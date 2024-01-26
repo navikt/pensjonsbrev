@@ -66,7 +66,6 @@ class BrevmetadataService(config: Config) {
             .map { it.mapToMetadata() }
     }
 
-    // TODO hent bare en med eget type kall
     suspend fun getMal(brevkode: String): BrevdataDto {
         return httpClient.get("/api/brevdata/brevForBrevkode/${brevkode}") {
             contentType(ContentType.Application.Json)

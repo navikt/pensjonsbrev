@@ -14,13 +14,13 @@ import no.nav.pensjon.brev.skribenten.auth.AuthorizedHttpClientResult
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse
-import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.EXTREAM_REDIGERING_GENERELL
-import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.TJENESTEBUSS_INTEGRASJON
+import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.*
 import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
 import no.nav.pensjon.brev.skribenten.routes.getCurrentGregorianTime
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExtreamRequestDto.SakskontekstDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto.Success.Samhandler
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto.FailureType.*
 import org.slf4j.LoggerFactory
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) {
@@ -95,7 +95,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         navIdent: String,
         metadata: BrevdataDto,
         name: String
-    ): ServiceResult<BestillExtreamBrevResponseDto, String> {
+    ): ServiceResult2<BestillExtreamBrevResponseDto> {
 
         //TODO better error handling.
         // TODO access controls for e-blanketter
@@ -140,56 +140,26 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     )
                 )
             )
-        }.toServiceResult<BestillExtreamBrevResponseDto, String>()
+        }.toServiceResult2<BestillExtreamBrevResponseDto>()
     }
 
     suspend fun redigerDoksysBrev(
         call: ApplicationCall,
         journalpostId: String,
         dokumentId: String,
-    ): ServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure> =
+    ): ServiceResult2<RedigerDoksysDokumentResponseDto> =
         tjenestebussIntegrasjonClient.post(call, "/redigerDoksysBrev") {
             RedigerDoksysDokumentRequestDto(journalpostId = journalpostId, dokumentId = dokumentId)
-        }.toServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure>()
-            .map {
-                RedigerDoksysDokumentResponseDto.Success(url = it.url)
-            }.catch { error ->
-                RedigerDoksysDokumentResponseDto.Failure(message = error.message, type = error.type)
-            }
+        }.toServiceResult2<RedigerDoksysDokumentResponseDto>()
 
     suspend fun redigerExtreamBrev(
         call: ApplicationCall,
         dokumentId: String,
-    ): BestillOgRedigerBrevResponse {
-        val response = tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
+    ): ServiceResult2<RedigerExtreamDokumentResponseDto> =
+        tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(RedigerExtreamDokumentRequestDto(dokumentId))
-        }
+        }.toServiceResult2<RedigerExtreamDokumentResponseDto>()
 
-        when (response) {
-            is AuthorizedHttpClientResult.Response -> {
-                val httpResponse = response.response
-                val extreamResponse = httpResponse.body<RedigerExtreamDokumentResponseDto>()
-                if (httpResponse.status.isSuccess()) {
-                    return BestillOgRedigerBrevResponse(
-                        url = extreamResponse.url,
-                        failureType = extreamResponse.failure?.let {
-                            logger.error("Feil ved redigering av extream brev $it")
-                            EXTREAM_REDIGERING_GENERELL
-                        }
-                    )
-                } else {
-                    logger.error("""Feil ved redigering av extream brev. 
-                                |Status: ${httpResponse.status}}
-                                |message: ${httpResponse.bodyAsText()}}""".trimMargin())
-                    return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
-                }
-            }
-            is AuthorizedHttpClientResult.Error -> {
-                logger.error(response.error.logString())
-                return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
-            }
-        }
-    }
 }

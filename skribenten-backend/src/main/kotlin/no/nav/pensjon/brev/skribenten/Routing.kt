@@ -49,9 +49,6 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         healthRoute()
 
         authenticate(authConfig.name) {
-            post("/test/pen") {
-                respondWithResult(safService.getStatus(call, "453840176"))
-            }
 
             data class LetterTemplatesResponse(
                 val kategorier: List<LetterCategory>,
@@ -68,7 +65,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 )
             }
             brevbakerRoute(brevbakerService)
-            bestillBrevRoute(tjenestebussIntegrasjonService, brevmetadataService, safService)
+            bestillBrevRoute(tjenestebussIntegrasjonService, brevmetadataService, safService, penService)
             kodeverkRoute(kodeverkService, penService)
             penRoute(penService, safService)
             personRoute(pdlService, pensjonPersonDataService, krrService)

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -10,7 +9,7 @@ import no.nav.pensjon.brev.skribenten.getLoggedInName
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExtreamBrevResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExtreamBrevResponseDto.FailureType.*
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.SafService.JournalpostLoadingError
 import org.slf4j.LoggerFactory
@@ -23,49 +22,31 @@ fun Route.bestillBrevRoute(
     tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
     brevmetadataService: BrevmetadataService,
     safService: SafService,
+    penService: PenService,
 ) {
 
     post("/bestillbrev") {
         val request = call.receive<OrderLetterRequest>()
-        val navIdent =
-            getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke ident på innlogget bruker i claim")
+        val navIdent = getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke ident på innlogget bruker i claim")
         val navn = getLoggedInName() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker i claim")
         val metadata: BrevdataDto = brevmetadataService.getMal(request.brevkode)
-        //TODO bestill doksys / extream brev avhengig av system i metadata
+
+
+        val result =
+            when (metadata.brevsystem) {
+                BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, penService, request, safService, tjenestebussIntegrasjonService)
+                BrevdataDto.BrevSystem.GAMMEL -> bestillExtreamBrev(
+                    tjenestebussIntegrasjonService = tjenestebussIntegrasjonService,
+                    call = call,
+                    request = request,
+                    navIdent = navIdent,
+                    metadata = metadata,
+                    navn = navn,
+                    safService = safService
+                )
+            }
         //TODO logg error message med correlation id istedenfor å sende den til front-end og bruk call-id.
-        // Front end bør kun bruke correlation id + type.
-        val result = bestillExtreamBrev(
-            tjenestebussIntegrasjonService = tjenestebussIntegrasjonService,
-            call = call,
-            request = request,
-            navIdent = navIdent,
-            metadata = metadata,
-            navn = navn,
-            safService = safService
-        )
-        call.respond(
-            when (result.failureType) {
-                DOKSYS_UNDER_REDIGERING -> HttpStatusCode.Conflict
-                DOKSYS_IKKE_REDIGERBART -> HttpStatusCode.Forbidden
-                DOKSYS_IKKE_FUNNET -> HttpStatusCode.NotFound
-                DOKSYS_IKKE_TILGANG -> HttpStatusCode.Unauthorized
-                DOKSYS_LUKKET -> HttpStatusCode.Locked
-
-                FERDIGSTILLING_TIMEOUT,
-                SAF_ERROR,
-                EXTREAM_REDIGERING_GENERELL,
-                TJENESTEBUSS_INTEGRASJON,
-                SKRIBENTEN_TOKEN_UTVEKSLING -> HttpStatusCode.InternalServerError
-
-                DOKSYS_VALIDERING_FEILET,
-                EXTREAM_BESTILLING_ADRESSE_MANGLER,
-                EXTREAM_BESTILLING_HENTE_BREVDATA,
-                EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
-                EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST -> HttpStatusCode.BadRequest
-
-                null -> HttpStatusCode.OK
-            }, result
-        )
+        call.respond(result)
     }
 }
 
@@ -77,53 +58,100 @@ private suspend fun bestillExtreamBrev(
     metadata: BrevdataDto,
     navn: String,
     safService: SafService
-): BestillOgRedigerBrevResponse {
-    val brevBestillingsResult: ServiceResult<BestillExtreamBrevResponseDto, String> =
-        tjenestebussIntegrasjonService.bestillExtreamBrev(call, request, navIdent, metadata, navn)
-
-    when (brevBestillingsResult) {
-        is ServiceResult.Ok -> {
-            val failure = brevBestillingsResult.result.failureType
-            val journalpostId = brevBestillingsResult.result.journalpostId
-            if (failure != null) {
-                return BestillOgRedigerBrevResponse(
-                    when (failure) {
-                        ADRESSE_MANGLER -> EXTREAM_BESTILLING_ADRESSE_MANGLER
-                        HENTE_BREVDATA -> EXTREAM_BESTILLING_HENTE_BREVDATA
-                        MANGLER_OBLIGATORISK_INPUT -> EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT
-                        OPPRETTE_JOURNALPOST -> EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST
-                    }
-                )
-            } else if (journalpostId != null) {
-                val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
-
-                return if (error != null) {
-                    BestillOgRedigerBrevResponse(
-                        when (error.type) {
-                            JournalpostLoadingError.ErrorType.ERROR -> SAF_ERROR
-                            JournalpostLoadingError.ErrorType.TIMEOUT -> FERDIGSTILLING_TIMEOUT
-                        },
-                    )
-                } else {
-                    tjenestebussIntegrasjonService.redigerExtreamBrev(call, journalpostId)
-                }
+): BestillOgRedigerBrevResponse =
+    tjenestebussIntegrasjonService.bestillExtreamBrev(call, request, navIdent, metadata, navn)
+        .map {
+            if (it.failureType != null) {
+                BestillOgRedigerBrevResponse(it.failureType)
+            } else if (it.journalpostId != null) {
+                redigerExtreamBrev(safService, call, it.journalpostId, tjenestebussIntegrasjonService)
             } else {
                 logger.error("Tom response fra tjenetebuss-integrasjon")
-                return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
+                BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
             }
+        }.catch { message, httpStatusCode ->
+            logger.error("Feil ved bestilling av brev fra extream mot tjenestebuss-integrasjon: $message Status:$httpStatusCode")
+            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
         }
 
-        is ServiceResult.Error -> {
-            logger.error("Feil ved bestilling av extream brev mot tjenestebuss-service Status: ${brevBestillingsResult.statusCode} Message: ${brevBestillingsResult.error}")
-            return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
-        }
-
-        is ServiceResult.AuthorizationError -> {
-            logger.error(brevBestillingsResult.error.logString())
-            return BestillOgRedigerBrevResponse(SKRIBENTEN_TOKEN_UTVEKSLING)
-        }
+private suspend fun redigerExtreamBrev(
+    safService: SafService,
+    call: ApplicationCall,
+    journalpostId: String,
+    tjenestebussIntegrasjonService: TjenestebussIntegrasjonService
+): BestillOgRedigerBrevResponse {
+    val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
+    return if (error != null) {
+        BestillOgRedigerBrevResponse(
+            when (error.type) {
+                JournalpostLoadingError.ErrorType.ERROR -> SAF_ERROR
+                JournalpostLoadingError.ErrorType.TIMEOUT -> FERDIGSTILLING_TIMEOUT
+            },
+        )
+    } else {
+        return tjenestebussIntegrasjonService.redigerExtreamBrev(call, journalpostId)
+            .map { extreamResponse ->
+                BestillOgRedigerBrevResponse(
+                    url = extreamResponse.url,
+                    failureType = extreamResponse.failure?.let {
+                        logger.error("Feil ved redigering av extream brev $it")
+                        EXTREAM_REDIGERING_GENERELL
+                    }
+                )
+            }.catch { message, httpStatusCode ->
+                logger.error("Feil ved bestilling av redigering av extream brev mot tjenestebuss integrasjon: $message Status: $httpStatusCode")
+                BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+            }
     }
 }
+
+
+private suspend fun bestillDoksysBrev(
+    call: ApplicationCall,
+    penService: PenService,
+    request: OrderLetterRequest,
+    safService: SafService,
+    tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
+): BestillOgRedigerBrevResponse =
+    penService.bestillDoksysBrev(call, request)
+        .map { response ->
+            if (response.failure != null) {
+                BestillOgRedigerBrevResponse(response.failure)
+            } else if (response.journalpostId != null) {
+                safService.getFirstDocumentInJournal(call, response.journalpostId)
+                    .map { safResponse -> redigerDoksysBrev(tjenestebussIntegrasjonService, call, safResponse, response.journalpostId) }
+                    .catch { message, httpStatusCode ->
+                        logger.error("Feil ved henting av dokumentId fra SAF ved redigering av doksys brev $message status: $httpStatusCode")
+                        BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                    }
+            } else {
+                logger.error("Tom response fra pesys")
+                BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+            }
+        }.catch { message, httpStatusCode ->
+            logger.error("Feil ved bestilling av doksys brev $message status: $httpStatusCode")
+            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+        }
+
+private suspend fun redigerDoksysBrev(
+    tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
+    call: ApplicationCall,
+    safResponse: SafService.HentDokumenterResponse.Dokument,
+    journalpostId: String
+) = tjenestebussIntegrasjonService.redigerDoksysBrev(call, journalpostId, safResponse.dokumentInfoId)
+    .map {
+        if (it.metaforceURI != null) {
+            BestillOgRedigerBrevResponse(it.metaforceURI)
+        } else if (it.failure != null) {
+            BestillOgRedigerBrevResponse(it.failure)
+        } else {
+            logger.error("Tom response ved redigering av doksys brev ved redigering av journal: $journalpostId")
+            BestillOgRedigerBrevResponse(DOKSYS_REDIGERING_UFORVENTET)
+        }
+    }.catch { message, httpStatusCode ->
+        logger.error("Feil ved redigering av doksys brev $message status: $httpStatusCode")
+        BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+    }
 
 fun getCurrentGregorianTime(): XMLGregorianCalendar {
     val cal = GregorianCalendar()
@@ -148,22 +176,61 @@ data class BestillOgRedigerBrevResponse(
     val failureType: FailureType?,
 ) {
     constructor(failure: FailureType) : this(url = null, failureType = failure)
+    constructor(url: String) : this(url = url, failureType = null)
+
+    constructor(failure: RedigerDoksysDokumentResponseDto.FailureType) : this(
+        when (failure) {
+            RedigerDoksysDokumentResponseDto.FailureType.UNDER_REDIGERING -> DOKSYS_REDIGERING_UNDER_REDIGERING
+            RedigerDoksysDokumentResponseDto.FailureType.IKKE_REDIGERBART -> DOKSYS_REDIGERING_IKKE_REDIGERBART
+            RedigerDoksysDokumentResponseDto.FailureType.VALIDERING_FEILET -> DOKSYS_REDIGERING_VALIDERING_FEILET
+            RedigerDoksysDokumentResponseDto.FailureType.IKKE_FUNNET -> DOKSYS_REDIGERING_IKKE_FUNNET
+            RedigerDoksysDokumentResponseDto.FailureType.IKKE_TILGANG -> DOKSYS_REDIGERING_IKKE_TILGANG
+            RedigerDoksysDokumentResponseDto.FailureType.LUKKET -> DOKSYS_REDIGERING_LUKKET
+            RedigerDoksysDokumentResponseDto.FailureType.UFORVENTET -> DOKSYS_REDIGERING_UFORVENTET
+        }
+    )
+
+    constructor(failure: PenService.BestillDoksysBrevResponse.FailureType) : this(
+        when (failure) {
+            PenService.BestillDoksysBrevResponse.FailureType.ADDRESS_NOT_FOUND -> DOKSYS_BESTILLING_ADDRESS_NOT_FOUND
+            PenService.BestillDoksysBrevResponse.FailureType.UNAUTHORIZED -> DOKSYS_BESTILLING_UNAUTHORIZED
+            PenService.BestillDoksysBrevResponse.FailureType.PERSON_NOT_FOUND -> DOKSYS_BESTILLING_PERSON_NOT_FOUND
+            PenService.BestillDoksysBrevResponse.FailureType.UNEXPECTED_DOKSYS_ERROR -> DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR
+            PenService.BestillDoksysBrevResponse.FailureType.INTERNAL_SERVICE_CALL_FAILIURE -> DOKSYS_BESTILLING_INTERNAL_SERVICE_CALL_FAILIURE
+            PenService.BestillDoksysBrevResponse.FailureType.TPS_CALL_FAILIURE -> DOKSYS_BESTILLING_TPS_CALL_FAILIURE
+        }
+    )
+
+    constructor(failure: BestillExtreamBrevResponseDto.FailureType) : this(
+        when (failure) {
+            BestillExtreamBrevResponseDto.FailureType.ADRESSE_MANGLER -> EXTREAM_BESTILLING_ADRESSE_MANGLER
+            BestillExtreamBrevResponseDto.FailureType.HENTE_BREVDATA -> EXTREAM_BESTILLING_HENTE_BREVDATA
+            BestillExtreamBrevResponseDto.FailureType.MANGLER_OBLIGATORISK_INPUT -> EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT
+            BestillExtreamBrevResponseDto.FailureType.OPPRETTE_JOURNALPOST -> EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST
+        }
+    )
 
     enum class FailureType {
-        DOKSYS_UNDER_REDIGERING,
-        DOKSYS_IKKE_REDIGERBART,
-        DOKSYS_VALIDERING_FEILET,
-        DOKSYS_IKKE_FUNNET,
-        DOKSYS_IKKE_TILGANG,
-        DOKSYS_LUKKET,
-        FERDIGSTILLING_TIMEOUT,
-        SAF_ERROR,
-        SKRIBENTEN_TOKEN_UTVEKSLING,
-        EXTREAM_REDIGERING_GENERELL,
-        TJENESTEBUSS_INTEGRASJON,
+        DOKSYS_BESTILLING_ADDRESS_NOT_FOUND,
+        DOKSYS_BESTILLING_INTERNAL_SERVICE_CALL_FAILIURE,
+        DOKSYS_BESTILLING_PERSON_NOT_FOUND,
+        DOKSYS_BESTILLING_TPS_CALL_FAILIURE,
+        DOKSYS_BESTILLING_UNAUTHORIZED,
+        DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR,
+        DOKSYS_REDIGERING_IKKE_FUNNET,
+        DOKSYS_REDIGERING_IKKE_REDIGERBART,
+        DOKSYS_REDIGERING_IKKE_TILGANG,
+        DOKSYS_REDIGERING_LUKKET,
+        DOKSYS_REDIGERING_UFORVENTET,
+        DOKSYS_REDIGERING_UNDER_REDIGERING,
+        DOKSYS_REDIGERING_VALIDERING_FEILET,
         EXTREAM_BESTILLING_ADRESSE_MANGLER,
         EXTREAM_BESTILLING_HENTE_BREVDATA,
         EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
         EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST,
+        EXTREAM_REDIGERING_GENERELL,
+        FERDIGSTILLING_TIMEOUT,
+        SAF_ERROR,
+        SKRIBENTEN_INTERNAL_ERROR,
     }
 }

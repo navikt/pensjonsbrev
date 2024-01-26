@@ -19,9 +19,4 @@ fun Route.tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService: Tjenesteb
         val requestDto = call.receive<HentSamhandlerRequestDto>()
         respondWithResult(tjenestebussIntegrasjonService.hentSamhandler(call, requestDto.idTSSEkstern, requestDto.hentDetaljert))
     }
-
-    post("/redigerDoksysBrev") {
-        val requestDto = call.receive<RedigerDoksysDokumentRequestDto>()
-        respondWithResult(tjenestebussIntegrasjonService.redigerDoksysBrev(call, requestDto.journalpostId, requestDto.dokumentId))
-    }
 }

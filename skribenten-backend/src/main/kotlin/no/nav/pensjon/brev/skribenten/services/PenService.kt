@@ -12,6 +12,11 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse
+import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.*
+import no.nav.pensjon.brev.skribenten.services.PenService.BestillDoksysBrevResponse.FailureType.*
+import no.nav.pensjon.brev.skribenten.services.SafService.JournalpostLoadingError.ErrorType.*
+import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
 class PenService(config: Config, authService: AzureADService) {
@@ -32,10 +37,6 @@ class PenService(config: Config, authService: AzureADService) {
 
     data class PenError(val feilmelding: String)
 
-    data class PenPersonDto(
-        val fodselsdato: LocalDate,
-        val fnr: String,
-    )
     data class Sak(
         val sakId: Long,
         val foedselsnr: String,
@@ -78,41 +79,32 @@ class PenService(config: Config, authService: AzureADService) {
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
-    ): ServiceResult<BestillDoksysBrevResponse, BestillDoksysBrevResponse> =
+    ): ServiceResult2<BestillDoksysBrevResponse> =
         client.post(call, "brev/skribenten/doksys/sak/${request.sakId}") {
             setBody(
                 BestilDoksysBrevRequest(
                     sakId = request.sakId,
                     brevkode = request.brevkode,
-                    mottaker = null, // TODO
+                    mottaker = request.gjelderPid,
                     journalfoerendeEnhet = request.enhetsId,
-                    sensitivePersonopplysninger = false, // TODO valg fra saksbehandler
+                    sensitivePersonopplysninger = request.isSensitive,
                     sprakKode = request.spraak,
-                    vedtakId = 42806043, //TODO fyll inn fra query param
+                    vedtakId = null, //TODO set from request
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult<BestillDoksysBrevResponse, BestillDoksysBrevResponse>()
+        }.toServiceResult2<BestillDoksysBrevResponse>()
+
     data class Avtaleland(val navn: String, val kode: String)
 
-    data class BestillDoksysBrevResponse(val journalpostId: String?, val error: Error? = null) {
-        companion object {
-            fun ok(journalpostId: String) =
-                BestillDoksysBrevResponse(journalpostId)
-
-            fun error(tekniskgrunn: String?, type: Error.ErrorType) =
-                BestillDoksysBrevResponse(null, Error(tekniskgrunn, type))
-        }
-
-        data class Error(val tekniskgrunn: String?, val type: ErrorType) {
-            enum class ErrorType {
-                ADDRESS_NOT_FOUND,
-                UNAUTHORIZED,
-                PERSON_NOT_FOUND,
-                UNEXPECTED_DOKSYS_ERROR,
-                INTERNAL_SERVICE_CALL_FAILIURE,
-                TPS_CALL_FAILIURE,
-            }
+    data class BestillDoksysBrevResponse(val journalpostId: String?, val failure: FailureType? = null) {
+        enum class FailureType {
+            ADDRESS_NOT_FOUND,
+            UNAUTHORIZED,
+            PERSON_NOT_FOUND,
+            UNEXPECTED_DOKSYS_ERROR,
+            INTERNAL_SERVICE_CALL_FAILIURE,
+            TPS_CALL_FAILIURE,
         }
     }
 
