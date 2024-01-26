@@ -35,6 +35,7 @@ externalHosts:
   - saf-q2.dev-fss-pub.nais.io
   - kodeverk.dev-fss-pub.nais.io
   - pensjon-persondata-q2.dev-fss-pub.nais.io
+  - pensjon-persondata-q2.intern.dev.nav.no
   - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
   - navansatt.dev-fss-pub.nais.io
 
