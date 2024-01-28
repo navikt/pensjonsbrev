@@ -20,6 +20,7 @@ import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadpphoerDTO
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadpphoerRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createTomMal
@@ -38,7 +39,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadOpphoerDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTO
@@ -83,13 +85,17 @@ object Fixtures {
             BarnepensjonRevurderingRedigerbartUtfallDTO::class -> createBarnepensjonRevurderingRedigerbartUtfallDTO() as T
             BarnepensjonOmregnetNyttRegelverkDTO::class -> createBarnepensjonOmregnetNyttRegelverkDTO() as T
             BarnepensjonOmregnetNyttRegelverkFerdigDTO::class -> createBarnepensjonOmregnetNyttRegelverkFerdigDTO() as T
+
             OmstillingsstoenadInnvilgelseDTO::class -> createOmstillingsstoenadInnvilgelseDTO() as T
             OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class -> createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() as T
             OmstillingstoenadAvslagDTO::class -> createOmstillingsstoenadAvslagDTO() as T
             OmstillingsstoenadRevurderingDTO::class -> createOmstillingsstoenadRevurderingDTO() as T
             OmstillingsstoenadOpphoerDTO::class -> createOmstillingsstoenadpphoerDTO() as T
+            OmstillingsstoenadOpphoerRedigerbartUtfallDTO::class -> createOmstillingsstoenadpphoerRedigerbartUtfallDTO() as T
+
             TilbakekrevingInnholdDTO::class -> createTilbakekrevingInnholdDTO() as T
             TilbakekrevingFerdigDTO::class -> createTilbakekrevingFerdigDTO() as T
+
             ManueltBrevDTO::class -> createManueltBrevDTO() as T
             ManueltBrevMedTittelDTO::class -> createTomMalInformasjonsbrev() as T
             TomMal::class -> createTomMal() as T

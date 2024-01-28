@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -16,13 +17,16 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.klageOgAnkeUtenTilbakekreving
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
 
 
 data class OmstillingstoenadAvslagDTO(
     override val innhold: List<Element>,
     val avdoedNavn: String,
+    val bosattUtland: Boolean,
 ): BrevDTO
 
 @TemplateModelHelpers
@@ -43,8 +47,8 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
         title {
             text(
                 Bokmal to "Vi har avslått søknaden din om omstillingsstønad",
-                Nynorsk to "",
-                English to "",
+                Nynorsk to "Vi har avslått søknaden din om omstillingsstønad",
+                English to "We have rejected your application for transitional benefits",
             )
         }
 
@@ -53,11 +57,15 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageOpphoer)
+            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageAvslagOpphoer)
             includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(klageOgAnkeUtenTilbakekreving, innhold)
+        // Nasjonal
+        includeAttachment(klageOgAnkeNasjonal, bosattUtland.not())
+
+        // Bosatt utland
+        includeAttachment(klageOgAnkeUtland, bosattUtland)
     }
 }
