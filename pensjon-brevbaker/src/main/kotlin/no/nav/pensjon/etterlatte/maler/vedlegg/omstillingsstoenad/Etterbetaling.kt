@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetalingSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetalingSelectors.etterbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetalingSelectors.fraDato
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetalingSelectors.tilDato
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
@@ -78,7 +78,7 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
         )
     }
 
-    includePhrase(BeregningsperiodetabellEtterbetaling(beregningsperioder))
+    includePhrase(BeregningsperiodetabellEtterbetaling(etterbetalingsperioder))
 
     paragraph {
         text(

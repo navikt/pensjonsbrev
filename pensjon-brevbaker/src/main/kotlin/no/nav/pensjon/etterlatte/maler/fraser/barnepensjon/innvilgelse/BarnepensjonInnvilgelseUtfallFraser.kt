@@ -15,46 +15,47 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
+import no.nav.pensjon.etterlatte.maler.Avdoed
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import java.time.LocalDate
 
-object BarnepensjonInnvilgelseEnkelFraser {
+object BarnepensjonInnvilgelseUtfallFraser {
 
     data class Foerstegangsbehandlingsvedtak(
+        val avdoed: Expression<Avdoed>,
         val virkningsdato: Expression<LocalDate>,
-        val avdoedNavn: Expression<String>,
-        val doedsdato: Expression<LocalDate>,
-        val beloep: Expression<Kroner>,
-        val vedtaksdato: Expression<LocalDate>,
+        val sisteBeregningsperiodeDatoFom: Expression<LocalDate>,
+        val sisteBeregningsperiodeBeloep: Expression<Kroner>,
         val erEtterbetaling: Expression<Boolean>,
-        val beregningsperioder: Expression<List<Beregningsperiode>>,
-        val nyesteUtbetalingsperiodeDatoFom: Expression<LocalDate>,
         val harFlereUtbetalingsperioder: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val formatertVirkningsdato = virkningsdato.format()
-                val formatertDoedsdato = doedsdato.format()
-                val formatertNyesteUtbetalingsperiodeDatoFom = nyesteUtbetalingsperiodeDatoFom.format()
+                val formatertDoedsdato = avdoed.doedsdato.format()
+                val formatertNyesteUtbetalingsperiodeDatoFom = sisteBeregningsperiodeDatoFom.format()
+                val formatertBeloep = sisteBeregningsperiodeBeloep.format()
+                val avdoedNavn = avdoed.navn
 
                 textExpr(
-                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ".",
-                    Nynorsk to "Du er innvilga barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ".",
-                    English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + "."
+                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
+                    Nynorsk to "Du er innvilga barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
+                    English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + ". "
                 )
 
                 showIf(harFlereUtbetalingsperioder) {
                     textExpr(
-                        Bokmal to "Du får ".expr() + beloep.format() + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
-                        Nynorsk to "Du får ".expr() + beloep.format() + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ". Sjå utbetalingsbeløp for tidlegare periodar i vedlegget om etterbetaling.",
-                        English to "You will receive ".expr() + beloep.format() + " kroner each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + ". See the payment amount for previous periods in the Back Payment Attachment."
+                        Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
+                        Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ". Sjå utbetalingsbeløp for tidlegare periodar i vedlegget om etterbetaling.",
+                        English to "You will receive ".expr() + formatertBeloep + " kroner each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + ". See the payment amount for previous periods in the Back Payment Attachment."
                     )
                 }.orShow {
                     textExpr(
-                        Bokmal to "Du får ".expr() + beloep.format() + " kroner hver måned før skatt.",
-                        Nynorsk to "Du får ".expr() + beloep.format() + " kroner per månad før skatt.",
-                        English to "You will receive NOK ".expr() + beloep.format() + " each month before tax."
+                        Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.",
+                        Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt.",
+                        English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax."
                     )
                 }
             }

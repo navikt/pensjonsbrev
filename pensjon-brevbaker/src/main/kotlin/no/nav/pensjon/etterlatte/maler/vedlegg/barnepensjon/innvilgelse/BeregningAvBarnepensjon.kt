@@ -19,24 +19,26 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.trygdetid
+import no.nav.pensjon.etterlatte.maler.BeregningsMetode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.IntBroek
+import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
+import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
+import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeFraGrunnlag
+import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.mindreEnnFireFemtedelerAvOpptjeningstiden
+import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
+import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.trygdetidsperioder
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.aarTrygdetid
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.antallBarn
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.beregningsMetodeAnvendt
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.beregningsMetodeFraGrunnlag
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.mindreEnnFireFemtedelerAvOpptjeningstiden
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.prorataBroek
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.trygdetidsperioder
 import no.nav.pensjon.etterlatte.maler.formatBroek
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
+
 
 @TemplateModelHelpers
 val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
@@ -56,14 +58,14 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
     }
     grunnbeloepetGammeltOgNyttRegelverk(grunnbeloep)
     trygdetid(
-        aarTrygdetid,
-        prorataBroek,
-        beregningsMetodeFraGrunnlag,
-        beregningsMetodeAnvendt,
-        mindreEnnFireFemtedelerAvOpptjeningstiden
+        trygdetid.beregnetTrygdetidAar,
+        trygdetid.prorataBroek,
+        trygdetid.beregningsMetodeFraGrunnlag,
+        trygdetid.beregningsMetodeAnvendt,
+        trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden
     )
-    beregnetBarnepensjonGammeltOgNyttRegelverk(aarTrygdetid, prorataBroek, beregningsMetodeAnvendt, beregningsperioder)
-    perioderMedRegistrertTrygdetid(trygdetidsperioder, beregningsMetodeAnvendt)
+    beregnetBarnepensjonGammeltOgNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder)
+    perioderMedRegistrertTrygdetid(trygdetid.trygdetidsperioder, trygdetid.beregningsMetodeAnvendt)
 }
 
 @TemplateModelHelpers
@@ -84,17 +86,17 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
     }
     grunnbeloepetNyttRegelverk(grunnbeloep)
     trygdetid(
-        aarTrygdetid,
-        prorataBroek,
-        beregningsMetodeFraGrunnlag,
-        beregningsMetodeAnvendt,
-        mindreEnnFireFemtedelerAvOpptjeningstiden
+        trygdetid.beregnetTrygdetidAar,
+        trygdetid.prorataBroek,
+        trygdetid.beregningsMetodeFraGrunnlag,
+        trygdetid.beregningsMetodeAnvendt,
+        trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden
     )
-    beregnetBarnepensjonNyttRegelverk(aarTrygdetid, prorataBroek, beregningsMetodeAnvendt, beregningsperioder)
-    perioderMedRegistrertTrygdetid(trygdetidsperioder, beregningsMetodeAnvendt)
+    beregnetBarnepensjonNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder)
+    perioderMedRegistrertTrygdetid(trygdetid.trygdetidsperioder, trygdetid.beregningsMetodeAnvendt)
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.grunnbeloepetGammeltOgNyttRegelverk(
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.grunnbeloepetGammeltOgNyttRegelverk(
     grunnbeloep: Expression<Kroner>,
 ) {
 
@@ -182,7 +184,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.grunnbeloepetNyttRegelverk(
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.grunnbeloepetNyttRegelverk(
     grunnbeloep: Expression<Kroner>,
 ) {
 
@@ -202,7 +204,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.trygdetid(
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.trygdetid(
     aarTrygdetid: Expression<Int>,
     prorataBroek: Expression<IntBroek?>,
     beregningsMetodeFraGrunnlag: Expression<BeregningsMetode>,
@@ -303,11 +305,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     konverterElementerTilBrevbakerformat(innhold)
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.beregnetBarnepensjonNyttRegelverk(
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.beregnetBarnepensjonNyttRegelverk(
     aarTrygdetid: Expression<Int>,
     prorataBroek: Expression<IntBroek?>,
     beregningsMetodeAnvendt: Expression<BeregningsMetode>,
-    beregningsperioder: Expression<List<Beregningsperiode>>
+    beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>
 ) {
     title2 {
         text(
@@ -337,11 +339,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     includePhrase(Beregningsperiodetabell(beregningsperioder))
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.beregnetBarnepensjonGammeltOgNyttRegelverk(
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.beregnetBarnepensjonGammeltOgNyttRegelverk(
     aarTrygdetid: Expression<Int>,
     prorataBroek: Expression<IntBroek?>,
     beregningsMetodeAnvendt: Expression<BeregningsMetode>,
-    beregningsperioder: Expression<List<Beregningsperiode>>
+    beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>
 ) {
     title2 {
         text(
@@ -475,7 +477,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     includePhrase(Beregningsperiodetabell(beregningsperioder))
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.perioderMedRegistrertTrygdetid(
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.perioderMedRegistrertTrygdetid(
     trygdetidsperioder: Expression<List<Trygdetidsperiode>>,
     beregningsMetodeAnvendt: Expression<BeregningsMetode>
 ) {
