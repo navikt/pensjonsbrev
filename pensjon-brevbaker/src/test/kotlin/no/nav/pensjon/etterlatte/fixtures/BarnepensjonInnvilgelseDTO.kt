@@ -73,6 +73,13 @@ fun createBarnepensjonInnvilgelseDTO() =
                     grunnbeloep = Kroner(123456),
                     antallBarn = 4,
                     utbetaltBeloep = Kroner(6234)
+                ),
+                BarnepensjonBeregningsperiode(
+                    datoFOM = LocalDate.of(2023, Month.APRIL, 1),
+                    datoTOM = null,
+                    grunnbeloep = Kroner(123456),
+                    antallBarn = 4,
+                    utbetaltBeloep = Kroner(8234)
                 )
             )
         ),
