@@ -3,7 +3,7 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
 
-fun createOmstillingsstoenadpphoerDTO() =
+fun createOmstillingsstoenadOpphoerDTO() =
     OmstillingsstoenadOpphoerDTO(
         innhold = listOf(
             Element(

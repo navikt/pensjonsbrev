@@ -19,7 +19,7 @@ import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadpphoerDTO
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadOpphoerDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadpphoerRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingInnholdDTO
@@ -90,7 +90,7 @@ object Fixtures {
             OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class -> createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() as T
             OmstillingstoenadAvslagDTO::class -> createOmstillingsstoenadAvslagDTO() as T
             OmstillingsstoenadRevurderingDTO::class -> createOmstillingsstoenadRevurderingDTO() as T
-            OmstillingsstoenadOpphoerDTO::class -> createOmstillingsstoenadpphoerDTO() as T
+            OmstillingsstoenadOpphoerDTO::class -> createOmstillingsstoenadOpphoerDTO() as T
             OmstillingsstoenadOpphoerRedigerbartUtfallDTO::class -> createOmstillingsstoenadpphoerRedigerbartUtfallDTO() as T
 
             TilbakekrevingInnholdDTO::class -> createTilbakekrevingInnholdDTO() as T
