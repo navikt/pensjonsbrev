@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 import { describe, expect, test } from "vitest";
 
-import { compose } from "~/pages/Brevredigering/LetterEditor/lib/functional";
+import { compose } from "~/Brevredigering/LetterEditor/lib/functional";
 
 describe("compose", () => {
   test("composed function applies f2 to output from f1: f2(f1(...))", () => {

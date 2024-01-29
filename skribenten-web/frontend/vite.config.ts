@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from "node:url";
 
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,6 +11,7 @@ export default defineConfig({
     react({
       jsxImportSource: "@emotion/react",
     }),
+    TanStackRouterVite(),
   ],
   resolve: {
     alias: {

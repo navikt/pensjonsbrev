@@ -5,36 +5,31 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.Etterbetaling
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.IntBroek
-import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.beregningsinfo
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.kunNyttRegelverk
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.beregningAvBarnepensjonGammeltOgNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.beregningAvBarnepensjonNyttRegelverk
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.dineRettigheterOgPlikterBosattUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.dineRettigheterOgPlikterNasjonal
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.etterbetalingAvBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomHandlerPaaVegneAvBarnetUtland
@@ -43,33 +38,12 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informas
 
 data class BarnepensjonInnvilgelseDTO(
     override val innhold: List<Element>,
-    val utbetalingsinfo: Utbetalingsinfo,
-    val beregningsinfo: BeregningsinfoBP,
-    val etterbetaling: Etterbetaling? = null,
+    val beregning: BarnepensjonBeregning,
+    val etterbetaling: BarnepensjonEtterbetaling?,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,
 ) : BrevDTO
-
-data class BeregningsinfoBP(
-    override val innhold: List<Element>,
-    val grunnbeloep: Kroner,
-    val beregningsperioder: List<Beregningsperiode>,
-    val antallBarn: Int,
-    val aarTrygdetid: Int,
-    val maanederTrygdetid: Int,
-    val trygdetidsperioder: List<Trygdetidsperiode>,
-    val prorataBroek: IntBroek?,
-    val beregningsMetodeAnvendt: BeregningsMetode,
-    val beregningsMetodeFraGrunnlag: BeregningsMetode,
-    val mindreEnnFireFemtedelerAvOpptjeningstiden: Boolean
-) : BrevDTO
-
-enum class BeregningsMetode {
-    NASJONAL,
-    PRORATA,
-    BEST
-}
 
 @TemplateModelHelpers
 object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>, Hovedmal {
@@ -99,7 +73,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
 
             includePhrase(
                 BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
-                    utbetalingsinfo.beregningsperioder,
+                    beregning.beregningsperioder,
                     etterbetaling
                 )
             )
@@ -109,10 +83,10 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         }
 
         // Beregning av barnepensjon nytt og gammelt regelverk
-        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregningsinfo, kunNyttRegelverk.not())
+        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregning, kunNyttRegelverk.not())
 
         // Beregning av barnepensjon nytt regelverk
-        includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregningsinfo, kunNyttRegelverk)
+        includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
 
         includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetaling)
 
@@ -124,6 +98,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, innhold, brukerUnder18Aar.not().and(bosattUtland.not()))
         includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, innhold, brukerUnder18Aar.not().and(bosattUtland))
 
-        includeAttachment(dineRettigheterOgPlikter, this.argument, true.expr())
+        includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, bosattUtland)
+        includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, bosattUtland.not())
     }
 }
