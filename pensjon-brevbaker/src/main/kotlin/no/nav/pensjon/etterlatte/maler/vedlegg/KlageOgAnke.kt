@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
+package no.nav.pensjon.etterlatte.maler.vedlegg
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -36,8 +36,8 @@ val klageOgAnkeUtland = createAttachment(
 val klageOgAnkeNasjonal = createAttachment(
     title = newText(
         Bokmal to "Informasjon om klage og anke",
-        Nynorsk to "",
-        English to ""
+        Nynorsk to "Informasjon om klage og anke",
+        English to "Information on Complaints and Appeals"
     ),
     includeSakspart = false,
 ) {

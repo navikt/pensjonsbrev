@@ -19,8 +19,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerD
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.klageOgAnkeNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.klageOgAnkeUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
 
 data class BarnepensjonOpphoerDTO(
     override val innhold: List<Element>,
