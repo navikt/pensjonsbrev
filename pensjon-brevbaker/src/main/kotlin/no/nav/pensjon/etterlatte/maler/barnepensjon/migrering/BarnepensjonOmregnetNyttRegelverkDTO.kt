@@ -10,18 +10,14 @@ import no.nav.pensjon.etterlatte.maler.IntBroek
 data class BarnepensjonOmregnetNyttRegelverkDTO(
     val utbetaltFoerReform: Kroner,
     val utbetaltEtterReform: Kroner,
-    val grunnbeloep: Kroner,
-    val anvendtTrygdetid: Int,
-    val prorataBroek: IntBroek?,
-    val erBosattUtlandet: Boolean,
-    val erYrkesskade: Boolean,
     val erForeldreloes: Boolean,
-    val erUnder18Aar: Boolean,
+    val erBosattUtlandet: Boolean,
 )
 
 data class BarnepensjonOmregnetNyttRegelverkFerdigDTO(
     override val innhold: List<Element>,
     val beregning: BarnepensjonBeregning,
     val etterbetaling: BarnepensjonEtterbetaling?,
+    val erUnder18Aar: Boolean,
     val data: BarnepensjonOmregnetNyttRegelverkDTO,
 ) : BrevDTO

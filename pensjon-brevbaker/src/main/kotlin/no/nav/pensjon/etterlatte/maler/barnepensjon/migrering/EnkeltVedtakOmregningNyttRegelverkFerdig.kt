@@ -1,6 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.migrering
 
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -16,9 +15,9 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.erUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
@@ -64,7 +63,7 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
             )
             includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(data.erUnder18Aar, data.erBosattUtlandet))
+            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(erUnder18Aar, data.erBosattUtlandet))
         }
 
         // Beregning av barnepensjon nytt og gammelt regelverk
@@ -76,24 +75,24 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
         includeAttachment(
             informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal,
             innhold,
-            data.erUnder18Aar.and(data.erBosattUtlandet.not())
+            erUnder18Aar.and(data.erBosattUtlandet.not())
         )
         includeAttachment(
             informasjonTilDegSomHandlerPaaVegneAvBarnetUtland,
             innhold,
-            data.erUnder18Aar.and(data.erBosattUtlandet)
+            erUnder18Aar.and(data.erBosattUtlandet)
         )
 
         // Vedlegg over 18 år
         includeAttachment(
             informasjonTilDegSomMottarBarnepensjonNasjonal,
             innhold,
-            data.erUnder18Aar.not().and(data.erBosattUtlandet.not())
+            erUnder18Aar.not().and(data.erBosattUtlandet.not())
         )
         includeAttachment(
             informasjonTilDegSomMottarBarnepensjonUtland,
             innhold,
-            data.erUnder18Aar.not().and(data.erBosattUtlandet)
+            erUnder18Aar.not().and(data.erBosattUtlandet)
         )
 
         includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, data.erBosattUtlandet)

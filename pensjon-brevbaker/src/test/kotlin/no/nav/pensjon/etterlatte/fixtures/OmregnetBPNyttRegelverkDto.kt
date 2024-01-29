@@ -22,13 +22,8 @@ fun createBarnepensjonOmregnetNyttRegelverkDTO() =
     BarnepensjonOmregnetNyttRegelverkDTO(
         utbetaltFoerReform = Kroner(1337),
         utbetaltEtterReform = Kroner(31337),
-        anvendtTrygdetid = 40,
-        grunnbeloep = Kroner(400000),
-        prorataBroek = IntBroek(43, 156),
-        erBosattUtlandet = true,
-        erYrkesskade = false,
         erForeldreloes = false,
-        erUnder18Aar = false,
+        erBosattUtlandet = true,
     )
 
 fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
@@ -75,16 +70,12 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
         ),
         beregning = lagBeregning(),
         etterbetaling = lagEtterbetaling(),
+        erUnder18Aar = false,
         data = BarnepensjonOmregnetNyttRegelverkDTO(
             utbetaltFoerReform = Kroner(1337),
             utbetaltEtterReform = Kroner(31337),
-            anvendtTrygdetid = 40,
-            grunnbeloep = Kroner(400000),
-            prorataBroek = IntBroek(43, 156),
-            erBosattUtlandet = true,
-            erYrkesskade = false,
             erForeldreloes = false,
-            erUnder18Aar = true,
+            erBosattUtlandet = true,
         )
     )
 
