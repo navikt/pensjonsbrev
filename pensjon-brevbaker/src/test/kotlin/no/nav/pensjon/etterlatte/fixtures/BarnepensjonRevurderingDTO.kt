@@ -1,74 +1,110 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import no.nav.pensjon.etterlatte.maler.Etterbetaling
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
+import no.nav.pensjon.etterlatte.maler.BeregningsMetode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.ElementType
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
+import no.nav.pensjon.etterlatte.maler.InnerElement
+import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
+import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
 
 fun createBarnepensjonRevurderingDTO() = BarnepensjonRevurderingDTO(
+    innhold = listOf(
+        Element(
+            type = ElementType.HEADING_THREE,
+            children = listOf(
+                InnerElement(
+                    text = "Begrunnelse for vedtaket"
+                )
+            )
+        ),
+        Element(
+            type = ElementType.PARAGRAPH,
+            children = listOf(
+                InnerElement(
+                    text = "Redigerbar tekst her"
+                ),
+            )
+        ),
+    ),
     erEndret = true,
-    etterbetaling = Etterbetaling(
-        fraDato = LocalDate.of(2020, Month.JANUARY, 1),
-        tilDato = LocalDate.of(2023, Month.DECEMBER, 31),
-    ),
-    utbetalingsinfo = Utbetalingsinfo(
-        antallBarn = 2,
-        beloep = Kroner(1234),
-        soeskenjustering = true,
-        virkningsdato = LocalDate.now(),
-        beregningsperioder = listOf(
-            Beregningsperiode(
-                datoFOM = LocalDate.now(),
-                datoTOM = LocalDate.now(),
-                grunnbeloep = Kroner(106003),
-                antallBarn = 1,
-                utbetaltBeloep = Kroner(495),
-            ),
-            Beregningsperiode(
-                datoFOM = LocalDate.now(),
-                datoTOM = null,
-                grunnbeloep = Kroner(106003),
-                antallBarn = 1,
-                utbetaltBeloep = Kroner(495),
-            ),
-        ),
-    ),
-    innhold = listOf(),
-    beregningsinfo = BeregningsinfoBP(
+    beregning = BarnepensjonBeregning(
         innhold = listOf(),
-        grunnbeloep = Kroner(123456),
+        virkningsdato = LocalDate.of(2023, Month.MAY, 1),
+        antallBarn = 1,
+        grunnbeloep = Kroner(118620),
         beregningsperioder = listOf(
-            Beregningsperiode(
-                datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-                datoTOM = LocalDate.of(2023, Month.JULY, 31),
-                grunnbeloep = Kroner(123456),
-                antallBarn = 4,
-                utbetaltBeloep = Kroner(6234)
-            )
+            BarnepensjonBeregningsperiode(
+                datoFOM = LocalDate.of(2023, Month.MAY, 1),
+                datoTOM = LocalDate.of(2023, Month.DECEMBER, 31),
+                grunnbeloep = Kroner(118620),
+                antallBarn = 1,
+                utbetaltBeloep = Kroner(8000),
+            ),
+            BarnepensjonBeregningsperiode(
+                datoFOM = LocalDate.of(2024, Month.JANUARY, 1),
+                datoTOM = null,
+                grunnbeloep = Kroner(118620),
+                antallBarn = 1,
+                utbetaltBeloep = Kroner(10000),
+            ),
         ),
-        antallBarn = 4,
-        aarTrygdetid = 12,
-        maanederTrygdetid = 3,
-        prorataBroek = null,
-        trygdetidsperioder = listOf(
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-                datoTOM = LocalDate.of(2023, Month.JULY, 31),
-                land = "Albania",
-                opptjeningsperiode = Periode(3, 0, 0),
-                type = TrygdetidType.FAKTISK
-            )
+        sisteBeregningsperiode = BarnepensjonBeregningsperiode(
+            datoFOM = LocalDate.of(2024, Month.JANUARY, 1),
+            datoTOM = null,
+            grunnbeloep = Kroner(118620),
+            antallBarn = 1,
+            utbetaltBeloep = Kroner(10000),
         ),
-        beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-        beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
-        mindreEnnFireFemtedelerAvOpptjeningstiden = true
-    )
+        trygdetid = Trygdetid(
+            trygdetidsperioder = listOf(
+                Trygdetidsperiode(
+                    datoFOM = LocalDate.of(2004, 1, 1),
+                    datoTOM = LocalDate.of(2024, 1, 1),
+                    land = "NOR",
+                    opptjeningsperiode = Periode(20, 0, 0),
+                    type = TrygdetidType.FAKTISK
+                ),
+                Trygdetidsperiode(
+                    datoFOM = LocalDate.of(2024, 1, 1),
+                    datoTOM = LocalDate.of(2044, 1, 1),
+                    land = "NOR",
+                    opptjeningsperiode = Periode(20, 0, 0),
+                    type = TrygdetidType.FREMTIDIG
+                )
+            ),
+            beregnetTrygdetidAar = 40,
+            beregnetTrygdetidMaaneder = 480,
+            prorataBroek = IntBroek(20, 150),
+            beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
+            beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
+            mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+        )
+    ),
+    etterbetaling = BarnepensjonEtterbetaling(
+        fraDato = LocalDate.of(2023, Month.MAY, 1),
+        tilDato = LocalDate.of(2023, Month.DECEMBER, 31),
+        etterbetalingsperioder = listOf(
+            BarnepensjonBeregningsperiode(
+                datoFOM = LocalDate.of(2023, Month.MAY, 1),
+                datoTOM = LocalDate.of(2023, Month.DECEMBER, 31),
+                grunnbeloep = Kroner(118620),
+                antallBarn = 1,
+                utbetaltBeloep = Kroner(8000)
+            )
+        )
+    ),
+    brukerUnder18Aar = true,
+    bosattUtland = false,
+    kunNyttRegelverk = false,
+    harFlereUtbetalingsperioder = true,
 )

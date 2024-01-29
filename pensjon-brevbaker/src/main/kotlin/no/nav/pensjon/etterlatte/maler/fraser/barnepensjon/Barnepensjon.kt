@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -17,39 +16,16 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 import java.time.LocalDate
 
 object Barnepensjon {
-
-    data class Foerstegangsbehandlingsvedtak(
-        val virkningsdato: Expression<LocalDate>,
-        val avdoedNavn: Expression<String>,
-        val doedsdato: Expression<LocalDate>,
-        val beloep: Expression<Kroner>,
-    ) :
-        OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            paragraph {
-                val formatertVirkningsdato = virkningsdato.format()
-                val formatertDoedsdato = doedsdato.format()
-                textExpr(
-                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato +
-                            " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". " +
-                            "Du får " + beloep.format() + " kroner hver måned før skatt. Barnepensjonen utbetales til og med den " +
-                            "kalendermåneden du fyller 18 år. Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
-    }
 
     object BeregningOgUtbetalingOverskrift : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
@@ -74,7 +50,7 @@ object Barnepensjon {
     }
 
     data class SlikHarViBeregnetPensjonenDin(
-        val beregningsperioder: Expression<List<Beregningsperiode>>,
+        val beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>,
         val soeskenjustering: Expression<Boolean>,
         val antallBarn: Expression<Int>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -113,7 +89,7 @@ object Barnepensjon {
     }
 
     data class BeregnetPensjonTabell(
-        val beregningsperioder: Expression<List<Beregningsperiode>>
+        val beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
