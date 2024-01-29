@@ -149,7 +149,9 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         dokumentId: String,
     ): ServiceResult2<RedigerDoksysDokumentResponseDto> =
         tjenestebussIntegrasjonClient.post(call, "/redigerDoksysBrev") {
-            RedigerDoksysDokumentRequestDto(journalpostId = journalpostId, dokumentId = dokumentId)
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(RedigerDoksysDokumentRequestDto(journalpostId = journalpostId, dokumentId = dokumentId))
         }.toServiceResult2<RedigerDoksysDokumentResponseDto>()
 
     suspend fun redigerExtreamBrev(

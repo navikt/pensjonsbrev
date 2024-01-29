@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.Failur
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExtreamBrevResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.services.SafService.JournalpostLoadingError
+import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
 import org.slf4j.LoggerFactory
 import java.util.*
 import javax.xml.datatype.DatatypeFactory
@@ -80,28 +80,26 @@ private suspend fun redigerExtreamBrev(
     journalpostId: String,
     tjenestebussIntegrasjonService: TjenestebussIntegrasjonService
 ): BestillOgRedigerBrevResponse {
-    val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
-    return if (error != null) {
-        BestillOgRedigerBrevResponse(
-            when (error.type) {
-                JournalpostLoadingError.ErrorType.ERROR -> SAF_ERROR
-                JournalpostLoadingError.ErrorType.TIMEOUT -> FERDIGSTILLING_TIMEOUT
-            },
-        )
-    } else {
-        return tjenestebussIntegrasjonService.redigerExtreamBrev(call, journalpostId)
-            .map { extreamResponse ->
-                BestillOgRedigerBrevResponse(
-                    url = extreamResponse.url,
-                    failureType = extreamResponse.failure?.let {
-                        logger.error("Feil ved redigering av extream brev $it")
-                        EXTREAM_REDIGERING_GENERELL
-                    }
-                )
-            }.catch { message, httpStatusCode ->
-                logger.error("Feil ved bestilling av redigering av extream brev mot tjenestebuss integrasjon: $message Status: $httpStatusCode")
-                BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
-            }
+    val status = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
+    when (status) {
+        ERROR -> return BestillOgRedigerBrevResponse(SAF_ERROR)
+        NOT_READY -> return BestillOgRedigerBrevResponse(FERDIGSTILLING_TIMEOUT)
+        READY -> {
+            return tjenestebussIntegrasjonService.redigerExtreamBrev(call, journalpostId)
+                .map { extreamResponse ->
+                    BestillOgRedigerBrevResponse(
+                        url = extreamResponse.url,
+                        failureType = extreamResponse.failure?.let {
+                            logger.error("Feil ved redigering av extream brev $it")
+                            EXTREAM_REDIGERING_GENERELL
+                        }
+                    )
+                }.catch { message, httpStatusCode ->
+                    logger.error("Feil ved bestilling av redigering av extream brev mot tjenestebuss integrasjon: $message Status: $httpStatusCode")
+                    BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                }
+
+        }
     }
 }
 
@@ -118,22 +116,7 @@ private suspend fun bestillDoksysBrev(
             if (response.failure != null) {
                 BestillOgRedigerBrevResponse(response.failure)
             } else if (response.journalpostId != null) {
-                safService.getFirstDocumentInJournal(call, response.journalpostId)
-                    .map { safResponse ->
-                        if (safResponse.errors != null) {
-                            logger.error("Feil fra saf ved henting av dokument med journalpostId ${response.journalpostId} ${safResponse.errors}")
-                            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
-                        } else if (safResponse.data != null) {
-                            redigerDoksysBrev(tjenestebussIntegrasjonService, call, safResponse.data.journalpost.dokumenter.first(), response.journalpostId)
-                        } else {
-                            logger.error("Tom response fra saf ved henting av dokument")
-                            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
-                        }
-                    }
-                    .catch { message, httpStatusCode ->
-                        logger.error("Feil ved henting av dokumentId fra SAF ved redigering av doksys brev $message status: $httpStatusCode")
-                        BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
-                    }
+                ventPaaJournalOgRediger(safService, call, tjenestebussIntegrasjonService, response.journalpostId)
             } else {
                 logger.error("Tom response fra pesys")
                 BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
@@ -143,15 +126,49 @@ private suspend fun bestillDoksysBrev(
             BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
         }
 
+private suspend fun ventPaaJournalOgRediger(
+    safService: SafService,
+    call: ApplicationCall,
+    tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
+    journalpostId: String
+): BestillOgRedigerBrevResponse =
+    when (safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)) {
+        ERROR -> BestillOgRedigerBrevResponse(SAF_ERROR)
+        NOT_READY -> BestillOgRedigerBrevResponse(FERDIGSTILLING_TIMEOUT)
+        READY -> {
+            safService.getFirstDocumentInJournal(call, journalpostId)
+                .map { safResponse ->
+                    if (safResponse.errors != null) {
+                        logger.error("Feil fra saf ved henting av dokument med journalpostId $journalpostId ${safResponse.errors}")
+                        BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                    } else if (safResponse.data != null) {
+                        val dokumentId = safResponse.data.journalpost.dokumenter.firstOrNull()?.dokumentInfoId
+                        if (dokumentId != null) {
+                            redigerDoksysBrev(tjenestebussIntegrasjonService, call, journalpostId, dokumentId)
+                        } else {
+                            logger.error("Fant ingen dokumenter for redigering ved henting av journalpostId $journalpostId")
+                            BestillOgRedigerBrevResponse(SAF_ERROR)
+                        }
+                    } else {
+                        logger.error("Tom response fra saf ved henting av dokument")
+                        BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                    }
+                }.catch { message, httpStatusCode ->
+                    logger.error("Feil ved henting av dokumentId fra SAF ved redigering av doksys brev $message status: $httpStatusCode")
+                    BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                }
+        }
+    }
+
 private suspend fun redigerDoksysBrev(
     tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
     call: ApplicationCall,
-    safResponse: SafService.HentDokumenterResponse.Dokument,
-    journalpostId: String
-) = tjenestebussIntegrasjonService.redigerDoksysBrev(call, journalpostId, safResponse.dokumentInfoId)
+    journalpostId: String,
+    dokumentId: String
+) = tjenestebussIntegrasjonService.redigerDoksysBrev(call, journalpostId, dokumentId)
     .map {
         if (it.metaforceURI != null) {
-            BestillOgRedigerBrevResponse(it.metaforceURI)
+            BestillOgRedigerBrevResponse(it.metaforceURI.replace("\"", ""))
         } else if (it.failure != null) {
             BestillOgRedigerBrevResponse(it.failure)
         } else {

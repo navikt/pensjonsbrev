@@ -20,13 +20,17 @@ private val hentJournalStatusQuery = SafService::class.java.getResource(HENT_JOU
 private val hentDokumenterQuery = SafService::class.java.getResource(HENT_DOKUMENTER_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_JOURNAL_STATUS_QUERY_RESOURCE")
 
-private const val EXTREAM_TIMEOUT = 60
+private const val TIMEOUT = 60
 
 data class JournalVariables(val journalpostId: String)
 data class JournalQuery(
     val query: String,
     val variables: JournalVariables
 )
+
+enum class JournalpostLoadingResult {
+    ERROR, NOT_READY, READY
+}
 
 class SafService(config: Config, authService: AzureADService) {
     private val safUrl = config.getString("url")
@@ -43,7 +47,7 @@ class SafService(config: Config, authService: AzureADService) {
         }
     }
 
-    data class HentJournalStatusResponse(val data: HentJournalpostData)
+    data class HentJournalStatusResponse(val data: HentJournalpostData?, val errors: JsonNode?)
     data class HentJournalpostData(val journalpost: JournalPost)
 
     data class HentDokumenterResponse(val data: Journalposter?, val errors: JsonNode?) {
@@ -60,8 +64,8 @@ class SafService(config: Config, authService: AzureADService) {
     private suspend fun getStatus(
         call: ApplicationCall,
         journalpostId: String
-    ): ServiceResult<HentJournalStatusResponse, String> =
-        client.post(call, "") {
+    ): JournalpostLoadingResult {
+        val response = client.post(call, "") {
             contentType(ContentType.Application.Json)
             setBody(
                 JournalQuery(
@@ -69,35 +73,44 @@ class SafService(config: Config, authService: AzureADService) {
                     variables = JournalVariables(journalpostId)
                 )
             )
-        }.toServiceResult<HentJournalStatusResponse, String>()
+        }.toServiceResult2<HentJournalStatusResponse>()
 
-    data class JournalpostLoadingError(val error: String, val type: ErrorType) {
-        enum class ErrorType { ERROR, TIMEOUT }
-    }
-
-    suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): JournalpostLoadingError? {
-        // TODO legg inn faktisk timeout på 60s. withTimeoutOrNull f.eks.
-        for (i in 1..EXTREAM_TIMEOUT) {
-            delay(1000)
-            when (val result = getStatus(call, journalpostId)) {
-                is ServiceResult.Ok -> {
-                    if (result.result.data.journalpost.journalstatus == Journalstatus.UNDER_ARBEID) {
-                        return null
+        return when(response) {
+            is ServiceResult2.Ok-> {
+                val data = response.result.data
+                val errors = response.result.errors
+                if (data != null) {
+                    return if(data.journalpost.journalstatus == Journalstatus.UNDER_ARBEID) {
+                        JournalpostLoadingResult.READY
+                    } else{
+                        JournalpostLoadingResult.NOT_READY
                     }
-                }
-
-                is ServiceResult.Error -> {
-                    logger.error("Feil ved venting på ferdigstilling av brev. Satus: ${result.statusCode}. Message: ${result.error}")
-                    return JournalpostLoadingError(result.error, JournalpostLoadingError.ErrorType.ERROR)
-                }
-
-                is ServiceResult.AuthorizationError -> {
-                    logger.error(result.error.logString())
-                    return JournalpostLoadingError(result.error.error, JournalpostLoadingError.ErrorType.ERROR)
+                } else if (errors != null) {
+                    logger.error("Feil ved henting a journalstatus fra SAF. JournalpostId: $journalpostId Errors: $errors")
+                    JournalpostLoadingResult.ERROR
+                } else {
+                    logger.error("Tom response ved henting av jouranlpoststatus fra SAF")
+                    JournalpostLoadingResult.ERROR
                 }
             }
+            is ServiceResult2.Error -> {
+                logger.error("Feil ved henting a journalstatus fra SAF. JournalpostId: $journalpostId, Status: ${response.statusCode}, Melding: ${response.error}")
+                JournalpostLoadingResult.ERROR
+            }
         }
-        return JournalpostLoadingError("Timed out", JournalpostLoadingError.ErrorType.TIMEOUT)
+    }
+
+    suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): JournalpostLoadingResult {
+        // TODO legg inn faktisk timeout på 60s. withTimeoutOrNull f.eks.
+        for (i in 1..TIMEOUT) {
+            delay(1000)
+            when (val result = getStatus(call, journalpostId)) {
+                JournalpostLoadingResult.READY,
+                JournalpostLoadingResult.ERROR -> return result
+                JournalpostLoadingResult.NOT_READY -> {}
+            }
+        }
+        return JournalpostLoadingResult.NOT_READY
     }
 
     private suspend fun getDocumentsInJournal(call: ApplicationCall, journalpostId: String) =

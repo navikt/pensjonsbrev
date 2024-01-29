@@ -12,11 +12,6 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse
-import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.*
-import no.nav.pensjon.brev.skribenten.services.PenService.BestillDoksysBrevResponse.FailureType.*
-import no.nav.pensjon.brev.skribenten.services.SafService.JournalpostLoadingError.ErrorType.*
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
 class PenService(config: Config, authService: AzureADService) {
