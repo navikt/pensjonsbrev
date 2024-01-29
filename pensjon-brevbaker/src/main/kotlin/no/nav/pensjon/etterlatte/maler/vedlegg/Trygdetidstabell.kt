@@ -48,7 +48,7 @@ data class Trygdetidstabell(
                         text(
                             Language.Bokmal to "Grunnlag trygdetid",
                             Language.Nynorsk to "Grunnlag trygdetid",
-                            Language.English to "Insurance coverage",
+                            Language.English to "Basis for contribution time",
                         )
                     }
                 }
@@ -67,7 +67,7 @@ data class Trygdetidstabell(
                             ifNotNull(periode.opptjeningsperiode) {
                                 textExpr(
                                     Language.Bokmal to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (fremtidig trygdetid)", ""),
-                                    Language.Nynorsk to "".expr(),
+                                    Language.Nynorsk to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (framtidig trygdetid)", ""),
                                     Language.English to "".expr(),
                                 )
                             }
