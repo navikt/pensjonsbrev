@@ -89,7 +89,7 @@ class SafService(config: Config, authService: AzureADService) {
                     logger.error("Feil ved henting a journalstatus fra SAF. JournalpostId: $journalpostId Errors: $errors")
                     JournalpostLoadingResult.ERROR
                 } else {
-                    logger.error("Tom response ved henting av jouranlpoststatus fra SAF")
+                    logger.error("Tom response ved henting av jouranlpoststatus fra SAF.  JournalpostId: $journalpostId")
                     JournalpostLoadingResult.ERROR
                 }
             }
