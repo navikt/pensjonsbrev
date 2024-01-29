@@ -5,7 +5,6 @@ import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerRequestDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentRequestDto
 import no.nav.pensjon.brev.skribenten.services.TjenestebussIntegrasjonService
 import no.nav.pensjon.brev.skribenten.services.respondWithResult
 

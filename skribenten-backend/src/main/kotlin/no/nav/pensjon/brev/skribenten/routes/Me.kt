@@ -31,18 +31,5 @@ fun Route.meRoute(navansattConfig: Config, authService: AzureADService) {
             getLoggedInNavIdent()?.let { call.respond(favouritesService.getFavourites(it)) }
                 ?: call.respond(HttpStatusCode.Unauthorized)
         }
-        get("/enheter") {
-            getLoggedInNavIdent()?.let { navIdent ->
-                navansattService.hentNavAnsattEnhetListe(call, navIdent)
-                    .map {
-                        logger.info("Test message: $it")
-                        call.respond(it)
-                    }
-                    .catch { message, httpStatusCode ->
-                        logger.error("Feil ved henting av NAV ansatt enhet liste: $message, $httpStatusCode")
-                        call.respond(httpStatusCode)
-                    }
-            } ?: call.respond(HttpStatusCode.Unauthorized, "Ikke tilgang ved kall til Navansatt tjenesten")
-        }
     }
 }
