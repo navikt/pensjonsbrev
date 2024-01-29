@@ -90,12 +90,12 @@ object OmstillingsstoenadFellesFraser {
             paragraph {
                 text(
                     Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din " +
-                            "etter bestemmelsene i forvaltningsloven § 17. Hvis du ønsker innsyn, " +
+                            "etter bestemmelsene i forvaltningsloven § 18. Hvis du ønsker innsyn, " +
                             "må du kontakte oss på telefon eller per post.",
-                    Nynorsk to "Etter føresegnene i forvaltingslova § 17 har du som hovudregel rett til å " +
+                    Nynorsk to "Etter føresegnene i forvaltingslova § 18 har du som hovudregel rett til å " +
                             "sjå dokumenta i saka di. Kontakt oss på telefon eller per post dersom du ønskjer innsyn.",
                     English to "As a general rule, you have the right to see the documents in your case " +
-                            "pursuant to the provisions of Section 17 of the Public Administration Act. " +
+                            "pursuant to the provisions of Section 18 of the Public Administration Act. " +
                             "If you want access, you can contact us by phone or mail. "
                 )
             }
