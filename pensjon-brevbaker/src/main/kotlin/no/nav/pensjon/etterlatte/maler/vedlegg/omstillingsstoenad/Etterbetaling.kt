@@ -72,7 +72,7 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
     }
     title2 {
         text(
-            Bokmal to "Etterbetaling av barnepensjon fra innvilgelsestidspunktet",
+            Bokmal to "Etterbetaling av omstillingsstønad",
             Nynorsk to "",
             English to "",
         )
