@@ -64,7 +64,7 @@ private suspend fun bestillExtreamBrev(
             if (it.failureType != null) {
                 BestillOgRedigerBrevResponse(it.failureType)
             } else if (it.journalpostId != null) {
-                redigerExtreamBrev(safService, call, it.journalpostId, tjenestebussIntegrasjonService)
+                ventPaaJournalOgRedigerExtreamBrev(safService, call, it.journalpostId, tjenestebussIntegrasjonService)
             } else {
                 logger.error("Tom response fra tjenetebuss-integrasjon")
                 BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
@@ -74,7 +74,7 @@ private suspend fun bestillExtreamBrev(
             BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
         }
 
-private suspend fun redigerExtreamBrev(
+private suspend fun ventPaaJournalOgRedigerExtreamBrev(
     safService: SafService,
     call: ApplicationCall,
     journalpostId: String,
@@ -116,7 +116,7 @@ private suspend fun bestillDoksysBrev(
             if (response.failure != null) {
                 BestillOgRedigerBrevResponse(response.failure)
             } else if (response.journalpostId != null) {
-                ventPaaJournalOgRediger(safService, call, tjenestebussIntegrasjonService, response.journalpostId)
+                ventPaaJournalOgRedigerDoksysBrev(safService, call, tjenestebussIntegrasjonService, response.journalpostId)
             } else {
                 logger.error("Tom response fra pesys")
                 BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
@@ -126,7 +126,7 @@ private suspend fun bestillDoksysBrev(
             BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
         }
 
-private suspend fun ventPaaJournalOgRediger(
+private suspend fun ventPaaJournalOgRedigerDoksysBrev(
     safService: SafService,
     call: ApplicationCall,
     tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
