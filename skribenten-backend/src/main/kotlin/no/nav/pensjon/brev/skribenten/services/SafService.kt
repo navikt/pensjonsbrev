@@ -64,8 +64,8 @@ class SafService(config: Config, authService: AzureADService) {
     private suspend fun getStatus(
         call: ApplicationCall,
         journalpostId: String
-    ): JournalpostLoadingResult {
-        val response = client.post(call, "") {
+    ): JournalpostLoadingResult =
+        client.post(call, "") {
             contentType(ContentType.Application.Json)
             setBody(
                 JournalQuery(
@@ -74,31 +74,24 @@ class SafService(config: Config, authService: AzureADService) {
                 )
             )
         }.toServiceResult2<HentJournalStatusResponse>()
-
-        return when(response) {
-            is ServiceResult2.Ok-> {
-                val data = response.result.data
-                val errors = response.result.errors
-                if (data != null) {
-                    return if(data.journalpost.journalstatus == Journalstatus.UNDER_ARBEID) {
+            .map {
+                if (it.data != null) {
+                    return if (it.data.journalpost.journalstatus == Journalstatus.UNDER_ARBEID) {
                         JournalpostLoadingResult.READY
-                    } else{
+                    } else {
                         JournalpostLoadingResult.NOT_READY
                     }
-                } else if (errors != null) {
-                    logger.error("Feil ved henting a journalstatus fra SAF. JournalpostId: $journalpostId Errors: $errors")
+                } else if (it.errors != null) {
+                    logger.error("Feil ved henting a journalstatus fra SAF. JournalpostId: $journalpostId Errors: ${it.errors}")
                     JournalpostLoadingResult.ERROR
                 } else {
                     logger.error("Tom response ved henting av jouranlpoststatus fra SAF.  JournalpostId: $journalpostId")
                     JournalpostLoadingResult.ERROR
                 }
-            }
-            is ServiceResult2.Error -> {
-                logger.error("Feil ved henting a journalstatus fra SAF. JournalpostId: $journalpostId, Status: ${response.statusCode}, Melding: ${response.error}")
+            }.catch{ message, status ->
+                logger.error("Feil ved henting a journalstatus fra SAF. JournalpostId: $journalpostId, Status: $status, Melding: $message")
                 JournalpostLoadingResult.ERROR
             }
-        }
-    }
 
     suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): JournalpostLoadingResult {
         // TODO legg inn faktisk timeout på 60s. withTimeoutOrNull f.eks.
