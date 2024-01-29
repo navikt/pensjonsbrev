@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.routes.getCurrentGregorianTime
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExtreamRequestDto.SakskontekstDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto.Success.Samhandler
-import org.slf4j.LoggerFactory
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) {
 
@@ -90,7 +89,6 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         name: String
     ): ServiceResult2<BestillExtreamBrevResponseDto> {
 
-        //TODO better error handling.
         // TODO access controls for e-blanketter
         val isEblankett = metadata.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT
         val isNotat = metadata.dokType == BrevdataDto.DokumentType.N
