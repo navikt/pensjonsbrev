@@ -15,8 +15,11 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.utbetaltEtterReform
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.utbetaltFoerReform
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
@@ -125,41 +128,15 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                 )
             }
 
-//            includePhrase(
-//                BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
-//                    beregning.beregningsperioder,
-//                    etterbetaling
-//                )
-//            )
+            includePhrase(
+                BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
+                    beregning.beregningsperioder,
+                    etterbetaling
+                )
+            )
             includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
         }
-
-        // Over 18 år vedlegg
-        includeAttachment(
-            utlandInformasjonTilDegSomMottarBarnepensjon,
-            this.argument,
-            erUnder18Aar.not().and(erBosattUtlandet)
-        )
-        includeAttachment(
-            informasjonTilDegSomMottarBarnepensjon,
-            this.argument,
-            erUnder18Aar.not().and(erBosattUtlandet.not())
-        )
-
-        // Under 18 år vedlegg
-        includeAttachment(
-            utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet,
-            this.argument,
-            erUnder18Aar.and(erBosattUtlandet)
-        )
-        includeAttachment(
-            informasjonTilDegSomHandlerPaaVegneAvBarnet,
-            this.argument,
-            erUnder18Aar.and(erBosattUtlandet.not())
-        )
-
-        includeAttachment(dineRettigheterOgPlikter, erUnder18Aar)
     }
 }
