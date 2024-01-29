@@ -17,11 +17,11 @@ data class BarnepensjonOmregnetNyttRegelverkDTO(
     val erYrkesskade: Boolean,
     val erForeldreloes: Boolean,
     val erUnder18Aar: Boolean,
-    val beregning: BarnepensjonBeregning,
-    val etterbetaling: BarnepensjonEtterbetaling?,
 )
 
 data class BarnepensjonOmregnetNyttRegelverkFerdigDTO(
     override val innhold: List<Element>,
-    val data: BarnepensjonOmregnetNyttRegelverkDTO
+    val beregning: BarnepensjonBeregning,
+    val etterbetaling: BarnepensjonEtterbetaling?,
+    val data: BarnepensjonOmregnetNyttRegelverkDTO,
 ) : BrevDTO

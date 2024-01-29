@@ -4,9 +4,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -15,19 +13,8 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erUnder18Aar
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.utbetaltEtterReform
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.utbetaltFoerReform
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.utlandInformasjonTilDegSomMottarBarnepensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
-import no.nav.pensjon.etterlatte.maler.vedlegg.utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet
 
 
 @TemplateModelHelpers
@@ -127,16 +114,6 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                     Language.English to "",
                 )
             }
-
-            includePhrase(
-                BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
-                    beregning.beregningsperioder,
-                    etterbetaling
-                )
-            )
-            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
         }
     }
 }

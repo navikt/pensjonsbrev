@@ -14,17 +14,16 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erUnder18Aar
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.beregningAvBarnepensjonGammeltOgNyttRegelverk
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.beregningAvBarnepensjonNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.dineRettigheterOgPlikterBosattUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.dineRettigheterOgPlikterNasjonal
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.etterbetalingAvBarnepensjon
@@ -32,9 +31,6 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informas
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomHandlerPaaVegneAvBarnetUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomMottarBarnepensjonNasjonal
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomMottarBarnepensjonUtland
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.utlandInformasjonTilDegSomMottarBarnepensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
-import no.nav.pensjon.etterlatte.maler.vedlegg.utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet
 
 @TemplateModelHelpers
 object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<BarnepensjonOmregnetNyttRegelverkFerdigDTO> {
@@ -52,27 +48,53 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
     ) {
         title {
             text(
-                Language.Bokmal to "Utkast til vedtak - endring av barnepensjon",
-                Language.Nynorsk to "Utkast til vedtak – endring av barnepensjon",
-                Language.English to "Draft decision – adjustment of children's pension",
+                Bokmal to "Utkast til vedtak - endring av barnepensjon",
+                Nynorsk to "Utkast til vedtak – endring av barnepensjon",
+                English to "Draft decision – adjustment of children's pension",
             )
         }
         outline {
             konverterElementerTilBrevbakerformat(innhold)
+
+            includePhrase(
+                BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
+                    beregning.beregningsperioder,
+                    etterbetaling
+                )
+            )
+            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
+            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
+            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(data.erUnder18Aar, data.erBosattUtlandet))
         }
 
         // Beregning av barnepensjon nytt og gammelt regelverk
-        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, data.beregning)
+        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregning)
 
-        includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, data.etterbetaling)
+        includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetaling)
 
         // Vedlegg under 18 år
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, innhold, data.erUnder18Aar.and(data.erBosattUtlandet.not()))
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, innhold, data.erUnder18Aar.and(data.erBosattUtlandet))
+        includeAttachment(
+            informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal,
+            innhold,
+            data.erUnder18Aar.and(data.erBosattUtlandet.not())
+        )
+        includeAttachment(
+            informasjonTilDegSomHandlerPaaVegneAvBarnetUtland,
+            innhold,
+            data.erUnder18Aar.and(data.erBosattUtlandet)
+        )
 
         // Vedlegg over 18 år
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, innhold, data.erUnder18Aar.not().and(data.erBosattUtlandet.not()))
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, innhold, data.erUnder18Aar.not().and(data.erBosattUtlandet))
+        includeAttachment(
+            informasjonTilDegSomMottarBarnepensjonNasjonal,
+            innhold,
+            data.erUnder18Aar.not().and(data.erBosattUtlandet.not())
+        )
+        includeAttachment(
+            informasjonTilDegSomMottarBarnepensjonUtland,
+            innhold,
+            data.erUnder18Aar.not().and(data.erBosattUtlandet)
+        )
 
         includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, data.erBosattUtlandet)
         includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, data.erBosattUtlandet.not())

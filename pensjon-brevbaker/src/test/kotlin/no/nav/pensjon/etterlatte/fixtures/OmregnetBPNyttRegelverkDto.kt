@@ -29,8 +29,6 @@ fun createBarnepensjonOmregnetNyttRegelverkDTO() =
         erYrkesskade = false,
         erForeldreloes = false,
         erUnder18Aar = false,
-        beregning = lagBeregning(),
-        etterbetaling = lagEtterbetaling(),
     )
 
 fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
@@ -75,6 +73,8 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
                 )
             )
         ),
+        beregning = lagBeregning(),
+        etterbetaling = lagEtterbetaling(),
         data = BarnepensjonOmregnetNyttRegelverkDTO(
             utbetaltFoerReform = Kroner(1337),
             utbetaltEtterReform = Kroner(31337),
@@ -85,8 +85,6 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
             erYrkesskade = false,
             erForeldreloes = false,
             erUnder18Aar = true,
-            beregning = lagBeregning(),
-            etterbetaling = lagEtterbetaling(),
         )
     )
 
