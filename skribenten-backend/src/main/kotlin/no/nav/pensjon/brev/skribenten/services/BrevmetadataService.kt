@@ -33,7 +33,7 @@ class BrevmetadataService(config: Config) {
         }
 
         if (httpResponse.status.isSuccess()) {
-            return httpResponse.body()
+            return mapToCategories(httpResponse.body())
         } else {
             logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
             return emptyList()
