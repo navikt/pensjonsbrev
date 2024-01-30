@@ -28,7 +28,7 @@ data class OmstillingsstoenadOpphoerDTO(
 
 @TemplateModelHelpers
 object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING_OPPHOER
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_OPPHOER
 
     override val template = createTemplate(
         name = kode.name,
