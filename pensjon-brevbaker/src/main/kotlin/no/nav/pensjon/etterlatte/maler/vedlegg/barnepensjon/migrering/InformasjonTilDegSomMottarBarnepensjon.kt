@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
+package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.migrering
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
@@ -10,10 +10,6 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
-import no.nav.pensjon.etterlatte.maler.vedlegg.endringAvKontonummerUtland
-import no.nav.pensjon.etterlatte.maler.vedlegg.skattetrekkPaaBarnepensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.skattetrekkPaaBarnepensjonUtland
-import no.nav.pensjon.etterlatte.maler.vedlegg.utbetalingUtland
 
 @TemplateModelHelpers
 val informasjonTilDegSomMottarBarnepensjon = createAttachment(
