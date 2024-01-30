@@ -8,11 +8,14 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import org.slf4j.LoggerFactory
 
 class BrevmetadataService(config: Config) {
     private val brevmetadataUrl = config.getString("url")
+    private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = HttpClient(CIO) {
         defaultRequest {
             url(brevmetadataUrl)
@@ -25,11 +28,16 @@ class BrevmetadataService(config: Config) {
     }
 
     suspend fun getRedigerbareBrevKategorier(sakstype: String): List<LetterCategory> {
-        val metadata: List<BrevdataDto> =
-            httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
-                contentType(ContentType.Application.Json)
-            }.body()
-        return mapToCategories(metadata)
+        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
+            contentType(ContentType.Application.Json)
+        }
+
+        if (httpResponse.status.isSuccess()) {
+            return httpResponse.body()
+        } else {
+            logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
+            return emptyList()
+        }
     }
 
     private fun mapToCategories(metadata: List<BrevdataDto>) =
@@ -98,6 +106,7 @@ data class BrevdataDto(
         DOKSYS,
         GAMMEL,     //EXTREAM
     }
+
     enum class DokumentType {
         I, //Inngende dokument
         N, //Notat
