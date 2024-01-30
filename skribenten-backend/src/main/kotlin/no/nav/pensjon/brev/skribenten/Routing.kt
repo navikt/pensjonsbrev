@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.skribenten.routes.personRoute
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import no.nav.pensjon.brev.skribenten.services.BrevmetadataService
-import no.nav.pensjon.brev.skribenten.services.KodeverkService
 import no.nav.pensjon.brev.skribenten.services.KrrService
 import no.nav.pensjon.brev.skribenten.services.LetterCategory
 import no.nav.pensjon.brev.skribenten.services.LetterMetadata
@@ -36,7 +35,6 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val safService = SafService(servicesConfig.getConfig("saf"), authService)
     val penService = PenService(servicesConfig.getConfig("pen"), authService)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
-    val kodeverkService = KodeverkService(servicesConfig.getConfig("kodeverk"))
     val pdlService = PdlService(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerService(servicesConfig.getConfig("brevbaker"), authService)
@@ -65,7 +63,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             }
             brevbakerRoute(brevbakerService)
             bestillBrevRoute(tjenestebussIntegrasjonService, brevmetadataService, safService, penService)
-            kodeverkRoute(kodeverkService, penService)
+            kodeverkRoute(penService)
             penRoute(penService)
             personRoute(pdlService, pensjonPersonDataService, krrService)
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)

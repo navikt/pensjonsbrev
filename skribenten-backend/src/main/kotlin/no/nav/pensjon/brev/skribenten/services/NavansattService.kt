@@ -28,8 +28,8 @@ class NavansattService(config: Config, authService: AzureADService) {
         }
     }
 
-    suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult<List<NAVEnhet>, String> {
-        return client.get(call,"navansatt/$ansattId/enheter").toServiceResult<List<NAVEnhet>, String>()
+    suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult2<List<NAVEnhet>> {
+        return client.get(call,"navansatt/$ansattId/enheter").toServiceResult2<List<NAVEnhet>>()
     }
 }
 

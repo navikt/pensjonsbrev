@@ -3,12 +3,14 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
+import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
+import no.nav.pensjon.brev.skribenten.auth.AuthorizedHttpClientResult
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
@@ -39,29 +41,23 @@ class KrrService(config: Config, authService: AzureADService) {
         }
     }
 
-    data class KontaktinfoKRRErrorResponse(
-        val errors: List<Error>,
-    ) {
-        data class Error(val id: String, val status: String, val title: String, val detail: String) {
-            fun prettyPrint() =
-                """
-                    Title: $title
-                    Status: $status
-                    Id: $id
-                    Detail: $detail
-                """.trimIndent()
+    data class KontaktinfoResponse(val spraakKode: SpraakKode?, val failure: FailureType?) {
+        constructor(failure: FailureType) : this(null, failure)
+        constructor(spraakKode: SpraakKode?) : this(spraakKode, null)
+
+        enum class FailureType {
+            NOT_FOUND,
+            ERROR,
         }
     }
 
-    data class KontaktinfoResponse(val spraakKode: SpraakKode?)
-
-    suspend fun getPreferredLocale(call: ApplicationCall, pid: String): ServiceResult<KontaktinfoResponse, String> {
+    suspend fun getPreferredLocale(call: ApplicationCall, pid: String): KontaktinfoResponse {
         return client.get(call, "/rest/v1/person") {
             headers {
                 accept(ContentType.Application.Json)
                 header("Nav-Personident", pid)
             }
-        }.toServiceResult<KontaktinfoKRRResponse, KontaktinfoKRRErrorResponse>()
+        }.toServiceResult2<KontaktinfoKRRResponse>()
             .map {
                 KontaktinfoResponse(
                     when (it.spraak) {
@@ -72,16 +68,16 @@ class KrrService(config: Config, authService: AzureADService) {
                         null -> null
                     }
                 )
-            }.catch { error ->
-                error.errors.joinToString { it.prettyPrint() }
-                    .also {
-                        logger.error(
-                            """
-                            Error(s) from krr proxy:
-                            $it
-                            """.trimIndent()
-                        )
+            }.catch { message, status ->
+                KontaktinfoResponse(
+                    if (status == HttpStatusCode.NotFound) {
+                        KontaktinfoResponse.FailureType.NOT_FOUND
+                    } else {
+                        logger.error("Feil ved henting av kontaktinformasjon. Status: $status Melding: $message")
+                        KontaktinfoResponse.FailureType.ERROR
                     }
+                )
             }
     }
+
 }
