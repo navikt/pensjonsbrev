@@ -71,12 +71,7 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
         beregning = lagBeregning(),
         etterbetaling = lagEtterbetaling(),
         erUnder18Aar = false,
-        data = BarnepensjonOmregnetNyttRegelverkDTO(
-            utbetaltFoerReform = Kroner(1337),
-            utbetaltEtterReform = Kroner(31337),
-            erForeldreloes = false,
-            erBosattUtlandet = true,
-        )
+        erBosattUtlandet = true,
     )
 
 private fun lagBeregning() = BarnepensjonBeregning(

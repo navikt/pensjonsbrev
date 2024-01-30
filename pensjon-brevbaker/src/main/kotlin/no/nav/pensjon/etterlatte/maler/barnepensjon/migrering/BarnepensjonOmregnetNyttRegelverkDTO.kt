@@ -19,5 +19,5 @@ data class BarnepensjonOmregnetNyttRegelverkFerdigDTO(
     val beregning: BarnepensjonBeregning,
     val etterbetaling: BarnepensjonEtterbetaling?,
     val erUnder18Aar: Boolean,
-    val data: BarnepensjonOmregnetNyttRegelverkDTO,
+    val erBosattUtlandet: Boolean,
 ) : BrevDTO
