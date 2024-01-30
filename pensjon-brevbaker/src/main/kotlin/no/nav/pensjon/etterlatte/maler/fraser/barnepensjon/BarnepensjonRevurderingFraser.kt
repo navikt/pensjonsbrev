@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.revurdering
+package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
