@@ -50,7 +50,7 @@ env:
   - name: BREVBAKER_SCOPE
     value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
   - name: BREVMETADATA_URL
-    value: "https://pensjon-brevmetadata-q2.intern.dev.nav.no"
+    value: "http://pensjon-brevmetadata-q2"
   - name: PDL_URL
     value: "https://pdl-api.dev-fss-pub.nais.io/graphql"
   - name: PDL_SCOPE
