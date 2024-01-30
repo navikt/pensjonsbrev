@@ -63,11 +63,13 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                             Language.English to "",
                         )
                     }
+                        }
                     item {
                         text(
                             Language.Bokmal to "økt aldersgrense fra 18 år til 20 år",
                             Language.Nynorsk to "",
                             Language.English to "",
+                            )
                         )
                     }
                     item {
@@ -75,6 +77,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                             Language.Bokmal to "ingen søskenjustering",
                             Language.Nynorsk to "",
                             Language.English to "",
+                            )
                         )
                     }
                 }
@@ -95,6 +98,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                     Language.English to "",
                 )
             }
+                }
             paragraph {
                 textExpr(
                     Language.Bokmal to "Du fikk ".expr() + utbetaltFoerReform.format()

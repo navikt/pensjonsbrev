@@ -21,14 +21,11 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.beregningAvBarnepensjonGammeltOgNyttRegelverk
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.dineRettigheterOgPlikterBosattUtland
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.dineRettigheterOgPlikterNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.etterbetalingAvBarnepensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomHandlerPaaVegneAvBarnetUtland
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomMottarBarnepensjonNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomMottarBarnepensjonUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.migrering.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.migrering.informasjonTilDegSomMottarBarnepensjon
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.migrering.utlandInformasjonTilDegSomMottarBarnepensjon
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.migrering.informasjonTilDegSomHandlerPaaVegneAvBarnet
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.migrering.utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet
 
 @TemplateModelHelpers
 object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<BarnepensjonOmregnetNyttRegelverkFerdigDTO> {

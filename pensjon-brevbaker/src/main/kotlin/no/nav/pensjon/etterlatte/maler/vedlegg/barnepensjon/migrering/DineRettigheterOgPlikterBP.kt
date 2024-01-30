@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
+package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.migrering
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
