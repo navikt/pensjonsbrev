@@ -2,41 +2,18 @@ package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Avdoed
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTO
 import java.time.LocalDate
-import java.time.YearMonth
+import java.time.Month
 
 fun createBarnepensjonInnvilgelseRedigerbartUtfallDTO() = BarnepensjonInnvilgelseRedigerbartUtfallDTO(
-    utbetalingsinfo = Utbetalingsinfo(
-        antallBarn = 2,
-        beloep = Kroner(1234),
-        soeskenjustering = true,
-        virkningsdato = LocalDate.now(),
-        beregningsperioder = listOf(
-            Beregningsperiode(
-                datoFOM = LocalDate.now().minusMonths(1),
-                datoTOM = LocalDate.now(),
-                grunnbeloep = Kroner(106003),
-                antallBarn = 1,
-                utbetaltBeloep = Kroner(495),
-            ),
-            Beregningsperiode(
-                datoFOM = LocalDate.now(),
-                datoTOM = null,
-                grunnbeloep = Kroner(106003),
-                antallBarn = 1,
-                utbetaltBeloep = Kroner(495),
-            ),
-        ),
-    ),
+    virkningsdato = LocalDate.of(2020, Month.JANUARY, 1),
     avdoed = Avdoed(
         navn = "Avdoed Avdoedesen",
         doedsdato = LocalDate.now().minusMonths(1),
     ),
-    vedtaksdato = YearMonth.now().atDay(1),
+    sisteBeregningsperiodeDatoFom = LocalDate.of(2020, Month.JANUARY, 1),
+    sisteBeregningsperiodeBeloep = Kroner(1000),
     erEtterbetaling = true,
     harFlereUtbetalingsperioder = false,
-    sisteUtbetalingsperiodeDatoFom = LocalDate.of(2024, 1, 1)
 )

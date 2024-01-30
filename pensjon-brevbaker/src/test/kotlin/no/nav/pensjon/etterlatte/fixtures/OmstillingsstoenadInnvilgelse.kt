@@ -2,7 +2,6 @@ package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
 import java.time.LocalDate
 import java.time.Month
@@ -152,7 +151,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
         etterbetaling = OmstillingsstoenadEtterbetaling(
             fraDato = LocalDate.of(2024, 1, 1),
             tilDato = LocalDate.of(2024, 2, 28),
-            beregningsperioder = listOf(
+            etterbetalingsperioder = listOf(
                 OmstillingsstoenadBeregningsperiode(
                     datoFOM = LocalDate.of(2024, Month.JANUARY, 1),
                     datoTOM = LocalDate.of(2024, Month.FEBRUARY, 28),

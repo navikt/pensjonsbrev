@@ -86,4 +86,6 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
         includeAttachment(dineRettigheterOgPlikter, beregning)
         includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetaling)
     }
+
+
 }

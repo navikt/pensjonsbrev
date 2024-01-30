@@ -1,8 +1,8 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 import { describe, expect, test } from "vitest";
 
-import type { Action } from "~/pages/Brevredigering/LetterEditor/lib/actions";
-import { bindAction, bindActionWithCallback, combine } from "~/pages/Brevredigering/LetterEditor/lib/actions";
+import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
+import { bindAction, bindActionWithCallback, combine } from "~/Brevredigering/LetterEditor/lib/actions";
 
 describe("bindAction", () => {
   test("output from action is passed as input to receiver", () => {

@@ -1,19 +1,36 @@
 package no.nav.pensjon.etterlatte.maler
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
 import java.time.LocalDate
 
-data class Etterbetaling(
+data class BarnepensjonEtterbetaling(
     val fraDato: LocalDate,
     val tilDato: LocalDate,
-    val etterbetalingsperioder: List<Beregningsperiode> = listOf()
+    val etterbetalingsperioder: List<BarnepensjonBeregningsperiode> = listOf()
 )
 
 data class OmstillingsstoenadEtterbetaling(
     val fraDato: LocalDate,
     val tilDato: LocalDate,
-    val beregningsperioder: List<OmstillingsstoenadBeregningsperiode> = listOf()
+    val etterbetalingsperioder: List<OmstillingsstoenadBeregningsperiode> = listOf()
+)
+
+data class BarnepensjonBeregning(
+    override val innhold: List<Element>,
+    val antallBarn: Int,
+    val virkningsdato: LocalDate,
+    val grunnbeloep: Kroner,
+    val beregningsperioder: List<BarnepensjonBeregningsperiode>,
+    val sisteBeregningsperiode: BarnepensjonBeregningsperiode,
+    val trygdetid: Trygdetid,
+) : BrevDTO
+
+data class BarnepensjonBeregningsperiode(
+    val datoFOM: LocalDate,
+    val datoTOM: LocalDate?,
+    val grunnbeloep: Kroner,
+    val antallBarn: Int,
+    var utbetaltBeloep: Kroner,
 )
 
 data class OmstillingsstoenadBeregning(
@@ -45,25 +62,11 @@ data class Trygdetid(
     val mindreEnnFireFemtedelerAvOpptjeningstiden: Boolean,
 )
 
-enum class EndringIUtbetaling {
-    OEKES, REDUSERES, SAMME
+enum class BeregningsMetode {
+    NASJONAL,
+    PRORATA,
+    BEST
 }
-
-data class Navn(val fornavn: String, val mellomnavn: String? = null, val etternavn: String)
-
-data class Beregningsinfo(
-    override val innhold: List<Element>,
-    val grunnbeloep: Kroner,
-    val beregningsperioder: List<NyBeregningsperiode>,
-    val trygdetidsperioder: List<Trygdetidsperiode>,
-) : BrevDTO
-
-data class NyBeregningsperiode(
-    val inntekt: Kroner,
-    val trygdetid: Int,
-    val stoenadFoerReduksjon: Kroner,
-    var utbetaltBeloep: Kroner,
-)
 
 data class Trygdetidsperiode(
     val datoFOM: LocalDate,
@@ -84,23 +87,23 @@ data class Periode(
     val dager: Int,
 )
 
-data class Utbetalingsinfo(
-    val antallBarn: Int,
-    val beloep: Kroner,
-    val soeskenjustering: Boolean,
-    val virkningsdato: LocalDate,
-    val beregningsperioder: List<Beregningsperiode>,
-)
-
-data class Beregningsperiode(
-    val datoFOM: LocalDate,
-    val datoTOM: LocalDate?,
-    val grunnbeloep: Kroner,
-    val antallBarn: Int,
-    var utbetaltBeloep: Kroner,
-)
-
 data class Avdoed(
     val navn: String,
     val doedsdato: LocalDate,
 )
+
+@Deprecated("Denne utgår når vi får ryddet opp i omstillingsstønad revurdering")
+data class NyBeregningsperiode(
+    val inntekt: Kroner,
+    val trygdetid: Int,
+    val stoenadFoerReduksjon: Kroner,
+    var utbetaltBeloep: Kroner,
+)
+
+@Deprecated("Denne utgår når vi får ryddet opp i omstillingsstønad revurdering")
+data class Beregningsinfo(
+    override val innhold: List<Element>,
+    val grunnbeloep: Kroner,
+    val beregningsperioder: List<NyBeregningsperiode>,
+    val trygdetidsperioder: List<Trygdetidsperiode>,
+) : BrevDTO

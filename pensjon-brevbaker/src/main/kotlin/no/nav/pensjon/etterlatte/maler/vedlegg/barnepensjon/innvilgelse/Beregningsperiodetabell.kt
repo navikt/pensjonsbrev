@@ -10,15 +10,15 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
 data class Beregningsperiodetabell(
-    val beregningsperioder: Expression<List<Beregningsperiode>>,
+    val beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {

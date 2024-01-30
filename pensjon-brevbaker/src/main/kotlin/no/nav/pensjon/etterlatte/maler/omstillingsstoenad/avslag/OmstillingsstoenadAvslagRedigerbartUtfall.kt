@@ -44,22 +44,22 @@ object OmstillingsstoenadAvslagRedigerbartUtfall : EtterlatteTemplate<Omstilling
             paragraph {
                 textExpr(
                     Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.".expr(),
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
+                    Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.".expr(),
+                    English to "Your application for transitional benefit for the deceased ".expr() + avdoedNavn + " has been rejected.".expr(),
                 )
             }
             paragraph {
                 text(
                     Bokmal to "(Utfall jamfør tekstbibliotek)",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "(Utfall jamfør tekstbibliotek)",
+                    English to "(Utfall jamfør tekstbibliotek)",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § <riktig paragrafhenvisning> og § 22-12.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § riktig paragrafhenvisning> og § 22-12.",
+                    English to "This decision has been made pursuant to the provisions regarding transitional benefits in the National Insurance Act – sections <riktig paragrafhenvisning> og § 22-12.",
                 )
             }
         }
