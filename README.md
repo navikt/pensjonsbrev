@@ -59,7 +59,7 @@ docker-compose up -d --build
 ### Debugge tjenester i docker
 Ulike docker-tjenester har eksponerte porter som du kan koble en remote debugger på.
 
-I [docker-compose.yml](docker-compose.yml) finner du de ulike portene som mappes til remote debug for de ulike tjenetene.
+I [docker-compose.yml](docker-compose.yml) finner du de ulike portene som mappes til remote debug for de ulike tjenestene.
 F.eks her hvor remote agent kjører i containeren på port 5008 og mappes ut til 5018 som du kan bruke til å koble til remote-debugger.
 ```yaml
 ports:

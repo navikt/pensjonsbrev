@@ -10,16 +10,16 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
-import no.nav.pensjon.brev.skribenten.routes.getCurrentGregorianTime
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExtreamRequestDto.SakskontekstDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto.Success.Samhandler
-import org.slf4j.LoggerFactory
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
+import java.util.*
+import javax.xml.datatype.DatatypeFactory
+import javax.xml.datatype.XMLGregorianCalendar
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) {
 
-    private val logger = LoggerFactory.getLogger(TjenestebussIntegrasjonService::class.java)
     private val tjenestebussIntegrasjonUrl = config.getString("url")
     private val tjenestebussIntegrasjonScope = config.getString("scope")
 
@@ -37,7 +37,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         call: ApplicationCall,
         samhandlerType: SamhandlerTypeCode,
         navn: String
-    ): ServiceResult2<FinnSamhandlerResponseDto.Success> =
+    ): ServiceResult<FinnSamhandlerResponseDto.Success, FinnSamhandlerResponseDto.Failure> =
         tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -47,7 +47,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     samhandlerType = SamhandlerTypeCode.valueOf(samhandlerType.name)
                 )
             )
-        }.toServiceResult2<FinnSamhandlerResponseDto.Success>()
+        }.toServiceResult<FinnSamhandlerResponseDto.Success, FinnSamhandlerResponseDto.Failure>()
             .map {
                 FinnSamhandlerResponseDto.Success(samhandlere = it.samhandlere.map { s ->
                     Samhandler(
@@ -57,10 +57,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         idType = s.idType
                     )
                 })
-            }.catch { message, status ->
-                logger.error("Feil ved samhandler-søk mot tjenestebuss-integrasjon. Status: $status Melding: $message")
-                FinnSamhandlerResponseDto.Failure("")
-            }
+            }.catch { error -> FinnSamhandlerResponseDto.Failure(message = error.message, type = error.type) }
 
     suspend fun hentSamhandler(
         call: ApplicationCall,
@@ -160,4 +157,9 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             setBody(RedigerExtreamDokumentRequestDto(dokumentId))
         }.toServiceResult2<RedigerExtreamDokumentResponseDto>()
 
+    private fun getCurrentGregorianTime(): XMLGregorianCalendar {
+        val cal = GregorianCalendar()
+        cal.time = Date()
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal)
+    }
 }

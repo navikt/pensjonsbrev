@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse
+package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType

@@ -9,9 +9,9 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
 import java.time.LocalDate
 
 class PenService(config: Config, authService: AzureADService) {
@@ -48,8 +48,18 @@ class PenService(config: Config, authService: AzureADService) {
     )
 
 
-    suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult2<Sak> =
-        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult2<Sak>()
+    private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak, PenError> =
+        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak, PenError>()
+
+    suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection, PenError> =
+        fetchSak(call, sakId).map {
+            SakSelection(
+                sakId = it.sakId,
+                foedselsnr = it.foedselsnr,
+                foedselsdato = it.foedselsdato,
+                sakType = it.sakType,
+            )
+        }
 
     data class BestilDoksysBrevRequest(
         val sakId: Long,
@@ -70,9 +80,9 @@ class PenService(config: Config, authService: AzureADService) {
                 BestilDoksysBrevRequest(
                     sakId = request.sakId,
                     brevkode = request.brevkode,
-                    mottaker = request.gjelderPid,
+                    mottaker = null, // TODO slett feltet fra pesys og sett mottaker der.
                     journalfoerendeEnhet = request.enhetsId,
-                    sensitivePersonopplysninger = request.isSensitive,
+                    sensitivePersonopplysninger = false, // TODO Undersøk om feltet har noen påvirkning på doksys, evt slett fra skribentencontroller i pesys
                     sprakKode = request.spraak,
                     vedtakId = null, //TODO set from request
                 )
@@ -93,7 +103,7 @@ class PenService(config: Config, authService: AzureADService) {
         }
     }
 
-    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult2<List<Avtaleland>> =
-        client.get(call, "brev/skribenten/avtaleland").toServiceResult2<List<Avtaleland>>()
+    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>, String> =
+        client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>, String>()
 }
 
