@@ -80,21 +80,14 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             }
             item {
                 text(
-                    Bokmal to "du gifter deg, inngår partnerskap eller samboerskap",
+                    Bokmal to "du gifter deg eller inngår partnerskap",
                     Nynorsk to "",
                     English to "",
                 )
             }
             item {
                 text(
-                    Bokmal to "gifter deg eller blir samboer med en du tidligere har vært gift med",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            item {
-                text(
-                    Bokmal to "får felles barn med ny samboer",
+                    Bokmal to "du blir samboer med en du har felles barn med eller tidligere har vært gift med",
                     Nynorsk to "",
                     English to "",
                 )
@@ -109,7 +102,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             }
             item {
                 text(
-                    Bokmal to "får varig opphold i institusjon",
+                    Bokmal to "du får varig opphold i institusjon",
                     Nynorsk to "",
                     English to "",
                 )
