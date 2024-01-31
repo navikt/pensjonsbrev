@@ -75,7 +75,7 @@ class SafService(config: Config, authService: AzureADService) {
                     variables = JournalVariables(journalpostId)
                 )
             )
-        }.toServiceResult2<HentJournalStatusResponse>()
+        }.toServiceResult<HentJournalStatusResponse>()
             .map {
                 if (it.data != null) {
                     return if (it.data.journalpost.journalstatus == Journalstatus.UNDER_ARBEID) {
@@ -118,9 +118,9 @@ class SafService(config: Config, authService: AzureADService) {
                     variables = JournalVariables(journalpostId)
                 )
             )
-        }.toServiceResult2<HentDokumenterResponse>()
+        }.toServiceResult<HentDokumenterResponse>()
 
-    suspend fun getFirstDocumentInJournal(call: ApplicationCall, journalpostId: String): ServiceResult2<HentDokumenterResponse> =
+    suspend fun getFirstDocumentInJournal(call: ApplicationCall, journalpostId: String): ServiceResult<HentDokumenterResponse> =
         getDocumentsInJournal(call, journalpostId)
 
 

@@ -7,7 +7,6 @@ import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenSamhandlerIkkeFunnetMsg
 import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenFinnSamhandlerRequest
 import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenHentSamhandlerRequest
 import no.nav.lib.pen.psakpselv.fault.FaultPenBase
-import no.nav.lib.pen.psakpselv.fault.samhandler.FaultPenSamhandlerIkkeFunnet
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.HentSamhandlerRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
@@ -63,9 +62,11 @@ class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercurit
                 )
             })
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
-            logger.error("En feil oppstod under kall til finnSamhandler med navn: ${requestDto.navn} , samhandlerType: ${requestDto.samhandlerType}, cause: ${ex.faultInfo.rootCause} ")
-            return FinnSamhandlerResponseDto()
-            return FinnSamhandlerResponseDto(ex.faultInfo.errorMessage, ex.faultInfo.errorType)
+            logger.error(
+                "En feil oppstod under kall til finnSamhandler med navn: ${requestDto.navn} , samhandlerType: ${requestDto.samhandlerType}",
+                ex.faultInfo.prettyPrint()
+            )
+            return FinnSamhandlerResponseDto("Feil ved henting av samhandler")
         }
     }
 }

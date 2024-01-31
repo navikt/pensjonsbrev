@@ -30,8 +30,6 @@ class PenService(config: Config, authService: AzureADService) {
         }
     }
 
-    data class PenError(val feilmelding: String)
-
     data class Sak(
         val sakId: Long,
         val foedselsnr: String,
@@ -48,10 +46,10 @@ class PenService(config: Config, authService: AzureADService) {
     )
 
 
-    private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak, PenError> =
-        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak, PenError>()
+    private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak> =
+        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak>()
 
-    suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection, PenError> =
+    suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection> =
         fetchSak(call, sakId).map {
             SakSelection(
                 sakId = it.sakId,
@@ -74,7 +72,7 @@ class PenService(config: Config, authService: AzureADService) {
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
-    ): ServiceResult2<BestillDoksysBrevResponse> =
+    ): ServiceResult<BestillDoksysBrevResponse> =
         client.post(call, "brev/skribenten/doksys/sak/${request.sakId}") {
             setBody(
                 BestilDoksysBrevRequest(
@@ -88,7 +86,7 @@ class PenService(config: Config, authService: AzureADService) {
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult2<BestillDoksysBrevResponse>()
+        }.toServiceResult<BestillDoksysBrevResponse>()
 
     data class Avtaleland(val navn: String, val kode: String)
 
@@ -103,7 +101,7 @@ class PenService(config: Config, authService: AzureADService) {
         }
     }
 
-    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>, String> =
-        client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>, String>()
+    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>> =
+        client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>>()
 }
 

@@ -32,12 +32,12 @@ class PensjonPersonDataService(config: Config, authService: AzureADService) {
         }
     }
 
-    suspend fun hentKontaktadresse(call: ApplicationCall, pid: String): ServiceResult2<KontaktAdresseResponseDto> =
+    suspend fun hentKontaktadresse(call: ApplicationCall, pid: String): ServiceResult<KontaktAdresseResponseDto> =
         client.get(call, "/api/adresse/kontaktadresse") {
             parameter("checkForVerge", true)
             headers {
                 header("pid", pid)
             }
-        }.toServiceResult2<KontaktAdresseResponseDto>()
+        }.toServiceResult<KontaktAdresseResponseDto>()
 
 }

@@ -1,21 +1,21 @@
 package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
 
-sealed class HentSamhandlerResponseDto {
-    data class Success(val samhandler: Samhandler) {
-        data class Samhandler(
-            val navn: String,
-            val samhandlerType: String,
-            val offentligId: String,
-            val idType: String
-        ) : HentSamhandlerResponseDto()
+data class HentSamhandlerResponseDto(val success: Success?, val failure: FailureType?) {
+    constructor(failure: FailureType) : this(null, failure)
+    constructor(success: Success) : this(success, null)
+
+    data class Success(
+        val navn: String,
+        val samhandlerType: String,
+        val offentligId: String,
+        val idType: String,
+    )
+
+    enum class FailureType {
+        GENERISK,
+        IKKE_FUNNET,
     }
-
-    data class Failure(
-        val message: String,
-        val type: String,
-    ) : HentSamhandlerResponseDto()
 }
-
 class HentSamhandlerRequestDto(
     val idTSSEkstern: String,
     val hentDetaljert: Boolean,

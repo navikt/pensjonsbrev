@@ -7,7 +7,6 @@ import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.respondWithResult
-import no.nav.pensjon.brev.skribenten.services.respondWithResult2
 
 fun Route.kodeverkRoute(penService: PenService) {
     route("/kodeverk") {
@@ -16,7 +15,7 @@ fun Route.kodeverkRoute(penService: PenService) {
             options { _, _ -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 86400)) }
         }
         get("/avtaleland") {
-            respondWithResult2(penService.hentAvtaleland(call))
+            respondWithResult(penService.hentAvtaleland(call))
         }
     }
 }

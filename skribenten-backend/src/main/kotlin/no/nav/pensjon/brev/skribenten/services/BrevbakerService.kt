@@ -14,10 +14,8 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brevbaker.api.model.*
-import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.*
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
@@ -37,10 +35,10 @@ class BrevbakerService(config: Config, authService: AzureADService) {
         }
     }
 
-    suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult2<String> =
-        client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult2()
+    suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
+        client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult()
 
-    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: BrevbakerBrevdata): ServiceResult2<RenderedJsonLetter> =
+    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: BrevbakerBrevdata): ServiceResult<RenderedJsonLetter> =
         client.post(call, "/letter/redigerbar") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -58,7 +56,7 @@ class BrevbakerService(config: Config, authService: AzureADService) {
                     language = LanguageCode.BOKMAL,
                 )
             )
-        }.toServiceResult2()
+        }.toServiceResult()
 }
 
 object RenderedJsonLetterModule : SimpleModule() {

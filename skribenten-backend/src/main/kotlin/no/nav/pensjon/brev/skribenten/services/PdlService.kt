@@ -56,7 +56,7 @@ class PdlService(config: Config, authService: AzureADService) {
     private val hentNavnQuery = PdlService::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
         ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
 
-    suspend fun hentNavn(call: ApplicationCall, fnr: String): ServiceResult2<String> {
+    suspend fun hentNavn(call: ApplicationCall, fnr: String): ServiceResult<String> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -69,7 +69,7 @@ class PdlService(config: Config, authService: AzureADService) {
                     variables = FnrVariables(fnr)
                 )
             )
-        }.toServiceResult2<PDLResponse<DataWrapperPersonMedNavn>>()
+        }.toServiceResult<PDLResponse<DataWrapperPersonMedNavn>>()
             .map {
                 it.data?.hentPerson?.navn?.firstOrNull()?.format() ?: "" // TODO hvordan får vi error her?
             }
