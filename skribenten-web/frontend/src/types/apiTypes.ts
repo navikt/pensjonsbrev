@@ -92,6 +92,6 @@ export type FailureType =
   | "EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST";
 
 export type NAVEnhet = {
-  enhetNr: string;
+  id: string;
   navn: string;
 };

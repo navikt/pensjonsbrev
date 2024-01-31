@@ -36,6 +36,6 @@ class NavansattService(config: Config, authService: AzureADService) {
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NAVEnhet(
-    val enhetNr: String,
+    val id: String,
     val navn: String,
 )
