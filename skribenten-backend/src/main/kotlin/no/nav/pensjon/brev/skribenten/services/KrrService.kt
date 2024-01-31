@@ -29,6 +29,7 @@ class KrrService(config: Config, authService: AzureADService) {
         }
     }
 
+    @Suppress("EnumEntryName")
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class KontaktinfoKRRResponse(val spraak: SpraakKode? = null) {
         enum class SpraakKode {

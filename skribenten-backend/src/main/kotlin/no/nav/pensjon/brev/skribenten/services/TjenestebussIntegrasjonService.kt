@@ -74,7 +74,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                 hentDetaljert = hentDetaljert
             )
         }.toServiceResult<HentSamhandlerResponseDto>()
-            .catch{ message, status ->
+            .catch { message, status ->
                 logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
                 HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
             }
