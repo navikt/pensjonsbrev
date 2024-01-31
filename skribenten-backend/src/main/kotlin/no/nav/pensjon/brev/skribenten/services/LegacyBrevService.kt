@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.server.application.*
+import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
+import no.nav.pensjon.brev.skribenten.getLoggedInName
+import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExtreamBrevResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
@@ -18,17 +21,15 @@ class LegacyBrevService(
     suspend fun bestillBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
-        navIdent: String,
-        navn: String
     ): BestillOgRedigerBrevResponse =
         when (brevmetadataService.getMal(request.brevkode).brevsystem) {
-             BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request)
+            BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request)
             BrevdataDto.BrevSystem.GAMMEL -> bestillExtreamBrev(
                 call = call,
                 request = request,
-                navIdent = navIdent,
+                navIdent = call.getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke ident på innlogget bruker i claim"),
+                navn = call.getLoggedInName() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker i claim"),
                 metadata = brevmetadataService.getMal(request.brevkode),
-                navn = navn,
             )
         }
 
