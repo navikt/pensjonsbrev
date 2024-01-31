@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -13,9 +14,13 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
 
 data class BarnepensjonOpphoerDTO(
     override val innhold: List<Element>,
@@ -49,7 +54,13 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
 
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
-            includePhrase(Barnepensjon.HarDuSpoersmaal)
+            includePhrase(Barnepensjon.HarDuSpoersmaalNy(brukerUnder18Aar, bosattUtland))
         }
+
+        // Nasjonal
+        includeAttachment(klageOgAnkeNasjonal, innhold, bosattUtland.not())
+
+        // Bosatt utland
+        includeAttachment(klageOgAnkeUtland, innhold, bosattUtland)
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse
+package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -8,18 +8,17 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikter = createAttachment(
+val dineRettigheterOgPlikterBosattUtland = createAttachment(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Rettane og pliktene dine",
@@ -31,10 +30,26 @@ val dineRettigheterOgPlikter = createAttachment(
     veiledningFraNavForvaltningsloven11()
     includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
     duHarRettTilInnsynISakenDin()
-    klagePaaVedtaketFolketrygdloven2112(bosattUtland)
+    klagePaaVedtaketFolketrygdloven2112(true.expr())
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BarnepensjonInnvilgelseDTO>.meldFraOmEndringer() {
+@TemplateModelHelpers
+val dineRettigheterOgPlikterNasjonal = createAttachment(
+    title = newText(
+        Bokmal to "Dine rettigheter og plikter",
+        Nynorsk to "Rettane og pliktene dine",
+        English to "Your Rights and Obligations",
+    ),
+    includeSakspart = false,
+) {
+    meldFraOmEndringer()
+    veiledningFraNavForvaltningsloven11()
+    includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
+    duHarRettTilInnsynISakenDin()
+    klagePaaVedtaketFolketrygdloven2112(false.expr())
+}
+
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.meldFraOmEndringer() {
     title2 {
         text(
             Bokmal to "Meld fra om endringer",
@@ -87,7 +102,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BarnepensjonInnvilgelseDT
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonInnvilgelseDTO>.veiledningFraNavForvaltningsloven11() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.veiledningFraNavForvaltningsloven11() {
     title2 {
         text(
             Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
@@ -110,7 +125,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonInnvilgelseDTO>.duHarRettTilInnsynISakenDin() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.duHarRettTilInnsynISakenDin() {
     title2 {
         text(
             Bokmal to "Du har rett til innsyn i saken din - forvaltningsloven § 18 ",
@@ -127,7 +142,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonInnvilgelseDTO>.klagePaaVedtaketFolketrygdloven2112(bosattUtland: Expression<Boolean>) {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.klagePaaVedtaketFolketrygdloven2112(bosattUtland: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Klage på vedtaket - folketrygdloven § 21-12",

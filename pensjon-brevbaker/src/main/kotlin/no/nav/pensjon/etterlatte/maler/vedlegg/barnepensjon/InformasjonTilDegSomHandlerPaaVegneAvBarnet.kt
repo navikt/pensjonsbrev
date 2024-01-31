@@ -1,6 +1,5 @@
-package no.nav.pensjon.etterlatte.maler.vedlegg
+package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -15,41 +14,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
 @TemplateModelHelpers
-val utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon til deg som handler på vegne av barnet",
-        Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
-        English to "Information for those acting on behalf of the child",
-    ),
-    includeSakspart = false,
-) {
-    informasjon()
-    postadresse(utland = true.expr())
-    utbetalingUtland()
-    endringAvKontonummerUtland(erUnder18Aar = true.expr())
-    skattetrekkPaaBarnepensjonUtland()
-}
-
-fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjonUtland() {
-    title2 {
-        text(
-            Bokmal to "Skattetrekk på barnepensjon",
-            Nynorsk to "Skattetrekk på barnepensjon",
-            English to "Tax deductions on children's pensions",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikke er skattemessig bosatt i Norge. Fra utlandet ringer du ${Constants.Utland.KONTAKTTELEFON_SKATT}.",
-            Nynorsk to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig busett i Noreg. Frå utlandet ringjer du ${Constants.Utland.KONTAKTTELEFON_SKATT}.",
-            English to "The Norwegian Tax Administration can answer any questions you may have about taxes regarding pension payments for people who are not tax residents in Norway. For calls from abroad: ${Constants.Utland.KONTAKTTELEFON_SKATT}.",
-        )
-    }
-}
-
-
-@TemplateModelHelpers
-val informasjonTilDegSomHandlerPaaVegneAvBarnet = createAttachment(
+val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment(
     title = newText(
         Bokmal to "Informasjon til deg som handler på vegne av barnet",
         Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
@@ -59,8 +24,24 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnet = createAttachment(
 ) {
     informasjon()
     postadresse(utland = false.expr())
-    endringAvKontonummerForelder()
-    skattetrekkPaaBarnepensjon()
+    endringAvKontonummerNasjonal()
+    skattetrekkPaaBarnepensjonNasjonal()
+}
+
+@TemplateModelHelpers
+val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment(
+    title = newText(
+        Bokmal to "Informasjon til deg som handler på vegne av barnet",
+        Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
+        English to "Information for those acting on behalf of the child",
+    ),
+    includeSakspart = false,
+) {
+    informasjon()
+    postadresse(utland = true.expr())
+    endringAvKontonummerUtland()
+    utbetalingUtland()
+    skattetrekkPaaBarnepensjonUtland()
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.informasjon() {
@@ -86,24 +67,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbetalingUtland() {
-    title2 {
-        text(
-            Bokmal to "Utbetaling av barnepensjon",
-            Nynorsk to "Utbetaling av barnepensjon",
-            English to "Payment of the children's pension",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Barnepensjonen utbetales til samme kontonummer som tidligere. Hvis kontonummeret er i en utenlandsk bank, må du være oppmerksom på at det er et gebyr for hver utbetaling. Det kan også ta litt lenger tid før pengene er på kontoen. Du finner mer informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
-            Nynorsk to "Barnepensjonen blir utbetalt til same kontonummer som før. Dersom kontonummeret er i ein utanlandsk bank, må du vere merksam på at det blir trekt eit gebyr for kvar utbetaling. Det kan også ta litt lenger tid før pengane er på kontoen. Du finn meir informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
-            English to "Your children’s pension is paid to the same bank account as before. If the bank account is held by a foreign bank, be aware that a minor fee may be charged for each payment. It will also take a little more time before the money reaches your account. More information on payments is available online: ${Constants.Utland.UTBETALING_INFO}.",
-        )
-    }
-}
 
-fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland(erUnder18Aar: Expression<Boolean>) {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland() {
     title2 {
         text(
             Bokmal to "Skal du endre kontonummer?",
@@ -113,21 +78,17 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endr
     }
     paragraph {
         text(
-            Bokmal to "Hvis du logger på ${Constants.NAV_URL} med BankID, Buypass eller Comfides, kan du sende melding via ${Constants.SKRIVTILOSS_URL}. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post.",
-            Nynorsk to "Dersom du loggar på ${Constants.NAV_URL} med BankID, Buypass eller Comfides, kan du sende melding via ${Constants.SKRIVTILOSS_URL}. Dersom du ikkje kan melde frå digitalt, kan du melde frå om endring via post. ",
-            English to "Parent can notify us via ${Constants.Engelsk.SKRIVTILOSS_URL}, " +
-                    "or send the Notification of New Account Number Form by conventional mail. You must then enclose a copy of a valid proof of identity.",
+            Bokmal to "Hvis du logger på ${Constants.NAV_URL} med BankID, Buypass eller Comfides, kan du som forelder sende melding via ${Constants.SKRIVTILOSS_URL}. Hvis du ikke kan melde fra digitalt, kan du melde om endringer per post.",
+            Nynorsk to "Dersom du loggar på ${Constants.NAV_URL} med BankID, Buypass eller Comfides, kan du som forelder sende melding via ${Constants.SKRIVTILOSS_URL}. Dersom du ikkje kan melde frå digitalt, kan du melde om endringar per post.",
+            English to "If you log in to ${Constants.NAV_URL} with BankID, Buypass or Comfides, you can send send a message via ${Constants.Engelsk.SKRIVTILOSS_URL}. If you cannot report digitally, you can report changes by post. ",
         )
     }
-
-    showIf(erUnder18Aar) {
-        paragraph {
-            text(
-                Bokmal to "Oppnevnt verge må melde om endring via post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
-                Nynorsk to "Verje må melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.    ",
-                English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
-            )
-        }
+    paragraph {
+        text(
+            Bokmal to "Oppnevnt verge må melde om endring per post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
+            Nynorsk to "Dersom du er oppnemnd verje, må du melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.",
+            English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
+        )
     }
     paragraph {
         text(
@@ -136,18 +97,9 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endr
             English to "You can find more information and a link to the correct form online ${Constants.Utland.ENDRE_KONTONUMMER_SKJEMA_URL}. Remember to sign the form and doctor enclose a copy of your identification.",
         )
     }
-    showIf(erUnder18Aar) {
-        paragraph {
-            text(
-                Bokmal to "Oppnevnt verge må melde om endring via post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
-                Nynorsk to "Verje må melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.    ",
-                English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
-            )
-        }
-    }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerForelder() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerNasjonal() {
     title2 {
         text(
             Bokmal to "Skal du endre kontonummer?",
@@ -167,7 +119,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Oppnevnt verge må melde om endring via post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
+            Bokmal to "Oppnevnt verge må melde om endring per post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
             Nynorsk to "Dersom du er oppnemnd verje, må du melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.",
             English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
         )
@@ -181,7 +133,24 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjon() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbetalingUtland() {
+    title2 {
+        text(
+            Bokmal to "Utbetaling av barnepensjon",
+            Nynorsk to "Utbetaling av barnepensjon",
+            English to "Payment of the children's pension",
+        )
+    }
+    paragraph {
+        text(
+            Bokmal to "Når kontonummer er i en utenlandsk bank, må du være oppmerksom på at det er et gebyr for hver utbetaling. Det kan også ta litt lenger tid før pengene er på kontoen. Du finner mer informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
+            Nynorsk to "If the bank account is held by a foreign bank, be aware that a minor fee may be charged for each payment. It will also take a little more time before the money reaches your account. More information on payments is available online: ${Constants.Utland.UTBETALING_INFO}.",
+            English to "Når kontonummer er i ein utanlandsk bank, må du vere merksam på at det blir trekt eit gebyr for kvar utbetaling. Det kan også ta litt lenger tid før pengane er på kontoen din. Du finn meir informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
+        )
+    }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjonNasjonal() {
     title2 {
         text(
             Bokmal to "Skattetrekk på barnepensjon",
@@ -203,6 +172,23 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skat
                     "If you stated the desired tax deduction in the application, we will have registered it for this year. " +
                     "You must check whether this tax deduction will be continued until the end of the year. " +
                     "You can read more about voluntary tax withholding online: ${Constants.SKATTETREKK_PENGESTOETTE_URL}.",
+        )
+    }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjonUtland() {
+    title2 {
+        text(
+            Bokmal to "Skattetrekk på barnepensjon",
+            Nynorsk to "Skattetrekk på barnepensjon",
+            English to "Tax deductions on children's pensions",
+        )
+    }
+    paragraph {
+        text(
+            Bokmal to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikke er skattemessig bosatt i Norge. Les mer om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
+            Nynorsk to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
+            English to "The Norwegian Tax Administration can answer any questions you may have about taxes regarding pension payments for people who are not tax residents in Norway. Read more about NAV and taxes here: ${Constants.SKATTETREKK_KILDESKATT_URL}.",
         )
     }
 }

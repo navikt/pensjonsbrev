@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 fun createOmstillingsstoenadRevurderingDTO() =
     OmstillingsstoenadRevurderingDTO(
-        omstillingsstoenadBeregning = OmstillingsstoenadBeregning(
+        beregning = OmstillingsstoenadBeregning(
             innhold = emptyList(),
             grunnbeloep = Kroner(118000),
             inntekt = Kroner(550000),
@@ -56,47 +56,9 @@ fun createOmstillingsstoenadRevurderingDTO() =
                 mindreEnnFireFemtedelerAvOpptjeningstiden = true,
             )
         ),
-        etterbetalinginfo = OmstillingsstoenadEtterbetaling(
+        etterbetaling = OmstillingsstoenadEtterbetaling(
             fraDato = LocalDate.now(),
             tilDato = LocalDate.now()
-        ),
-        beregningsinfo = Beregningsinfo(
-            grunnbeloep = Kroner(118000),
-            innhold = listOf(
-                Element(
-                    type = ElementType.HEADING_TWO,
-                    children = listOf(
-                        InnerElement(
-                            text = "<INSERT UTFALL HERE>"
-                        )
-                    )
-                ),
-                Element(
-                    type = ElementType.PARAGRAPH,
-                    children = listOf(
-                        InnerElement(
-                            text = "Her kommer det valgfri tekst om utfallene til beregning av stønaden"
-                        )
-                    )
-                )
-            ),
-            beregningsperioder = listOf(
-                NyBeregningsperiode(
-                    inntekt = Kroner(650000),
-                    trygdetid = 123,
-                    stoenadFoerReduksjon = Kroner(9000),
-                    utbetaltBeloep = Kroner(1234)
-                )
-            ),
-            trygdetidsperioder = listOf(
-                Trygdetidsperiode(
-                    datoFOM = LocalDate.now(),
-                    datoTOM = LocalDate.now(),
-                    land = "Norge",
-                    opptjeningsperiode = null,
-                    type = TrygdetidType.FAKTISK
-                )
-            )
         ),
         innhold = listOf(
             Element(

@@ -10,18 +10,6 @@ import no.nav.pensjon.brev.template.dsl.text
 
 object Vedtak {
 
-    object Overskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            title1 {
-                text(
-                    Bokmal to "Vedtak",
-                    Nynorsk to "Vedtak",
-                    English to "Decision",
-                )
-            }
-    }
-
     object BegrunnelseForVedtaket : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             title2 {
