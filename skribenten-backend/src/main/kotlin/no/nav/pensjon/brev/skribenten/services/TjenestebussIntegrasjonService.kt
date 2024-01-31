@@ -15,9 +15,11 @@ import no.nav.pensjon.brev.skribenten.routes.getCurrentGregorianTime
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExtreamRequestDto.SakskontekstDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto.Success.Samhandler
+import org.slf4j.LoggerFactory
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) {
 
+    private val logger = LoggerFactory.getLogger(TjenestebussIntegrasjonService::class.java)
     private val tjenestebussIntegrasjonUrl = config.getString("url")
     private val tjenestebussIntegrasjonScope = config.getString("scope")
 
@@ -35,7 +37,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         call: ApplicationCall,
         samhandlerType: SamhandlerTypeCode,
         navn: String
-    ): ServiceResult<FinnSamhandlerResponseDto.Success, FinnSamhandlerResponseDto.Failure> =
+    ): ServiceResult2<FinnSamhandlerResponseDto.Success> =
         tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -45,7 +47,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     samhandlerType = SamhandlerTypeCode.valueOf(samhandlerType.name)
                 )
             )
-        }.toServiceResult<FinnSamhandlerResponseDto.Success, FinnSamhandlerResponseDto.Failure>()
+        }.toServiceResult2<FinnSamhandlerResponseDto.Success>()
             .map {
                 FinnSamhandlerResponseDto.Success(samhandlere = it.samhandlere.map { s ->
                     Samhandler(
@@ -55,7 +57,10 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         idType = s.idType
                     )
                 })
-            }.catch { error -> FinnSamhandlerResponseDto.Failure(message = error.message, type = error.type) }
+            }.catch { message, status ->
+                logger.error("Feil ved samhandler-søk mot tjenestebuss-integrasjon. Status: $status Melding: $message")
+                FinnSamhandlerResponseDto.Failure("")
+            }
 
     suspend fun hentSamhandler(
         call: ApplicationCall,

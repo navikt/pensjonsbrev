@@ -48,18 +48,8 @@ class PenService(config: Config, authService: AzureADService) {
     )
 
 
-    private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak, PenError> =
-        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak, PenError>()
-
-    suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection, PenError> =
-        fetchSak(call, sakId).map {
-            SakSelection(
-                sakId = it.sakId,
-                foedselsnr = it.foedselsnr,
-                foedselsdato = it.foedselsdato,
-                sakType = it.sakType,
-            )
-        }
+    suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult2<Sak> =
+        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult2<Sak>()
 
     data class BestilDoksysBrevRequest(
         val sakId: Long,
@@ -103,7 +93,7 @@ class PenService(config: Config, authService: AzureADService) {
         }
     }
 
-    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>, String> =
-        client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>, String>()
+    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult2<List<Avtaleland>> =
+        client.get(call, "brev/skribenten/avtaleland").toServiceResult2<List<Avtaleland>>()
 }
 
