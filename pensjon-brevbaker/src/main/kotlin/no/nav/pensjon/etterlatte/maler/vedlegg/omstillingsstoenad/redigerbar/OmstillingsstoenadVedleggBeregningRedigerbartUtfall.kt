@@ -17,8 +17,8 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
 
 @TemplateModelHelpers
-object RedigerbartVedleggOmstillingsstoenadUtfallBeregning : EtterlatteTemplate<ManueltBrevDTO>, Vedlegg {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_VEDLEGG_UTFALL_BEREGNING
+object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Vedlegg {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_VEDLEGG_BEREGNING_UTFALL
 
     override val template = createTemplate(
         name = kode.name,

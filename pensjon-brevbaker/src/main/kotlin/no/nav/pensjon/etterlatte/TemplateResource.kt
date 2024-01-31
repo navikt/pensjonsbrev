@@ -25,8 +25,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.Omstillingssto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurdering
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdig
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnhold
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.RedigerbartVedleggBarnepensjonBeregningTrygdetid
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.RedigerbartVedleggOmstillingsstoenadUtfallBeregning
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.OmstillingsstoenadVedleggBeregningRedigerbartUtfall
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
     setOf(
@@ -39,7 +39,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         BarnepensjonOpphoerRedigerbartUtfall,
         BarnepensjonRevurdering,
         BarnepensjonRevurderingRedigerbartUtfall,
-        RedigerbartVedleggBarnepensjonBeregningTrygdetid,
+        BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall,
 
         // Omstillingsstønad
         OmstillingsstoenadAvslag,
@@ -49,7 +49,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OmstillingsstoenadOpphoer,
         OmstillingsstoenadOpphoerRedigerbartUtfall,
         OmstillingsstoenadRevurdering,
-        RedigerbartVedleggOmstillingsstoenadUtfallBeregning,
+        OmstillingsstoenadVedleggBeregningRedigerbartUtfall,
 
         // Tilbakekreving
         TilbakekrevingInnhold,
