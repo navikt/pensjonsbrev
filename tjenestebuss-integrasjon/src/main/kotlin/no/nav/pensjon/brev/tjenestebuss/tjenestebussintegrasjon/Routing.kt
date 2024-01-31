@@ -20,8 +20,6 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebus
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExtreamRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto.Failure.FailureType.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamBrevService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
@@ -68,7 +66,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
         }
-
     }
     val azureADConfig = config.requireAzureADConfig()
 
@@ -146,22 +143,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             }
             post("/redigerDoksysBrev") {
                 val requestDto = call.receive<RedigerDoksysDokumentRequestDto>()
-                when (val dokumentResponse = withCallId(dokumentProduksjonService) { redigerDokument(requestDto) }) {
-                    is RedigerDoksysDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, dokumentResponse)
-                    is RedigerDoksysDokumentResponseDto.Failure -> {
-                        call.respond(
-                            when (dokumentResponse.failureType) {
-                                UNDER_REDIGERING -> HttpStatusCode.Conflict
-                                IKKE_REDIGERBART -> HttpStatusCode.Forbidden
-                                VALIDERING_FEILET -> HttpStatusCode.BadRequest
-                                IKKE_FUNNET -> HttpStatusCode.NotFound
-
-                                IKKE_TILGANG -> HttpStatusCode.Unauthorized
-                                LUKKET -> HttpStatusCode.Locked
-                            }, dokumentResponse
-                        )
-                    }
-                }
+                call.respond(withCallId(dokumentProduksjonService) { redigerDokument(requestDto) })
             }
         }
     }

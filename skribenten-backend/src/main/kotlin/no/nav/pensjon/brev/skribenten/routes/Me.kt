@@ -10,11 +10,13 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 import no.nav.pensjon.brev.skribenten.services.FavouritesService
 import no.nav.pensjon.brev.skribenten.services.NavansattService
+import org.slf4j.LoggerFactory
 
-fun Route.meRoute(navansattConfig: Config,  authService: AzureADService) {
+fun Route.meRoute(navansattConfig: Config, authService: AzureADService) {
 
     val favouritesService = FavouritesService()
     val navansattService = NavansattService(navansattConfig, authService)
+    val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.routes.Route.meRoute")
 
     route("/me") {
         post("/favourites") {
@@ -28,11 +30,6 @@ fun Route.meRoute(navansattConfig: Config,  authService: AzureADService) {
         get("/favourites") {
             getLoggedInNavIdent()?.let { call.respond(favouritesService.getFavourites(it)) }
                 ?: call.respond(HttpStatusCode.Unauthorized)
-        }
-        get("/enheter") {
-            getLoggedInNavIdent()?.let {
-                call.respond(navansattService.hentNavAnsattEnhetListe(call, it))
-            } ?: call.respond(HttpStatusCode.Unauthorized,"Ikke tilgang ved kall til Navansatt tjenesten")
         }
     }
 }
