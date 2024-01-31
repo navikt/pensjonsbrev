@@ -9,9 +9,9 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
 import java.time.LocalDate
 
 class PenService(config: Config, authService: AzureADService) {
@@ -80,9 +80,9 @@ class PenService(config: Config, authService: AzureADService) {
                 BestilDoksysBrevRequest(
                     sakId = request.sakId,
                     brevkode = request.brevkode,
-                    mottaker = request.gjelderPid,
+                    mottaker = null, // TODO slett feltet fra pesys og sett mottaker der.
                     journalfoerendeEnhet = request.enhetsId,
-                    sensitivePersonopplysninger = request.isSensitive,
+                    sensitivePersonopplysninger = false, // TODO Undersøk om feltet har noen påvirkning på doksys, evt slett fra skribentencontroller i pesys
                     sprakKode = request.spraak,
                     vedtakId = null, //TODO set from request
                 )
