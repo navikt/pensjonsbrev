@@ -22,7 +22,7 @@ class LegacyBrevService(
         navn: String
     ): BestillOgRedigerBrevResponse =
         when (brevmetadataService.getMal(request.brevkode).brevsystem) {
-            BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request)
+             BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request)
             BrevdataDto.BrevSystem.GAMMEL -> bestillExtreamBrev(
                 call = call,
                 request = request,

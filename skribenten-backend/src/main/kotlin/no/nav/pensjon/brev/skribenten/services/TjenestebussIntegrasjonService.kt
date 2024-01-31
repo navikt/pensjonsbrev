@@ -10,11 +10,13 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
-import no.nav.pensjon.brev.skribenten.routes.getCurrentGregorianTime
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExtreamRequestDto.SakskontekstDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto.Success.Samhandler
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
+import java.util.*
+import javax.xml.datatype.DatatypeFactory
+import javax.xml.datatype.XMLGregorianCalendar
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) {
 
@@ -155,4 +157,9 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             setBody(RedigerExtreamDokumentRequestDto(dokumentId))
         }.toServiceResult2<RedigerExtreamDokumentResponseDto>()
 
+    private fun getCurrentGregorianTime(): XMLGregorianCalendar {
+        val cal = GregorianCalendar()
+        cal.time = Date()
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal)
+    }
 }

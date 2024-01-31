@@ -9,9 +9,11 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
+import kotlin.time.Duration.Companion.seconds
 
 private const val HENT_JOURNAL_STATUS_QUERY_RESOURCE = "/saf/HentJournalpostStatus.graphql"
 private const val HENT_DOKUMENTER_QUERY_RESOURCE = "/saf/HentDokumenter.graphql"
@@ -93,18 +95,19 @@ class SafService(config: Config, authService: AzureADService) {
                 JournalpostLoadingResult.ERROR
             }
 
-    suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): JournalpostLoadingResult {
-        // TODO legg inn faktisk timeout på 60s. withTimeoutOrNull f.eks.
-        for (i in 1..TIMEOUT) {
-            delay(1000)
-            when (val result = getStatus(call, journalpostId)) {
-                JournalpostLoadingResult.READY,
-                JournalpostLoadingResult.ERROR -> return result
-                JournalpostLoadingResult.NOT_READY -> {}
+    suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): JournalpostLoadingResult =
+        withTimeoutOrNull(TIMEOUT.seconds) {
+            for (i in 1..TIMEOUT) {
+                delay(1000)
+                when (val result = getStatus(call, journalpostId)) {
+                    JournalpostLoadingResult.READY,
+                    JournalpostLoadingResult.ERROR -> return@withTimeoutOrNull result
+
+                    JournalpostLoadingResult.NOT_READY -> {}
+                }
             }
-        }
-        return JournalpostLoadingResult.NOT_READY
-    }
+            return@withTimeoutOrNull JournalpostLoadingResult.NOT_READY
+        }?: JournalpostLoadingResult.NOT_READY
 
     private suspend fun getDocumentsInJournal(call: ApplicationCall, journalpostId: String) =
         client.post(call, "") {
