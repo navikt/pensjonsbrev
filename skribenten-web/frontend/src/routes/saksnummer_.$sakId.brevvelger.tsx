@@ -1,11 +1,12 @@
 import { css } from "@emotion/react";
-import { Accordion, Button, Search, Tabs } from "@navikt/ds-react";
+import { Accordion, Alert, Button, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { Fragment, useState } from "react";
 
-import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
+import { getFavoritter, getLetterTemplate, getPreferredLanguage } from "~/api/skribenten-api-endpoints";
+import { ApiError } from "~/components/ApiError";
 import type { LetterCategory } from "~/types/apiTypes";
 import type { LetterMetadata } from "~/types/apiTypes";
 
@@ -25,8 +26,15 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger")({
       queryFn: () => getLetterTemplate.queryFn(sakType),
     };
 
+    await queryClient.ensureQueryData({
+      queryKey: getPreferredLanguage.queryKey("123"),
+      queryFn: () => getPreferredLanguage.queryFn("123"),
+    });
+
     return queryClient.ensureQueryData(getLetterTemplateQuery);
   },
+  notFoundComponent: () => <div>not found</div>,
+  errorComponent: ApiError,
   component: BrevvelgerPage,
 });
 
