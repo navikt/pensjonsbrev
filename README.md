@@ -28,7 +28,8 @@ docker-compose up -d --build
    * vault
    * gcloud cli
    * kjørende docker/colima
-   * naisdevice med standard dev-miljø tilganger og tjenestebuss-q2 gruppe-tilgang
+   * naisdevice med standard dev-miljø tilganger og tjenestebuss-q2 gruppe-tilgang (spør Håkon)
+   * Legg til `155.55.2.73	tjenestebuss-q2.adeo.no` i /etc/hosts
 2. Hent alle secrets:
    ```bash
    (cd skribenten-backend && ./fetch-secrets.sh)
