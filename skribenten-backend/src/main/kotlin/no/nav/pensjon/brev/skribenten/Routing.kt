@@ -25,7 +25,6 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val safService = SafService(servicesConfig.getConfig("saf"), authService)
     val penService = PenService(servicesConfig.getConfig("pen"), authService)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
-    val kodeverkService = KodeverkService(servicesConfig.getConfig("kodeverk"))
     val pdlService = PdlService(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerService(servicesConfig.getConfig("brevbaker"), authService)
@@ -55,7 +54,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             }
             brevbakerRoute(brevbakerService)
             bestillBrevRoute(legacyBrevService)
-            kodeverkRoute(kodeverkService, penService)
+            kodeverkRoute(penService)
             penRoute(penService)
             personRoute(pdlService, pensjonPersonDataService, krrService)
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
