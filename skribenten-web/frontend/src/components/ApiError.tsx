@@ -10,8 +10,9 @@ export function ApiError({ error, text }: { error: unknown; text: string }) {
       <Alert
         css={css`
           margin-top: var(--a-spacing-4);
+          width: fit-content;
+          align-self: center;
         `}
-        fullWidth
         variant="error"
       >
         <Heading level="2" size="small" spacing>
@@ -20,9 +21,9 @@ export function ApiError({ error, text }: { error: unknown; text: string }) {
         <div>{text}</div>
         <div>
           <span>Prøv på nytt om litt. Hvis problemet vedvarer rapporter feil og oppgi følgende id: </span>
-          <HStack align="center" gap="4">
+          <HStack align="center" gap="0">
             {correlationId}
-            <CopyButton activeText="Kopiert" copyText={correlationId} text="Kopier" />
+            <CopyButton copyText={correlationId} />
           </HStack>
         </div>
       </Alert>
