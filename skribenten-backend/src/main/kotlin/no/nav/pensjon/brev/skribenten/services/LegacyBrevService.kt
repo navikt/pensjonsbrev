@@ -6,8 +6,32 @@ import no.nav.pensjon.brev.skribenten.getLoggedInName
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExtreamBrevResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
-import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.*
+import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.ERROR
+import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.NOT_READY
+import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.READY
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_ADDRESS_NOT_FOUND
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_INTERNAL_SERVICE_CALL_FAILIURE
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_PERSON_NOT_FOUND
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_TPS_CALL_FAILIURE
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_UNAUTHORIZED
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_IKKE_FUNNET
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_IKKE_REDIGERBART
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_IKKE_TILGANG
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_LUKKET
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_UFORVENTET
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_UNDER_REDIGERING
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_VALIDERING_FEILET
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.ENHETSID_MANGLER
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_BESTILLING_ADRESSE_MANGLER
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_BESTILLING_HENTE_BREVDATA
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_REDIGERING_GENERELL
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.FERDIGSTILLING_TIMEOUT
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.NAVANSATT_ENHETER_ERROR
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.SAF_ERROR
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.SKRIBENTEN_INTERNAL_ERROR
 import org.slf4j.LoggerFactory
 
 class LegacyBrevService(
@@ -15,23 +39,35 @@ class LegacyBrevService(
     private val brevmetadataService: BrevmetadataService,
     private val safService: SafService,
     private val penService: PenService,
+    private val navansattService: NavansattService
 ) {
     private val logger = LoggerFactory.getLogger(LegacyBrevService::class.java)
+    suspend fun bestillBrev(call: ApplicationCall, request: OrderLetterRequest): BestillOgRedigerBrevResponse {
 
-    suspend fun bestillBrev(
-        call: ApplicationCall,
-        request: OrderLetterRequest,
-    ): BestillOgRedigerBrevResponse =
-        when (brevmetadataService.getMal(request.brevkode).brevsystem) {
-            BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request)
-            BrevdataDto.BrevSystem.GAMMEL -> bestillExtreamBrev(
-                call = call,
-                request = request,
-                navIdent = call.getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke ident på innlogget bruker i claim"),
-                navn = call.getLoggedInName() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker i claim"),
-                metadata = brevmetadataService.getMal(request.brevkode),
-            )
+        return when (val serviceResult = penService.hentSak(call, request.sakId.toString())) {
+            is ServiceResult.Error -> BestillOgRedigerBrevResponse(PenService.BestillDoksysBrevResponse.FailureType.INTERNAL_SERVICE_CALL_FAILIURE)
+            is ServiceResult.Ok -> {
+                val sakEnhetId = serviceResult.result.enhetId
+                if (sakEnhetId == null) {
+                    return BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
+                } else if (!harTilgangTilEnhet(call = call, enhetsId = sakEnhetId)) {
+                    return BestillOgRedigerBrevResponse(NAVANSATT_ENHETER_ERROR)
+                } else {
+                    return when (brevmetadataService.getMal(request.brevkode).brevsystem) {
+                        BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request, sakEnhetId)
+                        BrevdataDto.BrevSystem.GAMMEL -> bestillExtreamBrev(
+                            call = call,
+                            request = request,
+                            navIdent = fetchLoggedInNavIdent(call),
+                            metadata = brevmetadataService.getMal(request.brevkode),
+                            navn = fetchLoggedInName(call),
+                            enhetsId = serviceResult.result.enhetId
+                        )
+                    }
+                }
+            }
         }
+    }
 
     private suspend fun bestillExtreamBrev(
         call: ApplicationCall,
@@ -39,8 +75,9 @@ class LegacyBrevService(
         navIdent: String,
         metadata: BrevdataDto,
         navn: String,
+        enhetsId: String,
     ): BestillOgRedigerBrevResponse =
-        tjenestebussIntegrasjonService.bestillExtreamBrev(call, request, navIdent, metadata, navn)
+        tjenestebussIntegrasjonService.bestillExtreamBrev(call, request, navIdent, metadata, navn, enhetsId)
             .map {
                 if (it.failureType != null) {
                     BestillOgRedigerBrevResponse(it.failureType)
@@ -82,9 +119,12 @@ class LegacyBrevService(
         }
     }
 
-
-    private suspend fun bestillDoksysBrev(call: ApplicationCall, request: OrderLetterRequest): BestillOgRedigerBrevResponse =
-        penService.bestillDoksysBrev(call, request)
+    private suspend fun bestillDoksysBrev(
+        call: ApplicationCall,
+        request: OrderLetterRequest,
+        enhetsId: String
+    ): BestillOgRedigerBrevResponse =
+        penService.bestillDoksysBrev(call, request, enhetsId)
             .map { response ->
                 if (response.failure != null) {
                     BestillOgRedigerBrevResponse(response.failure)
@@ -148,6 +188,22 @@ class LegacyBrevService(
             BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
         }
 
+    private fun fetchLoggedInNavIdent(call: ApplicationCall): String {
+        return call.getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke ident på innlogget bruker i claim")
+    }
+
+    private fun fetchLoggedInName(call: ApplicationCall): String {
+        return call.getLoggedInName() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker i claim")
+    }
+
+    suspend fun harTilgangTilEnhet(call: ApplicationCall, enhetsId: String): Boolean {
+        return navansattService.harAnsattTilgangTilEnhet(
+            call = call,
+            ansattId = fetchLoggedInNavIdent(call = call),
+            enhetsId = enhetsId
+        ) !is ServiceResult.Error
+    }
+
     data class OrderLetterRequest(
         val brevkode: String,
         val spraak: SpraakKode,
@@ -155,7 +211,6 @@ class LegacyBrevService(
         val gjelderPid: String,
         val landkode: String? = null,
         val mottakerText: String? = null,
-        val enhetsId: String,
         val isSensitive: Boolean,
     )
 
@@ -175,6 +230,7 @@ class LegacyBrevService(
                 RedigerDoksysDokumentResponseDto.FailureType.IKKE_TILGANG -> DOKSYS_REDIGERING_IKKE_TILGANG
                 RedigerDoksysDokumentResponseDto.FailureType.LUKKET -> DOKSYS_REDIGERING_LUKKET
                 RedigerDoksysDokumentResponseDto.FailureType.UFORVENTET -> DOKSYS_REDIGERING_UFORVENTET
+                RedigerDoksysDokumentResponseDto.FailureType.ENHETSID_MANGLER -> ENHETSID_MANGLER
             }
         )
 
@@ -220,6 +276,8 @@ class LegacyBrevService(
             FERDIGSTILLING_TIMEOUT,
             SAF_ERROR,
             SKRIBENTEN_INTERNAL_ERROR,
+            ENHETSID_MANGLER,
+            NAVANSATT_ENHETER_ERROR
         }
     }
 }

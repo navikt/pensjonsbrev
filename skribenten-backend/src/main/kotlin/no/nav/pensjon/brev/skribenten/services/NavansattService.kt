@@ -29,7 +29,14 @@ class NavansattService(config: Config, authService: AzureADService) {
     }
 
     suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult<List<NAVEnhet>> {
-        return client.get(call,"navansatt/$ansattId/enheter").toServiceResult<List<NAVEnhet>>()
+        return client.get(call, "navansatt/$ansattId/enheter").toServiceResult<List<NAVEnhet>>()
+    }
+
+    suspend fun harAnsattTilgangTilEnhet(call: ApplicationCall, ansattId: String, enhetsId: String): ServiceResult<Boolean> {
+        return when (val enheter = hentNavAnsattEnhetListe(call, ansattId)) {
+            is ServiceResult.Error -> ServiceResult.Error(error = enheter.error, statusCode = enheter.statusCode)
+            is ServiceResult.Ok -> ServiceResult.Ok(result = enheter.result.any { it.id == enhetsId })
+        }
     }
 }
 
