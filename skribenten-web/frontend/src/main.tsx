@@ -7,6 +7,8 @@ import { createRouter, NotFoundRoute, RouterProvider } from "@tanstack/react-rou
 import React from "react";
 import ReactDOM from "react-dom/client";
 
+import { ApiError } from "~/components/ApiError";
+
 import { Route as rootRoute } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
 
@@ -21,6 +23,7 @@ const notFoundRoute = new NotFoundRoute({
 const router = createRouter({
   routeTree,
   notFoundRoute,
+  defaultErrorComponent: ({ error }) => <ApiError error={error} text="Noe gikk galt" />,
   context: {
     queryClient,
   },

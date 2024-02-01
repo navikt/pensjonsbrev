@@ -33,8 +33,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger")({
 
     return queryClient.ensureQueryData(getLetterTemplateQuery);
   },
-  notFoundComponent: () => <div>not found</div>,
-  errorComponent: ApiError,
+  errorComponent: ({ error }) => <ApiError error={error} text="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
 });
 

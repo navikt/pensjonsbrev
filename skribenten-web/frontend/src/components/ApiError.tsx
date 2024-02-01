@@ -3,7 +3,7 @@ import { Alert, CopyButton, Heading, HStack } from "@navikt/ds-react";
 import { ErrorComponent } from "@tanstack/react-router";
 import { AxiosError } from "axios";
 
-export function ApiError({ error }: { error: unknown }) {
+export function ApiError({ error, text }: { error: unknown; text: string }) {
   if (error instanceof AxiosError) {
     const correlationId = error.response?.headers["x-request-id"];
     return (
@@ -17,7 +17,7 @@ export function ApiError({ error }: { error: unknown }) {
         <Heading level="2" size="small" spacing>
           Oops
         </Heading>
-        <div>Klarte ikke hente brevmaler for saken.</div>
+        <div>{text}</div>
         <div>
           <span>Prøv på nytt om litt. Hvis problemet vedvarer rapporter feil og oppgi følgende id: </span>
           <HStack align="center" gap="4">
