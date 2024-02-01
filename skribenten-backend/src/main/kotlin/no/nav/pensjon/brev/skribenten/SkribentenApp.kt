@@ -41,10 +41,9 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
     }
 
     install(CallId) {
-        retrieveFromHeader("X-Request-ID")
+        header("X-Request-ID")
         generate()
         verify { it.isNotEmpty() }
-        replyToHeader("X-Request-ID")
     }
 
     install(StatusPages) {
