@@ -41,7 +41,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
     }
 
     install(CallId) {
-        header("x_correlationId")
+        header("X-Request-ID")
         generate()
         verify { it.isNotEmpty() }
     }
