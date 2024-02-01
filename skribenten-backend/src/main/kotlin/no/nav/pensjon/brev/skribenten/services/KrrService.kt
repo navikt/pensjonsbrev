@@ -29,6 +29,7 @@ class KrrService(config: Config, authService: AzureADService) {
         }
     }
 
+    @Suppress("EnumEntryName")
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class KontaktinfoKRRResponse(val spraak: SpraakKode? = null) {
         enum class SpraakKode {
@@ -39,29 +40,23 @@ class KrrService(config: Config, authService: AzureADService) {
         }
     }
 
-    data class KontaktinfoKRRErrorResponse(
-        val errors: List<Error>,
-    ) {
-        data class Error(val id: String, val status: String, val title: String, val detail: String) {
-            fun prettyPrint() =
-                """
-                    Title: $title
-                    Status: $status
-                    Id: $id
-                    Detail: $detail
-                """.trimIndent()
+    data class KontaktinfoResponse(val spraakKode: SpraakKode?, val failure: FailureType?) {
+        constructor(failure: FailureType) : this(null, failure)
+        constructor(spraakKode: SpraakKode?) : this(spraakKode, null)
+
+        enum class FailureType {
+            NOT_FOUND,
+            ERROR,
         }
     }
 
-    data class KontaktinfoResponse(val spraakKode: SpraakKode?)
-
-    suspend fun getPreferredLocale(call: ApplicationCall, pid: String): ServiceResult<KontaktinfoResponse, String> {
+    suspend fun getPreferredLocale(call: ApplicationCall, pid: String): KontaktinfoResponse {
         return client.get(call, "/rest/v1/person") {
             headers {
                 accept(ContentType.Application.Json)
                 header("Nav-Personident", pid)
             }
-        }.toServiceResult<KontaktinfoKRRResponse, KontaktinfoKRRErrorResponse>()
+        }.toServiceResult<KontaktinfoKRRResponse>()
             .map {
                 KontaktinfoResponse(
                     when (it.spraak) {
@@ -72,16 +67,16 @@ class KrrService(config: Config, authService: AzureADService) {
                         null -> null
                     }
                 )
-            }.catch { error ->
-                error.errors.joinToString { it.prettyPrint() }
-                    .also {
-                        logger.error(
-                            """
-                            Error(s) from krr proxy:
-                            $it
-                            """.trimIndent()
-                        )
+            }.catch { message, status ->
+                KontaktinfoResponse(
+                    if (status == HttpStatusCode.NotFound) {
+                        KontaktinfoResponse.FailureType.NOT_FOUND
+                    } else {
+                        logger.error("Feil ved henting av kontaktinformasjon. Status: $status Melding: $message")
+                        KontaktinfoResponse.FailureType.ERROR
                     }
+                )
             }
     }
+
 }

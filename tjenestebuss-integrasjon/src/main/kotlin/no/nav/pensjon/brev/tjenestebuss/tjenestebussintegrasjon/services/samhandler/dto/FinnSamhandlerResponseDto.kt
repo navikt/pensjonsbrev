@@ -1,17 +1,13 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto
 
-sealed class FinnSamhandlerResponseDto {
-    data class Success(val samhandlere: List<Samhandler>) : FinnSamhandlerResponseDto() {
-        data class Samhandler(
-            val navn: String,
-            val samhandlerType: String,
-            val offentligId: String,
-            val idType: String
-        )
-    }
+data class FinnSamhandlerResponseDto(val samhandlere: List<Samhandler>, val failureType: String?) {
+    constructor(samhandlere: List<Samhandler>) : this(samhandlere, null)
+    constructor(failure: String) : this(emptyList(), failure)
 
-    data class Failure(
-        val message: String,
-        val type: String,
-    ) : FinnSamhandlerResponseDto()
+    data class Samhandler(
+        val navn: String,
+        val samhandlerType: String,
+        val offentligId: String,
+        val idType: String
+    )
 }

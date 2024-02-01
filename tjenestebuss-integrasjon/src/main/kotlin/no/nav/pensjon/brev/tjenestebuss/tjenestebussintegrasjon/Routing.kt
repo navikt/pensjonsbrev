@@ -22,9 +22,6 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.B
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamBrevService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto.Failure.FailureType
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.SamhandlerTypeCode
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSService
@@ -103,35 +100,11 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             }
             post("/hentSamhandler") {
                 val requestDto = call.receive<HentSamhandlerRequestDto>()
-
-                val samhandlerResponse = withCallId(samhandlerTjenestebussService) { hentSamhandler(requestDto) }
-
-                when (samhandlerResponse) {
-                    is HentSamhandlerResponseDto.Failure -> {
-                        if (samhandlerResponse.failureType == FailureType.IKKE_FUNNET) {
-                            call.respond(HttpStatusCode.NotFound, samhandlerResponse)
-                        } else {
-                            call.respond(HttpStatusCode.BadRequest, samhandlerResponse)
-                        }
-                    }
-
-                    is HentSamhandlerResponseDto.Success -> call.respond(HttpStatusCode.OK, samhandlerResponse)
-                }
+                call.respond(withCallId(samhandlerTjenestebussService) { hentSamhandler(requestDto) })
             }
             post("/finnSamhandler") {
                 val requestDto = call.receive<FinnSamhandlerRequestDto>()
-
-                val samhandlerResponse: FinnSamhandlerResponseDto = withCallId(samhandlerTjenestebussService) {
-                    finnSamhandler(requestDto)
-                }
-                when (samhandlerResponse) {
-                    is FinnSamhandlerResponseDto.Failure -> call.respond(
-                        HttpStatusCode.InternalServerError,
-                        samhandlerResponse
-                    )
-
-                    is FinnSamhandlerResponseDto.Success -> call.respond(HttpStatusCode.OK, samhandlerResponse)
-                }
+                call.respond(withCallId(samhandlerTjenestebussService) { finnSamhandler(requestDto) })
             }
             post("/bestillExtreamBrev") {
                 val requestDto = call.receive<BestillBrevExtreamRequestDto>()

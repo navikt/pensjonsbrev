@@ -6,6 +6,7 @@ import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenSamhandlerIkkeFunnetMsg
 import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenFinnSamhandlerRequest
 import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenHentSamhandlerRequest
+import no.nav.lib.pen.psakpselv.fault.FaultPenBase
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.HentSamhandlerRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
@@ -14,30 +15,33 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.ST
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.slf4j.LoggerFactory
 
-class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler): TjenestebussService() {
+class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val psakSamhandlerClient = PsakSamhandlerClient(config, securityHandler, callIdHandler).client()
 
     fun hentSamhandler(requestDto: HentSamhandlerRequestDto): HentSamhandlerResponseDto {
         try {
-            val response =  psakSamhandlerClient.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
+            val response = psakSamhandlerClient.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
                 idTSSEkstern = requestDto.idTSSEkstern
                 hentDetaljert = requestDto.hentDetaljert
             })
             logger.info("Henter samhandler for TSS id: ${requestDto.idTSSEkstern}")
-            return  HentSamhandlerResponseDto.Success(
-                navn = response.navn,
-                samhandlerType = response.samhandlerType,
-                offentligId = response.offentligId,
-                idType = response.idType
+            return HentSamhandlerResponseDto(
+                HentSamhandlerResponseDto.Success(
+                    navn = response.navn,
+                    samhandlerType = response.samhandlerType,
+                    offentligId = response.offentligId,
+                    idType = response.idType
+                )
             )
         } catch (ex: HentSamhandlerFaultPenGeneriskMsg) {
-            logger.error("En feil oppstod under henting av samhandler med TSS id: ${requestDto.idTSSEkstern}")
-            return HentSamhandlerResponseDto.Failure(HentSamhandlerResponseDto.Failure.FailureType.GENERISK, ex.faultInfo)
+            logger.error("En feil oppstod under henting av samhandler med TSS id: ${requestDto.idTSSEkstern} ", ex.faultInfo.prettyPrint())
+            return HentSamhandlerResponseDto(HentSamhandlerResponseDto.FailureType.GENERISK)
         } catch (ex: HentSamhandlerFaultPenSamhandlerIkkeFunnetMsg) {
-            logger.error("Kunne ikke finne samhandler med  TSS id: ${requestDto.idTSSEkstern}")
-            return HentSamhandlerResponseDto.Failure(HentSamhandlerResponseDto.Failure.FailureType.IKKE_FUNNET, ex.faultInfo)
+            ex.faultInfo.prettyPrint()
+            logger.error("Kunne ikke finne samhandler med TSS id: ${requestDto.idTSSEkstern}", ex.faultInfo.prettyPrint())
+            return HentSamhandlerResponseDto(HentSamhandlerResponseDto.FailureType.IKKE_FUNNET)
         }
     }
 
@@ -49,18 +53,31 @@ class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercurit
                 navn = requestDto.navn
                 samhandlerType = requestDto.samhandlerType.name
             })
-            return FinnSamhandlerResponseDto.Success(samhandlere = samhandlerResponse.samhandlere.map { FinnSamhandlerResponseDto.Success.Samhandler(
-                it.navn,
-                it.samhandlerType,
-                it.offentligId,
-                it.idType) }
-            )
+            return FinnSamhandlerResponseDto(samhandlere = samhandlerResponse.samhandlere.map {
+                FinnSamhandlerResponseDto.Samhandler(
+                    it.navn,
+                    it.samhandlerType,
+                    it.offentligId,
+                    it.idType
+                )
+            })
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
-            logger.error("En feil oppstod under kall til finnSamhandler med navn: ${requestDto.navn} , samhandlerType: ${requestDto.samhandlerType}, cause: ${ex.faultInfo.rootCause} ")
-            return FinnSamhandlerResponseDto.Failure(ex.faultInfo.errorMessage, ex.faultInfo.errorType)
+            logger.error(
+                "En feil oppstod under kall til finnSamhandler med navn: ${requestDto.navn} , samhandlerType: ${requestDto.samhandlerType}",
+                ex.faultInfo.prettyPrint()
+            )
+            return FinnSamhandlerResponseDto("Feil ved henting av samhandler")
         }
     }
 }
+
+private fun FaultPenBase.prettyPrint() =
+    """
+    | errorSource: $errorSource
+    | errorType: $errorType
+    | rootCause: $rootCause
+    | errorMessage: $errorMessage
+    """.trimMargin()
 
 
 

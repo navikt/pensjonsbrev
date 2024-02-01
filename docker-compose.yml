@@ -46,7 +46,6 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=pass
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
-      - KODEVERK_SERVICE=https://kodeverk.dev.intern.nav.no/api/v1/kodeverk/
       - KRR_SCOPE=api://dev-gcp.team-rocket.digdir-krr-proxy/.default
       - KRR_URL=https://digdir-krr-proxy.intern.dev.nav.no
       - PDL_SCOPE=api://dev-fss.pdl.pdl-api/.default
