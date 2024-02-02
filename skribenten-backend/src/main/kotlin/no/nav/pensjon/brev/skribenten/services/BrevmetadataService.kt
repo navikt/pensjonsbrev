@@ -27,7 +27,7 @@ class BrevmetadataService(config: Config) {
         }
     }
 
-    suspend fun getRedigerbareBrevKategorier(sakstype: String): List<LetterMetadata> {
+    suspend fun getRedigerbareBrev(sakstype: String): List<LetterMetadata> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }

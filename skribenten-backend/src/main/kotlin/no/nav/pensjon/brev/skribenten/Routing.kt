@@ -40,7 +40,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             get("/lettertemplates/{sakType}") {
                 val sakType = call.parameters.getOrFail("sakType")
                 call.respond(
-                    brevmetadataService.getRedigerbareBrevKategorier(sakType),
+                    brevmetadataService.getRedigerbareBrev(sakType),
                 )
             }
             get("/lettertemplates/e-blanketter") {
