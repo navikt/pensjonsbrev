@@ -28,15 +28,13 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   component: SelectedTemplate,
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
+
     const letterTemplates = await queryClient.ensureQueryData({
       queryKey: getLetterTemplate.queryKey(sak.sakType),
       queryFn: () => getLetterTemplate.queryFn(sak.sakType),
     });
 
-    const letterTemplate = [
-      ...letterTemplates.eblanketter,
-      ...letterTemplates.kategorier.flatMap((kategori) => kategori.templates),
-    ].find((letterMetadata) => letterMetadata.id === templateId);
+    const letterTemplate = letterTemplates.find((letterMetadata) => letterMetadata.id === templateId);
 
     if (!letterTemplate) {
       throw notFound();

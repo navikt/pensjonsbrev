@@ -27,7 +27,7 @@ class BrevmetadataService(config: Config) {
         }
     }
 
-    suspend fun getRedigerbareBrevKategorier(sakstype: String): List<LetterCategory> {
+    suspend fun getRedigerbareBrevKategorier(sakstype: String): List<LetterMetadata> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
@@ -43,13 +43,7 @@ class BrevmetadataService(config: Config) {
     private fun mapToCategories(metadata: List<BrevdataDto>) =
         metadata
             .filter { it.redigerbart }
-            .groupBy { it.brevkategori }
-            .map {
-                LetterCategory(
-                    name = it.key?.toString() ?: "Annet",
-                    templates = it.value.map { template -> template.mapToMetadata() }
-                )
-            }
+            .map{ it.mapToMetadata() }
 
     private fun BrevdataDto.mapToMetadata() =
         LetterMetadata(
@@ -60,8 +54,7 @@ class BrevmetadataService(config: Config) {
                 BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
                 BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXTREAM
             },
-            isVedtaksbrev = this.brevkategori == BrevdataDto.BrevkategoriCode.VEDTAK,
-            isEblankett = this.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT,
+            brevkategoriCode = this.brevkategori
         )
 
 
@@ -122,12 +115,6 @@ enum class SpraakKode {
     SE, // Nord-samisk
 }
 
-
-data class LetterCategory(
-    val name: String,
-    val templates: List<LetterMetadata>,
-)
-
 enum class BrevSystem { EXTREAM, DOKSYS, BREVBAKER }
 
 data class LetterMetadata(
@@ -135,7 +122,6 @@ data class LetterMetadata(
     val id: String,
     val brevsystem: BrevSystem,
     val spraak: List<SpraakKode>, // Enkelte brev er egentlig bare bokmål, men har null i metadata.
-    val isVedtaksbrev: Boolean,
-    val isEblankett: Boolean,
+    val brevkategoriCode: BrevdataDto.BrevkategoriCode?
 )
 

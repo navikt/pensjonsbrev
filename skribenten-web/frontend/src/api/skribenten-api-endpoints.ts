@@ -8,7 +8,6 @@ import axios from "axios";
 import type {
   BestillOgRedigerBrevResponse,
   LetterMetadata,
-  LetterTemplatesResponse,
   OrderLetterRequest,
   PidRequest,
   PreferredLanguage,
@@ -78,7 +77,7 @@ export const getPreferredLanguage = {
 export const getLetterTemplate = {
   queryKey: letterTemplatesKeys.id,
   queryFn: async (sakType: string) =>
-    (await axios.get<LetterTemplatesResponse>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
+    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
 };
 
 export const getEblanketter = {

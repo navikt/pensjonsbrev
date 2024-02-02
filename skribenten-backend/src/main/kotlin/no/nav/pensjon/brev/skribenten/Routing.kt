@@ -37,18 +37,10 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         healthRoute()
 
         authenticate(authConfig.name) {
-
-            data class LetterTemplatesResponse(
-                val kategorier: List<LetterCategory>,
-                val eblanketter: List<LetterMetadata>
-            )
             get("/lettertemplates/{sakType}") {
                 val sakType = call.parameters.getOrFail("sakType")
                 call.respond(
-                    LetterTemplatesResponse(
-                        brevmetadataService.getRedigerbareBrevKategorier(sakType),
-                        brevmetadataService.getEblanketter()
-                    )
+                    brevmetadataService.getRedigerbareBrevKategorier(sakType),
                 )
             }
             get("/lettertemplates/e-blanketter") {

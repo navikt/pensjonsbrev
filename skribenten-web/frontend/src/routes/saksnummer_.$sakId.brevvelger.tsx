@@ -3,11 +3,11 @@ import { Accordion, Button, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
-import { Fragment, useState } from "react";
+import { groupBy } from "lodash";
+import { useState } from "react";
 
 import { getEblanketter, getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { LetterCategory } from "~/types/apiTypes";
 import type { LetterMetadata } from "~/types/apiTypes";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger")({
@@ -81,7 +81,7 @@ export function BrevvelgerPage() {
           <Tabs.Tab label="E-blanketter" value={BrevvelgerTabOptions.E_BLANKETTER} />
         </Tabs.List>
         <Tabs.Panel value={BrevvelgerTabOptions.BREVMALER}>
-          <Brevmaler kategorier={letterTemplates.kategorier ?? []} />
+          <Brevmaler kategorier={letterTemplates ?? []} />
         </Tabs.Panel>
         <Tabs.Panel value={BrevvelgerTabOptions.E_BLANKETTER}>
           <Eblanketter eblanketter={eblanketter ?? []} />
@@ -92,21 +92,20 @@ export function BrevvelgerPage() {
   );
 }
 
-function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
+function Brevmaler({ kategorier }: { kategorier: LetterMetadata[] }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const favoritter = useQuery(getFavoritter).data ?? [];
 
-  const matchingFavoritter = kategorier
-    .flatMap((category) => category.templates)
-    .filter(({ id }) => favoritter.includes(id));
+  const matchingFavoritter = kategorier.filter(({ id }) => favoritter.includes(id));
+  const brevmalerMatchingSearchTerm = kategorier.filter((template) =>
+    template.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-  const letterCategoriesWithFavoritterIncluded = [{ name: "FAVORITTER", templates: matchingFavoritter }, ...kategorier];
-
-  const matchingLetterCategories = letterCategoriesWithFavoritterIncluded.map((category) => ({
-    ...category,
-    templates: category.templates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
-  }));
+  const brevmalerGroupedByType = {
+    FAVORITTER: matchingFavoritter,
+    ...groupBy(brevmalerMatchingSearchTerm, (brevmal) => brevmal.brevkategoriCode),
+  };
 
   return (
     <div
@@ -137,19 +136,16 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
         indent={false}
         size="small"
       >
-        {matchingLetterCategories.map((letterCategory) => {
-          if (letterCategory.templates.length === 0) {
-            return <Fragment key={letterCategory.name}></Fragment>;
-          }
+        {Object.entries(brevmalerGroupedByType).map(([type, brevmaler]) => {
           return (
-            <Accordion.Item key={letterCategory.name} open={searchTerm.length > 0 ? true : undefined}>
+            <Accordion.Item key={type} open={searchTerm.length > 0 ? true : undefined}>
               <Accordion.Header
                 css={css`
                   flex-direction: row-reverse;
                   justify-content: space-between;
                 `}
               >
-                {CATEGORY_TRANSLATIONS[letterCategory.name] ?? "Annet"}
+                {CATEGORY_TRANSLATIONS[type] ?? "Annet"}
               </Accordion.Header>
               <Accordion.Content>
                 <div
@@ -158,7 +154,7 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
                     flex-direction: column;
                   `}
                 >
-                  {letterCategory.templates.map((template) => (
+                  {brevmaler.map((template) => (
                     <BrevmalButton key={template.id} letterMetadata={template} />
                   ))}
                 </div>
