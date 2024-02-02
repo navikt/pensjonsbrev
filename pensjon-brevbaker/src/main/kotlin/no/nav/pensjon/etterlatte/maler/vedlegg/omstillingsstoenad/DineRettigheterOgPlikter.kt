@@ -94,6 +94,13 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             }
             item {
                 text(
+                    Bokmal to "du får felles barn med ny samboer",
+                    Nynorsk to "du får barn med ny sambuar",
+                    English to "Have joint children with a new co-habiting partner",
+                )
+            }
+            item {
+                text(
                     Bokmal to "du skal oppholde deg utenfor Norge i en periode på mer enn seks måneder eller " +
                             "skal flytte til et annet land",
                     Nynorsk to "du skal opphalde deg utanfor Noreg i meir enn seks månader, eller du skal " +
