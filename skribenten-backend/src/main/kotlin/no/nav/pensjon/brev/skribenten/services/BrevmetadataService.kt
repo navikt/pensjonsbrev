@@ -33,17 +33,15 @@ class BrevmetadataService(config: Config) {
         }
 
         if (httpResponse.status.isSuccess()) {
-            return mapToCategories(httpResponse.body())
+            return httpResponse.body<List<BrevdataDto>>()
+                .filter { it.redigerbart }
+                .filter {it.brevkategori != BrevdataDto.BrevkategoriCode.VEDTAK}
+                .map{ it.mapToMetadata() }
         } else {
             logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
             return emptyList()
         }
     }
-
-    private fun mapToCategories(metadata: List<BrevdataDto>) =
-        metadata
-            .filter { it.redigerbart }
-            .map{ it.mapToMetadata() }
 
     private fun BrevdataDto.mapToMetadata() =
         LetterMetadata(

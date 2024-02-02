@@ -250,10 +250,6 @@ function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetad
 }
 
 function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  if (letterTemplate.isEblankett) {
-    return <></>;
-  }
-
   return (
     <div>
       {(() => {
