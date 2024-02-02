@@ -12,6 +12,7 @@ export function ApiError({ error, text }: { error: unknown; text: string }) {
           margin-top: var(--a-spacing-4);
           width: fit-content;
           align-self: center;
+          min-width: 600px;
         `}
         variant="error"
       >
@@ -20,11 +21,16 @@ export function ApiError({ error, text }: { error: unknown; text: string }) {
         </Heading>
         <div>{text}</div>
         <div>
-          <span>Prøv på nytt om litt. Hvis problemet vedvarer rapporter feil og oppgi følgende id: </span>
-          <HStack align="center" gap="0">
-            {correlationId}
-            <CopyButton copyText={correlationId} />
-          </HStack>
+          {correlationId && (
+            <>
+              <HStack align="center" gap="0">
+                <span>
+                  Hvis problemet vedvarer rapporter feil og oppgi følgende id: <b>{correlationId}</b>
+                </span>
+                <CopyButton copyText={correlationId} />
+              </HStack>
+            </>
+          )}
         </div>
       </Alert>
     );

@@ -23,7 +23,7 @@ const notFoundRoute = new NotFoundRoute({
 const router = createRouter({
   routeTree,
   notFoundRoute,
-  defaultErrorComponent: ({ error }) => <ApiError error={error} text="Noe gikk galt" />,
+  defaultErrorComponent: ({ error }) => <ApiError error={error} text="Noe gikk galt." />,
   context: {
     queryClient,
   },
