@@ -13,6 +13,7 @@ import { z } from "zod";
 import {
   addFavoritt,
   deleteFavoritt,
+  getEblanketter,
   getFavoritter,
   getLetterTemplate,
   orderLetter,
@@ -34,7 +35,11 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
       queryFn: () => getLetterTemplate.queryFn(sak.sakType),
     });
 
-    const letterTemplate = letterTemplates.find((letterMetadata) => letterMetadata.id === templateId);
+    const eblanketter = await queryClient.ensureQueryData(getEblanketter);
+
+    const letterTemplate = [...letterTemplates, ...eblanketter].find(
+      (letterMetadata) => letterMetadata.id === templateId,
+    );
 
     if (!letterTemplate) {
       throw notFound();
