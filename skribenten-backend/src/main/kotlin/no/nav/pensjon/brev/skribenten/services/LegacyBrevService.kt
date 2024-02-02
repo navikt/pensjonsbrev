@@ -201,7 +201,10 @@ class LegacyBrevService(
             call = call,
             ansattId = fetchLoggedInNavIdent(call = call),
             enhetsId = enhetsId
-        ) !is ServiceResult.Error
+        ).let { when (it) {
+            is ServiceResult.Error -> false
+            is ServiceResult.Ok -> it.result
+        }}
     }
 
     data class OrderLetterRequest(
