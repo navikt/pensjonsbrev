@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Accordion, Button, Search, Tabs } from "@navikt/ds-react";
+import { Accordion, Alert, Button, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
@@ -97,13 +97,13 @@ function Brevmaler({ kategorier }: { kategorier: LetterMetadata[] }) {
 
   const favoritter = useQuery(getFavoritter).data ?? [];
 
-  const matchingFavoritter = kategorier.filter(({ id }) => favoritter.includes(id));
   const brevmalerMatchingSearchTerm = kategorier.filter((template) =>
     template.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+  const matchingFavoritter = brevmalerMatchingSearchTerm.filter(({ id }) => favoritter.includes(id));
 
   const brevmalerGroupedByType = {
-    FAVORITTER: matchingFavoritter,
+    ...(matchingFavoritter.length > 0 ? { FAVORITTER: matchingFavoritter } : {}),
     ...groupBy(brevmalerMatchingSearchTerm, (brevmal) => brevmal.brevkategoriCode),
   };
 
@@ -136,6 +136,7 @@ function Brevmaler({ kategorier }: { kategorier: LetterMetadata[] }) {
         indent={false}
         size="small"
       >
+        {Object.keys(brevmalerGroupedByType).length === 0 && <Alert variant="info">Ingen treff</Alert>}
         {Object.entries(brevmalerGroupedByType).map(([type, brevmaler]) => {
           return (
             <Accordion.Item key={type} open={searchTerm.length > 0 ? true : undefined}>
