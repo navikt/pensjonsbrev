@@ -44,7 +44,6 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
 
 const formValidationSchema = z.object({
   spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
-  enhetsId: z.string({ required_error: "Obligatorisk" }).length(4, "Obligatorisk"),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
 });
 
@@ -79,7 +78,6 @@ export function SelectedTemplate() {
 
 function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
-  const { enhetsId } = Route.useSearch();
   const { sak } = Route.useLoaderData();
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -92,7 +90,6 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 
   const methods = useForm<z.infer<typeof formValidationSchema>>({
     defaultValues: {
-      enhetsId,
       isSensitive: letterTemplate?.brevsystem === BrevSystem.Extream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
     },
     resolver: zodResolver(formValidationSchema),
