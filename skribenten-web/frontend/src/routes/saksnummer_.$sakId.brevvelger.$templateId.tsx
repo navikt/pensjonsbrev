@@ -50,7 +50,16 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   notFoundComponent: () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
     const { templateId } = Route.useParams();
-    return <Alert variant="info">Fant ikke brevmal med id {templateId}</Alert>;
+    return (
+      <Alert
+        css={css`
+          height: fit-content;
+        `}
+        variant="info"
+      >
+        Fant ikke brevmal med id {templateId}
+      </Alert>
+    );
   },
 });
 
