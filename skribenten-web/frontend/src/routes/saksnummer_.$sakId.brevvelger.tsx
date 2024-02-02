@@ -6,6 +6,7 @@ import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { Fragment, useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
+import { ApiError } from "~/components/ApiError";
 import type { LetterCategory } from "~/types/apiTypes";
 import type { LetterMetadata } from "~/types/apiTypes";
 
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger")({
 
     return queryClient.ensureQueryData(getLetterTemplateQuery);
   },
+  errorComponent: ({ error }) => <ApiError error={error} text="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
 });
 
@@ -46,6 +48,8 @@ export function BrevvelgerPage() {
       css={css`
         background: var(--a-white);
         display: grid;
+        align-self: center;
+        max-width: 1108px;
         grid-template-columns: minmax(432px, 720px) minmax(336px, 388px);
         gap: var(--a-spacing-4);
         justify-content: space-between;
