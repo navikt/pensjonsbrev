@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect } from "react";
@@ -38,7 +38,16 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
       ...letterTemplates.kategorier.flatMap((kategori) => kategori.templates),
     ].find((letterMetadata) => letterMetadata.id === templateId);
 
+    if (!letterTemplate) {
+      throw notFound();
+    }
+
     return { letterTemplate, sak };
+  },
+  notFoundComponent: () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
+    const { templateId } = Route.useParams();
+    return <Alert variant="info">Fant ikke brevmal med id {templateId}</Alert>;
   },
 });
 
