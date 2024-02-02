@@ -47,10 +47,13 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 call.respond(
                     LetterTemplatesResponse(
                         brevmetadataService.getRedigerbareBrevKategorier(sakType),
-                        //TODO figure out who has access to e-blanketter and filter them out. then only display eblanketter when you get the metadata back.
                         brevmetadataService.getEblanketter()
                     )
                 )
+            }
+            get("/lettertemplates/e-blanketter") {
+                //TODO figure out who has access to e-blanketter and filter them out. then only display eblanketter when you get the metadata back.
+                call.respond(brevmetadataService.getEblanketter())
             }
             brevbakerRoute(brevbakerService)
             bestillBrevRoute(legacyBrevService)

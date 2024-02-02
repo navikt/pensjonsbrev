@@ -7,6 +7,7 @@ import axios from "axios";
 
 import type {
   BestillOgRedigerBrevResponse,
+  LetterMetadata,
   LetterTemplatesResponse,
   OrderLetterRequest,
   PidRequest,
@@ -32,6 +33,7 @@ export const navnKeys = {
 
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
+  eblanketter: () => [...letterTemplatesKeys.all, "E_BLANKETTER"] as const,
   id: (sakType: string) => [...letterTemplatesKeys.all, sakType] as const,
 };
 
@@ -77,6 +79,12 @@ export const getLetterTemplate = {
   queryKey: letterTemplatesKeys.id,
   queryFn: async (sakType: string) =>
     (await axios.get<LetterTemplatesResponse>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
+};
+
+export const getEblanketter = {
+  queryKey: letterTemplatesKeys.eblanketter(),
+  queryFn: async () =>
+    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data,
 };
 
 export const getFavoritter = {

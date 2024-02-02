@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { Fragment, useState } from "react";
 
-import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
+import { getEblanketter, getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { LetterCategory } from "~/types/apiTypes";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -21,12 +21,16 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger")({
   loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
     const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);
 
+    const eblanketter = await queryClient.ensureQueryData(getEblanketter);
+
     const getLetterTemplateQuery = {
       queryKey: getLetterTemplate.queryKey(sakType),
       queryFn: () => getLetterTemplate.queryFn(sakType),
     };
 
-    return queryClient.ensureQueryData(getLetterTemplateQuery);
+    const letterTemplates = await queryClient.ensureQueryData(getLetterTemplateQuery);
+
+    return { letterTemplates, eblanketter };
   },
   errorComponent: ({ error }) => <ApiError error={error} text="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
@@ -41,7 +45,7 @@ export function BrevvelgerPage() {
   const { fane } = Route.useSearch();
   const { sakId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
-  const letterTemplate = Route.useLoaderData();
+  const { letterTemplates, eblanketter } = Route.useLoaderData();
 
   return (
     <div
@@ -77,10 +81,10 @@ export function BrevvelgerPage() {
           <Tabs.Tab label="E-blanketter" value={BrevvelgerTabOptions.E_BLANKETTER} />
         </Tabs.List>
         <Tabs.Panel value={BrevvelgerTabOptions.BREVMALER}>
-          <Brevmaler kategorier={letterTemplate.kategorier ?? []} />
+          <Brevmaler kategorier={letterTemplates.kategorier ?? []} />
         </Tabs.Panel>
         <Tabs.Panel value={BrevvelgerTabOptions.E_BLANKETTER}>
-          <Eblanketter eblanketter={letterTemplate.eblanketter ?? []} />
+          <Eblanketter eblanketter={eblanketter ?? []} />
         </Tabs.Panel>
       </Tabs>
       <Outlet />
