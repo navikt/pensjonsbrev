@@ -58,7 +58,7 @@ object OmstillingsstoenadAvslagRedigerbartUtfall : EtterlatteTemplate<Omstilling
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § <riktig paragrafhenvisning>.",
-                    Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § riktig paragrafhenvisning>.",
+                    Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § <riktig paragrafhenvisning>.",
                     English to "This decision has been made pursuant to the provisions regarding transitional benefits in the National Insurance Act – sections <riktig paragrafhenvisning>.",
                 )
             }
