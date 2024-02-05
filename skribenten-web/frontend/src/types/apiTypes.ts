@@ -65,6 +65,7 @@ export type OrderLetterRequest = {
   mottakerText?: string;
   enhetsId: string;
   isSensitive: boolean;
+  vedtaksId?: string;
 };
 
 export type BestillOgRedigerBrevResponse = {

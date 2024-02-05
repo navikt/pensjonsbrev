@@ -8,7 +8,6 @@ import React from "react";
 import { getNavn } from "~/api/skribenten-api-endpoints";
 import { getSak } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import { BrevvelgerTabOptions } from "~/routes/saksnummer_.$sakId.brevvelger";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { formatDateWithoutTimezone } from "~/utils/dateUtils";

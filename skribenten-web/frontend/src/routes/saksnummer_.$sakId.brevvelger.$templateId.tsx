@@ -100,7 +100,7 @@ export function SelectedTemplate() {
 
 function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
-  const { enhetsId } = Route.useSearch();
+  const { vedtaksId } = Route.useSearch();
   const { sak } = Route.useLoaderData();
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -113,7 +113,6 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 
   const methods = useForm<z.infer<typeof formValidationSchema>>({
     defaultValues: {
-      enhetsId,
       isSensitive: letterTemplate?.brevsystem === BrevSystem.Extream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
     },
     resolver: zodResolver(formValidationSchema),
@@ -149,6 +148,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
                   brevkode: letterTemplate.id,
                   sakId: Number(sakId),
                   gjelderPid: sak.foedselsnr,
+                  vedtaksId,
                   ...submittedValues,
                 };
                 return orderLetterMutation.mutate(orderLetterRequest);
