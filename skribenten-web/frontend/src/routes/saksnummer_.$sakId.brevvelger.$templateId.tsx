@@ -3,10 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Await, createFileRoute, defer, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
@@ -15,6 +15,7 @@ import {
   deleteFavoritt,
   getEblanketter,
   getFavoritter,
+  getKontaktAdresse,
   getLetterTemplate,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
@@ -29,6 +30,11 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   component: SelectedTemplate,
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
+
+    const adressePromise = queryClient.ensureQueryData({
+      queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
+      queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
+    });
 
     const letterTemplates = await queryClient.ensureQueryData({
       queryKey: getLetterTemplate.queryKey(sak.sakType),
@@ -45,7 +51,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
       throw notFound();
     }
 
-    return { letterTemplate, sak };
+    return { letterTemplate, sak, deferredAdresse: defer(adressePromise) };
   },
   notFoundComponent: () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
@@ -128,6 +134,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
       <Heading level="3" size="xsmall">
         Mottaker (TODO)
       </Heading>
+      <Adresse />
       <FormProvider {...methods}>
         <form
           css={css`
@@ -291,6 +298,23 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
         }
       })()}
     </div>
+  );
+}
+
+function Adresse() {
+  const { deferredAdresse } = Route.useLoaderData();
+  return (
+    <>
+      <Heading level="3" size="xsmall">
+        Adresse
+      </Heading>
+      <BodyShort size="small">
+        <Suspense fallback="...henter">
+          <Await promise={deferredAdresse}>{(data) => <span>{data.adresseString}</span>}</Await>
+        </Suspense>
+      </BodyShort>
+      <Divider />
+    </>
   );
 }
 

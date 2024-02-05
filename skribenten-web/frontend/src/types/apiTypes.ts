@@ -88,3 +88,8 @@ export type FailureType =
   | "EXTREAM_BESTILLING_HENTE_BREVDATA"
   | "EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT"
   | "EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST";
+
+export type KontaktAdresseResponse = {
+  adresseString: string;
+  adresselinjer: string[];
+};
