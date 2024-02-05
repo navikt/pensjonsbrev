@@ -69,7 +69,7 @@ class PenService(config: Config, authService: AzureADService) {
         val journalfoerendeEnhet: String?,
         val sensitivePersonopplysninger: Boolean?,
         val sprakKode: SpraakKode?,
-        val vedtakId: Long?,
+        val vedtaksId: Long?,
     )
 
     suspend fun bestillDoksysBrev(
@@ -86,7 +86,7 @@ class PenService(config: Config, authService: AzureADService) {
                     journalfoerendeEnhet = enhetsId,
                     sensitivePersonopplysninger = false, // TODO Undersøk om feltet har noen påvirkning på doksys, evt slett fra skribentencontroller i pesys
                     sprakKode = request.spraak,
-                    vedtakId = null, //TODO set from request
+                    vedtaksId = request.vedtaksId,
                 )
             )
             contentType(ContentType.Application.Json)

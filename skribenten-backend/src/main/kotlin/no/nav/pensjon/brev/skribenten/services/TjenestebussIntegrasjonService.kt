@@ -119,7 +119,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         land = request.landkode.takeIf { isEblankett },
                         //TODO sett verge om det er verge og samhandler om det overstyres
                         mottaker = if (isEblankett || isNotat) null else request.gjelderPid,  //fnr/tss id for mottaker
-                        vedtakId = null, // TODO sett fra queryparam/psak
+                        vedtaksId = request.vedtaksId?.toString(),
                     )
                 )
             )

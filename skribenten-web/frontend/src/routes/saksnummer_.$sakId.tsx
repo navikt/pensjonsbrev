@@ -7,6 +7,7 @@ import React from "react";
 
 import { getNavn } from "~/api/skribenten-api-endpoints";
 import { getSak } from "~/api/skribenten-api-endpoints";
+import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { formatDateWithoutTimezone } from "~/utils/dateUtils";
@@ -21,7 +22,15 @@ export const Route = createFileRoute("/saksnummer/$sakId")({
     return { getSakQueryOptions };
   },
   loader: ({ context: { queryClient, getSakQueryOptions } }) => queryClient.ensureQueryData(getSakQueryOptions),
+  errorComponent: ({ error }) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { sakId } = Route.useParams();
+    return <ApiError error={error} text={`Klarte ikke hente saksnummer ${sakId}`} />;
+  },
   component: SakBreadcrumbsPage,
+  validateSearch: (search: Record<string, unknown>): { vedtaksId?: string } => ({
+    vedtaksId: search.vedtaksId?.toString(),
+  }),
 });
 
 function SakBreadcrumbsPage() {
@@ -41,6 +50,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
     queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
     enabled: !!sak,
   });
+  const { vedtaksId } = Route.useSearch();
 
   if (!sak) {
     return <></>;
@@ -88,6 +98,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
         <span>
           Saksnummer: {sak.sakId} <CopyButton copyText={sak.sakId.toString()} size="small" />
         </span>
+        {vedtaksId && <span>vedtaksId: {vedtaksId}</span>}
       </div>
     </Bleed>
   );
