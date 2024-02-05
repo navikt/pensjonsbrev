@@ -15,8 +15,8 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 val dineRettigheterOgPlikter = createAttachment(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "",
-        English to "",
+        Nynorsk to "Dine rettar og plikter",
+        English to "Your rights and obligations",
     ),
     includeSakspart = false,
 ) {
@@ -32,79 +32,87 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     title2 {
         text(
             Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Plikt til å opplyse om endringar – folketrygdlova § 21-3",
+            English to "Duty to notify NAV of any changes – National Insurance Act Section 21-3",
         )
     }
     paragraph {
         text(
             Bokmal to "Du må melde fra om endringer som",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Du må melde frå dersom",
+            English to "ou must notify NAV of any changes in your circumstances, for example if:",
         )
         list {
             item {
                 text(
                     Bokmal to "arbeidsinntekten din endrer seg",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "arbeidsinntekta di endrar seg",
+                    English to "Your work income changes",
                 )
             }
             item {
                 text(
                     Bokmal to "arbeidssituasjonen din endrer seg",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "arbeidssituasjonen din endrar seg",
+                    English to "Your work situation changes",
                 )
             }
             item {
                 text(
                     Bokmal to "du får innvilget andre stønader fra NAV",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "du får innvilga andre stønader frå NAV",
+                    English to "You are granted any other benefits by NAV ",
                 )
             }
             item {
                 text(
                     Bokmal to "du ikke lenger er arbeidssøker",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "du ikkje lenger er arbeidssøkjar",
+                    English to "You are no longer seeking work",
                 )
             }
             item {
                 text(
                     Bokmal to "du endrer, avbryter eller reduserer omfanget av utdanningen din",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "du endrar, avbryt eller reduserer omfanget av utdanninga di",
+                    English to "You change, discontinue or reduce the scope of your education",
                 )
             }
             item {
                 text(
                     Bokmal to "du gifter deg eller inngår partnerskap",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "du giftar deg eller inngår partnarskap",
+                    English to "You get married, enter into a partnership or begin co-habiting with a partner",
                 )
             }
             item {
                 text(
                     Bokmal to "du blir samboer med en du har felles barn med eller tidligere har vært gift med",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "du blir sambuar med nokon du har barn med eller tidlegare har vore gift med",
+                    English to "You re-marry or begin co-habiting with someone to whom you were previously married",
+                )
+            }
+            item {
+                text(
+                    Bokmal to "du får felles barn med ny samboer",
+                    Nynorsk to "du får barn med ny sambuar",
+                    English to "Have joint children with a new co-habiting partner",
                 )
             }
             item {
                 text(
                     Bokmal to "du skal oppholde deg utenfor Norge i en periode på mer enn seks måneder eller " +
                             "skal flytte til et annet land",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "du skal opphalde deg utanfor Noreg i meir enn seks månader, eller du skal " +
+                            "flytte til eit anna land",
+                    English to "You stay outside of Norway for more than 6 months or move to another country",
                 )
             }
             item {
                 text(
                     Bokmal to "du får varig opphold i institusjon",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "du får varig opphald på ein institusjon",
+                    English to "You reside permanently in an institution",
                 )
             }
         }
@@ -115,8 +123,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     title2 {
         text(
             Bokmal to "Feilutbetaling av stønad folketrygdloven § 22-15 og § 22-16",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Feilutbetaling av stønad etter folketrygdlova § 22-15 og § 22-16",
+            English to "Incorrect payment of benefits – National Insurance Act Sections 22-15 and 22-16",
         )
     }
     paragraph {
@@ -124,8 +132,14 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av " +
                     "omstillingsstønad og du må straks melde fra om du oppdager feil. Hvis du ikke melder fra om " +
                     "endringer og får utbetalt for mye stønad, kan stønad som er utbetalt feil kreves tilbake.",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Du er ansvarleg for å følgje med på kor mykje omstillingsstønad som kjem inn på " +
+                    "kontoen din, og må melde frå med ein gong dersom du oppdagar feil. Dersom du får utbetalt for " +
+                    "mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake " +
+                    "det du ikkje hadde rett på.",
+            English to "You are responsible for keeping yourself informed of transactions in your account " +
+                    "concerning payment of transitional benefits and you must notify us if you discover any errors. " +
+                    "If you do not notify us of any changes and thereby receive too much in benefits, you can be " +
+                    "required to repay the overpaid amount.",
         )
     }
 }
@@ -134,16 +148,18 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     title2 {
         text(
             Bokmal to "Straffeansvar – folketrygdloven § 25-12",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Straffeansvar – folketrygdlova § 25-12",
+            English to "Criminal liability– National Insurance Act Section 25-12",
         )
     }
     paragraph {
         text(
             Bokmal to "Hvis du med vilje gir feil opplysninger eller ikke gir oss nødvendige opplysninger, " +
                     "kan det medføre straffeansvar.",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Det kan medføre straffeansvar dersom du med vilje gir feil opplysningar eller held " +
+                    "tilbake opplysningar vi treng.",
+            English to "If you knowingly provide incorrect information or fail to provide us with the " +
+                    "required information, this can lead to criminal liability. ",
         )
     }
 }
