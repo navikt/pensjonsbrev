@@ -13,6 +13,7 @@ import { z } from "zod";
 import {
   addFavoritt,
   deleteFavoritt,
+  getEblanketter,
   getFavoritter,
   getLetterTemplate,
   orderLetter,
@@ -28,15 +29,17 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   component: SelectedTemplate,
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
+
     const letterTemplates = await queryClient.ensureQueryData({
       queryKey: getLetterTemplate.queryKey(sak.sakType),
       queryFn: () => getLetterTemplate.queryFn(sak.sakType),
     });
 
-    const letterTemplate = [
-      ...letterTemplates.eblanketter,
-      ...letterTemplates.kategorier.flatMap((kategori) => kategori.templates),
-    ].find((letterMetadata) => letterMetadata.id === templateId);
+    const eblanketter = await queryClient.ensureQueryData(getEblanketter);
+
+    const letterTemplate = [...letterTemplates, ...eblanketter].find(
+      (letterMetadata) => letterMetadata.id === templateId,
+    );
 
     if (!letterTemplate) {
       throw notFound();
@@ -47,7 +50,16 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   notFoundComponent: () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
     const { templateId } = Route.useParams();
-    return <Alert variant="info">Fant ikke brevmal med id {templateId}</Alert>;
+    return (
+      <Alert
+        css={css`
+          height: fit-content;
+        `}
+        variant="info"
+      >
+        Fant ikke brevmal med id {templateId}
+      </Alert>
+    );
   },
 });
 
@@ -252,10 +264,6 @@ function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetad
 }
 
 function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  if (letterTemplate.isEblankett) {
-    return <></>;
-  }
-
   return (
     <div>
       {(() => {

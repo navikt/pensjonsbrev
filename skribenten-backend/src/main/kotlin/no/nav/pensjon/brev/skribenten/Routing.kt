@@ -8,13 +8,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
-import no.nav.pensjon.brev.skribenten.routes.bestillBrevRoute
-import no.nav.pensjon.brev.skribenten.routes.brevbakerRoute
-import no.nav.pensjon.brev.skribenten.routes.healthRoute
-import no.nav.pensjon.brev.skribenten.routes.kodeverkRoute
-import no.nav.pensjon.brev.skribenten.routes.meRoute
-import no.nav.pensjon.brev.skribenten.routes.penRoute
-import no.nav.pensjon.brev.skribenten.routes.personRoute
+import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
@@ -37,21 +31,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         healthRoute()
 
         authenticate(authConfig.name) {
-
-            data class LetterTemplatesResponse(
-                val kategorier: List<LetterCategory>,
-                val eblanketter: List<LetterMetadata>
-            )
-            get("/lettertemplates/{sakType}") {
-                val sakType = call.parameters.getOrFail("sakType")
-                call.respond(
-                    LetterTemplatesResponse(
-                        brevmetadataService.getRedigerbareBrevKategorier(sakType),
-                        //TODO figure out who has access to e-blanketter and filter them out. then only display eblanketter when you get the metadata back.
-                        brevmetadataService.getEblanketter()
-                    )
-                )
-            }
+            brevmalerRoute(brevmetadataService)
             brevbakerRoute(brevbakerService)
             bestillBrevRoute(legacyBrevService)
             kodeverkRoute(penService)
