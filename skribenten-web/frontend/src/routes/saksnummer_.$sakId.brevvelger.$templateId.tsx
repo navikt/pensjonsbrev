@@ -99,7 +99,7 @@ export function SelectedTemplate() {
 
 function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
-  const { vedtakId } = Route.useSearch();
+  const { vedtaksId } = Route.useSearch();
   const { sak } = Route.useLoaderData();
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -147,7 +147,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
                   brevkode: letterTemplate.id,
                   sakId: Number(sakId),
                   gjelderPid: sak.foedselsnr,
-                  vedtakId,
+                  vedtaksId,
                   ...submittedValues,
                 };
                 return orderLetterMutation.mutate(orderLetterRequest);
