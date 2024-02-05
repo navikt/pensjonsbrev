@@ -85,7 +85,7 @@ class PenService(config: Config, authService: AzureADService) {
                     journalfoerendeEnhet = request.enhetsId,
                     sensitivePersonopplysninger = false, // TODO Undersøk om feltet har noen påvirkning på doksys, evt slett fra skribentencontroller i pesys
                     sprakKode = request.spraak,
-                    vedtakId = null, //TODO set from request
+                    vedtakId = request.vedtakId,
                 )
             )
             contentType(ContentType.Application.Json)

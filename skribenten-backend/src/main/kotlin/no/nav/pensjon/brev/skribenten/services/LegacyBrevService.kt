@@ -157,6 +157,7 @@ class LegacyBrevService(
         val mottakerText: String? = null,
         val enhetsId: String,
         val isSensitive: Boolean,
+        val vedtakId: Long? = null,
     )
 
     data class BestillOgRedigerBrevResponse(

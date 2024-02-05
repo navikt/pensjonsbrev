@@ -64,7 +64,7 @@ export type OrderLetterRequest = {
   landkode?: string;
   mottakerText?: string;
   isSensitive: boolean;
-  vedtaksId?: string;
+  vedtakId?: string;
 };
 
 export type BestillOgRedigerBrevResponse = {

@@ -28,8 +28,8 @@ export const Route = createFileRoute("/saksnummer/$sakId")({
     return <ApiError error={error} text={`Klarte ikke hente saksnummer ${sakId}`} />;
   },
   component: SakBreadcrumbsPage,
-  validateSearch: (search: Record<string, unknown>): { vedtaksId?: string } => ({
-    vedtaksId: search.vedtaksId?.toString(),
+  validateSearch: (search: Record<string, unknown>): { vedtakId?: string } => ({
+    vedtakId: search.vedtakId?.toString(),
   }),
 });
 
@@ -50,7 +50,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
     queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
     enabled: !!sak,
   });
-  const { vedtaksId } = Route.useSearch();
+  const { vedtakId } = Route.useSearch();
 
   if (!sak) {
     return <></>;
@@ -98,7 +98,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
         <span>
           Saksnummer: {sak.sakId} <CopyButton copyText={sak.sakId.toString()} size="small" />
         </span>
-        {vedtaksId && <span>VedtaksId: {vedtaksId}</span>}
+        {vedtakId && <span>vedtakId: {vedtakId}</span>}
       </div>
     </Bleed>
   );
