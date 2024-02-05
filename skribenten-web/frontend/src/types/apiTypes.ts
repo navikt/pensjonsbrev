@@ -63,8 +63,8 @@ export type OrderLetterRequest = {
   gjelderPid: string;
   landkode?: string;
   mottakerText?: string;
-  enhetsId: string;
   isSensitive: boolean;
+  vedtaksId?: string;
 };
 
 export type BestillOgRedigerBrevResponse = {
@@ -234,3 +234,8 @@ export enum SamhandlerTypeCode {
   YH = "YH",
   YM = "YM",
 }
+
+export type KontaktAdresseResponse = {
+  adresseString: string;
+  adresselinjer: string[];
+};

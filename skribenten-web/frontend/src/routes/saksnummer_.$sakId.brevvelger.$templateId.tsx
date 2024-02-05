@@ -16,10 +16,10 @@ import {
   VStack,
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Await, createFileRoute, defer, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
@@ -29,6 +29,7 @@ import {
   finnSamhandler,
   getEblanketter,
   getFavoritter,
+  getKontaktAdresse,
   getLetterTemplate,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
@@ -51,6 +52,11 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
+    const adressePromise = queryClient.ensureQueryData({
+      queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
+      queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
+    });
+
     const letterTemplates = await queryClient.ensureQueryData({
       queryKey: getLetterTemplate.queryKey(sak.sakType),
       queryFn: () => getLetterTemplate.queryFn(sak.sakType),
@@ -66,7 +72,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
       throw notFound();
     }
 
-    return { letterTemplate, sak };
+    return { letterTemplate, sak, deferredAdresse: defer(adressePromise) };
   },
   notFoundComponent: () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
@@ -86,7 +92,6 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
 
 const formValidationSchema = z.object({
   spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
-  enhetsId: z.string({ required_error: "Obligatorisk" }).length(4, "Obligatorisk"),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
 });
 
@@ -121,7 +126,7 @@ export function SelectedTemplate() {
 
 function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
-  const { enhetsId } = Route.useSearch();
+  const { vedtaksId } = Route.useSearch();
   const { sak } = Route.useLoaderData();
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -134,7 +139,6 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 
   const methods = useForm<z.infer<typeof formValidationSchema>>({
     defaultValues: {
-      enhetsId,
       isSensitive: letterTemplate?.brevsystem === BrevSystem.Extream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
     },
     resolver: zodResolver(formValidationSchema),
@@ -152,6 +156,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
         Mottaker (TODO)
         <VelgSamhandlerModal />
       </Heading>
+      <Adresse />
       <FormProvider {...methods}>
         <form
           css={css`
@@ -171,6 +176,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
                   brevkode: letterTemplate.id,
                   sakId: Number(sakId),
                   gjelderPid: sak.foedselsnr,
+                  vedtaksId,
                   ...submittedValues,
                 };
                 return orderLetterMutation.mutate(orderLetterRequest);
@@ -314,6 +320,23 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
         }
       })()}
     </div>
+  );
+}
+
+function Adresse() {
+  const { deferredAdresse } = Route.useLoaderData();
+  return (
+    <>
+      <Heading level="3" size="xsmall">
+        Adresse
+      </Heading>
+      <BodyShort size="small">
+        <Suspense fallback="...henter">
+          <Await promise={deferredAdresse}>{(data) => <span>{data.adresseString}</span>}</Await>
+        </Suspense>
+      </BodyShort>
+      <Divider />
+    </>
   );
 }
 

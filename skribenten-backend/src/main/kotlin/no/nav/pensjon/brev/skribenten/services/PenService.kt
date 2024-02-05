@@ -44,7 +44,7 @@ class PenService(config: Config, authService: AzureADService) {
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val sakType: SakType,
-        val enhetId: String,
+        val enhetId: String?,
     )
 
 
@@ -69,23 +69,24 @@ class PenService(config: Config, authService: AzureADService) {
         val journalfoerendeEnhet: String?,
         val sensitivePersonopplysninger: Boolean?,
         val sprakKode: SpraakKode?,
-        val vedtakId: Long?,
+        val vedtaksId: Long?,
     )
 
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
-    ): ServiceResult<BestillDoksysBrevResponse> =
+        enhetsId: String,
+        ): ServiceResult<BestillDoksysBrevResponse> =
         client.post(call, "brev/skribenten/doksys/sak/${request.sakId}") {
             setBody(
                 BestilDoksysBrevRequest(
                     sakId = request.sakId,
                     brevkode = request.brevkode,
                     mottaker = null, // TODO slett feltet fra pesys og sett mottaker der.
-                    journalfoerendeEnhet = request.enhetsId,
+                    journalfoerendeEnhet = enhetsId,
                     sensitivePersonopplysninger = false, // TODO Undersøk om feltet har noen påvirkning på doksys, evt slett fra skribentencontroller i pesys
                     sprakKode = request.spraak,
-                    vedtakId = null, //TODO set from request
+                    vedtaksId = request.vedtaksId,
                 )
             )
             contentType(ContentType.Application.Json)

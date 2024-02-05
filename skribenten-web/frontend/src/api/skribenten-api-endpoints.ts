@@ -8,6 +8,7 @@ import axios from "axios";
 import {
   FinnSamhandlerRequestDto, FinnSamhandlerResponseDto,
   BestillOgRedigerBrevResponse,
+  KontaktAdresseResponse,
   LetterMetadata,
  OrderLetterRequest, PidRequest,
   PreferredLanguage,
@@ -44,6 +45,11 @@ export const letterKeys = {
 
 export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
+};
+
+export const adresseKeys = {
+  all: ["ADRESSE"],
+  pid: (pid: string) => [...adresseKeys.all, pid] as const,
 };
 
 export const preferredLanguageKeys = {
@@ -85,6 +91,19 @@ export const getEblanketter = {
   queryKey: letterTemplatesKeys.eblanketter(),
   queryFn: async () =>
     (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data,
+};
+
+export const getKontaktAdresse = {
+  queryKey: adresseKeys.pid,
+  queryFn: async (pid: string) =>
+    (
+      await axios.post<PidRequest, AxiosResponse<KontaktAdresseResponse>>(
+        `${SKRIBENTEN_API_BASE_PATH}/person/adresse`,
+        {
+          pid,
+        },
+      )
+    ).data,
 };
 
 export const getFavoritter = {

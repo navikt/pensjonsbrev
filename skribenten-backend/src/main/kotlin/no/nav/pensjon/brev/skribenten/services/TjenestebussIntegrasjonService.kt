@@ -84,7 +84,8 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         request: OrderLetterRequest,
         navIdent: String,
         metadata: BrevdataDto,
-        name: String
+        name: String,
+        enhetsId: String
     ): ServiceResult<BestillExtreamBrevResponseDto> {
 
         // TODO access controls for e-blanketter
@@ -103,14 +104,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     sprakkode = request.spraak.toString(),
                     brevMottakerNavn = request.mottakerText?.takeIf { isEblankett },        // custom felt kun for sed/eblankett
                     sakskontekstDto = SakskontekstDto(
-                        // TODO sett journalenhet ut fra queryparam/psak eller sakEier
-                        journalenhet = request.enhetsId,                              // NAV org enhet nr som skriver brevet. Kommer med i signatur.
-                        //    private String decideJournalEnhet(NAVEnhet enhetToSet, BrevmenyForm form) {
-                        //        if (form.getValgtAvsenderEnhet().equals(enhetToSet.getEnhetsId())) {
-                        //            return enhetToSet.getEnhetsId();
-                        //        } else {
-                        //            return form.getSak().getEierTilgang().getTilgangGittTil();
-                        //        }
+                        journalenhet = enhetsId,                            // NAV org enhet nr som skriver brevet. Kommer med i signatur.
                         gjelder = request.gjelderPid,                       // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
                         dokumentdato = getCurrentGregorianTime(),           // nåværende dato. TODO Skal dokumentdato komme fra parameter kanskje?
                         dokumenttype = metadata.dokType.toString(),         // Inngående, utgående, notat
@@ -125,7 +119,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         land = request.landkode.takeIf { isEblankett },
                         //TODO sett verge om det er verge og samhandler om det overstyres
                         mottaker = if (isEblankett || isNotat) null else request.gjelderPid,  //fnr/tss id for mottaker
-                        vedtakId = null, // TODO sett fra queryparam/psak
+                        vedtaksId = request.vedtaksId?.toString(),
                     )
                 )
             )

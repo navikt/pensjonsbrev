@@ -14,7 +14,8 @@ data class RedigerDoksysDokumentResponseDto(val metaforceURI: String?, val failu
         IKKE_FUNNET,
         IKKE_TILGANG,
         LUKKET,
-        UFORVENTET
+        UFORVENTET,
+        ENHETSID_MANGLER,
     }
 }
 
