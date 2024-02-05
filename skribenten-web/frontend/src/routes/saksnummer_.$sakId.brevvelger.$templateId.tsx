@@ -65,7 +65,6 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
 
 const formValidationSchema = z.object({
   spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
-  enhetsId: z.string({ required_error: "Obligatorisk" }).length(4, "Obligatorisk"),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
 });
 
