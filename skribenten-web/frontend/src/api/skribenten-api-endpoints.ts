@@ -7,6 +7,7 @@ import axios from "axios";
 
 import type {
   BestillOgRedigerBrevResponse,
+  KontaktAdresseResponse,
   LetterMetadata,
   OrderLetterRequest,
   PidRequest,
@@ -95,9 +96,12 @@ export const getKontaktAdresse = {
   queryKey: adresseKeys.pid,
   queryFn: async (pid: string) =>
     (
-      await axios.post<PidRequest, AxiosResponse<unknown>>(`${SKRIBENTEN_API_BASE_PATH}/person/adresse`, {
-        pid,
-      })
+      await axios.post<PidRequest, AxiosResponse<KontaktAdresseResponse>>(
+        `${SKRIBENTEN_API_BASE_PATH}/person/adresse`,
+        {
+          pid,
+        },
+      )
     ).data,
 };
 
