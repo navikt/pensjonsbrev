@@ -5,15 +5,16 @@
 import type { AxiosResponse } from "axios";
 import axios from "axios";
 
-import {
-  FinnSamhandlerRequestDto, FinnSamhandlerResponseDto,
+import type {
   BestillOgRedigerBrevResponse,
   KontaktAdresseResponse,
+  FinnSamhandlerRequestDto,
+  FinnSamhandlerResponseDto,
   LetterMetadata,
- OrderLetterRequest, PidRequest,
+  OrderLetterRequest,
+  PidRequest,
   PreferredLanguage,
-  SakDto
-,
+  SakDto,
 } from "~/types/apiTypes";
 import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";

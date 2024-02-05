@@ -6,11 +6,11 @@ import {
   BodyShort,
   Button,
   Heading,
-  HStack,
   Modal,
   Radio,
   RadioGroup,
   Select,
+  Table,
   Tag,
   TextField,
   VStack,
@@ -152,10 +152,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
       </Heading>
       <BodyShort size="small">TODO</BodyShort>
       <Divider />
-      <Heading level="3" size="xsmall">
-        Mottaker (TODO)
-        <VelgSamhandlerModal />
-      </Heading>
+      <VelgSamhandlerModal />
       <Adresse />
       <FormProvider {...methods}>
         <form
@@ -389,7 +386,6 @@ function VelgSamhandlerModal() {
 
   const methods = useForm();
 
-  console.log(methods.watch());
   const finnSamhandlerMutation = useMutation<
     FinnSamhandlerResponseDto,
     AxiosError<Error> | Error,
@@ -416,7 +412,32 @@ function VelgSamhandlerModal() {
               <TextField autoComplete="off" label="Søk" {...methods.register("navn")} />
               <SamhandlerTypeSelectFormPart />
               {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
-              {finnSamhandlerMutation.error && <ApiError error={finnSamhandlerMutation.error} text="Kunne ikke hente samhandlere." />}
+              {finnSamhandlerMutation.error && (
+                <ApiError error={finnSamhandlerMutation.error} text="Kunne ikke hente samhandlere." />
+              )}
+              {(finnSamhandlerMutation.data?.samhandlere.length ?? 0) > 0 && (
+                <>
+                  <div>Fant {finnSamhandlerMutation.data?.samhandlere.length} treff</div>
+                  <Table>
+                    <Table.Header>
+                      <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
+                      <Table.HeaderCell scope="col"></Table.HeaderCell>
+                    </Table.Header>
+                    <Table.Body>
+                      {finnSamhandlerMutation.data?.samhandlere.map((samhandler) => (
+                        <Table.Row key={samhandler.offentligId}>
+                          <Table.HeaderCell>{samhandler.navn}</Table.HeaderCell>
+                          <Table.DataCell>
+                            <Button size="small" type="button" variant="secondary">
+                              Velg
+                            </Button>
+                          </Table.DataCell>
+                        </Table.Row>
+                      ))}
+                    </Table.Body>
+                  </Table>
+                </>
+              )}
             </VStack>
           </FormProvider>
         </Modal.Body>
