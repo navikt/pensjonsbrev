@@ -94,7 +94,12 @@ export type FinnSamhandlerRequestDto = {
   samhandlerType: SamhandlerTypeCode;
 };
 
-type Samhandler = {
+export type HentSamhandlerRequestDto = {
+  idTSSEkstern: string;
+  hentDetaljert: boolean;
+};
+
+export type Samhandler = {
   navn: string;
   samhandlerType: string;
   offentligId: string;

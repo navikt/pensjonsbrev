@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
+import { ArrowRightIcon, PencilIcon, PlusIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import {
   Alert,
   BodyShort,
@@ -32,6 +32,7 @@ import {
   getFavoritter,
   getKontaktAdresse,
   getLetterTemplate,
+  hentSamhandler,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
@@ -404,6 +405,12 @@ function VelgSamhandlerModal() {
     resolver: zodResolver(samhandlerSearchValidationSchema),
   });
 
+  const hentSamhandlerQuery = useQuery({
+    queryKey: hentSamhandler.queryKey(offentligId as string),
+    queryFn: () => hentSamhandler.queryFn({ hentDetaljert: false, idTSSEkstern: offentligId as string }),
+    enabled: !!offentligId,
+  });
+
   const finnSamhandlerMutation = useMutation<
     FinnSamhandlerResponseDto,
     AxiosError<Error> | Error,
@@ -421,8 +428,13 @@ function VelgSamhandlerModal() {
       </Heading>
 
       <HStack align="center" gap="4">
-        <span>{offentligId ?? "Ikke satt"}</span>
-        <Button onClick={() => reference.current?.showModal()} size="small" variant="secondary">
+        {offentligId && <span>{hentSamhandlerQuery.data?.navn}</span>}
+        <Button
+          icon={offentligId ? <PencilIcon /> : <PlusIcon />}
+          onClick={() => reference.current?.showModal()}
+          size="small"
+          variant="secondary"
+        >
           {offentligId ? "Endre" : "Finn samhandler"}
         </Button>
       </HStack>

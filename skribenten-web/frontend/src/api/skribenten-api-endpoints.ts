@@ -7,14 +7,16 @@ import axios from "axios";
 
 import type {
   BestillOgRedigerBrevResponse,
-  KontaktAdresseResponse,
   FinnSamhandlerRequestDto,
   FinnSamhandlerResponseDto,
+  HentSamhandlerRequestDto,
+  KontaktAdresseResponse,
   LetterMetadata,
   OrderLetterRequest,
   PidRequest,
   PreferredLanguage,
   SakDto,
+  Samhandler,
 } from "~/types/apiTypes";
 import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
@@ -51,6 +53,11 @@ export const favoritterKeys = {
 export const adresseKeys = {
   all: ["ADRESSE"],
   pid: (pid: string) => [...adresseKeys.all, pid] as const,
+};
+
+export const samhandlerKeys = {
+  all: ["SAMHANDLER"],
+  offentligId: (offentligId: string) => [...samhandlerKeys.all, offentligId] as const,
 };
 
 export const preferredLanguageKeys = {
@@ -149,3 +156,9 @@ export async function orderLetter(orderLetterRequest: OrderLetterRequest) {
 export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
   return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
 }
+
+export const hentSamhandler = {
+  queryKey: samhandlerKeys.offentligId,
+  queryFn: async (request: HentSamhandlerRequestDto) =>
+    (await axios.post<Samhandler>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request)).data,
+};
