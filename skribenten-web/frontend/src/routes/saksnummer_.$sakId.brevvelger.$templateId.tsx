@@ -310,7 +310,7 @@ function Adresse() {
         Adresse
       </Heading>
       <BodyShort size="small">
-        <Suspense fallback="">
+        <Suspense fallback="...henter">
           <Await promise={deferredAdresse}>{(data) => <span>{data.adresseString}</span>}</Await>
         </Suspense>
       </BodyShort>
