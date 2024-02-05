@@ -25,7 +25,22 @@ class AdhocTest {
 
     @Test
     fun `testAdhocVarselOpphoerMedHvilendeRett pdf`() {
-        testAdhocPdf(AdhocVarselOpphoerMedHvilendeRett.template, pdfName = "UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT", Bokmal)
+        testAdhocPdf(
+            AdhocVarselOpphoerMedHvilendeRett.template,
+            pdfName = "UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT",
+            Bokmal
+        )
+    }
+
+    @Test
+    fun `testAdhocAlderspensjonFraFolketrygden pdf`() {
+        testAdhocPdf(
+            AdhocAlderspensjonFraFolketrygden.template,
+            pdfName = "PE_AP_ADHOC_2024_REGLERENDRET_GJR_AP_MNTINDV",
+            Bokmal,
+            Nynorsk,
+            English
+        )
     }
 
 }

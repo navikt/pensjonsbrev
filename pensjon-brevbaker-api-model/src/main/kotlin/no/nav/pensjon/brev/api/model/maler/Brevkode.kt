@@ -9,6 +9,7 @@ object Brevkode {
         UT_UNG_UFOER_20_AAR_AUTO,
         UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO,
         UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT,
+        PE_AP_ADHOC_2024_REGLERENDRET_GJR_AP_MNTINDV,
         ;
     }
     enum class Redigerbar {
