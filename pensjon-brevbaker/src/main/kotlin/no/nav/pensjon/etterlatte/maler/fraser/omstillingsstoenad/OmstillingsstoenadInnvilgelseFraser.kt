@@ -26,6 +26,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 object OmstillingsstoenadInnvilgelseFraser {
 
@@ -45,7 +46,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                     Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
                             " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ".",
                     Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
-                            ", ettersom " + avdoed.navn + " døde " + formatertDoedsdato + ".",
+                            ", ettersom " + avdoed.navn + " døydde " + formatertDoedsdato + ".",
                     English to "You have been granted transitional benefits starting ".expr() +
                             formatertVirkningsdato + " because " + avdoed.navn + " died on " + formatertDoedsdato + "."
                 )
@@ -113,14 +114,6 @@ object OmstillingsstoenadInnvilgelseFraser {
         val etterbetaling: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title2 {
-                text(
-                    Bokmal to "Begrunnelse for vedtaket",
-                    Nynorsk to "Grunngiving for vedtaket",
-                    English to "Grounds for the decision",
-                )
-            }
-
             paragraph {
                 text(
                     Bokmal to "Omstillingsstønad gis på bakgrunn av at",

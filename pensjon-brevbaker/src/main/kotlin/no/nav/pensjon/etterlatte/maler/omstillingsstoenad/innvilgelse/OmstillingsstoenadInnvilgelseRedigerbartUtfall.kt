@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.etterbetaling
 import java.time.LocalDate
@@ -48,6 +49,7 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
             )
         }
         outline {
+            includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(
                 OmstillingsstoenadInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(etterbetaling),
             )

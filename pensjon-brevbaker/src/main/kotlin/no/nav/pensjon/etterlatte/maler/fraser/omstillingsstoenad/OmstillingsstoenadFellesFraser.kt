@@ -55,7 +55,7 @@ object OmstillingsstoenadFellesFraser {
                             "på ${Constants.KLAGE_URL}.",
                     English to "If you believe the decision is incorrect, you may appeal the decision within " +
                             "six weeks from the date you received the decision. The appeal must be in writing. " +
-                            "You can find the form and information online: ${Constants.KLAGE_URL}."
+                            "You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}."
                 )
             }
         }
