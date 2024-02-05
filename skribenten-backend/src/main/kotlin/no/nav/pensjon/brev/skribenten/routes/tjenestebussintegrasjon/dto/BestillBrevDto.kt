@@ -38,7 +38,7 @@ data class BestillBrevExtreamRequestDto(
         val saksbehandlerId: String,
         val saksbehandlernavn: String,
         val saksid: String,
-        val vedtakId: String?,
+        val vedtaksId: String?,
     )
 }
 

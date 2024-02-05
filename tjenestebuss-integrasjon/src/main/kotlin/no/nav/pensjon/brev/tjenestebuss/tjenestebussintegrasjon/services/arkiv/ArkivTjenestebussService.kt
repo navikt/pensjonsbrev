@@ -56,7 +56,7 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
                     saksbehandlernavn = request.sakskontekstDto.saksbehandlernavn
                     saksid = request.sakskontekstDto.saksid
                     sensitivitetsgrad = "false"
-                    vedtaksInformasjon = request.sakskontekstDto.vedtakId
+                    vedtaksInformasjon = request.sakskontekstDto.vedtaksId
                     tillattelektroniskvarsling = elektroniskVarslingTrue
                 }
             })
@@ -116,6 +116,6 @@ data class BestillBrevExtreamRequestDto(
         val saksbehandlerId: String,
         val saksbehandlernavn: String,
         val saksid: String,
-        val vedtakId: String?,
+        val vedtaksId: String?,
     )
 }
