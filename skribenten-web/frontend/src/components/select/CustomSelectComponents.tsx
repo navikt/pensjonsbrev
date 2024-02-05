@@ -156,7 +156,7 @@ export function BasicSelect<
   return (
     <Select
       {...properties}
-      components={{ MenuList: CustomMenuList, ...properties.components }}
+      components={{ ...properties.components }}
       css={commonSelectCss}
       escapeClearsValue
       isClearable

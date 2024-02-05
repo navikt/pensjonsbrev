@@ -6,6 +6,7 @@ import {
   BodyShort,
   Button,
   Heading,
+  HStack,
   Modal,
   Radio,
   RadioGroup,
@@ -31,6 +32,7 @@ import {
   getLetterTemplate,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
+import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import { SamhandlerTypeSelectFormPart } from "~/components/select/SamhandlerSelect";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
@@ -365,7 +367,11 @@ function VelgSamhandlerModal() {
   const methods = useForm();
 
   console.log(methods.watch());
-  const finnSamhandlerMutation = useMutation<FinnSamhandlerResponseDto, unknown, FinnSamhandlerRequestDto>({
+  const finnSamhandlerMutation = useMutation<
+    FinnSamhandlerResponseDto,
+    AxiosError<Error> | Error,
+    FinnSamhandlerRequestDto
+  >({
     mutationFn: async (request) => {
       return await finnSamhandler(request);
     },
@@ -373,22 +379,28 @@ function VelgSamhandlerModal() {
 
   return (
     <>
-      <Button onClick={() => reference.current?.showModal()}>Velg mottaker</Button>
-      <Modal header={{ heading: "Mottaker" }} ref={reference} width={400}>
+      <Button onClick={() => reference.current?.showModal()}>Finn samhandler</Button>
+      <Modal header={{ heading: "Søk etter samhandler" }} ref={reference} width={600}>
         <Modal.Body>
           <FormProvider {...methods}>
-            <form
+            <VStack
+              as="form"
+              gap="4"
               id="skjema"
               method="dialog"
               onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
             >
               <TextField autoComplete="off" label="Søk" {...methods.register("navn")} />
               <SamhandlerTypeSelectFormPart />
-            </form>
+              {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
+              {finnSamhandlerMutation.error && <ApiError error={finnSamhandlerMutation.error} text="Kunne ikke hente samhandlere." />}
+            </VStack>
           </FormProvider>
         </Modal.Body>
         <Modal.Footer>
-          <Button form="skjema">Send</Button>
+          <Button form="skjema" loading={finnSamhandlerMutation.isPending}>
+            Send
+          </Button>
           <Button onClick={() => reference.current?.close()} type="button" variant="secondary">
             Avbryt
           </Button>
