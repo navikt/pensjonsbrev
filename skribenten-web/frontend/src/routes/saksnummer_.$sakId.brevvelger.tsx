@@ -6,7 +6,7 @@ import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { groupBy } from "lodash";
 import { useState } from "react";
 
-import {getEblanketter, getFavoritter, getKontaktAdresse, getLetterTemplate} from "~/api/skribenten-api-endpoints";
+import { getEblanketter, getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 
@@ -46,8 +46,6 @@ export function BrevvelgerPage() {
   const { sakId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
   const { letterTemplates, eblanketter } = Route.useLoaderData();
-
-
 
   return (
     <div

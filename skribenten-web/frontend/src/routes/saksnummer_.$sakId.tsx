@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Outlet } from "@tanstack/react-router";
 import React from "react";
 
-import { getKontaktAdresse, getNavn } from "~/api/skribenten-api-endpoints";
+import { getNavn } from "~/api/skribenten-api-endpoints";
 import { getSak } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
@@ -46,11 +46,6 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
     queryKey: getNavn.queryKey(sak?.foedselsnr as string),
     queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
     enabled: !!sak,
-  });
-
-  const adresse = useQuery({
-    queryKey: getKontaktAdresse.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getKontaktAdresse.queryFn(sak?.foedselsnr as string),
   });
 
   if (!sak) {
