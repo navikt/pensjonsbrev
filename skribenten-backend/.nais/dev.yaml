@@ -33,7 +33,6 @@ externalHosts:
   - pdl-api.dev-fss-pub.nais.io
   - pensjon-pen-q2.dev-fss-pub.nais.io
   - saf-q2.dev-fss-pub.nais.io
-  - kodeverk.dev-fss-pub.nais.io
   - pensjon-persondata-q2.dev-fss-pub.nais.io
   - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
   - navansatt.dev-fss-pub.nais.io
@@ -63,8 +62,6 @@ env:
     value: "api://dev-gcp.team-rocket.digdir-krr-proxy/.default"
   - name: KRR_URL
     value: "https://digdir-krr-proxy.intern.dev.nav.no"
-  - name: KODEVERK_SERVICE
-    value: "https://kodeverk.dev-fss-pub.nais.io/api/v1/kodeverk/"
   - name: PENSJON_PERSONDATA_SCOPE
     value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
   - name: PENSJON_PERSONDATA_URL

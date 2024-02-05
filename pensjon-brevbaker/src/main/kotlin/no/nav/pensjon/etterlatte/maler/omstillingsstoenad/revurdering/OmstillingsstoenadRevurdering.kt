@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Beregningsinfo
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
@@ -20,21 +19,19 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.etterbetalinginfo
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.omstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etterbetalingOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmYrkesskade
 
 data class OmstillingsstoenadRevurderingDTO(
     override val innhold: List<Element>,
-    val omstillingsstoenadBeregning: OmstillingsstoenadBeregning,
-    val etterbetalinginfo: OmstillingsstoenadEtterbetaling? = null,
-    val beregningsinfo: Beregningsinfo,
+    val beregning: OmstillingsstoenadBeregning,
+    val etterbetaling: OmstillingsstoenadEtterbetaling?,
     val erEndret: Boolean
 ): BrevDTO
 
@@ -91,10 +88,10 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(beregningAvOmstillingsstoenad, omstillingsstoenadBeregning)
+        includeAttachment(beregningAvOmstillingsstoenad, beregning)
+        includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetaling)
         includeAttachment(informasjonOmOmstillingsstoenad, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
-        includeAttachment(informasjonOmYrkesskade, innhold)
-        includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetalinginfo)
+        // includeAttachment(informasjonOmYrkesskade, innhold) TODO denne skal vel ikke være med her uten noen conditions?
     }
 }

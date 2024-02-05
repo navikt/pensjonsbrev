@@ -1,27 +1,22 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.Config
-import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
-import no.nav.pensjon.brev.skribenten.auth.AuthorizedHttpClientResult
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse
-import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.EXTREAM_REDIGERING_GENERELL
-import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.TJENESTEBUSS_INTEGRASJON
-import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
-import no.nav.pensjon.brev.skribenten.routes.getCurrentGregorianTime
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExtreamRequestDto.SakskontekstDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto.Success.Samhandler
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
 import org.slf4j.LoggerFactory
+import java.util.*
+import javax.xml.datatype.DatatypeFactory
+import javax.xml.datatype.XMLGregorianCalendar
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) {
 
@@ -43,7 +38,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         call: ApplicationCall,
         samhandlerType: SamhandlerTypeCode,
         navn: String
-    ): ServiceResult<FinnSamhandlerResponseDto.Success, FinnSamhandlerResponseDto.Failure> =
+    ): FinnSamhandlerResponseDto =
         tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -53,40 +48,35 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     samhandlerType = SamhandlerTypeCode.valueOf(samhandlerType.name)
                 )
             )
-        }.toServiceResult<FinnSamhandlerResponseDto.Success, FinnSamhandlerResponseDto.Failure>()
+        }.toServiceResult<FinnSamhandlerResponseDto>()
             .map {
-                FinnSamhandlerResponseDto.Success(samhandlere = it.samhandlere.map { s ->
-                    Samhandler(
+                FinnSamhandlerResponseDto(samhandlere = it.samhandlere.map { s ->
+                    FinnSamhandlerResponseDto.Samhandler(
                         navn = s.navn,
                         samhandlerType = s.samhandlerType,
                         offentligId = s.offentligId,
                         idType = s.idType
                     )
                 })
-            }.catch { error -> FinnSamhandlerResponseDto.Failure(message = error.message, type = error.type) }
+            }.catch { message, status ->
+                logger.error("Feil ved samhandler søk. Status: $status Melding: $message")
+                FinnSamhandlerResponseDto("Feil ved henting av samhandler")
+            }
 
     suspend fun hentSamhandler(
         call: ApplicationCall,
         idTSSEkstern: String,
         hentDetaljert: Boolean,
-    ): ServiceResult<HentSamhandlerResponseDto.Success, HentSamhandlerResponseDto.Failure> =
+    ): HentSamhandlerResponseDto =
         tjenestebussIntegrasjonClient.post(call, "/hentSamhandler") {
             HentSamhandlerRequestDto(
                 idTSSEkstern = idTSSEkstern,
                 hentDetaljert = hentDetaljert
             )
-        }.toServiceResult<HentSamhandlerResponseDto.Success, HentSamhandlerResponseDto.Failure>()
-            .map {
-                HentSamhandlerResponseDto.Success(
-                    samhandler = HentSamhandlerResponseDto.Success.Samhandler(
-                        navn = it.samhandler.navn,
-                        samhandlerType = it.samhandler.samhandlerType,
-                        offentligId = it.samhandler.offentligId,
-                        idType = it.samhandler.idType
-                    )
-                )
-            }.catch { error ->
-                HentSamhandlerResponseDto.Failure(message = error.message, type = error.type)
+        }.toServiceResult<HentSamhandlerResponseDto>()
+            .catch { message, status ->
+                logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
+                HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
             }
 
     suspend fun bestillExtreamBrev(
@@ -95,9 +85,8 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         navIdent: String,
         metadata: BrevdataDto,
         name: String
-    ): ServiceResult<BestillExtreamBrevResponseDto, String> {
+    ): ServiceResult<BestillExtreamBrevResponseDto> {
 
-        //TODO better error handling.
         // TODO access controls for e-blanketter
         val isEblankett = metadata.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT
         val isNotat = metadata.dokType == BrevdataDto.DokumentType.N
@@ -140,56 +129,33 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     )
                 )
             )
-        }.toServiceResult<BestillExtreamBrevResponseDto, String>()
+        }.toServiceResult<BestillExtreamBrevResponseDto>()
     }
 
     suspend fun redigerDoksysBrev(
         call: ApplicationCall,
         journalpostId: String,
         dokumentId: String,
-    ): ServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure> =
+    ): ServiceResult<RedigerDoksysDokumentResponseDto> =
         tjenestebussIntegrasjonClient.post(call, "/redigerDoksysBrev") {
-            RedigerDoksysDokumentRequestDto(journalpostId = journalpostId, dokumentId = dokumentId)
-        }.toServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure>()
-            .map {
-                RedigerDoksysDokumentResponseDto.Success(url = it.url)
-            }.catch { error ->
-                RedigerDoksysDokumentResponseDto.Failure(message = error.message, type = error.type)
-            }
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(RedigerDoksysDokumentRequestDto(journalpostId = journalpostId, dokumentId = dokumentId))
+        }.toServiceResult<RedigerDoksysDokumentResponseDto>()
 
     suspend fun redigerExtreamBrev(
         call: ApplicationCall,
         dokumentId: String,
-    ): BestillOgRedigerBrevResponse {
-        val response = tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
+    ): ServiceResult<RedigerExtreamDokumentResponseDto> =
+        tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(RedigerExtreamDokumentRequestDto(dokumentId))
-        }
+        }.toServiceResult<RedigerExtreamDokumentResponseDto>()
 
-        when (response) {
-            is AuthorizedHttpClientResult.Response -> {
-                val httpResponse = response.response
-                val extreamResponse = httpResponse.body<RedigerExtreamDokumentResponseDto>()
-                if (httpResponse.status.isSuccess()) {
-                    return BestillOgRedigerBrevResponse(
-                        url = extreamResponse.url,
-                        failureType = extreamResponse.failure?.let {
-                            logger.error("Feil ved redigering av extream brev $it")
-                            EXTREAM_REDIGERING_GENERELL
-                        }
-                    )
-                } else {
-                    logger.error("""Feil ved redigering av extream brev. 
-                                |Status: ${httpResponse.status}}
-                                |message: ${httpResponse.bodyAsText()}}""".trimMargin())
-                    return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
-                }
-            }
-            is AuthorizedHttpClientResult.Error -> {
-                logger.error(response.error.logString())
-                return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
-            }
-        }
+    private fun getCurrentGregorianTime(): XMLGregorianCalendar {
+        val cal = GregorianCalendar()
+        cal.time = Date()
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal)
     }
 }

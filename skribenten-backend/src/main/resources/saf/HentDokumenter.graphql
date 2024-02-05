@@ -1,0 +1,8 @@
+query hentJournalpostQuery($journalpostId: String!) {
+    journalpost(journalpostId: $journalpostId) {
+        journalpostId
+        dokumenter {
+            dokumentInfoId
+        }
+    }
+}

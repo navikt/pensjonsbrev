@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect } from "react";
@@ -14,10 +14,10 @@ import {
   addFavoritt,
   adresseKeys,
   deleteFavoritt,
+  getEblanketter,
   getFavoritter,
   getKontaktAdresse,
   getLetterTemplate,
-  getMineEnheter,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
@@ -31,17 +31,37 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   component: SelectedTemplate,
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
+
     const letterTemplates = await queryClient.ensureQueryData({
       queryKey: getLetterTemplate.queryKey(sak.sakType),
       queryFn: () => getLetterTemplate.queryFn(sak.sakType),
     });
 
-    const letterTemplate = [
-      ...letterTemplates.eblanketter,
-      ...letterTemplates.kategorier.flatMap((kategori) => kategori.templates),
-    ].find((letterMetadata) => letterMetadata.id === templateId);
+    const eblanketter = await queryClient.ensureQueryData(getEblanketter);
+
+    const letterTemplate = [...letterTemplates, ...eblanketter].find(
+      (letterMetadata) => letterMetadata.id === templateId,
+    );
+
+    if (!letterTemplate) {
+      throw notFound();
+    }
 
     return { letterTemplate, sak };
+  },
+  notFoundComponent: () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
+    const { templateId } = Route.useParams();
+    return (
+      <Alert
+        css={css`
+          height: fit-content;
+        `}
+        variant="info"
+      >
+        Fant ikke brevmal med id {templateId}
+      </Alert>
+    );
   },
 });
 
@@ -145,7 +165,6 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
         >
           <VStack gap="4">
             <SelectLanguage letterTemplate={letterTemplate} />
-            <SelectEnhetsId />
             <SelectSensitivity letterTemplate={letterTemplate} />
           </VStack>
 
@@ -218,27 +237,6 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   );
 }
 
-function SelectEnhetsId() {
-  const { register, formState } = useFormContext();
-
-  const enheter = useQuery({
-    ...getMineEnheter,
-  }).data;
-
-  return (
-    <Select
-      {...register("enhetsId")}
-      error={formState.errors.enhetsId?.message?.toString()}
-      label="EnhetsId"
-      size="small"
-    >
-      {enheter?.map((enhet) => (
-        <option key={enhet.enhetNr} value={enhet.enhetNr}>{`${enhet.navn} (${enhet.enhetNr})`}</option>
-      ))}
-    </Select>
-  );
-}
-
 function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
     <>
@@ -273,10 +271,6 @@ function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetad
 }
 
 function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  if (letterTemplate.isEblankett) {
-    return <></>;
-  }
-
   return (
     <div>
       {(() => {

@@ -28,7 +28,8 @@ docker-compose up -d --build
    * vault
    * gcloud cli
    * kjørende docker/colima
-   * naisdevice med standard dev-miljø tilganger og tjenestebuss-q2 gruppe-tilgang
+   * naisdevice med standard dev-miljø tilganger og [tjenestebuss-q2](https://console.nav.cloud.nais.io/team/tjenestebuss-q2-naisdevice) gruppe-tilgang
+   * Legg til `155.55.2.73	tjenestebuss-q2.adeo.no` i /etc/hosts
 2. Hent alle secrets:
    ```bash
    (cd skribenten-backend && ./fetch-secrets.sh)
@@ -59,7 +60,7 @@ docker-compose up -d --build
 ### Debugge tjenester i docker
 Ulike docker-tjenester har eksponerte porter som du kan koble en remote debugger på.
 
-I [docker-compose.yml](docker-compose.yml) finner du de ulike portene som mappes til remote debug for de ulike tjenetene.
+I [docker-compose.yml](docker-compose.yml) finner du de ulike portene som mappes til remote debug for de ulike tjenestene.
 F.eks her hvor remote agent kjører i containeren på port 5008 og mappes ut til 5018 som du kan bruke til å koble til remote-debugger.
 ```yaml
 ports:

@@ -8,7 +8,7 @@ env:
   - name: STS_URL
     value: "https://security-token-service.dev.adeo.no"
   - name: DOKPROD_URL
-    value: "https://dokprod-q2.dev.intern.nav.no/dokprod/"
+    value: "https://dokprod-q2.dev.intern.nav.no/"
   - name: BREVKLIENT_ROOTURL
     value: "https://wasapp-q2.adeo.no/brevweb/StartBrevKlient.jsp"
   - name: BREVKLIENT_CHROMEROOTURL

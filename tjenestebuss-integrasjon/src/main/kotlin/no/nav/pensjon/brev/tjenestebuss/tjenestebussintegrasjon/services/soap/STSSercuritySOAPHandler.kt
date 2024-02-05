@@ -14,9 +14,9 @@ import javax.xml.soap.SOAPFactory
 import javax.xml.ws.handler.Handler
 import javax.xml.ws.handler.MessageContext
 import javax.xml.ws.handler.soap.SOAPMessageContext
+private const val SECURITY_URL = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
 
 class STSSercuritySOAPHandler(private val stsService: STSService) : Handler<SOAPMessageContext> {
-    private val SECURITY_URL = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
     private val base64Decoder = Base64.getDecoder()
 
     override fun handleMessage(context: SOAPMessageContext?): Boolean {

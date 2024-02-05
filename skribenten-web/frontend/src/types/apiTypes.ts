@@ -19,23 +19,21 @@ export type SakType =
   | "OMSORG"
   | "UFOREP";
 
-export type LetterTemplatesResponse = {
-  kategorier: LetterCategory[];
-  eblanketter: LetterMetadata[];
-};
-
-export type LetterCategory = {
-  name: string;
-  templates: LetterMetadata[];
-};
+export type BrevkategoriCode =
+  | "BREV_MED_SKJEMA"
+  | "INFORMASJON"
+  | "INNHENTE_OPPL"
+  | "NOTAT"
+  | "OVRIG"
+  | "VARSEL"
+  | "VEDTAK";
 
 export type LetterMetadata = {
   name: string;
   id: string;
   brevsystem: BrevSystem;
   spraak: SpraakKode[];
-  isVedtaksbrev: boolean;
-  isEblankett: boolean;
+  brevkategoriCode?: BrevkategoriCode;
 };
 
 export enum BrevSystem {
@@ -90,8 +88,3 @@ export type FailureType =
   | "EXTREAM_BESTILLING_HENTE_BREVDATA"
   | "EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT"
   | "EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST";
-
-export type NAVEnhet = {
-  enhetNr: string;
-  navn: string;
-};

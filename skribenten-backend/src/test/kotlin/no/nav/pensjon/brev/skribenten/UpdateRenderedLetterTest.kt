@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.skribenten
 import no.nav.pensjon.brev.skribenten.routes.EditedJsonLetter
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.*
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.Block.*
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.Block.Paragraph
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.Block.Title1
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.ParagraphContent.ItemList.Item
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.ParagraphContent.Text.*
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.ParagraphContent.Text.Literal
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.ParagraphContent.Text.Variable
 import org.junit.Test
 import kotlin.test.assertEquals
 

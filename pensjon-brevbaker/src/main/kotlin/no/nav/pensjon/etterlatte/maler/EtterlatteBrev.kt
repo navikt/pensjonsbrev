@@ -91,19 +91,3 @@ data class Avdoed(
     val navn: String,
     val doedsdato: LocalDate,
 )
-
-@Deprecated("Denne utgår når vi får ryddet opp i omstillingsstønad revurdering")
-data class NyBeregningsperiode(
-    val inntekt: Kroner,
-    val trygdetid: Int,
-    val stoenadFoerReduksjon: Kroner,
-    var utbetaltBeloep: Kroner,
-)
-
-@Deprecated("Denne utgår når vi får ryddet opp i omstillingsstønad revurdering")
-data class Beregningsinfo(
-    override val innhold: List<Element>,
-    val grunnbeloep: Kroner,
-    val beregningsperioder: List<NyBeregningsperiode>,
-    val trygdetidsperioder: List<Trygdetidsperiode>,
-) : BrevDTO

@@ -7,8 +7,7 @@ import axios from "axios";
 
 import type {
   BestillOgRedigerBrevResponse,
-  LetterTemplatesResponse,
-  NAVEnhet,
+  LetterMetadata,
   OrderLetterRequest,
   PidRequest,
   PreferredLanguage,
@@ -33,6 +32,7 @@ export const navnKeys = {
 
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
+  eblanketter: () => [...letterTemplatesKeys.all, "E_BLANKETTER"] as const,
   id: (sakType: string) => [...letterTemplatesKeys.all, sakType] as const,
 };
 
@@ -43,10 +43,6 @@ export const letterKeys = {
 
 export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
-};
-
-export const enheterKeys = {
-  all: ["MINE_ENHETER"] as const,
 };
 
 export const adresseKeys = {
@@ -62,11 +58,6 @@ export const preferredLanguageKeys = {
 export const getSak = {
   queryKey: saksnummerKeys.id,
   queryFn: async (sakId: string) => (await axios.get<SakDto>(`${SKRIBENTEN_API_BASE_PATH}/pen/sak/${sakId}`)).data,
-};
-
-export const getMineEnheter = {
-  queryKey: enheterKeys.all,
-  queryFn: async () => (await axios.get<NAVEnhet[]>(`${SKRIBENTEN_API_BASE_PATH}/me/enheter`)).data,
 };
 
 export const getNavn = {
@@ -91,7 +82,13 @@ export const getPreferredLanguage = {
 export const getLetterTemplate = {
   queryKey: letterTemplatesKeys.id,
   queryFn: async (sakType: string) =>
-    (await axios.get<LetterTemplatesResponse>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
+    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
+};
+
+export const getEblanketter = {
+  queryKey: letterTemplatesKeys.eblanketter(),
+  queryFn: async () =>
+    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data,
 };
 
 export const getKontaktAdresse = {

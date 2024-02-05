@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
+import no.nav.pensjon.etterlatte.maler.Vedlegg
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -74,7 +75,11 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        val erHovedmal = fixtures.instanceOf(BrevDTO::class) && !fixtures.instanceOf(Delmal::class) && !fixtures.instanceOf(ManueltBrevDTO::class)
+        val erHovedmal = fixtures.instanceOf(BrevDTO::class) && !listOf(
+            Delmal::class,
+            Vedlegg::class,
+            ManueltBrevDTO::class
+        ).any { fixtures.instanceOf(it) }
         // Hovedmalar skal ikkje redigerast i Gjenny, så dei treng vi ikkje å lage JSON av.
         // I tillegg er det per no ein mangel i brevbakeren at han ikkje klarer å lage JSON av tabellar, som vi bruker i ein del hovedmalar
         if (erHovedmal) {
