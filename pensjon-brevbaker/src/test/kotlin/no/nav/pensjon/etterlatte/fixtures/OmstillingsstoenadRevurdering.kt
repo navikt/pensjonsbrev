@@ -7,59 +7,72 @@ import java.time.LocalDate
 
 fun createOmstillingsstoenadRevurderingDTO() =
     OmstillingsstoenadRevurderingDTO(
+        innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = OmstillingsstoenadBeregning(
             innhold = createPlaceholderForRedigerbartInnhold(),
             grunnbeloep = Kroner(118000),
-            inntekt = Kroner(550000),
+            inntekt = Kroner(100000),
             virkningsdato = LocalDate.now(),
             beregningsperioder = listOf(
                 OmstillingsstoenadBeregningsperiode(
-                    datoFOM = LocalDate.now(),
-                    datoTOM = LocalDate.now(),
-                    inntekt = Kroner(550000),
-                    utbetaltBeloep = Kroner(0),
-                    ytelseFoerAvkorting = Kroner(100),
+                    datoFOM = LocalDate.of(2024, 2, 1),
+                    datoTOM = null,
+                    inntekt = Kroner(100000),
+                    utbetaltBeloep = Kroner(5000),
+                    ytelseFoerAvkorting = Kroner(22000),
                     trygdetid = 40
                 ),
                 OmstillingsstoenadBeregningsperiode(
-                    datoFOM = LocalDate.now(),
-                    datoTOM = null,
-                    inntekt = Kroner(550000),
-                    utbetaltBeloep = Kroner(0),
-                    ytelseFoerAvkorting = Kroner(100),
+                    datoFOM = LocalDate.of(2024, 1, 1),
+                    datoTOM = LocalDate.of(2024, 1, 31),
+                    inntekt = Kroner(100000),
+                    utbetaltBeloep = Kroner(10000),
+                    ytelseFoerAvkorting = Kroner(22000),
                     trygdetid = 40
                 )
             ),
             sisteBeregningsperiode = OmstillingsstoenadBeregningsperiode(
-                datoFOM = LocalDate.now(),
+                datoFOM = LocalDate.of(2024, 2, 1),
                 datoTOM = null,
-                inntekt = Kroner(550000),
-                utbetaltBeloep = Kroner(0),
-                ytelseFoerAvkorting = Kroner(100),
+                inntekt = Kroner(100000),
+                utbetaltBeloep = Kroner(5000),
+                ytelseFoerAvkorting = Kroner(22000),
                 trygdetid = 40
             ),
             trygdetid = Trygdetid(
                 trygdetidsperioder = listOf(
                     Trygdetidsperiode(
-                        datoFOM = LocalDate.now(),
-                        datoTOM = LocalDate.now(),
-                        land = "Norge",
-                        opptjeningsperiode = Periode(3, 0, 0),
+                        datoFOM = LocalDate.of(2000, 1, 1),
+                        datoTOM = LocalDate.of(2023, 12, 31),
+                        land = "NOR",
+                        opptjeningsperiode = Periode(23, 0, 0),
                         type = TrygdetidType.FAKTISK
+                    ),
+                    Trygdetidsperiode(
+                        datoFOM = LocalDate.of(2024, 1, 1),
+                        datoTOM = LocalDate.of(2050, 12, 31),
+                        land = "NOR",
+                        opptjeningsperiode = Periode(26, 0, 0),
+                        type = TrygdetidType.FREMTIDIG
                     )
                 ),
-                beregnetTrygdetidAar = 12,
-                beregnetTrygdetidMaaneder = 3,
-                prorataBroek = IntBroek(250, 280),
+                beregnetTrygdetidAar = 40,
+                beregnetTrygdetidMaaneder = 480,
+                prorataBroek = null,
                 beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
                 beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
                 mindreEnnFireFemtedelerAvOpptjeningstiden = true,
             )
         ),
         etterbetaling = OmstillingsstoenadEtterbetaling(
-            fraDato = LocalDate.now(),
-            tilDato = LocalDate.now()
+            fraDato = LocalDate.of(2024, 1, 1),
+            tilDato = LocalDate.of(2024, 1, 31)
         ),
-        innhold = createPlaceholderForRedigerbartInnhold(),
-        erEndret = true
+        erEndret = true,
+        erOmgjoering = false,
+        datoVedtakOmgjoering = null,
+        harFlereUtbetalingsperioder = true,
+        lavEllerIngenInntekt = false,
+        harUtbetaling = true,
+        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
     )

@@ -70,12 +70,12 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
 
             includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
             includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad)
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, lavEllerIngenInntekt))
+            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, lavEllerIngenInntekt))
             showIf(lavEllerIngenInntekt.not()) {
                 includePhrase(OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(innvilgetMindreEnnFireMndEtterDoedsfall))
             }
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.Inntektsendring)
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.Etteroppgjoer)
+            includePhrase(OmstillingsstoenadFellesFraser.Inntektsendring)
+            includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
             includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
             includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)

@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
@@ -38,7 +39,7 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 @TemplateModelHelpers
-val beregningAvOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning>(
+val beregningAvOmstillingsstoenad = createAttachment(
     title = newText(
         Bokmal to "Beregning av omstillingsstønad",
         Nynorsk to "Utrekning av omstillingsstønad",
@@ -90,15 +91,14 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     }
 
     title2 {
-        textExpr(
-            Bokmal to "".expr() + "Omstillingsstønad fra " + sisteBeregningsperiode.datoFOM.format(),
-            Nynorsk to "".expr() + "Omstillingsstønad frå " + sisteBeregningsperiode.datoFOM.format(),
-            English to "".expr() + "Your transitional benefits payment begins on " +
-                    sisteBeregningsperiode.datoFOM.format(),
+        text(
+            Bokmal to "Beregnet omstillingsstønad",
+            Nynorsk to "Utrekna omstillingsstønad",
+            English to "Calculated adjustment allowance",
         )
     }
 
-    includePhrase(Beregningsperiodetabell(sisteBeregningsperiode))
+    includePhrase(Beregningsperiodetabell(beregningsperioder))
 
     paragraph {
         text(

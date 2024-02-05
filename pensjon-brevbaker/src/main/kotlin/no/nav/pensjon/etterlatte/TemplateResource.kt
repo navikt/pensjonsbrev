@@ -27,6 +27,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoer
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurdering
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarsel
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdig
@@ -57,6 +58,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OmstillingsstoenadOpphoer,
         OmstillingsstoenadOpphoerRedigerbartUtfall,
         OmstillingsstoenadRevurdering,
+        OmstillingsstoenadRevurderingRedigerbartUtfall,
         OmstillingsstoenadVedleggBeregningRedigerbartUtfall,
         OmstillingsstoenadVarsel,
         OmstillingsstoenadVarselRedigerbartUtfall,
