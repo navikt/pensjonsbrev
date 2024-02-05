@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedige
 import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.SAF_ERROR
 import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.SKRIBENTEN_INTERNAL_ERROR
 import org.slf4j.LoggerFactory
+import kotlin.math.log
 
 class LegacyBrevService(
     private val tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
@@ -42,32 +43,30 @@ class LegacyBrevService(
     private val navansattService: NavansattService
 ) {
     private val logger = LoggerFactory.getLogger(LegacyBrevService::class.java)
-    suspend fun bestillBrev(call: ApplicationCall, request: OrderLetterRequest): BestillOgRedigerBrevResponse {
-
-        return when (val serviceResult = penService.hentSak(call, request.sakId.toString())) {
-            is ServiceResult.Error -> BestillOgRedigerBrevResponse(PenService.BestillDoksysBrevResponse.FailureType.INTERNAL_SERVICE_CALL_FAILIURE)
-            is ServiceResult.Ok -> {
-                val sakEnhetId = serviceResult.result.enhetId
-                if (sakEnhetId == null) {
-                    return BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
-                } else if (!harTilgangTilEnhet(call = call, enhetsId = sakEnhetId)) {
-                    return BestillOgRedigerBrevResponse(NAVANSATT_ENHETER_ERROR)
-                } else {
-                    return when (brevmetadataService.getMal(request.brevkode).brevsystem) {
-                        BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request, sakEnhetId)
-                        BrevdataDto.BrevSystem.GAMMEL -> bestillExtreamBrev(
-                            call = call,
-                            request = request,
-                            navIdent = fetchLoggedInNavIdent(call),
-                            metadata = brevmetadataService.getMal(request.brevkode),
-                            navn = fetchLoggedInName(call),
-                            enhetsId = serviceResult.result.enhetId
-                        )
-                    }
+    suspend fun bestillBrev(call: ApplicationCall, request: OrderLetterRequest): BestillOgRedigerBrevResponse =
+        penService.hentSak(call, request.sakId.toString()).map { serviceResult ->
+            val sakEnhetId = serviceResult.enhetId
+            if (sakEnhetId == null) {
+                return BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
+            } else if (!harTilgangTilEnhet(call = call, enhetsId = sakEnhetId)) {
+                return BestillOgRedigerBrevResponse(NAVANSATT_ENHETER_ERROR)
+            } else {
+                return when (brevmetadataService.getMal(request.brevkode).brevsystem) {
+                    BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request, sakEnhetId)
+                    BrevdataDto.BrevSystem.GAMMEL -> bestillExtreamBrev(
+                        call = call,
+                        request = request,
+                        navIdent = fetchLoggedInNavIdent(call),
+                        metadata = brevmetadataService.getMal(request.brevkode),
+                        navn = fetchLoggedInName(call),
+                        enhetsId = serviceResult.enhetId
+                    )
                 }
             }
+        }.catch { message, httpStatusCode ->
+            logger.error("En feil oppstod under henting av Sak med sakId. ${request.sakId} , med message: $message , statuscode: $httpStatusCode")
+            return BestillOgRedigerBrevResponse(PenService.BestillDoksysBrevResponse.FailureType.INTERNAL_SERVICE_CALL_FAILIURE)
         }
-    }
 
     private suspend fun bestillExtreamBrev(
         call: ApplicationCall,
