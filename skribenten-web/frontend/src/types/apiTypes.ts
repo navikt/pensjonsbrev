@@ -19,23 +19,21 @@ export type SakType =
   | "OMSORG"
   | "UFOREP";
 
-export type LetterTemplatesResponse = {
-  kategorier: LetterCategory[];
-  eblanketter: LetterMetadata[];
-};
-
-export type LetterCategory = {
-  name: string;
-  templates: LetterMetadata[];
-};
+export type BrevkategoriCode =
+  | "BREV_MED_SKJEMA"
+  | "INFORMASJON"
+  | "INNHENTE_OPPL"
+  | "NOTAT"
+  | "OVRIG"
+  | "VARSEL"
+  | "VEDTAK";
 
 export type LetterMetadata = {
   name: string;
   id: string;
   brevsystem: BrevSystem;
   spraak: SpraakKode[];
-  isVedtaksbrev: boolean;
-  isEblankett: boolean;
+  brevkategoriCode?: BrevkategoriCode;
 };
 
 export enum BrevSystem {
@@ -65,7 +63,31 @@ export type OrderLetterRequest = {
   gjelderPid: string;
   landkode?: string;
   mottakerText?: string;
+  enhetsId: string;
+  isSensitive: boolean;
 };
+
+export type BestillOgRedigerBrevResponse = {
+  url?: string;
+  failureType?: FailureType;
+};
+
+export type FailureType =
+  | "DOKSYS_UNDER_REDIGERING"
+  | "DOKSYS_IKKE_REDIGERBART"
+  | "DOKSYS_VALIDERING_FEILET"
+  | "DOKSYS_IKKE_FUNNET"
+  | "DOKSYS_IKKE_TILGANG"
+  | "DOKSYS_LUKKET"
+  | "FERDIGSTILLING_TIMEOUT"
+  | "SAF_ERROR"
+  | "SKRIBENTEN_TOKEN_UTVEKSLING"
+  | "EXTREAM_REDIGERING_GENERELL"
+  | "TJENESTEBUSS_INTEGRASJON"
+  | "EXTREAM_BESTILLING_ADRESSE_MANGLER"
+  | "EXTREAM_BESTILLING_HENTE_BREVDATA"
+  | "EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT"
+  | "EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST";
 
 export type FinnSamhandlerRequestDto = {
   navn: string;

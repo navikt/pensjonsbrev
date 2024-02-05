@@ -5,6 +5,9 @@ import com.typesafe.config.Config
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import org.slf4j.LoggerFactory
+import java.net.ProxySelector
+import java.net.InetSocketAddress
+import java.net.URI
 import java.net.URL
 
 private const val jwtAzureAdName = "AZURE_AD"
@@ -37,7 +40,15 @@ fun Config.requireAzureADConfig() =
 fun AuthenticationConfig.tjenestebusJwt(config: JwtConfig) =
     jwt(config.name) {
         realm = "tjenestebuss-integrasjon$name"
-        verifier(JwkProviderBuilder(URL(config.jwksUrl)).build(), config.issuer) {
+        val proxyUri: URI? = System.getenv("HTTP_PROXY")?.let { URI.create(it) }
+        val jwkBuilder = JwkProviderBuilder(URL(config.jwksUrl))
+            .apply {
+                if(proxyUri != null) {
+                    proxied(ProxySelector.of(InetSocketAddress(proxyUri.host, proxyUri.port)).select(URI(config.jwksUrl)).first())
+                }
+            }
+
+        verifier(jwkBuilder.build(), config.issuer) {
             withAnyOfAudience(config.clientId)
             withIssuer(config.issuer)
         }

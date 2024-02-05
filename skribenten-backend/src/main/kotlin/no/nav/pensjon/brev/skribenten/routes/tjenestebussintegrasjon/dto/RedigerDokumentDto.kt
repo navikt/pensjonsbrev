@@ -6,25 +6,19 @@ class RedigerDoksysDokumentRequestDto(
     val dokumentId: String,
 )
 
-sealed class RedigerDoksysDokumentResponseDto {
-    data class Success(val url: String) : RedigerDoksysDokumentResponseDto()
-    data class Failure(val message: String?,val type: FailureType?) : RedigerDoksysDokumentResponseDto()
-
+data class RedigerDoksysDokumentResponseDto(val metaforceURI: String?, val failure: FailureType?) {
     enum class FailureType {
-        LASING,
-        IKKE_TILLATT,
+        UNDER_REDIGERING,
+        IKKE_REDIGERBART,
         VALIDERING_FEILET,
         IKKE_FUNNET,
         IKKE_TILGANG,
-        LUKKET
+        LUKKET,
+        UFORVENTET
     }
 }
 
-data class RedigerExtreamDokumentRequestDto(
-    val journalpostId: String,
-)
 
-sealed class RedigerExtreamDokumentResponseDto {
-    data class Success(val url: String) : RedigerExtreamDokumentResponseDto()
-    data class Failure(val message: String?) : RedigerExtreamDokumentResponseDto()
-}
+data class RedigerExtreamDokumentRequestDto(val journalpostId: String)
+
+data class RedigerExtreamDokumentResponseDto(val url: String?, val failure: String?)

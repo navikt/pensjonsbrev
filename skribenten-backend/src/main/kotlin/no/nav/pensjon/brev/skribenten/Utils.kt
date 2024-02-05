@@ -18,10 +18,19 @@ fun HeadersBuilder.callId(call: ApplicationCall) {
 }
 
 fun PipelineContext<Unit, ApplicationCall>.getLoggedInNavIdent(): String? =
+    call.getLoggedInNavIdent()
+
+fun ApplicationCall.getLoggedInNavIdent(): String? =
     getClaim(NAV_IDENT_CLAIM_KEY)
 
 fun PipelineContext<Unit, ApplicationCall>.getLoggedInName(): String? =
+    call.getLoggedInName()
+
+fun ApplicationCall.getLoggedInName(): String? =
     getClaim(LOGGER_IN_PERSON_NAME_KEY)
 
 fun PipelineContext<Unit, ApplicationCall>.getClaim(claim: String): String? =
-    call.authentication.principal<UserPrincipal>()?.jwtPayload?.getClaim(claim)?.asString()
+    call.getClaim(claim)
+
+fun ApplicationCall.getClaim(claim: String): String? =
+    authentication.principal<UserPrincipal>()?.jwtPayload?.getClaim(claim)?.asString()

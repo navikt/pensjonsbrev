@@ -1,10 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
-import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -20,18 +18,14 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.etterlatte.maler.BeregningsinfoSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.trygdetid
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.ytelseFoerAvkorting
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
@@ -39,7 +33,6 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeFraGru
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.mindreEnnFireFemtedelerAvOpptjeningstiden
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.trygdetidsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.formatBroek
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
@@ -175,16 +168,25 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
     }
 
     showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.NASJONAL)) {
+        paragraph {
+            text(
+                Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden " +
+                        "etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis " +
+                        "beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "".expr() + "For å få full omstillingsstønad må avdødes trygdetid være beregnet " +
+                        "til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Avdødes samlede " +
+                        "trygdetid er beregnet til " + trygdetid.beregnetTrygdetidAar.format() + " år.",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
         showIf(trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden) {
-            paragraph {
-                text(
-                    Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter " +
-                            "fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis beregnet " +
-                            "framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
             paragraph {
                 text(
                     Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig " +
@@ -194,34 +196,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                             "det tabellen viser.",
                     Nynorsk to "",
                     English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "".expr() + "For å få full omstillingsstønad må avdødes samlede trygdetid " +
-                            "være beregnet til minst 40 år. Avdødes samlede trygdetid er beregnet " +
-                            "til " + trygdetid.beregnetTrygdetidAar.format() + " år.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
-        }.orShow {
-            paragraph {
-                text(
-                    Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden " +
-                            "etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis " +
-                            "beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "".expr() + "For å få full omstillingsstønad må avdødes trygdetid være beregnet " +
-                            "til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Avdødes samlede " +
-                            "trygdetid er beregnet til " + trygdetid.beregnetTrygdetidAar.format() + " år.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
                 )
             }
         }

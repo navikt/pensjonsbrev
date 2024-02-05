@@ -14,13 +14,11 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brevbaker.api.model.*
-import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.*
 
-class BrevbakerServiceException(msg: String): Exception(msg)
+class BrevbakerServiceException(msg: String) : Exception(msg)
 
 class BrevbakerService(config: Config, authService: AzureADService) {
     private val brevbakerUrl = config.getString("url")
@@ -37,10 +35,10 @@ class BrevbakerService(config: Config, authService: AzureADService) {
         }
     }
 
-    suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String, Any> =
+    suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
         client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult()
 
-    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: BrevbakerBrevdata): ServiceResult<RenderedJsonLetter, Any> =
+    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: BrevbakerBrevdata): ServiceResult<RenderedJsonLetter> =
         client.post(call, "/letter/redigerbar") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -54,31 +52,6 @@ class BrevbakerService(config: Config, authService: AzureADService) {
                         bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
                         vergeNavn = null,
                         signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
-                    ),
-                    language = LanguageCode.BOKMAL,
-                )
-            )
-        }.toServiceResult()
-
-    // Demo request
-    // TODO: handle exceptions thrown by client, and wrap them in ServiceResult.Error. Design a type to represent errors.
-    suspend fun genererBrev(call: ApplicationCall): ServiceResult<LetterResponse, Any> =
-        client.post(call, "/letter/autobrev") {
-            contentType(ContentType.Application.Json)
-            setBody(
-                AutobrevRequest(
-                    kode = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO,
-                    letterData = OmsorgEgenAutoDto(
-                        Year(2020),
-                        Year(2021),
-                        EgenerklaeringOmsorgsarbeidDto(Year(2020), ReturAdresse("Fyrstikkallèen 1", "0664", "Oslo"))
-                    ),
-                    felles = Felles(
-                        dokumentDato = LocalDate.now(),
-                        saksnummer = "1234",
-                        avsenderEnhet = NAVEnhet("nav.no", "NAV", Telefonnummer("22225555")),
-                        bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
-                        vergeNavn = null,
                     ),
                     language = LanguageCode.BOKMAL,
                 )
@@ -99,7 +72,7 @@ object RenderedJsonLetterModule : SimpleModule() {
         object : StdDeserializer<RenderedJsonLetter.Block>(RenderedJsonLetter.Block::class.java) {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedJsonLetter.Block {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type =  when(RenderedJsonLetter.Block.Type.valueOf(node.get("type").textValue())) {
+                val type = when (RenderedJsonLetter.Block.Type.valueOf(node.get("type").textValue())) {
                     RenderedJsonLetter.Block.Type.TITLE1 -> RenderedJsonLetter.Block.Title1::class.java
                     RenderedJsonLetter.Block.Type.TITLE2 -> RenderedJsonLetter.Block.Title2::class.java
                     RenderedJsonLetter.Block.Type.PARAGRAPH -> RenderedJsonLetter.Block.Paragraph::class.java
@@ -112,7 +85,7 @@ object RenderedJsonLetterModule : SimpleModule() {
         object : StdDeserializer<RenderedJsonLetter.ParagraphContent>(RenderedJsonLetter.ParagraphContent::class.java) {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedJsonLetter.ParagraphContent {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when(RenderedJsonLetter.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                val type = when (RenderedJsonLetter.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                     RenderedJsonLetter.ParagraphContent.Type.ITEM_LIST -> RenderedJsonLetter.ParagraphContent.ItemList::class.java
                     RenderedJsonLetter.ParagraphContent.Type.LITERAL -> RenderedJsonLetter.ParagraphContent.Text.Literal::class.java
                     RenderedJsonLetter.ParagraphContent.Type.VARIABLE -> RenderedJsonLetter.ParagraphContent.Text.Variable::class.java
@@ -125,7 +98,7 @@ object RenderedJsonLetterModule : SimpleModule() {
         object : StdDeserializer<RenderedJsonLetter.ParagraphContent.Text>(RenderedJsonLetter.ParagraphContent.Text::class.java) {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedJsonLetter.ParagraphContent.Text {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when(RenderedJsonLetter.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                val type = when (RenderedJsonLetter.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                     RenderedJsonLetter.ParagraphContent.Type.LITERAL -> RenderedJsonLetter.ParagraphContent.Text.Literal::class.java
                     RenderedJsonLetter.ParagraphContent.Type.VARIABLE -> RenderedJsonLetter.ParagraphContent.Text.Variable::class.java
                     RenderedJsonLetter.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("ITEM_LIST is not allowed in a text-only block.")

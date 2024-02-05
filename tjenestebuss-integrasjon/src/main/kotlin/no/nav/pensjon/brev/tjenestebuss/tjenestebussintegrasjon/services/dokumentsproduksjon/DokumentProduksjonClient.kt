@@ -15,7 +15,7 @@ class DokumentProduksjonClient(config: Config, securityHandler: STSSercuritySOAP
         val name = "Dokumentproduksjon_v3"
         val portName = "Dokumentproduksjon_v3Port"
         val namespace = "http://nav.no/tjeneste/virksomhet/dokumentproduksjon/v3/Binding"
-        address = "${dokprodUrl}ws/dokumentproduksjon/v3?wsdl"
+        address = "${dokprodUrl}dokprod/ws/dokumentproduksjon/v3"
         wsdlURL = "wsdl/no/nav/tjeneste/virksomhet/dokumentproduksjon/v3/Binding.wsdl"
         serviceName = QName(namespace, name)
         endpointName = QName(namespace, portName)

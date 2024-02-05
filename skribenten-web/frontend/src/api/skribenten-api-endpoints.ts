@@ -7,7 +7,8 @@ import axios from "axios";
 
 import {
   FinnSamhandlerRequestDto, FinnSamhandlerResponseDto,
-  LetterTemplatesResponse,
+  BestillOgRedigerBrevResponse,
+  LetterMetadata,
  OrderLetterRequest, PidRequest,
   PreferredLanguage,
   SakDto
@@ -32,6 +33,7 @@ export const navnKeys = {
 
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
+  eblanketter: () => [...letterTemplatesKeys.all, "E_BLANKETTER"] as const,
   id: (sakType: string) => [...letterTemplatesKeys.all, sakType] as const,
 };
 
@@ -76,12 +78,18 @@ export const getPreferredLanguage = {
 export const getLetterTemplate = {
   queryKey: letterTemplatesKeys.id,
   queryFn: async (sakType: string) =>
-    (await axios.get<LetterTemplatesResponse>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
+    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
+};
+
+export const getEblanketter = {
+  queryKey: letterTemplatesKeys.eblanketter(),
+  queryFn: async () =>
+    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data,
 };
 
 export const getFavoritter = {
   queryKey: favoritterKeys.all,
-  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/favourites`)).data,
+  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`)).data,
 };
 
 export const getTemplate = {
@@ -96,18 +104,26 @@ export async function renderLetter(letterId: string, request: unknown) {
 
 export async function addFavoritt(id: string) {
   return (
-    await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, id, {
+    await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, id, {
       headers: { "Content-Type": "text/plain" },
     })
   ).data;
 }
 
 export async function deleteFavoritt(id: string) {
-  return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, { data: id })).data;
+  return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
 export async function orderLetter(orderLetterRequest: OrderLetterRequest) {
-  return (await axios.post<unknown>(`${SKRIBENTEN_API_BASE_PATH}/bestillbrev`, orderLetterRequest)).data;
+  const response = (
+    await axios.post<BestillOgRedigerBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/bestillbrev`, orderLetterRequest)
+  ).data;
+
+  if (response.failureType) {
+    throw new Error(response.failureType);
+  }
+
+  return response.url ?? "";
 }
 
 export async function finnSamhandler(request: FinnSamhandlerRequestDto) {

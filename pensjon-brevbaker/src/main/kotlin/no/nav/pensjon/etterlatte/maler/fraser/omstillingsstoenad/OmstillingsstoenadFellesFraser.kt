@@ -53,13 +53,13 @@ object OmstillingsstoenadFellesFraser {
         }
     }
 
-    object DuHarRettTilAaKlageOpphoer  : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object DuHarRettTilAaKlageAvslagOpphoer  : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Bokmal to "Du har rett til å klage",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Du har rett til å klage",
+                    English to "You have the right to appeal"
                 )
             }
             paragraph {
@@ -67,8 +67,12 @@ object OmstillingsstoenadFellesFraser {
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker " +
                             "fra den datoen du mottok vedtaket. Du kan lese mer om hvordan du klager i " +
                             "vedlegget «Informasjon om klage og anke».",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den " +
+                            "datoen du fekk vedtaket. I vedlegget «Informasjon om klage og anke» kan du lese " +
+                            "meir om korleis du klagar.",
+                    English to "If you believe the decision is incorrect, you may appeal the decision within " +
+                            "six weeks from the date you received the decision. You can read more about how to " +
+                            "appeal in the attachment Information on Complaints and Appeals.  "
                 )
             }
         }
@@ -79,8 +83,8 @@ object OmstillingsstoenadFellesFraser {
             title2 {
                 text(
                     Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Du har rett til innsyn",
+                    English to "You have the right to access documents"
                 )
             }
             paragraph {
@@ -88,8 +92,11 @@ object OmstillingsstoenadFellesFraser {
                     Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din " +
                             "etter bestemmelsene i forvaltningsloven § 18. Hvis du ønsker innsyn, " +
                             "må du kontakte oss på telefon eller per post.",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Etter føresegnene i forvaltingslova § 18 har du som hovudregel rett til å " +
+                            "sjå dokumenta i saka di. Kontakt oss på telefon eller per post dersom du ønskjer innsyn.",
+                    English to "As a general rule, you have the right to see the documents in your case " +
+                            "pursuant to the provisions of Section 18 of the Public Administration Act. " +
+                            "If you want access, you can contact us by phone or mail. "
                 )
             }
         }
@@ -101,7 +108,7 @@ object OmstillingsstoenadFellesFraser {
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
-                    English to ""
+                    English to "Any questions?"
                 )
             }
             paragraph {
@@ -110,8 +117,15 @@ object OmstillingsstoenadFellesFraser {
                             "chatte eller skrive til oss. Du kan også kontakte oss på telefon " +
                             "+47 ${Constants.KONTAKTTELEFON_PENSJON}, hverdager 09.00-15.00. Hvis du oppgir " +
                             "fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Du kan finne svar på ${Constants.OMS_URL}. Du kan skrive til eller chatte " +
+                            "med oss på ${Constants.KONTAKT_URL}. Du kan også kontakte oss på telefon " +
+                            "+47 ${Constants.KONTAKTTELEFON_PENSJON}, kvardagar 09:00–15:00. Det vil gjere det " +
+                            "enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer.",
+                    English to "You can find answers to your questions online: ${Constants.OMS_URL}. " +
+                            "Feel free to chat with us or write to us here: ${Constants.KONTAKT_URL}. " +
+                            "You can also contact us by phone (+47 ${Constants.KONTAKTTELEFON_PENSJON}), " +
+                            "weekdays 09:00-15:00. If you provide your national identity number, we can more " +
+                            "easily provide you with quick and good help."
                 )
             }
         }
