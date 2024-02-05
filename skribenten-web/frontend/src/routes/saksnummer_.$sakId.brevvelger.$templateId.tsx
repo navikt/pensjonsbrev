@@ -6,6 +6,7 @@ import {
   BodyShort,
   Button,
   Heading,
+  HStack,
   Modal,
   Radio,
   RadioGroup,
@@ -50,6 +51,9 @@ import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
+  validateSearch: (search: Record<string, unknown>): { offentligId?: string } => ({
+    offentligId: search.offentligId?.toString(),
+  }),
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
@@ -389,6 +393,8 @@ const samhandlerSearchValidationSchema = z.object({
 
 function VelgSamhandlerModal() {
   const reference = useRef<HTMLDialogElement>(null);
+  const navigate = useNavigate({ from: Route.fullPath });
+  const { offentligId } = Route.useSearch();
 
   const methods = useForm<z.infer<typeof samhandlerSearchValidationSchema>>({
     defaultValues: {
@@ -410,7 +416,17 @@ function VelgSamhandlerModal() {
 
   return (
     <>
-      <Button onClick={() => reference.current?.showModal()}>Finn samhandler</Button>
+      <Heading level="3" size="xsmall">
+        Samhandler
+      </Heading>
+
+      <HStack align="center" gap="4">
+        <span>{offentligId ?? "Ikke satt"}</span>
+        <Button onClick={() => reference.current?.showModal()} size="small" variant="secondary">
+          {offentligId ? "Endre" : "Finn samhandler"}
+        </Button>
+      </HStack>
+
       <Modal header={{ heading: "Søk etter samhandler" }} ref={reference} width={600}>
         <Modal.Body>
           <FormProvider {...methods}>
@@ -445,7 +461,23 @@ function VelgSamhandlerModal() {
                         <Table.Row key={samhandler.offentligId}>
                           <Table.HeaderCell>{samhandler.navn}</Table.HeaderCell>
                           <Table.DataCell>
-                            <Button size="small" type="button" variant="secondary">
+                            {/*<Link search={(s) => ({ ...s, offentligId: samhandler.offentligId })}>*/}
+                            {/*  Velg*/}
+                            {/*</Link>*/}
+                            <Button
+                              onClick={() => {
+                                reference.current?.close();
+                                navigate({
+                                  // to: Route.fullPath,
+                                  params: (p) => p,
+                                  search: (s) => ({ ...s, offentligId: samhandler.offentligId }),
+                                  replace: true,
+                                });
+                              }}
+                              size="small"
+                              type="button"
+                              variant="secondary"
+                            >
                               Velg
                             </Button>
                           </Table.DataCell>
@@ -460,7 +492,7 @@ function VelgSamhandlerModal() {
         </Modal.Body>
         <Modal.Footer>
           <Button form="skjema" loading={finnSamhandlerMutation.isPending}>
-            Send
+            Søk
           </Button>
           <Button onClick={() => reference.current?.close()} type="button" variant="secondary">
             Avbryt
