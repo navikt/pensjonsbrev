@@ -44,6 +44,7 @@ import type {
   LetterMetadata,
   OrderLetterRequest,
 } from "~/types/apiTypes";
+import { SamhandlerTypeCode } from "~/types/apiTypes";
 import { BrevSystem, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
@@ -381,10 +382,21 @@ function FavoriteButton() {
   );
 }
 
+const samhandlerSearchValidationSchema = z.object({
+  samhandlerType: z.nativeEnum(SamhandlerTypeCode, { required_error: "Obligatorisk" }),
+  navn: z.string().min(1, "Obligatorisk"),
+});
+
 function VelgSamhandlerModal() {
   const reference = useRef<HTMLDialogElement>(null);
 
-  const methods = useForm();
+  const methods = useForm<z.infer<typeof samhandlerSearchValidationSchema>>({
+    defaultValues: {
+      samhandlerType: undefined,
+      navn: undefined,
+    },
+    resolver: zodResolver(samhandlerSearchValidationSchema),
+  });
 
   const finnSamhandlerMutation = useMutation<
     FinnSamhandlerResponseDto,
@@ -409,7 +421,12 @@ function VelgSamhandlerModal() {
               method="dialog"
               onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
             >
-              <TextField autoComplete="off" label="Søk" {...methods.register("navn")} />
+              <TextField
+                autoComplete="off"
+                error={methods.formState.errors.navn?.message}
+                label="Søk"
+                {...methods.register("navn")}
+              />
               <SamhandlerTypeSelectFormPart />
               {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
               {finnSamhandlerMutation.error && (
