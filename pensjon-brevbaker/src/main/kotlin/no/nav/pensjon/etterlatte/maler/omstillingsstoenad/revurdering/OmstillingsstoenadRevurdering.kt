@@ -36,6 +36,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.lavEllerIngenInntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetaling
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 import java.time.LocalDate
 
@@ -129,5 +130,7 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
         includeAttachment(informasjonOmOmstillingsstoenad, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
         // includeAttachment(informasjonOmYrkesskade, innhold) TODO denne skal vel ikke være med her uten noen conditions?
+
+        includeAttachment(forhaandsvarselFeilutbetaling, true.expr())
     }
 }
