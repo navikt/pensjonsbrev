@@ -34,8 +34,7 @@ export const navnKeys = {
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
   eblanketter: () => [...letterTemplatesKeys.all, "E_BLANKETTER"] as const,
-  sakTypeSearch: (search: { sakType: string; includeVedtak: boolean }) =>
-    [...letterTemplatesKeys.all, search] as const,
+  sakTypeSearch: (search: { sakType: string; includeVedtak: boolean }) => [...letterTemplatesKeys.all, search] as const,
 };
 
 export const letterKeys = {

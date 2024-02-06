@@ -29,11 +29,7 @@ import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
   loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
-  loader: async ({
-    context: { queryClient, getSakQueryOptions },
-    params: { templateId },
-    deps: { includeVedtak },
-  }) => {
+  loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId }, deps: { includeVedtak } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
     const adressePromise = queryClient.ensureQueryData({
