@@ -35,10 +35,7 @@ class BrevmetadataService(config: Config) {
         if (httpResponse.status.isSuccess()) {
             return httpResponse.body<List<BrevdataDto>>()
                 .filter { it.redigerbart }
-                .filter { when (includeVedtak) {
-                    true -> true
-                    false ->it.brevkategori != BrevdataDto.BrevkategoriCode.VEDTAK
-                }}
+                .filter { includeVedtak || it.brevkategori != BrevdataDto.BrevkategoriCode.VEDTAK }
                 .map{ it.mapToMetadata() }
         } else {
             logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
