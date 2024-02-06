@@ -10,7 +10,6 @@ data class HentSamhandlerResponseDto(val success: Success?, val failure: Failure
 
     enum class FailureType {
         GENERISK,
-        IKKE_FUNNET,
     }
 }
 class HentSamhandlerRequestDto(
