@@ -59,14 +59,14 @@ object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
                 text(
                     Bokmal to "Samlet pensjon før skatt er den samme som før.",
                     Nynorsk to "Samla pensjon før skatt er den same som før.",
-                    English to "The total pension before tax is the same as before."
+                    English to "The total pension amount before tax is the same as before."
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Alderspensjonen reguleres hvert år med gjennomsnittet av pris- og lønnsveksten.",
                     Nynorsk to "Alderspensjonen blir regulert kvart år med gjennomsnittet av pris- og lønnsveksten.",
-                    English to "The retirement pension is adjusted each year by the average of consumer price and wage growth."
+                    English to "Retirement pension is adjusted annually by the average of consumer price and wage growth."
                 )
             }
             title1 {

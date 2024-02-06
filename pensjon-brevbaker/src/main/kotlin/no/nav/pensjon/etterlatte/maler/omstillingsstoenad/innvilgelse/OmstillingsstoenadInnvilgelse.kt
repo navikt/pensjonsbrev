@@ -58,8 +58,8 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
         title {
             text(
                 Bokmal to "Vi har innvilget søknaden din om omstillingsstønad",
-                Nynorsk to "",
-                English to "",
+                Nynorsk to "Vi har innvilga søknaden din om omstillingsstønad",
+                English to "We have granted your application for transitional benefits",
             )
         }
 
@@ -82,9 +82,9 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
         }
 
         includeAttachment(beregningAvOmstillingsstoenad, beregning)
+        includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetaling)
         includeAttachment(informasjonOmOmstillingsstoenad, beregning)
         includeAttachment(dineRettigheterOgPlikter, beregning)
-        includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetaling)
     }
 
 

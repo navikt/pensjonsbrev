@@ -16,8 +16,8 @@ object OmstillingsstoenadFellesFraser {
             title2 {
                 text(
                     Bokmal to "Du må melde fra om endringer",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Du må melde frå om endringar",
+                    English to "You must report any changes"
                 )
             }
             paragraph {
@@ -25,8 +25,12 @@ object OmstillingsstoenadFellesFraser {
                     Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for " +
                             "utbetalingen av omstillingsstønaden din, eller retten til å få omstillingsstønad. " +
                             "I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Du pliktar å melde frå til oss om endringar som har innverknad på utbetalinga " +
+                            "av eller retten på omstillingsstønad. I vedlegget «Dine rettar og plikter» ser du kva " +
+                            "endringar du må seie frå om. ",
+                    English to "You are obligated to notify us of any changes that affect the payment of " +
+                            "transitional benefits, or the right to receive transitional benefits. You will see " +
+                            "which changes you must report in the attachment, Your Rights and Obligations."
                 )
             }
         }
@@ -37,8 +41,8 @@ object OmstillingsstoenadFellesFraser {
             title2 {
                 text(
                     Bokmal to "Du har rett til å klage",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Du har rett til å klage",
+                    English to "You have the right to appeal"
                 )
             }
             paragraph {
@@ -46,8 +50,12 @@ object OmstillingsstoenadFellesFraser {
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker " +
                             "fra den datoen du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema " +
                             "og informasjon på ${Constants.KLAGE_URL}.",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den " +
+                            "datoen du fekk vedtaket. Klaga må vere skriftleg. Du finn skjema og informasjon " +
+                            "på ${Constants.KLAGE_URL}.",
+                    English to "If you believe the decision is incorrect, you may appeal the decision within " +
+                            "six weeks from the date you received the decision. The appeal must be in writing. " +
+                            "You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}."
                 )
             }
         }
@@ -122,10 +130,10 @@ object OmstillingsstoenadFellesFraser {
                             "+47 ${Constants.KONTAKTTELEFON_PENSJON}, kvardagar 09:00–15:00. Det vil gjere det " +
                             "enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer.",
                     English to "You can find answers to your questions online: ${Constants.OMS_URL}. " +
-                            "Feel free to chat with us or write to us here: ${Constants.KONTAKT_URL}. " +
-                            "You can also contact us by phone (+47 ${Constants.KONTAKTTELEFON_PENSJON}), " +
-                            "weekdays 09:00-15:00. If you provide your national identity number, we can more " +
-                            "easily provide you with quick and good help."
+                            "Feel free to chat with us or write to us here: ${Constants.KONTAKT_URL}. You can also contact " +
+                            "us by phone (+47 ${Constants.KONTAKTTELEFON_PENSJON}), weekdays 09:00-15:00. If you " +
+                            "provide your national identity number, we can more easily provide you with quick " +
+                            "and good help. "
                 )
             }
         }

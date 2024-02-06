@@ -35,22 +35,22 @@ data class BeregningsperiodetabellEtterbetaling(
                     column(2) {
                         text(
                             Language.Bokmal to "Stønad før reduksjon for inntekt",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "Stønad før reduksjon",
+                            Language.English to "Benefit amount before reduction",
                         )
                     }
                     column(1) {
                         text(
                             Language.Bokmal to "Inntekt",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "Inntekta di",
+                            Language.English to "Your income",
                         )
                     }
                     column(1) {
                         text(
                             Language.Bokmal to "Utbetaling per måned",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "Utbetaling per månad",
+                            Language.English to "Payout per month",
                         )
                     }
                 }
