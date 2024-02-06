@@ -17,7 +17,7 @@ import {
   VStack,
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Await, createFileRoute, defer, notFound } from "@tanstack/react-router";
+import { Await, CatchBoundary, createFileRoute, defer, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { Suspense, useEffect, useRef } from "react";
@@ -335,7 +335,12 @@ function Adresse() {
       </Heading>
       <BodyShort size="small">
         <Suspense fallback="...henter">
-          <Await promise={deferredAdresse}>{(data) => <span>{data.adresseString}</span>}</Await>
+          <CatchBoundary
+            errorComponent={(error: unknown) => <ApiError error={error} text="Fant ikke adresse" />}
+            getResetKey={() => "adresseError"}
+          >
+            <Await promise={deferredAdresse}>{(data) => <span>{data.adresseString}</span>}</Await>
+          </CatchBoundary>
         </Suspense>
       </BodyShort>
       <Divider />
