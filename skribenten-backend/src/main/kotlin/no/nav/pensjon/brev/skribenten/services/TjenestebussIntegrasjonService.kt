@@ -69,9 +69,13 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         hentDetaljert: Boolean,
     ): HentSamhandlerResponseDto =
         tjenestebussIntegrasjonClient.post(call, "/hentSamhandler") {
-            HentSamhandlerRequestDto(
-                idTSSEkstern = idTSSEkstern,
-                hentDetaljert = hentDetaljert
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(
+                HentSamhandlerRequestDto(
+                    idTSSEkstern = idTSSEkstern,
+                    hentDetaljert = hentDetaljert
+                )
             )
         }.toServiceResult<HentSamhandlerResponseDto>()
             .catch { message, status ->
