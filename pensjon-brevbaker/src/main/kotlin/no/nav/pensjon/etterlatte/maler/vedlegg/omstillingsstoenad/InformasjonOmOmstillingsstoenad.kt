@@ -17,7 +17,7 @@ val informasjonOmOmstillingsstoenad = createAttachment(
     title = newText(
         Bokmal to "Informasjon til deg som mottar omstillingsstønad",
         Nynorsk to "Informasjon til deg som får omstillingsstønad",
-        English to "Information for Recipients of Transitional Benefits",
+        English to "Information for Recipients of adjustment allowance",
     ),
     includeSakspart = false,
 ) {

@@ -34,7 +34,7 @@ object OmstillingsstoenadFellesFraser {
                             "av eller retten på omstillingsstønad. I vedlegget «Dine rettar og plikter» ser du kva " +
                             "endringar du må seie frå om. ",
                     English to "You are obligated to notify us of any changes that affect the payment of " +
-                            "transitional benefits, or the right to receive transitional benefits. You will see " +
+                            "the adjustment allowance, or the right to receive the allowance. You will see " +
                             "which changes you must report in the attachment, Your Rights and Obligations."
                 )
             }
@@ -184,7 +184,7 @@ object OmstillingsstoenadFellesFraser {
                 text(
                     Bokmal to "Hvor lenge kan du få omstillingsstønaden?",
                     Nynorsk to "Kor lenge kan du få omstillingsstønad?",
-                    English to "How long can you receive transitional benefits?",
+                    English to "How long can you receive adjustment allowance?",
                 )
             }
             showIf(lavEllerIngenInntekt) {
@@ -197,9 +197,9 @@ object OmstillingsstoenadFellesFraser {
                                 "inntekt eller hadde låg inntekt dei siste fem åra før dødsfallet. Under " +
                                 "føresetnad av at du oppfyller vilkåra, får du omstillingsstønad fram til du " +
                                 "fyller 67 år. ",
-                        English to "If any of the rules for exemption from the duration of benefits apply " +
-                                "to you, because you had a low income or no income in the last five years before " +
-                                "the date of the death. You are eligible for transitional benefits until you turn " +
+                        English to "If any of the rules for exemption from the duration of benefits apply to " +
+                                "you, because you had a low income or no income in the last five years before the " +
+                                "date of the death. You are eligible for the adjustment allowance until you turn " +
                                 "67 as long as you meet the conditions.",
                     )
                 }
@@ -211,8 +211,8 @@ object OmstillingsstoenadFellesFraser {
                                     "lenge du oppfyller vilkårene.",
                             Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad i " +
                                     "tre år frå datoen for dødsfallet. ",
-                            English to "You are eligible for transitional benefits for three years from the " +
-                                    "date of the death, as long as you meet the conditions for receiving benefits.",
+                            English to "You are eligible for adjustment allowance for three years from the " +
+                                    "date of the death, as long as you meet the conditions for receiving the allowance.",
                         )
                     }
                     paragraph {
@@ -221,7 +221,7 @@ object OmstillingsstoenadFellesFraser {
                                     "og hensiktsmessig.",
                             Nynorsk to "Stønaden kan bli forlenga med inntil to år dersom du tek utdanning " +
                                     "som er nødvendig og føremålstenleg.",
-                            English to "Benefits can be extended for up to two years if you are obtaining an " +
+                            English to "The allowance can be extended for up to two years if you are obtaining an " +
                                     "education, vocational training that is necessary and suitable.",
                         )
                     }
@@ -234,8 +234,8 @@ object OmstillingsstoenadFellesFraser {
                             Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
                                     "i tre år frå datoen for dødsfallet. Dersom inntekta di skulle endre seg, kan " +
                                     "dette gjere at du likevel får utbetalt stønad i denne perioden.",
-                            English to "You are eligible for transitional benefits for three years from the " +
-                                    "date of the death, as long as you meet the conditions for receiving benefits. " +
+                            English to "You are eligible for adjustment allowance for three years from the " +
+                                    "date of the death, as long as you meet the conditions for receiving the allowance. " +
                                     "Changes to your income may make you eligible for benefits in this period. ",
                         )
                     }
@@ -247,6 +247,34 @@ object OmstillingsstoenadFellesFraser {
                     Bokmal to "Les mer om hvor lenge du kan få på " + Constants.OMS_HVORLENGE_URL + ".",
                     Nynorsk to "Les meir på " + Constants.OMS_HVORLENGE_URL + " om kor lenge du kan få stønad.",
                     English to "Read more about the duration of benefits online: " + Constants.OMS_HVORLENGE_URL + ".",
+                )
+            }
+        }
+    }
+
+    object SpesieltOmInntektsendring : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Spesielt om endring av inntekten din",
+                    Nynorsk to "Spesielt om endring av inntekta di",
+                    English to "Special information about changes to your income",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "For at du skal motta korrekt omstillingsstønad, er det viktig at du informerer " +
+                            "oss hvis inntekten din endrer seg. Vi justerer omstillingsstønaden fra måneden etter " +
+                            "at du har gitt beskjed. Du kan lese mer om inntektsendring i vedlegget " +
+                            "«Informasjon til deg som mottar omstillingsstønad».",
+                    Nynorsk to "For at du skal få rett omstillingsstønad, er det viktig at du informerer oss " +
+                            "dersom inntekta di endrar seg. Vi justerer omstillingsstønaden frå månaden etter at du " +
+                            "har gitt beskjed. Du kan lese meir om inntektsendring i vedlegget «Informasjon til deg " +
+                            "som får omstillingsstønad».",
+                    English to "To receive the correct amount of the adjustment allowance, you are obligated " +
+                            "to inform us about any changes to your income. We will adjust the adjustment " +
+                            "allowance starting the month after you reported the change. You can read more " +
+                            "about income reporting in the Attachment: Information to Adjustment Allowance Recipients.",
                 )
             }
         }

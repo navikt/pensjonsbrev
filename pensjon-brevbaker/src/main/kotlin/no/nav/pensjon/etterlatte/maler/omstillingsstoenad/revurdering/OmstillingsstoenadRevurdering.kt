@@ -22,7 +22,6 @@ import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
-import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
@@ -71,41 +70,40 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
         title {
             text(
                 Bokmal to "Vi har ",
-                Nynorsk to "",
-                English to "",
+                Nynorsk to "Vi har ",
+                English to "We have ",
             )
             showIf(erOmgjoering) {
                 ifNotNull(datoVedtakOmgjoering) {
                     textExpr(
                         Bokmal to "omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
-                        Nynorsk to "".expr(),
-                        English to "".expr(),
+                        Nynorsk to "gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
+                        English to "reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
                     )
                 }
             }.orShow {
                 showIf(erEndret) {
                     text(
                         Bokmal to "endret",
-                        Nynorsk to "",
-                        English to "",
+                        Nynorsk to "endra",
+                        English to "changed",
                     )
                 } orShow {
                     text(
                         Bokmal to "vurdert",
-                        Nynorsk to "",
-                        English to "",
+                        Nynorsk to "vurdert",
+                        English to "evaluated",
                     )
                 }
                 text(
                     Bokmal to " omstillingsstønaden din",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to " omstillingsstønaden din",
+                    English to " your adjustment allowance",
                 )
             }
         }
 
         outline {
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(OmstillingsstoenadRevurderingFraser.RevurderingVedtak(
                 erEndret,
                 beregning,
@@ -121,7 +119,7 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
                 includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt)
             }
             includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
-            includePhrase(OmstillingsstoenadFellesFraser.Inntektsendring)
+            includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
             includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
             includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
