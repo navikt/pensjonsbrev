@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler
 
 import com.typesafe.config.Config
+import io.ktor.server.plugins.*
 import no.nav.inf.psak.samhandler.FinnSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenSamhandlerIkkeFunnetMsg
@@ -41,7 +42,7 @@ class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercurit
         } catch (ex: HentSamhandlerFaultPenSamhandlerIkkeFunnetMsg) {
             ex.faultInfo.prettyPrint()
             logger.error("Kunne ikke finne samhandler med TSS id: ${requestDto.idTSSEkstern}", ex.faultInfo.prettyPrint())
-            return HentSamhandlerResponseDto(HentSamhandlerResponseDto.FailureType.IKKE_FUNNET)
+            throw NotFoundException();
         }
     }
 

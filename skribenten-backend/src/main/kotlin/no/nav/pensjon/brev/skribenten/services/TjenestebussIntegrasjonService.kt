@@ -69,14 +69,21 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         hentDetaljert: Boolean,
     ): HentSamhandlerResponseDto =
         tjenestebussIntegrasjonClient.post(call, "/hentSamhandler") {
-            HentSamhandlerRequestDto(
-                idTSSEkstern = idTSSEkstern,
-                hentDetaljert = hentDetaljert
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(
+                HentSamhandlerRequestDto(
+                    idTSSEkstern = idTSSEkstern,
+                    hentDetaljert = hentDetaljert
+                )
             )
         }.toServiceResult<HentSamhandlerResponseDto>()
             .catch { message, status ->
                 logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
-                HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
+                when (status) {
+                    HttpStatusCode.NotFound -> throw NotFoundException()
+                    else -> HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
+                }
             }
 
     suspend fun bestillExtreamBrev(

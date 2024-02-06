@@ -38,7 +38,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
     }
 
     install(CallId) {
-        retrieveFromHeader("X-Request-ID")
+        header("X-Request-ID")
         generate()
         verify { it.isNotEmpty() }
     }
