@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Await, createFileRoute, defer, notFound } from "@tanstack/react-router";
+import { Await, CatchBoundary, createFileRoute, defer, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { Suspense, useEffect } from "react";
@@ -19,6 +19,7 @@ import {
   getLetterTemplate,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
+import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
 import { BrevvelgerTabOptions } from "~/routes/saksnummer_.$sakId.brevvelger";
@@ -310,7 +311,12 @@ function Adresse() {
       </Heading>
       <BodyShort size="small">
         <Suspense fallback="...henter">
-          <Await promise={deferredAdresse}>{(data) => <span>{data.adresseString}</span>}</Await>
+          <CatchBoundary
+            errorComponent={(error: unknown) => <ApiError error={error} text="Fant ikke adresse" />}
+            getResetKey={() => "adresseError"}
+          >
+            <Await promise={deferredAdresse}>{(data) => <span>{data.adresseString}</span>}</Await>
+          </CatchBoundary>
         </Suspense>
       </BodyShort>
       <Divider />
