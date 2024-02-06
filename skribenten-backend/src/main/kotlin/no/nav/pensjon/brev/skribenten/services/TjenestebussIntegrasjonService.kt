@@ -80,10 +80,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         }.toServiceResult<HentSamhandlerResponseDto>()
             .catch { message, status ->
                 logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
-                when (status) {
-                    HttpStatusCode.NotFound -> throw NotFoundException()
-                    else -> HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
-                }
+                HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
             }
 
     suspend fun bestillExtreamBrev(
