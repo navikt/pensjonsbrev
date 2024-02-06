@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -20,6 +21,7 @@ val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
     OpptjeningVedForhoeyetHjelpesats,
     UfoerOmregningEnslig,
     UngUfoerAuto,
+    VarselSaksbehandlingstidAuto,
 )
 
 val prodRedigerbareTemplates: Set<RedigerbarTemplate<*>> = setOf(
