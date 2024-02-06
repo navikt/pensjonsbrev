@@ -82,21 +82,22 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                 text(
                     Bokmal to "du gifter deg eller inngår partnerskap",
                     Nynorsk to "du giftar deg eller inngår partnarskap",
-                    English to "You get married, enter into a partnership or begin co-habiting with a partner",
+                    English to "You are getting married or initiating cohabitation",
                 )
             }
             item {
                 text(
                     Bokmal to "du blir samboer med en du har felles barn med eller tidligere har vært gift med",
                     Nynorsk to "du blir sambuar med nokon du har barn med eller tidlegare har vore gift med",
-                    English to "You re-marry or begin co-habiting with someone to whom you were previously married",
+                    English to "You become a cohabiting partner with someone you have common children with " +
+                            "or were previously married to",
                 )
             }
             item {
                 text(
                     Bokmal to "du får felles barn med ny samboer",
                     Nynorsk to "du får barn med ny sambuar",
-                    English to "Have joint children with a new co-habiting partner",
+                    English to "You are expecting a child with a new cohabiting partner",
                 )
             }
             item {
