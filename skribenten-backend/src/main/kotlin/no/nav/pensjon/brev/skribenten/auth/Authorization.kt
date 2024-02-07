@@ -92,10 +92,7 @@ data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Paylo
     fun getUserId(): String = jwtPayload.subject
 
     fun isPensjonUtlandGroup(): Boolean {
-        val pensjonUtlandGruppe = "TODO" // TODO: get from config?
-
-        return true
-
-//        return jwtPayload.claims["groups"]?.asList(String::class.java)?.contains(pensjonUtlandGruppe) ?: false
+        val pensjonUtlandGruppe = "bda6bd68-77e6-4c00-96b9-7ecf5df7413c" // TODO: get from config?
+        return jwtPayload.claims["groups"]?.asList(String::class.java)?.contains(pensjonUtlandGruppe) ?: false
     }
 }
