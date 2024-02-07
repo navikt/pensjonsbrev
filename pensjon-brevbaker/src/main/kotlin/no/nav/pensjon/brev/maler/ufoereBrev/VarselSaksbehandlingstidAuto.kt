@@ -2,12 +2,16 @@ package no.nav.pensjon.brev.maler.ufoereBrev
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.LocalDate
 
 object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidAutoDto> {
 
@@ -29,6 +33,17 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                 Bokmal to "NAV har mottatt søknaden din om uføretrygd",
                 Nynorsk to "NAV har motteke søknaden din om uføretrygd",
                 English to "NAV has received your application for disability benefit"
+            )
+        }
+        outline {
+
+
+            includePhrase(
+                Ufoeretrygd.MeldeFraOmEndringer
+            )
+
+            includePhrase(
+                Ufoeretrygd.HarDuSpoersmaalUfoeretrygd
             )
         }
     }
