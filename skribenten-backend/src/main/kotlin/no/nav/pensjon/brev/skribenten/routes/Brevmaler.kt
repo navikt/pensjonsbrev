@@ -14,7 +14,8 @@ fun Route.brevmalerRoute(
 ) {
     get("/lettertemplates/e-blanketter") {
         val hasAccess = call.principal<UserPrincipal>()?.isPensjonUtlandGroup() ?: false
-        if (hasAccess) call.respond(brevmetadataService.getEblanketter()) else emptyList<LetterMetadata>()
+        val eblanketter = if (hasAccess) brevmetadataService.getEblanketter() else emptyList()
+        call.respond(eblanketter)
     }
     get("/lettertemplates/{sakType}") {
         val sakType = call.parameters.getOrFail("sakType")
