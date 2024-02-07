@@ -12,7 +12,6 @@ export function ApiError({ error, text }: { error: unknown; text: string }) {
           margin-top: var(--a-spacing-4);
           width: fit-content;
           align-self: center;
-          //min-width: 600px; //TODO
         `}
         variant="error"
       >

@@ -10,14 +10,15 @@ import type {
   FinnSamhandlerRequestDto,
   FinnSamhandlerResponseDto,
   HentSamhandlerRequestDto,
+  HentsamhandlerResponseDto,
   KontaktAdresseResponse,
   LetterMetadata,
   OrderLetterRequest,
   PidRequest,
   PreferredLanguage,
   SakDto,
-  Samhandler,
 } from "~/types/apiTypes";
+import { Samhandler } from "~/types/apiTypes";
 import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
@@ -159,6 +160,15 @@ export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
 
 export const hentSamhandler = {
   queryKey: samhandlerKeys.idTSSEkstern,
-  queryFn: async (request: HentSamhandlerRequestDto) =>
-    (await axios.post<Samhandler>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request)).data,
+  queryFn: async (request: HentSamhandlerRequestDto) => {
+    const response = (
+      await axios.post<HentsamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request)
+    ).data;
+
+    if (response.failure) {
+      throw new Error(response.failure);
+    }
+
+    return response.success;
+  },
 };
