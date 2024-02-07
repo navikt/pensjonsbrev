@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -30,6 +31,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erEndret
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harFlereUtbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
@@ -42,6 +44,7 @@ import java.time.LocalDate
 
 data class OmstillingsstoenadRevurderingDTO(
     override val innhold: List<Element>,
+    val innholdForhaandsvarsel: List<Element>,
     val erEndret: Boolean,
     val erOmgjoering: Boolean,
     val datoVedtakOmgjoering: LocalDate?,
@@ -129,8 +132,6 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
         includeAttachment(beregningAvOmstillingsstoenad, beregning)
         includeAttachment(informasjonOmOmstillingsstoenad, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
-        // includeAttachment(informasjonOmYrkesskade, innhold) TODO denne skal vel ikke være med her uten noen conditions?
-
-        includeAttachment(forhaandsvarselFeilutbetaling, true.expr())
+        includeAttachment(forhaandsvarselFeilutbetaling, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }
 }

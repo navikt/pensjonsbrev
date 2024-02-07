@@ -8,6 +8,7 @@ import java.time.LocalDate
 fun createOmstillingsstoenadRevurderingDTO() =
     OmstillingsstoenadRevurderingDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
+        innholdForhaandsvarsel = createPlaceholderForRedigerbartInnhold(),
         beregning = OmstillingsstoenadBeregning(
             innhold = createPlaceholderForRedigerbartInnhold(),
             grunnbeloep = Kroner(118000),
