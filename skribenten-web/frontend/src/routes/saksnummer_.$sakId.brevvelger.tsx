@@ -69,7 +69,7 @@ function Brevmaler({ kategorier }: { kategorier: LetterMetadata[] }) {
 
   const brevmalerGroupedByType = {
     ...(matchingFavoritter.length > 0 ? { FAVORITTER: matchingFavoritter } : {}),
-    ...groupBy(brevmalerMatchingSearchTerm, (brevmal) => brevmal.brevkategoriCode),
+    ...groupBy(brevmalerMatchingSearchTerm, (brevmal) => brevmal.brevkategoriCode ?? brevmal.dokumentkategoriCode),
   };
 
   return (
@@ -111,8 +111,7 @@ function Brevmaler({ kategorier }: { kategorier: LetterMetadata[] }) {
                   justify-content: space-between;
                 `}
               >
-                {/* TODO: This might not be a valid assumption */}
-                {CATEGORY_TRANSLATIONS[type] ?? "E-blanketter"}
+                {CATEGORY_TRANSLATIONS[type] ?? "Annet"}
               </Accordion.Header>
               <Accordion.Content>
                 <div
@@ -186,4 +185,5 @@ const CATEGORY_TRANSLATIONS: Record<string, string> = {
   VARSEL: "Varsel",
   VEDTAK: "Vedtak",
   FAVORITTER: "Favoritter",
+  E_BLANKETT: "E-blanketter",
 };

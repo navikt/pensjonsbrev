@@ -28,12 +28,15 @@ export type BrevkategoriCode =
   | "VARSEL"
   | "VEDTAK";
 
+export type DokumentkategoriCode = "B" | "E_BLANKETT" | "IB" | "SED" | "VB";
+
 export type LetterMetadata = {
   name: string;
   id: string;
   brevsystem: BrevSystem;
   spraak: SpraakKode[];
   brevkategoriCode?: BrevkategoriCode;
+  dokumentkategoriCode?: DokumentkategoriCode;
 };
 
 export enum BrevSystem {
