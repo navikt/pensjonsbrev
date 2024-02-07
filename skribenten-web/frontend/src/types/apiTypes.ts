@@ -99,6 +99,11 @@ export type HentSamhandlerRequestDto = {
   hentDetaljert: boolean;
 };
 
+export type HentsamhandlerResponseDto = {
+  success: Samhandler;
+  failure: null | string;
+};
+
 export type Samhandler = {
   navn: string;
   samhandlerType: string;
