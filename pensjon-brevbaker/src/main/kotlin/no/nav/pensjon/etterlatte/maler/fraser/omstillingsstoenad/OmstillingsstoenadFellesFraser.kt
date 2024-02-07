@@ -166,7 +166,7 @@ object OmstillingsstoenadFellesFraser {
                             "må du betale tilbake. Du kan lese meir om etteroppgjer på " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
                     English to "Each autumn, NAV checks income data from your tax return to verify the correct " +
-                            "amount of transitional benefits for the previous year. If you received less than you " +
+                            "amount of adjustment allowance for the previous year. If you received less than you " +
                             "are owed, you will receive Back Pay. If you received more than you were owed, you must " +
                             "repay the excess to NAV. You can find more information about final settlements online: " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
@@ -299,10 +299,10 @@ object OmstillingsstoenadFellesFraser {
                             "dersom inntekta di endrar seg. Vi justerer omstillingsstønaden frå månaden etter at du " +
                             "har gitt beskjed. Du kan lese meir om inntektsendring i vedlegget «Informasjon til deg " +
                             "som får omstillingsstønad».",
-                    English to "To receive the correct amount of transitional benefits, you are obligated to " +
-                            "inform us about any changes to your income. We will adjust the transitional benefits " +
+                    English to "To receive the correct amount of adjustment allowance, you are obligated to " +
+                            "inform us about any changes to your income. We will adjust the adjustment allowance " +
                             "starting the month after you reported the change. You can read more about income " +
-                            "reporting in the attachment: Information to Recipients of Transitional Benefits. ",
+                            "reporting in the attachment: Information to Recipients of Adjustment Allowance. ",
                 )
             }
         }

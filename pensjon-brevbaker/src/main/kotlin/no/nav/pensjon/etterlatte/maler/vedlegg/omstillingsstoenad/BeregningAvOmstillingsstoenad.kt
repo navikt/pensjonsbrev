@@ -43,7 +43,7 @@ val beregningAvOmstillingsstoenad = createAttachment(
     title = newText(
         Bokmal to "Beregning av omstillingsstønad",
         Nynorsk to "Utrekning av omstillingsstønad",
-        English to "Calculation of Transitional Benefits",
+        English to "Calculation of Adjustment Allowance",
     ),
     includeSakspart = false
 ) {
@@ -62,7 +62,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     "folketrygda (G). Dagens verdi av grunnbeløpet er " + grunnbeloep.format() + " kroner. " +
                     "Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i " +
                     "juni kvart år.",
-            English to "Full transitional benefits are calculated based on 2.25 x the national ".expr() +
+            English to "Full adjustment allowance are calculated based on 2.25 x the national ".expr() +
                     "insurance basic amount (G). The current value of the basic amount is NOK " + grunnbeloep.format() +
                     ". The basic amount is adjusted on 1 May each year. You will receive payment of any increase in " +
                     "June of each year.",
@@ -185,7 +185,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 Nynorsk to "Vi har lagt til grunn at du ikkje har arbeidsinntekt eller tilsvarande inntekt som " +
                         "omstillingsstønaden skal reduserast etter. ",
                 English to "Our calculation shows that you had no employment income or similar income from " +
-                        "which the transitional benefits can be reduced.",
+                        "which the adjustment allowance can be reduced.",
             )
         }
     }
@@ -230,7 +230,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         "trygdetida til avdøde vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i " +
                         "utrekninga. Avdøde har ei samla trygdetid på " + trygdetid.beregnetTrygdetidAar.format() +
                         " år. ",
-                English to "".expr() + "To be entitled to full transitional benefits, the deceased must have " +
+                English to "".expr() + "To be entitled to full adjustment allowance, the deceased must have " +
                         "accumulated at least 40 years of contribution time. Contribution time above 40 years of " +
                         "coverage is not included in the calculation. The deceased's total calculated contribution " +
                         "time is " + trygdetid.beregnetTrygdetidAar.format() + " years.",
@@ -264,7 +264,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         "Trygdetid over 40 år blir ikke tatt med i beregningen.",
                 Nynorsk to "For at du skal kunne få full omstillingsstønad, må den utrekna trygdetida " +
                         "til avdøde vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i utrekninga.",
-                English to "To be entitled to full transitional benefits, the deceased must have accumulated " +
+                English to "To be entitled to full adjustment allowance, the deceased must have accumulated " +
                         "at least 40 years of contribution time. Contribution time above 40 years of coverage is not " +
                         "included in the calculation.",
             )
@@ -288,7 +288,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         "faktisk oppteningstid i Noreg og samla faktisk oppteningstid i Noreg og andre EØS- eller " +
                         "avtaleland. Avdøde har ei samla trygdetid på " + trygdetid.beregnetTrygdetidAar.format() +
                         " år, og forholdstalet er " + trygdetid.prorataBroek.formatBroek() + ".",
-                English to "".expr() + "Your transitional benefits are calculated according to the provisions " +
+                English to "".expr() + "Your adjustment allowance are calculated according to the provisions " +
                         "in the EEA Agreement because the conditions that entitle you to the benefits have been met, " +
                         "by compiling the deceased's contribution time in Norway and other EEA countries or other " +
                         "countries with which Norway has an agreement. Contribution time is calculated according to " +
@@ -315,7 +315,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         "av medlemsperiodar i land som Noreg har trygdeavtale med, skal det bli gitt trygdetid " +
                         "etter gunstigaste utrekning: anten berre nasjonal opptening eller samanlagd opptening " +
                         "i Noreg og avtaleland.",
-                English to "To be entitled to full transitional benefits, the deceased must have accumulated " +
+                English to "To be entitled to full adjustment allowance, the deceased must have accumulated " +
                         "at least 40 years of contribution time. Contribution time above 40 years of coverage is " +
                         "not included in the calculation. When the basis for the benefits is met according to " +
                         "national rules, and the deceased has also accrued membership periods in countries with " +

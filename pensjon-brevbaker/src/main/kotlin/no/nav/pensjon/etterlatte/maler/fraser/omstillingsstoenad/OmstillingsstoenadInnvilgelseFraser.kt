@@ -46,7 +46,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                             " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ".",
                     Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
                             ", ettersom " + avdoed.navn + " døydde " + formatertDoedsdato + ".",
-                    English to "You have been granted transitional benefits starting ".expr() +
+                    English to "You have been granted adjustment allowance starting ".expr() +
                             formatertVirkningsdato + " because " + avdoed.navn + " died on " + formatertDoedsdato + "."
                 )
             }
@@ -68,7 +68,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                             English to "You will receive NOK ".expr() + utbetaltBeloep.format() + " each " +
                                     "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ". " +
                                     "See the payment amount for previous periods in the " +
-                                    "Back Payment of Transitional Benefits Attachment."
+                                    "Back Payment of Adjustment Allowance Attachment."
                         )
                     }
                 }.orShow {
@@ -90,7 +90,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                                 "enn grensen for å få utbetalt stønaden.",
                         Nynorsk to "Du får ikkje utbetalt omstillingsstønad, då inntekta di er over " +
                                 "maksimumsgrensa for å kunne få stønad.",
-                        English to "You will not receive transitional benefits because your income is " +
+                        English to "You will not receive adjustment allowance because your income is " +
                                 "higher than the limit for receiving such benefits.",
                     )
                 }
@@ -102,8 +102,8 @@ object OmstillingsstoenadInnvilgelseFraser {
                             "omstillingsstønad».",
                     Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» korleis vi har " +
                             "rekna ut omstillingsstønaden din.",
-                    English to "You can see how we calculated your transitional benefits in the " +
-                            "Attachment: Calculation of Transitional Benefits.",
+                    English to "You can see how we calculated your adjustment allowance in the " +
+                            "Attachment: Calculation of Adjustment Allowance.",
                 )
             }
         }
@@ -117,7 +117,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                 text(
                     Bokmal to "Omstillingsstønad gis på bakgrunn av at",
                     Nynorsk to "Det blir gitt omstillingsstønad på bakgrunn av at",
-                    English to "You have been granted transitional benefits because",
+                    English to "You have been granted adjustment allowances because",
                 )
                 list {
                     item {
@@ -172,7 +172,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                         Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i " +
                                 "folketrygdlova §§ 17-2, 17-3, 17-4, 17-5, 17-6, 17-9, 22-12 og 22-13.",
                         English to "This decision has been made pursuant to the provisions regarding " +
-                                "transitional benefits in the National Insurance Act – sections 17-2, 17-3, 17-4, " +
+                                "adjustment allowance in the National Insurance Act – sections 17-2, 17-3, 17-4, " +
                                 "17-5, 17-6, 17-9, 22-12 and 22-13.",
                     )
                 } orShow {
@@ -182,7 +182,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                         Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova " +
                                 "§§ 17-2, 17-3, 17-4, 17-5, 17-6, 17-9 og 22-12.",
                         English to "This decision has been made pursuant to the provisions regarding " +
-                                "transitional benefits in the National Insurance Act – sections 17-2, 17-3, 17-4, " +
+                                "adjustment allowance in the National Insurance Act – sections 17-2, 17-3, 17-4, " +
                                 "17-5, 17-6, 17-9 and 22-12.",
                     )
                 }
@@ -198,7 +198,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                 text(
                     Bokmal to "Utbetaling av omstillingsstønad",
                     Nynorsk to "Utbetaling av omstillingsstønad",
-                    English to "Payment of transitional benefits",
+                    English to "Payment of adjustment allowance",
                 )
             }
             paragraph {
@@ -207,7 +207,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                             "Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}.",
                     Nynorsk to "Omstillingsstønad blir utbetalt innan den 20. i kvar månad. Du finn " +
                             "utbetalingsdatoar på ${Constants.UTBETALING_URL}.",
-                    English to "Transitional benefits are paid on or before the 20th of each month. You can " +
+                    English to "Adjustment allowance are paid on or before the 20th of each month. You can " +
                             "find payout dates online: ${Constants.UTBETALING_URL}.",
                 )
             }
@@ -234,7 +234,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                         Nynorsk to "Du finn meir informasjon om etterbetaling i vedlegget «Etterbetaling " +
                                 "av omstillingsstønad».",
                         English to "You can find more information about back payments in the attachment: " +
-                                "Back Payments for Transitional Benefits. ",
+                                "Back Payments for Adjustment Allowance. ",
                     )
                 }
             }
@@ -247,7 +247,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                 text(
                     Bokmal to "Hva er omstillingsstønad",
                     Nynorsk to "Kva er omstillingsstønad?",
-                    English to "What are transitional benefits?",
+                    English to "What are adjustment allowance?",
                 )
             }
             paragraph {
@@ -258,7 +258,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                     Nynorsk to "Føremålet med omstillingsstønaden er å sikre den attlevande inntekt og gi " +
                             "hjelp til sjølvhjelp, slik at den attlevande etter ein omstillingsperiode etter " +
                             "dødsfallet kan bli i stand til å forsørgje seg sjølv gjennom eige arbeid.",
-                    English to "The purpose of transitional benefits is to ensure survivors of the deceased a " +
+                    English to "The purpose of adjustment allowance is to ensure survivors of the deceased a " +
                             "decent income and support self-reliance, so the survivor will be able to support " +
                             "himself through employment after a transitional period following the death of " +
                             "one's spouse.",
@@ -292,9 +292,9 @@ object OmstillingsstoenadInnvilgelseFraser {
                             "omstillingsstønad» kan du lese meir om aktivitetsplikta og kva denne inneber.",
                     English to "There is no obligation to work or employment-related activities for the first " +
                             "six months after the death. After six months have passed, one condition for continuing " +
-                            "to receive transitional benefits is that you are at least 50 percent active. This is " +
+                            "to receive adjustment allowance is that you are at least 50 percent active. This is " +
                             "called the Activity Obligation.  Read more about the activity obligation and what this " +
-                            "involves in the Attachment: Information to Recipients of Transitional Benefits.",
+                            "involves in the Attachment: Information to Recipients of Adjustment Allowance.",
                 )
             }
 

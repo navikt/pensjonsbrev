@@ -138,7 +138,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake " +
                     "det du ikkje hadde rett på.",
             English to "You are responsible for keeping yourself informed of transactions in your account " +
-                    "concerning payment of transitional benefits and you must notify us if you discover any errors. " +
+                    "concerning payment of adjustment allowance and you must notify us if you discover any errors. " +
                     "If you do not notify us of any changes and thereby receive too much in benefits, you can be " +
                     "required to repay the overpaid amount.",
         )

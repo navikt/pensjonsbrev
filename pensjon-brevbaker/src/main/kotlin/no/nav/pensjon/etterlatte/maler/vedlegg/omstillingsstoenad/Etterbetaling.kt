@@ -85,7 +85,7 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
         text(
             Bokmal to "Etterbetaling av omstillingsstønad",
             Nynorsk to "Etterbetaling av omstillingsstønad",
-            English to "Payment of transitional benefits",
+            English to "Payment of adjustment allowance",
         )
     }
 

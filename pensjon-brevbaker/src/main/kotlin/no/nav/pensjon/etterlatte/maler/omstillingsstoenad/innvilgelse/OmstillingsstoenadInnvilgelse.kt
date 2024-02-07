@@ -59,7 +59,7 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
             text(
                 Bokmal to "Vi har innvilget søknaden din om omstillingsstønad",
                 Nynorsk to "Vi har innvilga søknaden din om omstillingsstønad",
-                English to "We have granted your application for transitional benefits",
+                English to "We have granted your application for adjustment allowance",
             )
         }
 
