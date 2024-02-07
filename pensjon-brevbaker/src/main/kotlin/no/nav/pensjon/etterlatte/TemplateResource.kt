@@ -18,6 +18,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarsel
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigstilling
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslagRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelse
@@ -62,6 +64,10 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         // Tilbakekreving
         TilbakekrevingInnhold,
         TilbakekrevingFerdig,
+
+        // Klage
+        AvvistKlageInnhold,
+        AvvistKlageFerdigstilling,
 
         // Informasjonsbrev
         TomMal,

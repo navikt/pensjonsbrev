@@ -4,6 +4,8 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 enum class EtterlatteBrevKode {
+    AVVIST_KLAGE_INNHOLD,
+    AVVIST_KLAGE_FERDIG,
     BARNEPENSJON_AVSLAG,
     BARNEPENSJON_AVSLAG_UTFALL,
     BARNEPENSJON_INNVILGELSE,
