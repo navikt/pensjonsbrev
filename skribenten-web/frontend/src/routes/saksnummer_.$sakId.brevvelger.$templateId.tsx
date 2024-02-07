@@ -3,10 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Await, CatchBoundary, createFileRoute, defer, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
@@ -32,11 +32,6 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
-    const adressePromise = queryClient.ensureQueryData({
-      queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
-      queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
-    });
-
     const letterTemplates = await queryClient.ensureQueryData({
       queryKey: getLetterTemplate.queryKey(sak.sakType),
       queryFn: () => getLetterTemplate.queryFn(sak.sakType),
@@ -52,7 +47,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
       throw notFound();
     }
 
-    return { letterTemplate, sak, deferredAdresse: defer(adressePromise) };
+    return { letterTemplate, sak };
   },
   notFoundComponent: () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
@@ -303,22 +298,21 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
 }
 
 function Adresse() {
-  const { deferredAdresse } = Route.useLoaderData();
+  const { sak } = Route.useLoaderData();
+
+  const adresseQuery = useQuery({
+    queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
+    queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
+  });
+
   return (
     <>
       <Heading level="3" size="xsmall">
         Adresse
       </Heading>
-      <BodyShort size="small">
-        <Suspense fallback="...henter">
-          <CatchBoundary
-            errorComponent={(error: unknown) => <ApiError error={error} text="Fant ikke adresse" />}
-            getResetKey={() => "adresseError"}
-          >
-            <Await promise={deferredAdresse}>{(data) => <span>{data.adresseString}</span>}</Await>
-          </CatchBoundary>
-        </Suspense>
-      </BodyShort>
+      {adresseQuery.data && <BodyShort>{adresseQuery.data.adresseString}</BodyShort>}
+      {adresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
+      {adresseQuery.error && <ApiError error={adresseQuery.error} text="Fant ikke adresse" />}
       <Divider />
     </>
   );
