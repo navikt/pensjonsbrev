@@ -74,8 +74,8 @@ class OmstillingsstoenadRevurderingFraser {
                                 text(
                                     Language.Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget " +
                                             "«Beregning av omstillingsstønad».",
-                                    Language.Nynorsk to "Du finn meir informasjon om beløp for tidlegare periodar " +
-                                            "i vedlegget «Utrekning av omstillingsstønad». ",
+                                    Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av " +
+                                            "omstillingsstønad» korleis vi har rekna ut omstillingsstønaden din.",
                                     Language.English to "Read more about amounts for previous periods in the " +
                                             "Attachment Calculation of Adjustment Allowance.",
                                 )
@@ -94,8 +94,8 @@ class OmstillingsstoenadRevurderingFraser {
                             text(
                                 Language.Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget " +
                                         "«Beregning av omstillingsstønad».",
-                                Language.Nynorsk to "Du finn meir informasjon om beløp for tidlegare periodar " +
-                                        "i vedlegget «Utrekning av omstillingsstønad».",
+                                Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
+                                        "korleis vi har rekna ut omstillingsstønaden din.",
                                 Language.English to "Read more about amounts for previous periods in the " +
                                         "Attachment Calculation of Adjustment Allowance. ",
                             )
@@ -129,8 +129,8 @@ class OmstillingsstoenadRevurderingFraser {
                         text(
                             Language.Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget " +
                                     "«Beregning av omstillingsstønad».",
-                            Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» korleis " +
-                                    "vi har rekna ut omstillingsstønaden din.",
+                            Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
+                                    "korleis vi har rekna ut omstillingsstønaden din.",
                             Language.English to "Read more about amounts for previous periods in the Attachment " +
                                     "Calculation of Adjustment Allowance.",
                         )
@@ -265,13 +265,14 @@ class OmstillingsstoenadRevurderingFraser {
             paragraph {
                 text(
                     Language.Bokmal to "Fordi stønaden din er redusert tilbake i tid, har du fått for mye " +
-                            "utbetalt. Se vedlegg «Forhåndsvarsel om eventuell tilbakekreving av feilutbetalt stønad».",
+                            "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale tilbake " +
+                            "omstillingsstønad».",
                     Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått for " +
-                            "mykje utbetalt. Sjå vedlegget «Førehandsvarsel om eventuell tilbakekrevjing av " +
-                            "feilutbetalt stønad».",
+                            "mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
+                            "tilbake omstillingsstønad».",
                     Language.English to "Because your allowance has been reduced retroactively, you received " +
                             "more than you were owed. See the Attachment: Advance Notice of Possible Repayment of " +
-                            "Incorrectly Paid Benefits.",
+                            "Incorrectly Paid Adjustment Allowance.",
                 )
             }
         }

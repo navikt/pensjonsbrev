@@ -16,8 +16,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 val forhaandsvarselFeilutbetaling = createAttachment(
     title = newText(
         Bokmal to "Forhåndsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
-        Nynorsk to "",
-        English to "",
+        Nynorsk to "Førehandsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
+        English to "Advance Notice of Possible Repayment of Incorrectly Paid Adjustment Allowance",
     ),
     includeSakspart = false
 ) {
@@ -28,5 +28,4 @@ val forhaandsvarselFeilutbetaling = createAttachment(
     includePhrase(OmstillingsstoenadForhaandsvarselFraser.HvaSkjerVidereIDinSak)
     includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
     includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
-
 }
