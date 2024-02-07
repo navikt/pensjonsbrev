@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Button, Heading, Link, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
@@ -112,6 +112,10 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
     },
   });
 
+  useEffect(() => {
+    orderLetterMutation.reset();
+  }, [templateId]);
+
   const methods = useForm<z.infer<typeof formValidationSchema>>({
     defaultValues: {
       isSensitive: letterTemplate?.brevsystem === BrevSystem.Extream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
@@ -165,19 +169,31 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 
           <VStack gap="4">
             {orderLetterMutation.error && <Alert variant="error">{orderLetterMutation.error.message}</Alert>}
-            <Button
-              css={css`
-                width: fit-content;
-              `}
-              icon={<ArrowRightIcon />}
-              iconPosition="right"
-              loading={orderLetterMutation.isPending}
-              size="small"
-              type="submit"
-              variant="primary"
-            >
-              Rediger brev
-            </Button>
+            {orderLetterMutation.isSuccess ? (
+              <Alert variant="success">
+                <Heading level="3" size="xsmall">
+                  Brev bestilt
+                </Heading>
+                <span>
+                  Redigering skal åpne seg selv, hvis ikke er popup blokkert av nettleseren din.{" "}
+                  <Link href={orderLetterMutation.data}>Klikk her for å prøve åpne på nytt</Link>
+                </span>
+              </Alert>
+            ) : (
+              <Button
+                css={css`
+                  width: fit-content;
+                `}
+                icon={<ArrowRightIcon />}
+                iconPosition="right"
+                loading={orderLetterMutation.isPending}
+                size="small"
+                type="submit"
+                variant="primary"
+              >
+                Bestill og rediger brev
+              </Button>
+            )}
           </VStack>
         </form>
       </FormProvider>
