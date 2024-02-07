@@ -17,17 +17,16 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger")({
         ? BrevvelgerTabOptions.E_BLANKETTER
         : BrevvelgerTabOptions.BREVMALER,
   }),
-  loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
-    const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);
+  loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
+  loader: async ({ context: { queryClient, getSakQueryOptions }, deps: { includeVedtak } }) => {
+    const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
     const eblanketter = await queryClient.ensureQueryData(getEblanketter);
 
-    const getLetterTemplateQuery = {
-      queryKey: getLetterTemplate.queryKey(sakType),
-      queryFn: () => getLetterTemplate.queryFn(sakType),
-    };
-
-    const letterTemplates = await queryClient.ensureQueryData(getLetterTemplateQuery);
+    const letterTemplates = await queryClient.ensureQueryData({
+      queryKey: getLetterTemplate.queryKey({ sakType: sak.sakType, includeVedtak }),
+      queryFn: () => getLetterTemplate.queryFn(sak.sakType, { includeVedtak }),
+    });
 
     return { letterTemplates, eblanketter };
   },
