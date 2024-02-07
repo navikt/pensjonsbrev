@@ -93,11 +93,6 @@ data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Paylo
 
     fun isPensjonUtlandGroup(): Boolean {
         val pensjonUtlandGruppe = "bda6bd68-77e6-4c00-96b9-7ecf5df7413c" // TODO: get from config?
-        val t = "dec3ee50-b683-4644-9507-520e8f054ac2"
-        val groups = jwtPayload.claims["groups"]?.asList(String::class.java)
-        groups?.forEach {
-            logger.info(it)
-        }
-        return jwtPayload.claims["groups"]?.asList(String::class.java)?.contains(t) ?: false
+        return jwtPayload.claims["groups"]?.asList(String::class.java)?.contains(pensjonUtlandGruppe) ?: false
     }
 }
