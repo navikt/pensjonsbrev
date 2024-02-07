@@ -57,7 +57,7 @@ export const adresseKeys = {
 
 export const samhandlerKeys = {
   all: ["SAMHANDLER"],
-  offentligId: (offentligId: string) => [...samhandlerKeys.all, offentligId] as const,
+  idTSSEkstern: (idTSSEkstern: string) => [...samhandlerKeys.all, idTSSEkstern] as const,
 };
 
 export const preferredLanguageKeys = {
@@ -158,7 +158,7 @@ export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
 }
 
 export const hentSamhandler = {
-  queryKey: samhandlerKeys.offentligId,
+  queryKey: samhandlerKeys.idTSSEkstern,
   queryFn: async (request: HentSamhandlerRequestDto) =>
     (await axios.post<Samhandler>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request)).data,
 };

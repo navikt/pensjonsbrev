@@ -52,8 +52,8 @@ import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
-  validateSearch: (search: Record<string, unknown>): { offentligId?: string } => ({
-    offentligId: search.offentligId?.toString(),
+  validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string } => ({
+    idTSSEkstern: search.idTSSEkstern?.toString(),
   }),
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
@@ -400,7 +400,7 @@ const samhandlerSearchValidationSchema = z.object({
 function VelgSamhandlerModal() {
   const reference = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate({ from: Route.fullPath });
-  const { offentligId } = Route.useSearch();
+  const { idTSSEkstern } = Route.useSearch();
 
   const methods = useForm<z.infer<typeof samhandlerSearchValidationSchema>>({
     defaultValues: {
@@ -411,9 +411,9 @@ function VelgSamhandlerModal() {
   });
 
   const hentSamhandlerQuery = useQuery({
-    queryKey: hentSamhandler.queryKey(offentligId as string),
-    queryFn: () => hentSamhandler.queryFn({ hentDetaljert: false, idTSSEkstern: offentligId as string }),
-    enabled: !!offentligId,
+    queryKey: hentSamhandler.queryKey(idTSSEkstern as string),
+    queryFn: () => hentSamhandler.queryFn({ hentDetaljert: false, idTSSEkstern: idTSSEkstern as string }),
+    enabled: !!idTSSEkstern,
   });
 
   const finnSamhandlerMutation = useMutation<
@@ -433,14 +433,14 @@ function VelgSamhandlerModal() {
       </Heading>
 
       <HStack align="center" gap="4">
-        {offentligId && <span>{hentSamhandlerQuery.data?.navn}</span>}
+        {idTSSEkstern && <span>{hentSamhandlerQuery.data?.navn}</span>}
         <Button
-          icon={offentligId ? <PencilIcon /> : <PlusIcon />}
+          icon={idTSSEkstern ? <PencilIcon /> : <PlusIcon />}
           onClick={() => reference.current?.showModal()}
           size="small"
           variant="secondary"
         >
-          {offentligId ? "Endre" : "Finn samhandler"}
+          {idTSSEkstern ? "Endre" : "Finn samhandler"}
         </Button>
       </HStack>
 
@@ -475,10 +475,10 @@ function VelgSamhandlerModal() {
                     </Table.Header>
                     <Table.Body>
                       {finnSamhandlerMutation.data?.samhandlere.map((samhandler) => (
-                        <Table.Row key={samhandler.offentligId}>
+                        <Table.Row key={samhandler.idTSSEkstern}>
                           <Table.HeaderCell>{samhandler.navn}</Table.HeaderCell>
                           <Table.DataCell>
-                            {/*<Link search={(s) => ({ ...s, offentligId: samhandler.offentligId })}>*/}
+                            {/*<Link search={(s) => ({ ...s, idTSSEkstern: samhandler.idTSSEkstern })}>*/}
                             {/*  Velg*/}
                             {/*</Link>*/}
                             <Button
@@ -487,7 +487,7 @@ function VelgSamhandlerModal() {
                                 navigate({
                                   // to: Route.fullPath,
                                   params: (p) => p,
-                                  search: (s) => ({ ...s, offentligId: samhandler.offentligId }),
+                                  search: (s) => ({ ...s, idTSSEkstern: samhandler.idTSSEkstern }),
                                   replace: true,
                                 });
                               }}

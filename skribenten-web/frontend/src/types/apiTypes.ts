@@ -104,6 +104,7 @@ export type Samhandler = {
   samhandlerType: string;
   offentligId: string;
   idType: string;
+  idTSSEkstern: string;
 };
 
 export type FinnSamhandlerResponseDto = {

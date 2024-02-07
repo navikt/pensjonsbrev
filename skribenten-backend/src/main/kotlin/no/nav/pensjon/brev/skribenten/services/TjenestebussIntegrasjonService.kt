@@ -49,16 +49,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                 )
             )
         }.toServiceResult<FinnSamhandlerResponseDto>()
-            .map {
-                FinnSamhandlerResponseDto(samhandlere = it.samhandlere.map { s ->
-                    FinnSamhandlerResponseDto.Samhandler(
-                        navn = s.navn,
-                        samhandlerType = s.samhandlerType,
-                        offentligId = s.offentligId,
-                        idType = s.idType
-                    )
-                })
-            }.catch { message, status ->
+            .catch { message, status ->
                 logger.error("Feil ved samhandler søk. Status: $status Melding: $message")
                 FinnSamhandlerResponseDto("Feil ved henting av samhandler")
             }
