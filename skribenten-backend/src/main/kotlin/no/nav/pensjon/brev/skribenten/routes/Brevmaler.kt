@@ -18,8 +18,9 @@ fun Route.brevmalerRoute(
     }
     get("/lettertemplates/{sakType}") {
         val sakType = call.parameters.getOrFail("sakType")
+        val includeVedtak = call.request.queryParameters["includeVedtak"] == "true"
         call.respond(
-            brevmetadataService.getRedigerbareBrev(sakType),
+            brevmetadataService.getRedigerbareBrev(sakType, includeVedtak),
         )
     }
 }
