@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.ST
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.slf4j.LoggerFactory
 
-class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
+class PsakSamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val psakSamhandlerClient = PsakSamhandlerClient(config, securityHandler, callIdHandler).client()

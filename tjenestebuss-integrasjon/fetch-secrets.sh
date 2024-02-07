@@ -73,20 +73,25 @@ while true; do
 done
 
 mkdir -p secrets/sts
+mkdir -p secrets/samhandlerService
 mkdir -p secrets/brevklient
 
 STS_USERNAME=$(vault kv get -field username serviceuser/dev/srvpensjonsbrev-esb)
 STS_PASSWORD=$(vault kv get -field password serviceuser/dev/srvpensjonsbrev-esb)
+SAMHANDLERSERVICE_USERNAME=$(vault kv get -field username serviceuser/dev/srv-pensjon-tss-samhandlerv2)
+SAMHANDLERSERVICE_PASSWORD=$(vault kv get -field password serviceuser/dev/srv-pensjon-tss-samhandlerv2)
 BREVKLIENT_SYSTEMID=$(vault kv get -field systemid /kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev)
 BREVKLIENT_PASSORD=$(vault kv get -field passord /kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev)
 
 jq --null-input --arg username "$STS_USERNAME" --arg password "$STS_PASSWORD" '{"STS_USERNAME": $username, "STS_PASSWORD": $password}' > secrets/sts/auth.json
+jq --null-input --arg username "$SAMHANDLERSERVICE_USERNAME" --arg password "$SAMHANDLERSERVICE_PASSWORD" '{"SAMHANDLERSERVICE_USERNAME": $username, "SAMHANDLERSERVICE_PASSWORD": $password}' > secrets/samhandlerService/auth.json
 jq --null-input --arg systemid "$BREVKLIENT_SYSTEMID" --arg passord "$BREVKLIENT_PASSORD" '{"BREVKLIENT_SYSTEMID": $systemid, "BREVKLIENT_PASSORD": $passord}' > secrets/brevklient/auth.json
 
 kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret azure-pensjonsbrev-tjenestebuss-lokal -o json | jq '.data | map_values(@base64d)' > secrets/azuread.json
 echo "Creating docker env file from secrets..."
 jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/azuread.json > secrets/docker.env
 jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/sts/auth.json >> secrets/docker.env
+jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/samhandlerService/auth.json >> secrets/docker.env
 jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/brevklient/auth.json >> secrets/docker.env
 echo "docker.env file created in the \"secrets\" folder."
 echo "All secrets are fetched and stored in the \"secrets\" folder."

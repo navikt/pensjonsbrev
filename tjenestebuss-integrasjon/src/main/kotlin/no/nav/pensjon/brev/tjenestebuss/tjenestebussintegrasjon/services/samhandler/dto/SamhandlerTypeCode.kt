@@ -13,20 +13,20 @@ enum class SamhandlerTypeCode {
     ART,   // Arbeidstilsynet
     ASEN,  // Arbeidslivssenter
     AT,    // Apotektekniker
-    ATU,   // Attfringsutvalg
+    ATU,   // Attføringsutvalg
     AU,    // Audiograf
     BAND,  // Bandasjist
-    BB,    // Begravelsesbyr
+    BB,    // Begravelsesbyrå
     BBE,   // Bobestyrer
     BEH,   // Behandler
     BF,    // Bidragsfogden
     BH,    // Barnehage
     BHT,   // Bedriftshelsetjeneste
-    BI,    // Bioingenir
+    BI,    // Bioingeniør
     BU,    // Bilutvalget
-    EOS,   // ES-Land
+    EOS,   // EØS-Land
     ET,    // Ergoterapeut
-    FA,    // Farmasyt
+    FA,    // Farmasøyt
     FB,    // Fiskehelsebiolog
     FFU,   // Folketrygdkontoret for utenlandssaker
     FKL,   // Fellesordningen LO/NHO
@@ -36,24 +36,24 @@ enum class SamhandlerTypeCode {
     FT,    // Fysioterapeut
     FTK,   // Fylkestrygdekontor
     FULL,  // Fullmektig
-    GVS,   // Grunn- og videregende skole
-    HE,    // Helsesekretr
+    GVS,   // Grunn- og videregående skole
+    HE,    // Helsesekretær
     HF,    // Helsefagarbeider
     HFO,   // Helseforetak
     HJS,   // Hjemmesykepleien
     HMS,   // Hjelpemiddelsentral
     HP,    // Hjelpepleier
     HPRD,  // HPR-dummy
-    HS,    // Helsesster
+    HS,    // Helsesøster
     HSTA,  // Helsestasjon
     HSV,   // Hovedstevnevitnet
     HTF,   // Helsetjeneste forvaltning
-    HU,    // Hyskole/universitet
+    HU,    // Høyskole/universitet
     INST,  // Institusjon
     IS,    // Innkrevingssentralen
     JO,    // Jordmor
     KA,    // Klage- og Ankeenhet
-    KE,    // Klinisk ernringsfysiolog
+    KE,    // Klinisk ernæringsfysiolog
     KEMN,  // Kemner
     KI,    // Kiropraktor
     KOMM,  // Kommune
@@ -63,43 +63,43 @@ enum class SamhandlerTypeCode {
     KYND,  // Sakkyndig
     LABO,  // Laboratorium - offentlig
     LABP,  // Laboratorium - privat
-    LARO,  // Lab/rntgen - privat
+    LARO,  // Lab/røntgen - privat
     LBS,   // Landsdekkende bilsenter
     LE,    // Lege
     LEBE,  // Bedriftslege
     LEFA,  // Fastlege
     LEKO,  // Kommunelege
-    LERA,  // Rdgivende lege
+    LERA,  // Rådgivende lege
     LFK,   // Legemiddel fagkontor
-    LHK,   // Leverandr helsetrygdkort
+    LHK,   // Leverandør helsetrygdkort
     LK,    // Ligningskontor
-    LM,    // Leverandr Motorkjrety
+    LM,    // Leverandør Motorkjøretøy
     LOGO,  // Logoped
-    LRB,   // Lsreregister Brnnysund
+    LRB,   // Løsøreregister Brønnøysund
     LS,    // Legesenter
     MT,    // Manuellterapeut
     NB,    // Namsmannen
     OA,    // Omsorgsarbeider
-    OI,    // Ortopediingenir
+    OI,    // Ortopediingeniør
     OM,    // Ombygger bil
     OP,    // Optiker
     OR,    // Ortoptist
     ORVE,  // Ortopedisk verksted
     PE,    // Perfusjonist
-    PF,    // Provisorfarmasyt
+    PF,    // Provisorfarmasøyt
     POLI,  // Poliklinikk
     PPT,   // Psykologisk pedagogisk tjeneste
     PS,    // Psykolog
     RA,    // Radiograf
-    REGO,  // Regional oppgjrsenhet
-    RF,    // Reseptarfarmasyt
+    REGO,  // Regional oppgjørsenhet
+    RF,    // Reseptarfarmasøyt
     RFK,   // Rogaland fylkestrygdekontor
     RHFO,  // Regionalt helseforetak
     RKK,   // Regionklagekontor
-    ROL,   // Rdgivende overlege
-    RONO,  // Rntgeninstitutt - offentlig
-    RONP,  // Rntgeninstitutt - privat
-    RT,    // Rdgivende tannlege
+    ROL,   // Rådgivende overlege
+    RONO,  // Røntgeninstitutt - offentlig
+    RONP,  // Røntgeninstitutt - privat
+    RT,    // Rådgivende tannlege
     RTK,   // Regionstrygdekontor
     RTV,   // Rikstrygdeverket
     SAD,   // Samleadressat
@@ -107,11 +107,11 @@ enum class SamhandlerTypeCode {
     SK,    // Sosialkontor
     SP,    // Sykepleier
     SR,    // Skifteretten
-    STKO,  // Stttekontakt
+    STKO,  // Støttekontakt
     SUD,   // Statens utlendingsdirektorat
     SYKH,  // Sykehus
     TEPE,  // Tjenestepensjonsordningar
-    TH,    // Tannhelsesekretr
+    TH,    // Tannhelsesekretær
     TI,    // Takseringsinstanser
     TK,    // Trygdekontor
     TL,    // Tannlege
@@ -119,10 +119,10 @@ enum class SamhandlerTypeCode {
     TOLK,  // Tolk
     TP,    // Tannpleier
     TR,    // Trygderetten
-    TRAN,  // Transportr
+    TRAN,  // Transportør
     TT,    // Tanntekniker
     UTL,   // Utenlandske samhandler
-    VE,    // Veterinr
+    VE,    // Veterinær
     VIRT,  // Virtuelt trygdekontor
     VP,    // Vernepleier
     X,     // Diverse

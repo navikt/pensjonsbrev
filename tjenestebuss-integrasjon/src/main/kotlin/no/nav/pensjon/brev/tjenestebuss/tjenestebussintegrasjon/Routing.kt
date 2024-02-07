@@ -21,7 +21,8 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.A
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExtreamRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamBrevService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.PsakSamhandlerTjenestebussService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.SamhandlerTypeCode
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSService
@@ -77,8 +78,9 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val stsService = STSService(config.getConfig("services.sts"))
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
         val servicesConfig = config.getConfig("services")
-        val samhandlerTjenestebussService =
-            SamhandlerTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
+        val psakSamhandlerTjenestebussService =
+            PsakSamhandlerTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
+        val samhandlerService = SamhandlerService(servicesConfig.getConfig("samhandlerService"))
         val arkivTjenestebussService =
             ArkivTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
         val dokumentProduksjonService =
@@ -100,11 +102,15 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             }
             post("/hentSamhandler") {
                 val requestDto = call.receive<HentSamhandlerRequestDto>()
-                call.respond(withCallId(samhandlerTjenestebussService) { hentSamhandler(requestDto) })
+                call.respond(withCallId(psakSamhandlerTjenestebussService) { hentSamhandler(requestDto) })
+            }
+            post("/hentSamhandlerAdresse"){
+                val requestDto = call.receive<HentSamhandlerAdresseRequestDto>()
+                call.respond(withCallId(samhandlerService) { hentSamhandlerPostadresse(requestDto.idTSSEkstern) })
             }
             post("/finnSamhandler") {
                 val requestDto = call.receive<FinnSamhandlerRequestDto>()
-                call.respond(withCallId(samhandlerTjenestebussService) { finnSamhandler(requestDto) })
+                call.respond(withCallId(psakSamhandlerTjenestebussService) { finnSamhandler(requestDto) })
             }
             post("/bestillExtreamBrev") {
                 val requestDto = call.receive<BestillBrevExtreamRequestDto>()
@@ -125,6 +131,10 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
 data class HentSamhandlerRequestDto(
     val idTSSEkstern: String,
     val hentDetaljert: Boolean,
+)
+
+data class HentSamhandlerAdresseRequestDto(
+    val idTSSEkstern: String,
 )
 
 data class FinnSamhandlerRequestDto(
