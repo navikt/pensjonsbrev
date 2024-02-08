@@ -11,21 +11,22 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 
 // TBU3020
 data class InnledningVarselSaksbehandlingstid(
-    val mottattDato: Expression<LocalDate>
+    val mottattDatoMinus2Dager: Expression<LocalDate>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
+            val mottattDato = mottattDatoMinus2Dager.format()
             textExpr(
-                Bokmal to "Vi viser til søknaden din om uføretrygd som vi mottok ".expr() + mottattDato.format() + ".",
-                Nynorsk to "Vi viser til søknaden din om uføretrygd som vi tok imot ".expr() + mottattDato.format() + ".",
-                English to "We refer to your application for disability benefit that we received ".expr() + mottattDato.format() + "."
+                Bokmal to "Vi viser til søknaden din om uføretrygd som vi mottok ".expr() + mottattDato + ".",
+                Nynorsk to "Vi viser til søknaden din om uføretrygd som vi tok imot ".expr() + mottattDato + ".",
+                English to "We refer to your application for disability benefit that we received ".expr() + mottattDato + "."
             )
         }
     }
 }
 
 // TBU3015
-data class SaksbehandlingstidUfore(
+data class SaksbehandlingstidUfoere(
     val utvidetBehandlingstid: Expression<Boolean>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

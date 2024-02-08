@@ -2,16 +2,14 @@ package no.nav.pensjon.brev.maler.ufoereBrev
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
+import no.nav.pensjon.brev.maler.fraser.ufoer.InnledningVarselSaksbehandlingstid
+import no.nav.pensjon.brev.maler.fraser.ufoer.SaksbehandlingstidUfoere
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
-import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.LocalDate
 
 object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidAutoDto> {
 
@@ -28,6 +26,7 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+
         title {
             text(
                 Bokmal to "NAV har mottatt søknaden din om uføretrygd",
@@ -36,15 +35,22 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             )
         }
         outline {
-
-
             includePhrase(
-                Ufoeretrygd.MeldeFraOmEndringer
+                InnledningVarselSaksbehandlingstid(
+                    mottattDatoMinus2Dager =
+                )
             )
 
             includePhrase(
-                Ufoeretrygd.HarDuSpoersmaalUfoeretrygd
+                SaksbehandlingstidUfoere(
+                    utvidetBehandlingstid =
+                )
             )
+
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+
+            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
         }
+        includeAttachment(vedleggDineRettigheterOgPlikterUfoere)
     }
 }
