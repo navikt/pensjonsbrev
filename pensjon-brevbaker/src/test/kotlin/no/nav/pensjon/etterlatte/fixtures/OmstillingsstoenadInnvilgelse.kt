@@ -15,16 +15,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
             doedsdato = LocalDate.of(2023, 12, 1)
         ),
         beregning = OmstillingsstoenadBeregning(
-            innhold = listOf(
-                Element(
-                    type = ElementType.PARAGRAPH,
-                    children = listOf(
-                        InnerElement(
-                            text = "Tekst som legges i vedlegg for beregning"
-                        )
-                    )
-                )
-            ),
+            innhold = createPlaceholderForRedigerbartInnhold(),
             virkningsdato = LocalDate.of(2024, 1, 1),
             inntekt = Kroner(500000),
             grunnbeloep = Kroner(118620),
