@@ -24,7 +24,7 @@ data class InnledningVarselSaksbehandlingstid(
         }
     }
 }
-
+/*
 // TBU3015
 data class SaksbehandlingstidUfoere(
     val utvidetBehandlingstid: Expression<Boolean>
@@ -44,4 +44,5 @@ data class SaksbehandlingstidUfoere(
             )
         }
     }
-}
+    }
+ */
