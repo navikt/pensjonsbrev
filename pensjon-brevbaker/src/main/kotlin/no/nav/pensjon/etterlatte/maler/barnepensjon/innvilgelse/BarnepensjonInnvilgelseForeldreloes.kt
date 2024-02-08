@@ -95,9 +95,8 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            // TODO påse at er ok
             includePhrase(
-                BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
+                BarnepensjonForeldreloesFraser.UtbetalingAvBarnepensjon(
                     beregning.beregningsperioder,
                     etterbetaling
                 )
