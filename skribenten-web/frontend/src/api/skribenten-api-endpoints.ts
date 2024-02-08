@@ -89,8 +89,14 @@ export const getLetterTemplate = {
 
 export const getEblanketter = {
   queryKey: letterTemplatesKeys.eblanketter(),
-  queryFn: async () =>
-    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data,
+  queryFn: async () => {
+    try {
+      return (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data;
+    } catch {
+      /* Fetching e-blanketter is not critical, therefore we want to handle Forbidden/Server errors as an empty list. */
+    }
+    return [];
+  },
 };
 
 export const getKontaktAdresse = {

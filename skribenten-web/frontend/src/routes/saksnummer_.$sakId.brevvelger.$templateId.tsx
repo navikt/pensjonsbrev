@@ -22,7 +22,6 @@ import {
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
-import { BrevvelgerTabOptions } from "~/routes/saksnummer_.$sakId.brevvelger";
 import type { LetterMetadata, OrderLetterRequest } from "~/types/apiTypes";
 import { BrevSystem, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
@@ -72,7 +71,6 @@ const formValidationSchema = z.object({
 });
 
 export function SelectedTemplate() {
-  const { fane } = Route.useSearch();
   const { letterTemplate } = Route.useLoaderData();
 
   if (!letterTemplate) {
@@ -91,10 +89,10 @@ export function SelectedTemplate() {
       `}
     >
       <FavoriteButton />
-      {fane === BrevvelgerTabOptions.BREVMALER ? (
-        <Brevmal letterTemplate={letterTemplate} />
-      ) : (
+      {letterTemplate.dokumentkategoriCode === "E_BLANKETT" ? (
         <Eblankett letterTemplate={letterTemplate} />
+      ) : (
+        <Brevmal letterTemplate={letterTemplate} />
       )}
     </div>
   );
