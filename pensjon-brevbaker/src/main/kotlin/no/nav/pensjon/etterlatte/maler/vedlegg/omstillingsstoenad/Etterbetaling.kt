@@ -24,7 +24,7 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
     title = newText(
         Bokmal to "Etterbetaling",
         Nynorsk to "Etterbetaling",
-        English to "Back payments",
+        English to "Back Payments",
     ),
     includeSakspart = false
 ) {

@@ -67,8 +67,8 @@ object OmstillingsstoenadInnvilgelseFraser {
                                     "«Etterbetaling av omstillingsstønad».",
                             English to "You will receive NOK ".expr() + utbetaltBeloep.format() + " each " +
                                     "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ". " +
-                                    "See the payment amount for previous periods in the " +
-                                    "Back Payment of Adjustment Allowance Attachment."
+                                    "See the payment amount for previous periods in the attachment " +
+                                    "Back Payments."
                         )
                     }
                 }.orShow {
