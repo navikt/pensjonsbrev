@@ -44,9 +44,9 @@ object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Reglene har ingen praktisk betydning for deg. Samlet pensjon før skatt er den samme som før. "
-                            + "Vi har bare endret metoden for beregningen av alderspensjonen din.",
+                            + "Vi har bare endret metoden for beregningen av alderspensjonen din.",
                     Nynorsk to "Reglane har ingen praktisk tyding for deg. Samla pensjon før skatt er den same som før. "
-                            + "Vi har berre endra metoden for utrekninga av alderspensjonen din.",
+                            + "Vi har berre endra metoden for utrekninga av alderspensjonen din.",
                     English to "The rules have no practical significance for you. Your total pension amount before tax is the same as before. "
                             + "We have only changed the method for calculating your retirement pension."
                 )
@@ -61,9 +61,9 @@ object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Metoden for beregningen av alderspensjonen din gjør at du nå får et gjenlevendetillegg. "
-                            + "Dette erstatter det som før het «minstenivåtillegg individuelt».",
+                            + "Dette erstatter det som før het «minstenivåtillegg individuelt».",
                     Nynorsk to "Metoden for utrekninga av alderspensjonen din gjer at du no får eit attlevandetillegg. "
-                            + "Dette erstattar det som før heitte «minstenivåtillegg individuelt».",
+                            + "Dette erstattar det som før heitte «minstenivåtillegg individuelt».",
                     English to "The method for calculating your retirement pension means that you now receive a survivor’s supplement. "
                             + "This replaces what was previously called ‘minimum pension supplement’."
                 )
@@ -95,7 +95,7 @@ object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Du kan logge deg på ${Constants.UTBETALINGSOVERSIKT_URL} for å se utbetalingene dine.",
-                    Nynorsk to "Du kan logge deg på ${Constants.UTBETALINGSOVERSIKT_URL} for å sjå utbetalingane dine",
+                    Nynorsk to "Du kan logge deg på ${Constants.UTBETALINGSOVERSIKT_URL} for å sjå utbetalingane dine.",
                     English to "Log in to ${Constants.UTBETALINGSOVERSIKT_URL} to see your payments.",
                 )
             }
