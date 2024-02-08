@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.ufoere
 
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.latex.*
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
