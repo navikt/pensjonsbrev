@@ -179,37 +179,43 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
             <SelectSensitivity letterTemplate={letterTemplate} />
           </VStack>
 
-          <VStack gap="4">
-            {orderLetterMutation.error && <Alert variant="error">{orderLetterMutation.error.message}</Alert>}
-            {orderLetterMutation.isSuccess ? (
-              <Alert variant="success">
-                <Heading level="3" size="xsmall">
-                  Brev bestilt
-                </Heading>
-                <span>
-                  Redigering skal åpne seg selv, hvis ikke er popup blokkert av nettleseren din.{" "}
-                  <Link href={orderLetterMutation.data}>Klikk her for å prøve åpne på nytt</Link>
-                </span>
-              </Alert>
-            ) : (
-              <Button
-                css={css`
-                  width: fit-content;
-                `}
-                icon={<ArrowRightIcon />}
-                iconPosition="right"
-                loading={orderLetterMutation.isPending}
-                size="small"
-                type="submit"
-                variant="primary"
-              >
-                Bestill og rediger brev
-              </Button>
-            )}
-          </VStack>
+          <BestillOgRedigerButton orderMutation={orderLetterMutation} />
         </form>
       </FormProvider>
     </>
+  );
+}
+
+function BestillOgRedigerButton({ orderMutation }: { orderMutation: any }) {
+  return (
+    <VStack gap="4">
+      {orderMutation.error && <Alert variant="error">{orderMutation.error.message}</Alert>}
+      {orderMutation.isSuccess ? (
+        <Alert variant="success">
+          <Heading level="3" size="xsmall">
+            Brev bestilt
+          </Heading>
+          <span>
+            Redigering skal åpne seg selv, hvis ikke er popup blokkert av nettleseren din.{" "}
+            <Link href={orderMutation.data}>Klikk her for å prøve åpne på nytt</Link>
+          </span>
+        </Alert>
+      ) : (
+        <Button
+          css={css`
+            width: fit-content;
+          `}
+          icon={<ArrowRightIcon />}
+          iconPosition="right"
+          loading={orderMutation.isPending}
+          size="small"
+          type="submit"
+          variant="primary"
+        >
+          Bestill og rediger brev
+        </Button>
+      )}
+    </VStack>
   );
 }
 
@@ -325,22 +331,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
               size="small"
             />
           </VStack>
-          <VStack gap="4">
-            {orderEblankettMutation.error && <Alert variant="error">{orderEblankettMutation.error.message}</Alert>}
-            <Button
-              css={css`
-                width: fit-content;
-              `}
-              icon={<ArrowRightIcon />}
-              iconPosition="right"
-              loading={orderEblankettMutation.isPending}
-              size="small"
-              type="submit"
-              variant="primary"
-            >
-              Bestill eblankett
-            </Button>
-          </VStack>
+          <BestillOgRedigerButton orderMutation={orderEblankettMutation} />
         </form>
       </FormProvider>
     </>
