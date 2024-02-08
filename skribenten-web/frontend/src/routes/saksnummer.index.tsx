@@ -8,7 +8,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 import { getSak } from "~/api/skribenten-api-endpoints";
-import { BrevvelgerTabOptions } from "~/routes/saksnummer_.$sakId.brevvelger";
 import type { SakDto } from "~/types/apiTypes";
 
 export const Route = createFileRoute("/saksnummer/")({
@@ -31,7 +30,6 @@ function SaksnummerPage() {
       navigate({
         to: "/saksnummer/$sakId/brevvelger",
         params: { sakId: sak.sakId.toString() },
-        search: { fane: BrevvelgerTabOptions.BREVMALER },
       });
     },
   });

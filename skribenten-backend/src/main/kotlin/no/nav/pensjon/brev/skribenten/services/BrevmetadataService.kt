@@ -52,7 +52,8 @@ class BrevmetadataService(config: Config) {
                 BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
                 BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXTREAM
             },
-            brevkategoriCode = this.brevkategori
+            brevkategoriCode = this.brevkategori,
+            dokumentkategoriCode = this.dokumentkategori
         )
 
 
@@ -120,6 +121,7 @@ data class LetterMetadata(
     val id: String,
     val brevsystem: BrevSystem,
     val spraak: List<SpraakKode>, // Enkelte brev er egentlig bare bokmål, men har null i metadata.
-    val brevkategoriCode: BrevdataDto.BrevkategoriCode?
+    val brevkategoriCode: BrevdataDto.BrevkategoriCode?,
+    val dokumentkategoriCode: BrevdataDto.DokumentkategoriCode?,
 )
 
