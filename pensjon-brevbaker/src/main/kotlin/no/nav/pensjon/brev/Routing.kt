@@ -63,7 +63,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
                         if (template == null) {
                             call.respond(HttpStatusCode.NotFound)
                         } else {
-                            call.respond(TemplateMetaRenderer.render(template, language))
+                            call.respond(TemplateDocumentationRenderer.render(template, language))
                         }
 
                     }

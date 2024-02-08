@@ -1,36 +1,26 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
-import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.UngUfoerAuto
-import no.nav.pensjon.brev.maler.example.DesignReferenceLetter
+import no.nav.pensjon.brev.api.prodAutobrevTemplates
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.jacksonObjectMapper
-import no.nav.pensjon.brev.template.render.TemplateDocumentation.*
-import no.nav.pensjon.brev.template.render.TemplateMetaRenderer.flattenLiteralConcat
-import no.nav.pensjon.brev.template.render.TemplateMetaRenderer.mergeLiterals
+import no.nav.pensjon.brev.template.render.TemplateDocumentation.ContentOrControlStructure
+import no.nav.pensjon.brev.template.render.TemplateDocumentation.Element
+import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer.flattenLiteralConcat
+import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer.mergeLiterals
 import no.nav.pensjon.brevbaker.api.model.Year
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class TemplateMetaRendererTest {
-
-    private val mapper = jacksonObjectMapper()
+class TemplateDocumentationRendererTest {
 
     @Test
-    fun renderTest() {
-        val doc = TemplateMetaRenderer.render(ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template.attachments.first().template.outline, Language.Bokmal)
-
-        ExpressionVisitor.visit(doc).forEach {
-            println(mapper.writeValueAsString(it))
-            println("----------------------------")
+    fun canRenderDocumentationForAllTemplates() {
+        prodAutobrevTemplates.forEach {
+            TemplateDocumentationRenderer.render(it.template, it.template.language.all().first())
         }
-
     }
 
     @Test
@@ -45,6 +35,7 @@ class TemplateMetaRendererTest {
 
 }
 
+// Dette er et util som er greit å ha etterhvert som vi jobberr videre med å forenkle expressions
 object ExpressionVisitor {
     fun <T: Element> visit(nodes: List<ContentOrControlStructure<T>>): List<TemplateDocumentation.Expression> =
         nodes.flatMap { visit(it) }

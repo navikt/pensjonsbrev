@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.BinaryOperation.Documentation
 import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invoke.Operation
 
-object TemplateMetaRenderer {
+object TemplateDocumentationRenderer {
 
     fun render(template: LetterTemplate<*, *>, lang: Language): TemplateDocumentation =
         TemplateDocumentation(
@@ -75,7 +75,7 @@ object TemplateMetaRenderer {
         lang: Language
     ): List<TemplateDocumentation.Element.ParagraphContent> =
         when (element) {
-            is Element.OutlineContent.ParagraphContent.Form -> TODO()
+            is Element.OutlineContent.ParagraphContent.Form -> listOf(TemplateDocumentation.Element.ParagraphContent.Text.Literal("## missing documentation ##"))
             is Element.OutlineContent.ParagraphContent.ItemList -> listOf(
                 TemplateDocumentation.Element.ParagraphContent.ItemList(
                     renderContentOrStructure(element.items) { listOf(renderItem(it, lang)) }
