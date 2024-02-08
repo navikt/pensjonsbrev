@@ -93,3 +93,8 @@ export type KontaktAdresseResponse = {
   adresseString: string;
   adresselinjer: string[];
 };
+
+export type Avtaleland = {
+  navn: string;
+  kode: string;
+};

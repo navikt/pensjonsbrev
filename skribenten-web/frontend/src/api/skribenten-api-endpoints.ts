@@ -6,6 +6,7 @@ import type { AxiosResponse } from "axios";
 import axios from "axios";
 
 import type {
+  Avtaleland,
   BestillOgRedigerBrevResponse,
   KontaktAdresseResponse,
   LetterMetadata,
@@ -44,6 +45,10 @@ export const letterKeys = {
 
 export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
+};
+
+export const avtalelandKeys = {
+  all: ["AVTALE_LAND"] as const,
 };
 
 export const adresseKeys = {
@@ -115,6 +120,11 @@ export const getTemplate = {
   queryKey: letterKeys.brevkode,
   queryFn: async (brevkode: string) =>
     (await axios.get<RedigerbarTemplateDescription>(`${SKRIBENTEN_API_BASE_PATH}/template/${brevkode}`)).data,
+};
+
+export const getAvtaleLand = {
+  queryKey: avtalelandKeys.all,
+  queryFn: async () => (await axios.get<Avtaleland[]>(`${SKRIBENTEN_API_BASE_PATH}/kodeverk/avtaleland`)).data,
 };
 
 export async function renderLetter(letterId: string, request: unknown) {

@@ -13,6 +13,7 @@ import { z } from "zod";
 import {
   addFavoritt,
   deleteFavoritt,
+  getAvtaleLand,
   getEblanketter,
   getFavoritter,
   getKontaktAdresse,
@@ -66,7 +67,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   },
 });
 
-const formValidationSchema = z.object({
+const brevmalValidationSchema = z.object({
   spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
 });
@@ -117,11 +118,11 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
     orderLetterMutation.reset();
   }, [templateId]);
 
-  const methods = useForm<z.infer<typeof formValidationSchema>>({
+  const methods = useForm<z.infer<typeof brevmalValidationSchema>>({
     defaultValues: {
       isSensitive: letterTemplate?.brevsystem === BrevSystem.Extream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
     },
-    resolver: zodResolver(formValidationSchema),
+    resolver: zodResolver(brevmalValidationSchema),
   });
 
   return (
@@ -249,7 +250,15 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   );
 }
 
+const eblankettValidationSchema = z.object({
+  avtaleland: z.string().min(1, "Obligatorisk"),
+});
+
 function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  const methods = useForm({
+    resolver: zodResolver(eblankettValidationSchema),
+  });
+
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
@@ -258,7 +267,52 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
       </Heading>
       <BodyShort size="small">E-blankett</BodyShort>
       <Divider />
+      <FormProvider {...methods}>
+        <form
+          css={css`
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+          `}
+          onSubmit={methods.handleSubmit((submittedValues) => {
+            console.log("submit", submittedValues);
+          })}
+        >
+          <SelectAvtaleland />
+          <Button
+            css={css`
+              width: fit-content;
+            `}
+            icon={<ArrowRightIcon />}
+            iconPosition="right"
+            size="small"
+            type="submit"
+            variant="primary"
+          >
+            Bestill eblankett
+          </Button>
+        </form>
+      </FormProvider>
     </>
+  );
+}
+
+function SelectAvtaleland() {
+  const avtalelandQuery = useQuery(getAvtaleLand);
+  const { register, getFieldState } = useFormContext();
+
+  const options = avtalelandQuery.data ?? [];
+
+  return (
+    <Select {...register("avtaleland")} error={getFieldState("avtaleland").error?.message} label="Land" size="small">
+      <option value={""}>Velg land</option>
+      {options.map((option) => (
+        <option key={option.kode} value={option.kode}>
+          {option.navn}
+        </option>
+      ))}
+    </Select>
   );
 }
 
