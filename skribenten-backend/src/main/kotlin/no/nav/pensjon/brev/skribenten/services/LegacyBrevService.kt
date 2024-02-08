@@ -4,36 +4,11 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.getLoggedInName
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExtreamBrevResponseDto
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExstreamBrevResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
-import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.ERROR
-import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.NOT_READY
-import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.READY
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_ADDRESS_NOT_FOUND
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_INTERNAL_SERVICE_CALL_FAILIURE
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_PERSON_NOT_FOUND
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_TPS_CALL_FAILIURE
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_UNAUTHORIZED
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_IKKE_FUNNET
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_IKKE_REDIGERBART
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_IKKE_TILGANG
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_LUKKET
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_UFORVENTET
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_UNDER_REDIGERING
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.DOKSYS_REDIGERING_VALIDERING_FEILET
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.ENHETSID_MANGLER
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_BESTILLING_ADRESSE_MANGLER
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_BESTILLING_HENTE_BREVDATA
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.EXTREAM_REDIGERING_GENERELL
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.FERDIGSTILLING_TIMEOUT
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.NAVANSATT_ENHETER_ERROR
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.SAF_ERROR
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.SKRIBENTEN_INTERNAL_ERROR
+import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.*
 import org.slf4j.LoggerFactory
-import kotlin.math.log
 
 class LegacyBrevService(
     private val tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
@@ -53,7 +28,7 @@ class LegacyBrevService(
             } else {
                 return when (brevmetadataService.getMal(request.brevkode).brevsystem) {
                     BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request, sakEnhetId)
-                    BrevdataDto.BrevSystem.GAMMEL -> bestillExtreamBrev(
+                    BrevdataDto.BrevSystem.GAMMEL -> bestillExstreamBrev(
                         call = call,
                         request = request,
                         navIdent = fetchLoggedInNavIdent(call),
@@ -68,7 +43,7 @@ class LegacyBrevService(
             return BestillOgRedigerBrevResponse(PenService.BestillDoksysBrevResponse.FailureType.INTERNAL_SERVICE_CALL_FAILIURE)
         }
 
-    private suspend fun bestillExtreamBrev(
+    private suspend fun bestillExstreamBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
         navIdent: String,
@@ -76,22 +51,22 @@ class LegacyBrevService(
         navn: String,
         enhetsId: String,
     ): BestillOgRedigerBrevResponse =
-        tjenestebussIntegrasjonService.bestillExtreamBrev(call, request, navIdent, metadata, navn, enhetsId)
+        tjenestebussIntegrasjonService.bestillExstreamBrev(call, request, navIdent, metadata, navn, enhetsId)
             .map {
                 if (it.failureType != null) {
                     BestillOgRedigerBrevResponse(it.failureType)
                 } else if (it.journalpostId != null) {
-                    ventPaaJournalOgRedigerExtreamBrev(call, it.journalpostId)
+                    ventPaaJournalOgRedigerExstreamBrev(call, it.journalpostId)
                 } else {
                     logger.error("Tom response fra tjenestebuss-integrasjon")
                     BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
                 }
             }.catch { message, httpStatusCode ->
-                logger.error("Feil ved bestilling av brev fra extream mot tjenestebuss-integrasjon: $message Status:$httpStatusCode")
+                logger.error("Feil ved bestilling av brev fra exstream mot tjenestebuss-integrasjon: $message Status:$httpStatusCode")
                 BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
             }
 
-    private suspend fun ventPaaJournalOgRedigerExtreamBrev(
+    private suspend fun ventPaaJournalOgRedigerExstreamBrev(
         call: ApplicationCall,
         journalpostId: String,
     ): BestillOgRedigerBrevResponse {
@@ -100,17 +75,17 @@ class LegacyBrevService(
             ERROR -> return BestillOgRedigerBrevResponse(SAF_ERROR)
             NOT_READY -> return BestillOgRedigerBrevResponse(FERDIGSTILLING_TIMEOUT)
             READY -> {
-                return tjenestebussIntegrasjonService.redigerExtreamBrev(call, journalpostId)
-                    .map { extreamResponse ->
+                return tjenestebussIntegrasjonService.redigerExstreamBrev(call, journalpostId)
+                    .map { exstreamResponse ->
                         BestillOgRedigerBrevResponse(
-                            url = extreamResponse.url,
-                            failureType = extreamResponse.failure?.let {
-                                logger.error("Feil ved redigering av extream brev $it")
-                                EXTREAM_REDIGERING_GENERELL
+                            url = exstreamResponse.url,
+                            failureType = exstreamResponse.failure?.let {
+                                logger.error("Feil ved redigering av exstream brev $it")
+                                EXSTREAM_REDIGERING_GENERELL
                             }
                         )
                     }.catch { message, httpStatusCode ->
-                        logger.error("Feil ved bestilling av redigering av extream brev mot tjenestebuss integrasjon: $message Status: $httpStatusCode")
+                        logger.error("Feil ved bestilling av redigering av exstream brev mot tjenestebuss integrasjon: $message Status: $httpStatusCode")
                         BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
                     }
 
@@ -248,12 +223,12 @@ class LegacyBrevService(
             }
         )
 
-        constructor(failure: BestillExtreamBrevResponseDto.FailureType) : this(
+        constructor(failure: BestillExstreamBrevResponseDto.FailureType) : this(
             when (failure) {
-                BestillExtreamBrevResponseDto.FailureType.ADRESSE_MANGLER -> EXTREAM_BESTILLING_ADRESSE_MANGLER
-                BestillExtreamBrevResponseDto.FailureType.HENTE_BREVDATA -> EXTREAM_BESTILLING_HENTE_BREVDATA
-                BestillExtreamBrevResponseDto.FailureType.MANGLER_OBLIGATORISK_INPUT -> EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT
-                BestillExtreamBrevResponseDto.FailureType.OPPRETTE_JOURNALPOST -> EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST
+                BestillExstreamBrevResponseDto.FailureType.ADRESSE_MANGLER -> EXSTREAM_BESTILLING_ADRESSE_MANGLER
+                BestillExstreamBrevResponseDto.FailureType.HENTE_BREVDATA -> EXSTREAM_BESTILLING_HENTE_BREVDATA
+                BestillExstreamBrevResponseDto.FailureType.MANGLER_OBLIGATORISK_INPUT -> EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT
+                BestillExstreamBrevResponseDto.FailureType.OPPRETTE_JOURNALPOST -> EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST
             }
         )
 
@@ -271,11 +246,11 @@ class LegacyBrevService(
             DOKSYS_REDIGERING_UFORVENTET,
             DOKSYS_REDIGERING_UNDER_REDIGERING,
             DOKSYS_REDIGERING_VALIDERING_FEILET,
-            EXTREAM_BESTILLING_ADRESSE_MANGLER,
-            EXTREAM_BESTILLING_HENTE_BREVDATA,
-            EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
-            EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST,
-            EXTREAM_REDIGERING_GENERELL,
+            EXSTREAM_BESTILLING_ADRESSE_MANGLER,
+            EXSTREAM_BESTILLING_HENTE_BREVDATA,
+            EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
+            EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST,
+            EXSTREAM_REDIGERING_GENERELL,
             FERDIGSTILLING_TIMEOUT,
             SAF_ERROR,
             SKRIBENTEN_INTERNAL_ERROR,

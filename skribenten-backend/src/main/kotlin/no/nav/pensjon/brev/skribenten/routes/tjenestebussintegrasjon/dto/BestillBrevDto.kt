@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
 
 import javax.xml.datatype.XMLGregorianCalendar
 
-data class BestillExtreamBrevResponseDto(
+data class BestillExstreamBrevResponseDto(
     val journalpostId: String?,
     val failureType: FailureType?
 ) {
@@ -15,7 +15,7 @@ data class BestillExtreamBrevResponseDto(
 }
 
 
-data class BestillBrevExtreamRequestDto(
+data class BestillBrevExstreamRequestDto(
     val brevKode: String,
     val brevGruppe: String,
     val isRedigerbart: Boolean,

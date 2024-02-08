@@ -117,7 +117,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 
   const methods = useForm<z.infer<typeof formValidationSchema>>({
     defaultValues: {
-      isSensitive: letterTemplate?.brevsystem === BrevSystem.Extream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
+      isSensitive: letterTemplate?.brevsystem === BrevSystem.Exstream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
     },
     resolver: zodResolver(formValidationSchema),
   });
@@ -147,7 +147,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
               case BrevSystem.Brevbaker: {
                 return navigate({ to: "/saksnummer/$sakId/redigering/$templateId", params: { sakId, templateId } });
               }
-              case BrevSystem.Extream:
+              case BrevSystem.Exstream:
               case BrevSystem.DokSys: {
                 const orderLetterRequest = {
                   brevkode: letterTemplate.id,
@@ -201,7 +201,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 }
 
 function SelectSensitivity({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  if (letterTemplate.brevsystem !== BrevSystem.Extream) {
+  if (letterTemplate.brevsystem !== BrevSystem.Exstream) {
     return <></>;
   }
 
@@ -292,10 +292,10 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
               </Tag>
             );
           }
-          case BrevSystem.Extream: {
+          case BrevSystem.Exstream: {
             return (
               <Tag size="small" variant="alt1-moderate">
-                Extream
+                Exstream
               </Tag>
             );
           }

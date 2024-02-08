@@ -50,7 +50,7 @@ class BrevmetadataService(config: Config) {
             spraak = sprak ?: emptyList(),
             brevsystem = when (brevsystem) {
                 BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
-                BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXTREAM
+                BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
             },
             brevkategoriCode = this.brevkategori,
             dokumentkategoriCode = this.dokumentkategori
@@ -95,7 +95,7 @@ data class BrevdataDto(
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
     enum class BrevSystem {
         DOKSYS,
-        GAMMEL,     //EXTREAM
+        GAMMEL,     //EXSTREAM
     }
 
     enum class DokumentType {
@@ -114,7 +114,7 @@ enum class SpraakKode {
     SE, // Nord-samisk
 }
 
-enum class BrevSystem { EXTREAM, DOKSYS, BREVBAKER }
+enum class BrevSystem { EXSTREAM, DOKSYS, BREVBAKER }
 
 data class LetterMetadata(
     val name: String,

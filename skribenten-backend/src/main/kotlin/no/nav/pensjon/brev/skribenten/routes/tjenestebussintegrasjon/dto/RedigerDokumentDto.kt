@@ -20,6 +20,6 @@ data class RedigerDoksysDokumentResponseDto(val metaforceURI: String?, val failu
 }
 
 
-data class RedigerExtreamDokumentRequestDto(val journalpostId: String)
+data class RedigerExstreamDokumentRequestDto(val journalpostId: String)
 
-data class RedigerExtreamDokumentResponseDto(val url: String?, val failure: String?)
+data class RedigerExstreamDokumentResponseDto(val url: String?, val failure: String?)

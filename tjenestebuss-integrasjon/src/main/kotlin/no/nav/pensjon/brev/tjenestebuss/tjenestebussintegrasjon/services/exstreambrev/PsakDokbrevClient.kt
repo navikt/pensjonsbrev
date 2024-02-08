@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev
+package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.exstreambrev
 
 import com.typesafe.config.Config
 import no.nav.inf.psak.dokbrev.PSAKDokBrev
@@ -11,7 +11,7 @@ import javax.xml.namespace.QName
 
 /**
  * PsakDokbrevClient er en soap klient for PSAK Dokbrev.
- * Benyttes for Extream brev
+ * Benyttes for Exstream brev
  */
 class PsakDokbrevClient(
     config: Config,
