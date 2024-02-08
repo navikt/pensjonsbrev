@@ -55,15 +55,16 @@ import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
+  loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
   validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string } => ({
     idTSSEkstern: search.idTSSEkstern?.toString(),
   }),
-  loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
+  loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId }, deps: { includeVedtak } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
     const letterTemplates = await queryClient.ensureQueryData({
-      queryKey: getLetterTemplate.queryKey(sak.sakType),
-      queryFn: () => getLetterTemplate.queryFn(sak.sakType),
+      queryKey: getLetterTemplate.queryKey({ sakType: sak.sakType, includeVedtak }),
+      queryFn: () => getLetterTemplate.queryFn(sak.sakType, { includeVedtak }),
     });
 
     const eblanketter = await queryClient.ensureQueryData(getEblanketter);

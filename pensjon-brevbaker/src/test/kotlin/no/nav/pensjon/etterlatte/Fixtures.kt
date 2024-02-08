@@ -6,6 +6,8 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageFerdigDTO
+import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseRedigerbartUtfallDTO
@@ -18,8 +20,8 @@ import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadOpphoerDTO
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadpphoerRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingInnholdDTO
@@ -36,6 +38,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
@@ -95,6 +99,9 @@ object Fixtures {
 
             TilbakekrevingInnholdDTO::class -> createTilbakekrevingInnholdDTO() as T
             TilbakekrevingFerdigDTO::class -> createTilbakekrevingFerdigDTO() as T
+
+            AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
+            AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T
 
             ManueltBrevDTO::class -> createManueltBrevDTO() as T
             ManueltBrevMedTittelDTO::class -> createTomMalInformasjonsbrev() as T

@@ -27,7 +27,7 @@ class BrevmetadataService(config: Config) {
         }
     }
 
-    suspend fun getRedigerbareBrev(sakstype: String): List<LetterMetadata> {
+    suspend fun getRedigerbareBrev(sakstype: String, includeVedtak: Boolean): List<LetterMetadata> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
@@ -35,7 +35,7 @@ class BrevmetadataService(config: Config) {
         if (httpResponse.status.isSuccess()) {
             return httpResponse.body<List<BrevdataDto>>()
                 .filter { it.redigerbart }
-                .filter {it.brevkategori != BrevdataDto.BrevkategoriCode.VEDTAK}
+                .filter { includeVedtak || it.brevkategori != BrevdataDto.BrevkategoriCode.VEDTAK }
                 .map{ it.mapToMetadata() }
         } else {
             logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
