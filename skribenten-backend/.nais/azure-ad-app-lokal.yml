@@ -15,10 +15,12 @@ metadata:
     team: pensjonsbrev
 spec:
   secretName: azure-skribenten-backend-lokal
-  allowAllUsers: true
   replyUrls:
     - url: "http://localhost:8082/oauth2/callback"
   claims:
+    groups:
+      - id: "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
+      - id: "bda6bd68-77e6-4c00-96b9-7ecf5df7413c" #0000-GA-Pensjon_Utland
     extra:
       - "azp_name"
   preAuthorizedApplications:
@@ -28,3 +30,5 @@ spec:
     - application: skribenten-web
       cluster: dev-gcp
       namespace: pensjonsbrev
+
+
