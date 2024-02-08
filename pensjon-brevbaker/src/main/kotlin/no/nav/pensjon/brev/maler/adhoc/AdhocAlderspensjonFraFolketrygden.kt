@@ -132,7 +132,7 @@ object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
                             + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                     Nynorsk to "Du finn meir informasjon på ${Constants.REGULERING_ALDERSPENSJON_URL}."
                             + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Om du ikkje finner svar på $NAV_URL, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " Viss du ikkje finner svar på $NAV_URL, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
                             + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                     English to "You can find more information at ${Constants.REGULERING_ALDERSPENSJON_URL}."
                             + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
