@@ -234,7 +234,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                         Nynorsk to "Du finn meir informasjon om etterbetaling i vedlegget «Etterbetaling " +
                                 "av omstillingsstønad».",
                         English to "You can find more information about back payments in the attachment: " +
-                                "Back Payments for Adjustment Allowance. ",
+                                "Back Payments.",
                     )
                 }
             }
