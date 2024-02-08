@@ -8,7 +8,7 @@ import java.time.LocalDate
 fun createOmstillingsstoenadRevurderingDTO() =
     OmstillingsstoenadRevurderingDTO(
         beregning = OmstillingsstoenadBeregning(
-            innhold = emptyList(),
+            innhold = createPlaceholderForRedigerbartInnhold(),
             grunnbeloep = Kroner(118000),
             inntekt = Kroner(550000),
             virkningsdato = LocalDate.now(),
@@ -60,23 +60,6 @@ fun createOmstillingsstoenadRevurderingDTO() =
             fraDato = LocalDate.now(),
             tilDato = LocalDate.now()
         ),
-        innhold = listOf(
-            Element(
-                type = ElementType.HEADING_TWO,
-                children = listOf(
-                    InnerElement(
-                        text = "Tittel 2"
-                    )
-                )
-            ),
-            Element(
-                type = ElementType.PARAGRAPH,
-                children = listOf(
-                    InnerElement(
-                        text = "Her kommer det valgfri tekst om innvilget vedtak"
-                    )
-                )
-            )
-        ),
+        innhold = createPlaceholderForRedigerbartInnhold(),
         erEndret = true
     )
