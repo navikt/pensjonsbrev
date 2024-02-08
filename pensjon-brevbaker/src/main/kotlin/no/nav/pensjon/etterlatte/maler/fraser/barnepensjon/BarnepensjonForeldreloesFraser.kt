@@ -35,11 +35,14 @@ object BarnepensjonForeldreloesFraser {
 
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Du er innvilget barnepensjon fra $formatertVirkningsdato} fordi begge foreldrene dine er registrert død.".expr() + ifElse(
-                        bareEnPeriode,
-                        "Du får $formatertBeloep kroner hver måned før skatt.",
-                        ""
-                    ),
+                    Language.Bokmal to (
+                            "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + "fordi begge foreldrene dine er registrert død." +
+                                    ifElse(
+                                        bareEnPeriode,
+                                        "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
+                                        "".expr()
+                                    )
+                            ),
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
                 )
@@ -53,17 +56,21 @@ object BarnepensjonForeldreloesFraser {
             }
             showIf(enEllerFlerePerioderMedFlereBeloep) {
                 paragraph {
-                    text(
-                        Language.Bokmal to "Du får $formatertBeloep kroner hver måned før skatt fra $formatertFom. Se beløp for tidligere perioder og hvordan vi har beregnet pensjonen i vedlegg “Beregning av barnepensjon”.",
-                        Language.Nynorsk to "",
-                        Language.English to "",
+                    textExpr(
+                        Language.Bokmal to (
+                                "Du får ".expr() + formatertBeloep + "kroner hver måned før skatt fra " + formatertFom +
+                                        ". Se beløp for tidligere perioder og hvordan vi har beregnet pensjonen i vedlegg “Beregning av barnepensjon”."
+                                ),
+                        Language.Nynorsk to "".expr(),
+                        Language.English to "".expr(),
                     )
                 }
             }
             showIf(ingenUtbetaling) {
                 paragraph {
                     text(
-                        Language.Bokmal to "Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du mottar i uføretrygd fra NAV.",
+                        Language.Bokmal to "Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du" +
+                                " mottar i uføretrygd fra NAV.",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )
@@ -174,14 +181,18 @@ object BarnepensjonForeldreloesFraser {
             ifNotNull(etterbetaling) {
                 paragraph {
                     text(
-                        Language.Bokmal to "Det kan bli beregnet fradrag i etterbetalingen for skatt, eller ytelser du har mottatt fra NAV eller andre. Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
+                        Language.Bokmal to "Det kan bli beregnet fradrag i etterbetalingen for skatt, eller ytelser du har mottatt fra NAV eller andre. " +
+                                "Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. " +
+                                "Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL_NY}.",
+                        Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. " +
+                                "Gjelder etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
+                                "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL_NY}.",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )
