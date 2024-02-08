@@ -11,9 +11,9 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.etterbetalingsperioder
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.fraDato
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.tilDato
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.etterbetalingsperioder
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.fraDato
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.tilDato
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 @TemplateModelHelpers
@@ -37,15 +37,15 @@ val etterbetalingAvBarnepensjon = createAttachment(
     }
     paragraph {
         text(
-            Bokmal to "Det kan bli beregnet fradrag i etterbetalingen for skatt, ytelser du har mottatt fra NAV eller andre, som for eksempel tjenestepensjonsordninger. " +
+            Bokmal to "Det kan bli beregnet fradrag i etterbetalingen for skatt, ytelser du har mottatt fra NAV eller andre. " +
                     "Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. " +
                     "Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
             Nynorsk to "Det kan bli gjort frådrag i etterbetalinga for skatt eller ytingar du har fått frå NAV " +
-                    "eller andre (t.d. tenestepensjonsordningar). " +
+                    "eller andre. " +
                     "Dersom Skatteetaten eller andre ordningar har krav i etterbetalinga, kan denne bli forseinka. " +
                     "Frådrag i etterbetalinga vil gå fram av utbetalingsmeldinga.",
             English to "Deductions may be calculated from the back payment for tax, " +
-                    "benefits you have received from NAV or others, such as occupational pension schemes. " +
+                    "benefits you have received from NAV or others. " +
                     "If the Norwegian Tax Administration or other schemes are entitled to the back payment, " +
                     "the payment to you may be delayed. " +
                     "Deductions from the back payment will be stated in the disbursement notice.",
@@ -75,6 +75,13 @@ val etterbetalingAvBarnepensjon = createAttachment(
             English to "If the back payment applies to previous years, " +
                     "NAV will deduct the tax at the Tax Administration's standard rates. " +
                     "You can read more about the rates here: ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+        )
+    }
+    title2 {
+        text(
+            Bokmal to "Etterbetaling av barnepensjon fra innvilgelsestidspunktet",
+            Nynorsk to "Etterbetaling av barnepensjon frå tidspunktet det vart innvilga",
+            English to "Back Payments for Children's Pension from the time it was granted",
         )
     }
     includePhrase(Beregningsperiodetabell(etterbetalingsperioder))

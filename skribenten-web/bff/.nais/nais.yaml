@@ -26,8 +26,12 @@ spec:
     application:
       enabled: true
       singlePageApplication: true
-      allowAllUsers: true
+      allowAllUsers: false
       claims:
+        groups:
+          {{#each groups as |group|}}
+             - id: {{group}}
+          {{/each}}
         extra:
           - azp_name
           - NAVident

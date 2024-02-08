@@ -5,10 +5,14 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDE_SKJEMA_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBarnetilleggTidligereIAar
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -741,24 +745,158 @@ object HvordanSoekerDuOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
+object RettTilUfoeretrygdVedGradertUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad",
+                Nynorsk to "Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad",
+                English to "When you have partial disability benefit, you may be entitled to an adjustment allowance",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Omstillingsstønad er en tidsbegrenset stønad som vanligvis varer i tre år. Omstillingsstønad er pensjonsgivende inntekt, og kan derfor påvirke hva du får utbetalt i uføretrygd.",
+                Nynorsk to "Omstillingsstønad er ein tidsavgrensa stønad som vanlegvis varar i tre år. Omstillingsstønad er pensjonsgivande inntekt, og kan derfor påverke kva du får utbetalt i uføretrygd.",
+                English to "The adjustment allowance is a time-limited benefit that normally only lasts three years. The adjustment allowance is pensionable income and can therefore affect what you receive in disability benefits.",
+            )
+        }
+    }
+}
+
+data class StoerrelseOmstillingsstoenad(val grunnbeloepVedVirk: Expression<Kroner>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Hvor mye kan du få i omstillingsstønad?",
+                Nynorsk to "Hvor mykje kan du få?",
+                English to "How much are you entitled to?",
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "Stønaden er 2,25 ganger grunnbeløpet i folketrygden per år. ".expr() +
+                        "Grunnbeløpet er " + grunnbeloepVedVirk.format() + " kroner. " +
+                        "Hvis den avdøde har bodd utenfor Norge etter fylte 16 år, kan det påvirke størrelsen.",
+
+                Nynorsk to "Stønaden er 2,25 gongar grunnbeløpet i folketrygda per år. ".expr() +
+                        "Grunnbeløpet er " + grunnbeloepVedVirk.format() + " kronar. " +
+                        "Viss den avdøde har budd utanfor Noreg etter fylte 16 år, kan det påverke stønaden.",
+
+                English to "The allowance is 2.25 times the basic amount in the National Insurance Scheme per year. ".expr() +
+                        "The basic amount is NOK " + grunnbeloepVedVirk.format() + ". " +
+                        "If the deceased lived outside Norway after the age of 16, it may affect the amount.",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Hvis du har arbeidsinntekt ved siden av uføretrygden din, blir omstillingsstønaden redusert med 45 prosent av den inntekten som er over halve grunnbeløpet. " +
+                        "Noen ytelser, som for eksempel sykepenger og dagpenger, likestilles med arbeidsinntekt.",
+
+                Nynorsk to "Viss du har arbeidsinntekt ved sida av uføretrygda di, blir stønaden redusert med 45 prosent av den inntekta som er over halve grunnbeløpet. " +
+                        "Nokre ytingar, som til dømes sjukepengar og dagpengar, er likestilte med arbeidsinntekt.",
+
+                English to "If you have earned income in addition to your disability benefit, the adjustment allowance will be reduced by 45 percent of the income that exceeds half the National Insurance basic amount. " +
+                        "Some benefits, such as sickness benefits and unemployment benefits, are considered earned income.",
+            )
+        }
+    }
+}
+
+object HvemHarRettPaaOmstillingsstoenad : OutlinePhrase<LangBokmalNynorskEnglish>(){
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Hvem kan ha rett til omstillingstønad?",
+                Nynorsk to "Kven kan ha rett til omstillingsstønad?",
+                English to "Who is entitled to an adjustment allowance?",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "For å ha rett til omstillingsstønaden må du ved dødsfallet som hovedregel:",
+                Nynorsk to "For å ha rett til stønaden må du ved dødsfallet som hovudregel:",
+                English to "To be entitled to an adjustment allowance, you at the time of the death must as a rule:",
+            )
+            list {
+                item {
+                    text(
+                        Bokmal to "være medlem i folketrygden, og avdøde må ha vært medlem i folketrygden de siste fem årene fram til dødsfallet",
+                        Nynorsk to "vere medlem i folketrygda, og avdøde må ha vore medlem i folketrygda dei siste fem åra fram til dødsfallet",
+                        English to "be a member of the National Insurance Scheme, and the deceased must have been a member of the National Insurance Scheme for the last five years prior to death",
+                    )
+                }
+                item {
+                    text(
+                        Bokmal to "ha vært gift med den avdøde i minst fem år, eller",
+                        Nynorsk to "ha vore gift med den avdøde i minst fem år, eller",
+                        English to "have been married to the deceased for at least five years, or",
+                    )
+                }
+                item {
+                    text(
+                        Bokmal to "ha vært gift eller samboer med den avdøde og ha eller ha hatt barn med den avdøde, eller",
+                        Nynorsk to "ha vore gift eller sambuar med den avdøde og ha eller ha hatt barn med den avdøde, eller",
+                        English to "have been married to or a cohabitant with the deceased, and have/had children together, or",
+                    )
+                }
+                item {
+                    text(
+                        Bokmal to "ha omsorg for barn minst halvparten av tiden.",
+                        Nynorsk to "ha omsorg for barn minst halvparten av full tid.",
+                        English to "care for a child at least half the time.",
+                    )
+                }
+            }
+        }
+    }
+}
+
 // SoekUTGJT_001
-object SoekGjenlevendetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object SoekGjenlevendetilleggFoer2024 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Vi oppfordrer deg til å søke om gjenlevendetillegg i uføretrygden så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. " +
                         "Det er nye regler for gjenlevendeytelser fra 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for hvilke regler som gjelder for deg. " +
-                        "Du finner informasjon og søknadsskjemaet for gjenlevende ektefelle, partner eller samboer på $GJENLEVENDE_SKJEMA_URL",
+                        "Du finner informasjon og søknadsskjemaet for gjenlevende ektefelle, partner eller samboer på $GJENLEVENDE_SKJEMA_URL.",
                 Nynorsk to "Vi oppmodar deg til å søkje om attlevandetillegg i uføretrygda så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader. " +
                         "Det er nye reglar for ytingar til attlevande frå 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for kva regler som gjeld for deg. " +
-                        "Du finn informasjon og søknadsskjemaet for attlevande ektefelle, partner eller sambuar på $GJENLEVENDE_SKJEMA_URL",
+                        "Du finn informasjon og søknadsskjemaet for attlevande ektefelle, partner eller sambuar på $GJENLEVENDE_SKJEMA_URL.",
                 English to "We encourage you to apply for survivor's supplement to disability benefit as soon as possible because we normally only pay retroactively for three months. " +
                         "There are new rules for survivor benefits from January 1, 2024. The date when NAV receives your application may have significance for which rules apply to you. " +
-                        "You will find information and the application form for a surviving spouse, partner or cohabitant at $GJENLEVENDE_SKJEMA_URL"
+                        "You will find information and the application form for a surviving spouse, partner or cohabitant at $GJENLEVENDE_SKJEMA_URL."
             )
         }
 }
 
+data class SoekGjenlevendetilleggEtter2024(val borIAvtaleLand: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                Bokmal to "Vi oppfordrer deg til å søke om omstillingsstønaden så snart som mulig fordi vi vanligvis bare etterbetaler for tre måneder.",
+                Nynorsk to "Vi oppmodar deg til å søkje så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader.",
+                English to "We encourage you to apply as soon as possible because we normally only pay retroactively for three months.",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Du finner mer informasjon og søknad på nav.no/omstillingsstonad.",
+                Nynorsk to "Du finn informasjon og søknad på nav.no/omstillingsstonad.",
+                English to "You will find information and the application form at nav.no/omstillingsstonad.",
+            )
+        }
+        showIf(borIAvtaleLand) {
+            paragraph {
+                text(
+                    Bokmal to "Hvis du bor i utlandet, må du kontakte trygdemyndigheter i bostedslandet ditt og søke om ytelser etter avdøde.",
+                    Nynorsk to "Dersom du bur i utlandet, må du kontakte trygdemyndigheitene i bustadlandet ditt.",
+                    English to "If you live outside Norway, you must contact the National Insurance authority in your country of residence.",
+                )
+            }
+        }
+    }
+}
 // SoekAvtaleLandUT_001
 object SoekGjenlevendetilleggAvtaleland : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -784,25 +922,21 @@ object AvdoedBoddArbeidetIUtlandOverskrift : OutlinePhrase<LangBokmalNynorskEngl
 }
 
 // AvdodBoddArbUtland2_001
-object AvdoedBoddEllerArbeidetIUtland : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class AvdoedBoddEllerArbeidetIUtland(val borIAvtaleland: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
-                Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. " +
-                        "Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. " +
-                        "Derfor kan du også ha rettigheter fra andre land. " +
-                        "Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
-
-                Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. " +
-                        "Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. " +
-                        "Derfor kan du også ha rettar frå andre land. " +
-                        "Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
-
-                English to "If the deceased has lived or worked abroad, this may affect your payment. " +
-                        "Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. " +
-                        "You may therefore also have rights from other countries. " +
-                        "We can assist you with your application to countries with which Norway has a social security agreement."
+                Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet, kan det påvirke hvor mye du får ubetalt. Norge har trygdesamarbeid med mange land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. ",
+                Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land. ",
+                English to "If the deceased has lived or worked abroad, this may affect your payment. Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. You may therefore also have rights from other countries. ",
             )
+            showIf(not(borIAvtaleland)) {
+                text(
+                    Bokmal to "Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
+                    Nynorsk to "Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
+                    English to "We can assist you with your application to countries with which Norway has a social security agreement.",
+                )
+            }
         }
 }
 // PensjonFraAndreOverskrift_001

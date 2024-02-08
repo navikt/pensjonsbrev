@@ -9,9 +9,9 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
 import java.time.LocalDate
 
 class PenService(config: Config, authService: AzureADService) {
@@ -30,18 +30,13 @@ class PenService(config: Config, authService: AzureADService) {
         }
     }
 
-    data class PenError(val feilmelding: String)
-
-    data class PenPersonDto(
-        val fodselsdato: LocalDate,
-        val fnr: String,
-    )
     data class Sak(
         val sakId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val sakType: SakType,
-    )
+        val enhetId: String,
+        )
 
     enum class SakType { AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG, UFOREP, }
     data class SakSelection(
@@ -49,20 +44,22 @@ class PenService(config: Config, authService: AzureADService) {
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val sakType: SakType,
+        val enhetId: String?,
     )
 
 
-    private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak, PenError> =
-        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak, PenError>()
+    private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak> =
+        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak>()
 
-    suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection, PenError> =
+    suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection> =
         fetchSak(call, sakId).map {
             SakSelection(
                 sakId = it.sakId,
                 foedselsnr = it.foedselsnr,
                 foedselsdato = it.foedselsdato,
                 sakType = it.sakType,
-            )
+                enhetId = it.enhetId
+                )
         }
 
     data class BestilDoksysBrevRequest(
@@ -72,51 +69,43 @@ class PenService(config: Config, authService: AzureADService) {
         val journalfoerendeEnhet: String?,
         val sensitivePersonopplysninger: Boolean?,
         val sprakKode: SpraakKode?,
-        val vedtakId: Long?,
+        val vedtaksId: Long?,
     )
 
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
-    ): ServiceResult<BestillDoksysBrevResponse, BestillDoksysBrevResponse> =
+        enhetsId: String,
+        ): ServiceResult<BestillDoksysBrevResponse> =
         client.post(call, "brev/skribenten/doksys/sak/${request.sakId}") {
             setBody(
                 BestilDoksysBrevRequest(
                     sakId = request.sakId,
                     brevkode = request.brevkode,
-                    mottaker = null, // TODO
-                    journalfoerendeEnhet = "4849", // TODO
-                    sensitivePersonopplysninger = false, // TODO valg fra saksbehandler
+                    mottaker = null, // TODO slett feltet fra pesys og sett mottaker der.
+                    journalfoerendeEnhet = enhetsId,
+                    sensitivePersonopplysninger = false, // TODO Undersøk om feltet har noen påvirkning på doksys, evt slett fra skribentencontroller i pesys
                     sprakKode = request.spraak,
-                    vedtakId = 42806043, //TODO fyll inn fra query param
+                    vedtaksId = request.vedtaksId,
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult<BestillDoksysBrevResponse, BestillDoksysBrevResponse>()
+        }.toServiceResult<BestillDoksysBrevResponse>()
+
     data class Avtaleland(val navn: String, val kode: String)
 
-    data class BestillDoksysBrevResponse(val journalpostId: String?, val error: Error? = null) {
-        companion object {
-            fun ok(journalpostId: String) =
-                BestillDoksysBrevResponse(journalpostId)
-
-            fun error(tekniskgrunn: String?, type: Error.ErrorType) =
-                BestillDoksysBrevResponse(null, Error(tekniskgrunn, type))
-        }
-
-        data class Error(val tekniskgrunn: String?, val type: ErrorType) {
-            enum class ErrorType {
-                ADDRESS_NOT_FOUND,
-                UNAUTHORIZED,
-                PERSON_NOT_FOUND,
-                UNEXPECTED_DOKSYS_ERROR,
-                INTERNAL_SERVICE_CALL_FAILIURE,
-                TPS_CALL_FAILIURE,
-            }
+    data class BestillDoksysBrevResponse(val journalpostId: String?, val failure: FailureType? = null) {
+        enum class FailureType {
+            ADDRESS_NOT_FOUND,
+            UNAUTHORIZED,
+            PERSON_NOT_FOUND,
+            UNEXPECTED_DOKSYS_ERROR,
+            INTERNAL_SERVICE_CALL_FAILIURE,
+            TPS_CALL_FAILIURE,
         }
     }
 
-    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>, String> =
-        client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>, String>()
+    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>> =
+        client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>>()
 }
 

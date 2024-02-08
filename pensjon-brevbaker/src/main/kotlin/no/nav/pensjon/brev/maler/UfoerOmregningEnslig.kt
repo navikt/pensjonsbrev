@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.SivilstandAvdoed.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.ektefelletilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.harFellesBarnUtenBarnetillegg
@@ -24,6 +25,8 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.Innt
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.InntektFoerUfoerhetVedVirkSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.InntektFoerUfoerhetVedVirkSelectors.oppjustertBeloep
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.erInntektsavkortet
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.grunnbeloep
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.harGradertUfoeretrygd
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.totalUfoereMaanedligBeloep
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.avdoed
@@ -256,26 +259,35 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 }
             }
 
-            showIf(harAvdoedRettigheterFoer2024){
-                showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.SAMBOER3_2)) {
+            showIf(harAvdoedRettigheterFoer2024) {
+                showIf(avdoed.sivilstand.isOneOf(SAMBOER3_2)) {
                     includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
                     includePhrase(GjenlevenderettUfoeretrygdSamboer)
                 }
-                showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
+                showIf(avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
                     includePhrase(RettTilGjenlevendetilleggOverskrift)
                     includePhrase(HvemHarRettTilGjenlevendetilleggVilkaar)
                     includePhrase(HvordanSoekerDuOverskrift)
-                    includePhrase(SoekGjenlevendetillegg)
+                    includePhrase(SoekGjenlevendetilleggFoer2024)
 
                     showIf(bruker.borIAvtaleLand) {
                         includePhrase(SoekGjenlevendetilleggAvtaleland)
                     }
                 }
+            }.orShowIf(
+                avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)
+                        and ufoeretrygdVedVirk.harGradertUfoeretrygd
+            ) {
+                includePhrase(RettTilUfoeretrygdVedGradertUfoeretrygd)
+                includePhrase(HvemHarRettPaaOmstillingsstoenad)
+                includePhrase(StoerrelseOmstillingsstoenad(ufoeretrygdVedVirk.grunnbeloep))
+                includePhrase(HvordanSoekerDuOverskrift)
+                includePhrase(SoekGjenlevendetilleggEtter2024(bruker.borIAvtaleLand))
             }
 
-            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
+            showIf(avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
                 includePhrase(AvdoedBoddArbeidetIUtlandOverskrift)
-                includePhrase(AvdoedBoddEllerArbeidetIUtland)
+                includePhrase(AvdoedBoddEllerArbeidetIUtland(bruker.borIAvtaleLand))
                 includePhrase(PensjonFraAndreOverskrift)
                 includePhrase(InfoAvdoedPenFraAndre)
             }

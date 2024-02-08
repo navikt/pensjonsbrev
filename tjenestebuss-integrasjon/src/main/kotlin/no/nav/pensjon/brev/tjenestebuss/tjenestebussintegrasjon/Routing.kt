@@ -15,19 +15,13 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.Metrics.configureMetrics
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.JwtConfig
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzureADConfig
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevRequestDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Journalpost
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExtreamRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamBrevService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.SamhandlerTypeCode
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSService
@@ -44,7 +38,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
     }
 
     install(CallId) {
-        retrieveFromHeader("X-Request-ID")
+        header("X-Request-ID")
         generate()
         verify { it.isNotEmpty() }
     }
@@ -82,15 +76,15 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
     routing {
         val stsService = STSService(config.getConfig("services.sts"))
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
-
+        val servicesConfig = config.getConfig("services")
         val samhandlerTjenestebussService =
-            SamhandlerTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
-
+            SamhandlerTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
         val arkivTjenestebussService =
-            ArkivTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
-
+            ArkivTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
         val dokumentProduksjonService =
-            DokumentproduksjonService(config.getConfig("services.dokprod"), stsSercuritySOAPHandler)
+            DokumentproduksjonService(servicesConfig.getConfig("dokprod"), stsSercuritySOAPHandler)
+        val redigerExtreamBrevService = RedigerExtreamBrevService(servicesConfig, stsSercuritySOAPHandler)
+
 
         get("/isAlive") {
             call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
@@ -101,86 +95,48 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         }
 
         authenticate(azureADConfig.name) {
-
+            get("/ping") {
+                call.respondText("Hello!", ContentType.Text.Plain, HttpStatusCode.OK)
+            }
             post("/hentSamhandler") {
                 val requestDto = call.receive<HentSamhandlerRequestDto>()
-
-                val samhandlerResponse = withCallId(samhandlerTjenestebussService) { hentSamhandler(requestDto) }
-
-                when (samhandlerResponse) {
-                    is HentSamhandlerResponseDto.Failure -> {
-                        if (samhandlerResponse.failureType == HentSamhandlerResponseDto.Failure.FailureType.IKKE_FUNNET) {
-                            call.respond(HttpStatusCode.NotFound, samhandlerResponse)
-                        } else {
-                            call.respond(HttpStatusCode.BadRequest, samhandlerResponse)
-                        }
-                    }
-
-                    is HentSamhandlerResponseDto.Samhandler -> call.respond(HttpStatusCode.OK, samhandlerResponse)
-                }
+                call.respond(withCallId(samhandlerTjenestebussService) { hentSamhandler(requestDto) })
             }
             post("/finnSamhandler") {
                 val requestDto = call.receive<FinnSamhandlerRequestDto>()
-
-                val samhandlerResponse = withCallId(samhandlerTjenestebussService) {
-                    finnSamhandler(requestDto)
-                }
-                when (samhandlerResponse) {
-                    is FinnSamhandlerResponseDto.Failure -> call.respond(
-                        HttpStatusCode.InternalServerError,
-                        samhandlerResponse
-                    )
-
-                    is FinnSamhandlerResponseDto.Success -> call.respond(HttpStatusCode.OK, samhandlerResponse)
-                }
+                call.respond(withCallId(samhandlerTjenestebussService) { finnSamhandler(requestDto) })
             }
-            post("/bestillbrev") {
-                val requestDto = call.receive<BestillBrevRequestDto>()
-
-                when (val arkivResponse = withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
-                    is Journalpost -> call.respond(HttpStatusCode.OK, arkivResponse)
-                    is BestillBrevResponseDto.Failure -> {
-                        if (arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
-                            call.respond(HttpStatusCode.BadRequest, arkivResponse)
-                        } else {
-                            call.respond(HttpStatusCode.InternalServerError, arkivResponse)
-                        }
-                    }
-                }
+            post("/bestillExtreamBrev") {
+                val requestDto = call.receive<BestillBrevExtreamRequestDto>()
+                call.respond(withCallId(arkivTjenestebussService) { bestillBrev(requestDto) })
             }
-        }
-
-        post("/bestillbrev") {
-            val requestDto = call.receive<RedigerDokumentRequestDto>()
-
-            when (val dokumentResponse = withCallId(dokumentProduksjonService) { hentSamhandler(requestDto) }) {
-                is RedigerDokumentResponseDto.Dokument -> call.respond(HttpStatusCode.OK, dokumentResponse)
-                is RedigerDokumentResponseDto.Failure -> {
-                    when(dokumentResponse.failureType){
-                        RedigerDokumentResponseDto.Failure.FailureType.LASING -> call.respond(HttpStatusCode.InternalServerError, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILLATT -> call.respond(HttpStatusCode.Forbidden, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET -> call.respond(HttpStatusCode.BadRequest, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.IKKE_FUNNET -> call.respond(HttpStatusCode.NotFound, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILGANG -> call.respond(HttpStatusCode.Unauthorized, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.LUKKET -> call.respond(HttpStatusCode.Locked, dokumentResponse)
-                    }
-                }
+            post("/redigerExtreamBrev") {
+                val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
+                call.respond(withCallId(redigerExtreamBrevService) { hentExtreamBrevUrl(requestDto) })
+            }
+            post("/redigerDoksysBrev") {
+                val requestDto = call.receive<RedigerDoksysDokumentRequestDto>()
+                call.respond(withCallId(dokumentProduksjonService) { redigerDokument(requestDto) })
             }
         }
     }
 }
 
-class HentSamhandlerRequestDto(
+data class HentSamhandlerRequestDto(
     val idTSSEkstern: String,
     val hentDetaljert: Boolean,
 )
 
-class FinnSamhandlerRequestDto(
+data class FinnSamhandlerRequestDto(
     val navn: String,
     val samhandlerType: SamhandlerTypeCode,
 )
 
-class RedigerDokumentRequestDto(
+data class RedigerDoksysDokumentRequestDto(
     val journalpostId: String,
     val dokumentId: String,
+)
+
+data class RedigerExtreamDokumentRequestDto(
+    val journalpostId: String,
 )

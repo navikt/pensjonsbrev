@@ -4,7 +4,7 @@
 # secret kan hentes fra cluster med "kubectl -n pensjonsbrev get secret azure-skribenten-backend-lokal -o json | jq '.data | map_values(@base64d)'"
 #
 # Kjøres en gang eller ved endringer med
-# kubectl apply -f .deploy/azure-ad-app-lokal.yaml
+# kubectl apply -f .nais/azure-ad-app-lokal.yml
 ###
 apiVersion: nais.io/v1
 kind: AzureAdApplication
@@ -15,12 +15,16 @@ metadata:
     team: pensjonsbrev
 spec:
   secretName: azure-skribenten-backend-lokal
+  allowAllUsers: true
   replyUrls:
     - url: "http://localhost:8082/oauth2/callback"
   claims:
     extra:
       - "azp_name"
   preAuthorizedApplications:
+    - application: skribenten-web
+      cluster: dev-gcp
+      namespace: pensjonsbrev
     - application: skribenten-web
       cluster: dev-gcp
       namespace: pensjonsbrev

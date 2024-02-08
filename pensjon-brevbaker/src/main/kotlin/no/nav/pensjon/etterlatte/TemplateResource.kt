@@ -1,60 +1,81 @@
 package no.nav.pensjon.etterlatte
 
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.etterlatte.maler.TomMal
+import no.nav.pensjon.etterlatte.maler.andre.TomDelmal
+import no.nav.pensjon.etterlatte.maler.andre.TomMal
 import no.nav.pensjon.etterlatte.maler.andre.TomMalInformasjonsbrev
-import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandlingEnkel
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.Endring
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkel
+import no.nav.pensjon.etterlatte.maler.andre.UtsattKlagefrist
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslag
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelse
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUfall
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.EnkeltVedtakOmregningNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.EnkeltVedtakOmregningNyttRegelverkFerdig
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurdering
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OmgjoeringAvFarskapRevurdering
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OpphoerRevurdering
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.SoeskenjusteringRevurdering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslag
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslagBegrunnelse
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfall
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.InnvilgelseFoerstegangsvedtak
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.Opphoer
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OpphoerGenerell
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.RevurderingEndring
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoer
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurdering
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarsel
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigstilling
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslagRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelse
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoer
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurdering
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarsel
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdig
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnhold
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.OmstillingsstoenadVedleggBeregningRedigerbartUtfall
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
     setOf(
-        AvslagFoerstegangsbehandling,
-        AvslagFoerstegangsbehandlingEnkel,
+        // Barnepensjon
+        BarnepensjonAvslag,
+        BarnepensjonAvslagRedigerbartUtfall,
         BarnepensjonInnvilgelse,
-        BarnepensjonInnvilgelseEnkel,
-        BarnepensjonInnvilgelseNy,
-        OMSInnvilgelseAuto,
-        OMSInnvilgelseManuell,
-        OMSOpphoerManuell,
-        OMSAvslag,
-        OMSAvslagBegrunnelse,
-        AdopsjonRevurdering,
-        Endring,
-        OmgjoeringAvFarskapRevurdering,
-        OpphoerRevurdering,
-        SoeskenjusteringRevurdering,
-        InnvilgelseFoerstegangsvedtak,
-        FoerstegangsvedtakUtfall,
-        RevurderingEndring,
-        Opphoer,
-        OpphoerGenerell,
+        BarnepensjonInnvilgelseRedigerbartUfall,
+        BarnepensjonOpphoer,
+        BarnepensjonOpphoerRedigerbartUtfall,
+        BarnepensjonRevurdering,
+        BarnepensjonRevurderingRedigerbartUtfall,
+        BarnepensjonVarsel,
+        BarnepensjonVarselRedigerbartUtfall,
+        BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall,
+
+        // Omstillingsstønad
+        OmstillingsstoenadAvslag,
+        OmstillingsstoenadAvslagRedigerbartUtfall,
+        OmstillingsstoenadInnvilgelse,
+        OmstillingsstoenadInnvilgelseRedigerbartUtfall,
+        OmstillingsstoenadOpphoer,
+        OmstillingsstoenadOpphoerRedigerbartUtfall,
+        OmstillingsstoenadRevurdering,
+        OmstillingsstoenadVedleggBeregningRedigerbartUtfall,
+        OmstillingsstoenadVarsel,
+        OmstillingsstoenadVarselRedigerbartUtfall,
+
+        // Tilbakekreving
         TilbakekrevingInnhold,
         TilbakekrevingFerdig,
+
+        // Klage
+        AvvistKlageInnhold,
+        AvvistKlageFerdigstilling,
+
+        // Informasjonsbrev
         TomMal,
+        TomDelmal,
         TomMalInformasjonsbrev,
+        UtsattKlagefrist,
+
+        // Div migrering mm.
         ForhaandsvarselOmregningBP,
         EnkeltVedtakOmregningNyttRegelverk,
         EnkeltVedtakOmregningNyttRegelverkFerdig

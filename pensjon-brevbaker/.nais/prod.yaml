@@ -1,8 +1,10 @@
-allowAllUsers: false
 app-name: "pensjon-brevbaker"
 pdf-bygger-app: "pensjon-pdf-bygger"
 ingresses:
   - "https://pensjon-brevbaker.intern.nav.no"
+
+groups:
+  - "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e" #0000-GA-PENSJON_SAKSBEHANDLER
 
 preAuthorized:
   - name: pensjon-pen

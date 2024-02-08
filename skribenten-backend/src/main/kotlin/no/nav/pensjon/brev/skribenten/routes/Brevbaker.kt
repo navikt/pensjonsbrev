@@ -8,9 +8,9 @@ import io.ktor.server.util.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import no.nav.pensjon.brev.skribenten.updatedEditedLetter
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
+import org.slf4j.LoggerFactory
 
 
 data class RenderLetterRequest(val letterData: GenericBrevdata, val editedLetter: EditedJsonLetter?)
@@ -19,27 +19,27 @@ class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
 
 // TODO: Flytt til topp-rute /brevbaker
 fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
+    val logger = LoggerFactory.getLogger("brevbakerRoute")
+
     get("/template/{brevkode}") {
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
-
-        when (val template = brevbakerService.getTemplate(call, brevkode)) {
-            is ServiceResult.AuthorizationError -> TODO()
-            is ServiceResult.Error -> TODO()
-            is ServiceResult.Ok -> call.respondText(template.result, ContentType.Application.Json)
-        }
+        brevbakerService.getTemplate(call, brevkode)
+            .map { call.respondText(it, ContentType.Application.Json) }
+            .catch { message, status ->
+                logger.error("Feil ved henting av brevkode: Status:$status Melding: $message ")
+                call.respond(status, message)
+            }
     }
 
     post<RenderLetterRequest>("/letter/{brevkode}") { request ->
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
-
-        when (val rendered = brevbakerService.renderLetter(call, brevkode, request.letterData)) {
-            is ServiceResult.AuthorizationError -> TODO()
-            is ServiceResult.Error -> TODO()
-            is ServiceResult.Ok -> call.respond(
-                request.editedLetter?.let { updatedEditedLetter(it, rendered.result) }
-                    ?: rendered.result
-            )
-        }
+        brevbakerService.renderLetter(call, brevkode, request.letterData)
+            .map { rendered ->
+                call.respond(request.editedLetter?.let { updatedEditedLetter(it, rendered) } ?: rendered)
+            }.catch { message, status ->
+                logger.error("Feil ved rendring av brevbaker brev Brevkode: $brevkode Melding: $message Status: $status")
+                call.respond(HttpStatusCode.InternalServerError, "Feil ved rendring av brevbaker brev.")
+            }
     }
-
 }
+

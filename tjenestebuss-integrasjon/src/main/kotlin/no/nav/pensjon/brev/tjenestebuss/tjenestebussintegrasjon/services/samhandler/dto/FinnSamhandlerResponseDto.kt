@@ -1,27 +1,13 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto
 
-import no.nav.lib.pen.psakpselv.fault.FaultPenBase
+data class FinnSamhandlerResponseDto(val samhandlere: List<Samhandler>, val failureType: String?) {
+    constructor(samhandlere: List<Samhandler>) : this(samhandlere, null)
+    constructor(failure: String) : this(emptyList(), failure)
 
-sealed class FinnSamhandlerResponseDto {
-    data class Success(val samhandlere: List<Samhandler>) : FinnSamhandlerResponseDto() {
-        data class Samhandler(
-            val navn: String,
-            val samhandlerType: String,
-            val offentligId: String,
-            val idType: String
-        )
-    }
-    data class Failure(
-        val message: String,
-        val source: String,
-        val type: String,
-        val cause: String,
-    ) : FinnSamhandlerResponseDto() {
-        constructor(faultPenBase: FaultPenBase): this(
-            faultPenBase.errorMessage,
-            faultPenBase.errorSource,
-            faultPenBase.errorType,
-            faultPenBase.rootCause,
-        )
-    }
+    data class Samhandler(
+        val navn: String,
+        val samhandlerType: String,
+        val offentligId: String,
+        val idType: String
+    )
 }

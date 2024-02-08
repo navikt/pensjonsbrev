@@ -5,8 +5,16 @@
 import type { AxiosResponse } from "axios";
 import axios from "axios";
 
-import type { LetterTemplatesResponse, PidRequest, PreferredLanguage, SakDto } from "../types/apiTypes";
-import type { RedigerbarTemplateDescription, RenderedLetter } from "../types/brevbakerTypes";
+import type {
+  BestillOgRedigerBrevResponse,
+  KontaktAdresseResponse,
+  LetterMetadata,
+  OrderLetterRequest,
+  PidRequest,
+  PreferredLanguage,
+  SakDto,
+} from "~/types/apiTypes";
+import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -25,7 +33,8 @@ export const navnKeys = {
 
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
-  id: (sakType: string) => [...letterTemplatesKeys.all, sakType] as const,
+  eblanketter: () => [...letterTemplatesKeys.all, "E_BLANKETTER"] as const,
+  sakTypeSearch: (search: { sakType: string; includeVedtak: boolean }) => [...letterTemplatesKeys.all, search] as const,
 };
 
 export const letterKeys = {
@@ -35,6 +44,11 @@ export const letterKeys = {
 
 export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
+};
+
+export const adresseKeys = {
+  all: ["ADRESSE"],
+  pid: (pid: string) => [...adresseKeys.all, pid] as const,
 };
 
 export const preferredLanguageKeys = {
@@ -67,14 +81,40 @@ export const getPreferredLanguage = {
 };
 
 export const getLetterTemplate = {
-  queryKey: letterTemplatesKeys.id,
-  queryFn: async (sakType: string) =>
-    (await axios.get<LetterTemplatesResponse>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
+  queryKey: letterTemplatesKeys.sakTypeSearch,
+  queryFn: async (sakType: string, search: { includeVedtak: boolean }) =>
+    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`, { params: search }))
+      .data,
+};
+
+export const getEblanketter = {
+  queryKey: letterTemplatesKeys.eblanketter(),
+  queryFn: async () => {
+    try {
+      return (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data;
+    } catch {
+      /* Fetching e-blanketter is not critical, therefore we want to handle Forbidden/Server errors as an empty list. */
+    }
+    return [];
+  },
+};
+
+export const getKontaktAdresse = {
+  queryKey: adresseKeys.pid,
+  queryFn: async (pid: string) =>
+    (
+      await axios.post<PidRequest, AxiosResponse<KontaktAdresseResponse>>(
+        `${SKRIBENTEN_API_BASE_PATH}/person/adresse`,
+        {
+          pid,
+        },
+      )
+    ).data,
 };
 
 export const getFavoritter = {
   queryKey: favoritterKeys.all,
-  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/favourites`)).data,
+  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`)).data,
 };
 
 export const getTemplate = {
@@ -89,12 +129,24 @@ export async function renderLetter(letterId: string, request: unknown) {
 
 export async function addFavoritt(id: string) {
   return (
-    await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, id, {
+    await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, id, {
       headers: { "Content-Type": "text/plain" },
     })
   ).data;
 }
 
 export async function deleteFavoritt(id: string) {
-  return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, { data: id })).data;
+  return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
+}
+
+export async function orderLetter(orderLetterRequest: OrderLetterRequest) {
+  const response = (
+    await axios.post<BestillOgRedigerBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/bestillbrev`, orderLetterRequest)
+  ).data;
+
+  if (response.failureType) {
+    throw new Error(response.failureType);
+  }
+
+  return response.url ?? "";
 }

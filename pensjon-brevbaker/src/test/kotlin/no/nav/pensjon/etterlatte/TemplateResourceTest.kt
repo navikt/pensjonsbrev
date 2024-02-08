@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
+import no.nav.pensjon.etterlatte.maler.Vedlegg
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -28,83 +29,88 @@ import java.nio.file.Paths
 class TemplateResourceTest {
 
     @Tag(TestTags.INTEGRATION_TEST)
-    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: EtterlatteBrevKode,
         fixtures: T,
+        spraak: Language,
     ) {
         Letter(
             template,
             fixtures,
-            Language.Bokmal,
+            spraak,
             Fixtures.felles,
         ).let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF(etterlatteBrevKode.name, it) }
+            .also { writeTestPDF(filnavn(etterlatteBrevKode, spraak), it) }
     }
 
-    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: EtterlatteBrevKode,
         fixtures: T,
+        spraak: Language,
     ) {
         Letter(
             template,
             fixtures,
-            Language.Bokmal,
+            spraak,
             Fixtures.felles,
         ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML(etterlatteBrevKode.name, it) }
+            .also { writeTestHTML(filnavn(etterlatteBrevKode, spraak), it) }
     }
 
-    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
+    private fun filnavn(etterlatteBrevKode: EtterlatteBrevKode, spraak: Language) =
+        "${etterlatteBrevKode.name}_${spraak.javaClass.simpleName}"
+
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> jsontest(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: EtterlatteBrevKode,
         fixtures: T,
+        spraak: Language,
     ) {
-        val erHovedmal = fixtures.instanceOf(BrevDTO::class) && !fixtures.instanceOf(Delmal::class) && !fixtures.instanceOf(ManueltBrevDTO::class)
+        val erHovedmal = fixtures.instanceOf(BrevDTO::class) && !listOf(
+            Delmal::class,
+            Vedlegg::class,
+            ManueltBrevDTO::class
+        ).any { fixtures.instanceOf(it) }
         // Hovedmalar skal ikkje redigerast i Gjenny, så dei treng vi ikkje å lage JSON av.
         // I tillegg er det per no ein mangel i brevbakeren at han ikkje klarer å lage JSON av tabellar, som vi bruker i ein del hovedmalar
         if (erHovedmal) {
             return
         }
-        val foreloepigIkkeStoettaIJSON = setOf(
-            EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE,
-            EtterlatteBrevKode.BARNEPENSJON_REVURDERING_SOESKENJUSTERING,
-            EtterlatteBrevKode.OMS_INNVILGELSE_AUTO,
-        )
-        if (foreloepigIkkeStoettaIJSON.contains(etterlatteBrevKode)) {
-            return
-        }
         Letter(
             template,
             fixtures,
-            Language.Bokmal,
+            spraak,
             Fixtures.felles,
         ).let { PensjonJsonRenderer.render(it) }
             .also { json ->
                 Paths.get("build/test_json")
                     .also { Files.createDirectories(it) }
-                    .resolve((Paths.get("${etterlatteBrevKode.name}.json")))
+                    .resolve((Paths.get("${filnavn(etterlatteBrevKode, spraak)}.json")))
                     .let { Files.writeString(it, objectMapper.writeValueAsString(json)) }
             }
     }
 
     companion object {
         @JvmStatic
-        fun alleMalene() =
-            prodAutobrevTemplates.map {
-                Arguments.of(
-                    it.template,
-                    it.kode,
-                    Fixtures.create(it.template.letterDataType),
-                )
+        fun alleMalene() = listOf(Language.Nynorsk, Language.Bokmal, Language.English)
+            .flatMap { spraak ->
+                prodAutobrevTemplates.map {
+                    Arguments.of(
+                        it.template,
+                        it.kode,
+                        Fixtures.create(it.template.letterDataType),
+                        spraak,
+                    )
+                }
             }
     }
 }

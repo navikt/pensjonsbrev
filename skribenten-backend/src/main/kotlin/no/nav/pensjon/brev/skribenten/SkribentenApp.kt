@@ -25,7 +25,6 @@ fun main() {
     val skribentenConfig: Config = ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
         .resolveWith(ConfigFactory.load("azuread")) // loads azuread secrets for local
         .getConfig("skribenten")
-
     embeddedServer(Netty, port = skribentenConfig.getInt("port"), host = "0.0.0.0") {
         skribentenApp(skribentenConfig)
     }.start(wait = true)
@@ -42,7 +41,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
     }
 
     install(CallId) {
-        retrieveFromHeader("X-Request-ID")
+        header("X-Request-ID")
         generate()
         verify { it.isNotEmpty() }
     }
@@ -77,7 +76,6 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
     install(Authentication) {
         skribentenJwt(azureADConfig)
     }
-
     configureRouting(azureADConfig, skribentenConfig)
     configureMetrics()
 }

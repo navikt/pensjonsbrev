@@ -95,7 +95,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Beregningen av barnepensjonen din trer i kraft som et vedtak fire uker fra du mottar dette forhåndsvarselet. I løpet av denne perioden kan du gi oss nye opplysninger slik at vi kan rette opp eventuelle feil i beregningen.",
+                    Language.Bokmal to "Beregningen av barnepensjonen din trer i kraft som et vedtak fra 1. januar 2024. Du kan gi oss nye opplysninger slik at vi kan rette opp eventuelle feil i beregningen.",
                     Language.Nynorsk to "Utrekninga av barnepensjonen din trer i kraft som vedtak fire veker frå du får dette førehandsvarselet. I løpet av denne perioden kan du gi oss nye opplysningar slik at vi kan rette opp eventuelle feil i utrekninga.",
                     Language.English to "The calculation of your children's pension will take effect four weeks after you receive this advance notice. During this period, feel free to provide us with any new information so we can correct any errors in our calculation."
                 )
@@ -117,7 +117,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis opplysningene ikke stemmer, må du gi beskjed til NAV innen fire uker fra du får dette forhåndsvarselet. Hvis opplysningene gjør at NAV må beregne barnepensjonen din på nytt, får du et nytt vedtak.",
+                    Language.Bokmal to "Hvis opplysningene ikke stemmer, må du gi beskjed til NAV snarest mulig. Hvis opplysningene gjør at NAV må beregne barnepensjonen din på nytt, får du et nytt vedtak.",
                     Language.Nynorsk to "Dersom opplysningane ikkje stemmer, må du gi beskjed til NAV innan fire veker frå du får dette førehandsvarselet. Du vil få eit nytt vedtak dersom opplysningane gjer det nødvendig for NAV å rekne ut barnepensjonen din på nytt.",
                     Language.English to "If the information is incorrect, you must notify NAV within four weeks of receiving this advance notice. If the information means that NAV has to recalculate your children's pension, you will receive a new decision."
                 )
@@ -125,7 +125,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
 
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis du ikke har nye opplysninger eller innsigelser til “Utkast til vedtak – endring av barnepensjon” som er vedlagt, vil vedlegget anses som et vedtak fra 1. januar 2024. Du vil altså ikke få et nytt vedtak fordi utkastet da er omgjort til “Vedtak - endring av barnepensjon”.",
+                    Language.Bokmal to "Hvis du ikke har nye opplysninger eller innsigelser til “Utkast til vedtak – endring av barnepensjon” som er vedlagt, vil vedlegget anses som et vedtak etter to uker fra du mottok dette brevet. Du vil ikke få et nytt vedtak fordi utkastet da er omgjort til “Vedtak - endring av barnepensjon”.",
                     Language.Nynorsk to "Dersom du ikkje har nye opplysningar eller innvendingar mot «Utkast til vedtak – endring av barnepensjon» som er lagt ved, vil vedlegget bli rekna som vedtak frå og med 1. januar 2024. Du vil med andre ikkje få eit nytt vedtak, fordi utkastet då har blitt gjort om til «Vedtak – endring av barnepensjon».",
                     Language.English to "If you have no new information or objections to the information provided in the Draft Decision, the decision will be deemed valid as of 1 January 2024. In other words, you will not receive a new decision because the draft decision will be converted to a formal decision and then entitled Decision – adjustment of children's pension."
                 )
@@ -133,7 +133,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
 
             paragraph {
                 text(
-                    Language.Bokmal to "Etter at vedtaket har tredd i kraft (altså 1. januar 2024) har du seks ukers klagefrist på vedtaket. Du finner informasjon om hvordan du klager i “Utkast til vedtak – endring av barnepensjon”.",
+                    Language.Bokmal to "Etter at vedtaket har tredd i kraft har du seks ukers klagefrist på vedtaket. Du finner informasjon om hvordan du klager i “Utkast til vedtak – endring av barnepensjon”.",
                     Language.Nynorsk to "Etter at vedtaket har tredd i kraft (altså 1. januar 2024), har du seks vekers klagefrist. Sjå «Utkast til vedtak – endring av barnepensjon» for meir informasjon om korleis du går fram for å klage.",
                     Language.English to "After the decision has entered into force (i.e. 1 January 2024), you have six weeks to appeal the decision. You can find information on how to appeal in the attachment, Draft decision – adjustment of children's pension."
                 )

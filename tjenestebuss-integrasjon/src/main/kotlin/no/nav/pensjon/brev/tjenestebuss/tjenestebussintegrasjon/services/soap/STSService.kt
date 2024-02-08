@@ -31,13 +31,13 @@ data class UserToken(
 }
 
 class STSService(stsConfig: Config) {
-    val mutex = Mutex()
+    private val mutex = Mutex()
 
-    var token: UserToken? = null
-    val stsEndpointUrl: String = stsConfig.getString("url")
-    val stsUser: String = stsConfig.getString("username")
-    val stsPassword: String = stsConfig.getString("password")
-    val client = HttpClient(CIO) {
+    private var token: UserToken? = null
+    private val stsEndpointUrl: String = stsConfig.getString("url")
+    private val stsUser: String = stsConfig.getString("username")
+    private val stsPassword: String = stsConfig.getString("password")
+    private val client = HttpClient(CIO) {
         install(Auth) {
             basic {
                 credentials {

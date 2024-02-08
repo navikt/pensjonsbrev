@@ -1,6 +1,9 @@
-allowAllUsers: true
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
+
+groups:
+  - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
+  - "bda6bd68-77e6-4c00-96b9-7ecf5df7413c" #0000-GA-Pensjon_Utland
 
 inboundRules:
   - application: skribenten-web
@@ -17,13 +20,23 @@ outboundRules:
   - application: digdir-krr-proxy
     namespace: team-rocket
     cluster: dev-gcp
+  - application: pensjonsbrev-tjenestebuss-q2
+    namespace: pensjonsbrev
+    cluster: dev-fss
+  - application: navansatt
+    namespace: teampensjon
+    cluster: dev-fss
+  - application: pensjon-persondata-q2
+    namespace: pensjon-person
+    cluster: dev-fss
 
 externalHosts:
   - pdl-api.dev-fss-pub.nais.io
   - pensjon-pen-q2.dev-fss-pub.nais.io
-  - saf.intern.dev.nav.no
-  - kodeverk.dev-fss-pub.nais.io
-  - pensjon-persondata-q2.intern.dev.nav.no
+  - saf-q2.dev-fss-pub.nais.io
+  - pensjon-persondata-q2.dev-fss-pub.nais.io
+  - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
+  - navansatt.dev-fss-pub.nais.io
 
 env:
   - name: CORS_ALLOW_HOST
@@ -37,26 +50,30 @@ env:
   - name: BREVBAKER_SCOPE
     value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
   - name: BREVMETADATA_URL
-    value: "https://pensjon-brevmetadata-q2.intern.dev.nav.no"
-  - name: MICROSOFT_GRAPH_URL
-    value: "https://graph.microsoft.com/"
-  - name: MICROSOFT_GRAPH_SCOPE
-    value: "https://graph.microsoft.com/User.Read"
+    value: "http://pensjon-brevmetadata-q2"
   - name: PDL_URL
     value: "https://pdl-api.dev-fss-pub.nais.io/graphql"
   - name: PDL_SCOPE
     value: "api://dev-fss.pdl.pdl-api/.default"
   - name: SAF_URL
-    value: "https://saf.intern.dev.nav.no/graphql"
+    value: "https://saf-q2.dev-fss-pub.nais.io/graphql"
   - name: SAF_SCOPE
     value: "api://dev-fss.teamdokumenthandtering.saf/.default"
   - name: KRR_SCOPE
     value: "api://dev-gcp.team-rocket.digdir-krr-proxy/.default"
   - name: KRR_URL
     value: "https://digdir-krr-proxy.intern.dev.nav.no"
-  - name: KODEVERK_SERVICE
-    value: "https://kodeverk.dev-fss-pub.nais.io/api/v1/kodeverk/"
   - name: PENSJON_PERSONDATA_SCOPE
     value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
   - name: PENSJON_PERSONDATA_URL
-    value: "https://pensjon-persondata-q2.intern.dev.nav.no"
+    value: "https://pensjon-persondata-q2.dev-fss-pub.nais.io"
+  - name: TJENESTEBUSS_INTEGRASJON_URL
+    value: "https://pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io"
+  - name: TJENESTEBUSS_INTEGRASJON_SCOPE
+    value: "api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default"
+  - name: NAVANSATT_URL
+    value: "https://navansatt.dev-fss-pub.nais.io/"
+  - name: NAVANSATT_SCOPE
+    value: "api://dev-fss.teampensjon.navansatt/.default"
+  - name: GROUPS_PENSJON_UTLAND
+    value: "bda6bd68-77e6-4c00-96b9-7ecf5df7413c"

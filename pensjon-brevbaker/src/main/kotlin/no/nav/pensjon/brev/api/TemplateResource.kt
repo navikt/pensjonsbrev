@@ -12,8 +12,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
+    AdhocAlderspensjonFraFolketrygden,
+    AdhocVarselOpphoerMedHvilendeRett,
     ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
-    AdhocInfoOmFeilUT2023,
     OmsorgEgenAuto,
     OpphoerBarnetilleggAuto,
     OpptjeningVedForhoeyetHjelpesats,
