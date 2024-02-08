@@ -68,13 +68,13 @@ data class Trygdetidstabell(
                                 textExpr(
                                     Language.Bokmal to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (fremtidig trygdetid)", ""),
                                     Language.Nynorsk to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (framtidig trygdetid)", ""),
-                                    Language.English to "".expr(),
+                                    Language.English to  it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (future contribution time)", ""),
                                 )
                             }
                         }
                     }
                 }
-            }
+            }1
         }
     }
 }

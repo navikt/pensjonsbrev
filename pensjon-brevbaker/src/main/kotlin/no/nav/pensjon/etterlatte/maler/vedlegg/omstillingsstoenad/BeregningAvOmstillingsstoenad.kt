@@ -62,7 +62,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     "folketrygda (G). Dagens verdi av grunnbeløpet er " + grunnbeloep.format() + " kroner. " +
                     "Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i " +
                     "juni kvart år.",
-            English to "Full adjustment allowance are calculated based on 2.25 x the national ".expr() +
+            English to "Full adjustment allowance are calculated based on 2.25 × the national ".expr() +
                     "insurance basic amount (G). The current value of the basic amount is NOK " + grunnbeloep.format() +
                     ". The basic amount is adjusted on 1 May each year. You will receive payment of any increase in " +
                     "June of each year.",

@@ -35,7 +35,7 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
                     ". Vanligvis vil du få denne etterbetalingen i løpet av tre uker. ",
             Nynorsk to "Du får etterbetalt stønad frå ".expr() + fraDato.format() + " til " + tilDato.format() +
                     ". Vanlegvis får du denne etterbetalinga i løpet av tre veker.",
-            English to "You will receive back payments on allowance from ".expr() + fraDato.format() + " til " +
+            English to "You will receive back payments on allowance from ".expr() + fraDato.format() + " until " +
                     tilDato.format() + ". You will usually receive this back payment within three weeks.",
         )
     }

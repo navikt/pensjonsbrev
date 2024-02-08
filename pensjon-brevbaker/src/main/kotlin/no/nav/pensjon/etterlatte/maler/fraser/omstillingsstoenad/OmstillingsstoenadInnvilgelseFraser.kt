@@ -224,8 +224,8 @@ object OmstillingsstoenadInnvilgelseFraser {
             paragraph {
                 text(
                     Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker. ",
-                    Nynorsk to "Dersom du har rett på etterbetaling, får du vanlegvis denne i løpet av tre veker.",
-                    English to "If you are entitled to a back payment, you will normally receive this within three weeks.",
+                    Nynorsk to "Dersom du har rett på etterbetaling, får du vanlegvis denne i løpet av tre veker. ",
+                    English to "If you are entitled to a back payment, you will normally receive this within three weeks. ",
                 )
                 ifNotNull(etterbetaling) {
                     text(
