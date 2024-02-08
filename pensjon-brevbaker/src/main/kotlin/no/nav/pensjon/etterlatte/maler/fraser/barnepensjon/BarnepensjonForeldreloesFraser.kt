@@ -27,6 +27,7 @@ object BarnepensjonForeldreloesFraser {
         val bareEnPeriode: Expression<Boolean>,
         val enEllerFlerePerioderMedFlereBeloep: Expression<Boolean>,
         val ingenUtbetaling: Expression<Boolean>,
+        val vedtattIPesys: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val formatertVirkningsdato = virkningstidspunkt.format()
@@ -35,13 +36,16 @@ object BarnepensjonForeldreloesFraser {
 
             paragraph {
                 textExpr(
-                    Language.Bokmal to (
-                            "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + "fordi begge foreldrene dine er registrert død." +
-                                    ifElse(
-                                        bareEnPeriode,
-                                        "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
-                                        "".expr()
-                                    )
+                    Language.Bokmal to
+                            ifElse(
+                                vedtattIPesys,
+                                "Vi viser til at du er innvilget barnepensjon. Stortinget har vedtatt nye regler for barnepensjon. Pensjonen din er derfor endret fra 1. januar 2024.".expr(),
+                                "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + "fordi begge foreldrene dine er registrert død.".expr()
+                            ) +
+                            ifElse(
+                                bareEnPeriode,
+                                "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
+                                "".expr()
                             ),
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
@@ -87,9 +91,19 @@ object BarnepensjonForeldreloesFraser {
     }
 
     data class BegrunnelseForVedtaketRedigerbart(
-        val etterbetaling: Expression<Boolean>
+        val etterbetaling: Expression<Boolean>,
+        val vedtattIPesys: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(vedtattIPesys) {
+                paragraph {
+                    text(
+                        Language.Bokmal to "De nye reglene for barnepensjon har ingen søskenjustering, og du vil få pensjon til du er 20 år selv om du er under utdanning.",
+                        Language.Nynorsk to "",
+                        Language.English to "",
+                    )
+                }
+            }
             paragraph {
                 text(
                     Language.Bokmal to "Barnepensjon gis på bakgrunn av at",

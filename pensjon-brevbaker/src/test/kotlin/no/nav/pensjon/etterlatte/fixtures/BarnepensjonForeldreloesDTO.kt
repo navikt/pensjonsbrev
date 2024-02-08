@@ -90,9 +90,11 @@ fun createBarnepensjonForeldreloesDTO() =
         kunNyttRegelverk = false,
         bareEnPeriode = true,
         enEllerFlerePerioderMedFlereBeloep = true,
-        ingenUtbetaling = true
+        ingenUtbetaling = true,
+        vedtattIPesys = true
     )
 
 fun createBarnepensjonForeldreloesRedigerbarDTO() = BarnepensjonForeldreloesRedigerbarDTO(
     erEtterbetaling = true,
+    vedtattIPesys = true
 )

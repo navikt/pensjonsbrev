@@ -10,11 +10,13 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erEtterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.vedtattIPesys
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForeldreloesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 data class BarnepensjonForeldreloesRedigerbarDTO(
     val erEtterbetaling: Boolean,
+    val vedtattIPesys: Boolean,
 )
 
 @TemplateModelHelpers
@@ -38,7 +40,7 @@ object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(
-                BarnepensjonForeldreloesFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling),
+                BarnepensjonForeldreloesFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling, vedtattIPesys),
             )
         }
     }

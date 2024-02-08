@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -31,6 +32,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonFore
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.enEllerFlerePerioderMedFlereBeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.ingenUtbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.kunNyttRegelverk
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.vedtattIPesys
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForeldreloesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
@@ -53,6 +55,7 @@ data class BarnepensjonForeldreloesDTO(
     val bareEnPeriode: Boolean,
     val enEllerFlerePerioderMedFlereBeloep: Boolean,
     val ingenUtbetaling: Boolean,
+    val vedtattIPesys: Boolean
 ) : BrevDTO
 
 
@@ -72,10 +75,18 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
         ),
     ) {
         title {
-            text(
-                Bokmal to "Vi har innvilget søknaden din om barnepensjon",
-                Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-                English to "We have granted your application for a children's pension",
+            ifElse(
+                vedtattIPesys,
+                text(
+                    Bokmal to "Barnepensjonen er endret fra 1. januar 2024",
+                    Nynorsk to "",
+                    English to "",
+                ),
+                text(
+                    Bokmal to "Vi har innvilget søknaden din om barnepensjon",
+                    Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
+                    English to "We have granted your application for a children's pension",
+                )
             )
         }
 
@@ -89,6 +100,7 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
                     bareEnPeriode = bareEnPeriode,
                     enEllerFlerePerioderMedFlereBeloep = enEllerFlerePerioderMedFlereBeloep,
                     ingenUtbetaling = ingenUtbetaling,
+                    vedtattIPesys = vedtattIPesys
                 )
             )
 
