@@ -2,8 +2,10 @@ package no.nav.pensjon.brev
 
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
+import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
 import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
@@ -63,6 +65,7 @@ object Fixtures {
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
+            VarselSaksbehandlingstidAutoDto::class -> createVarselSaksbehandlingstidAutoDto() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")

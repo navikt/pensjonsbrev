@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.mottattDatoMinus2Dager
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.utvidetBehandlingstid
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.*
@@ -56,8 +57,8 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             paragraph {
                 textExpr(
                     Bokmal to "Søknaden din blir behandlet så snart som mulig, og senest innen ".expr()
-                            + ifElse(utvidetBehandlingstid, ifFalse = "4", ifTrue = "12" + " måneder. "
-                            + "Blir ikke saken din ferdigbehandlet innen denne fristen, vil vi gi deg beskjed om ny svartid."),
+                            + ifElse(utvidetBehandlingstid, ifFalse = "4", ifTrue = "12") + " måneder. "
+                            + "Blir ikke saken din ferdigbehandlet innen denne fristen, vil vi gi deg beskjed om ny svartid.",
                     Nynorsk to "Søknaden din vert handsama så snart som mogleg, og seinast innan ".expr()
                             + ifElse(utvidetBehandlingstid, ifFalse = "4", ifTrue = "12") + " 4 månader. "
                             + "Vert ikkje saka di handsama innan denne fristen, vil vi gje deg melding om ny svarfrist.",
@@ -68,6 +69,8 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             }
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+
+            includePhrase(Felles.RettTilInnsynPesys)
 
             includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
         }
