@@ -525,22 +525,20 @@ function VelgSamhandlerModal() {
                   <div>Fant {finnSamhandlerMutation.data?.samhandlere.length} treff</div>
                   <Table>
                     <Table.Header>
-                      <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
-                      <Table.HeaderCell scope="col"></Table.HeaderCell>
+                      <Table.Row>
+                        <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
+                        <Table.HeaderCell scope="col"></Table.HeaderCell>
+                      </Table.Row>
                     </Table.Header>
                     <Table.Body>
                       {finnSamhandlerMutation.data?.samhandlere.map((samhandler) => (
                         <Table.Row key={samhandler.idTSSEkstern}>
-                          <Table.HeaderCell>{samhandler.navn}</Table.HeaderCell>
+                          <Table.HeaderCell scope="row">{samhandler.navn}</Table.HeaderCell>
                           <Table.DataCell>
-                            {/*<Link search={(s) => ({ ...s, idTSSEkstern: samhandler.idTSSEkstern })}>*/}
-                            {/*  Velg*/}
-                            {/*</Link>*/}
                             <Button
                               onClick={() => {
                                 reference.current?.close();
                                 navigate({
-                                  // to: Route.fullPath,
                                   params: (p) => p,
                                   search: (s) => ({ ...s, idTSSEkstern: samhandler.idTSSEkstern }),
                                   replace: true,
