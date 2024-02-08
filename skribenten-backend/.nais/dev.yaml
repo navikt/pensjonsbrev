@@ -3,6 +3,7 @@ ingresses:
 
 groups:
   - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
+  - "bda6bd68-77e6-4c00-96b9-7ecf5df7413c" #0000-GA-Pensjon_Utland
 
 inboundRules:
   - application: skribenten-web
@@ -74,3 +75,5 @@ env:
     value: "https://navansatt.dev-fss-pub.nais.io/"
   - name: NAVANSATT_SCOPE
     value: "api://dev-fss.teampensjon.navansatt/.default"
+  - name: GROUPS_PENSJON_UTLAND
+    value: "bda6bd68-77e6-4c00-96b9-7ecf5df7413c"

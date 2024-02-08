@@ -1,12 +1,12 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Button, Heading, Link, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Await, CatchBoundary, createFileRoute, defer, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
@@ -22,24 +22,19 @@ import {
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
-import { BrevvelgerTabOptions } from "~/routes/saksnummer_.$sakId.brevvelger";
 import type { LetterMetadata, OrderLetterRequest } from "~/types/apiTypes";
 import { BrevSystem, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
-  loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
+  loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
+  loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId }, deps: { includeVedtak } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
-    const adressePromise = queryClient.ensureQueryData({
-      queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
-      queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
-    });
-
     const letterTemplates = await queryClient.ensureQueryData({
-      queryKey: getLetterTemplate.queryKey(sak.sakType),
-      queryFn: () => getLetterTemplate.queryFn(sak.sakType),
+      queryKey: getLetterTemplate.queryKey({ sakType: sak.sakType, includeVedtak }),
+      queryFn: () => getLetterTemplate.queryFn(sak.sakType, { includeVedtak }),
     });
 
     const eblanketter = await queryClient.ensureQueryData(getEblanketter);
@@ -52,7 +47,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
       throw notFound();
     }
 
-    return { letterTemplate, sak, deferredAdresse: defer(adressePromise) };
+    return { letterTemplate, sak };
   },
   notFoundComponent: () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
@@ -76,7 +71,6 @@ const formValidationSchema = z.object({
 });
 
 export function SelectedTemplate() {
-  const { fane } = Route.useSearch();
   const { letterTemplate } = Route.useLoaderData();
 
   if (!letterTemplate) {
@@ -95,10 +89,10 @@ export function SelectedTemplate() {
       `}
     >
       <FavoriteButton />
-      {fane === BrevvelgerTabOptions.BREVMALER ? (
-        <Brevmal letterTemplate={letterTemplate} />
-      ) : (
+      {letterTemplate.dokumentkategoriCode === "E_BLANKETT" ? (
         <Eblankett letterTemplate={letterTemplate} />
+      ) : (
+        <Brevmal letterTemplate={letterTemplate} />
       )}
     </div>
   );
@@ -116,6 +110,10 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
       window.open(callbackUrl);
     },
   });
+
+  useEffect(() => {
+    orderLetterMutation.reset();
+  }, [templateId]);
 
   const methods = useForm<z.infer<typeof formValidationSchema>>({
     defaultValues: {
@@ -170,19 +168,31 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 
           <VStack gap="4">
             {orderLetterMutation.error && <Alert variant="error">{orderLetterMutation.error.message}</Alert>}
-            <Button
-              css={css`
-                width: fit-content;
-              `}
-              icon={<ArrowRightIcon />}
-              iconPosition="right"
-              loading={orderLetterMutation.isPending}
-              size="small"
-              type="submit"
-              variant="primary"
-            >
-              Rediger brev
-            </Button>
+            {orderLetterMutation.isSuccess ? (
+              <Alert variant="success">
+                <Heading level="3" size="xsmall">
+                  Brev bestilt
+                </Heading>
+                <span>
+                  Redigering skal åpne seg selv, hvis ikke er popup blokkert av nettleseren din.{" "}
+                  <Link href={orderLetterMutation.data}>Klikk her for å prøve åpne på nytt</Link>
+                </span>
+              </Alert>
+            ) : (
+              <Button
+                css={css`
+                  width: fit-content;
+                `}
+                icon={<ArrowRightIcon />}
+                iconPosition="right"
+                loading={orderLetterMutation.isPending}
+                size="small"
+                type="submit"
+                variant="primary"
+              >
+                Bestill og rediger brev
+              </Button>
+            )}
           </VStack>
         </form>
       </FormProvider>
@@ -303,22 +313,21 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
 }
 
 function Adresse() {
-  const { deferredAdresse } = Route.useLoaderData();
+  const { sak } = Route.useLoaderData();
+
+  const adresseQuery = useQuery({
+    queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
+    queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
+  });
+
   return (
     <>
       <Heading level="3" size="xsmall">
         Adresse
       </Heading>
-      <BodyShort size="small">
-        <Suspense fallback="...henter">
-          <CatchBoundary
-            errorComponent={(error: unknown) => <ApiError error={error} text="Fant ikke adresse" />}
-            getResetKey={() => "adresseError"}
-          >
-            <Await promise={deferredAdresse}>{(data) => <span>{data.adresseString}</span>}</Await>
-          </CatchBoundary>
-        </Suspense>
-      </BodyShort>
+      {adresseQuery.data && <BodyShort>{adresseQuery.data.adresseString}</BodyShort>}
+      {adresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
+      {adresseQuery.error && <ApiError error={adresseQuery.error} text="Fant ikke adresse" />}
       <Divider />
     </>
   );

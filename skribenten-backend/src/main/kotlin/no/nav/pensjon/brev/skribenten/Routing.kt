@@ -3,9 +3,7 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.Config
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.routes.*
@@ -32,7 +30,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         healthRoute()
 
         authenticate(authConfig.name) {
-            brevmalerRoute(brevmetadataService)
+            brevmalerRoute(brevmetadataService, skribentenConfig.getConfig("groups"))
             brevbakerRoute(brevbakerService)
             bestillBrevRoute(legacyBrevService)
             kodeverkRoute(penService)
