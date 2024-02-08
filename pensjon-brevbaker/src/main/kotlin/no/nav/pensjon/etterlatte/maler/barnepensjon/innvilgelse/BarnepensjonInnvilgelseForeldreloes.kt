@@ -102,6 +102,8 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
                 )
             )
 
+            includePhrase(BarnepensjonForeldreloesFraser.HvorLengeKanDuFaaBarnepensjon)
+
             includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)// TODO påse at er ok
             includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)// TODO påse at er ok
             includePhrase(
