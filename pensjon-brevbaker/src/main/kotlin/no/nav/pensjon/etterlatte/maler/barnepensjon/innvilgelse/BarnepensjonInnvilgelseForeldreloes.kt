@@ -104,14 +104,14 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
 
             includePhrase(BarnepensjonForeldreloesFraser.HvorLengeKanDuFaaBarnepensjon)
 
-            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)// TODO påse at er ok
-            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)// TODO påse at er ok
+            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
+            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
             includePhrase(
                 BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(
                     brukerUnder18Aar,
                     bosattUtland
                 )
-            )// TODO påse at er ok
+            )
         }
 
         // Beregning av barnepensjon nytt og gammelt regelverk
@@ -119,11 +119,6 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
         // TODO NYTT BEREGNIGNSVEDLEGG
         // Beregning av barnepensjon nytt regelverk
         includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
-
-        includeAttachmentIfNotNull(
-            etterbetalingAvBarnepensjon,
-            etterbetaling
-        ) // TODO Ikke vedlegg men i teksten i hovedmal
 
         // Vedlegg under 18 år
         includeAttachment(
