@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import kotlin.reflect.jvm.internal.impl.resolve.scopes.MemberScope.Empty
+
 
 object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
     override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_AP_ADHOC_2024_REGLERENDRET_GJR_AP_MNTINDV
