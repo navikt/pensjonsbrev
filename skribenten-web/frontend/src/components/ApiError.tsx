@@ -4,7 +4,9 @@ import { ErrorComponent } from "@tanstack/react-router";
 import { AxiosError } from "axios";
 
 export function ApiError({ error, text }: { error: unknown; text: string }) {
+  console.log("er", error);
   if (error instanceof AxiosError) {
+    console.log("instance")
     const correlationId = error.response?.headers["x-request-id"];
     return (
       <Alert

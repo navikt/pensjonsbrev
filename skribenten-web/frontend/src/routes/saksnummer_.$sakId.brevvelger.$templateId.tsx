@@ -34,6 +34,7 @@ import {
   getKontaktAdresse,
   getLetterTemplate,
   hentSamhandler,
+  hentSamhandlerAdresse,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
@@ -46,6 +47,7 @@ import type {
   FinnSamhandlerResponseDto,
   LetterMetadata,
   OrderLetterRequest,
+  SamhandlerPostadresse,
 } from "~/types/apiTypes";
 import { SamhandlerTypeCode } from "~/types/apiTypes";
 import { BrevSystem, SpraakKode } from "~/types/apiTypes";
@@ -339,13 +341,18 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
 }
 
 function Adresse() {
+  const { idTSSEkstern } = Route.useSearch();
+
+  return idTSSEkstern ? <SamhandlerAdresse /> : <PersonAdresse />;
+}
+
+function PersonAdresse() {
   const { sak } = Route.useLoaderData();
 
   const adresseQuery = useQuery({
     queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
     queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
   });
-
   return (
     <>
       <Heading level="3" size="xsmall">
@@ -357,6 +364,43 @@ function Adresse() {
       <Divider />
     </>
   );
+}
+function SamhandlerAdresse() {
+  const { idTSSEkstern } = Route.useSearch();
+
+  const hentSamhandlerAdresseQuery = useQuery({
+    queryKey: hentSamhandlerAdresse.queryKey(idTSSEkstern as string),
+    queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: idTSSEkstern as string }),
+    enabled: !!idTSSEkstern,
+  });
+
+  return (
+    <>
+      <Heading level="3" size="xsmall">
+        Adresse
+      </Heading>
+      {hentSamhandlerAdresseQuery.data && (
+        <BodyShort>{formatSamhandlerAdresse(hentSamhandlerAdresseQuery.data)}</BodyShort>
+      )}
+      {hentSamhandlerAdresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
+      {hentSamhandlerAdresseQuery.error && (
+        <ApiError error={hentSamhandlerAdresseQuery.error} text="Fant ikke adresse" />
+      )}
+      <Divider />
+    </>
+  );
+}
+
+function formatSamhandlerAdresse(adresse: SamhandlerPostadresse) {
+  const { land, linje1, postnr, poststed } = adresse;
+
+  const defaultAddressLine = `${linje1}, ${postnr} ${poststed}`;
+
+  if (land !== "NOR") {
+    return `${defaultAddressLine} ${land}`;
+  }
+
+  return defaultAddressLine;
 }
 
 function FavoriteButton() {

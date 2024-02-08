@@ -3,12 +3,14 @@
 /* eslint-disable unicorn/no-await-expression-member*/
 
 import type { AxiosResponse } from "axios";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import type {
   BestillOgRedigerBrevResponse,
   FinnSamhandlerRequestDto,
   FinnSamhandlerResponseDto,
+  HentSamhandlerAdresseRequestDto,
+  HentSamhandlerAdresseResponseDto,
   HentSamhandlerRequestDto,
   HentsamhandlerResponseDto,
   KontaktAdresseResponse,
@@ -18,8 +20,8 @@ import type {
   PreferredLanguage,
   SakDto,
 } from "~/types/apiTypes";
-import { Samhandler } from "~/types/apiTypes";
 import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
+
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -59,6 +61,11 @@ export const adresseKeys = {
 export const samhandlerKeys = {
   all: ["SAMHANDLER"],
   idTSSEkstern: (idTSSEkstern: string) => [...samhandlerKeys.all, idTSSEkstern] as const,
+};
+
+export const samhandlerAdresseKeys = {
+  all: ["SAMHANDLER_ADRESSE"],
+  idTSSEkstern: (idTSSEkstern: string) => [...samhandlerAdresseKeys.all, idTSSEkstern] as const,
 };
 
 export const preferredLanguageKeys = {
@@ -170,5 +177,21 @@ export const hentSamhandler = {
     }
 
     return response.success;
+  },
+};
+export const hentSamhandlerAdresse = {
+  queryKey: samhandlerAdresseKeys.idTSSEkstern,
+  queryFn: async (request: HentSamhandlerAdresseRequestDto) => {
+    const response = await axios.post<HentSamhandlerAdresseResponseDto>(
+      `${SKRIBENTEN_API_BASE_PATH}/hentSamhandlerAdresse`,
+      request,
+    );
+
+    if (response.data.failureType) {
+      // TODO: generalize
+      throw new AxiosError(response.data.failureType, "200", undefined, request, response);
+    }
+
+    return response.data.adresse;
   },
 };

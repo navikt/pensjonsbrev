@@ -99,6 +99,24 @@ export type HentSamhandlerRequestDto = {
   hentDetaljert: boolean;
 };
 
+export type HentSamhandlerAdresseResponseDto = {
+  adresse: SamhandlerPostadresse;
+  failureType?: string;
+};
+export type SamhandlerPostadresse = {
+  navn: string;
+  linje1?: string;
+  linje2?: string;
+  linje3?: string;
+  postnr?: string;
+  poststed?: string;
+  land?: string;
+};
+
+export type HentSamhandlerAdresseRequestDto = {
+  idTSSEkstern: string;
+};
+
 export type HentsamhandlerResponseDto = {
   success: Samhandler;
   failure: null | string;
