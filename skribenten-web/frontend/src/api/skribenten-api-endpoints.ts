@@ -10,6 +10,7 @@ import type {
   BestillOgRedigerBrevResponse,
   KontaktAdresseResponse,
   LetterMetadata,
+  OrderEblankettRequest,
   OrderLetterRequest,
   PidRequest,
   PreferredLanguage,
@@ -149,7 +150,7 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-export async function orderLetter(orderLetterRequest: OrderLetterRequest) {
+export async function orderLetter(orderLetterRequest: OrderLetterRequest | OrderEblankettRequest) {
   const response = (
     await axios.post<BestillOgRedigerBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/bestillbrev`, orderLetterRequest)
   ).data;

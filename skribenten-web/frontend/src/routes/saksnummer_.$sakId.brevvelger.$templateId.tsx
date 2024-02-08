@@ -1,12 +1,24 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, Link, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
+import {
+  Alert,
+  BodyShort,
+  Button,
+  Heading,
+  Link,
+  Radio,
+  RadioGroup,
+  Select,
+  Tag,
+  TextField,
+  VStack,
+} from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
@@ -23,7 +35,7 @@ import {
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
-import type { LetterMetadata, OrderLetterRequest } from "~/types/apiTypes";
+import type { LetterMetadata, OrderEblankettRequest, OrderLetterRequest } from "~/types/apiTypes";
 import { BrevSystem, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
@@ -248,13 +260,30 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   );
 }
 
-const eblankettValidationSchema = z.object({
-  avtaleland: z.string().min(1, "Obligatorisk"),
+const eblankettValidationSchema = brevmalValidationSchema.extend({
+  landkode: z.string().min(1, "Obligatorisk"),
+  mottakerText: z.string().min(1, "Obligatorisk"),
 });
 
 function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  const methods = useForm({
+  const { sakId } = Route.useParams();
+  const { sak } = Route.useLoaderData();
+
+  const { vedtaksId } = Route.useSearch();
+
+  const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
+    defaultValues: {
+      landkode: "",
+      mottakerText: "",
+    },
     resolver: zodResolver(eblankettValidationSchema),
+  });
+
+  const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
+    mutationFn: orderLetter,
+    onSuccess: (callbackUrl) => {
+      window.open(callbackUrl);
+    },
   });
 
   return (
@@ -274,22 +303,44 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
             justify-content: space-between;
           `}
           onSubmit={methods.handleSubmit((submittedValues) => {
-            console.log("submit", submittedValues);
+            const orderLetterRequest = {
+              brevkode: letterTemplate.id,
+              sakId: Number(sakId),
+              gjelderPid: sak.foedselsnr,
+              vedtaksId,
+              ...submittedValues,
+            };
+            return orderEblankettMutation.mutate(orderLetterRequest);
           })}
         >
-          <SelectAvtaleland />
-          <Button
-            css={css`
-              width: fit-content;
-            `}
-            icon={<ArrowRightIcon />}
-            iconPosition="right"
-            size="small"
-            type="submit"
-            variant="primary"
-          >
-            Bestill eblankett
-          </Button>
+          <VStack gap="4">
+            <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectSensitivity letterTemplate={letterTemplate} />
+            <SelectAvtaleland />
+            <TextField
+              {...methods.register("mottakerText")}
+              autoComplete="off"
+              error={methods.formState.errors.mottakerText?.message}
+              label="Mottaker"
+              size="small"
+            />
+          </VStack>
+          <VStack gap="4">
+            {orderEblankettMutation.error && <Alert variant="error">{orderEblankettMutation.error.message}</Alert>}
+            <Button
+              css={css`
+                width: fit-content;
+              `}
+              icon={<ArrowRightIcon />}
+              iconPosition="right"
+              loading={orderEblankettMutation.isPending}
+              size="small"
+              type="submit"
+              variant="primary"
+            >
+              Bestill eblankett
+            </Button>
+          </VStack>
         </form>
       </FormProvider>
     </>
@@ -298,12 +349,12 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 
 function SelectAvtaleland() {
   const avtalelandQuery = useQuery(getAvtaleLand);
-  const { register, getFieldState } = useFormContext();
+  const { register, formState } = useFormContext();
 
   const options = avtalelandQuery.data ?? [];
 
   return (
-    <Select {...register("avtaleland")} error={getFieldState("avtaleland").error?.message} label="Land" size="small">
+    <Select {...register("landkode")} error={formState.errors.landkode?.message?.toString()} label="Land" size="small">
       <option value={""}>Velg land</option>
       {options.map((option) => (
         <option key={option.kode} value={option.kode}>
