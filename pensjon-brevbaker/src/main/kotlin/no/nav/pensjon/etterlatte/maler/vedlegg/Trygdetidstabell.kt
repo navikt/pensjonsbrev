@@ -74,7 +74,7 @@ data class Trygdetidstabell(
                         }
                     }
                 }
-            }1
+            }
         }
     }
 }
