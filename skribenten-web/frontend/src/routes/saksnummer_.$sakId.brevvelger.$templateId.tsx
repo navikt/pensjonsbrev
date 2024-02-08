@@ -14,6 +14,7 @@ import {
   TextField,
   VStack,
 } from "@navikt/ds-react";
+import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
@@ -78,11 +79,6 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   },
 });
 
-const brevmalValidationSchema = z.object({
-  spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
-  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
-});
-
 export function SelectedTemplate() {
   const { letterTemplate } = Route.useLoaderData();
 
@@ -110,6 +106,11 @@ export function SelectedTemplate() {
     </div>
   );
 }
+
+const brevmalValidationSchema = z.object({
+  spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
+  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+});
 
 function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
@@ -186,10 +187,87 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   );
 }
 
-function BestillOgRedigerButton({ orderMutation }: { orderMutation: any }) {
+const eblankettValidationSchema = brevmalValidationSchema.extend({
+  landkode: z.string().min(1, "Obligatorisk"),
+  mottakerText: z.string().min(1, "Obligatorisk"),
+});
+
+function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  const { sakId } = Route.useParams();
+  const { sak } = Route.useLoaderData();
+
+  const { vedtaksId } = Route.useSearch();
+
+  const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
+    defaultValues: {
+      landkode: "",
+      mottakerText: "",
+    },
+    resolver: zodResolver(eblankettValidationSchema),
+  });
+
+  const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
+    mutationFn: orderLetter,
+    onSuccess: (callbackUrl) => {
+      window.open(callbackUrl);
+    },
+  });
+
+  return (
+    <>
+      <LetterTemplateHeading letterTemplate={letterTemplate} />
+      <Heading level="3" size="xsmall">
+        Formål og målgruppe
+      </Heading>
+      <BodyShort size="small">E-blankett</BodyShort>
+      <Divider />
+      <FormProvider {...methods}>
+        <form
+          css={css`
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+          `}
+          onSubmit={methods.handleSubmit((submittedValues) => {
+            const orderLetterRequest = {
+              brevkode: letterTemplate.id,
+              sakId: Number(sakId),
+              gjelderPid: sak.foedselsnr,
+              vedtaksId,
+              ...submittedValues,
+            };
+            return orderEblankettMutation.mutate(orderLetterRequest);
+          })}
+        >
+          <VStack gap="4">
+            <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectSensitivity letterTemplate={letterTemplate} />
+            <SelectAvtaleland />
+            <TextField
+              {...methods.register("mottakerText")}
+              autoComplete="off"
+              error={methods.formState.errors.mottakerText?.message}
+              label="Mottaker"
+              size="small"
+            />
+          </VStack>
+          <BestillOgRedigerButton orderMutation={orderEblankettMutation} />
+        </form>
+      </FormProvider>
+    </>
+  );
+}
+
+function BestillOgRedigerButton({
+  orderMutation,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- request type is not relevant for this component
+  orderMutation: UseMutationResult<string, AxiosError<Error> | Error, any>;
+}) {
   return (
     <VStack gap="4">
-      {orderMutation.error && <Alert variant="error">{orderMutation.error.message}</Alert>}
+      {orderMutation.error && <ApiError error={orderMutation.error} text="Bestilling feilet" />}
       {orderMutation.isSuccess ? (
         <Alert variant="success">
           <Heading level="3" size="xsmall">
@@ -263,78 +341,6 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
         </option>
       ))}
     </Select>
-  );
-}
-
-const eblankettValidationSchema = brevmalValidationSchema.extend({
-  landkode: z.string().min(1, "Obligatorisk"),
-  mottakerText: z.string().min(1, "Obligatorisk"),
-});
-
-function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  const { sakId } = Route.useParams();
-  const { sak } = Route.useLoaderData();
-
-  const { vedtaksId } = Route.useSearch();
-
-  const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
-    defaultValues: {
-      landkode: "",
-      mottakerText: "",
-    },
-    resolver: zodResolver(eblankettValidationSchema),
-  });
-
-  const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
-    mutationFn: orderLetter,
-    onSuccess: (callbackUrl) => {
-      window.open(callbackUrl);
-    },
-  });
-
-  return (
-    <>
-      <LetterTemplateHeading letterTemplate={letterTemplate} />
-      <Heading level="3" size="xsmall">
-        Formål og målgruppe
-      </Heading>
-      <BodyShort size="small">E-blankett</BodyShort>
-      <Divider />
-      <FormProvider {...methods}>
-        <form
-          css={css`
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            justify-content: space-between;
-          `}
-          onSubmit={methods.handleSubmit((submittedValues) => {
-            const orderLetterRequest = {
-              brevkode: letterTemplate.id,
-              sakId: Number(sakId),
-              gjelderPid: sak.foedselsnr,
-              vedtaksId,
-              ...submittedValues,
-            };
-            return orderEblankettMutation.mutate(orderLetterRequest);
-          })}
-        >
-          <VStack gap="4">
-            <SelectLanguage letterTemplate={letterTemplate} />
-            <SelectSensitivity letterTemplate={letterTemplate} />
-            <SelectAvtaleland />
-            <TextField
-              {...methods.register("mottakerText")}
-              autoComplete="off"
-              error={methods.formState.errors.mottakerText?.message}
-              label="Mottaker"
-              size="small"
-            />
-          </VStack>
-          <BestillOgRedigerButton orderMutation={orderEblankettMutation} />
-        </form>
-      </FormProvider>
-    </>
   );
 }
 
