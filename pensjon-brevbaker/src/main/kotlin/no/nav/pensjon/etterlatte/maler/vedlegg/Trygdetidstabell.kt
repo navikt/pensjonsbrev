@@ -1,20 +1,18 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg
 
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.ExpressionScope
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LocalizedFormatter
-import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.Periode
+import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.land
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.opptjeningsperiode
+import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.type
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
 data class Trygdetidstabell(
@@ -73,7 +71,7 @@ data class Trygdetidstabell(
     }
 }
 
-fun Expression<Periode>.format() = format(PeriodeFormatter)
+fun Expression<Periode>.format(): StringExpression = format(PeriodeFormatter)
 
 object PeriodeFormatter : LocalizedFormatter<Periode>() {
     override fun apply(first: Periode, second: Language): String {

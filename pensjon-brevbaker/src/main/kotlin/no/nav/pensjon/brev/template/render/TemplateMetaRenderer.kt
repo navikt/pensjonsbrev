@@ -8,11 +8,27 @@ import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invoke.Operation
 
 object TemplateMetaRenderer {
-    fun render(
-        outline: List<OutlineElement<*>>,
-        lang: Language
-    ): List<TemplateDocumentation.ContentOrControlStructure<TemplateDocumentation.Element.OutlineContent>> =
-        renderContentOrStructure(outline) { listOf(renderOutline(it, lang)) }
+
+    fun render(template: LetterTemplate<*, *>, lang: Language): TemplateDocumentation =
+        TemplateDocumentation(
+            title = renderText(template.title, lang),
+            outline = renderOutline(template.outline, lang),
+            attachments = template.attachments.map { renderAttachment(it, lang) },
+        )
+
+    private fun renderAttachment(attachment: IncludeAttachment<*, *>, lang: Language): TemplateDocumentation.Attachment =
+        TemplateDocumentation.Attachment(
+            title = renderText(listOf(attachment.template.title), lang),
+            outline = renderOutline(attachment.template.outline, lang),
+            include = renderExpression(attachment.predicate),
+            attachmentData = renderExpression(attachment.data),
+        )
+
+    private fun <T : Element<*>, R : TemplateDocumentation.Element> renderContentOrStructure(
+        contentOrStructure: List<ContentOrControlStructure<*, T>>,
+        mapper: (T) -> List<R>
+    ): List<TemplateDocumentation.ContentOrControlStructure<R>> =
+        contentOrStructure.flatMap { el -> renderContentOrStructure(el) { mapper(it) } }
 
     private fun <T : Element<*>, R : TemplateDocumentation.Element> renderContentOrStructure(
         contentOrStructure: ContentOrControlStructure<*, T>,
@@ -37,11 +53,11 @@ object TemplateMetaRenderer {
             )
         }
 
-    private fun <T : Element<*>, R : TemplateDocumentation.Element> renderContentOrStructure(
-        contentOrStructure: List<ContentOrControlStructure<*, T>>,
-        mapper: (T) -> List<R>
-    ): List<TemplateDocumentation.ContentOrControlStructure<R>> =
-        contentOrStructure.flatMap { el -> renderContentOrStructure(el) { mapper(it) } }
+    private fun renderOutline(
+        outline: List<OutlineElement<*>>,
+        lang: Language
+    ): List<TemplateDocumentation.ContentOrControlStructure<TemplateDocumentation.Element.OutlineContent>> =
+        renderContentOrStructure(outline) { listOf(renderOutline(it, lang)) }
 
     private fun renderOutline(element: Element.OutlineContent<*>, lang: Language): TemplateDocumentation.Element.OutlineContent =
         when (element) {

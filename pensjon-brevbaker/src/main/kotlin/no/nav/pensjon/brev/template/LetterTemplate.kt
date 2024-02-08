@@ -87,8 +87,6 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         val body: Collection<ContentOrControlStructure<Lang, C>>,
         private val next: NextExpression<Item>
     ) : ContentOrControlStructure<Lang, C>() {
-        val nextExpr : Expression<Item>
-            get() = next
 
         fun render(
             scope: ExpressionScope<*, *>,
