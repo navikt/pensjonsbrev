@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 object BarnepensjonForeldreloesFraser {
 
-    data class FoersteDel(
+    data class Vedtak(
         val virkningstidspunkt: Expression<LocalDate>,
         val sistePeriodeFom: Expression<LocalDate>,
         val sistePeriodeBeloep: Expression<Kroner>,
@@ -75,6 +75,70 @@ object BarnepensjonForeldreloesFraser {
                     Language.Nynorsk to "",
                     Language.English to "",
                 )
+            }
+        }
+    }
+
+    data class BegrunnelseForVedtaketRedigerbart(
+        val etterbetaling: Expression<Boolean>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "Barnepensjon gis på bakgrunn av at",
+                    Language.Nynorsk to "Det blir gitt barnepensjon på bakgrunn av at",
+                    Language.English to "",
+                )
+                list {
+                    item {
+                        text(
+                            Language.Bokmal to "du har mistet begge foreldrene dine",
+                            Language.Nynorsk to "",
+                            Language.English to "",
+                        )
+                    }
+                    item {
+                        text(
+                            Language.Bokmal to "du er under 20 år",
+                            Language.Nynorsk to "",
+                            Language.English to "",
+                        )
+                    }
+                    item {
+                        text(
+                            Language.Bokmal to "du er medlem i folketrygden",
+                            Language.Nynorsk to "",
+                            Language.English to "",
+                        )
+                    }
+                    item {
+                        text(
+                            Language.Bokmal to "minst en av foreldrene dine i de siste fem årene før dødsfallet " +
+                                    "var medlem i folketrygden, eller fikk pensjon eller uføretrygd fra folketrygden",
+                            Language.Nynorsk to "",
+                            Language.English to "",
+                        )
+                    }
+                }
+            }
+            paragraph {
+                showIf(etterbetaling) {
+                    text(
+                        Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
+                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9, § 22-12 og § 22-13.",
+                        Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i " +
+                                "folketrygdlova §§ 17-2, 17-3, 17-4, 17-5, 17-6, 17-9 og 22-12.",
+                        Language.English to "",
+                    )
+                } orShow {
+                    text(
+                        Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
+                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9 og § 22-12.",
+                        Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova " +
+                                "§§ 17-2, 17-3, 17-4, 17-5, 17-6, 17-9 og 22-12.",
+                        Language.English to "",
+                    )
+                }
             }
         }
     }

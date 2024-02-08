@@ -38,7 +38,6 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepens
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterBosattUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.etterbetalingAvBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomHandlerPaaVegneAvBarnetUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjonNasjonal
@@ -83,7 +82,7 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
         outline {
 
             includePhrase(
-                BarnepensjonForeldreloesFraser.FoersteDel(
+                BarnepensjonForeldreloesFraser.Vedtak(
                     virkningstidspunkt = beregning.virkningsdato,
                     sistePeriodeBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep,
                     sistePeriodeFom = beregning.sisteBeregningsperiode.datoFOM,
