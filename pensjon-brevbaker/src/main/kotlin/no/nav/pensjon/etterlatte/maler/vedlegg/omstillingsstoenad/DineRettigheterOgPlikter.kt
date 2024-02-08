@@ -125,7 +125,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Feilutbetaling av stønad folketrygdloven § 22-15 og § 22-16",
             Nynorsk to "Feilutbetaling av stønad etter folketrygdlova § 22-15 og § 22-16",
-            English to "Incorrect payment of benefits – National Insurance Act Sections 22-15 and 22-16",
+            English to "Incorrect payment of allowance – National Insurance Act Sections 22-15 and 22-16",
         )
     }
     paragraph {
@@ -139,7 +139,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "det du ikkje hadde rett på.",
             English to "You are responsible for keeping yourself informed of transactions in your account " +
                     "concerning payment of adjustment allowance and you must notify us if you discover any errors. " +
-                    "If you do not notify us of any changes and thereby receive too much in benefits, you can be " +
+                    "If you do not notify us of any changes and thereby receive too much in allowance, you can be " +
                     "required to repay the overpaid amount.",
         )
     }

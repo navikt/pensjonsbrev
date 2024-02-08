@@ -37,7 +37,7 @@ data class BeregningsperiodetabellEtterbetaling(
                         text(
                             Language.Bokmal to "Stønad før reduksjon for inntekt",
                             Language.Nynorsk to "Stønad før reduksjon",
-                            Language.English to "Benefit amount before reduction",
+                            Language.English to "Allowance amount before reduction",
                         )
                     }
                     column(1) {

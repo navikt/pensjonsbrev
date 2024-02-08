@@ -144,7 +144,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "vilkårene er oppfylt igjen. Det blir midlertidig stans av utbetalingene dine hvis du",
             Nynorsk to "Dersom du ikkje innfrir aktivitetsplikta, kan utbetalinga av stønaden bli stansa " +
                     "fram til du igjen oppfyller vilkåra. Utbetalingane blir stansa mellombels dersom du",
-            English to "If you do not meet the activity obligation, benefit payments may stop until the " +
+            English to "If you do not meet the activity obligation, allowance payments may stop until the " +
                     "condition is met again. Your payments will be temporarily suspended if you",
         )
         list {
@@ -185,7 +185,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Nynorsk to "NAV må kunne kontakte deg for å gi oppfølging ved behov. Dersom vi ikkje får kontakt " +
                     "med deg, kan vi stoppe stønaden.",
             English to "NAV must be able to get in touch with you to follow up your case, whenever needed. " +
-                    "We may stop your benefits if we cannot get in touch with you. ",
+                    "We may stop your allowance if we cannot get in touch with you. ",
         )
     }
 }
@@ -207,7 +207,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "halvparten av grunnbeløpet i folketrygda (G). Stønaden blir redusert ut frå kva du oppgir " +
                     "som forventa inntekt for gjeldande år.",
             English to "The adjustment allowance are reduced by 45 percent of your income, if it is more " +
-                    "than half of the basic amount in the National Insurance Scheme (G). The benefits will be " +
+                    "than half of the basic amount in the National Insurance Scheme (G). The allowance will be " +
                     "reduced based on what you declare as anticipated income for the current year.",
         )
     }
@@ -390,10 +390,10 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Du kan bare ha ett kontonummer registrert hos oss. Du kan endre kontonummeret i " +
+            Bokmal to "Du kan bare ha ett kontonummer registrert hos NAV. Du kan endre kontonummeret i " +
                     "«Personopplysninger» ved å logge på nav.no. Du kan også sende endring per post. " +
                     "Du finner skjema og riktig adresse på " + Constants.ENDRING_KONTONUMMER_URL + ".",
-            Nynorsk to "Du kan berre ha eitt kontonummer registrert hos oss. Du kan endre kontonummer under " +
+            Nynorsk to "Du kan berre ha eitt kontonummer registrert hos NAV. Du kan endre kontonummer under " +
                     "«Personopplysningar» ved å logge på nav.no. Du kan også sende endring per post. Du finn skjema " +
                     "og rett adresse på " + Constants.ENDRING_KONTONUMMER_URL + ".",
             English to "You can only have one account number registered with NAV. You can change your account " +

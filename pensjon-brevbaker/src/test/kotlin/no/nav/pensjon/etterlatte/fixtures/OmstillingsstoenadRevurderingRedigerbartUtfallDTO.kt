@@ -7,5 +7,5 @@ fun createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() =
     OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
         erEtterbetaling = true,
         harUtbetaling = true,
-        feilutbetaling = FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL
+        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
     )

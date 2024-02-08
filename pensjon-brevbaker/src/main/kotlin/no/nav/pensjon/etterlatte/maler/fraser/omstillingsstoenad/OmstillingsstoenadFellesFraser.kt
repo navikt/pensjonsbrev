@@ -197,7 +197,7 @@ object OmstillingsstoenadFellesFraser {
                                 "inntekt eller hadde låg inntekt dei siste fem åra før dødsfallet. Under " +
                                 "føresetnad av at du oppfyller vilkåra, får du omstillingsstønad fram til du " +
                                 "fyller 67 år. ",
-                        English to "If any of the rules for exemption from the duration of benefits apply to " +
+                        English to "If any of the rules for exemption from the duration of allowance apply to " +
                                 "you, because you had a low income or no income in the last five years before the " +
                                 "date of the death. You are eligible for the adjustment allowance until you turn " +
                                 "67 as long as you meet the conditions.",
@@ -236,7 +236,7 @@ object OmstillingsstoenadFellesFraser {
                                     "dette gjere at du likevel får utbetalt stønad i denne perioden.",
                             English to "You are eligible for adjustment allowance for three years from the " +
                                     "date of the death, as long as you meet the conditions for receiving the allowance. " +
-                                    "Changes to your income may make you eligible for benefits in this period. ",
+                                    "Changes to your income may make you eligible for allowance in this period. ",
                         )
                     }
                 }
@@ -246,7 +246,7 @@ object OmstillingsstoenadFellesFraser {
                 text(
                     Bokmal to "Les mer om hvor lenge du kan få på " + Constants.OMS_HVORLENGE_URL + ".",
                     Nynorsk to "Les meir på " + Constants.OMS_HVORLENGE_URL + " om kor lenge du kan få stønad.",
-                    English to "Read more about the duration of benefits online: " + Constants.OMS_HVORLENGE_URL + ".",
+                    English to "Read more about the duration of allowance online: " + Constants.OMS_HVORLENGE_URL + ".",
                 )
             }
         }
@@ -274,7 +274,7 @@ object OmstillingsstoenadFellesFraser {
                     English to "To receive the correct amount of the adjustment allowance, you are obligated " +
                             "to inform us about any changes to your income. We will adjust the adjustment " +
                             "allowance starting the month after you reported the change. You can read more " +
-                            "about income reporting in the Attachment: Information to Adjustment Allowance Recipients.",
+                            "about income reporting in the attachment Information to Adjustment Allowance Recipients.",
                 )
             }
         }
@@ -302,7 +302,7 @@ object OmstillingsstoenadFellesFraser {
                     English to "To receive the correct amount of adjustment allowance, you are obligated to " +
                             "inform us about any changes to your income. We will adjust the adjustment allowance " +
                             "starting the month after you reported the change. You can read more about income " +
-                            "reporting in the attachment: Information to Recipients of Adjustment Allowance. ",
+                            "reporting in the attachment Information to Recipients of Adjustment Allowance. ",
                 )
             }
         }

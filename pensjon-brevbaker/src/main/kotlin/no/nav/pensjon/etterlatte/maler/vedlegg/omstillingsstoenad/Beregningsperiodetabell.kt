@@ -35,7 +35,7 @@ data class Beregningsperiodetabell(
                         text(
                             Language.Bokmal to "Stønad før reduksjon for inntekt",
                             Language.Nynorsk to "Stønad før reduksjon for inntekt",
-                            Language.English to "Benefits paid before income reduction",
+                            Language.English to "Allowance paid before income reduction",
                         )
                     }
                     column(1) {

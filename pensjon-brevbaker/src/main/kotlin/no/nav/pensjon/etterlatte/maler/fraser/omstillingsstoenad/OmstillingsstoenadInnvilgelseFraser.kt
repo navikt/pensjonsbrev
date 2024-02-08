@@ -91,7 +91,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                         Nynorsk to "Du får ikkje utbetalt omstillingsstønad, då inntekta di er over " +
                                 "maksimumsgrensa for å kunne få stønad.",
                         English to "You will not receive adjustment allowance because your income is " +
-                                "higher than the limit for receiving such benefits.",
+                                "higher than the limit for receiving such allowance.",
                     )
                 }
             }
@@ -103,7 +103,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                     Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» korleis vi har " +
                             "rekna ut omstillingsstønaden din.",
                     English to "You can see how we calculated your adjustment allowance in the " +
-                            "Attachment: Calculation of Adjustment Allowance.",
+                            "attachment Calculation of Adjustment Allowance.",
                 )
             }
         }
@@ -233,7 +233,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                                 "«Etterbetaling av omstillingsstønad».",
                         Nynorsk to "Du finn meir informasjon om etterbetaling i vedlegget «Etterbetaling " +
                                 "av omstillingsstønad».",
-                        English to "You can find more information about back payments in the attachment: " +
+                        English to "You can find more information about back payments in the attachment " +
                                 "Back Payments.",
                     )
                 }
@@ -294,7 +294,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                             "six months after the death. After six months have passed, one condition for continuing " +
                             "to receive adjustment allowance is that you are at least 50 percent active. This is " +
                             "called the Activity Obligation.  Read more about the activity obligation and what this " +
-                            "involves in the Attachment: Information to Recipients of Adjustment Allowance.",
+                            "involves in the attachment Information to Recipients of Adjustment Allowance.",
                 )
             }
 

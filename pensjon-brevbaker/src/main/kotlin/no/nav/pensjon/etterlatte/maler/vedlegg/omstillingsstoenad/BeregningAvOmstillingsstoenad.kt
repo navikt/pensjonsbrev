@@ -74,9 +74,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     "mindre enn 40 år vil stønaden avkortes.",
             Nynorsk to "For at du skal få full stønad må avdøde ha hatt ei trygdetid på minst 40 år. Dersom " +
                     "trygdetida er mindre enn 40 år, blir stønaden avkorta.",
-            English to "To receive the maximum benefit, the deceased's contribution time to the national " +
+            English to "To receive the maximum allowance, the deceased's contribution time to the national " +
                     "insurance scheme must be at least 40 years. If the contribution time is less than 40 years, " +
-                    "the benefit is reduced.",
+                    "the allowance is reduced.",
         )
     }
     paragraph {
@@ -85,7 +85,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     "arbeidsinntekt eller tilsvarende inntekt som er over halvparten av grunnbeløpet.",
             Nynorsk to "Inntekta di avgjer kor mykje du kan få. Stønaden blir redusert med 45 prosent av " +
                     "arbeidsinntekt eller tilsvarande inntekt som er over halvparten av grunnbeløpet.",
-            English to "Your income determines how much money you are entitled to. The benefit is reduced by " +
+            English to "Your income determines how much money you are entitled to. The allowance is reduced by " +
                     "45 percent of the employment income or similar income when this is over half the basic amount.",
         )
     }
@@ -112,7 +112,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         text(
             Bokmal to "Stønad før reduksjon for inntekt",
             Nynorsk to "Stønad før reduksjon for inntekt",
-            English to "Benefits paid before income reduction",
+            English to "Allowance paid before income reduction",
         )
     }
 
@@ -125,7 +125,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 Nynorsk to "".expr() + "Stønad per år før reduksjon av inntekt er rekna ut til 2,25 gongar " +
                         "grunnbeløpet i folketrygda (G) gonga med " + trygdetid.beregnetTrygdetidAar.format() + "/40 " +
                         "trygdetid. Beløpet blir fordelt på 12 utbetalingar i året.",
-                English to "".expr() + "Benefits per year before reduction of income are calculated " +
+                English to "".expr() + "Allowance per year before reduction of income are calculated " +
                         "based on 2.25 × national insurance basic amount (G) × " +
                         trygdetid.beregnetTrygdetidAar.format() + "/40 years of contribution time. This amount " +
                         "is distributed in 12 payments a year.",
@@ -142,7 +142,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                         "grunnbeløpet i folketrygda gonga med " + trygdetid.beregnetTrygdetidAar.format() + "/40 " +
                         "trygdetid, gonga med forholdstalet " + trygdetid.prorataBroek.formatBroek() + ". Beløpet " +
                         "blir fordelt på 12 utbetalingar i året.",
-                English to "".expr() + "Benefits per year before reduction of income are calculated based on " +
+                English to "".expr() + "Allowance per year before reduction of income are calculated based on " +
                         "2.25 × national insurance basic amount (G) × " + trygdetid.beregnetTrygdetidAar.format() +
                         "/40 years of contribution time, multiplied by the proportional fraction " +
                         trygdetid.prorataBroek.formatBroek() + ". This amount is distributed in 12 payments a year.",
@@ -289,7 +289,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         "avtaleland. Avdøde har ei samla trygdetid på " + trygdetid.beregnetTrygdetidAar.format() +
                         " år, og forholdstalet er " + trygdetid.prorataBroek.formatBroek() + ".",
                 English to "".expr() + "Your adjustment allowance are calculated according to the provisions " +
-                        "in the EEA Agreement because the conditions that entitle you to the benefits have been met, " +
+                        "in the EEA Agreement because the conditions that entitle you to the allowance have been met, " +
                         "by compiling the deceased's contribution time in Norway and other EEA countries or other " +
                         "countries with which Norway has an agreement. Contribution time is calculated according to " +
                         "the deceased's total contribution time in these the countries. To calculate the Norwegian " +
@@ -317,7 +317,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         "i Noreg og avtaleland.",
                 English to "To be entitled to full adjustment allowance, the deceased must have accumulated " +
                         "at least 40 years of contribution time. Contribution time above 40 years of coverage is " +
-                        "not included in the calculation. When the basis for the benefits is met according to " +
+                        "not included in the calculation. When the basis for the allowance is met according to " +
                         "national rules, and the deceased has also accrued membership periods in countries with " +
                         "which Norway has a national insurance agreement, the contribution time must be stated " +
                         "according to the best calculation of (only) national contribution and of the combined " +
