@@ -1,9 +1,9 @@
-package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev
+package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.exstreambrev
 
 import com.typesafe.config.Config
 import no.nav.lib.pen.psakpselv.asbo.brev.ASBOPenHentBrevklientURLRequest
 import no.nav.lib.pen.psakpselv.asbo.brev.ASBOPenHentBrevklientURLResponse
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.RedigerExtreamDokumentRequestDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.RedigerExstreamDokumentRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.slf4j.LoggerFactory
@@ -13,7 +13,7 @@ const val TOKEN_QUERY_KEY = "token="
 const val BREVKLIENT_WIDTH = "300"
 const val BREVKLIENT_HEIGHT = "30"
 
-class RedigerExtreamBrevService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
+class RedigerExstreamBrevService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val psakDokbrevClient = PsakDokbrevClient(config, securityHandler, callIdHandler).client()
     private val brevklientSystemId = config.getString("brevklient.systemid")
@@ -28,12 +28,12 @@ class RedigerExtreamBrevService(config: Config, securityHandler: STSSercuritySOA
         .replace("#", "%23")
 
     /**
-     * Henter URL som benyttes for å redigere et Extream dokument.
+     * Henter URL som benyttes for å redigere et Exstream dokument.
      *
      * @param requestDto en request som inneholder journalpostId
-     * @return en response som enten er Success med extreamBrevUrl eller Failure med eventuell årsak
+     * @return en response som enten er Success med exstreamBrevUrl eller Failure med eventuell årsak
      */
-    fun hentExtreamBrevUrl(requestDto: RedigerExtreamDokumentRequestDto): RedigerExtreamDokumentResponseDto {
+    fun hentExstreamBrevUrl(requestDto: RedigerExstreamDokumentRequestDto): RedigerExstreamDokumentResponseDto {
         try {
             val response: ASBOPenHentBrevklientURLResponse =
                 psakDokbrevClient.hentBrevklientURL(ASBOPenHentBrevklientURLRequest().apply {
@@ -44,30 +44,30 @@ class RedigerExtreamBrevService(config: Config, securityHandler: STSSercuritySOA
                     bredde = BREVKLIENT_WIDTH
                     hoyde = BREVKLIENT_HEIGHT
                 })
-            logger.info("Henter Extream brev URL for dokumentId: ${requestDto.journalpostId}")
+            logger.info("Henter Exstream brev URL for dokumentId: ${requestDto.journalpostId}")
 
             val token = URI(response.brevklientURL).query.split("&").filter { it.startsWith(TOKEN_QUERY_KEY) }
                 .map { it.removePrefix(TOKEN_QUERY_KEY) }
                 .firstOrNull()
-                ?: return RedigerExtreamDokumentResponseDto.failure("Could not find token in redigerExtreamBrev response")
+                ?: return RedigerExstreamDokumentResponseDto.failure("Could not find token in redigerExstreamBrev response")
 
             val redirectChromeUrl =
                 "mbdok://$brevklientSystemId@brevklient/dokument/${requestDto.journalpostId}?token=$token&server=$brevklientChromeRootUrl"
 
-            return RedigerExtreamDokumentResponseDto(url = redirectChromeUrl, failure = null)
+            return RedigerExstreamDokumentResponseDto(url = redirectChromeUrl, failure = null)
         } catch (ex: Exception) {
             val message =
-                """En feil oppstod under henting av Extream brev URL for dokumentId: ${requestDto.journalpostId}:
+                """En feil oppstod under henting av Exstream brev URL for dokumentId: ${requestDto.journalpostId}:
                     |${ex.message}""".trimMargin()
             logger.error(message)
-            return RedigerExtreamDokumentResponseDto.failure(message)
+            return RedigerExstreamDokumentResponseDto.failure(message)
         }
     }
 }
 
-data class RedigerExtreamDokumentResponseDto(val url: String?, val failure: String?) {
+data class RedigerExstreamDokumentResponseDto(val url: String?, val failure: String?) {
     companion object {
-        fun success(url: String) = RedigerExtreamDokumentResponseDto(url = url, failure = null)
-        fun failure(message: String) = RedigerExtreamDokumentResponseDto(url = null, failure = message)
+        fun success(url: String) = RedigerExstreamDokumentResponseDto(url = url, failure = null)
+        fun failure(message: String) = RedigerExstreamDokumentResponseDto(url = null, failure = message)
     }
 }
