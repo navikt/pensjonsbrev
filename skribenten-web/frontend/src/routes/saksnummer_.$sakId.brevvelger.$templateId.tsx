@@ -89,7 +89,7 @@ export function SelectedTemplate() {
       `}
     >
       <FavoriteButton />
-      {letterTemplate.brevkategoriCode === null ? (
+      {letterTemplate.dokumentkategoriCode === "E_BLANKETT" ? (
         <Eblankett letterTemplate={letterTemplate} />
       ) : (
         <Brevmal letterTemplate={letterTemplate} />
