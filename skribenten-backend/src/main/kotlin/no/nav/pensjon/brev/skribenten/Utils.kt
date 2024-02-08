@@ -32,5 +32,12 @@ fun ApplicationCall.getLoggedInName(): String? =
 fun PipelineContext<Unit, ApplicationCall>.getClaim(claim: String): String? =
     call.getClaim(claim)
 
+fun PipelineContext<Unit, ApplicationCall>.isInGroup(claim: String): Boolean =
+    call.isInGroup(claim)
+
+fun ApplicationCall.isInGroup(claim: String): Boolean =
+    authentication.principal<UserPrincipal>()?.jwtPayload?.getClaim("groups")
+        ?.asList(String::class.java)?.contains(claim) ?: false
+
 fun ApplicationCall.getClaim(claim: String): String? =
     authentication.principal<UserPrincipal>()?.jwtPayload?.getClaim(claim)?.asString()
