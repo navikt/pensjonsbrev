@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.auth
 
 import com.auth0.jwk.JwkProviderBuilder
-import com.auth0.jwt.interfaces.Claim
 import com.auth0.jwt.interfaces.Payload
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.module.kotlin.*
@@ -90,9 +89,4 @@ data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Paylo
     }
 
     fun getUserId(): String = jwtPayload.subject
-
-    fun isPensjonUtlandGroup(): Boolean {
-        val pensjonUtlandGruppe = "bda6bd68-77e6-4c00-96b9-7ecf5df7413c" // TODO: get from config?
-        return jwtPayload.claims["groups"]?.asList(String::class.java)?.contains(pensjonUtlandGruppe) ?: false
-    }
 }
