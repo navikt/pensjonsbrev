@@ -17,6 +17,8 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
+// Erstatte PE_UT_06_200
+
 @TemplateModelHelpers
 object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidAutoDto> {
 
@@ -30,7 +32,7 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             displayTitle = "Automatisk varsel om saksbehandlingstid",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
         title {
@@ -41,6 +43,7 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             )
         }
         outline {
+            // TBU3020
             paragraph {
                 val mottattDato = mottattDatoMinus2Dager.format()
                 textExpr(
@@ -49,7 +52,7 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                     English to "We refer to your application for disability benefit that we received ".expr() + mottattDato + "."
                 )
             }
-
+            // TBU3015
             paragraph {
                 textExpr(
                     Bokmal to "Søknaden din blir behandlet så snart som mulig, og senest innen ".expr()
