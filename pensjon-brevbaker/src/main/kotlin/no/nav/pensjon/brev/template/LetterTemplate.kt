@@ -33,13 +33,14 @@ sealed class Expression<out Out> {
         override fun eval(scope: ExpressionScope<*, *>): Out = value
     }
 
-    data class FromScope<ParameterType : Any, out Out>(val selector: ExpressionScope<ParameterType, *>.() -> Out, val __name: String) :
+    data class FromScope<ParameterType : Any, out Out>(val selector: ExpressionScope<ParameterType, *>.() -> Out, val scopeName: String) :
         Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out {
             @Suppress("UNCHECKED_CAST")
             return (scope as ExpressionScope<ParameterType, *>).selector()
         }
 
+        // TODO: Se om vi klarer å omformulere disse slik at det ikke trengs å sendes med selector
         companion object {
             fun <ParameterType : Any, Out> argument(selector: ExpressionScope<ParameterType, *>.() -> Out) = FromScope(selector, "argument")
             fun <ParameterType : Any, Out> felles(selector: ExpressionScope<ParameterType, *>.() -> Out) = FromScope(selector, "felles")
@@ -153,7 +154,7 @@ sealed class Element<out Lang : LanguageSupport> {
         sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
 
             data class ItemList<out Lang : LanguageSupport>(
-                val items: List<ContentOrControlStructure<Lang, Item<Lang>>>
+                val items: List<ListItemElement<Lang>>
             ) : ParagraphContent<Lang>() {
                 init {
                     if (items.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
@@ -163,7 +164,7 @@ sealed class Element<out Lang : LanguageSupport> {
                     val text: List<TextElement<Lang>>
                 ) : Element<Lang>()
 
-                private fun getItems(item: ContentOrControlStructure<Lang, Item<Lang>>): List<Item<Lang>> =
+                private fun getItems(item: ListItemElement<Lang>): List<Item<Lang>> =
                     when (item) {
                         is ContentOrControlStructure.Conditional -> item.showIf.plus(item.showElse).flatMap { getItems(it) }
                         is ContentOrControlStructure.ForEach<Lang, Item<Lang>, *> -> item.body.flatMap { getItems(it) }
@@ -232,7 +233,7 @@ sealed class Element<out Lang : LanguageSupport> {
 
                 @Suppress("DataClassPrivateConstructor")
                 data class Literal<out Lang : LanguageSupport> private constructor(
-                    private val text: Map<Language, String>,
+                    val text: Map<Language, String>,
                     val languages: Lang,
                     override var fontType: FontType,
                 ) : Text<Lang>() {

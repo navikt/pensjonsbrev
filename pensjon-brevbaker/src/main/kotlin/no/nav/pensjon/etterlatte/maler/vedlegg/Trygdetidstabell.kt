@@ -1,12 +1,12 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg
 
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.Periode
@@ -73,11 +73,7 @@ data class Trygdetidstabell(
     }
 }
 
-fun Expression<Periode>.format() = Expression.BinaryInvoke(
-    first = this,
-    second = Expression.FromScope(ExpressionScope<Any, *>::language),
-    operation = PeriodeFormatter,
-)
+fun Expression<Periode>.format() = format(PeriodeFormatter)
 
 object PeriodeFormatter : LocalizedFormatter<Periode>() {
     override fun apply(first: Periode, second: Language): String {
