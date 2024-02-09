@@ -64,10 +64,13 @@ export type OrderLetterRequest = {
   spraak: SpraakKode;
   sakId: number;
   gjelderPid: string;
-  landkode?: string;
-  mottakerText?: string;
   isSensitive: boolean;
   vedtaksId?: string;
+};
+
+export type OrderEblankettRequest = OrderLetterRequest & {
+  landkode: string;
+  mottakerText: string;
 };
 
 export type BestillOgRedigerBrevResponse = {
@@ -95,4 +98,9 @@ export type FailureType =
 export type KontaktAdresseResponse = {
   adresseString: string;
   adresselinjer: string[];
+};
+
+export type Avtaleland = {
+  navn: string;
+  kode: string;
 };

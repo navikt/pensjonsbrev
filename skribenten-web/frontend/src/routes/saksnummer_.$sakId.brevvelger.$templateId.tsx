@@ -1,18 +1,32 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, Link, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
+import {
+  Alert,
+  BodyShort,
+  Button,
+  Heading,
+  Link,
+  Radio,
+  RadioGroup,
+  Select,
+  Tag,
+  TextField,
+  VStack,
+} from "@navikt/ds-react";
+import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
 import {
   addFavoritt,
   deleteFavoritt,
+  getAvtaleLand,
   getEblanketter,
   getFavoritter,
   getKontaktAdresse,
@@ -22,7 +36,7 @@ import {
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
-import type { LetterMetadata, OrderLetterRequest } from "~/types/apiTypes";
+import type { LetterMetadata, OrderEblankettRequest, OrderLetterRequest } from "~/types/apiTypes";
 import { BrevSystem, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
@@ -65,11 +79,6 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
   },
 });
 
-const formValidationSchema = z.object({
-  spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
-  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
-});
-
 export function SelectedTemplate() {
   const { letterTemplate } = Route.useLoaderData();
 
@@ -98,6 +107,11 @@ export function SelectedTemplate() {
   );
 }
 
+const brevmalValidationSchema = z.object({
+  spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
+  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+});
+
 function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
@@ -115,11 +129,11 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
     orderLetterMutation.reset();
   }, [templateId]);
 
-  const methods = useForm<z.infer<typeof formValidationSchema>>({
+  const methods = useForm<z.infer<typeof brevmalValidationSchema>>({
     defaultValues: {
       isSensitive: letterTemplate?.brevsystem === BrevSystem.Exstream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
     },
-    resolver: zodResolver(formValidationSchema),
+    resolver: zodResolver(brevmalValidationSchema),
   });
 
   return (
@@ -166,37 +180,120 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
             <SelectSensitivity letterTemplate={letterTemplate} />
           </VStack>
 
-          <VStack gap="4">
-            {orderLetterMutation.error && <Alert variant="error">{orderLetterMutation.error.message}</Alert>}
-            {orderLetterMutation.isSuccess ? (
-              <Alert variant="success">
-                <Heading level="3" size="xsmall">
-                  Brev bestilt
-                </Heading>
-                <span>
-                  Redigering skal åpne seg selv, hvis ikke er popup blokkert av nettleseren din.{" "}
-                  <Link href={orderLetterMutation.data}>Klikk her for å prøve åpne på nytt</Link>
-                </span>
-              </Alert>
-            ) : (
-              <Button
-                css={css`
-                  width: fit-content;
-                `}
-                icon={<ArrowRightIcon />}
-                iconPosition="right"
-                loading={orderLetterMutation.isPending}
-                size="small"
-                type="submit"
-                variant="primary"
-              >
-                Bestill og rediger brev
-              </Button>
-            )}
-          </VStack>
+          <BestillOgRedigerButton orderMutation={orderLetterMutation} />
         </form>
       </FormProvider>
     </>
+  );
+}
+
+const eblankettValidationSchema = brevmalValidationSchema.extend({
+  landkode: z.string().min(1, "Obligatorisk"),
+  mottakerText: z.string().min(1, "Obligatorisk"),
+});
+
+function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  const { sakId } = Route.useParams();
+  const { sak } = Route.useLoaderData();
+
+  const { vedtaksId } = Route.useSearch();
+
+  const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
+    defaultValues: {
+      landkode: "",
+      mottakerText: "",
+    },
+    resolver: zodResolver(eblankettValidationSchema),
+  });
+
+  const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
+    mutationFn: orderLetter,
+    onSuccess: (callbackUrl) => {
+      window.open(callbackUrl);
+    },
+  });
+
+  return (
+    <>
+      <LetterTemplateHeading letterTemplate={letterTemplate} />
+      <Heading level="3" size="xsmall">
+        Formål og målgruppe
+      </Heading>
+      <BodyShort size="small">E-blankett</BodyShort>
+      <Divider />
+      <FormProvider {...methods}>
+        <form
+          css={css`
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+          `}
+          onSubmit={methods.handleSubmit((submittedValues) => {
+            const orderLetterRequest = {
+              brevkode: letterTemplate.id,
+              sakId: Number(sakId),
+              gjelderPid: sak.foedselsnr,
+              vedtaksId,
+              ...submittedValues,
+            };
+            return orderEblankettMutation.mutate(orderLetterRequest);
+          })}
+        >
+          <VStack gap="4">
+            <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectSensitivity letterTemplate={letterTemplate} />
+            <SelectAvtaleland />
+            <TextField
+              {...methods.register("mottakerText")}
+              autoComplete="off"
+              error={methods.formState.errors.mottakerText?.message}
+              label="Mottaker"
+              size="small"
+            />
+          </VStack>
+          <BestillOgRedigerButton orderMutation={orderEblankettMutation} />
+        </form>
+      </FormProvider>
+    </>
+  );
+}
+
+function BestillOgRedigerButton({
+  orderMutation,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- request type is not relevant for this component
+  orderMutation: UseMutationResult<string, AxiosError<Error> | Error, any>;
+}) {
+  return (
+    <VStack gap="4">
+      {orderMutation.error && <ApiError error={orderMutation.error} text="Bestilling feilet" />}
+      {orderMutation.isSuccess ? (
+        <Alert variant="success">
+          <Heading level="3" size="xsmall">
+            Brev bestilt
+          </Heading>
+          <span>
+            Redigering skal åpne seg selv, hvis ikke er popup blokkert av nettleseren din.{" "}
+            <Link href={orderMutation.data}>Klikk her for å prøve åpne på nytt</Link>
+          </span>
+        </Alert>
+      ) : (
+        <Button
+          css={css`
+            width: fit-content;
+          `}
+          icon={<ArrowRightIcon />}
+          iconPosition="right"
+          loading={orderMutation.isPending}
+          size="small"
+          type="submit"
+          variant="primary"
+        >
+          Bestill og rediger brev
+        </Button>
+      )}
+    </VStack>
   );
 }
 
@@ -247,16 +344,21 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   );
 }
 
-function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+function SelectAvtaleland() {
+  const avtalelandQuery = useQuery(getAvtaleLand);
+  const { register, formState } = useFormContext();
+
+  const options = avtalelandQuery.data ?? [];
+
   return (
-    <>
-      <LetterTemplateHeading letterTemplate={letterTemplate} />
-      <Heading level="3" size="xsmall">
-        Formål og målgruppe
-      </Heading>
-      <BodyShort size="small">E-blankett</BodyShort>
-      <Divider />
-    </>
+    <Select {...register("landkode")} error={formState.errors.landkode?.message?.toString()} label="Land" size="small">
+      <option value={""}>Velg land</option>
+      {options.map((option) => (
+        <option key={option.kode} value={option.kode}>
+          {option.navn}
+        </option>
+      ))}
+    </Select>
   );
 }
 

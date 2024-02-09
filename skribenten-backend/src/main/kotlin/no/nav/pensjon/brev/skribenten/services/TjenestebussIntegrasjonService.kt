@@ -115,7 +115,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         fagsystem = "PEN",
                         fagomradekode = "PEN",                              // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
                         innhold = metadata.dekode,                          // Visningsnavn
-                        kategori = metadata.dokumentkategori.toString(),    // Kategori for dokumentet
+                        kategori = if (isEblankett) BrevdataDto.DokumentkategoriCode.SED.toString() else metadata.dokumentkategori.toString(),    // Kategori for dokumentet
                         saksid = request.sakId.toString(),// sakid
                         saksbehandlernavn = name,
                         saksbehandlerId = navIdent,
