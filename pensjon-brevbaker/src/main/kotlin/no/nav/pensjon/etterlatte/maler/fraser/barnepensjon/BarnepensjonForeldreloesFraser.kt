@@ -206,7 +206,7 @@ object BarnepensjonForeldreloesFraser {
                     text(
                         Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. " +
                                 "Gjelder etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
-                                "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL_NY}.",
+                                "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )

@@ -45,3 +45,4 @@ object Constants {
         const val KONTAKTTELEFON_GENERELL = "+47 ${Constants.KONTAKTTELEFON_GENERELL}"
         const val KONTAKTTELEFON_SKATT = "+47 22 07 70 00"
     }
+}
