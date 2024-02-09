@@ -93,7 +93,7 @@ object BarnepensjonRevurderingFraser {
         }
     }
 
-    object FeilutbetalingUtenVarsel : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -104,13 +104,15 @@ object BarnepensjonRevurderingFraser {
                             "pensjonen din blei avvikla tilbake i tid, har du fått for mykje utbetalt. Beløpet er " +
                             "under den nedre grensa for tilbakekrevjing som går fram av folketrygdlova § 22-15 " +
                             "sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
-                    Language.English to "",
+                    Language.English to "You have been overpaid because your pension has been terminated " +
+                            "retroactively. The amount is below the lower limit for demanding repayment, as stated " +
+                            "in the National Insurance Act - Section 22-15(6). So no repayment will be demanded of you.",
                 )
             }
         }
     }
 
-    object FeilutbetalingMedVarsel : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingMedVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(

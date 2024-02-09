@@ -59,7 +59,7 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
         outline {
             konverterElementerTilBrevbakerformat(innhold)
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
-                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarsel)
+                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselOpphoer)
             }
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)

@@ -46,7 +46,7 @@ object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<BarnepensjonOpp
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(RedigerbartUtfallFraser.FyllInn)
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarsel)
+                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
             }
         }
     }
