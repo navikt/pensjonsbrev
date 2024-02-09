@@ -92,4 +92,45 @@ object BarnepensjonRevurderingFraser {
             }
         }
     }
+
+    object FeilutbetalingUtenVarsel : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi pensjonen din er opphørt tilbake i tid, har du fått for mye " +
+                            "utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår av " +
+                            "folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt.",
+                    Language.Nynorsk to "Dersom det er feilutbetaling som ikkje skal krevjast tilbake fordi " +
+                            "pensjonen din blei avvikla tilbake i tid, har du fått for mykje utbetalt. Beløpet er " +
+                            "under den nedre grensa for tilbakekrevjing som går fram av folketrygdlova § 22-15 " +
+                            "sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
+                    Language.English to "",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingMedVarsel : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Feilutbetaling",
+                    Language.Nynorsk to "Feilutbetaling",
+                    Language.English to "Incorrectly paid pension",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi pensjonen din er opphørt tilbake i tid, har du fått for mye " +
+                            "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale tilbake pensjon».",
+                    Language.Nynorsk to "Ettersom pensjonen din blei avvikla tilbake i tid, har du fått " +
+                            "for mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
+                            "tilbake pensjon».",
+                    Language.English to "Because you stopped receiving a pension at some time in the past, " +
+                            "you received more than you were owed. See the attachment Advance Notice of Possible " +
+                            "Repayment of Incorrectly Paid Pension.",
+                )
+            }
+        }
+    }
 }

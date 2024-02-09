@@ -150,20 +150,7 @@ class OmstillingsstoenadRevurderingFraser {
             }
 
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                  paragraph {
-                      text(
-                          Language.Bokmal to "Fordi stønaden din er redusert tilbake i tid, har du fått for " +
-                                  "mye utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår " +
-                                  "av folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt. ",
-                          Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått " +
-                                  "for mykje utbetalt. Beløpet er under den nedre grensa for tilbakekrevjing som går " +
-                                  "fram av folketrygdlova § 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
-                          Language.English to "Because your allowance has been reduced retroactively, you " +
-                                  "received more than you were owed. The amount is below the lower limit for " +
-                                  "demanding repayment, as stated in Section 22-15(6) of the National Insurance Act, " +
-                                  "so no repayment will be demanded of you. ",
-                      )
-                  }
+                includePhrase(FeilutbetalingUtenVarselRevurdering)
             }
 
             paragraph {
@@ -253,7 +240,26 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object Feilutbetaling : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi stønaden din er redusert tilbake i tid, har du fått for " +
+                            "mye utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår " +
+                            "av folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt. ",
+                    Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått " +
+                            "for mykje utbetalt. Beløpet er under den nedre grensa for tilbakekrevjing som går " +
+                            "fram av folketrygdlova § 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
+                    Language.English to "Because your allowance has been reduced retroactively, you " +
+                            "received more than you were owed. The amount is below the lower limit for " +
+                            "demanding repayment, as stated in Section 22-15(6) of the National Insurance Act, " +
+                            "so no repayment will be demanded of you. ",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingMedVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -272,6 +278,51 @@ class OmstillingsstoenadRevurderingFraser {
                             "tilbake omstillingsstønad».",
                     Language.English to "Because your allowance has been reduced retroactively, you received " +
                             "more than you were owed. See the attachment Advance Notice of Possible Repayment of " +
+                            "Incorrectly Paid Adjustment Allowance.",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi stønaden din er opphørt tilbake i tid, har du fått for mye " +
+                            "utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår av " +
+                            "folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt.",
+                    Language.Nynorsk to "Dersom det er feilutbetaling som ikkje skal krevjast tilbake fordi " +
+                            "omstillingsstønaden din blei avvikla tilbake i tid, har du fått for mykje utbetalt. " +
+                            "Beløpet er under den nedre grensa for tilbakekrevjing som går fram av folketrygdlova " +
+                            "§ 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
+                    Language.English to "You have been overpaid because your Adjustmenst Allowance has been " +
+                            "terminated retroactively. The amount is below the lower limit for demanding repayment, " +
+                            "as stated in the National Insurance Act - Section 22-15(6). So no repayment will be " +
+                            "demanded of you.",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingMedVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Feilutbetaling",
+                    Language.Nynorsk to "Feilutbetaling",
+                    Language.English to "Incorrectly payment",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi stønaden din er opphørt tilbake i tid, har du fått for mye " +
+                            "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale " +
+                            "tilbake omstillingsstønad».",
+                    Language.Nynorsk to "Ettersom omstillingsstønaden din blei avvikla tilbake i tid, har du " +
+                            "fått for mykje utbetalt. Sjå vedlegget «Førehandsvarsel om eventuell tilbakekrevjing " +
+                            "av feilutbetalt omstillingsstønad».",
+                    Language.English to "You have been overpaid because your Adjustment Allowance has been " +
+                            "terminated retroactively. See the Attachment Advance Notice of Possible Repayment of " +
                             "Incorrectly Paid Adjustment Allowance.",
                 )
             }

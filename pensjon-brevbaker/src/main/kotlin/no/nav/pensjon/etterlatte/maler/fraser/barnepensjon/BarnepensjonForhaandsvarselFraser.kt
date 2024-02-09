@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
+package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
@@ -7,14 +7,14 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
-class OmstillingsstoenadForhaandsvarselFraser {
+class BarnepensjonForhaandsvarselFraser {
 
     object ForhaandsvarselRedigerbart : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Language.Bokmal to "Som følge av vedtaket som er gjort har du fått <beløp> kroner for " +
-                            "mye utbetalt i omstillingsstønad fra og med <dato> til og med <dato>.",
+                            "mye utbetalt i barnepensjon fra og med <dato> til og med <dato>.",
                     Language.Nynorsk to "",
                     Language.English to "",
                 )
@@ -53,8 +53,9 @@ class OmstillingsstoenadForhaandsvarselFraser {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "<Fritekst. Eks.: Vi innvilget omstillingsstønad til deg selv om " +
-                            "vilkårene ikke var oppfylt. Dette har medført en feilutbetaling til deg. > ",
+                    Language.Bokmal to "<Fritekst. Eks.: Utbetaling av barnepensjon skulle vært stoppet fra " +
+                            "måneden etter du ble adoptert. Vi mottok ikke opplysningene i tide til å stoppe " +
+                            "utbetalingen fra riktig tidspunkt. Dette har medført en feilutbetaling til deg. >  ",
                     Language.Nynorsk to "",
                     Language.English to "",
                 )
