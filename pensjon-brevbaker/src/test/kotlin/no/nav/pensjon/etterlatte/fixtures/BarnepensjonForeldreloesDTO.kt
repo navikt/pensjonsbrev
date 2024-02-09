@@ -17,9 +17,9 @@ import java.time.Month
 
 fun createBarnepensjonForeldreloesDTO() =
     BarnepensjonForeldreloesDTO(
-        innhold = listOf(),
+        innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = BarnepensjonBeregning(
-            innhold = listOf(),
+            innhold = createPlaceholderForRedigerbartInnhold(),
             virkningsdato = LocalDate.now(),
             antallBarn = 2,
             grunnbeloep = Kroner(123456),

@@ -298,8 +298,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     English to "To be entitled to a full pension, the deceased must have accumulated at least 40 years of contribution time. Contribution time above 40 years of coverage is not included in the calculation. When the basis for the pension is met according to national rules, and the deceased has also accrued membership periods in countries with which Norway has a national insurance agreement, the contribution time must be stated according to the best calculation of (only) national contribution and of the combined contribution time in Norway and the agreement country(ies).",
                 )
             }
-        }
-        showIf(erForeldreloes) {
+        }.orShow {
             paragraph {
                 textExpr(
                     Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Pensjonen din er beregnet etter trygdetiden til ".expr() + bruktAvdoed  + ". Avdødes samlede trygdetid er beregnet til ".expr() + aarTrygdetid.format() + " år",

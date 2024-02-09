@@ -148,7 +148,7 @@ object BarnepensjonForeldreloesFraser {
                         Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
                                 "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9, § 22-12 og § 22-13.",
                         Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i " +
-                                "folketrygdlova §§ 17-2, 17-3, 17-4, 17-5, 17-6, 17-9 og 22-12.",
+                                "folketrygdlova §§ 17-2, 17-3, 17-4, 17-5, 17-6, 17-9 og 22-12 og § 22-13.",
                         Language.English to "",
                     )
                 } orShow {
