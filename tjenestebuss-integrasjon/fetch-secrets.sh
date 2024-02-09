@@ -77,8 +77,20 @@ mkdir -p secrets/pensjonsbrev
 
 STS_USERNAME=$(vault kv get -field username serviceuser/dev/srvpensjonsbrev-esb)
 STS_PASSWORD=$(vault kv get -field password serviceuser/dev/srvpensjonsbrev-esb)
+BREVKLIENT_PASSORD=$(vault kv get -field BREVKLIENT_PASSORD kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev)
+BREVKLIENT_SYSTEMID=$(vault kv get -field BREVKLIENT_SYSTEMID kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev)
+SAMHANDLERV2_USERNAME=$(vault kv get -field SAMHANDLERV2_USERNAME kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev)
+SAMHANDLERV2_PASSWORD=$(vault kv get -field SAMHANDLERV2_PASSWORD kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev)
 jq --null-input --arg username "$STS_USERNAME" --arg password "$STS_PASSWORD" '{"STS_USERNAME": $username, "STS_PASSWORD": $password}' > secrets/sts/auth.json
-vault kv get -format json -field data kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev > secrets/pensjonsbrev/auth.json
+jq --null-input \
+ --arg brevklient_passord "$BREVKLIENT_PASSORD" \
+ --arg brevklient_systemid "$BREVKLIENT_SYSTEMID" \
+ --arg samhandlerv2_username "$SAMHANDLERV2_USERNAME" \
+ --arg samhandlerv2_password "$SAMHANDLERV2_PASSWORD" \
+  '{"PENSJONSBREV_BREVKLIENT_PASSORD": $brevklient_passord,
+    "PENSJONSBREV_BREVKLIENT_SYSTEMID": $brevklient_systemid,
+    "PENSJONSBREV_SAMHANDLERV2_USERNAME": $samhandlerv2_username,
+    "PENSJONSBREV_SAMHANDLERV2_PASSWORD": $samhandlerv2_password}' > secrets/pensjonsbrev/auth.json
 kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret azure-pensjonsbrev-tjenestebuss-lokal -o json | jq '.data | map_values(@base64d)' > secrets/azuread.json
 echo "Creating docker env file from secrets..."
 jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/azuread.json > secrets/docker.env

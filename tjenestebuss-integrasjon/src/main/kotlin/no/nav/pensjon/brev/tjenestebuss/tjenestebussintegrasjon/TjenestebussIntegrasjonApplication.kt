@@ -13,8 +13,10 @@ fun main() {
     val tjenestebussIntegrasjonConfig: Config =
         ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
             .getConfig("tjenestebussintegrasjon")
+            // resolve from secrets files when running on NAIS
             .resolveWith(getVaultSecretConfig(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .resolveWithMultiple("sts/auth", "azuread", "pensjonsbrev/auth")
+            // Resolve from secrets folder when running locally
+            .resolveLocalSecrets("sts/auth", "azuread", "pensjonsbrev")
     embeddedServer(Netty, port = tjenestebussIntegrasjonConfig.getInt("port"), host = "0.0.0.0") {
         tjenestebussIntegrationApi(tjenestebussIntegrasjonConfig)
     }.start(wait = true)
@@ -41,7 +43,7 @@ fun getVaultSecretConfig(): Config {
     } else ConfigFactory.empty()
 }
 
-fun Config.resolveWithMultiple(vararg paths: String): Config =
-    paths.foldIndexed(this) { index, current, path ->
-        current.resolveWith(ConfigFactory.load(path), ConfigResolveOptions.defaults().setAllowUnresolved(index != paths.lastIndex))
+fun Config.resolveLocalSecrets(vararg paths: String): Config =
+    paths.fold(this) { current, path ->
+        current.resolveWith(ConfigFactory.load(path), ConfigResolveOptions.defaults().setAllowUnresolved(true))
     }
