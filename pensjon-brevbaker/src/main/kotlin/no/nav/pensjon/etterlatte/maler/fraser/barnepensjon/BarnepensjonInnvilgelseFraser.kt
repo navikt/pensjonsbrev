@@ -37,9 +37,9 @@ object BarnepensjonInnvilgelseFraser {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker.",
-                    Language.Nynorsk to "Dersom du har rett på etterbetaling, vil du vanlegvis få denne i løpet av tre veker.",
-                    Language.English to "If you are entitled to a back payment, you will normally receive this within three weeks.",
+                    Language.Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker. ",
+                    Language.Nynorsk to "Dersom du har rett på etterbetaling, vil du vanlegvis få denne i løpet av tre veker. ",
+                    Language.English to "If you are entitled to a back payment, you will normally receive this within three weeks. ",
                 )
                 ifNotNull(etterbetaling) {
                     text(

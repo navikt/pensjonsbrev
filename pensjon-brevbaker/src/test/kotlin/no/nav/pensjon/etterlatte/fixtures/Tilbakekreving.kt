@@ -26,23 +26,6 @@ fun createTilbakekrevingInnholdDTO() = TilbakekrevingInnholdDTO(
 
 fun createTilbakekrevingFerdigDTO() =
     TilbakekrevingFerdigDTO(
-        innhold = listOf(
-            Element(
-                type = ElementType.HEADING_TWO,
-                children = listOf(
-                    InnerElement(
-                        text = "Tittel 2"
-                    )
-                )
-            ),
-            Element(
-                type = ElementType.PARAGRAPH,
-                children = listOf(
-                    InnerElement(
-                        text = "Her kommer det valgfri tekst om innvilget vedtak"
-                    )
-                )
-            )
-        ),
+        innhold = createPlaceholderForRedigerbartInnhold(),
         data = createTilbakekrevingInnholdDTO()
     )

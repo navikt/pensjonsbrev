@@ -45,7 +45,7 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
             text(
                 Bokmal to "Vi har opphørt omstillingsstønaden din",
                 Nynorsk to "Vi har avvikla omstillingsstønaden din",
-                English to "We have terminated your transitional benefits",
+                English to "We have terminated your adjustment allowance",
             )
         }
 

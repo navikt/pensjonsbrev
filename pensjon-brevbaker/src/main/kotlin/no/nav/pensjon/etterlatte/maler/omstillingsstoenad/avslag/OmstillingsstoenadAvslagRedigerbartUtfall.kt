@@ -45,7 +45,7 @@ object OmstillingsstoenadAvslagRedigerbartUtfall : EtterlatteTemplate<Omstilling
                 textExpr(
                     Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.".expr(),
                     Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.".expr(),
-                    English to "Your application for transitional benefit for the deceased ".expr() + avdoedNavn + " has been rejected.".expr(),
+                    English to "Your application for adjustment allowance for the deceased ".expr() + avdoedNavn + " has been rejected.".expr(),
                 )
             }
             paragraph {
@@ -59,7 +59,7 @@ object OmstillingsstoenadAvslagRedigerbartUtfall : EtterlatteTemplate<Omstilling
                 text(
                     Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § <riktig paragrafhenvisning>.",
                     Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § <riktig paragrafhenvisning>.",
-                    English to "This decision has been made pursuant to the provisions regarding transitional benefits in the National Insurance Act – sections § <riktig paragrafhenvisning>.",
+                    English to "This decision has been made pursuant to the provisions regarding adjustment allowance in the National Insurance Act – sections § <riktig paragrafhenvisning>.",
                 )
             }
         }

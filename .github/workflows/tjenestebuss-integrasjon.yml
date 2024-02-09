@@ -45,16 +45,18 @@ jobs:
 
   deploy-tjenestebuss-integrasjon-dev:
     name: "Deploy tjenestebuss-integrasjon to dev"
+    permissions:
+      contents: "read"
+      id-token: "write"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: "build-tjenestebuss-integrasjon"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy tjenestebus-integrasjon backend to DEV"
-        uses: "nais/deploy/actions/deploy@v1"
+        uses: "nais/deploy/actions/deploy@v2"
         env:
           "ENVIRONMENT": "dev-gcp:tjenestebuss-integrasjon"
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-fss"
           "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
           "VAR": image=${{ format('{0}:{1}', env.IMAGE_TJENESTEBUSS_INTEGRASJON, env.IMAGE_TAG) }}

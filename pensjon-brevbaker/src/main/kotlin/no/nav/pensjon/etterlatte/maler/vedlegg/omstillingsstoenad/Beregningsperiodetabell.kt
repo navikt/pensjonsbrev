@@ -6,22 +6,19 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.trygdetid
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.ytelseFoerAvkorting
-import no.nav.pensjon.etterlatte.maler.Trygdetid
-import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
-import no.nav.pensjon.etterlatte.maler.formatBroek
+import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
 data class Beregningsperiodetabell(
-    val sisteBeregningsperiode: Expression<OmstillingsstoenadBeregningsperiode>,
+    val beregningsperioder: Expression<List<OmstillingsstoenadBeregningsperiode>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -29,9 +26,16 @@ data class Beregningsperiodetabell(
                 header = {
                     column(1) {
                         text(
+                            Language.Bokmal to "Periode",
+                            Language.Nynorsk to "Periode",
+                            Language.English to "Period",
+                        )
+                    }
+                    column(1) {
+                        text(
                             Language.Bokmal to "Stønad før reduksjon for inntekt",
                             Language.Nynorsk to "Stønad før reduksjon for inntekt",
-                            Language.English to "Benefits paid before income reduction",
+                            Language.English to "Allowance paid before income reduction",
                         )
                     }
                     column(1) {
@@ -50,10 +54,13 @@ data class Beregningsperiodetabell(
                     }
                 }
             ) {
-                row {
-                    cell { includePhrase(Felles.KronerText(sisteBeregningsperiode.ytelseFoerAvkorting)) }
-                    cell { includePhrase(Felles.KronerText(sisteBeregningsperiode.inntekt)) }
-                    cell { includePhrase(Felles.KronerText(sisteBeregningsperiode.utbetaltBeloep)) }
+                forEach(beregningsperioder) { periode ->
+                    row {
+                        cell { includePhrase(PeriodeITabell(periode.datoFOM, periode.datoTOM)) }
+                        cell { includePhrase(Felles.KronerText(periode.ytelseFoerAvkorting)) }
+                        cell { includePhrase(Felles.KronerText(periode.inntekt)) }
+                        cell { includePhrase(Felles.KronerText(periode.utbetaltBeloep)) }
+                    }
                 }
             }
         }
