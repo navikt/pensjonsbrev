@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -36,7 +37,7 @@ data class BeregningsperiodetabellEtterbetaling(
                         text(
                             Language.Bokmal to "Stønad før reduksjon for inntekt",
                             Language.Nynorsk to "Stønad før reduksjon",
-                            Language.English to "Benefit amount before reduction",
+                            Language.English to "Allowance amount before reduction",
                         )
                     }
                     column(1) {
@@ -58,27 +59,9 @@ data class BeregningsperiodetabellEtterbetaling(
                 forEach(beregningsperioder) {
                     row {
                         cell { includePhrase(PeriodeITabell(it.datoFOM, it.datoTOM)) }
-                        cell {
-                            textExpr(
-                                Language.Bokmal to it.ytelseFoerAvkorting.format() + " kr",
-                                Language.Nynorsk to it.ytelseFoerAvkorting.format() + " kr",
-                                Language.English to "NOK ".expr() + it.ytelseFoerAvkorting.format(),
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Language.Bokmal to it.inntekt.format() + " kr",
-                                Language.Nynorsk to it.inntekt.format() + " kr",
-                                Language.English to "NOK ".expr() + it.inntekt.format(),
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Language.Bokmal to it.utbetaltBeloep.format() + " kr",
-                                Language.Nynorsk to it.utbetaltBeloep.format() + " kr",
-                                Language.English to "NOK ".expr() + it.utbetaltBeloep.format(),
-                            )
-                        }
+                        cell { includePhrase(Felles.KronerText(it.ytelseFoerAvkorting)) }
+                        cell { includePhrase(Felles.KronerText(it.inntekt)) }
+                        cell { includePhrase(Felles.KronerText(it.utbetaltBeloep)) }
                     }
                 }
             }

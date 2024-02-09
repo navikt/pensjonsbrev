@@ -48,7 +48,7 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
             text(
                 Bokmal to "Vi har avslått søknaden din om omstillingsstønad",
                 Nynorsk to "Vi har avslått søknaden din om omstillingsstønad",
-                English to "We have rejected your application for transitional benefits",
+                English to "We have rejected your application for adjustment allowance",
             )
         }
 

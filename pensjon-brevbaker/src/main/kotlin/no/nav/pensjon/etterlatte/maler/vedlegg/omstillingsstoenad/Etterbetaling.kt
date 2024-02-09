@@ -24,7 +24,7 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
     title = newText(
         Bokmal to "Etterbetaling",
         Nynorsk to "Etterbetaling",
-        English to "Back payments",
+        English to "Back Payments",
     ),
     includeSakspart = false
 ) {
@@ -35,7 +35,7 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
                     ". Vanligvis vil du få denne etterbetalingen i løpet av tre uker. ",
             Nynorsk to "Du får etterbetalt stønad frå ".expr() + fraDato.format() + " til " + tilDato.format() +
                     ". Vanlegvis får du denne etterbetalinga i løpet av tre veker.",
-            English to "You will receive back payments on benefits from ".expr() + fraDato.format() + " til " +
+            English to "You will receive back payments on allowance from ".expr() + fraDato.format() + " until " +
                     tilDato.format() + ". You will usually receive this back payment within three weeks.",
         )
     }
@@ -49,7 +49,7 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
                     "NAV eller andre (t.d. tenestepensjonsordningar). Dersom Skatteetaten eller andre ordningar har " +
                     "krav i etterbetalinga, kan denne bli forseinka. Frådrag i etterbetalinga vil gå fram av " +
                     "utbetalingsmeldinga.",
-            English to "Deductions may be calculated from the back payment for tax, benefits you have received " +
+            English to "Deductions may be calculated from the back payment for tax, allowance you have received " +
                     "from NAV or others, such as occupational pension schemes. If the Norwegian Tax Administration " +
                     "or other schemes are entitled to the back payment, the payment to you may be delayed. " +
                     "Deductions from the back payment will be stated in the disbursement notice.  ",
@@ -85,7 +85,7 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
         text(
             Bokmal to "Etterbetaling av omstillingsstønad",
             Nynorsk to "Etterbetaling av omstillingsstønad",
-            English to "Payment of transitional benefits",
+            English to "Payment of adjustment allowance",
         )
     }
 

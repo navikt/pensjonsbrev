@@ -214,16 +214,18 @@ jobs:
 
   "deployBrevbakerToDev":
     name: "Deploy brevbaker to dev"
+    permissions:
+      contents: "read"
+      id-token: "write"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: ["runIntegrationTests", "build-brevbaker"]
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v1"
+        uses: "nais/deploy/actions/deploy@v2"
         env:
           "ENVIRONMENT": "dev-gcp:brevbaker"
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
           "VAR": image=${{ needs.build-brevbaker.outputs.image }}
@@ -231,16 +233,18 @@ jobs:
 
   "deployPdfByggerToDev":
     name: "Deploy pdf-bygger to dev"
+    permissions:
+      contents: "read"
+      id-token: "write"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: ["runIntegrationTests", "build-pdfbygger"]
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v1"
+        uses: "nais/deploy/actions/deploy@v2"
         env:
           "ENVIRONMENT": "dev-gcp:pdf-bygger"
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml"
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
@@ -248,16 +252,18 @@ jobs:
 
   "deployBrevbakerToProduction":
     name: "Deploy brevbaker to production"
+    permissions:
+      contents: "read"
+      id-token: "write"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: ["runIntegrationTests", "build-brevbaker"]
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to production"
-        uses: "nais/deploy/actions/deploy@v1"
+        uses: "nais/deploy/actions/deploy@v2"
         env:
           "ENVIRONMENT": "prod-gcp:brevbaker"
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "prod-gcp"
           "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
           "VAR": image=${{ needs.build-brevbaker.outputs.image }}
@@ -265,16 +271,18 @@ jobs:
 
   "deployPdfByggerToProduction":
     name: "Deploy pdf-bygger to production"
+    permissions:
+      contents: "read"
+      id-token: "write"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: ["runIntegrationTests", "build-pdfbygger"]
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to production"
-        uses: "nais/deploy/actions/deploy@v1"
+        uses: "nais/deploy/actions/deploy@v2"
         env:
           "ENVIRONMENT": "prod-gcp:pdf-bygger"
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "prod-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml"
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}

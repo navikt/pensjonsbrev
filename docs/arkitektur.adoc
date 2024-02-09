@@ -27,7 +27,7 @@ Se også: https://confluence.adeo.no/pages/viewpage.action?pageId=387091206[Over
 === Beslutninger
 
 ==== Utvikle brev-løsningen selv
-Det ble vurdert å ta i bruk hyllevare(OpenText Extream), men da antar vi at vi vil støte på tidligere problemstillinger med MetaForce. OpenText Extream er hyllevare som vi ikke kan tilpasse selv, og vi låser brev-malene inn i ett eksternt CCM verktøy slik som før. Dersom OpenText Extream ikke vedlikeholdes er vi tilbake til samme tilstand som i dag.
+Det ble vurdert å ta i bruk hyllevare(OpenText Exstream), men da antar vi at vi vil støte på tidligere problemstillinger med MetaForce. OpenText Exstream er hyllevare som vi ikke kan tilpasse selv, og vi låser brev-malene inn i ett eksternt CCM verktøy slik som før. Dersom OpenText Exstream ikke vedlikeholdes er vi tilbake til samme tilstand som i dag.
 
 Vi valgte å utvikle en egen fullstendig løsning og ikke hyllevare fordi:
 

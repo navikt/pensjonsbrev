@@ -18,9 +18,9 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.Metrics.configur
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzureADConfig
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExtreamRequestDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExstreamRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamBrevService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.exstreambrev.RedigerExstreamBrevService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.PsakSamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.SamhandlerTypeCode
@@ -85,7 +85,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             ArkivTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
         val dokumentProduksjonService =
             DokumentproduksjonService(servicesConfig.getConfig("dokprod"), stsSercuritySOAPHandler)
-        val redigerExtreamBrevService = RedigerExtreamBrevService(servicesConfig, stsSercuritySOAPHandler)
+        val redigerExstreamBrevService = RedigerExstreamBrevService(servicesConfig, stsSercuritySOAPHandler)
 
 
         get("/isAlive") {
@@ -112,13 +112,13 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 val requestDto = call.receive<FinnSamhandlerRequestDto>()
                 call.respond(withCallId(psakSamhandlerTjenestebussService) { finnSamhandler(requestDto) })
             }
-            post("/bestillExtreamBrev") {
-                val requestDto = call.receive<BestillBrevExtreamRequestDto>()
+            post("/bestillExstreamBrev") {
+                val requestDto = call.receive<BestillBrevExstreamRequestDto>()
                 call.respond(withCallId(arkivTjenestebussService) { bestillBrev(requestDto) })
             }
-            post("/redigerExtreamBrev") {
-                val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
-                call.respond(withCallId(redigerExtreamBrevService) { hentExtreamBrevUrl(requestDto) })
+            post("/redigerExstreamBrev") {
+                val requestDto = call.receive<RedigerExstreamDokumentRequestDto>()
+                call.respond(withCallId(redigerExstreamBrevService) { hentExstreamBrevUrl(requestDto) })
             }
             post("/redigerDoksysBrev") {
                 val requestDto = call.receive<RedigerDoksysDokumentRequestDto>()
@@ -147,6 +147,6 @@ data class RedigerDoksysDokumentRequestDto(
     val dokumentId: String,
 )
 
-data class RedigerExtreamDokumentRequestDto(
+data class RedigerExstreamDokumentRequestDto(
     val journalpostId: String,
 )

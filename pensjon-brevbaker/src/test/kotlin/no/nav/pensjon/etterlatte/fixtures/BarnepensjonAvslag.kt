@@ -4,7 +4,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
 
 fun createBarnepensjonAvslagDTO() =
     BarnepensjonAvslagDTO(
-        innhold = emptyList(),
+        innhold = createPlaceholderForRedigerbartInnhold(),
         bosattUtland = false,
         brukerUnder18Aar = false
     )

@@ -239,7 +239,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "hjelper deg, ikkje er advokat, må du gi vedkomande ei skriftleg fullmakt. Bruk gjerne " +
                     "skjemaet du finn på ${Constants.FULLMAKT_URL}.",
             English to "You can ask for help from others throughout case processing, such as an attorney, " +
-                    "legal aide, an organization of which you are a member or another person of legal age. " +
+                    "legal aid, an organization of which you are a member or another person of legal age. " +
                     "If the person helping you is not an attorney, you must give this person a written power of attorney. " +
                     "Feel free to use the form you find here: ${Constants.Engelsk.FULLMAKT_URL}."
         )

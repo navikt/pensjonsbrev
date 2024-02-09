@@ -60,6 +60,7 @@ services:
       - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
       - NAVANSATT_URL=https://navansatt.dev-fss-pub.nais.io
       - NAVANSATT_SCOPE=api://dev-fss.teampensjon.navansatt/.default
+      - GROUPS_PENSJON_UTLAND=bda6bd68-77e6-4c00-96b9-7ecf5df7413c
 
   skribenten-backend-db:
     profiles:

@@ -11,7 +11,7 @@ import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExtreamRequestDto.SakskontekstDto
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExstreamRequestDto.SakskontekstDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseResponseDto.FailureType.GENERISK
 import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
 import org.slf4j.LoggerFactory
@@ -90,27 +90,27 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             }
 
 
-    suspend fun bestillExtreamBrev(
+    suspend fun bestillExstreamBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
         navIdent: String,
         metadata: BrevdataDto,
         name: String,
         enhetsId: String
-    ): ServiceResult<BestillExtreamBrevResponseDto> {
+    ): ServiceResult<BestillExstreamBrevResponseDto> {
 
         // TODO access controls for e-blanketter
         val isEblankett = metadata.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT
         val isNotat = metadata.dokType == BrevdataDto.DokumentType.N
 
-        return tjenestebussIntegrasjonClient.post(call, "/bestillExtreamBrev") {
+        return tjenestebussIntegrasjonClient.post(call, "/bestillExstreamBrev") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(
-                BestillBrevExtreamRequestDto(
+                BestillBrevExstreamRequestDto(
                     brevKode = request.brevkode, // ID på brev,
                     brevGruppe = metadata.brevgruppe
-                        ?: throw BadRequestException("Fant ikke brevgruppe gitt extream brev :${request.brevkode}"),
+                        ?: throw BadRequestException("Fant ikke brevgruppe gitt exstream brev :${request.brevkode}"),
                     isRedigerbart = metadata.redigerbart,
                     sprakkode = request.spraak.toString(),
                     brevMottakerNavn = request.mottakerText?.takeIf { isEblankett },        // custom felt kun for sed/eblankett
@@ -122,7 +122,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         fagsystem = "PEN",
                         fagomradekode = "PEN",                              // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
                         innhold = metadata.dekode,                          // Visningsnavn
-                        kategori = metadata.dokumentkategori.toString(),    // Kategori for dokumentet
+                        kategori = if (isEblankett) BrevdataDto.DokumentkategoriCode.SED.toString() else metadata.dokumentkategori.toString(),    // Kategori for dokumentet
                         saksid = request.sakId.toString(),// sakid
                         saksbehandlernavn = name,
                         saksbehandlerId = navIdent,
@@ -134,7 +134,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     )
                 )
             )
-        }.toServiceResult<BestillExtreamBrevResponseDto>()
+        }.toServiceResult<BestillExstreamBrevResponseDto>()
     }
 
     suspend fun redigerDoksysBrev(
@@ -148,15 +148,15 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             setBody(RedigerDoksysDokumentRequestDto(journalpostId = journalpostId, dokumentId = dokumentId))
         }.toServiceResult<RedigerDoksysDokumentResponseDto>()
 
-    suspend fun redigerExtreamBrev(
+    suspend fun redigerExstreamBrev(
         call: ApplicationCall,
         dokumentId: String,
-    ): ServiceResult<RedigerExtreamDokumentResponseDto> =
-        tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
+    ): ServiceResult<RedigerExstreamDokumentResponseDto> =
+        tjenestebussIntegrasjonClient.post(call, "/redigerExstreamBrev") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(RedigerExtreamDokumentRequestDto(dokumentId))
-        }.toServiceResult<RedigerExtreamDokumentResponseDto>()
+            setBody(RedigerExstreamDokumentRequestDto(dokumentId))
+        }.toServiceResult<RedigerExstreamDokumentResponseDto>()
 
     private fun getCurrentGregorianTime(): XMLGregorianCalendar {
         val cal = GregorianCalendar()
