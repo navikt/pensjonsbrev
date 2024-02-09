@@ -5,9 +5,6 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
-import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.ElementType
-import no.nav.pensjon.etterlatte.maler.InnerElement
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
@@ -28,46 +25,7 @@ fun createBarnepensjonOmregnetNyttRegelverkDTO() =
 
 fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
     BarnepensjonOmregnetNyttRegelverkFerdigDTO(
-        innhold = listOf(
-            Element(
-                type = ElementType.HEADING_TWO,
-                children = listOf(
-                    InnerElement(
-                        text = "Tittel"
-                    )
-                )
-            ),
-            Element(
-                type = ElementType.PARAGRAPH,
-                children = listOf(
-                    InnerElement(
-                        text = "Paragraf"
-                    )
-                )
-            ),
-            Element(
-                type = ElementType.PARAGRAPH,
-                children = listOf(
-                    InnerElement(
-                        type = ElementType.BULLETED_LIST,
-                        children = listOf(
-                            InnerElement(
-                                type = ElementType.LIST_ITEM,
-                                text = "Listeting volum 111",
-                            ),
-                            InnerElement(
-                                type = ElementType.LIST_ITEM,
-                                text = "Listeting volum 222"
-                            ),
-                            InnerElement(
-                                type = ElementType.LIST_ITEM,
-                                text = "Listeting volum 333"
-                            )
-                        )
-                    )
-                )
-            )
-        ),
+        innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = lagBeregning(),
         etterbetaling = lagEtterbetaling(),
         erUnder18Aar = false,
@@ -75,7 +33,7 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
     )
 
 private fun lagBeregning() = BarnepensjonBeregning(
-    innhold = listOf(),
+    innhold = createPlaceholderForRedigerbartInnhold(),
     virkningsdato = LocalDate.now(),
     antallBarn = 2,
     grunnbeloep = Kroner(123456),

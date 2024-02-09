@@ -43,7 +43,7 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
             text(
                 Bokmal to "Vi har opphørt omstillingsstønaden din",
                 Nynorsk to "Vi har avvikla omstillingsstønaden din",
-                English to "We have terminated your transitional benefits",
+                English to "We have terminated your adjustment allowance",
             )
         }
 
@@ -60,7 +60,7 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
                 textExpr(
                     Bokmal to "Omstillingsstønaden din opphører fra ".expr() + virkningsdato.format() + ".",
                     Nynorsk to "Omstillingsstønaden din fell bort frå og med ".expr() + virkningsdato.format() + ".",
-                    English to "Your transitional benefits will terminate on: ".expr() + virkningsdato.format() + ".",
+                    English to "Your adjustment allowance will terminate on: ".expr() + virkningsdato.format() + ".",
                 )
             }
             paragraph {
@@ -69,8 +69,8 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
                             "folketrygdloven § <riktig paragrafhenvisning> og § 22-12.",
                     Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova " +
                             "§ <riktig paragrafhenvisning> og § 22-12. ",
-                    English to "This decision has been made pursuant to the provisions regarding transitional " +
-                            "benefits in the National Insurance Act – sections  <riktig paragrafhenvisning> " +
+                    English to "This decision has been made pursuant to the provisions regarding adjustment " +
+                            "allowance in the National Insurance Act – sections  <riktig paragrafhenvisning> " +
                             "og § 22-12. ",
                 )
             }

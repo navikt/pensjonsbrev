@@ -14,28 +14,12 @@ import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTO
 import java.time.LocalDate
 import java.time.Month
 
 fun createBarnepensjonRevurderingDTO() = BarnepensjonRevurderingDTO(
-    innhold = listOf(
-        Element(
-            type = ElementType.HEADING_THREE,
-            children = listOf(
-                InnerElement(
-                    text = "Begrunnelse for vedtaket"
-                )
-            )
-        ),
-        Element(
-            type = ElementType.PARAGRAPH,
-            children = listOf(
-                InnerElement(
-                    text = "Redigerbar tekst her"
-                ),
-            )
-        ),
-    ),
+    innhold = createPlaceholderForRedigerbartInnhold(),
     erEndret = true,
     beregning = BarnepensjonBeregning(
         innhold = listOf(),
@@ -107,4 +91,8 @@ fun createBarnepensjonRevurderingDTO() = BarnepensjonRevurderingDTO(
     bosattUtland = false,
     kunNyttRegelverk = false,
     harFlereUtbetalingsperioder = true,
+)
+
+fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderingRedigerbartUtfallDTO(
+    erEtterbetaling = true,
 )

@@ -4,7 +4,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.Omstillingstoen
 
 fun createOmstillingsstoenadAvslagDTO() =
     OmstillingstoenadAvslagDTO(
-        innhold = emptyList(),
+        innhold = createPlaceholderForRedigerbartInnhold(),
         avdoedNavn = "Ola Nordmann",
         bosattUtland = false
     )

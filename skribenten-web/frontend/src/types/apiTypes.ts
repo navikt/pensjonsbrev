@@ -28,16 +28,19 @@ export type BrevkategoriCode =
   | "VARSEL"
   | "VEDTAK";
 
+export type DokumentkategoriCode = "B" | "E_BLANKETT" | "IB" | "SED" | "VB";
+
 export type LetterMetadata = {
   name: string;
   id: string;
   brevsystem: BrevSystem;
   spraak: SpraakKode[];
   brevkategoriCode?: BrevkategoriCode;
+  dokumentkategoriCode?: DokumentkategoriCode;
 };
 
 export enum BrevSystem {
-  Extream = "EXTREAM",
+  Exstream = "EXSTREAM",
   DokSys = "DOKSYS",
   Brevbaker = "BREVBAKER",
 }
@@ -61,10 +64,13 @@ export type OrderLetterRequest = {
   spraak: SpraakKode;
   sakId: number;
   gjelderPid: string;
-  landkode?: string;
-  mottakerText?: string;
   isSensitive: boolean;
   vedtaksId?: string;
+};
+
+export type OrderEblankettRequest = OrderLetterRequest & {
+  landkode: string;
+  mottakerText: string;
 };
 
 export type BestillOgRedigerBrevResponse = {
@@ -82,12 +88,12 @@ export type FailureType =
   | "FERDIGSTILLING_TIMEOUT"
   | "SAF_ERROR"
   | "SKRIBENTEN_TOKEN_UTVEKSLING"
-  | "EXTREAM_REDIGERING_GENERELL"
+  | "EXSTREAM_REDIGERING_GENERELL"
   | "TJENESTEBUSS_INTEGRASJON"
-  | "EXTREAM_BESTILLING_ADRESSE_MANGLER"
-  | "EXTREAM_BESTILLING_HENTE_BREVDATA"
-  | "EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT"
-  | "EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST";
+  | "EXSTREAM_BESTILLING_ADRESSE_MANGLER"
+  | "EXSTREAM_BESTILLING_HENTE_BREVDATA"
+  | "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT"
+  | "EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST";
 
 export type FinnSamhandlerRequestDto = {
   navn: string;
@@ -267,4 +273,9 @@ export enum SamhandlerTypeCode {
 export type KontaktAdresseResponse = {
   adresseString: string;
   adresselinjer: string[];
+};
+
+export type Avtaleland = {
+  navn: string;
+  kode: string;
 };

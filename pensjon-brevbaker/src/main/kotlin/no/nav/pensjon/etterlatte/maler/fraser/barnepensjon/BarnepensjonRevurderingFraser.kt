@@ -83,9 +83,9 @@ object BarnepensjonRevurderingFraser {
                     )
                 }.orShow {
                     text(
-                        Language.Bokmal to "og § 22-13.",
-                        Language.Nynorsk to "og § 22-13.",
-                        Language.English to "og § 22-13."
+                        Language.Bokmal to "og § 22-12.",
+                        Language.Nynorsk to "og § 22-12.",
+                        Language.English to "og § 22-12."
                     )
                 }
 

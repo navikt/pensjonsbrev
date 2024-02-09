@@ -47,16 +47,18 @@ jobs:
 
   deploy-skribenten-backend-dev:
     name: "Deploy skribenten-backend to dev"
+    permissions:
+      contents: "read"
+      id-token: "write"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: "build-skribenten-backend"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy Skribenten backend to DEV"
-        uses: "nais/deploy/actions/deploy@v1"
+        uses: "nais/deploy/actions/deploy@v2"
         env:
           "ENVIRONMENT": "dev-gcp:skribenten-backend"
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "skribenten-backend/.nais/nais.yaml"
           "VAR": image=${{ format('{0}:{1}', env.IMAGE_SKRIBENTEN_BACKEND, env.IMAGE_TAG) }}

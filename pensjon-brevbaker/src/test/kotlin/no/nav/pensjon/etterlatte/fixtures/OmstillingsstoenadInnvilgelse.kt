@@ -3,97 +3,19 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import java.time.LocalDate
 import java.time.Month
 
 fun createOmstillingsstoenadInnvilgelseDTO() =
     OmstillingsstoenadInnvilgelseDTO(
-        innhold = listOf(
-            Element(
-                type = ElementType.HEADING_TWO,
-                children = listOf(
-                    InnerElement(
-                        text = "Begrunnelse for vedtaket"
-                    )
-                )
-            ),
-            Element(
-                type = ElementType.PARAGRAPH,
-                children = listOf(
-                    InnerElement(
-                        text = "Omstillingsstønad gis på bakgrunn av at"
-                    )
-                )
-            ),
-            Element(
-                type = ElementType.BULLETED_LIST,
-                children = listOf(
-                    InnerElement(
-                        type = ElementType.LIST_ITEM,
-                        children = listOf(
-                            InnerElement(
-                                type = ElementType.PARAGRAPH,
-                                text = "du som gjenlevende ektefelle på dødsfallstidspunktet hadde vært gift " +
-                                        "med avdøde i minst fem år, har eller har hatt barn med avdøde, eller har " +
-                                        "omsorgen for barn under 18 år med minst halvparten av full tid"
-                            )
-                        ),
-                    ),
-                    InnerElement(
-                        type = ElementType.LIST_ITEM,
-                        children = listOf(
-                            InnerElement(
-                                type = ElementType.PARAGRAPH,
-                                text = "du er medlem i folketrygden"
-                            )
-                        ),
-                    ),
-                    InnerElement(
-                        type = ElementType.LIST_ITEM,
-                        children = listOf(
-                            InnerElement(
-                                type = ElementType.PARAGRAPH,
-                                text = "avdøde i de siste fem årene før dødsfallet var medlem i folketrygden, " +
-                                        "eller fikk pensjon eller uføretrygd fra folketrygden."
-                            )
-                        ),
-                    )
-                )
-            ),
-            Element(
-                type = ElementType.PARAGRAPH,
-                children = listOf(
-                    InnerElement(
-                        text = "Samboere med felles barn og samboere som tidligere har vært gift likestilles med ektefeller."
-                    )
-                )
-            ),
-            Element(
-                type = ElementType.PARAGRAPH,
-                children = listOf(
-                    InnerElement(
-                        text = "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven " +
-                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9, § 22-12 og § 22-13."
-                    )
-                )
-            )
-
-        ),
+        innhold = createPlaceholderForRedigerbartInnhold(),
         avdoed = Avdoed(
             navn = "Avdoed Avdoedesen",
             doedsdato = LocalDate.of(2023, 12, 1)
         ),
         beregning = OmstillingsstoenadBeregning(
-            innhold = listOf(
-                Element(
-                    type = ElementType.PARAGRAPH,
-                    children = listOf(
-                        InnerElement(
-                            text = "Tekst som legges i vedlegg for beregning"
-                        )
-                    )
-                )
-            ),
+            innhold = createPlaceholderForRedigerbartInnhold(),
             virkningsdato = LocalDate.of(2024, 1, 1),
             inntekt = Kroner(500000),
             grunnbeloep = Kroner(118620),
@@ -164,4 +86,15 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
         ),
         innvilgetMindreEnnFireMndEtterDoedsfall = true,
         lavEllerIngenInntekt = true,
+    )
+
+fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
+    OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
+        virkningsdato = LocalDate.now(),
+        avdoed = Avdoed(
+            navn = "Avdod Avdodesen",
+            doedsdato = LocalDate.now()
+        ),
+        utbetalingsbeloep = Kroner(12345),
+        etterbetaling = true
     )

@@ -1,12 +1,17 @@
 package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
 
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 object OmstillingsstoenadFellesFraser {
@@ -29,7 +34,7 @@ object OmstillingsstoenadFellesFraser {
                             "av eller retten på omstillingsstønad. I vedlegget «Dine rettar og plikter» ser du kva " +
                             "endringar du må seie frå om. ",
                     English to "You are obligated to notify us of any changes that affect the payment of " +
-                            "transitional benefits, or the right to receive transitional benefits. You will see " +
+                            "the adjustment allowance, or the right to receive the allowance. You will see " +
                             "which changes you must report in the attachment, Your Rights and Obligations."
                 )
             }
@@ -138,4 +143,169 @@ object OmstillingsstoenadFellesFraser {
             }
         }
     }
+
+    object Etteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Etteroppgjør",
+                    Nynorsk to "Etteroppgjer",
+                    English to "Final settlement",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hver høst sjekker NAV inntektsopplysningene i skatteoppgjøret ditt for å se " +
+                            "om du har fått utbetalt riktig beløp i omstillingsstønad året før. Hvis du har fått " +
+                            "for lite utbetalt, får du en etterbetaling. Har du fått for mye utbetalt, må du betale " +
+                            "tilbake. Du kan finne mer informasjon om etteroppgjør på " +
+                            "${Constants.OMS_ETTEROPPGJOER_URL}.",
+                    Nynorsk to "Kvar haust sjekkar NAV inntektsopplysningane i skatteoppgjeret ditt for å sjå " +
+                            "om du fekk utbetalt rett beløp i omstillingsstønad året før. Dersom du fekk utbetalt " +
+                            "for lite, får du ei etterbetaling. Dersom du fekk utbetalt meir enn du hadde rett på, " +
+                            "må du betale tilbake. Du kan lese meir om etteroppgjer på " +
+                            "${Constants.OMS_ETTEROPPGJOER_URL}.",
+                    English to "Each autumn, NAV checks income data from your tax return to verify the correct " +
+                            "amount of adjustment allowance for the previous year. If you received less than you " +
+                            "are owed, you will receive Back Pay. If you received more than you were owed, you must " +
+                            "repay the excess to NAV. You can find more information about final settlements online: " +
+                            "${Constants.OMS_ETTEROPPGJOER_URL}.",
+                )
+            }
+        }
+    }
+
+    data class HvorLengerKanDuFaaOmstillingsstoenad(
+        val beregning: Expression<OmstillingsstoenadBeregning>,
+        val lavEllerIngenInntekt: Expression<Boolean>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Hvor lenge kan du få omstillingsstønaden?",
+                    Nynorsk to "Kor lenge kan du få omstillingsstønad?",
+                    English to "How long can you receive adjustment allowance?",
+                )
+            }
+            showIf(lavEllerIngenInntekt) {
+                paragraph {
+                    text(
+                        Bokmal to "Du kommer inn under unntaksreglene for varighet av stønaden, fordi du har hatt " +
+                                "lav eller ingen inntekt de siste fem årene før dødsfallstidspunktet. Du får " +
+                                "omstillingsstønad frem til du fyller 67 år, så lenge du oppfyller vilkårene.",
+                        Nynorsk to "Du kjem inn under unntaksreglane for lengde på stønad, då du var utan " +
+                                "inntekt eller hadde låg inntekt dei siste fem åra før dødsfallet. Under " +
+                                "føresetnad av at du oppfyller vilkåra, får du omstillingsstønad fram til du " +
+                                "fyller 67 år. ",
+                        English to "If any of the rules for exemption from the duration of allowance apply to " +
+                                "you, because you had a low income or no income in the last five years before the " +
+                                "date of the death. You are eligible for the adjustment allowance until you turn " +
+                                "67 as long as you meet the conditions.",
+                    )
+                }
+            }.orShow {
+                showIf(beregning.sisteBeregningsperiode.utbetaltBeloep.greaterThan(0)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du får omstillingsstønad frem til det er gått tre år fra datoen for dødsfallet, så " +
+                                    "lenge du oppfyller vilkårene.",
+                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad i " +
+                                    "tre år frå datoen for dødsfallet. ",
+                            English to "You are eligible for adjustment allowance for three years from the " +
+                                    "date of the death, as long as you meet the conditions for receiving the allowance.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Stønaden kan forlenges med inntil to år hvis du tar utdanning som er nødvendig " +
+                                    "og hensiktsmessig.",
+                            Nynorsk to "Stønaden kan bli forlenga med inntil to år dersom du tek utdanning " +
+                                    "som er nødvendig og føremålstenleg.",
+                            English to "The allowance can be extended for up to two years if you are obtaining an " +
+                                    "education, vocational training that is necessary and suitable.",
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            Bokmal to "Du er innvilget omstillingsstønad frem til det er gått tre år fra datoen for " +
+                                    "dødsfallet, så lenge du oppfyller vilkårene. Om det skjer endringer " +
+                                    "i inntekten din kan dette gjør at du likevel vil få utbetalt stønad i denne perioden. ",
+                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
+                                    "i tre år frå datoen for dødsfallet. Dersom inntekta di skulle endre seg, kan " +
+                                    "dette gjere at du likevel får utbetalt stønad i denne perioden.",
+                            English to "You are eligible for adjustment allowance for three years from the " +
+                                    "date of the death, as long as you meet the conditions for receiving the allowance. " +
+                                    "Changes to your income may make you eligible for allowance in this period. ",
+                        )
+                    }
+                }
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Les mer om hvor lenge du kan få på " + Constants.OMS_HVORLENGE_URL + ".",
+                    Nynorsk to "Les meir på " + Constants.OMS_HVORLENGE_URL + " om kor lenge du kan få stønad.",
+                    English to "Read more about the duration of allowance online: " + Constants.OMS_HVORLENGE_URL + ".",
+                )
+            }
+        }
+    }
+
+    object SpesieltOmInntektsendring : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Spesielt om endring av inntekten din",
+                    Nynorsk to "Spesielt om endring av inntekta di",
+                    English to "Special information about changes to your income",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "For at du skal motta korrekt omstillingsstønad, er det viktig at du informerer " +
+                            "oss hvis inntekten din endrer seg. Vi justerer omstillingsstønaden fra måneden etter " +
+                            "at du har gitt beskjed. Du kan lese mer om inntektsendring i vedlegget " +
+                            "«Informasjon til deg som mottar omstillingsstønad».",
+                    Nynorsk to "For at du skal få rett omstillingsstønad, er det viktig at du informerer oss " +
+                            "dersom inntekta di endrar seg. Vi justerer omstillingsstønaden frå månaden etter at du " +
+                            "har gitt beskjed. Du kan lese meir om inntektsendring i vedlegget «Informasjon til deg " +
+                            "som får omstillingsstønad».",
+                    English to "To receive the correct amount of the adjustment allowance, you are obligated " +
+                            "to inform us about any changes to your income. We will adjust the adjustment " +
+                            "allowance starting the month after you reported the change. You can read more " +
+                            "about income reporting in the attachment Information to Adjustment Allowance Recipients.",
+                )
+            }
+        }
+    }
+
+    object Inntektsendring : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Du må melde fra hvis inntekten din endrer seg",
+                    Nynorsk to "Meld frå dersom inntekta di endrar seg",
+                    English to "You must report any changes to your income",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "For at du skal motta korrekt omstillingsstønad, er det viktig at du informerer " +
+                            "oss hvis inntekten din endrer seg. Vi justerer omstillingsstønaden fra måneden etter " +
+                            "at du har gitt beskjed. Du kan lese mer om inntektsendring i vedlegget " +
+                            "«Informasjon til deg som mottar omstillingsstønad».",
+                    Nynorsk to "For at du skal få rett omstillingsstønad, er det viktig at du informerer oss " +
+                            "dersom inntekta di endrar seg. Vi justerer omstillingsstønaden frå månaden etter at du " +
+                            "har gitt beskjed. Du kan lese meir om inntektsendring i vedlegget «Informasjon til deg " +
+                            "som får omstillingsstønad».",
+                    English to "To receive the correct amount of adjustment allowance, you are obligated to " +
+                            "inform us about any changes to your income. We will adjust the adjustment allowance " +
+                            "starting the month after you reported the change. You can read more about income " +
+                            "reporting in the attachment Information to Recipients of Adjustment Allowance. ",
+                )
+            }
+        }
+    }
+
 }

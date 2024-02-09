@@ -6,6 +6,7 @@ import type { AxiosResponse } from "axios";
 import axios, { AxiosError } from "axios";
 
 import type {
+  Avtaleland,
   BestillOgRedigerBrevResponse,
   FinnSamhandlerRequestDto,
   FinnSamhandlerResponseDto,
@@ -15,6 +16,7 @@ import type {
   HentsamhandlerResponseDto,
   KontaktAdresseResponse,
   LetterMetadata,
+  OrderEblankettRequest,
   OrderLetterRequest,
   PidRequest,
   PreferredLanguage,
@@ -51,6 +53,10 @@ export const letterKeys = {
 
 export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
+};
+
+export const avtalelandKeys = {
+  all: ["AVTALE_LAND"] as const,
 };
 
 export const adresseKeys = {
@@ -106,8 +112,14 @@ export const getLetterTemplate = {
 
 export const getEblanketter = {
   queryKey: letterTemplatesKeys.eblanketter(),
-  queryFn: async () =>
-    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data,
+  queryFn: async () => {
+    try {
+      return (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data;
+    } catch {
+      /* Fetching e-blanketter is not critical, therefore we want to handle Forbidden/Server errors as an empty list. */
+    }
+    return [];
+  },
 };
 
 export const getKontaktAdresse = {
@@ -134,6 +146,11 @@ export const getTemplate = {
     (await axios.get<RedigerbarTemplateDescription>(`${SKRIBENTEN_API_BASE_PATH}/template/${brevkode}`)).data,
 };
 
+export const getAvtaleLand = {
+  queryKey: avtalelandKeys.all,
+  queryFn: async () => (await axios.get<Avtaleland[]>(`${SKRIBENTEN_API_BASE_PATH}/kodeverk/avtaleland`)).data,
+};
+
 export async function renderLetter(letterId: string, request: unknown) {
   return (await axios.post<RenderedLetter>(`${SKRIBENTEN_API_BASE_PATH}/letter/${letterId}`, request)).data;
 }
@@ -150,7 +167,7 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-export async function orderLetter(orderLetterRequest: OrderLetterRequest) {
+export async function orderLetter(orderLetterRequest: OrderLetterRequest | OrderEblankettRequest) {
   const response = (
     await axios.post<BestillOgRedigerBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/bestillbrev`, orderLetterRequest)
   ).data;
