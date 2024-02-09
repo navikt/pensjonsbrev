@@ -18,8 +18,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-// Erstatte PE_UT_06_200
-
 @TemplateModelHelpers
 object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidAutoDto> {
 
