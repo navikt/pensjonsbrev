@@ -16,7 +16,8 @@ import {
   Tag,
   TextField,
   VStack,
-} from "@navikt/ds-react";import type { UseMutationResult } from "@tanstack/react-query";
+} from "@navikt/ds-react";
+import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
@@ -28,8 +29,8 @@ import { z } from "zod";
 import {
   addFavoritt,
   deleteFavoritt,
-  getAvtaleLand,
   finnSamhandler,
+  getAvtaleLand,
   getEblanketter,
   getFavoritter,
   getKontaktAdresse,
@@ -42,12 +43,12 @@ import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import { SamhandlerTypeSelectFormPart } from "~/components/select/SamhandlerSelect";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
-
 import type {
   FinnSamhandlerRequestDto,
   FinnSamhandlerResponseDto,
   LetterMetadata,
- OrderEblankettRequest, OrderLetterRequest,
+  OrderEblankettRequest,
+  OrderLetterRequest,
   SamhandlerPostadresse,
 } from "~/types/apiTypes";
 import { SamhandlerTypeCode } from "~/types/apiTypes";
