@@ -25,7 +25,7 @@ object BarnepensjonForeldreloesFraser {
         val sistePeriodeFom: Expression<LocalDate>,
         val sistePeriodeBeloep: Expression<Kroner>,
         val bareEnPeriode: Expression<Boolean>,
-        val enEllerFlerePerioderMedFlereBeloep: Expression<Boolean>,
+        val flerePerioder: Expression<Boolean>,
         val ingenUtbetaling: Expression<Boolean>,
         val vedtattIPesys: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -58,7 +58,7 @@ object BarnepensjonForeldreloesFraser {
                     Language.English to "",
                 )
             }
-            showIf(enEllerFlerePerioderMedFlereBeloep) {
+            showIf(flerePerioder) {
                 paragraph {
                     textExpr(
                         Language.Bokmal to (

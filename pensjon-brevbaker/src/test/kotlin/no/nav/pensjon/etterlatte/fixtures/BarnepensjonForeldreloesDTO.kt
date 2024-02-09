@@ -12,7 +12,6 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
 import java.time.LocalDate
 import java.time.Month
 
@@ -90,7 +89,7 @@ fun createBarnepensjonForeldreloesDTO() =
         brukerUnder18Aar = true,
         kunNyttRegelverk = false,
         bareEnPeriode = true,
-        enEllerFlerePerioderMedFlereBeloep = true,
+        flerePerioder = true,
         ingenUtbetaling = true,
         vedtattIPesys = true
     )

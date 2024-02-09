@@ -29,14 +29,13 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonFore
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.enEllerFlerePerioderMedFlereBeloep
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.flerePerioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.ingenUtbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.vedtattIPesys
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForeldreloesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonGammeltOgNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterBosattUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterNasjonal
@@ -53,7 +52,7 @@ data class BarnepensjonForeldreloesDTO(
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,
     val bareEnPeriode: Boolean,
-    val enEllerFlerePerioderMedFlereBeloep: Boolean,
+    val flerePerioder: Boolean,
     val ingenUtbetaling: Boolean,
     val vedtattIPesys: Boolean
 ) : BrevDTO
@@ -98,7 +97,7 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
                     sistePeriodeBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep,
                     sistePeriodeFom = beregning.sisteBeregningsperiode.datoFOM,
                     bareEnPeriode = bareEnPeriode,
-                    enEllerFlerePerioderMedFlereBeloep = enEllerFlerePerioderMedFlereBeloep,
+                    flerePerioder = flerePerioder,
                     ingenUtbetaling = ingenUtbetaling,
                     vedtattIPesys = vedtattIPesys
                 )
@@ -124,9 +123,6 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
                 )
             )
         }
-
-        // Beregning av barnepensjon nytt og gammelt regelverk
-        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregning, kunNyttRegelverk.not())
 
         // Beregning av barnepensjon nytt regelverk
         includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
