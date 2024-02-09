@@ -127,7 +127,7 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
 
         // Beregning av barnepensjon nytt og gammelt regelverk
         includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregning, kunNyttRegelverk.not())
-        // TODO NYTT BEREGNIGNSVEDLEGG
+
         // Beregning av barnepensjon nytt regelverk
         includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
 

@@ -63,8 +63,9 @@ fun createBarnepensjonForeldreloesDTO() =
                 beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
                 beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
                 mindreEnnFireFemtedelerAvOpptjeningstiden = false,
-            )
-        ),
+            ),
+            erForeldreloes = true,
+            bruktAvdoed = "Hubba Bubba"),
         etterbetaling = BarnepensjonEtterbetaling(
             fraDato = LocalDate.of(2020, Month.JANUARY, 1),
             tilDato = LocalDate.of(2023, Month.JULY, 31),
