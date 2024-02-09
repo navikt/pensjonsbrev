@@ -1,0 +1,21 @@
+app-name: "autodokumentasjon-web"
+
+ingresses:
+  - "https://brevbaker-autodokumentasjon-q2.intern.dev.nav.no"
+
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: EXPRESS_HOST
+    value: "::"
+  - name: EXPRESS_PORT
+    value: "8080"
+  - name: BREVBAKER_API_URL
+    value: "http://pensjon-brevbaker"
+  - name: BREVBAKER_API_SCOPE
+    value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
+
+outboundApps:
+  - application: pensjon-brevbaker
+    namespace: pensjonsbrev
+    cluster: dev-gcp
