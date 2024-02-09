@@ -23,8 +23,6 @@ groups:
 vaultPaths:
   - kvPath: "serviceuser/data/dev/srvpensjonsbrev-esb"
     mountPath: "/secrets/sts"
-  - kvPath: "serviceuser/data/dev/srv-pensjon-tss-samhandlerv2"
-    mountPath: "/services/samhandlerService"
   - kvPath: "/kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev"
     mountPath: "/secrets/pensjonsbrev"
 inboundRules:
