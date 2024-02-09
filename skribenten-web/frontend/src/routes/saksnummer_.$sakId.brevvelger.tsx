@@ -6,7 +6,7 @@ import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { groupBy } from "lodash";
 import { useState } from "react";
 
-import { getEblanketter, getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
+import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 
@@ -48,27 +48,29 @@ export function BrevvelgerPage() {
         }
       `}
     >
-      <Brevmaler kategorier={letterTemplates ?? []} />
+      <Brevmaler letterTemplates={letterTemplates ?? []} />
       <Outlet />
     </div>
   );
 }
 
-function Brevmaler({ kategorier }: { kategorier: LetterMetadata[] }) {
+function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const favoritter = useQuery(getFavoritter).data ?? [];
-  const eblanketter = useQuery(getEblanketter).data ?? [];
 
-  const brevmalerMatchingSearchTerm = [...kategorier, ...eblanketter].filter((template) =>
+  const brevmalerMatchingSearchTerm = letterTemplates.filter((template) =>
     template.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
   const matchingFavoritter = brevmalerMatchingSearchTerm.filter(({ id }) => favoritter.includes(id));
 
   const brevmalerGroupedByType = {
     ...(matchingFavoritter.length > 0 ? { FAVORITTER: matchingFavoritter } : {}),
-    ...groupBy(brevmalerMatchingSearchTerm, (brevmal) => brevmal.brevkategoriCode ?? brevmal.dokumentkategoriCode),
+    ...groupBy(
+      brevmalerMatchingSearchTerm,
+      // Group by brevkategoriCode if it exists. If E-blankett, group by dokumentKategoriCode or else put them in "Annet" category
+      (brevmal) => brevmal.brevkategoriCode ?? (brevmal.dokumentkategoriCode === "E_BLANKETT" ? "E_BLANKETT" : "OTHER"),
+    ),
   };
 
   return (
@@ -110,7 +112,7 @@ function Brevmaler({ kategorier }: { kategorier: LetterMetadata[] }) {
                   justify-content: space-between;
                 `}
               >
-                {CATEGORY_TRANSLATIONS[type] ?? "Annet"}
+                {CATEGORY_TRANSLATIONS[type]}
               </Accordion.Header>
               <Accordion.Content>
                 <div
@@ -185,4 +187,5 @@ const CATEGORY_TRANSLATIONS: Record<string, string> = {
   VEDTAK: "Vedtak",
   FAVORITTER: "Favoritter",
   E_BLANKETT: "E-blanketter",
+  OTHER: "Annet",
 };
