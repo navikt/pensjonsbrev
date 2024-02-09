@@ -27,7 +27,7 @@ object Felles {
                 text(
                     Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram.",
                     Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram.",
-                    English to "You are entitled to see your case documents. Refer to the attachment “Your rights and obligations” for information about how to proceed.",
+                    English to "You are entitled to see your case documents. Refer to the attachment «Your rights and obligations» for information about how to proceed.",
                 )
             }
         }
