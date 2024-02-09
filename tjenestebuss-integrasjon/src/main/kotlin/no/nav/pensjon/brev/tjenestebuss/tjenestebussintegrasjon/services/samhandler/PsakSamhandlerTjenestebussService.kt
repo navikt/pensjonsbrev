@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.ST
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.slf4j.LoggerFactory
 
-class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
+class PsakSamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val psakSamhandlerClient = PsakSamhandlerClient(config, securityHandler, callIdHandler).client()
@@ -53,14 +53,17 @@ class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercurit
                 navn = requestDto.navn
                 samhandlerType = requestDto.samhandlerType.name
             })
-            return FinnSamhandlerResponseDto(samhandlere = samhandlerResponse.samhandlere.map {
-                FinnSamhandlerResponseDto.Samhandler(
-                    it.navn,
-                    it.samhandlerType,
-                    it.offentligId,
-                    it.idType
-                )
-            })
+            return FinnSamhandlerResponseDto(samhandlere = samhandlerResponse.samhandlere.flatMap { samhandler ->
+                samhandler.avdelinger.map { avdeling ->
+                    FinnSamhandlerResponseDto.Samhandler(
+                        navn = avdeling.avdelingNavn.takeIf { !it.isNullOrBlank() } ?: samhandler.navn,
+                        samhandlerType = samhandler.samhandlerType,
+                        offentligId = samhandler.offentligId,
+                        idType = samhandler.idType,
+                        idTSSEkstern = avdeling.idTSSEkstern,
+                    )
+                }
+            }.distinctBy { it.idTSSEkstern })
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
             logger.error(
                 "En feil oppstod under kall til finnSamhandler med navn: ${requestDto.navn} , samhandlerType: ${requestDto.samhandlerType}",

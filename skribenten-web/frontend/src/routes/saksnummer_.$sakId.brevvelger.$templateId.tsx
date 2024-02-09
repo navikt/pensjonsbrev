@@ -1,15 +1,18 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
+import { ArrowRightIcon, PencilIcon, PlusIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import {
   Alert,
   BodyShort,
   Button,
   Heading,
+  HStack,
   Link,
+  Modal,
   Radio,
   RadioGroup,
   Select,
+  Table,
   Tag,
   TextField,
   VStack,
@@ -19,29 +22,44 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
 import {
   addFavoritt,
   deleteFavoritt,
+  finnSamhandler,
   getAvtaleLand,
   getFavoritter,
   getKontaktAdresse,
   getLetterTemplate,
+  hentSamhandler,
+  hentSamhandlerAdresse,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
+import { SamhandlerTypeSelectFormPart } from "~/components/select/SamhandlerSelect";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
-import type { LetterMetadata, OrderEblankettRequest, OrderLetterRequest } from "~/types/apiTypes";
+import type {
+  FinnSamhandlerRequestDto,
+  FinnSamhandlerResponseDto,
+  LetterMetadata,
+  OrderEblankettRequest,
+  OrderLetterRequest,
+  SamhandlerPostadresse,
+} from "~/types/apiTypes";
+import { SamhandlerTypeCode } from "~/types/apiTypes";
 import { BrevSystem, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
   loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
+  validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string } => ({
+    idTSSEkstern: search.idTSSEkstern?.toString(),
+  }),
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId }, deps: { includeVedtak } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
@@ -135,9 +153,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
       </Heading>
       <BodyShort size="small">TODO</BodyShort>
       <Divider />
-      <Heading level="3" size="xsmall">
-        Mottaker (TODO)
-      </Heading>
+      <VelgSamhandlerModal />
       <Adresse />
       <FormProvider {...methods}>
         <form
@@ -406,13 +422,18 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
 }
 
 function Adresse() {
+  const { idTSSEkstern } = Route.useSearch();
+
+  return idTSSEkstern ? <SamhandlerAdresse /> : <PersonAdresse />;
+}
+
+function PersonAdresse() {
   const { sak } = Route.useLoaderData();
 
   const adresseQuery = useQuery({
     queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
     queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
   });
-
   return (
     <>
       <Heading level="3" size="xsmall">
@@ -424,6 +445,43 @@ function Adresse() {
       <Divider />
     </>
   );
+}
+function SamhandlerAdresse() {
+  const { idTSSEkstern } = Route.useSearch();
+
+  const hentSamhandlerAdresseQuery = useQuery({
+    queryKey: hentSamhandlerAdresse.queryKey(idTSSEkstern as string),
+    queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: idTSSEkstern as string }),
+    enabled: !!idTSSEkstern,
+  });
+
+  return (
+    <>
+      <Heading level="3" size="xsmall">
+        Adresse
+      </Heading>
+      {hentSamhandlerAdresseQuery.data && (
+        <BodyShort>{formatSamhandlerAdresse(hentSamhandlerAdresseQuery.data)}</BodyShort>
+      )}
+      {hentSamhandlerAdresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
+      {hentSamhandlerAdresseQuery.error && (
+        <ApiError error={hentSamhandlerAdresseQuery.error} text="Fant ikke adresse" />
+      )}
+      <Divider />
+    </>
+  );
+}
+
+function formatSamhandlerAdresse(adresse: SamhandlerPostadresse) {
+  const { land, linje1, postnr, poststed } = adresse;
+
+  const defaultAddressLine = `${linje1}, ${postnr} ${poststed}`;
+
+  if (land !== "NOR") {
+    return `${defaultAddressLine} ${land}`;
+  }
+
+  return defaultAddressLine;
 }
 
 function FavoriteButton() {
@@ -467,5 +525,131 @@ function FavoriteButton() {
     >
       Legg til som favoritt
     </Button>
+  );
+}
+
+const samhandlerSearchValidationSchema = z.object({
+  samhandlerType: z.nativeEnum(SamhandlerTypeCode, { required_error: "Obligatorisk" }),
+  navn: z.string().min(1, "Obligatorisk"),
+});
+
+function VelgSamhandlerModal() {
+  const reference = useRef<HTMLDialogElement>(null);
+  const navigate = useNavigate({ from: Route.fullPath });
+  const { idTSSEkstern } = Route.useSearch();
+
+  const methods = useForm<z.infer<typeof samhandlerSearchValidationSchema>>({
+    defaultValues: {
+      samhandlerType: undefined,
+      navn: undefined,
+    },
+    resolver: zodResolver(samhandlerSearchValidationSchema),
+  });
+
+  const hentSamhandlerQuery = useQuery({
+    queryKey: hentSamhandler.queryKey(idTSSEkstern as string),
+    queryFn: () => hentSamhandler.queryFn({ hentDetaljert: false, idTSSEkstern: idTSSEkstern as string }),
+    enabled: !!idTSSEkstern,
+  });
+
+  const finnSamhandlerMutation = useMutation<
+    FinnSamhandlerResponseDto,
+    AxiosError<Error> | Error,
+    FinnSamhandlerRequestDto
+  >({
+    mutationFn: async (request) => {
+      return await finnSamhandler(request);
+    },
+  });
+
+  return (
+    <>
+      <Heading level="3" size="xsmall">
+        Samhandler
+      </Heading>
+
+      <HStack align="center" gap="4">
+        {idTSSEkstern && <span>{hentSamhandlerQuery.data?.navn}</span>}
+        <Button
+          icon={idTSSEkstern ? <PencilIcon /> : <PlusIcon />}
+          onClick={() => reference.current?.showModal()}
+          size="small"
+          variant="secondary"
+        >
+          {idTSSEkstern ? "Endre" : "Finn samhandler"}
+        </Button>
+      </HStack>
+
+      <Modal header={{ heading: "Søk etter samhandler" }} ref={reference} width={600}>
+        <Modal.Body>
+          <FormProvider {...methods}>
+            <VStack
+              as="form"
+              gap="4"
+              id="skjema"
+              method="dialog"
+              onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
+            >
+              <TextField
+                autoComplete="off"
+                error={methods.formState.errors.navn?.message}
+                label="Søk"
+                {...methods.register("navn")}
+              />
+              <SamhandlerTypeSelectFormPart />
+              {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
+              {finnSamhandlerMutation.error && (
+                <ApiError error={finnSamhandlerMutation.error} text="Kunne ikke hente samhandlere." />
+              )}
+              {(finnSamhandlerMutation.data?.samhandlere.length ?? 0) > 0 && (
+                <>
+                  <div>Fant {finnSamhandlerMutation.data?.samhandlere.length} treff</div>
+                  <Table>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
+                        <Table.HeaderCell scope="col"></Table.HeaderCell>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {finnSamhandlerMutation.data?.samhandlere.map((samhandler) => (
+                        <Table.Row key={samhandler.idTSSEkstern}>
+                          <Table.HeaderCell scope="row">{samhandler.navn}</Table.HeaderCell>
+                          <Table.DataCell>
+                            <Button
+                              onClick={() => {
+                                reference.current?.close();
+                                navigate({
+                                  params: (p) => p,
+                                  search: (s) => ({ ...s, idTSSEkstern: samhandler.idTSSEkstern }),
+                                  replace: true,
+                                });
+                              }}
+                              size="small"
+                              type="button"
+                              variant="secondary"
+                            >
+                              Velg
+                            </Button>
+                          </Table.DataCell>
+                        </Table.Row>
+                      ))}
+                    </Table.Body>
+                  </Table>
+                </>
+              )}
+            </VStack>
+          </FormProvider>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button form="skjema" loading={finnSamhandlerMutation.isPending}>
+            Søk
+          </Button>
+          <Button onClick={() => reference.current?.close()} type="button" variant="secondary">
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }

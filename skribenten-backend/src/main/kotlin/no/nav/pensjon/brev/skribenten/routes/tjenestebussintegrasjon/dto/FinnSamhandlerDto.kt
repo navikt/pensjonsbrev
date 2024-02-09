@@ -8,7 +8,8 @@ data class FinnSamhandlerResponseDto(val samhandlere: List<Samhandler>, val fail
         val navn: String,
         val samhandlerType: String,
         val offentligId: String,
-        val idType: String
+        val idType: String,
+        val idTSSEkstern: String,
     )
 }
 

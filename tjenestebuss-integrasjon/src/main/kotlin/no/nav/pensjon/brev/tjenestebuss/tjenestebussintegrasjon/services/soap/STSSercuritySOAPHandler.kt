@@ -41,9 +41,7 @@ class STSSercuritySOAPHandler(private val stsService: STSService) : Handler<SOAP
             }
         }
 
-    override fun handleFault(context: SOAPMessageContext?): Boolean {
-        return true
-    }
+    override fun handleFault(context: SOAPMessageContext?): Boolean = true
 
     override fun close(context: MessageContext?) {
     }

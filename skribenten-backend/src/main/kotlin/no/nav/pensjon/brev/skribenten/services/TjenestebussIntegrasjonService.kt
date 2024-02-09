@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExstreamRequestDto.SakskontekstDto
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseResponseDto.FailureType.GENERISK
 import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -49,16 +50,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                 )
             )
         }.toServiceResult<FinnSamhandlerResponseDto>()
-            .map {
-                FinnSamhandlerResponseDto(samhandlere = it.samhandlere.map { s ->
-                    FinnSamhandlerResponseDto.Samhandler(
-                        navn = s.navn,
-                        samhandlerType = s.samhandlerType,
-                        offentligId = s.offentligId,
-                        idType = s.idType
-                    )
-                })
-            }.catch { message, status ->
+            .catch { message, status ->
                 logger.error("Feil ved samhandler søk. Status: $status Melding: $message")
                 FinnSamhandlerResponseDto("Feil ved henting av samhandler")
             }
@@ -82,6 +74,21 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                 logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
                 HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
             }
+
+    suspend fun hentSamhandlerAdresse(
+        call: ApplicationCall,
+        idTSSEkstern: String,
+    ): HentSamhandlerAdresseResponseDto =
+        tjenestebussIntegrasjonClient.post(call, "/hentSamhandlerAdresse") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(HentSamhandlerAdresseRequestDto(idTSSEkstern))
+        }.toServiceResult<HentSamhandlerAdresseResponseDto>()
+            .catch { message, status ->
+                logger.error("Feil ved henting av samhandler adresse fra tjenestebuss-integrasjon. Status: $status Melding: $message")
+                HentSamhandlerAdresseResponseDto(null, GENERISK)
+            }
+
 
     suspend fun bestillExstreamBrev(
         call: ApplicationCall,

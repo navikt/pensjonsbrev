@@ -7,6 +7,7 @@ val logbackVersion: String by project
 val logstashVersion: String by project
 val mockkVersion: String by project
 val dokumentproduksjonVersion: String by project
+val samhandlerVersion: String by project
 val micrometerVersion: String by project
 
 plugins {
@@ -63,6 +64,7 @@ dependencies {
 	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:$esbVersion")
 	implementation("no.nav.pensjon.pesys-esb-wsclient:pen-arkiv-esb-wsclient-legacy:$esbVersion")
 	implementation("no.nav.tjenestespesifikasjoner:dokumentproduksjon-v3-tjenestespesifikasjon:$dokumentproduksjonVersion")
+	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$samhandlerVersion")
 
 	implementation("javax.xml.ws:jaxws-api:2.3.1")
 	@Suppress("GradlePackageUpdate")
