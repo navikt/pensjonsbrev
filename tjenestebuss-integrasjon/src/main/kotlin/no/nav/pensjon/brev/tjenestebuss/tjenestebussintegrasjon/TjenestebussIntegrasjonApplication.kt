@@ -14,9 +14,7 @@ fun main() {
         ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
             .getConfig("tjenestebussintegrasjon")
             .resolveWith(getVaultSecretConfig(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .resolveWith(ConfigFactory.load("sts/auth"), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .resolveWith(ConfigFactory.load("azuread"))
-            .resolveWith(ConfigFactory.load("brevklient/auth"))
+            .resolveWithMultiple("sts/auth", "azuread", "pensjonsbrev/auth")
     embeddedServer(Netty, port = tjenestebussIntegrasjonConfig.getInt("port"), host = "0.0.0.0") {
         tjenestebussIntegrationApi(tjenestebussIntegrasjonConfig)
     }.start(wait = true)
@@ -42,3 +40,8 @@ fun getVaultSecretConfig(): Config {
             ?: ConfigFactory.empty()
     } else ConfigFactory.empty()
 }
+
+fun Config.resolveWithMultiple(vararg paths: String): Config =
+    paths.foldIndexed(this) { index, current, path ->
+        current.resolveWith(ConfigFactory.load(path), ConfigResolveOptions.defaults().setAllowUnresolved(index != paths.lastIndex))
+    }
