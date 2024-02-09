@@ -42,7 +42,6 @@ export const navnKeys = {
 
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
-  eblanketter: () => [...letterTemplatesKeys.all, "E_BLANKETTER"] as const,
   sakTypeSearch: (search: { sakType: string; includeVedtak: boolean }) => [...letterTemplatesKeys.all, search] as const,
 };
 
@@ -108,18 +107,6 @@ export const getLetterTemplate = {
   queryFn: async (sakType: string, search: { includeVedtak: boolean }) =>
     (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`, { params: search }))
       .data,
-};
-
-export const getEblanketter = {
-  queryKey: letterTemplatesKeys.eblanketter(),
-  queryFn: async () => {
-    try {
-      return (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data;
-    } catch {
-      /* Fetching e-blanketter is not critical, therefore we want to handle Forbidden/Server errors as an empty list. */
-    }
-    return [];
-  },
 };
 
 export const getKontaktAdresse = {

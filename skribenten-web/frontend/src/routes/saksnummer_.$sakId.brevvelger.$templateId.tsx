@@ -31,7 +31,6 @@ import {
   deleteFavoritt,
   finnSamhandler,
   getAvtaleLand,
-  getEblanketter,
   getFavoritter,
   getKontaktAdresse,
   getLetterTemplate,
@@ -69,11 +68,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
       queryFn: () => getLetterTemplate.queryFn(sak.sakType, { includeVedtak }),
     });
 
-    const eblanketter = await queryClient.ensureQueryData(getEblanketter);
-
-    const letterTemplate = [...letterTemplates, ...eblanketter].find(
-      (letterMetadata) => letterMetadata.id === templateId,
-    );
+    const letterTemplate = letterTemplates.find((letterMetadata) => letterMetadata.id === templateId);
 
     if (!letterTemplate) {
       throw notFound();
@@ -99,10 +94,6 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
 
 export function SelectedTemplate() {
   const { letterTemplate } = Route.useLoaderData();
-
-  if (!letterTemplate) {
-    return <></>;
-  }
 
   return (
     <div
