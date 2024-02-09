@@ -60,8 +60,8 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                             + ifElse(utvidetBehandlingstid, ifFalse = "4", ifTrue = "12") + " måneder. "
                             + "Blir ikke saken din ferdigbehandlet innen denne fristen, vil vi gi deg beskjed om ny svartid.",
                     Nynorsk to "Søknaden din vert handsama så snart som mogleg, og seinast innan ".expr()
-                            + ifElse(utvidetBehandlingstid, ifFalse = "4", ifTrue = "12") + " 4 månader. "
-                            + "Vert ikkje saka di handsama innan denne fristen, vil vi gje deg melding om ny svarfrist.",
+                            + ifElse(utvidetBehandlingstid, ifFalse = "4", ifTrue = "12") + " månader. "
+                            + "Vert ikkje saka di handsama innan denne fristen, vil vi gje deg melding om ny svartid.",
                     English to "Your application will be processed as soon as possible, and no later than within ".expr()
                             + ifElse(utvidetBehandlingstid, ifFalse = "4", ifTrue = "12") + " months . "
                             + "If your case is not processed within this deadline, we will notify you of a new response time."

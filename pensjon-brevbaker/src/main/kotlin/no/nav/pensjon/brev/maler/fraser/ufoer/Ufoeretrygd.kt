@@ -342,7 +342,8 @@ object Ufoeretrygd {
                             + " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
                             + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                     Nynorsk to "Du finn meir informasjon på ${Constants.UFOERETRYGD_URL}."
-                            + " Om du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                            + " Viss du ikkje finn svar på $NAV_URL, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
                             + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                     English to "You can find more information at ${Constants.UFOERETRYGD_URL}."
                             + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
