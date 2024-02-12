@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -41,21 +42,9 @@ object BarnepensjonForeldreloesFraser {
                                 vedtattIPesys,
                                 "Vi viser til at du er innvilget barnepensjon. Stortinget har vedtatt nye regler for barnepensjon. Pensjonen din er derfor endret fra 1. januar 2024.".expr(),
                                 "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + "fordi begge foreldrene dine er registrert død.".expr()
-                            ) +
-                            ifElse(
-                                bareEnPeriode,
-                                "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
-                                "".expr()
                             ),
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
-                )
-            }
-            paragraph {
-                text(
-                    Language.Bokmal to "Se hvordan vi har beregnet pensjonen din i vedlegget “Beregning av barnepensjon”.",
-                    Language.Nynorsk to "",
-                    Language.English to "",
                 )
             }
             showIf(flerePerioder) {
@@ -65,6 +54,14 @@ object BarnepensjonForeldreloesFraser {
                                 "Du får ".expr() + formatertBeloep + "kroner hver måned før skatt fra " + formatertFom +
                                         ". Se beløp for tidligere perioder og hvordan vi har beregnet pensjonen i vedlegg “Beregning av barnepensjon”."
                                 ),
+                        Language.Nynorsk to "".expr(),
+                        Language.English to "".expr(),
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    textExpr(
+                        Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr(),
                     )
