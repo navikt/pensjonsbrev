@@ -188,9 +188,7 @@ object BarnepensjonForeldreloesFraser {
                     Language.Nynorsk to "Dersom du har rett på etterbetaling, vil du vanlegvis få denne i løpet av tre veker.",
                     Language.English to "If you are entitled to a back payment, you will normally receive this within three weeks.",
                 )
-            }
-            ifNotNull(etterbetaling) {
-                paragraph {
+                ifNotNull(etterbetaling) {
                     text(
                         Language.Bokmal to "Det kan bli beregnet fradrag i etterbetalingen for skatt, eller ytelser du har mottatt fra NAV eller andre. " +
                                 "Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. " +
@@ -199,6 +197,8 @@ object BarnepensjonForeldreloesFraser {
                         Language.English to "",
                     )
                 }
+            }
+            ifNotNull(etterbetaling) {
                 paragraph {
                     text(
                         Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. " +
