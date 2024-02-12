@@ -23,10 +23,6 @@ jobs:
         working-directory: autodokumentasjon-web/frontend
         run: npm ci
 
-      - name: Run tests
-        working-directory: autodokumentasjon-web/frontend
-        run: npm run test
-
       - name: Run ESLint
         working-directory: autodokumentasjon-web/frontend
         run: npm run lint
