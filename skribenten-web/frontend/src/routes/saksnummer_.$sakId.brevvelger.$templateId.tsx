@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightIcon, PencilIcon, PlusIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
+import { ArrowRightIcon, PencilIcon, PlusIcon, StarFillIcon, StarIcon, XMarkIcon } from "@navikt/aksel-icons";
 import {
   Alert,
   BodyShort,
@@ -578,6 +578,22 @@ function VelgSamhandlerModal() {
         >
           {idTSSEkstern ? "Endre" : "Finn samhandler"}
         </Button>
+        {idTSSEkstern && (
+          <Button
+            icon={<XMarkIcon />}
+            onClick={() =>
+              navigate({
+                params: (p) => p,
+                search: (s) => ({ ...s, idTSSEkstern: undefined }),
+                replace: true,
+              })
+            }
+            size="small"
+            variant="danger"
+          >
+            Fjern
+          </Button>
+        )}
       </HStack>
 
       <Modal header={{ heading: "Søk etter samhandler" }} ref={reference} width={600}>
