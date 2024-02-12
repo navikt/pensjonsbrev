@@ -7,8 +7,6 @@ import no.nav.pensjon.etterlatte.maler.andre.TomMalInformasjonsbrev
 import no.nav.pensjon.etterlatte.maler.andre.UtsattKlagefrist
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslag
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfall
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaatt
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseForeldreloes
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseForeldreloesRedigerbartUfall
@@ -91,8 +89,6 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         ForhaandsvarselOmregningBP,
         EnkeltVedtakOmregningNyttRegelverk,
         EnkeltVedtakOmregningNyttRegelverkFerdig,
-        BarnepensjonForhaandsvarselGjenoppstaatt,
-        BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfall,
     )
 
 val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = emptySet()

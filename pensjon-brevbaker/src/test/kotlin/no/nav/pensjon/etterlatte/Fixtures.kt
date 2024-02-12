@@ -11,8 +11,8 @@ import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesRedigerbarDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForhaandsvarselGjenoppstaatt
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfall
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkDTO
@@ -37,8 +37,6 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaattDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
@@ -49,6 +47,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerD
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
@@ -105,8 +105,8 @@ object Fixtures {
             BarnepensjonOmregnetNyttRegelverkDTO::class -> createBarnepensjonOmregnetNyttRegelverkDTO() as T
             BarnepensjonOmregnetNyttRegelverkFerdigDTO::class -> createBarnepensjonOmregnetNyttRegelverkFerdigDTO() as T
 
-            BarnepensjonForhaandsvarselGjenoppstaattDTO::class -> createBarnepensjonForhaandsvarselGjenoppstaatt() as T
-            BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfallDTO::class -> createBarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfall() as T
+            BarnepensjonVarselDTO::class -> createBarnepensjonVarsel() as T
+            BarnepensjonVarselRedigerbartUtfallDTO::class -> createBarnepensjonVarselRedigerbartUtfall() as T
 
             OmstillingsstoenadInnvilgelseDTO::class -> createOmstillingsstoenadInnvilgelseDTO() as T
             OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class -> createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() as T
