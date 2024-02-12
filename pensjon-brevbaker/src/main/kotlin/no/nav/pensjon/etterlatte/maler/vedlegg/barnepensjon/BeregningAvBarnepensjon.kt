@@ -257,8 +257,10 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             )
         }
         paragraph {
+            // TODO skal brukes brev som ikke er foreldreløs senere
+            val foreldreloes = ifElse(erForeldreloes, " Pensjonen din er beregnet etter trygdetiden til ".expr() + bruktAvdoed + ".", "".expr())
             textExpr(
-                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Pensjonen din er beregnet etter trygdetiden til ".expr() + bruktAvdoed  + ". Avdødes samlede trygdetid er beregnet til ".expr() + aarTrygdetid.format() + " år",
+                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.".expr() + foreldreloes + "Avdødes samlede trygdetid er beregnet til ".expr() + aarTrygdetid.format() + " år",
                 Nynorsk to "For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i utrekninga. Den utrekna trygdetida til avdøde er totalt ".expr() + aarTrygdetid.format() + " år.",
                 English to "To be entitled to a full pension, the deceased must have accumulated at least 40 years of contribution time. Contribution time above 40 years of coverage is not included in the calculation. The deceased's total calculated contribution time is ".expr() + aarTrygdetid.format() + " years.",
             )
