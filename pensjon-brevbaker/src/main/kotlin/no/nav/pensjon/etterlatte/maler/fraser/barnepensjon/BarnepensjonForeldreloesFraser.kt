@@ -190,7 +190,7 @@ object BarnepensjonForeldreloesFraser {
                 )
                 ifNotNull(etterbetaling) {
                     text(
-                        Language.Bokmal to "Det kan bli beregnet fradrag i etterbetalingen for skatt, eller ytelser du har mottatt fra NAV eller andre. " +
+                        Language.Bokmal to " Det kan bli beregnet fradrag i etterbetalingen for skatt, eller ytelser du har mottatt fra NAV eller andre. " +
                                 "Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. " +
                                 "Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
                         Language.Nynorsk to "",
