@@ -8,20 +8,19 @@ name: "deploy: autodokumentasjon-web"
       - autodokumentasjon-web/**
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: autodokumentasjon-web
-
 jobs:
-  build:
-    name: build
+  build-and-deploy-to-cdn:
+    runs-on: ubuntu-latest
+
     permissions:
       contents: read
       id-token: write
-    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
       - name: Install frontend
         working-directory: autodokumentasjon-web
@@ -31,53 +30,11 @@ jobs:
         working-directory: autodokumentasjon-web
         run: npm run build
 
-      - name: Copy frontend dist into public directory of bff
-        working-directory: autodokumentasjon-web/frontend
-        run: cp -r dist/ ../bff/public
-
-      - name: Build and push Docker container
-        uses: nais/docker-build-push@v0
-        id: docker-build-push
+      - uses: navikt/frontend/actions/spa-deploy/v1@main
         with:
-          team: pensjonsbrev
-          image_suffix: web
-          docker_context: autodokumentasjon-web/bff
-          dockerfile: autodokumentasjon-web/bff/Dockerfile
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-    outputs:
-      image: ${{ steps.docker-build-push.outputs.image }}
-
-  deploy-dev:
-    name: Deploy app to dev
-    permissions:
-      contents: read
-      id-token: write
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to DEV
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: dev-gcp
-          RESOURCE: autodokumentasjon-web/.nais/nais.yaml
-          VAR: image=${{needs.build.outputs.image}}
-          VARS: "autodokumentasjon-web/.nais/dev.yaml"
-
-#  deploy-prod:
-#    permissions:
-#      contents: read
-#      id-token: write
-#    if: github.ref == 'refs/heads/main'
-#    name: Deploy app to prod
-#    needs: build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Deploy to PROD
-#        uses: nais/deploy/actions/deploy@v2
-#        env:
-#          CLUSTER: prod-gcp
-#          RESOURCE: .nais/web/web-prod.yaml
-#          VAR: image=${{needs.build.outputs.image}}
+          app-name: autodokumentasjon
+          team-name: pensjonsbrev
+          source: autodokumentasjon-web/dist
+          ingress: https://autodokumentasjon.intern.dev.nav.no
+          environment: dev
+          nais-deploy-apikey: ${{ secrets.NAIS_DEPLOY_APIKEY }}
