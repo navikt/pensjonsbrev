@@ -92,7 +92,7 @@ services:
       - BREVKLIENT_CHROMEROOTURL=https://wasapp-q2.adeo.no/brevweb/
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
 
-  wonderwall:
+  wonderwall-skribenten-bff:
     profiles:
       - skribenten
     image: ghcr.io/nais/wonderwall:latest
@@ -127,6 +127,38 @@ services:
       EXPRESS_HOST: "::"
       SKRIBENTEN_API_URL: "http://skribenten-backend:8080"
       SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default"
+
+  wonderwall-autodokumentasjon:
+    image: ghcr.io/nais/wonderwall:latest
+    platform: linux/amd64
+    ports:
+      - "8087:8087"
+    restart: on-failure
+    env_file:
+      - autodokumentasjon-web/bff/.env
+    environment:
+      - WONDERWALL_AUTO_LOGIN=true
+      - WONDERWALL_OPENID_PROVIDER=azure
+      - WONDERWALL_INGRESS=http://localhost:8087
+      - WONDERWALL_BIND_ADDRESS=0.0.0.0:8087
+      - WONDERWALL_UPSTREAM_HOST=autodokumentasjon-bff:8088
+      - WONDERWALL_LOG_LEVEL=debug
+      - WONDERWALL_LOG_FORMAT=text
+  autodokumentasjon-bff:
+    build:
+      context: autodokumentasjon-web/bff
+    secrets:
+      - npmrc
+    env_file:
+      - autodokumentasjon-web/bff/.env
+    ports:
+      - "8088:8088"
+    environment:
+      NODE_ENV: "development"
+      EXPRESS_PORT: "8088"
+      EXPRESS_HOST: "::"
+      BREVBAKER_API_URL: "http://pensjon-brevbaker:8080"
+      BREVBAKER_API_SCOPE: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
 
   locust-master:
     profiles:

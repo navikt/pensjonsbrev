@@ -40,6 +40,9 @@ docker-compose up -d --build
       ```bash
    (cd skribenten-web/bff && python3 setup_local_azure_secrets.py)
    ```
+      ```bash
+   (cd autodokumentasjon-web/bff && python3 setup_local_azure_secrets.py)
+   ```
 3. Sett opp tokens for npm og gradle [se oppsett av packages.read token](#oppsett-av-packagesread-token)
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
    ```bash
