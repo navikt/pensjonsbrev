@@ -30,15 +30,15 @@ data class ForhaandsvarselGjenoppstaattBarnepensjonDTO(
 @TemplateModelHelpers
 object ForhaandsvarselGjenoppstaattBarnepensjon : EtterlatteTemplate<ForhaandsvarselGjenoppstaattBarnepensjonDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_FORHAANDSVARSEL_GJENOPPSTAATT
-    override val template: LetterTemplate<*, ForhaandsvarselGjenoppstaattBarnepensjonDTO> = createTemplate(
+    override val template = createTemplate(
         name = kode.name,
         letterDataType = ForhaandsvarselGjenoppstaattBarnepensjonDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Endring av barnepensjon",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
         title {
