@@ -74,19 +74,19 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
         ),
     ) {
         title {
-            ifElse(
-                vedtattIPesys,
+            showIf(vedtattIPesys) {
                 text(
                     Bokmal to "Barnepensjonen er endret fra 1. januar 2024",
                     Nynorsk to "",
                     English to "",
-                ),
+                )
+            }.orShow {
                 text(
                     Bokmal to "Vi har innvilget søknaden din om barnepensjon",
                     Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
                     English to "We have granted your application for a children's pension",
                 )
-            )
+            }
         }
 
         outline {
