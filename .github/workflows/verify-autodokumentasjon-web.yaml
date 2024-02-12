@@ -18,19 +18,19 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: autodokumentasjon-web/frontend
+          cache-dependency-path: autodokumentasjon-web
       - name: Install dependencies
-        working-directory: autodokumentasjon-web/frontend
+        working-directory: autodokumentasjon-web
         run: npm ci
 
       - name: Run ESLint
-        working-directory: autodokumentasjon-web/frontend
+        working-directory: autodokumentasjon-web
         run: npm run lint
 
       - name: Run stylelint
-        working-directory: autodokumentasjon-web/frontend
+        working-directory: autodokumentasjon-web
         run: npm run stylelint
 
       - name: Check for typescript errors
-        working-directory: autodokumentasjon-web/frontend
+        working-directory: autodokumentasjon-web
         run: npm run check-types
