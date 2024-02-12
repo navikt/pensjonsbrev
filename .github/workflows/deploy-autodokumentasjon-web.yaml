@@ -1,16 +1,16 @@
-name: "deploy: web"
+name: "deploy: autodokumentasjon-web"
 'on':
   push:
     branches:
       - main
     paths:
-      - .github/workflows/deploy-web.yaml
-      - skribenten-web/**
+      - .github/workflows/deploy-autodokumentasjon-web.yaml
+      - autodokumentasjon-web/**
   workflow_dispatch:
 
 defaults:
   run:
-    working-directory: skribenten-web
+    working-directory: autodokumentasjon-web
 
 jobs:
   build:
@@ -28,25 +28,25 @@ jobs:
           scope: '@navikt'
 
       - name: Install frontend
-        working-directory: skribenten-web/frontend
+        working-directory: autodokumentasjon-web/frontend
         run: npm install
 
       - name: Build frontend
-        working-directory: skribenten-web/frontend
+        working-directory: autodokumentasjon-web/frontend
         run: npm run build
 
       - name: Copy frontend dist into public directory of bff
-        working-directory: skribenten-web/frontend
+        working-directory: autodokumentasjon-web/frontend
         run: cp -r dist/ ../bff/public
 
       - name: Install bff dependencies
-        working-directory: skribenten-web/bff
+        working-directory: autodokumentasjon-web/bff
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build bff
-        working-directory: skribenten-web/bff
+        working-directory: autodokumentasjon-web/bff
         run: npm run build
 
       - name: Build and push Docker container
@@ -55,8 +55,8 @@ jobs:
         with:
           team: pensjonsbrev
           image_suffix: web
-          docker_context: skribenten-web/bff
-          dockerfile: skribenten-web/bff/Dockerfile
+          docker_context: autodokumentasjon-web/bff
+          dockerfile: autodokumentasjon-web/bff/Dockerfile
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
     outputs:
@@ -75,9 +75,9 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: skribenten-web/bff/.nais/nais.yaml
+          RESOURCE: autodokumentasjon-web/bff/.nais/nais.yaml
           VAR: image=${{needs.build.outputs.image}}
-          VARS: "skribenten-web/bff/.nais/bff-dev.yaml"
+          VARS: "autodokumentasjon-web/bff/.nais/bff-dev.yaml"
 
 #  deploy-prod:
 #    permissions:

@@ -1,12 +1,12 @@
-name: "verify: skribenten-web"
+name: "verify: autodokumentasjon-web"
 
 on:
   pull_request:
     branches:
       - 'main'
     paths:
-      - .github/workflows/verify-web.yaml
-      - skribenten-web/**
+      - .github/workflows/verify-autodokumentasjon-web.yaml
+      - autodokumentasjon-web/**
 
 jobs:
   verify:
@@ -18,23 +18,23 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: skribenten-web/frontend
+          cache-dependency-path: autodokumentasjon-web/frontend
       - name: Install dependencies
-        working-directory: skribenten-web/frontend
+        working-directory: autodokumentasjon-web/frontend
         run: npm ci
 
       - name: Run tests
-        working-directory: skribenten-web/frontend
+        working-directory: autodokumentasjon-web/frontend
         run: npm run test
 
       - name: Run ESLint
-        working-directory: skribenten-web/frontend
+        working-directory: autodokumentasjon-web/frontend
         run: npm run lint
 
       - name: Run stylelint
-        working-directory: skribenten-web/frontend
+        working-directory: autodokumentasjon-web/frontend
         run: npm run stylelint
 
       - name: Check for typescript errors
-        working-directory: skribenten-web/frontend
+        working-directory: autodokumentasjon-web/frontend
         run: npm run check-types
