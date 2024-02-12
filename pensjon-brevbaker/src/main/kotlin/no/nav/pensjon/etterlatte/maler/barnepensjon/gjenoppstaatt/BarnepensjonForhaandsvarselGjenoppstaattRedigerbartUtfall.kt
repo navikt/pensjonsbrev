@@ -16,24 +16,23 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattBarnepensjonRedigerbartUtfallDTOSelectors.automatiskBehandla
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattBarnepensjonRedigerbartUtfallDTOSelectors.erBosattUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfallDTOSelectors.automatiskBehandla
+import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfallDTOSelectors.erBosattUtlandet
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattFraser
 
-data class ForhaandsvarselGjenoppstaattBarnepensjonRedigerbartUtfallDTO(
+data class BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfallDTO(
     val beregning: BarnepensjonBeregning,
     val automatiskBehandla: Boolean,
-    val erUnder18Aar: Boolean,
     val erBosattUtlandet: Boolean,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
-object ForhaandsvarselGjenoppstaattBarnepensjonRedigerbartUtfall :
-    EtterlatteTemplate<ForhaandsvarselGjenoppstaattBarnepensjonRedigerbartUtfallDTO> {
+object BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfall :
+    EtterlatteTemplate<BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfallDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_FORHAANDSVARSEL_GJENOPPSTAATT_UTFALL
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = ForhaandsvarselGjenoppstaattBarnepensjonRedigerbartUtfallDTO::class,
+        letterDataType = BarnepensjonForhaandsvarselGjenoppstaattRedigerbartUtfallDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Endring av barnepensjon",

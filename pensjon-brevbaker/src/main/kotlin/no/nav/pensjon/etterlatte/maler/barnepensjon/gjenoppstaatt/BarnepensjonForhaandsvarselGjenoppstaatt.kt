@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -12,15 +11,15 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattBarnepensjonDTOSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattBarnepensjonDTOSelectors.erBosattUtlandet
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattBarnepensjonDTOSelectors.erUnder18Aar
-import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattBarnepensjonDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaattDTOSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaattDTOSelectors.erBosattUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaattDTOSelectors.erUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.gjenoppstaatt.BarnepensjonForhaandsvarselGjenoppstaattDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonGammeltOgNyttRegelverk
 
-data class ForhaandsvarselGjenoppstaattBarnepensjonDTO(
+data class BarnepensjonForhaandsvarselGjenoppstaattDTO(
     override val innhold: List<Element>,
     val beregning: BarnepensjonBeregning,
     val erUnder18Aar: Boolean,
@@ -28,11 +27,11 @@ data class ForhaandsvarselGjenoppstaattBarnepensjonDTO(
 ) : BrevDTO
 
 @TemplateModelHelpers
-object ForhaandsvarselGjenoppstaattBarnepensjon : EtterlatteTemplate<ForhaandsvarselGjenoppstaattBarnepensjonDTO> {
+object BarnepensjonForhaandsvarselGjenoppstaatt : EtterlatteTemplate<BarnepensjonForhaandsvarselGjenoppstaattDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_FORHAANDSVARSEL_GJENOPPSTAATT
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = ForhaandsvarselGjenoppstaattBarnepensjonDTO::class,
+        letterDataType = BarnepensjonForhaandsvarselGjenoppstaattDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Endring av barnepensjon",
