@@ -110,7 +110,7 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
         erForeldreloes,
         bruktAvdoed.ifNull("")
     )
-    beregnetBarnepensjonNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder)
+    beregnetBarnepensjonNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder, erForeldreloes)
     perioderMedRegistrertTrygdetid(trygdetid.trygdetidsperioder, trygdetid.beregningsMetodeAnvendt)
 }
 
@@ -215,19 +215,19 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         )
     }
     paragraph {
-        ifElse(
-            erForldreloes,
+        showIf(erForldreloes) {
             textExpr(
                 Bokmal to "Når begge foreldrene er døde, blir den årlige pensjonen lik 2,25 ganger grunnbeløpet. Folketrygdens grunnbeløp per i dag er ".expr() + grunnbeloep.format() + " kroner. Dette deles på 12 måneder. Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år.",
                 Nynorsk to "".expr(),
                 English to "".expr()
-            ),
+            )
+        }.orShow {
             textExpr(
                 Bokmal to "Barnepensjonen utgjør en ganger folketrygdens grunnbeløp (G). Folketrygdens grunnbeløp er per i dag ".expr()  + grunnbeloep.format() + " kroner. Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år. ",
                 Nynorsk to "Barnepensjonen per år utgjer éin gong grunnbeløpet i folketrygda (G).  Grunnbeløpet i folketrygda er per i dag  ".expr()  + grunnbeloep.format() + " kroner.  Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
                 English to "The children's pension per year amounts to 1 x the national insurance basic amount (G).  The national insurance basic amount currently amounts to ".expr()  + grunnbeloep.format() + " kroner.  The basic amount is adjusted on 1 May each year. You will receive payment of any increase in June of each year. ",
             )
-        )
+        }
     }
 }
 
@@ -260,7 +260,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             // TODO skal brukes brev som ikke er foreldreløs senere
             val foreldreloes = ifElse(erForeldreloes, " Pensjonen din er beregnet etter trygdetiden til ".expr() + bruktAvdoed + ".", "".expr())
             textExpr(
-                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.".expr() + foreldreloes + "Avdødes samlede trygdetid er beregnet til ".expr() + aarTrygdetid.format() + " år",
+                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.".expr() + foreldreloes + " Avdødes samlede trygdetid er beregnet til ".expr() + aarTrygdetid.format() + " år.",
                 Nynorsk to "For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i utrekninga. Den utrekna trygdetida til avdøde er totalt ".expr() + aarTrygdetid.format() + " år.",
                 English to "To be entitled to a full pension, the deceased must have accumulated at least 40 years of contribution time. Contribution time above 40 years of coverage is not included in the calculation. The deceased's total calculated contribution time is ".expr() + aarTrygdetid.format() + " years.",
             )
@@ -278,7 +278,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.PRORATA)) {
         paragraph {
             textExpr(
-                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.".expr() + ifElse(erForeldreloes, " Pensjonen din er beregnet etter trygdetiden til ".expr() + bruktAvdoed + " Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år".expr(), "".expr())  ,
+                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.".expr() + ifElse(erForeldreloes, " Pensjonen din er beregnet etter trygdetiden til ".expr() + bruktAvdoed + " Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år.".expr(), "".expr())  ,
                 Nynorsk to "For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i utrekninga.".expr() + ifElse(erForeldreloes, "", ""),
                 English to "To be entitled to a full pension, the deceased must have accumulated at least 40 years of contribution time. Contribution time above 40 years of coverage is not included in the calculation.".expr() + ifElse(erForeldreloes, "", ""),
             )
@@ -357,7 +357,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     aarTrygdetid: Expression<Int>,
     prorataBroek: Expression<IntBroek?>,
     beregningsMetodeAnvendt: Expression<BeregningsMetode>,
-    beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>
+    beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>,
+    erForldreloes: Expression<Boolean>
 ) {
     title2 {
         text(
@@ -369,17 +370,17 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     showIf(beregningsMetodeAnvendt.equalTo(BeregningsMetode.PRORATA)) {
         paragraph {
             textExpr(
-                Bokmal to "Barnepensjonen per år er beregnet til 1 G ganget med ".expr() + aarTrygdetid.format() + "/40 år trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
-                Nynorsk to "Barnepensjonen per år er rekna ut til 1 G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året.",
-                English to "The children's pension per year is calculated at 1G x ".expr() + aarTrygdetid.format() + "/40 contribution time, multiplied by the proportional fraction " + prorataBroek.formatBroek() + ". This amount is distributed in 12 payments a year.",
+                Bokmal to "Barnepensjonen per år er beregnet til ".expr() + ifElse(erForeldreloes, "2,25 G", "1 G") + " ganget med ".expr() + aarTrygdetid.format() + "/40 år trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
+                Nynorsk to "Barnepensjonen per år er rekna ut til ".expr() + ifElse(erForeldreloes, "2,25 G", "1 G") + " gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året.",
+                English to "The children's pension per year is calculated at ".expr() + ifElse(erForeldreloes, "2,25 G", "1 G") + " x ".expr() + aarTrygdetid.format() + "/40 contribution time, multiplied by the proportional fraction " + prorataBroek.formatBroek() + ". This amount is distributed in 12 payments a year.",
             )
         }
     }.orShowIf(beregningsMetodeAnvendt.equalTo(BeregningsMetode.NASJONAL)) {
         paragraph {
             textExpr(
-                Bokmal to "Barnepensjonen er beregnet til 1 G ganget med ".expr() + aarTrygdetid.format() + "/40 år trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
-                Nynorsk to "Barnepensjonen per år er rekna ut til 1 G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året.",
-                English to "The children's pension paid per year is calculated to 1G x ".expr() + aarTrygdetid.format() + "/40 contribution time. This amount is distributed in 12 payments a year.",
+                Bokmal to "Barnepensjonen er beregnet til ".expr() + ifElse(erForeldreloes, "2,25 G", "1 G") + " ganget med ".expr() + aarTrygdetid.format() + "/40 år trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
+                Nynorsk to "Barnepensjonen per år er rekna ut til ".expr() + ifElse(erForeldreloes, "2,25 G", "1 G") + " gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året.",
+                English to "The children's pension paid per year is calculated to ".expr() + ifElse(erForeldreloes, "2.25G", "1G") + " x ".expr() + aarTrygdetid.format() + "/40 contribution time. This amount is distributed in 12 payments a year.",
             )
         }
     }
