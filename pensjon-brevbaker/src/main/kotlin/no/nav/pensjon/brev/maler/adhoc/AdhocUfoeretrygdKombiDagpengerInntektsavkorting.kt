@@ -50,7 +50,7 @@ object AdhocUfoeretrygdKombiDagpengerInntektsavkorting : AutobrevTemplate<EmptyB
             }
             paragraph {
                 text(
-                    Bokmal to "Du kombinerte uføretrygd og dagpenger i hele eller deler av perioden 2019 til og med desember 2021."
+                    Bokmal to "Du kombinerte uføretrygd og dagpenger i hele eller deler av perioden 2019 til og med desember 2021."
                 )
             }
             paragraph {
