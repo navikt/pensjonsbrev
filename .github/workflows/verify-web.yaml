@@ -17,8 +17,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: skribenten-web/frontend
       - name: Install dependencies
         working-directory: skribenten-web/frontend
         run: npm ci
