@@ -61,7 +61,21 @@ object AdhocUfoeretrygdKombiDagpenger : AutobrevTemplate<EmptyBrevdata> {
                     Bokmal to "Har du annen pensjonsgivende inntekt må denne legges inn i inntektsplanleggeren på Dine sider på nav.no på vanlig måte."
                 )
             }
-            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
+            title1 {
+                text(
+                    Bokmal to "Har du spørsmål?",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                )
+                newline()
+                text(
+                    Bokmal to "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
+                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                )
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
@@ -70,7 +71,21 @@ object AdhocUfoeretrygdKombiDagpengerInntektsavkorting : AutobrevTemplate<EmptyB
                     Bokmal to "Annen pensjonsgivende inntekt vil som vanlig kunne føre til reduksjon av uføretrygden dersom inntektsgrensen overstiges."
                 )
             }
-            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
+            title1 {
+                text(
+                    Bokmal to "Har du spørsmål?",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                )
+                newline()
+                text(
+                    Bokmal to "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
+                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                )
+            }
         }
     }
 }
