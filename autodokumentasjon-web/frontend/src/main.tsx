@@ -8,7 +8,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { ApiError } from "./components/ApiError";
-
 import { Route as rootRoute } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
 
