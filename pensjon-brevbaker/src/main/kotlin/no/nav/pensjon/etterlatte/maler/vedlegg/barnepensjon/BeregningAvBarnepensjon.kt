@@ -94,7 +94,10 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
     showIf(erForeldreloes) {
          paragraph {
              text(
-                 Bokmal to "Når begge foreldrene er døde, er det den forelderen med best beregnet trygdetid som legges til grunn i beregningen. Dersom ingen av foreldrene hadde full trygdetid, reduseres barnepensjonen forholdsmessig tilsvarende trygdetiden til den av foreldrene som hadde lengst trygdetid.",
+                 Bokmal to "Når begge foreldrene er døde, er det den forelderen med best beregnet trygdetid som " +
+                         "legges til grunn i beregningen. Hvis begge foreldrene hadde full trygdetid, er det tilfeldig " +
+                         "hvilken som blir lagt til grunn. Hvis ingen av foreldrene hadde full trygdetid, reduseres " +
+                         "barnepensjonen forholdsmessig tilsvarende trygdetiden til den av foreldrene som hadde lengst trygdetid.",
                  Nynorsk to "",
                  English to "",
              )
