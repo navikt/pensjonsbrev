@@ -22,20 +22,6 @@ spec:
   readiness:
     path: /internal/health/readiness
     initialDelay: 5
-  azure:
-    application:
-      enabled: true
-      singlePageApplication: true
-      allowAllUsers: true
-      claims:
-        extra:
-          - azp_name
-          - NAVident
-      replyURLs:
-        - "http://localhost:8080/oauth2/callback"
-    sidecar:
-      enabled: true
-      autoLogin: true
 
   accessPolicy:
     outbound:
