@@ -42,6 +42,8 @@ jobs:
       - name: Install bff dependencies
         working-directory: skribenten-web/bff
         run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build bff
         working-directory: skribenten-web/bff
