@@ -135,7 +135,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
 }
 
 function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
-  const { sakId, templateId } = useParams({ from: "/saksnummer/$sakId/brevvelger/$templateId" });
+  const { templateId } = useParams({ from: "/saksnummer/$sakId/brevvelger/$templateId" });
   const navigate = useNavigate({ from: "/saksnummer/$sakId/brevvelger/$templateId" });
 
   // Ideally we would use the Link component as it gives native <a/> features.
@@ -165,7 +165,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
       onClick={() =>
         navigate({
           to: "/saksnummer/$sakId/brevvelger/$templateId",
-          params: { sakId, templateId: letterMetadata.id },
+          params: { templateId: letterMetadata.id },
           search: (s) => s,
         })
       }

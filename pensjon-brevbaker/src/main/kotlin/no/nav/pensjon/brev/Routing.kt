@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.TemplateModelSpecification
 import no.nav.pensjon.brev.template.render.*
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateDescription
 import no.nav.pensjon.etterlatte.etterlatteRouting
 
@@ -35,16 +36,36 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
                     call.respond(letterResource.templateResource.getAutoBrev())
                 }
 
-                get("/{kode}") {
-                    val template = call.parameters
-                        .getOrFail<Brevkode.AutoBrev>("kode")
-                        .let { letterResource.templateResource.getAutoBrev(it) }
-                        ?.description()
+                route("/{kode}") {
 
-                    if (template == null) {
-                        call.respond(HttpStatusCode.NotFound)
-                    } else {
-                        call.respond(template)
+                    get {
+                        val template = call.parameters
+                            .getOrFail<Brevkode.AutoBrev>("kode")
+                            .let { letterResource.templateResource.getAutoBrev(it) }
+                            ?.description()
+
+                        if (template == null) {
+                            call.respond(HttpStatusCode.NotFound)
+                        } else {
+                            call.respond(template)
+                        }
+                    }
+
+                    get("/doc/{language}") {
+                        val language = call.parameters.getOrFail<LanguageCode>("language").toLanguage()
+
+                        val template = call.parameters
+                            .getOrFail<Brevkode.AutoBrev>("kode")
+                            .let { letterResource.templateResource.getAutoBrev(it) }
+                            ?.takeIf { it.language.supports(language) }
+
+
+                        if (template == null) {
+                            call.respond(HttpStatusCode.NotFound)
+                        } else {
+                            call.respond(TemplateDocumentationRenderer.render(template, language))
+                        }
+
                     }
                 }
             }
@@ -60,7 +81,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
                     }
                 }
 
-                get("/all"){
+                get("/all") {
                     letterResource.templateResource.getRedigerbareBrev().map { it.name }
                 }
 

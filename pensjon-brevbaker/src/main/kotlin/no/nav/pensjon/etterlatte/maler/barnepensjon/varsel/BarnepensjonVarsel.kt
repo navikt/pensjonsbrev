@@ -8,18 +8,33 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
+import no.nav.pensjon.etterlatte.maler.BrevDTO
+import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.erBosattUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.erUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
+
+
+data class BarnepensjonVarselDTO(
+    override val innhold: List<Element>,
+    val beregning: BarnepensjonBeregning,
+    val erUnder18Aar: Boolean,
+    val erBosattUtlandet: Boolean,
+) : BrevDTO
 
 @TemplateModelHelpers
-object BarnepensjonVarsel : EtterlatteTemplate<ManueltBrevDTO>, Hovedmal {
+object BarnepensjonVarsel : EtterlatteTemplate<BarnepensjonVarselDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VARSEL
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
+        letterDataType = BarnepensjonVarselDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varselbrev barnepensjon",
@@ -30,14 +45,17 @@ object BarnepensjonVarsel : EtterlatteTemplate<ManueltBrevDTO>, Hovedmal {
     ) {
         title {
             text(
-                Language.Bokmal to "",
+                Language.Bokmal to "Forhåndsvarsel om ny barnepensjon fra 1. januar 2024",
                 Language.Nynorsk to "",
-                Language.English to ""
+                Language.English to "",
             )
         }
-
         outline {
             konverterElementerTilBrevbakerformat(innhold)
+
+            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
         }
+
+        includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning)
     }
 }
