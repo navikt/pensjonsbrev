@@ -41,7 +41,7 @@ object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<Barnepensjo
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har vurdert barnepensjonen din",
+                Language.Bokmal to "",
                 Language.Nynorsk to "",
                 Language.English to "",
             )

@@ -10,11 +10,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.erEtterbetaling
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.RedigerbartUtfallFraser
-import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
+
 @TemplateModelHelpers
 object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VARSEL_UTFALL
@@ -38,7 +35,7 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>,
             )
         }
         outline {
-            includePhrase(RedigerbartUtfallFraser.BlankTekst)
+            includePhrase(Felles.BlankTekst)
         }
     }
 }
