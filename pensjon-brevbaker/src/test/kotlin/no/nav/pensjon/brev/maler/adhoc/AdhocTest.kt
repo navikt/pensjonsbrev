@@ -24,6 +24,24 @@ class AdhocTest {
 
 
     @Test
+    fun `testAdhocUfoeretrygdKombiDagpenger pdf`() {
+        testAdhocPdf(
+            AdhocUfoeretrygdKombiDagpenger.template,
+            pdfName = "UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER",
+            Bokmal
+        )
+    }
+
+    @Test
+    fun `testAdhocUfoeretrygdKombiDagpengerInntektsavkorting pdf`() {
+        testAdhocPdf(
+            AdhocUfoeretrygdKombiDagpengerInntektsavkorting.template,
+            pdfName = "UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER_INNTEKTSAVKORTING",
+            Bokmal
+        )
+    }
+
+    @Test
     fun `testAdhocVarselOpphoerMedHvilendeRett pdf`() {
         testAdhocPdf(
             AdhocVarselOpphoerMedHvilendeRett.template,
@@ -42,5 +60,4 @@ class AdhocTest {
             English
         )
     }
-
 }
