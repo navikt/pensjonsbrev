@@ -22,7 +22,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRed
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattFraser
 
 data class BarnepensjonVarselRedigerbartUtfallDTO(
-    val beregning: BarnepensjonBeregning,
     val automatiskBehandla: Boolean,
     val erBosattUtlandet: Boolean,
 ) : RedigerbartUtfallBrevDTO
