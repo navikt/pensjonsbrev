@@ -21,7 +21,7 @@ jobs:
           cache-dependency-path: skribenten-web/frontend
       - name: Install dependencies
         working-directory: skribenten-web/frontend
-        run: npm i
+        run: npm ci
 
       - name: Run tests
         working-directory: skribenten-web/frontend
