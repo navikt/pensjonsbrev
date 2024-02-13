@@ -10,7 +10,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.RedigerbartUtfallFraser
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
 object BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Vedlegg {
@@ -35,7 +35,7 @@ object BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall : EtterlatteTempla
             )
         }
         outline {
-            includePhrase(RedigerbartUtfallFraser.BlankTekst)
+            includePhrase(Felles.BlankTekst)
         }
     }
 }

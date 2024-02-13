@@ -20,7 +20,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerD
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.forhaandsvarselFeilutbetalingBarnepensjonOpphoer
@@ -61,9 +61,9 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselOpphoer)
             }
-            includePhrase(Barnepensjon.DuHarRettTilAaKlage)
-            includePhrase(Barnepensjon.DuHarRettTilInnsyn)
-            includePhrase(Barnepensjon.HarDuSpoersmaalNy(brukerUnder18Aar, bosattUtland))
+            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaalNy(brukerUnder18Aar, bosattUtland))
         }
 
         // Nasjonal
