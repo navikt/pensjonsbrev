@@ -17,8 +17,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 object BarnepensjonInnvilgelseFraser {
 
     data class UtbetalingAvBarnepensjon(
-        val beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>,
-        val etterbetaling: Expression<BarnepensjonEtterbetaling?>,
+        val etterbetaling: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -41,7 +40,7 @@ object BarnepensjonInnvilgelseFraser {
                     Language.Nynorsk to "Dersom du har rett på etterbetaling, vil du vanlegvis få denne i løpet av tre veker. ",
                     Language.English to "If you are entitled to a back payment, you will normally receive this within three weeks. ",
                 )
-                ifNotNull(etterbetaling) {
+                showIf(etterbetaling) {
                     text(
                         Language.Bokmal to "Du finner mer informasjon om etterbetaling i vedlegget «Etterbetaling av barnepensjon».",
                         Language.Nynorsk to "Du kan lese meir om etterbetaling i vedlegget «Etterbetaling av barnepensjon».",

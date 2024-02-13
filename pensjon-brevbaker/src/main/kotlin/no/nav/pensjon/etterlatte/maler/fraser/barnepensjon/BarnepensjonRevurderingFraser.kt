@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -16,6 +17,8 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.sisteBereg
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 
 object BarnepensjonRevurderingFraser {
 
@@ -47,7 +50,7 @@ object BarnepensjonRevurderingFraser {
                         )
                     }
                     text(
-                        Language.Bokmal to "Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
+                        Language.Bokmal to "Se beløp for tidligere perioder og hvordan vi har beregnet barnepensjonen i vedlegg «Beregning av barnepensjon».",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )
@@ -62,13 +65,21 @@ object BarnepensjonRevurderingFraser {
         }
     }
 
-    data class FyllInn(val etterbetaling: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class UtfallRedigerbart(
+        val etterbetaling: Expression<Boolean>,
+        val feilutbetaling: Expression<FeilutbetalingType>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph { text(
                 Language.Bokmal to "(utfall jamfør tekstbibliotek)",
                 Language.Nynorsk to "(utfall jamfør tekstbibliotek)",
                 Language.English to "(utfall jamfør tekstbibliotek)",
             ) }
+
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselRevurdering)
+            }
+
             paragraph {
                 text(
                     Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning> ",
@@ -131,6 +142,50 @@ object BarnepensjonRevurderingFraser {
                     Language.English to "Because you stopped receiving a pension at some time in the past, " +
                             "you received more than you were owed. See the attachment Advance Notice of Possible " +
                             "Repayment of Incorrectly Paid Pension.",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi pensjonen din er redusert tilbake i tid, har du fått for " +
+                            "mye utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår " +
+                            "av folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt. ",
+                    Language.Nynorsk to "Ettersom pensjonen din blei redusert tilbake i tid, har du fått " +
+                            "for mykje utbetalt. Beløpet er under den nedre grensa for tilbakekrevjing som går " +
+                            "fram av folketrygdlova § 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
+                    Language.English to "Because your pension has been reduced retroactively, you " +
+                            "received more than you were owed. The amount is below the lower limit for " +
+                            "demanding repayment, as stated in Section 22-15(6) of the National Insurance Act, " +
+                            "so no repayment will be demanded of you. ",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingMedVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Feilutbetaling",
+                    Language.Nynorsk to "Feilutbetaling",
+                    Language.English to "Incorrectly paid pension",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi pensjonen din er redusert tilbake i tid, har du fått for mye " +
+                            "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale tilbake " +
+                            "pensjon».",
+                    Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått for " +
+                            "mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
+                            "tilbake pensjon».",
+                    Language.English to "Because your allowance has been reduced retroactively, you received " +
+                            "more than you were owed. See the attachment Advance Notice of Possible Repayment of " +
+                            "Incorrectly Paid Pension.",
                 )
             }
         }
