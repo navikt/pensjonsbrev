@@ -7,7 +7,11 @@ package no.nav.pensjon.brev.template
 abstract class Expression<T> {
     class Literal<T>(val value: T): Expression<T>()
     class UnaryInvoke<In, T>(expression: Expression<In>, operation: UnaryOperation<In, T>): Expression<T>()
-    class FromScope<ParameterType, T>(val selector: ExpressionScope<ParameterType, *>.() -> T): Expression<T>()
+    class FromScope<ParameterType, T>(val selector: ExpressionScope<ParameterType, *>.() -> T): Expression<T>() {
+        companion object {
+            fun <ParameterType, T> argument(selector: ExpressionScope<ParameterType, *>.() -> T) = FromScope(selector)
+        }
+    }
 }
 
 abstract class UnaryOperation<In, T> {

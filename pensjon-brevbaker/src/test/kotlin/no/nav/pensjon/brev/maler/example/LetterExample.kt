@@ -71,6 +71,38 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                 )
             }
 
+            paragraph {
+                showIf(firstName.equalTo("Alexander")) {
+                    text(
+                        Bokmal to "Hei Alexander",
+                        Nynorsk to "Hei Alexander",
+                    )
+                }.orShowIf(firstName.equalTo("Håkon")) {
+                    text(
+                        Bokmal to "Hei Håkon",
+                        Nynorsk to "Hei Håkon"
+                    )
+                }.orShow {
+                    textExpr(
+                        Bokmal to "Hei ".expr() + firstName,
+                        Nynorsk to "Hei ".expr() + firstName,
+                    )
+                }
+                text(
+                    Bokmal to ", håper du har en fin dag!",
+                    Nynorsk to ", håper du har en fin dag!"
+                )
+            }
+
+            paragraph {
+                forEach(tilleggEksempel) {
+                    textExpr(
+                        Bokmal to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
+                        Nynorsk to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
+                    )
+                }
+            }
+
             // Fetch a value from the letter arguments
             paragraph {
                 //ShowIf shows the content of the block if the boolean expression resolves to true
@@ -92,6 +124,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                                 )
                             }
                         }
+                        item { text(Bokmal to "Joda", Nynorsk to "Jauda") }
                     }
                     item {
                         text(Bokmal to "Test1", Nynorsk to "Test1")
