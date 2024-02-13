@@ -6,7 +6,7 @@ on:
       - 'main'
     paths:
       - .github/workflows/verify-brevoppskrift-web.yaml
-      - brevoppskrift-web/**
+      - brevoppskrift-web/frontend/**
 
 jobs:
   verify:
@@ -21,7 +21,7 @@ jobs:
           cache-dependency-path: brevoppskrift-web/frontend
       - name: Install dependencies
         working-directory: brevoppskrift-web/frontend
-        run: npm ci
+        run: npm i
 
       - name: Run ESLint
         working-directory: brevoppskrift-web/frontend

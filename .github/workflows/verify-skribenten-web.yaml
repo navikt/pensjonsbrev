@@ -6,7 +6,7 @@ on:
       - 'main'
     paths:
       - .github/workflows/verify-skribenten-web.yaml
-      - skribenten-web/**
+      - skribenten-web/frontend/**
 
 jobs:
   verify:
@@ -21,7 +21,7 @@ jobs:
           cache-dependency-path: skribenten-web/frontend
       - name: Install dependencies
         working-directory: skribenten-web/frontend
-        run: npm ci
+        run: npm i
 
       - name: Run tests
         working-directory: skribenten-web/frontend
