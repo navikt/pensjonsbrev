@@ -52,7 +52,7 @@ object OmstillingsstoenadRevurderingRedigerbartUtfall : EtterlatteTemplate<Omsti
                 includePhrase(OmstillingsstoenadRevurderingFraser.Utbetaling(erEtterbetaling))
             }
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.Feilutbetaling)
+                includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingMedVarselRevurdering)
             }
         }
     }

@@ -39,29 +39,4 @@ object RedigerbartUtfallFraser {
         }
     }
 
-    object Feilutbetaling : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    Language.Bokmal to "Skal med hvis det er feilutbetaling",
-                    Language.Nynorsk to "",
-                    Language.English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Language.Bokmal to "Feilutbetaling",
-                    Language.Nynorsk to "",
-                    Language.English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Language.Bokmal to "Siden pensjonen din er opphørt tilbake i tid, medfører dette at du har fått utbetalt for mye i pensjon i denne perioden. Du vil få eget forhåndsvarsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
-                    Language.Nynorsk to "",
-                    Language.English to "",
-                )
-            }
-        }
-    }
 }

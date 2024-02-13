@@ -3,11 +3,17 @@
 /* eslint-disable unicorn/no-await-expression-member*/
 
 import type { AxiosResponse } from "axios";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import type {
   Avtaleland,
   BestillOgRedigerBrevResponse,
+  FinnSamhandlerRequestDto,
+  FinnSamhandlerResponseDto,
+  HentSamhandlerAdresseRequestDto,
+  HentSamhandlerAdresseResponseDto,
+  HentSamhandlerRequestDto,
+  HentsamhandlerResponseDto,
   KontaktAdresseResponse,
   LetterMetadata,
   OrderEblankettRequest,
@@ -17,6 +23,7 @@ import type {
   SakDto,
 } from "~/types/apiTypes";
 import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
+
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -35,7 +42,6 @@ export const navnKeys = {
 
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
-  eblanketter: () => [...letterTemplatesKeys.all, "E_BLANKETTER"] as const,
   sakTypeSearch: (search: { sakType: string; includeVedtak: boolean }) => [...letterTemplatesKeys.all, search] as const,
 };
 
@@ -55,6 +61,16 @@ export const avtalelandKeys = {
 export const adresseKeys = {
   all: ["ADRESSE"],
   pid: (pid: string) => [...adresseKeys.all, pid] as const,
+};
+
+export const samhandlerKeys = {
+  all: ["SAMHANDLER"],
+  idTSSEkstern: (idTSSEkstern: string) => [...samhandlerKeys.all, idTSSEkstern] as const,
+};
+
+export const samhandlerAdresseKeys = {
+  all: ["SAMHANDLER_ADRESSE"],
+  idTSSEkstern: (idTSSEkstern: string) => [...samhandlerAdresseKeys.all, idTSSEkstern] as const,
 };
 
 export const preferredLanguageKeys = {
@@ -91,18 +107,6 @@ export const getLetterTemplate = {
   queryFn: async (sakType: string, search: { includeVedtak: boolean }) =>
     (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`, { params: search }))
       .data,
-};
-
-export const getEblanketter = {
-  queryKey: letterTemplatesKeys.eblanketter(),
-  queryFn: async () => {
-    try {
-      return (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/e-blanketter`)).data;
-    } catch {
-      /* Fetching e-blanketter is not critical, therefore we want to handle Forbidden/Server errors as an empty list. */
-    }
-    return [];
-  },
 };
 
 export const getKontaktAdresse = {
@@ -161,3 +165,38 @@ export async function orderLetter(orderLetterRequest: OrderLetterRequest | Order
 
   return response.url ?? "";
 }
+
+export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
+  return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
+}
+
+export const hentSamhandler = {
+  queryKey: samhandlerKeys.idTSSEkstern,
+  queryFn: async (request: HentSamhandlerRequestDto) => {
+    const response = (
+      await axios.post<HentsamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request)
+    ).data;
+
+    if (response.failure) {
+      throw new Error(response.failure);
+    }
+
+    return response.success;
+  },
+};
+export const hentSamhandlerAdresse = {
+  queryKey: samhandlerAdresseKeys.idTSSEkstern,
+  queryFn: async (request: HentSamhandlerAdresseRequestDto) => {
+    const response = await axios.post<HentSamhandlerAdresseResponseDto>(
+      `${SKRIBENTEN_API_BASE_PATH}/hentSamhandlerAdresse`,
+      request,
+    );
+
+    if (response.data.failureType) {
+      // TODO: generalize
+      throw new AxiosError(response.data.failureType, "200", undefined, request, response);
+    }
+
+    return response.data.adresse;
+  },
+};

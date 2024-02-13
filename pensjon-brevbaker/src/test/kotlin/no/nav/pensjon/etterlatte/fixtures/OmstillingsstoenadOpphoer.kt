@@ -8,10 +8,13 @@ import java.time.LocalDate
 fun createOmstillingsstoenadOpphoerDTO() =
     OmstillingsstoenadOpphoerDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
-        bosattUtland = false
+        innholdForhaandsvarsel = createPlaceholderForRedigerbartInnhold(),
+        bosattUtland = false,
+        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
     )
 
 fun createOmstillingsstoenadpphoerRedigerbartUtfallDTO() =
     OmstillingsstoenadOpphoerRedigerbartUtfallDTO(
-        virkningsdato = LocalDate.of(2024, 1, 1)
+        virkningsdato = LocalDate.of(2024, 1, 1),
+        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
     )
