@@ -11,7 +11,10 @@ const server = express();
 server.use(express.urlencoded({ extended: true }));
 
 setupActuators(server);
+
+server.set("trust proxy", 1);
 addSimpleProxyHandler(server, { ingoingUrl: "/brevbaker", outgoingUrl: config.brevbakerApiProxy.url });
+
 setupStaticRoutes(server);
 
 export { server };

@@ -129,6 +129,8 @@ services:
       SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default"
 
   autodokumentasjon:
+    profiles:
+      - skribenten
     build:
       context: autodokumentasjon-web/bff
     ports:
