@@ -93,7 +93,7 @@ services:
       - SAMHANDLERSERVICE_URL=https://wasapp-q2.adeo.no/
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
 
-  wonderwall-skribenten-bff:
+  wonderwall:
     profiles:
       - skribenten
     image: ghcr.io/nais/wonderwall:latest
