@@ -32,7 +32,7 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
         erBosattUtlandet = true,
     )
 
-private fun lagBeregning() = BarnepensjonBeregning(
+internal fun lagBeregning() = BarnepensjonBeregning(
     innhold = createPlaceholderForRedigerbartInnhold(),
     virkningsdato = LocalDate.now(),
     antallBarn = 2,
