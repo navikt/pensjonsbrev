@@ -11,7 +11,6 @@ fun createBarnepensjonVarsel() = BarnepensjonVarselDTO(
 )
 
 fun createBarnepensjonVarselRedigerbartUtfall() = BarnepensjonVarselRedigerbartUtfallDTO(
-    beregning = lagBeregning(),
     automatiskBehandla = false,
     erBosattUtlandet = false,
 )
