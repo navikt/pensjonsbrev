@@ -6,6 +6,11 @@ const app = {
   port: Number(requireEnvironment("EXPRESS_PORT")),
 };
 
+const brevbakerApiProxy = {
+  url: requireEnvironment("BREVBAKER_API_URL"),
+};
+
 export default {
   app,
+  brevbakerApiProxy,
 };
