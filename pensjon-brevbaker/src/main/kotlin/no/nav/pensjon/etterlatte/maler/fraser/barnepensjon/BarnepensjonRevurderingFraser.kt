@@ -18,7 +18,6 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.virkningsd
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 
 object BarnepensjonRevurderingFraser {
 
@@ -77,7 +76,7 @@ object BarnepensjonRevurderingFraser {
             ) }
 
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselRevurdering)
+                includePhrase(FeilutbetalingUtenVarselRevurdering)
             }
 
             paragraph {
