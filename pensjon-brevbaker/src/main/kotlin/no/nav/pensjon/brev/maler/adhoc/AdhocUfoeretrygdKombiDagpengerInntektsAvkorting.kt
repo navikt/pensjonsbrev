@@ -14,8 +14,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
-object AdhocUfoeretrygdKombiDagpenger : AutobrevTemplate<EmptyBrevdata> {
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER
+object AdhocUfoeretrygdKombiDagpengerInntektsAvkorting : AutobrevTemplate<EmptyBrevdata> {
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER_INNTEKTSAVKORTING
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
@@ -35,7 +35,7 @@ object AdhocUfoeretrygdKombiDagpenger : AutobrevTemplate<EmptyBrevdata> {
         outline {
             paragraph {
                 text(
-                    Bokmal to "NAV etterbetaler dagpenger til medlemmer som fikk feil beregningsgrunnlag for dagpenger i perioden 2019 til og med desember 2021. "
+                    Bokmal to "NAV etterbetaler dagpenger til personer som fikk feil beregningsgrunnlag for dagpenger i perioden 2019 til og med desember 2021. "
                             + "Du har mottatt eget brev om dette, og vi viser til det brevet for nærmere informasjon om etterbetalingen av dagpenger.",
                 )
             }
@@ -51,14 +51,25 @@ object AdhocUfoeretrygdKombiDagpenger : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du har blitt innvilget uføretrygd etter desember 2021. Pensjonsgivende inntekt som stammer fra perioden før man blir innvilget uføretrygd skal ikke føre til avkortning av uføretrygden. "
-                            + "Etterbetalingen av dagpenger skal derfor ikke påvirke størrelsen på din uføretrygd, og du trenger ikke foreta deg noe. Dersom du mottar barnetillegg i din uføretrygd, "
-                            + "fører etterbetalingen av dagpenger heller ikke til reduksjon av barnetillegget. Dette følger av folketrygdloven §§ 12-14 og 12-16."
+                    Bokmal to "Du kombinerte uføretrygd og dagpenger i hele eller deler av perioden 2019 til og med desember 2021."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Har du annen pensjonsgivende inntekt må denne legges inn i inntektsplanleggeren på Dine sider på nav.no på vanlig måte."
+                    Bokmal to "Etterbetalingen av dagpenger er pensjonsgivende inntekt som kan føre til reduksjon av uføretrygden, dersom inntekten overstiger inntektsgrensen. "
+                            + "Eventuell reduksjon av uføretrygden og barnetillegget avhenger av størrelsen på etterbetalingen av dagpenger. "
+                            + "Dette gjelder selv om etterbetalingen stammer fra en tidligere periode, da det er tidspunktet for utbetaling som er avgjørende. "
+                            + "Du vil få eget vedtak dersom utbetalingen av uføretrygden og barnetillegget reduseres. Dette følger av folketrygdloven §§ 12-14 og 12-16."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Det er derfor viktig at du legger inn etterbetalingen av dagpenger i inntektsplanleggeren på Dine sider på nav.no. Dette vil gi riktig utbetaling av uføretrygd."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Annen pensjonsgivende inntekt vil som vanlig kunne føre til reduksjon av uføretrygden dersom inntektsgrensen overstiges."
                 )
             }
             includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
