@@ -166,7 +166,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
           onSubmit={methods.handleSubmit((submittedValues) => {
             switch (letterTemplate.brevsystem) {
               case BrevSystem.Brevbaker: {
-                return navigate({ to: "/saksnummer/$sakId/redigering/$templateId", params: { sakId, templateId } });
+                return navigate({ to: "/saksnummer/$sakId/redigering/$templateId", params: { templateId } });
               }
               case BrevSystem.Exstream:
               case BrevSystem.DokSys: {
@@ -583,7 +583,6 @@ function VelgSamhandlerModal() {
             icon={<XMarkIcon />}
             onClick={() =>
               navigate({
-                params: (p) => p,
                 search: (s) => ({ ...s, idTSSEkstern: undefined }),
                 replace: true,
               })
@@ -636,7 +635,6 @@ function VelgSamhandlerModal() {
                               onClick={() => {
                                 reference.current?.close();
                                 navigate({
-                                  params: (p) => p,
                                   search: (s) => ({ ...s, idTSSEkstern: samhandler.idTSSEkstern }),
                                   replace: true,
                                 });
