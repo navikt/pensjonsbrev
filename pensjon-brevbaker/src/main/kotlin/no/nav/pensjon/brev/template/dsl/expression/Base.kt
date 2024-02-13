@@ -104,6 +104,6 @@ infix fun <T> Expression<T>.equalTo(other: Expression<T>) =
 fun <T> Expression<T>.format(formatter: LocalizedFormatter<T>): StringExpression =
     Expression.BinaryInvoke(
         first = this,
-        second = Expression.FromScope(ExpressionScope<Any, *>::language),
+        second = Expression.FromScope.language(ExpressionScope<Any, *>::language),
         operation = formatter,
     )
