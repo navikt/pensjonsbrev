@@ -1,5 +1,5 @@
 {
-  "name": "skribenten-web-frontend",
+  "name": "brevoppskrift-web-frontend",
   "private": true,
   "type": "module",
   "version": "0.0.0",
@@ -17,29 +17,21 @@
   },
   "dependencies": {
     "@emotion/react": "11.11.3",
-    "@hookform/resolvers": "3.3.4",
     "@navikt/aksel-icons": "5.18.1",
     "@navikt/ds-css": "5.18.1",
     "@navikt/ds-react": "5.18.1",
     "@tanstack/react-query": "5.20.2",
     "@tanstack/react-router": "1.16.0",
     "axios": "1.6.7",
-    "date-fns": "3.3.1",
-    "immer": "10.0.3",
     "lodash": "4.17.21",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-hook-form": "7.50.1",
-    "react-select": "5.8.0",
-    "zod": "3.22.4"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@navikt/aksel-stylelint": "5.18.1",
     "@tanstack/react-query-devtools": "5.20.3",
     "@tanstack/router-devtools": "1.16.0",
     "@tanstack/router-vite-plugin": "1.16.1",
-    "@testing-library/react": "14.2.1",
-    "@testing-library/user-event": "14.5.2",
     "@types/lodash": "4.14.202",
     "@types/node": "20.11.17",
     "@types/react": "18.2.55",
@@ -55,18 +47,11 @@
     "eslint-plugin-simple-import-sort": "12.0.0",
     "eslint-plugin-testing-library": "6.2.0",
     "eslint-plugin-unicorn": "51.0.1",
-    "jsdom": "24.0.0",
     "postcss-styled-syntax": "0.6.4",
     "prettier": "3.2.5",
     "stylelint": "16.2.1",
     "stylelint-config-standard": "36.0.0",
     "typescript": "5.3.3",
-    "vite": "5.1.1",
-    "vitest": "1.2.2"
-  },
-  "overrides": {
-    "vite": {
-      "rollup": "npm:@rollup/wasm-node@^4.9.2"
-    }
+    "vite": "5.1.1"
   }
 }

@@ -1,52 +1,49 @@
-name: "deploy: web"
+name: "deploy: brevoppskrift-web"
 'on':
   push:
     branches:
       - main
     paths:
-      - .github/workflows/deploy-web.yaml
-      - skribenten-web/**
+      - .github/workflows/deploy-brevoppskrift-web.yaml
+      - brevoppskrift-web/**
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: skribenten-web
-
 jobs:
-  build:
-    name: build
+  build-and-deploy-to-cdn:
+    runs-on: ubuntu-latest
+
     permissions:
       contents: read
       id-token: write
-    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
 
       - name: Install frontend
-        working-directory: skribenten-web/frontend
+        working-directory: brevoppskrift-web
         run: npm install
 
       - name: Build frontend
-        working-directory: skribenten-web/frontend
+        working-directory: brevoppskrift-web
         run: npm run build
 
       - name: Copy frontend dist into public directory of bff
-        working-directory: skribenten-web/frontend
+        working-directory: brevoppskrift-web/frontend
         run: cp -r dist/ ../bff/public
 
       - name: Install bff dependencies
-        working-directory: skribenten-web/bff
+        working-directory: brevoppskrift-web/bff
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build bff
-        working-directory: skribenten-web/bff
+        working-directory: brevoppskrift-web/bff
         run: npm run build
 
       - name: Build and push Docker container
@@ -55,8 +52,8 @@ jobs:
         with:
           team: pensjonsbrev
           image_suffix: web
-          docker_context: skribenten-web/bff
-          dockerfile: skribenten-web/bff/Dockerfile
+          docker_context: brevoppskrift-web/bff
+          dockerfile: brevoppskrift-web/bff/Dockerfile
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
     outputs:
@@ -75,23 +72,6 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: skribenten-web/bff/.nais/nais.yaml
+          RESOURCE: brevoppskrift-web/bff/.nais/nais.yaml
           VAR: image=${{needs.build.outputs.image}}
-          VARS: "skribenten-web/bff/.nais/bff-dev.yaml"
-
-#  deploy-prod:
-#    permissions:
-#      contents: read
-#      id-token: write
-#    if: github.ref == 'refs/heads/main'
-#    name: Deploy app to prod
-#    needs: build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Deploy to PROD
-#        uses: nais/deploy/actions/deploy@v2
-#        env:
-#          CLUSTER: prod-gcp
-#          RESOURCE: .nais/web/web-prod.yaml
-#          VAR: image=${{needs.build.outputs.image}}
+          VARS: "brevoppskrift-web/bff/.nais/bff-dev.yaml"
