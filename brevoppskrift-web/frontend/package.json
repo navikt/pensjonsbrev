@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@navikt/aksel-stylelint": "5.18.1",
-    "@tanstack/react-query-devtools": "5.20.2",
+    "@tanstack/react-query-devtools": "5.20.3",
     "@tanstack/router-devtools": "1.16.0",
     "@tanstack/router-vite-plugin": "1.16.1",
     "@testing-library/react": "14.2.1",
