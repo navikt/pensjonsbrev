@@ -153,14 +153,14 @@ object BarnepensjonRevurderingFraser {
                 text(
                     Language.Bokmal to "Fordi pensjonen din er redusert tilbake i tid, har du fått for " +
                             "mye utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår " +
-                            "av folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt. ",
+                            "av folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt.",
                     Language.Nynorsk to "Ettersom pensjonen din blei redusert tilbake i tid, har du fått " +
                             "for mykje utbetalt. Beløpet er under den nedre grensa for tilbakekrevjing som går " +
                             "fram av folketrygdlova § 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
                     Language.English to "Because your pension has been reduced retroactively, you " +
                             "received more than you were owed. The amount is below the lower limit for " +
                             "demanding repayment, as stated in Section 22-15(6) of the National Insurance Act, " +
-                            "so no repayment will be demanded of you. ",
+                            "so no repayment will be demanded of you.",
                 )
             }
         }
