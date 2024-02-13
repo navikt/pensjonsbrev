@@ -20,7 +20,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
 
       - name: Install frontend
         working-directory: autodokumentasjon-web
@@ -30,11 +32,46 @@ jobs:
         working-directory: autodokumentasjon-web
         run: npm run build
 
-      - uses: navikt/frontend/actions/spa-deploy/v1@main
+      - name: Copy frontend dist into public directory of bff
+        working-directory: autodokumentasjon-web/frontend
+        run: cp -r dist/ ../bff/public
+
+      - name: Install bff dependencies
+        working-directory: autodokumentasjon-web/bff
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: Build bff
+        working-directory: autodokumentasjon-web/bff
+        run: npm run build
+
+      - name: Build and push Docker container
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
         with:
-          app-name: autodokumentasjon
-          team-name: pensjonsbrev
-          source: autodokumentasjon-web/dist
-          ingress: https://autodokumentasjon.intern.dev.nav.no
-          environment: dev
-          nais-deploy-apikey: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          team: pensjonsbrev
+          image_suffix: web
+          docker_context: autodokumentasjon-web/bff
+          dockerfile: autodokumentasjon-web/bff/Dockerfile
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+
+  deploy-dev:
+    name: Deploy app to dev
+    permissions:
+      contents: read
+      id-token: write
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to DEV
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: autodokumentasjon-web/bff/.nais/nais.yaml
+          VAR: image=${{needs.build.outputs.image}}
+          VARS: "autodokumentasjon-web/bff/.nais/bff-dev.yaml"
