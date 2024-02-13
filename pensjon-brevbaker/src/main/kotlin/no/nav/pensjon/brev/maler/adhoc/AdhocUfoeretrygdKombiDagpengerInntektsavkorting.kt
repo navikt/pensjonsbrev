@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
@@ -14,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
-object AdhocUfoeretrygdKombiDagpengerInntektsAvkorting : AutobrevTemplate<EmptyBrevdata> {
+object AdhocUfoeretrygdKombiDagpengerInntektsavkorting : AutobrevTemplate<EmptyBrevdata> {
     override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER_INNTEKTSAVKORTING
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
         name = kode.name,
