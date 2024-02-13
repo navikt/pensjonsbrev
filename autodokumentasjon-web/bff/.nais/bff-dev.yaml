@@ -1,7 +1,7 @@
-app-name: "autodokumentasjon-web"
+app-name: "brevoppskrift-web"
 
 ingresses:
-  - "https://brevbaker-autodokumentasjon-q2.intern.dev.nav.no"
+  - "https://brevoppskriften.intern.dev.nav.no"
 
 env:
   - name: NODE_ENV

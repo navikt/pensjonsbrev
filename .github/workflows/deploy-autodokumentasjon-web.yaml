@@ -1,11 +1,11 @@
-name: "deploy: autodokumentasjon-web"
+name: "deploy: brevoppskrift-web"
 'on':
   push:
     branches:
       - main
     paths:
-      - .github/workflows/deploy-autodokumentasjon-web.yaml
-      - autodokumentasjon-web/**
+      - .github/workflows/deploy-brevoppskrift-web.yaml
+      - brevoppskrift-web/**
   workflow_dispatch:
 
 jobs:
@@ -25,25 +25,25 @@ jobs:
           scope: '@navikt'
 
       - name: Install frontend
-        working-directory: autodokumentasjon-web
+        working-directory: brevoppskrift-web
         run: npm install
 
       - name: Build frontend
-        working-directory: autodokumentasjon-web
+        working-directory: brevoppskrift-web
         run: npm run build
 
       - name: Copy frontend dist into public directory of bff
-        working-directory: autodokumentasjon-web/frontend
+        working-directory: brevoppskrift-web/frontend
         run: cp -r dist/ ../bff/public
 
       - name: Install bff dependencies
-        working-directory: autodokumentasjon-web/bff
+        working-directory: brevoppskrift-web/bff
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build bff
-        working-directory: autodokumentasjon-web/bff
+        working-directory: brevoppskrift-web/bff
         run: npm run build
 
       - name: Build and push Docker container
@@ -52,8 +52,8 @@ jobs:
         with:
           team: pensjonsbrev
           image_suffix: web
-          docker_context: autodokumentasjon-web/bff
-          dockerfile: autodokumentasjon-web/bff/Dockerfile
+          docker_context: brevoppskrift-web/bff
+          dockerfile: brevoppskrift-web/bff/Dockerfile
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
     outputs:
@@ -72,6 +72,6 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: autodokumentasjon-web/bff/.nais/nais.yaml
+          RESOURCE: brevoppskrift-web/bff/.nais/nais.yaml
           VAR: image=${{needs.build.outputs.image}}
-          VARS: "autodokumentasjon-web/bff/.nais/bff-dev.yaml"
+          VARS: "brevoppskrift-web/bff/.nais/bff-dev.yaml"

@@ -129,11 +129,11 @@ services:
       SKRIBENTEN_API_URL: "http://skribenten-backend:8080"
       SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default"
 
-  autodokumentasjon:
+  brevoppskrift:
     profiles:
       - skribenten
     build:
-      context: autodokumentasjon-web/bff
+      context: brevoppskrift-web/bff
     ports:
       - "8088:8088"
     environment:

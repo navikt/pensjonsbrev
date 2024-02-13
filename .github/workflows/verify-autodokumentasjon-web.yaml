@@ -1,12 +1,12 @@
-name: "verify: autodokumentasjon-web"
+name: "verify: brevoppskrift-web"
 
 on:
   pull_request:
     branches:
       - 'main'
     paths:
-      - .github/workflows/verify-autodokumentasjon-web.yaml
-      - autodokumentasjon-web/**
+      - .github/workflows/verify-brevoppskrift-web.yaml
+      - brevoppskrift-web/**
 
 jobs:
   verify:
@@ -18,19 +18,19 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: autodokumentasjon-web/frontend
+          cache-dependency-path: brevoppskrift-web/frontend
       - name: Install dependencies
-        working-directory: autodokumentasjon-web/frontend
+        working-directory: brevoppskrift-web/frontend
         run: npm ci
 
       - name: Run ESLint
-        working-directory: autodokumentasjon-web/frontend
+        working-directory: brevoppskrift-web/frontend
         run: npm run lint
 
       - name: Run stylelint
-        working-directory: autodokumentasjon-web/frontend
+        working-directory: brevoppskrift-web/frontend
         run: npm run stylelint
 
       - name: Check for typescript errors
-        working-directory: autodokumentasjon-web/frontend
+        working-directory: brevoppskrift-web/frontend
         run: npm run check-types

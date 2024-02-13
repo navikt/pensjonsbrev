@@ -1,4 +1,4 @@
-# Autodokumentasjon for Brevbaker brev
+# Brevoppskriften - Autodokumentasjon for Brevbaker brev
 
 For å bruke npm trenger du ha `node` installert. 
 Vi anbefaler at du bruker [asdf](https://asdf-vm.com/) slik at du automatisk kjører nødvendige pakker på støttet versjon.

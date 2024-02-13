@@ -46,8 +46,8 @@ docker-compose up -d --build
    (cd skribenten-web/bff && npm i && npm run build)
    (cd skribenten-web/frontend && npm i)
    ./gradlew :tjenestebuss-integrasjon:publishImageToLocalRegistry :skribenten-backend:build :pensjon-brevbaker:build :pdf-bygger:build
-   (cd autodokumentasjon-web/bff && npm i && npm run build)
-   (cd autodokumentasjon-web/frontend && npm i)
+   (cd brevoppskrift-web/bff && npm i && npm run build)
+   (cd brevoppskrift-web/frontend && npm i)
    ```
 5. Kjør alle backend-tjenester
    ```bash
