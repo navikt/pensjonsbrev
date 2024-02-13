@@ -98,8 +98,6 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         name: String,
         enhetsId: String
     ): ServiceResult<BestillExstreamBrevResponseDto> {
-
-        // TODO access controls for e-blanketter
         val isEblankett = metadata.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT
         val isNotat = metadata.dokType == BrevdataDto.DokumentType.N
 
@@ -117,7 +115,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     sakskontekstDto = SakskontekstDto(
                         journalenhet = enhetsId,                            // NAV org enhet nr som skriver brevet. Kommer med i signatur.
                         gjelder = request.gjelderPid,                       // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
-                        dokumentdato = getCurrentGregorianTime(),           // nåværende dato. TODO Skal dokumentdato komme fra parameter kanskje?
+                        dokumentdato = getCurrentGregorianTime(),           // nåværende dato.
                         dokumenttype = metadata.dokType.toString(),         // Inngående, utgående, notat
                         fagsystem = "PEN",
                         fagomradekode = "PEN",                              // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
@@ -129,13 +127,20 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         kravtype = null, // TODO sett. Brukes for notater
                         land = request.landkode.takeIf { isEblankett },
                         //TODO sett verge om det er verge og samhandler om det overstyres
-                        mottaker = if (isEblankett || isNotat) null else request.gjelderPid,  //fnr/tss id for mottaker
+                        mottaker = bestemExstreamMottaker(isEblankett, isNotat, request),
                         vedtaksId = request.vedtaksId?.toString(),
                     )
                 )
             )
         }.toServiceResult<BestillExstreamBrevResponseDto>()
     }
+
+    private fun bestemExstreamMottaker(isEblankett: Boolean, isNotat: Boolean, request: OrderLetterRequest) =
+        if (isEblankett || isNotat) {
+            null
+        } else {
+            request.idTSSEkstern ?: request.gjelderPid
+        }
 
     suspend fun redigerDoksysBrev(
         call: ApplicationCall,
