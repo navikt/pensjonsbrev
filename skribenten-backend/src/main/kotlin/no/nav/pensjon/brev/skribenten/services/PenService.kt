@@ -65,9 +65,7 @@ class PenService(config: Config, authService: AzureADService) {
     data class BestilDoksysBrevRequest(
         val sakId: Long,
         val brevkode: String,
-        val mottaker: String?,
         val journalfoerendeEnhet: String?,
-        val sensitivePersonopplysninger: Boolean?,
         val sprakKode: SpraakKode?,
         val vedtaksId: Long?,
     )
@@ -82,9 +80,7 @@ class PenService(config: Config, authService: AzureADService) {
                 BestilDoksysBrevRequest(
                     sakId = request.sakId,
                     brevkode = request.brevkode,
-                    mottaker = null, // TODO slett feltet fra pesys og sett mottaker der.
                     journalfoerendeEnhet = enhetsId,
-                    sensitivePersonopplysninger = false, // TODO Undersøk om feltet har noen påvirkning på doksys, evt slett fra skribentencontroller i pesys
                     sprakKode = request.spraak,
                     vedtaksId = request.vedtaksId,
                 )

@@ -21,7 +21,7 @@
     "@navikt/aksel-icons": "5.18.1",
     "@navikt/ds-css": "5.18.1",
     "@navikt/ds-react": "5.18.1",
-    "@tanstack/react-query": "5.20.1",
+    "@tanstack/react-query": "5.20.2",
     "@tanstack/react-router": "1.16.0",
     "axios": "1.6.7",
     "date-fns": "3.3.1",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@navikt/aksel-stylelint": "5.18.1",
-    "@tanstack/react-query-devtools": "5.20.1",
+    "@tanstack/react-query-devtools": "5.20.3",
     "@tanstack/router-devtools": "1.16.0",
     "@tanstack/router-vite-plugin": "1.16.1",
     "@testing-library/react": "14.2.1",
@@ -63,5 +63,10 @@
     "typescript": "5.3.3",
     "vite": "5.1.1",
     "vitest": "1.2.2"
+  },
+  "overrides": {
+    "vite": {
+      "rollup": "npm:@rollup/wasm-node@^4.9.2"
+    }
   }
 }

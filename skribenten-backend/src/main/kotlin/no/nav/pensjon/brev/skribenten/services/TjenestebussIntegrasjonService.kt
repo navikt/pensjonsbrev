@@ -124,7 +124,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         saksid = request.sakId.toString(),// sakid
                         saksbehandlernavn = name,
                         saksbehandlerId = navIdent,
-                        kravtype = null, // TODO sett. Brukes for notater
+                        kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
                         land = request.landkode.takeIf { isEblankett },
                         //TODO sett verge om det er verge og samhandler om det overstyres
                         mottaker = bestemExstreamMottaker(isEblankett, isNotat, request),

@@ -26,13 +26,14 @@ class LegacyBrevService(
             } else if (!harTilgangTilEnhet(call = call, enhetsId = sakEnhetId)) {
                 return BestillOgRedigerBrevResponse(NAVANSATT_ENHETER_ERROR)
             } else {
-                return when (brevmetadataService.getMal(request.brevkode).brevsystem) {
+                val brevMetadata = brevmetadataService.getMal(request.brevkode)
+                return when (brevMetadata.brevsystem) {
                     BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request, sakEnhetId)
                     BrevdataDto.BrevSystem.GAMMEL -> bestillExstreamBrev(
                         call = call,
                         request = request,
                         navIdent = fetchLoggedInNavIdent(call),
-                        metadata = brevmetadataService.getMal(request.brevkode),
+                        metadata = brevMetadata,
                         navn = fetchLoggedInName(call),
                         enhetsId = serviceResult.enhetId
                     )
@@ -198,7 +199,7 @@ class LegacyBrevService(
         val gjelderPid: String,
         val landkode: String? = null,
         val mottakerText: String? = null,
-        val isSensitive: Boolean,
+        val isSensitive: Boolean?,
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
         )

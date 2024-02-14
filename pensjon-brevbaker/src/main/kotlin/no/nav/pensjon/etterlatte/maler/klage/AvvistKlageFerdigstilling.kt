@@ -12,7 +12,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.innhold
@@ -53,9 +53,9 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
             konverterElementerTilBrevbakerformat(innhold)
 
             showIf(data.sakType.equalTo(SakType.BARNEPENSJON)) {
-                includePhrase(Barnepensjon.DuHarRettTilAaKlage)
-                includePhrase(Barnepensjon.DuHarRettTilInnsyn)
-                includePhrase(Barnepensjon.HarDuSpoersmaal)
+                includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal)
             } orShow {
                 includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
                 includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
