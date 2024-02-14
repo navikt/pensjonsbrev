@@ -59,7 +59,7 @@ export type PidRequest = {
   pid: string;
 };
 
-export type OrderLetterRequest = {
+export type OrderDoksysLetterRequest = {
   brevkode: string;
   spraak: SpraakKode;
   sakId: number;
@@ -68,7 +68,22 @@ export type OrderLetterRequest = {
   vedtaksId?: string;
 };
 
-export type OrderEblankettRequest = OrderLetterRequest & {
+export type OrderExstreamLetterRequest = {
+  brevkode: string;
+  spraak: SpraakKode;
+  sakId: number;
+  gjelderPid: string;
+  isSensitive: boolean;
+  vedtaksId?: string;
+};
+
+export type OrderEblankettRequest = {
+  brevkode: string;
+  spraak: SpraakKode;
+  sakId: number;
+  gjelderPid: string;
+  isSensitive: boolean;
+  vedtaksId?: string;
   landkode: string;
   mottakerText: string;
 };

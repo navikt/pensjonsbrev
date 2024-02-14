@@ -19,8 +19,7 @@ import {
 } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
-import { useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import React, { useEffect, useRef } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
@@ -46,12 +45,12 @@ import type {
   FinnSamhandlerRequestDto,
   FinnSamhandlerResponseDto,
   LetterMetadata,
+  OrderDoksysLetterRequest,
   OrderEblankettRequest,
-  OrderLetterRequest,
+  OrderExstreamLetterRequest,
   SamhandlerPostadresse,
 } from "~/types/apiTypes";
-import { SamhandlerTypeCode } from "~/types/apiTypes";
-import { BrevSystem, SpraakKode } from "~/types/apiTypes";
+import { BrevSystem, SamhandlerTypeCode, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
@@ -104,15 +103,91 @@ export function SelectedTemplate() {
         align-items: flex-start;
         gap: var(--a-spacing-5);
         border-right: 1px solid var(--a-gray-400);
+
+        form {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          justify-content: space-between;
+        }
       `}
     >
       <FavoriteButton />
-      {letterTemplate.dokumentkategoriCode === "E_BLANKETT" ? (
-        <Eblankett letterTemplate={letterTemplate} />
-      ) : (
-        <Brevmal letterTemplate={letterTemplate} />
-      )}
+      <Brevmal letterTemplate={letterTemplate} />
     </div>
+  );
+}
+
+function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  if (letterTemplate.dokumentkategoriCode === "E_BLANKETT") {
+    return <Eblankett letterTemplate={letterTemplate} />;
+  }
+
+  switch (letterTemplate.brevsystem) {
+    case BrevSystem.DokSys: {
+      return <BrevmalForDoksys letterTemplate={letterTemplate} />;
+    }
+    case BrevSystem.Exstream: {
+      return <BrevmalForExstream letterTemplate={letterTemplate} />;
+    }
+    case BrevSystem.Brevbaker: {
+      return <div>TODO</div>;
+    }
+  }
+}
+
+function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  const { templateId, sakId } = Route.useParams();
+  const { vedtaksId } = Route.useSearch();
+  const { sak } = Route.useLoaderData();
+
+  const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
+    mutationFn: orderLetter,
+    onSuccess: (callbackUrl) => {
+      window.open(callbackUrl);
+    },
+  });
+
+  const { reset } = orderLetterMutation;
+  useEffect(() => {
+    reset();
+  }, [templateId, reset]);
+
+  const methods = useForm<z.infer<typeof brevmalValidationSchema>>({
+    defaultValues: {
+      isSensitive: undefined,
+    },
+    resolver: zodResolver(brevmalValidationSchema),
+  });
+
+  return (
+    <>
+      <LetterTemplateHeading letterTemplate={letterTemplate} />
+      <Divider />
+      <VelgSamhandlerModal />
+      <Adresse />
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit((submittedValues) => {
+            const orderLetterRequest = {
+              brevkode: letterTemplate.id,
+              sakId: Number(sakId),
+              gjelderPid: sak.foedselsnr,
+              vedtaksId,
+              ...submittedValues,
+            };
+            return orderLetterMutation.mutate(orderLetterRequest);
+          })}
+        >
+          <VStack gap="4">
+            <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectSensitivity />
+          </VStack>
+
+          <BestillOgRedigerButton orderMutation={orderLetterMutation} />
+        </form>
+      </FormProvider>
+    </>
   );
 }
 
@@ -121,13 +196,12 @@ const brevmalValidationSchema = z.object({
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
 });
 
-function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
   const { sak } = Route.useLoaderData();
-  const navigate = useNavigate({ from: Route.fullPath });
 
-  const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderLetterRequest>({
+  const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderDoksysLetterRequest>({
     mutationFn: orderLetter,
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
@@ -149,43 +223,23 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
-      <Heading level="3" size="xsmall">
-        Formål og målgruppe
-      </Heading>
-      <BodyShort size="small">TODO</BodyShort>
       <Divider />
-      <VelgSamhandlerModal />
       <Adresse />
       <FormProvider {...methods}>
         <form
-          css={css`
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            justify-content: space-between;
-          `}
           onSubmit={methods.handleSubmit((submittedValues) => {
-            switch (letterTemplate.brevsystem) {
-              case BrevSystem.Brevbaker: {
-                return navigate({ to: "/saksnummer/$sakId/redigering/$templateId", params: { templateId } });
-              }
-              case BrevSystem.Exstream:
-              case BrevSystem.DokSys: {
-                const orderLetterRequest = {
-                  brevkode: letterTemplate.id,
-                  sakId: Number(sakId),
-                  gjelderPid: sak.foedselsnr,
-                  vedtaksId,
-                  ...submittedValues,
-                };
-                return orderLetterMutation.mutate(orderLetterRequest);
-              }
-            }
+            const orderLetterRequest = {
+              brevkode: letterTemplate.id,
+              sakId: Number(sakId),
+              gjelderPid: sak.foedselsnr,
+              vedtaksId,
+              ...submittedValues,
+            };
+            return orderLetterMutation.mutate(orderLetterRequest);
           })}
         >
           <VStack gap="4">
             <SelectLanguage letterTemplate={letterTemplate} />
-            <SelectSensitivity letterTemplate={letterTemplate} />
           </VStack>
 
           <BestillOgRedigerButton orderMutation={orderLetterMutation} />
@@ -224,19 +278,10 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
-      <Heading level="3" size="xsmall">
-        Formål og målgruppe
-      </Heading>
       <BodyShort size="small">E-blankett</BodyShort>
       <Divider />
       <FormProvider {...methods}>
         <form
-          css={css`
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            justify-content: space-between;
-          `}
           onSubmit={methods.handleSubmit((submittedValues) => {
             const orderLetterRequest = {
               brevkode: letterTemplate.id,
@@ -250,7 +295,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
         >
           <VStack gap="4">
             <SelectLanguage letterTemplate={letterTemplate} />
-            <SelectSensitivity letterTemplate={letterTemplate} />
+            <SelectSensitivity />
             <SelectAvtaleland />
             <TextField
               {...methods.register("mottakerText")}
@@ -305,11 +350,7 @@ function BestillOgRedigerButton({
   );
 }
 
-function SelectSensitivity({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  if (letterTemplate.brevsystem !== BrevSystem.Exstream) {
-    return <></>;
-  }
-
+function SelectSensitivity() {
   return (
     <Controller
       name="isSensitive"
