@@ -66,6 +66,7 @@ export type OrderLetterRequest = {
   gjelderPid: string;
   isSensitive: boolean;
   vedtaksId?: string;
+  idTSSEkstern?: string;
 };
 
 export type OrderEblankettRequest = OrderLetterRequest & {

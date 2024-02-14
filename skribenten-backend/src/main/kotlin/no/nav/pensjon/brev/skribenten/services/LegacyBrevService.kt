@@ -190,6 +190,7 @@ class LegacyBrevService(
      * @param isSensitive   om brevet inneholder sensitive opplysninger som ikke skal vises ved nivå 3 pålogging.
      * Brukes ikke i doksys brev ettersom det settes senere i prosessen.
      * @param vedtaksId     vedtakId dersom brevet er ett vedtaksbrev. Brukes for å hente opplysninger om vedtaket for vedtaksbrev.
+     * @param idTSSEkstern  overstyring av mottaker til samhandler med TSS id
      * */
     data class OrderLetterRequest(
         val brevkode: String,
@@ -200,7 +201,8 @@ class LegacyBrevService(
         val mottakerText: String? = null,
         val isSensitive: Boolean?,
         val vedtaksId: Long? = null,
-    )
+        val idTSSEkstern: String? = null,
+        )
 
     data class BestillOgRedigerBrevResponse(
         val url: String?,
