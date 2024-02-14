@@ -152,7 +152,7 @@ const eblankettValidationSchema = baseOrderLetterValidationSchema.extend({
 
 function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
-  const { vedtaksId } = Route.useSearch();
+  const { vedtaksId, idTSSEkstern } = Route.useSearch();
   const { sak } = Route.useLoaderData();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
@@ -239,7 +239,7 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
               sakId: Number(sakId),
               gjelderPid: sak.foedselsnr,
               vedtaksId,
-              ...submittedValues,
+              idTSSEkstern,...submittedValues,
             };
             return orderLetterMutation.mutate(orderLetterRequest);
           })}

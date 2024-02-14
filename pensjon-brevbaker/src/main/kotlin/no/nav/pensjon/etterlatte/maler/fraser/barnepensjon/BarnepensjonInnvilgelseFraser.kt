@@ -100,28 +100,31 @@ object BarnepensjonInnvilgelseFraser {
                     Language.English to "The pension is paid by the 20th of each month. You can find payout dates online: ${Constants.Engelsk.UTBETALINGSDATOER_URL}.",
                 )
             }
-            paragraph {
-                text(
-                    Language.Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker. ",
-                    Language.Nynorsk to "Dersom du har rett på etterbetaling, vil du vanlegvis få denne i løpet av tre veker. ",
-                    Language.English to "If you are entitled to a back payment, you will normally receive this within three weeks. ",
-                )
-                showIf(etterbetaling) {
+            showIf(etterbetaling) {
+                paragraph {
                     text(
-                        Language.Bokmal to "Du finner mer informasjon om etterbetaling i vedlegget «Etterbetaling av barnepensjon».",
-                        Language.Nynorsk to "Du kan lese meir om etterbetaling i vedlegget «Etterbetaling av barnepensjon».",
-                        Language.English to "You can find more information about back payments in the attachment Back Payments for Children's Pension.",
+                        Language.Bokmal to "Du får etterbetalt pensjon. Vanligvis vil du få denne i løpet av " +
+                                "tre uker. Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan " +
+                                "denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
+                        Language.Nynorsk to "",
+                        Language.English to "",
+                    )
+                }
+                paragraph {
+                    text(
+                        Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder " +
+                                "etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
+                                "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+                        Language.Nynorsk to "Det blir normalt sett bli trekt skatt av etterbetaling. Dersom " +
+                                "etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane til " +
+                                "Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+                        Language.English to "Tax is usually deducted from back payments. If the back payment " +
+                                "applies to previous years, NAV will deduct the tax at the Tax Administration's " +
+                                "standard rates. You can read more about the rates here: " +
+                                "${Constants.SKATTETREKK_ETTERBETALING_URL}. ",
                     )
                 }
             }
-            paragraph {
-                text(
-                    Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget «Beregning av barnepensjon».",
-                    Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av barnepensjon» korleis vi har rekna ut barnepensjonen din.",
-                    Language.English to "You can find more information about how we have calculated your children's pension in the attachment, Calculating the Children's Pension.",
-                )
-            }
-
         }
     }
 
@@ -179,13 +182,13 @@ object BarnepensjonInnvilgelseFraser {
                 textExpr(
                     Language.Bokmal to "Du finner mer informasjon på ".expr() + Constants.BARNEPENSJON_URL + ". " +
                             "Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon " + kontaktTelefon + " " +
-                            "hverdager 9-15. ",
+                            "hverdager mellom kl. 09.00-15.00. ",
                     Language.Nynorsk to "Du finn meir informasjon på ".expr() + Constants.BARNEPENSJON_URL + ". " +
                             "Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " + kontaktTelefon + " " +
-                            ", kvardagar 9–15.",
+                            ", kvardagar mellom kl. 09.00–15.00.",
                     Language.English to "For more information, visit us online: ".expr() + Constants.Engelsk.BARNEPENSJON_URL + ". " +
                             "If you cannot find the answer to your question, you can call us by phone (" + kontaktTelefon + ") " +
-                            "weekdays 9-15."
+                            "weekdays between 09.00-15.00."
                 )
                 showIf(brukerUnder18Aar) {
                     text(

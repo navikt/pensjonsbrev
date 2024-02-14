@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -25,39 +26,90 @@ object BarnepensjonRevurderingFraser {
         val erEndret: Expression<Boolean>,
         val beregning: Expression<BarnepensjonBeregning>,
         val erEtterbetaling: Expression<Boolean>,
-        val harFlereUtbetalingsperioder: Expression<Boolean>
+        val harFlereUtbetalingsperioder: Expression<Boolean>,
+        val harUtbetaling: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                val formatertNyesteUtbetalingsperiodeDatoFom = beregning.sisteBeregningsperiode.datoFOM.format()
-                val formatertVirkningsdato = beregning.virkningsdato.format()
-                val formatertBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
+            val formatertNyesteUtbetalingsperiodeDatoFom = beregning.sisteBeregningsperiode.datoFOM.format()
+            val formatertVirkningsdato = beregning.virkningsdato.format()
+            val formatertBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
 
-                showIf(erEndret) {
+            showIf(erEndret) {
+                paragraph {
+                    textExpr(
+                        Language.Bokmal to "Barnepensjonen din er endret fra ".expr() + formatertVirkningsdato + ".",
+                        Language.Nynorsk to "".expr(),
+                        Language.English to "".expr(),
+                    )
+                }
+                showIf(harUtbetaling) {
                     showIf(harFlereUtbetalingsperioder) {
+                        paragraph {
+                            textExpr(
+                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før " +
+                                        "skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se beløp for " +
+                                        "tidligere perioder og hvordan vi har beregnet barnepensjonen din i vedlegg " +
+                                        "«Beregning av barnepensjon».",
+                                Language.Nynorsk to "".expr(),
+                                Language.English to "".expr()
+                            )
+                        }
+
+                    }.orShow {
+                        paragraph {
+                            textExpr(
+                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før " +
+                                        "skatt.",
+                                Language.Nynorsk to "".expr(),
+                                Language.English to "".expr()
+                            )
+                        }
+                        paragraph {
+                            text(
+                                Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
+                                        "«Beregning av barnepensjon».",
+                                Language.Nynorsk to "",
+                                Language.English to ""
+                            )
+                        }
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            Language.Bokmal to "Du får ikke utbetalt pensjon.",
+                            Language.Nynorsk to "",
+                            Language.English to ""
+                        )
+                    }
+                }
+
+            }.orShow {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Barnepensjonen din er vurdert på nytt. ",
+                        Language.Nynorsk to "",
+                        Language.English to ""
+                    )
+                    showIf(harUtbetaling) {
                         textExpr(
-                            Language.Bokmal to "Barnepensjonen din er endret fra ".expr() + formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". ",
+                            Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + "kroner per måned før skatt.",
                             Language.Nynorsk to "".expr(),
                             Language.English to "".expr()
                         )
                     }.orShow {
-                        textExpr(
-                            Language.Bokmal to "Barnepensjonen din er endret fra ".expr() + formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner hver måned før skatt. ",
-                            Language.Nynorsk to "".expr(),
-                            Language.English to "".expr()
+                        text(
+                            Language.Bokmal to "Du får fortsatt ikke utbetalt pensjon.",
+                            Language.Nynorsk to "",
+                            Language.English to ""
                         )
                     }
+                }
+                paragraph {
                     text(
-                        Language.Bokmal to "Se beløp for tidligere perioder og hvordan vi har beregnet barnepensjonen i vedlegg «Beregning av barnepensjon».",
+                        Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget «Beregning av barnepensjon».",
                         Language.Nynorsk to "",
-                        Language.English to "",
-                    )
-                }.orShow {
-                    textExpr(
-                        Language.Bokmal to "Barnepensjonen din er vurdert på nytt. Du får fortsatt ".expr() + formatertBeloep + " kroner per måned før skatt.",
-                        Language.Nynorsk to "".expr(),
-                        Language.English to "".expr()
+                        Language.English to ""
                     )
                 }
             }
@@ -176,12 +228,12 @@ object BarnepensjonRevurderingFraser {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Fordi pensjonen din er redusert tilbake i tid, har du fått for mye " +
+                    Language.Bokmal to "Siden pensjonen din er redusert tilbake i tid, har du fått for mye " +
                             "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale tilbake " +
-                            "pensjon».",
+                            "barnepensjon».",
                     Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått for " +
                             "mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
-                            "tilbake pensjon».",
+                            "tilbake barnepensjon».",
                     Language.English to "Because your allowance has been reduced retroactively, you received " +
                             "more than you were owed. See the attachment Advance Notice of Possible Repayment of " +
                             "Incorrectly Paid Pension.",

@@ -65,6 +65,7 @@ export type BaseLetterRequest = {
   sakId: number;
   gjelderPid: string;
   vedtaksId?: string;
+  idTSSEkstern?: string;
 };
 
 export type OrderDoksysLetterRequest = BaseLetterRequest;
