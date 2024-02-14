@@ -1,0 +1,19 @@
+app-name: "brevoppskrift-web"
+
+ingresses:
+  - "https://pensjon-brevoppskrift.intern.dev.nav.no"
+
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: EXPRESS_HOST
+    value: "::"
+  - name: EXPRESS_PORT
+    value: "8080"
+  - name: BREVBAKER_URL
+    value: "http://pensjon-brevbaker"
+
+outboundApps:
+  - application: pensjon-brevbaker
+    namespace: pensjonsbrev
+    cluster: dev-gcp

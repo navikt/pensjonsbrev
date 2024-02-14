@@ -52,8 +52,8 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull and orIfNotNull adds a conditional checks`() {
-        val navn = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).test1
-        val noegreier = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).test2
+        val navn = Expression.FromScope.argument(ExpressionScope<NullBrevDto, *>::argument).test1
+        val noegreier = Expression.FromScope.argument(ExpressionScope<NullBrevDto, *>::argument).test2
 
         @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
         val expected = template.copy(

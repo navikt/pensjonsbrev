@@ -88,7 +88,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         // Div migrering mm.
         ForhaandsvarselOmregningBP,
         EnkeltVedtakOmregningNyttRegelverk,
-        EnkeltVedtakOmregningNyttRegelverkFerdig
+        EnkeltVedtakOmregningNyttRegelverkFerdig,
     )
 
 val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = emptySet()

@@ -21,10 +21,10 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
 @TemplateModelHelpers([Felles::class])
 interface TemplateGlobalScope<LetterData : Any> {
     val argument: Expression<LetterData>
-        get() = Expression.FromScope(ExpressionScope<LetterData, *>::argument)
+        get() = Expression.FromScope.argument(ExpressionScope<LetterData, *>::argument)
 
     val felles: Expression<Felles>
-        get() = Expression.FromScope(ExpressionScope<LetterData, *>::felles)
+        get() = Expression.FromScope.felles(ExpressionScope<LetterData, *>::felles)
 }
 
 @LetterTemplateMarker

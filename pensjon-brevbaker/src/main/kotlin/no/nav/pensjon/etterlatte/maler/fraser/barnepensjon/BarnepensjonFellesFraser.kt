@@ -1,48 +1,33 @@
 package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
-import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.TextOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
-import java.time.LocalDate
 
-object Barnepensjon {
+object BarnepensjonFellesFraser {
 
-    object Utbetaling : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title2 {
+    object FyllInn : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
                 text(
-                    Bokmal to "Utbetaling",
+                    Language.Bokmal to "(utfall jamfør tekstbibliotek)",
+                    Language.Nynorsk to "(utfall jamfør tekstbibliotek)",
+                    Language.English to "(utfall jamfør tekstbibliotek)",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. " +
-                            "Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker."
+                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning>.",
+                    Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova § <riktig paragrafhenvisning>.",
+                    Language.English to "This decision has been made pursuant to the provisions regarding children's pensions in the National Insurance Act – sections § <riktig paragrafhenvisning>.",
                 )
             }
         }

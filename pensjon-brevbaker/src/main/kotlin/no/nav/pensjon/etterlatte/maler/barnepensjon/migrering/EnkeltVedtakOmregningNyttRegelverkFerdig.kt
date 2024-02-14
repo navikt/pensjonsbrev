@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -56,8 +57,7 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
 
             includePhrase(
                 BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
-                    beregning.beregningsperioder,
-                    etterbetaling
+                    etterbetaling.notNull()
                 )
             )
             includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)

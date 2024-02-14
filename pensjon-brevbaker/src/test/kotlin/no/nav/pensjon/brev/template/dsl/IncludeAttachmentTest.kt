@@ -81,7 +81,7 @@ class IncludeAttachmentTest {
 
         @Test
         fun `attachment is included with notnull condition`() {
-            val selector: Expression<String?> = Expression.FromScope(ExpressionScope<NullData, *>::argument).test
+            val selector: Expression<String?> = Expression.FromScope.argument(ExpressionScope<NullData, *>::argument).test
 
 
             @Suppress("UNCHECKED_CAST")
