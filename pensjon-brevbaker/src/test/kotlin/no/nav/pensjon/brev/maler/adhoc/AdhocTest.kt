@@ -36,7 +36,7 @@ class AdhocTest {
     fun `testAdhocUfoeretrygdKombiDagpengerInntektsavkorting pdf`() {
         testAdhocPdf(
             AdhocUfoeretrygdKombiDagpengerInntektsavkorting.template,
-            pdfName = "UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER_INNTEKTSAVKORTING",
+            pdfName = "UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER_AVKORTNING",
             Bokmal
         )
     }
