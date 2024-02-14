@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.template.ExpressionEvalTestSelectors.SomeDtoSelectors.kortNavn
 import no.nav.pensjon.brev.template.ExpressionEvalTestSelectors.SomeDtoSelectors.name
-import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.saksnummer
@@ -14,12 +13,13 @@ class ExpressionEvalTest {
 
     data class SomeDto(val name: String, val kortNavn: String?)
 
+    @Suppress("unused")
     @TemplateModelHelpers
     object Helpers : HasModel<SomeDto>
 
     private val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
-    private val argumentExpr = Expression.FromScope.argument(ExpressionScope<SomeDto, *>::argument)
-    private val fellesExpr = Expression.FromScope.felles(ExpressionScope<SomeDto, *>::felles)
+    private val argumentExpr = Expression.FromScope.Argument<SomeDto>()
+    private val fellesExpr = Expression.FromScope.Felles
 
     @Test
     fun `eval Literal returns literal`() {
@@ -87,7 +87,7 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval FromScope will select a value from scope`() {
-        val evaluated: Language = Expression.FromScope.language(ExpressionScope<SomeDto, *>::language).eval(scope)
+        val evaluated: Language = Expression.FromScope.Language.eval(scope)
         assertEquals(scope.language, evaluated)
     }
 

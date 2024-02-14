@@ -75,7 +75,7 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             |
             |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>
             |   get() = Expression.UnaryInvoke(
-            |       Expression.FromScope.argument(ExpressionScope<$dataClassName, *>::argument),
+            |       Expression.FromScope.Argument(),
             |       UnaryOperation.Select($selectorName)
             |   )
             |

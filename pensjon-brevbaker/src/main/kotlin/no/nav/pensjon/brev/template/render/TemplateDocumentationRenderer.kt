@@ -149,7 +149,9 @@ object TemplateDocumentationRenderer {
                 "TODO"
             )
 
-            is Expression.FromScope<*, *> -> TemplateDocumentation.Expression.LetterData(expr.scopeName)
+            is Expression.FromScope.Language -> TemplateDocumentation.Expression.LetterData("language")
+            is Expression.FromScope.Felles -> TemplateDocumentation.Expression.LetterData("felles")
+            is Expression.FromScope.Argument -> TemplateDocumentation.Expression.LetterData("argument")
             is Expression.Literal -> TemplateDocumentation.Expression.Literal(expr.value.toString())
             is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr)
 

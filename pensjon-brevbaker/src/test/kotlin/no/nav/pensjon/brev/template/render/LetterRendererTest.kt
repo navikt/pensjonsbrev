@@ -204,7 +204,7 @@ class LetterRendererTest {
             override val propertyType = "TestVedleggDto"
             override val selector = LetterData::vedlegg
         }
-        val vedleggDataExpr = Expression.FromScope.argument(ExpressionScope<LetterData, *>::argument).select(vedleggDataSelector)
+        val vedleggDataExpr = Expression.FromScope.Argument<LetterData>().select(vedleggDataSelector)
 
         var evaluatedAttachmentScopedExpr: String? = null
         MockRenderer().publicRenderAttachments(

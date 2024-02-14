@@ -21,7 +21,7 @@ data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     }
 }
 
-class PreventToStringForExpressionException() : Exception("Expression.toString should not be used. " +
+class PreventToStringForExpressionException : Exception("Expression.toString should not be used. " +
         "In most cases this means that a template contains string concatenation of a string literal with an Expression-object, e.g:" +
         "text(Bokmal to \"The year is \${year.format()} \")"
 )
@@ -33,18 +33,18 @@ sealed class Expression<out Out> {
         override fun eval(scope: ExpressionScope<*, *>): Out = value
     }
 
-    data class FromScope<ParameterType : Any, out Out>(val selector: ExpressionScope<ParameterType, *>.() -> Out, val scopeName: String) :
-        Expression<Out>() {
-        override fun eval(scope: ExpressionScope<*, *>): Out {
-            @Suppress("UNCHECKED_CAST")
-            return (scope as ExpressionScope<ParameterType, *>).selector()
+    sealed class FromScope<out Out> : Expression<Out>() {
+        data object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.Felles>() {
+            override fun eval(scope: ExpressionScope<*, *>) = scope.felles
         }
-
-        // TODO: Se om vi klarer å omformulere disse slik at det ikke trengs å sendes med selector
-        companion object {
-            fun <ParameterType : Any, Out> argument(selector: ExpressionScope<ParameterType, *>.() -> Out) = FromScope(selector, "argument")
-            fun <ParameterType : Any, Out> felles(selector: ExpressionScope<ParameterType, *>.() -> Out) = FromScope(selector, "felles")
-            fun <ParameterType : Any, Out> language(selector: ExpressionScope<ParameterType, *>.() -> Out) = FromScope(selector, "language")
+        data object Language : FromScope<no.nav.pensjon.brev.template.Language>() {
+            override fun eval(scope: ExpressionScope<*, *>) = scope.language
+        }
+        class Argument<out Out> : FromScope<Out>() {
+            @Suppress("UNCHECKED_CAST")
+            override fun eval(scope: ExpressionScope<*, *>) = scope.argument as Out
+            override fun equals(other: Any?): Boolean = other is Argument<*>
+            override fun hashCode(): Int = javaClass.hashCode()
         }
     }
 

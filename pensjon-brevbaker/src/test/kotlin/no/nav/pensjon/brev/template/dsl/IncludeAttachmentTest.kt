@@ -57,7 +57,7 @@ class IncludeAttachmentTest {
 
     @Nested
     inner class IncludeIfNotNull{
-        val testVedlegg = createAttachment<LangNynorsk, String>(
+        private val testVedlegg = createAttachment<LangNynorsk, String>(
             title = newText(
                 Nynorsk to "Test vedlegg",
             ),
@@ -68,7 +68,7 @@ class IncludeAttachmentTest {
             }
         }
 
-        val testTemplate = createTemplate(
+        private val testTemplate = createTemplate(
             name = "test",
             letterDataType = NullData::class,
             languages = languages(Nynorsk),
@@ -81,7 +81,7 @@ class IncludeAttachmentTest {
 
         @Test
         fun `attachment is included with notnull condition`() {
-            val selector: Expression<String?> = Expression.FromScope.argument(ExpressionScope<NullData, *>::argument).test
+            val selector: Expression<String?> = Expression.FromScope.Argument<NullData>().test
 
 
             @Suppress("UNCHECKED_CAST")
