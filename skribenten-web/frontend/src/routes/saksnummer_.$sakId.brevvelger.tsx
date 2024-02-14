@@ -22,7 +22,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger")({
 
     return { letterTemplates };
   },
-  errorComponent: ({ error }) => <ApiError error={error} text="Klarte ikke hente brevmaler for saken." />,
+  errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
 });
 

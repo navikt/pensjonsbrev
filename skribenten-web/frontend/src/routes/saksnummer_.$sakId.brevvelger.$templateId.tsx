@@ -275,7 +275,7 @@ function BestillOgRedigerButton({
 }) {
   return (
     <VStack gap="4">
-      {orderMutation.error && <ApiError error={orderMutation.error} text="Bestilling feilet" />}
+      {orderMutation.error && <ApiError error={orderMutation.error} title="Bestilling feilet" />}
       {orderMutation.isSuccess ? (
         <Alert variant="success">
           <Heading level="3" size="xsmall">
@@ -442,7 +442,7 @@ function PersonAdresse() {
       </Heading>
       {adresseQuery.data && <BodyShort>{adresseQuery.data.adresseString}</BodyShort>}
       {adresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
-      {adresseQuery.error && <ApiError error={adresseQuery.error} text="Fant ikke adresse" />}
+      {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
       <Divider />
     </>
   );
@@ -466,7 +466,7 @@ function SamhandlerAdresse() {
       )}
       {hentSamhandlerAdresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
       {hentSamhandlerAdresseQuery.error && (
-        <ApiError error={hentSamhandlerAdresseQuery.error} text="Fant ikke adresse" />
+        <ApiError error={hentSamhandlerAdresseQuery.error} title="Fant ikke adresse" />
       )}
       <Divider />
     </>
@@ -615,7 +615,7 @@ function VelgSamhandlerModal() {
               <SamhandlerTypeSelectFormPart />
               {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
               {finnSamhandlerMutation.error && (
-                <ApiError error={finnSamhandlerMutation.error} text="Kunne ikke hente samhandlere." />
+                <ApiError error={finnSamhandlerMutation.error} title="Kunne ikke hente samhandlere." />
               )}
               {(finnSamhandlerMutation.data?.samhandlere.length ?? 0) > 0 && (
                 <>
