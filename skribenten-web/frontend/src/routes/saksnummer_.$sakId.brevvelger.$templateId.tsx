@@ -136,6 +136,20 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   }
 }
 
+const baseOrderLetterValidationSchema = z.object({
+  spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
+});
+
+const exstreamOrderLetterValidationSchema = baseOrderLetterValidationSchema.extend({
+  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+});
+
+const eblankettValidationSchema = baseOrderLetterValidationSchema.extend({
+  landkode: z.string().min(1, "Obligatorisk"),
+  mottakerText: z.string().min(1, "Obligatorisk"),
+  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+});
+
 function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
@@ -153,11 +167,11 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
     reset();
   }, [templateId, reset]);
 
-  const methods = useForm<z.infer<typeof brevmalValidationSchema>>({
+  const methods = useForm<z.infer<typeof exstreamOrderLetterValidationSchema>>({
     defaultValues: {
       isSensitive: undefined,
     },
-    resolver: zodResolver(brevmalValidationSchema),
+    resolver: zodResolver(exstreamOrderLetterValidationSchema),
   });
 
   return (
@@ -191,11 +205,6 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
   );
 }
 
-const brevmalValidationSchema = z.object({
-  spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
-  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
-});
-
 function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
@@ -213,11 +222,8 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
     reset();
   }, [templateId, reset]);
 
-  const methods = useForm<z.infer<typeof brevmalValidationSchema>>({
-    defaultValues: {
-      isSensitive: letterTemplate?.brevsystem === BrevSystem.Exstream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
-    },
-    resolver: zodResolver(brevmalValidationSchema),
+  const methods = useForm<z.infer<typeof baseOrderLetterValidationSchema>>({
+    resolver: zodResolver(baseOrderLetterValidationSchema),
   });
 
   return (
@@ -248,11 +254,6 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
     </>
   );
 }
-
-const eblankettValidationSchema = brevmalValidationSchema.extend({
-  landkode: z.string().min(1, "Obligatorisk"),
-  mottakerText: z.string().min(1, "Obligatorisk"),
-});
 
 function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { sakId } = Route.useParams();
