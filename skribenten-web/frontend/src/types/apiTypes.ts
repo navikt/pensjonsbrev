@@ -65,13 +65,13 @@ export type BaseLetterRequest = {
   sakId: number;
   gjelderPid: string;
   vedtaksId?: string;
-  idTSSEkstern?: string;
 };
 
 export type OrderDoksysLetterRequest = BaseLetterRequest;
 
 export type OrderExstreamLetterRequest = BaseLetterRequest & {
   isSensitive: boolean;
+  idTSSEkstern?: string;
 };
 
 export type OrderEblankettRequest = BaseLetterRequest & {

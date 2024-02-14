@@ -188,6 +188,7 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
               sakId: Number(sakId),
               gjelderPid: sak.foedselsnr,
               vedtaksId,
+              idTSSEkstern,
               ...submittedValues,
             };
             return orderLetterMutation.mutate(orderLetterRequest);
@@ -239,7 +240,7 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
               sakId: Number(sakId),
               gjelderPid: sak.foedselsnr,
               vedtaksId,
-              idTSSEkstern,...submittedValues,
+              ...submittedValues,
             };
             return orderLetterMutation.mutate(orderLetterRequest);
           })}
