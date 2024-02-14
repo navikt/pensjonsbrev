@@ -123,7 +123,7 @@ const brevmalValidationSchema = z.object({
 
 function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
-  const { vedtaksId } = Route.useSearch();
+  const { vedtaksId, idTSSEkstern } = Route.useSearch();
   const { sak } = Route.useLoaderData();
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -175,6 +175,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
                   sakId: Number(sakId),
                   gjelderPid: sak.foedselsnr,
                   vedtaksId,
+                  idTSSEkstern,
                   ...submittedValues,
                 };
                 return orderLetterMutation.mutate(orderLetterRequest);
