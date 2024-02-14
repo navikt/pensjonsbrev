@@ -19,7 +19,7 @@ object AdhocUfoeretrygdKombiDagpenger : AutobrevTemplate<EmptyBrevdata> {
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Informasjon om etterbetaling av dagpenger",
+            displayTitle = "Informasjon om etterbetaling av dagpenger og betydningen for uføretrygd",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
