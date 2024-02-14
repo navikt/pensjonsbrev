@@ -124,9 +124,9 @@ object BarnepensjonFellesFraser {
                     )
                     kontakttelefonPensjon(bosattUtland)
                     text(
-                        Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
-                        Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
-                        English to ") weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help."
+                        Bokmal to " hverdager mellom kl. 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                        Nynorsk to ", kvardagar mellom kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
+                        English to ") weekdays between 09.00-15.00. If you provide your child's national identity number, we can more easily provide you with quick and good help."
                     )
                 }
             }.orShow {
@@ -138,11 +138,30 @@ object BarnepensjonFellesFraser {
                     )
                     kontakttelefonPensjon(bosattUtland)
                     text(
-                        Bokmal to " hverdager 9-15. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
-                        Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                        English to ") weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help."
+                        Bokmal to " hverdager mellom kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                        Nynorsk to ", kvardagar mellom kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
+                        English to ") weekdays between 09.00-15.00. If you provide your child's national identity number, we can more easily provide you with quick and good help."
                     )
                 }
+            }
+        }
+    }
+
+    object HvorLengeKanDuFaaBarnepensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Hvor lenge kan du få barnepensjon?",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Du er innvilget barnepensjon til og med den kalendermåneden du fyller 20 år, så lenge du oppfyller vilkårene.",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
             }
         }
     }
