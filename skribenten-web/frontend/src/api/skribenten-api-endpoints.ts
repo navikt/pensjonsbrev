@@ -16,8 +16,9 @@ import type {
   HentsamhandlerResponseDto,
   KontaktAdresseResponse,
   LetterMetadata,
+  OrderDoksysLetterRequest,
   OrderEblankettRequest,
-  OrderLetterRequest,
+  OrderExstreamLetterRequest,
   PidRequest,
   PreferredLanguage,
   SakDto,
@@ -154,7 +155,9 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-export async function orderLetter(orderLetterRequest: OrderLetterRequest | OrderEblankettRequest) {
+export async function orderLetter(
+  orderLetterRequest: OrderExstreamLetterRequest | OrderEblankettRequest | OrderDoksysLetterRequest,
+) {
   const response = await axios.post<BestillOgRedigerBrevResponse>(
     `${SKRIBENTEN_API_BASE_PATH}/bestillbrev`,
     orderLetterRequest,
