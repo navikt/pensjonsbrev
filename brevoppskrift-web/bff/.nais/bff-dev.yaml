@@ -10,7 +10,7 @@ env:
     value: "::"
   - name: EXPRESS_PORT
     value: "8080"
-  - name: BREVBAKER_URL
+  - name: BREVBAKER_API_URL
     value: "http://pensjon-brevbaker"
 
 outboundApps:
