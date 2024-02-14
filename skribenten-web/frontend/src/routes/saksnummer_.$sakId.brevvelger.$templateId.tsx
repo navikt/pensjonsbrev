@@ -134,9 +134,10 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
     },
   });
 
+  const { reset } = orderLetterMutation;
   useEffect(() => {
-    orderLetterMutation.reset();
-  }, [templateId, orderLetterMutation.reset]);
+    reset();
+  }, [templateId, reset]);
 
   const methods = useForm<z.infer<typeof brevmalValidationSchema>>({
     defaultValues: {
