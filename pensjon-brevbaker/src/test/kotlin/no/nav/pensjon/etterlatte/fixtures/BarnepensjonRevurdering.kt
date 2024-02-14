@@ -23,6 +23,8 @@ fun createBarnepensjonRevurderingDTO() = BarnepensjonRevurderingDTO(
     innhold = createPlaceholderForRedigerbartInnhold(),
     innholdForhaandsvarsel = createPlaceholderForRedigerbartInnhold(),
     erEndret = true,
+    erOmgjoering = false,
+    datoVedtakOmgjoering = null,
     beregning = BarnepensjonBeregning(
         innhold = listOf(),
         virkningsdato = LocalDate.of(2023, Month.MAY, 1),
@@ -93,6 +95,7 @@ fun createBarnepensjonRevurderingDTO() = BarnepensjonRevurderingDTO(
     bosattUtland = false,
     kunNyttRegelverk = false,
     harFlereUtbetalingsperioder = true,
+    harUtbetaling = true,
     feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
 )
 

@@ -212,23 +212,4 @@ object BarnepensjonForeldreloesFraser {
         }
     }
 
-    object HvorLengeKanDuFaaBarnepensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title2 {
-                text(
-                    Language.Bokmal to "Hvor lenge kan du få barnepensjon?",
-                    Language.Nynorsk to "",
-                    Language.English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Language.Bokmal to "Du er innvilget barnepensjon til og med den kalendermåneden du fyller 20 år, så lenge du oppfyller vilkårene.",
-                    Language.Nynorsk to "",
-                    Language.English to "",
-                )
-            }
-        }
-    }
-
 }
