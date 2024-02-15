@@ -1,6 +1,14 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightIcon, Buildings3Icon, PencilIcon, PersonIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
+import {
+  ArrowRightIcon,
+  Buildings3Icon,
+  FileSearchIcon,
+  PencilIcon,
+  PersonIcon,
+  StarFillIcon,
+  StarIcon,
+} from "@navikt/aksel-icons";
 import type { SortState } from "@navikt/ds-react";
 import {
   Alert,
@@ -12,6 +20,7 @@ import {
   Modal,
   Radio,
   RadioGroup,
+  Search,
   Select,
   Table,
   Tag,
@@ -663,11 +672,19 @@ function VelgSamhandlerModal() {
               method="dialog"
               onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
             >
-              <TextField
-                autoComplete="off"
-                error={methods.formState.errors.navn?.message}
-                label="Søk"
-                {...methods.register("navn")}
+              <Controller
+                name="navn"
+                render={({ field, fieldState }) => (
+                  <Search
+                    error={fieldState.error?.message}
+                    hideLabel={false}
+                    label="Søk"
+                    onChange={(value) => field.onChange(value)}
+                    variant="primary"
+                  >
+                    <Search.Button form="skjema" icon={<FileSearchIcon />} loading={finnSamhandlerMutation.isPending} />
+                  </Search>
+                )}
               />
               <SamhandlerTypeSelectFormPart />
               {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
@@ -688,9 +705,6 @@ function VelgSamhandlerModal() {
           </FormProvider>
         </Modal.Body>
         <Modal.Footer>
-          <Button form="skjema" loading={finnSamhandlerMutation.isPending}>
-            Søk
-          </Button>
           <Button onClick={() => reference.current?.close()} type="button" variant="secondary">
             Avbryt
           </Button>
