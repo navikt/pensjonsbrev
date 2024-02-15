@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -140,23 +139,18 @@ object BarnepensjonForeldreloesFraser {
                 }
             }
             paragraph {
-                showIf(etterbetaling) {
-                    text(
-                        Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
-                                "§§ 18-2, 18-3, 18-4, 18-5, 22-12 og 22-13.",
-                        Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i " +
-                                "folketrygdlova §§ 18-2, 18-3, 18-4, 18-5, 22-12 og 22-13.",
-                        Language.English to "",
-                    )
-                } orShow {
-                    text(
-                        Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
-                                "§§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
-                        Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova " +
-                                "§§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
-                        Language.English to "",
-                    )
-                }
+                textExpr(
+                    Language.Bokmal to ("Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
+                            "§§ 18-2, 18-3, 18-4, 18-5").expr() +
+                            ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Language.Nynorsk to ("Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova " +
+                            "§§ 18-2, 18-3, 18-4, 18-5").expr() +
+                            ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Language.English to ("This decision has been made pursuant to the provisions regarding " +
+                            "children's pensions in the National Insurance Act – " +
+                            "sections 18-2, 18-3, 18-4, 18-5").expr() +
+                            ifElse(etterbetaling, ", 22-12 and 22-13.", " and 22-12."),
+                )
             }
         }
     }

@@ -27,7 +27,7 @@ object BarnepensjonFellesFraser {
                 text(
                     Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning>.",
                     Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova § <riktig paragrafhenvisning>.",
-                    Language.English to "This decision has been made pursuant to the provisions regarding children's pensions in the National Insurance Act – sections § <riktig paragrafhenvisning>.",
+                    Language.English to "This decision has been made pursuant to the provisions regarding children's pensions in the National Insurance Act – sections <riktig paragrafhenvisning>.",
                 )
             }
         }

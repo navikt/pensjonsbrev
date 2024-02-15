@@ -57,12 +57,11 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i " +
-                            "folketrygdloven § <riktig paragrafhenvisning> og § 22-12.",
+                            "folketrygdloven § <riktig paragrafhenvisning>.",
                     Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova " +
-                            "§ <riktig paragrafhenvisning> og § 22-12. ",
+                            "§ <riktig paragrafhenvisning>.",
                     English to "This decision has been made pursuant to the provisions regarding adjustment " +
-                            "allowance in the National Insurance Act – sections  <riktig paragrafhenvisning> " +
-                            "og § 22-12. ",
+                            "allowance in the National Insurance Act – sections <riktig paragrafhenvisning>.",
                 )
             }
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
