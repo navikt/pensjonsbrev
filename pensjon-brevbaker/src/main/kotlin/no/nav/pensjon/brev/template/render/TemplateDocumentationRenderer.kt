@@ -152,11 +152,9 @@ object TemplateDocumentationRenderer {
             is Expression.FromScope.Language -> TemplateDocumentation.Expression.LetterData("language")
             is Expression.FromScope.Felles -> TemplateDocumentation.Expression.LetterData("felles")
             is Expression.FromScope.Argument -> TemplateDocumentation.Expression.LetterData("argument")
+            is Expression.FromScope.Assigned -> TemplateDocumentation.Expression.LetterData("forEach_item")
             is Expression.Literal -> TemplateDocumentation.Expression.Literal(expr.value.toString())
             is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr)
-
-            // TODO: This is for handling the private NextExpression, should be changed in LetterTemplate
-            else -> TemplateDocumentation.Expression.LetterData("forEach_item")
         }
 
     private fun renderUnaryInvoke(expr: Expression.UnaryInvoke<*, *>): TemplateDocumentation.Expression =
