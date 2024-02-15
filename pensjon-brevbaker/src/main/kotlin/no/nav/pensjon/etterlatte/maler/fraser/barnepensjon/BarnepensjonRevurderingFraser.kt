@@ -127,30 +127,16 @@ object BarnepensjonRevurderingFraser {
                 Language.English to "(utfall jamfør tekstbibliotek)",
             ) }
 
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(FeilutbetalingUtenVarselRevurdering)
+            paragraph {
+                textExpr(
+                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", § 22-12 og § 22-13.", " og § 22-12."),
+                    Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova §§ <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Language.English to "This decision has been made pursuant to the provisions regarding children's pensions in the National Insurance Act – sections <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 and 22-13.", " and 22-12."),
+                )
             }
 
-            paragraph {
-                text(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning> ",
-                    Language.Nynorsk to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning> ",
-                    Language.English to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning> ",
-                )
-                showIf(etterbetaling) {
-                    text(
-                        Language.Bokmal to ", § 22-12 og § 22-13.",
-                        Language.Nynorsk to ", § 22-12 og § 22-13.",
-                        Language.English to ", § 22-12 og § 22-13."
-                    )
-                }.orShow {
-                    text(
-                        Language.Bokmal to "og § 22-12.",
-                        Language.Nynorsk to "og § 22-12.",
-                        Language.English to "og § 22-12."
-                    )
-                }
-
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                includePhrase(FeilutbetalingUtenVarselRevurdering)
             }
         }
     }

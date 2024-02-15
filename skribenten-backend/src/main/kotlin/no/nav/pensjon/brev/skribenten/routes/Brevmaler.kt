@@ -7,18 +7,19 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.isInGroup
 import no.nav.pensjon.brev.skribenten.services.BrevmetadataService
+import no.nav.pensjon.brev.skribenten.services.PenService
 
 fun Route.brevmalerRoute(
     brevmetadataService: BrevmetadataService,
     groupsConfig: Config
 ) {
     get("/lettertemplates/{sakType}") {
-        val sakType = call.parameters.getOrFail("sakType")
-        val includeVedtak = call.request.queryParameters["includeVedtak"] == "true"
+        val sakType = call.parameters.getOrFail<PenService.SakType>("sakType")
+        val isVedtaksKontekst = call.request.queryParameters["includeVedtak"] == "true"
 
         val hasAccessToEblanketter = isInGroup(groupsConfig.getString("pensjon_utland"))
 
-        val redigerbareBrev = brevmetadataService.getRedigerbareBrev(sakType, includeVedtak)
+        val redigerbareBrev = brevmetadataService.getRedigerbareBrev(sakType, isVedtaksKontekst)
         val eblanketter = if (hasAccessToEblanketter) brevmetadataService.getEblanketter() else emptyList()
 
         call.respond(redigerbareBrev + eblanketter)
