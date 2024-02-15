@@ -29,27 +29,27 @@ fun Route.sakRoute(
     pensjonPersonDataService: PensjonPersonDataService,
     krrService: KrrService,
 ) {
-    route("/sak") {
+    route("/sak/{sakId}") {
         intercept(ApplicationCallPipeline.Call) {
             sjekkEnhetstilgangTilSak(navansattService, penService)
         }
-        get("/{sakId}") {
+        get("") {
             val sakId = call.parameters.getOrFail("sakId")
             respondWithResult(penService.hentSak(call, sakId))
         }
-        post("/{sakId}/bestillbrev") {
+        post("/bestillbrev") {
             val request = call.receive<LegacyBrevService.OrderLetterRequest>()
             call.respond(legacyBrevService.bestillBrev(call, request))
         }
-        post<PidRequest>("/{sakId}/navn") {
+        post<PidRequest>("/navn") {
             respondWithResult(pdlService.hentNavn(call, it.pid))
         }
 
-        post<PidRequest>("/{sakId}/adresse") {
+        post<PidRequest>("/adresse") {
             respondWithResult(pensjonPersonDataService.hentKontaktadresse(call, it.pid))
         }
 
-        post<PidRequest>("/{sakId}/foretrukketSpraak") {
+        post<PidRequest>("/foretrukketSpraak") {
             call.respond(krrService.getPreferredLocale(call, it.pid))
         }
     }
