@@ -15,11 +15,11 @@ fun Route.brevmalerRoute(
 ) {
     get("/lettertemplates/{sakType}") {
         val sakType = call.parameters.getOrFail<PenService.SakType>("sakType")
-        val includeVedtak = call.request.queryParameters["includeVedtak"] == "true"
+        val isVedtaksKontekst = call.request.queryParameters["includeVedtak"] == "true"
 
         val hasAccessToEblanketter = isInGroup(groupsConfig.getString("pensjon_utland"))
 
-        val redigerbareBrev = brevmetadataService.getRedigerbareBrev(sakType, includeVedtak)
+        val redigerbareBrev = brevmetadataService.getRedigerbareBrev(sakType, isVedtaksKontekst)
         val eblanketter = if (hasAccessToEblanketter) brevmetadataService.getEblanketter() else emptyList()
 
         call.respond(redigerbareBrev + eblanketter)

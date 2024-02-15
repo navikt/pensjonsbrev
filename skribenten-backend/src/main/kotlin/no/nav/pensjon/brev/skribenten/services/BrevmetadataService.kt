@@ -28,7 +28,7 @@ class BrevmetadataService(config: Config) {
         }
     }
 
-    suspend fun getRedigerbareBrev(sakstype: PenService.SakType, includeVedtak: Boolean): List<LetterMetadata> {
+    suspend fun getRedigerbareBrev(sakstype: PenService.SakType, isVedtaksKontekst: Boolean): List<LetterMetadata> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
@@ -36,7 +36,7 @@ class BrevmetadataService(config: Config) {
         if (httpResponse.status.isSuccess()) {
             return httpResponse.body<List<BrevdataDto>>()
                 .filter { it.redigerbart }
-                .filter { filterForKontekst(it, includeVedtak) }
+                .filter { filterForKontekst(it, isVedtaksKontekst) }
                 .map { it.mapToMetadata() }
         } else {
             logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
@@ -44,11 +44,11 @@ class BrevmetadataService(config: Config) {
         }
     }
 
-    private fun filterForKontekst(brevdataDto: BrevdataDto, includeVedtak: Boolean): Boolean =
-        when(brevdataDto.brevkontekst){
+    private fun filterForKontekst(brevmetadata: BrevdataDto, isVedtaksKontekst: Boolean): Boolean =
+        when(brevmetadata.brevkontekst){
             ALLTID -> true
-            SAK -> !includeVedtak
-            VEDTAK -> includeVedtak
+            SAK -> !isVedtaksKontekst
+            VEDTAK -> isVedtaksKontekst
             null -> false
         }
 
