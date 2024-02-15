@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.util.*
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
@@ -21,10 +22,12 @@ data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     }
 }
 
-class PreventToStringForExpressionException : Exception("Expression.toString should not be used. " +
-        "In most cases this means that a template contains string concatenation of a string literal with an Expression-object, e.g:" +
-        "text(Bokmal to \"The year is \${year.format()} \")"
+class PreventToStringForExpressionException : Exception(
+    "Expression.toString should not be used. " +
+            "In most cases this means that a template contains string concatenation of a string literal with an Expression-object, e.g:" +
+            "text(Bokmal to \"The year is \${year.format()} \")"
 )
+
 sealed class Expression<out Out> {
 
     abstract fun eval(scope: ExpressionScope<*, *>): Out
@@ -37,14 +40,26 @@ sealed class Expression<out Out> {
         data object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.Felles>() {
             override fun eval(scope: ExpressionScope<*, *>) = scope.felles
         }
+
         data object Language : FromScope<no.nav.pensjon.brev.template.Language>() {
             override fun eval(scope: ExpressionScope<*, *>) = scope.language
         }
+
         class Argument<out Out> : FromScope<Out>() {
             @Suppress("UNCHECKED_CAST")
             override fun eval(scope: ExpressionScope<*, *>) = scope.argument as Out
             override fun equals(other: Any?): Boolean = other is Argument<*>
             override fun hashCode(): Int = javaClass.hashCode()
+        }
+
+        data class Assigned<out Out>(val id: String = UUID.randomUUID().toString()) : FromScope<Out>() {
+            override fun eval(scope: ExpressionScope<*, *>): Out =
+                if (scope is ExpressionScope.WithAssignment<*, *, *>) {
+                    @Suppress("UNCHECKED_CAST")
+                    (scope as ExpressionScope.WithAssignment<*, *, Out>).lookup(this)
+                } else {
+                    throw InvalidScopeTypeException("Requires scope to be ${this::class.qualifiedName}, but was: ${scope::class.qualifiedName}")
+                }
         }
     }
 
@@ -81,58 +96,11 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         val showElse: List<ContentOrControlStructure<Lang, C>>,
     ) : ContentOrControlStructure<Lang, C>()
 
-    @Suppress("DataClassPrivateConstructor")
-    data class ForEach<out Lang : LanguageSupport, C : Element<Lang>, Item : Any> private constructor(
+    data class ForEach<out Lang : LanguageSupport, C : Element<Lang>, Item : Any>(
         val items: Expression<Collection<Item>>,
         val body: Collection<ContentOrControlStructure<Lang, C>>,
-        private val next: NextExpression<Item>
-    ) : ContentOrControlStructure<Lang, C>() {
-
-        fun render(
-            scope: ExpressionScope<*, *>,
-            renderElement: (scope: ExpressionScope<*, *>, element: ContentOrControlStructure<Lang, C>) -> Unit
-        ) {
-            items.eval(scope).forEach { item ->
-                val iteratorScope = ForEachExpressionScope(item to next, scope)
-                body.forEach { element ->
-                    renderElement(iteratorScope, element)
-                }
-            }
-        }
-
-        companion object {
-            fun <Lang : LanguageSupport, C : Element<Lang>, Item : Any> create(
-                items: Expression<Collection<Item>>,
-                createView: (item: Expression<Item>) -> Collection<ContentOrControlStructure<Lang, C>>
-            ): ForEach<Lang, C, Item> =
-                NextExpression<Item>().let { ForEach(items, createView(it), it) }
-        }
-
-        private class NextExpression<Item : Any> : Expression<Item>() {
-            override fun eval(scope: ExpressionScope<*, *>): Item =
-                if (scope is ForEachExpressionScope<*>) {
-                    @Suppress("UNCHECKED_CAST")
-                    (scope as ForEachExpressionScope<Item>).evalNext(this)
-                } else {
-                    throw InvalidScopeTypeException("Requires scope to be ForEachExpressionScope, but was: ${scope::class.qualifiedName}")
-                }
-        }
-
-        private class ForEachExpressionScope<Item : Any>(
-            val next: Pair<Item, NextExpression<Item>>,
-            val parent: ExpressionScope<*, *>
-        ) : ExpressionScope<Any, Language>(parent.argument, parent.felles, parent.language) {
-            fun evalNext(expr: NextExpression<Item>): Item =
-                if (expr == next.second) {
-                    next.first
-                } else if (parent is ForEachExpressionScope<*>) {
-                    @Suppress("UNCHECKED_CAST")
-                    (parent as ForEachExpressionScope<Item>).evalNext(expr)
-                } else {
-                    throw MissingScopeForNextItemEvaluationException("Could not find scope matching: $expr")
-                }
-        }
-    }
+        val next: Expression.FromScope.Assigned<Item>
+    ) : ContentOrControlStructure<Lang, C>()
 }
 
 typealias TextElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent.Text<Lang>>

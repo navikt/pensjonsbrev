@@ -15,11 +15,16 @@ abstract class LetterRenderer<R : Any> {
                 render(scope, body, block)
             }
 
-            is ContentOrControlStructure.ForEach<*, C, *> -> element.render(scope) { s, e -> controlStructure(s, e, block) }
+            is ContentOrControlStructure.ForEach<*, C, *> ->
+                element.items.eval(scope)
+                    .map { scope.assign(it, element.next) }
+                    .forEach { scopeWithItem ->
+                        render(scopeWithItem, element.body, block)
+                    }
         }
     }
 
-    protected open fun <C : Element<*>> render(scope: ExpressionScope<*, *>, elements: List<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*, *>, element: C) -> Unit) {
+    protected open fun <C : Element<*>> render(scope: ExpressionScope<*, *>, elements: Collection<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*, *>, element: C) -> Unit) {
         elements.forEach { controlStructure(scope, it, renderBlock) }
     }
 
