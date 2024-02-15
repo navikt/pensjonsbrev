@@ -56,6 +56,13 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
                     English to "",
                 )
             }
+            title2 {
+                text(
+                    Bokmal to "Forhåndsvarsel om innvilgelse av ny barnepensjon",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
             showIf(automatiskBehandla) {
                 includePhrase(Automatisk(erBosattUtlandet))
             }.orShow { includePhrase(Manuelt(erBosattUtlandet)) }
