@@ -1,13 +1,7 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowRightIcon,
-  Buildings3Icon,
-  PencilIcon,
-  PersonIcon,
-  StarFillIcon,
-  StarIcon,
-} from "@navikt/aksel-icons";
+import { ArrowRightIcon, Buildings3Icon, PencilIcon, PersonIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
+import type { SortState } from "@navikt/ds-react";
 import {
   Alert,
   BodyShort,
@@ -28,7 +22,8 @@ import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import React, { useEffect, useRef } from "react";
+import { sortBy } from "lodash";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
@@ -56,6 +51,7 @@ import type {
   OrderDoksysLetterRequest,
   OrderEblankettRequest,
   OrderExstreamLetterRequest,
+  Samhandler,
   SamhandlerPostadresse,
 } from "~/types/apiTypes";
 import { BrevSystem, SamhandlerTypeCode, SpraakKode } from "~/types/apiTypes";
@@ -616,8 +612,8 @@ const samhandlerSearchValidationSchema = z.object({
 
 function VelgSamhandlerModal() {
   const reference = useRef<HTMLDialogElement>(null);
-  const navigate = useNavigate({ from: Route.fullPath });
   const { idTSSEkstern } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
 
   const methods = useForm<z.infer<typeof samhandlerSearchValidationSchema>>({
     defaultValues: {
@@ -657,7 +653,7 @@ function VelgSamhandlerModal() {
         </Button>
       </HStack>
 
-      <Modal header={{ heading: "Søk etter samhandler" }} ref={reference} width={600}>
+      <Modal header={{ heading: "Finn samhandler" }} ref={reference} width={600}>
         <Modal.Body>
           <FormProvider {...methods}>
             <VStack
@@ -678,42 +674,16 @@ function VelgSamhandlerModal() {
               {finnSamhandlerMutation.error && (
                 <ApiError error={finnSamhandlerMutation.error} title="Kunne ikke hente samhandlere." />
               )}
-              {(finnSamhandlerMutation.data?.samhandlere.length ?? 0) > 0 && (
-                <>
-                  <div>Fant {finnSamhandlerMutation.data?.samhandlere.length} treff</div>
-                  <Table>
-                    <Table.Header>
-                      <Table.Row>
-                        <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
-                        <Table.HeaderCell scope="col"></Table.HeaderCell>
-                      </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                      {finnSamhandlerMutation.data?.samhandlere.map((samhandler) => (
-                        <Table.Row key={samhandler.idTSSEkstern}>
-                          <Table.HeaderCell scope="row">{samhandler.navn}</Table.HeaderCell>
-                          <Table.DataCell>
-                            <Button
-                              onClick={() => {
-                                reference.current?.close();
-                                navigate({
-                                  search: (s) => ({ ...s, idTSSEkstern: samhandler.idTSSEkstern }),
-                                  replace: true,
-                                });
-                              }}
-                              size="small"
-                              type="button"
-                              variant="secondary"
-                            >
-                              Velg
-                            </Button>
-                          </Table.DataCell>
-                        </Table.Row>
-                      ))}
-                    </Table.Body>
-                  </Table>
-                </>
-              )}
+              <SamhandlerSearchResults
+                onSelect={(id) => {
+                  reference.current?.close();
+                  navigate({
+                    search: (s) => ({ ...s, idTSSEkstern: id }),
+                    replace: true,
+                  });
+                }}
+                samhandlere={finnSamhandlerMutation.data?.samhandlere ?? []}
+              />
             </VStack>
           </FormProvider>
         </Modal.Body>
@@ -727,5 +697,72 @@ function VelgSamhandlerModal() {
         </Modal.Footer>
       </Modal>
     </>
+  );
+}
+
+function SamhandlerSearchResults({
+  samhandlere,
+  onSelect,
+}: {
+  samhandlere: Samhandler[];
+  onSelect: (idTSSEkstern: string) => void;
+}) {
+  const [sort, setSort] = useState<SortState | undefined>({
+    orderBy: "navn",
+    direction: "ascending",
+  });
+
+  if (samhandlere.length === 0) {
+    return <></>;
+  }
+
+  const handleSort = (sortKey: string | undefined) => {
+    if (sortKey) {
+      setSort({
+        orderBy: sortKey,
+        direction: sort && sortKey === sort.orderBy && sort.direction === "ascending" ? "descending" : "ascending",
+      });
+    } else {
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      setSort(undefined);
+    }
+  };
+
+  const sortedSamhandlereAscending = sort?.orderBy ? sortBy(samhandlere, sort.orderBy) : samhandlere;
+  const reversed = sort?.direction === "descending";
+
+  const sortedSamhandlere = reversed ? sortedSamhandlereAscending.reverse() : sortedSamhandlereAscending;
+
+  return (
+    <VStack gap="2">
+      <BodyShort size="small">{sortedSamhandlere.length} treff</BodyShort>
+      <Table onSortChange={(sortKey) => handleSort(sortKey)} sort={sort}>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader colSpan={2} sortKey="navn" sortable>
+              Navn
+            </Table.ColumnHeader>
+            {/*<Table.HeaderCell scope="col"></Table.HeaderCell>*/}
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {sortedSamhandlere.map((samhandler) => (
+            <Table.Row key={samhandler.idTSSEkstern}>
+              <Table.HeaderCell scope="row">{samhandler.navn}</Table.HeaderCell>
+              <Table.DataCell>
+                <Button
+                  onClick={() => onSelect(samhandler.idTSSEkstern)}
+                  size="small"
+                  type="button"
+                  variant="secondary-neutral"
+                >
+                  Velg
+                </Button>
+              </Table.DataCell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </VStack>
   );
 }
