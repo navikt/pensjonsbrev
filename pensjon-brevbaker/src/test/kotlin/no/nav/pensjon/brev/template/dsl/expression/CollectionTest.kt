@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 class CollectionTest {
 
-    private val emptyScope: ExpressionScope<Unit, Language.Bokmal> =
+    private val emptyScope: ExpressionScope<Unit> =
         ExpressionScope(Unit, Fixtures.felles, Language.Bokmal)
 
     @Test

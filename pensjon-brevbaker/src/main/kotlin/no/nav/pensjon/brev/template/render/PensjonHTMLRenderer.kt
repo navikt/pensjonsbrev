@@ -40,7 +40,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         }
         """.trimIndent()
 
-    override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedHtmlLetter =
+    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): RenderedHtmlLetter =
         RenderedHtmlLetter().apply {
             newFile("index.html") {
                 appendLine("<!DOCTYPE html>").appendHTML().html {
@@ -80,12 +80,12 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
             }
         }
 
-    private fun FlowContent.brevdato(scope: ExpressionScope<*, *>): Unit =
+    private fun FlowContent.brevdato(scope: ExpressionScope<*>): Unit =
         div(classes("brevdato")) {
             text(scope.felles.dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)))
         }
 
-    private fun FlowContent.renderClosing(scope: ExpressionScope<*, *>, brevtype: LetterMetadata.Brevtype) {
+    private fun FlowContent.renderClosing(scope: ExpressionScope<*>, brevtype: LetterMetadata.Brevtype) {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
@@ -122,7 +122,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         }
     }
 
-    private fun FlowContent.renderAttachment(scope: ExpressionScope<*, *>, template: AttachmentTemplate<*, *>): Unit =
+    private fun FlowContent.renderAttachment(scope: ExpressionScope<*>, template: AttachmentTemplate<*, *>): Unit =
         div(classes("vedlegg")) {
             img(classes = classes("logo"), src = navLogoImg, alt = AltTexts.logo.text(scope.language))
             h1(classes("tittel")) { renderText(scope, listOf(template.title)) }
@@ -134,13 +134,13 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
             }
         }
 
-    private fun FlowContent.renderOutline(scope: ExpressionScope<*, *>, outline: List<OutlineElement<*>>): Unit =
+    private fun FlowContent.renderOutline(scope: ExpressionScope<*>, outline: List<OutlineElement<*>>): Unit =
         render(scope, outline) { outlineScope, element ->
             renderOutlineContent(outlineScope, element)
         }
 
     private fun FlowContent.renderOutlineContent(
-        scope: ExpressionScope<*, *>,
+        scope: ExpressionScope<*>,
         element: Element.OutlineContent<*>
     ): Unit =
         when (element) {
@@ -150,7 +150,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         }
 
     private fun FlowContent.renderParagraph(
-        scope: ExpressionScope<*, *>,
+        scope: ExpressionScope<*>,
         paragraph: Element.OutlineContent.Paragraph<*>
     ) {
         div(classes("paragraph")) {
@@ -161,7 +161,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
     }
 
     private fun FlowContent.renderParagraphContent(
-        scope: ExpressionScope<*, *>,
+        scope: ExpressionScope<*>,
         element: Element.OutlineContent.ParagraphContent<*>
     ) {
         when (element) {
@@ -172,12 +172,12 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         }
     }
 
-    private fun FlowOrPhrasingContent.renderText(scope: ExpressionScope<*, *>, elements: List<TextElement<*>>) {
+    private fun FlowOrPhrasingContent.renderText(scope: ExpressionScope<*>, elements: List<TextElement<*>>) {
         render(scope, elements) { inner, text -> renderTextContent(inner, text) }
     }
 
     private fun FlowOrPhrasingContent.renderTextContent(
-        scope: ExpressionScope<*, *>,
+        scope: ExpressionScope<*>,
         element: Element.OutlineContent.ParagraphContent.Text<*>
     ) {
         when (element.fontType) {
@@ -198,12 +198,12 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         }
     }
 
-    private fun Tag.renderTextWithoutStyle(scope: ExpressionScope<*, *>, elements: List<TextElement<*>>) {
+    private fun Tag.renderTextWithoutStyle(scope: ExpressionScope<*>, elements: List<TextElement<*>>) {
         render(scope, elements) { inner, text -> renderTextContentWithoutStyle(inner, text) }
     }
 
     private fun Tag.renderTextContentWithoutStyle(
-        scope: ExpressionScope<*, *>,
+        scope: ExpressionScope<*>,
         element: Element.OutlineContent.ParagraphContent.Text<*>
     ): Unit =
         when (element) {
@@ -217,7 +217,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         }
 
     private fun FlowContent.renderForm(
-        scope: ExpressionScope<*, *>,
+        scope: ExpressionScope<*>,
         element: Element.OutlineContent.ParagraphContent.Form<*>
     ): Unit =
         when (element) {
@@ -247,7 +247,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         }
 
     private fun FlowContent.renderList(
-        scope: ExpressionScope<*, *>,
+        scope: ExpressionScope<*>,
         element: Element.OutlineContent.ParagraphContent.ItemList<*>
     ) {
         ul {
@@ -258,7 +258,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
     }
 
     private fun FlowContent.renderTable(
-        scope: ExpressionScope<*, *>,
+        scope: ExpressionScope<*>,
         element: Element.OutlineContent.ParagraphContent.Table<*>
     ) {
         // Small screen
@@ -324,7 +324,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
             Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT -> "text-right"
         }
 
-    private fun FlowContent.renderSakspart(scope: ExpressionScope<*, *>) =
+    private fun FlowContent.renderSakspart(scope: ExpressionScope<*>) =
         div(classes("sakspart")) {
             with(scope.felles.bruker) {
                 val navnPrefix =

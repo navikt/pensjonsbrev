@@ -30,33 +30,33 @@ class PreventToStringForExpressionException : Exception(
 
 sealed class Expression<out Out> {
 
-    abstract fun eval(scope: ExpressionScope<*, *>): Out
+    abstract fun eval(scope: ExpressionScope<*>): Out
 
     data class Literal<out Out>(val value: Out) : Expression<Out>() {
-        override fun eval(scope: ExpressionScope<*, *>): Out = value
+        override fun eval(scope: ExpressionScope<*>): Out = value
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {
         data object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.Felles>() {
-            override fun eval(scope: ExpressionScope<*, *>) = scope.felles
+            override fun eval(scope: ExpressionScope<*>) = scope.felles
         }
 
         data object Language : FromScope<no.nav.pensjon.brev.template.Language>() {
-            override fun eval(scope: ExpressionScope<*, *>) = scope.language
+            override fun eval(scope: ExpressionScope<*>) = scope.language
         }
 
         class Argument<out Out> : FromScope<Out>() {
             @Suppress("UNCHECKED_CAST")
-            override fun eval(scope: ExpressionScope<*, *>) = scope.argument as Out
+            override fun eval(scope: ExpressionScope<*>) = scope.argument as Out
             override fun equals(other: Any?): Boolean = other is Argument<*>
             override fun hashCode(): Int = javaClass.hashCode()
         }
 
         data class Assigned<out Out>(val id: String = UUID.randomUUID().toString()) : FromScope<Out>() {
-            override fun eval(scope: ExpressionScope<*, *>): Out =
-                if (scope is ExpressionScope.WithAssignment<*, *, *>) {
+            override fun eval(scope: ExpressionScope<*>): Out =
+                if (scope is ExpressionScope.WithAssignment<*, *>) {
                     @Suppress("UNCHECKED_CAST")
-                    (scope as ExpressionScope.WithAssignment<*, *, Out>).lookup(this)
+                    (scope as ExpressionScope.WithAssignment<*, Out>).lookup(this)
                 } else {
                     throw InvalidScopeTypeException("Requires scope to be ${this::class.qualifiedName}, but was: ${scope::class.qualifiedName}")
                 }
@@ -67,7 +67,7 @@ sealed class Expression<out Out> {
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
     ) : Expression<Out>() {
-        override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(value.eval(scope))
+        override fun eval(scope: ExpressionScope<*>): Out = operation.apply(value.eval(scope))
     }
 
     data class BinaryInvoke<In1, In2, out Out>(
@@ -75,7 +75,7 @@ sealed class Expression<out Out> {
         val second: Expression<In2>,
         val operation: BinaryOperation<In1, In2, Out>
     ) : Expression<Out>() {
-        override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(first.eval(scope), second.eval(scope))
+        override fun eval(scope: ExpressionScope<*>): Out = operation.apply(first.eval(scope), second.eval(scope))
     }
 
     final override fun toString(): String {
