@@ -13,6 +13,16 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import org.slf4j.LoggerFactory
 
+private val filteredLetters = hashSetOf(
+    "PE_IY_03_176",
+    "PE_UT_04_004",
+    "PE_BA_01_108",
+    "PE_AP_04_922",
+    "PE_AP_01_007",
+)
+
+private val
+
 class BrevmetadataService(config: Config) {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
