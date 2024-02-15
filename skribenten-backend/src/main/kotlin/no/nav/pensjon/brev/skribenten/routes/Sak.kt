@@ -7,6 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.ktor.util.pipeline.*
+import kotlinx.coroutines.async
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 import no.nav.pensjon.brev.skribenten.services.KrrService
@@ -15,7 +16,6 @@ import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
-import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import no.nav.pensjon.brev.skribenten.services.respondWithResult
 import org.slf4j.LoggerFactory
 
@@ -63,17 +63,27 @@ suspend fun PipelineContext<Unit, ApplicationCall>.sjekkEnhetstilgangTilSak(nava
         call.respond(HttpStatusCode.BadRequest, "SakId mangler i request")
         return
     }
-    when(val sakSelection = penService.hentSak(call, sakId)) {
-        is ServiceResult.Error -> call.respond(sakSelection.statusCode, sakSelection.error)
-        is ServiceResult.Ok -> {
-            if(sakSelection.result.enhetId.isNullOrEmpty()){
+    val sakSelection = async { penService.hentSak(call, sakId) }
+    val enheter = async { navansattService.hentNavAnsattEnhetListe(call, sakId) }
+
+
+    sakSelection.await().map { sak ->
+        enheter.await().map { result ->
+            result.any { it.id == sak.enhetId }
+            if (sak.enhetId.isNullOrEmpty()) {
                 call.respond(HttpStatusCode.BadRequest, "Sak har ikke enhetsId")
-            } else if (!navansattService.harAnsattTilgangTilEnhet(call, sakSelection.result.enhetId)) {
-                    val message = "Navansatt: ${fetchLoggedInNavIdent(call)} har ikke enhetstilgang til sak"
-                    logger.error(message)
-                    call.respond(HttpStatusCode.Forbidden, message)
+            } else if (result.none { it.id == sak.enhetId }) {
+                val message = "Navansatt: ${fetchLoggedInNavIdent(call)} har ikke enhetstilgang til sak"
+                logger.error(message)
+                call.respond(HttpStatusCode.Forbidden, message)
             }
+        }.catch { message, status ->
+            logger.error("En feil oppstod under henting av enheter, status: $status , message: $message")
+            call.respond(HttpStatusCode.InternalServerError, "En feil oppstod under henting av enheter")
         }
+    }.catch { message, status ->
+        logger.error("En feil oppstod under henting av sak, status: $status , message: $message")
+        call.respond(HttpStatusCode.InternalServerError, "En feil oppstod under henting av sak")
     }
 }
 

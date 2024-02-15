@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.server.application.*
-import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.getLoggedInName
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
@@ -16,7 +15,6 @@ class LegacyBrevService(
     private val brevmetadataService: BrevmetadataService,
     private val safService: SafService,
     private val penService: PenService,
-    private val navansattService: NavansattService
 ) {
     private val logger = LoggerFactory.getLogger(LegacyBrevService::class.java)
     suspend fun bestillBrev(call: ApplicationCall, request: OrderLetterRequest): BestillOgRedigerBrevResponse =
@@ -170,16 +168,7 @@ class LegacyBrevService(
         return call.getLoggedInName() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker i claim")
     }
 
-    suspend fun harTilgangTilEnhet(call: ApplicationCall, enhetsId: String): Boolean {
-        return navansattService.harAnsattTilgangTilEnhet(
-            call = call,
-            ansattId = fetchLoggedInNavIdent(call = call),
-            enhetsId = enhetsId
-        ).let { when (it) {
-            is ServiceResult.Error -> false
-            is ServiceResult.Ok -> it.result
-        }}
-    }
+
 
     /**
      * @param brevkode ID til brevet som bestilles
