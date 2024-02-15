@@ -33,7 +33,7 @@ fun Route.sakRoute(
         intercept(ApplicationCallPipeline.Call) {
             sjekkEnhetstilgangTilSak(navansattService, penService)
         }
-        get("/{sakId}/") {
+        get("/{sakId}") {
             val sakId = call.parameters.getOrFail("sakId")
             respondWithResult(penService.hentSak(call, sakId))
         }
