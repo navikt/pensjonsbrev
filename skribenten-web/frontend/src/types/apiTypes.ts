@@ -137,7 +137,7 @@ export type HentsamhandlerResponseDto = {
 
 export type Samhandler = {
   navn: string;
-  samhandlerType: string;
+  samhandlerType: SamhandlerTypeCode;
   offentligId: string;
   idType: string;
   idTSSEkstern: string;

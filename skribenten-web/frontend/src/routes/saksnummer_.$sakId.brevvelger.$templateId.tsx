@@ -650,7 +650,9 @@ function VelgSamhandlerModal() {
     },
   });
 
-  console.log(finnSamhandlerMutation.data);
+  const selectedSamhandler = finnSamhandlerMutation.data?.samhandlere?.find(
+    (samhandler) => samhandler.idTSSEkstern === selectedIdTSSEkstern,
+  );
 
   return (
     <>
@@ -668,7 +670,7 @@ function VelgSamhandlerModal() {
 
       <Modal header={{ heading: "Finn samhandler" }} ref={reference} width={600}>
         <Modal.Body>
-          {selectedIdTSSEkstern === undefined ? (
+          {selectedIdTSSEkstern === undefined && (
             <FormProvider {...methods}>
               <VStack
                 as="form"
@@ -708,18 +710,13 @@ function VelgSamhandlerModal() {
                 />
               </VStack>
             </FormProvider>
-          ) : (
+          )}
+          {selectedSamhandler && (
             <VStack gap="4">
               <Heading level="2" size="small">
-                {
-                  SAMHANDLER_ENUM_TO_TEXT[
-                    finnSamhandlerMutation.data?.samhandlere?.find(
-                      (samhandler) => samhandler.idTSSEkstern === selectedIdTSSEkstern,
-                    )?.samhandlerType
-                  ]
-                }
+                {SAMHANDLER_ENUM_TO_TEXT[selectedSamhandler.samhandlerType]}
               </Heading>
-              <VerifySamhandler idTSSEkstern={selectedIdTSSEkstern} />
+              <VerifySamhandler idTSSEkstern={selectedSamhandler.idTSSEkstern} />
               <Button
                 css={css`
                   width: fit-content;
