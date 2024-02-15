@@ -1,6 +1,13 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightIcon, PencilIcon, PlusIcon, StarFillIcon, StarIcon, XMarkIcon } from "@navikt/aksel-icons";
+import {
+  ArrowRightIcon,
+  Buildings3Icon,
+  PencilIcon,
+  PersonIcon,
+  StarFillIcon,
+  StarIcon,
+} from "@navikt/aksel-icons";
 import {
   Alert,
   BodyShort,
@@ -33,6 +40,7 @@ import {
   getFavoritter,
   getKontaktAdresse,
   getLetterTemplate,
+  getNavn,
   hentSamhandler,
   hentSamhandlerAdresse,
   orderLetter,
@@ -178,7 +186,6 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Divider />
-      <VelgSamhandlerModal />
       <Adresse />
       <FormProvider {...methods}>
         <form
@@ -478,20 +485,33 @@ function PersonAdresse() {
     queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
     queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
   });
+
+  const { data: navn } = useQuery({
+    queryKey: getNavn.queryKey(sak?.foedselsnr as string),
+    queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
+    enabled: !!sak,
+  });
+
   return (
-    <>
+    <VStack gap="2">
       <Heading level="3" size="xsmall">
-        Adresse
+        Mottaker
       </Heading>
-      {adresseQuery.data && <BodyShort>{adresseQuery.data.adresseString}</BodyShort>}
+      <span>
+        {navn} ({adresseQuery.data?.type})
+      </span>
+      <VStack gap="0">
+        {adresseQuery.data && adresseQuery.data.adresselinjer.map((linje) => <span key={linje}>{linje}</span>)}
+      </VStack>
       {adresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
       {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
-      <Divider />
-    </>
+      <VelgSamhandlerModal />
+    </VStack>
   );
 }
 function SamhandlerAdresse() {
   const { idTSSEkstern } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
 
   const hentSamhandlerAdresseQuery = useQuery({
     queryKey: hentSamhandlerAdresse.queryKey(idTSSEkstern as string),
@@ -500,32 +520,49 @@ function SamhandlerAdresse() {
   });
 
   return (
-    <>
+    <VStack gap="2">
       <Heading level="3" size="xsmall">
-        Adresse
+        Mottaker
       </Heading>
-      {hentSamhandlerAdresseQuery.data && (
-        <BodyShort>{formatSamhandlerAdresse(hentSamhandlerAdresseQuery.data)}</BodyShort>
-      )}
+      {hentSamhandlerAdresseQuery.data && <FormattedSamhandlerAdresse adresse={hentSamhandlerAdresseQuery.data} />}
       {hentSamhandlerAdresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
       {hentSamhandlerAdresseQuery.error && (
         <ApiError error={hentSamhandlerAdresseQuery.error} title="Fant ikke adresse" />
       )}
-      <Divider />
-    </>
+      <Button
+        css={css`
+          width: fit-content;
+        `}
+        icon={<PersonIcon />}
+        onClick={() =>
+          navigate({
+            search: (s) => ({ ...s, idTSSEkstern: undefined }),
+            replace: true,
+          })
+        }
+        size="small"
+        variant="secondary"
+      >
+        Endre til bruker
+      </Button>
+    </VStack>
   );
 }
 
-function formatSamhandlerAdresse(adresse: SamhandlerPostadresse) {
-  const { land, linje1, postnr, poststed } = adresse;
+function FormattedSamhandlerAdresse({ adresse }: { adresse: SamhandlerPostadresse }) {
+  const { land, linje1, postnr, poststed, navn } = adresse;
 
-  const defaultAddressLine = `${linje1}, ${postnr} ${poststed}`;
-
-  if (land !== "NOR") {
-    return `${defaultAddressLine} ${land}`;
-  }
-
-  return defaultAddressLine;
+  return (
+    <>
+      <span>{navn} (samhandler)</span>
+      <VStack gap="0">
+        <span>{linje1}</span>
+        <span>
+          {postnr} {poststed} {land === "NOR" ? "" : `, ${land}`}
+        </span>
+      </VStack>
+    </>
+  );
 }
 
 function FavoriteButton() {
@@ -608,35 +645,16 @@ function VelgSamhandlerModal() {
 
   return (
     <>
-      <Heading level="3" size="xsmall">
-        Samhandler
-      </Heading>
-
       <HStack align="center" gap="4">
         {idTSSEkstern && <span>{hentSamhandlerQuery.data?.navn}</span>}
         <Button
-          icon={idTSSEkstern ? <PencilIcon /> : <PlusIcon />}
+          icon={idTSSEkstern ? <PencilIcon /> : <Buildings3Icon />}
           onClick={() => reference.current?.showModal()}
           size="small"
           variant="secondary"
         >
-          {idTSSEkstern ? "Endre" : "Finn samhandler"}
+          {idTSSEkstern ? "Endre" : "Endre til samhandler"}
         </Button>
-        {idTSSEkstern && (
-          <Button
-            icon={<XMarkIcon />}
-            onClick={() =>
-              navigate({
-                search: (s) => ({ ...s, idTSSEkstern: undefined }),
-                replace: true,
-              })
-            }
-            size="small"
-            variant="danger"
-          >
-            Fjern
-          </Button>
-        )}
       </HStack>
 
       <Modal header={{ heading: "Søk etter samhandler" }} ref={reference} width={600}>
