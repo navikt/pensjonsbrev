@@ -10,11 +10,11 @@ fun createOmstillingsstoenadOpphoerDTO() =
         innhold = createPlaceholderForRedigerbartInnhold(),
         innholdForhaandsvarsel = createPlaceholderForRedigerbartInnhold(),
         bosattUtland = false,
-        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
+        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
+        virkningsdato =  LocalDate.of(2024, 1, 1),
     )
 
 fun createOmstillingsstoenadpphoerRedigerbartUtfallDTO() =
     OmstillingsstoenadOpphoerRedigerbartUtfallDTO(
-        virkningsdato = LocalDate.of(2024, 1, 1),
         feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
     )
