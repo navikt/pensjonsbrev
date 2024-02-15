@@ -15,7 +15,21 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 data class KontaktAdresseResponseDto(
     val adresseString: String,
     val adresselinjer: List<String>,
-)
+    val type: Adressetype,
+){
+    enum class Adressetype {
+        MATRIKKELADRESSE,
+        POSTADRESSE_I_FRITT_FORMAT,
+        POSTBOKSADRESSE,
+        REGOPPSLAG_ADRESSE,
+        UKJENT_BOSTED,
+        UTENLANDSK_ADRESSE,
+        UTENLANDSK_ADRESSE_I_FRITT_FORMAT,
+        VEGADRESSE,
+        VERGE_PERSON_POSTADRESSE,
+        VERGE_SAMHANDLER_POSTADRESSE,
+    }
+}
 
 class PensjonPersonDataService(config: Config, authService: AzureADService) {
 
