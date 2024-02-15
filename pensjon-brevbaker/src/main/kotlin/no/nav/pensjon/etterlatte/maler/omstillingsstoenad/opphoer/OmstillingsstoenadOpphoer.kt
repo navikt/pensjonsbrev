@@ -5,10 +5,14 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -23,14 +27,17 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.forhaandsvarselFeilutbetalingBarnepensjonOpphoer
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer
+import java.time.LocalDate
 
 data class OmstillingsstoenadOpphoerDTO(
     override val innhold: List<Element>,
     val innholdForhaandsvarsel: List<Element>,
+    val virkningsdato: LocalDate,
     val bosattUtland: Boolean,
     val feilutbetaling: FeilutbetalingType
 ): BrevDTO
@@ -59,6 +66,13 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
         }
 
         outline {
+            paragraph {
+                textExpr(
+                    Bokmal to "Omstillingsstønaden din opphører fra ".expr() + virkningsdato.format() + ".",
+                    Nynorsk to "Omstillingsstønaden din fell bort frå og med ".expr() + virkningsdato.format() + ".",
+                    English to "Your adjustment allowance will terminate on: ".expr() + virkningsdato.format() + ".",
+                )
+            }
             konverterElementerTilBrevbakerformat(innhold)
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingMedVarselOpphoer)

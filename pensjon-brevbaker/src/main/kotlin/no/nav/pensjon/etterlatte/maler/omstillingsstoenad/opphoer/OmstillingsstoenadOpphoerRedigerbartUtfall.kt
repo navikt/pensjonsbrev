@@ -5,27 +5,20 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
+import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfallDTOSelectors.feilutbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfallDTOSelectors.virkningsdato
-import java.time.LocalDate
 
 
 data class OmstillingsstoenadOpphoerRedigerbartUtfallDTO(
-    val virkningsdato: LocalDate,
     val feilutbetaling: FeilutbetalingType
 )
 
@@ -38,7 +31,7 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
         letterDataType = OmstillingsstoenadOpphoerRedigerbartUtfallDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Opphør av omstillingsstønad",
+            displayTitle = "Vedtak - opphør",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -46,9 +39,9 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
     ) {
         title {
             text(
-                Bokmal to "Vi har opphørt omstillingsstønaden din",
-                Nynorsk to "Vi har avvikla omstillingsstønaden din",
-                English to "We have terminated your adjustment allowance",
+                Bokmal to "",
+                Nynorsk to "",
+                English to "",
             )
         }
 
@@ -59,13 +52,6 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
                     Bokmal to "(utfall jamfør tekstbibliotek)",
                     Nynorsk to "(utfall jamfør tekstbibliotek)",
                     English to "(utfall jamfør tekstbibliotek)",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Omstillingsstønaden din opphører fra ".expr() + virkningsdato.format() + ".",
-                    Nynorsk to "Omstillingsstønaden din fell bort frå og med ".expr() + virkningsdato.format() + ".",
-                    English to "Your adjustment allowance will terminate on: ".expr() + virkningsdato.format() + ".",
                 )
             }
             paragraph {

@@ -29,7 +29,7 @@ object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<BarnepensjonOpp
         letterDataType = BarnepensjonOpphoerRedigerbartUtfallDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - innvilgelse",
+            displayTitle = "Vedtak - opphør",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -37,9 +37,9 @@ object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<BarnepensjonOpp
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har opphørt barnepensjonen din",
-                Language.Nynorsk to "Vi har avvikla barnepensjonen din",
-                Language.English to "We have terminated your application for a children's pension",
+                Language.Bokmal to "",
+                Language.Nynorsk to "",
+                Language.English to "",
             )
         }
         outline {
