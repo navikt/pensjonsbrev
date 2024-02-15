@@ -11,17 +11,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import org.slf4j.LoggerFactory
-
-private val filteredLetters = hashSetOf(
-    "PE_IY_03_176",
-    "PE_UT_04_004",
-    "PE_BA_01_108",
-    "PE_AP_04_922",
-    "PE_AP_01_007",
-)
-
-private val
 
 class BrevmetadataService(config: Config) {
     private val brevmetadataUrl = config.getString("url")
@@ -37,7 +28,7 @@ class BrevmetadataService(config: Config) {
         }
     }
 
-    suspend fun getRedigerbareBrev(sakstype: String, includeVedtak: Boolean): List<LetterMetadata> {
+    suspend fun getRedigerbareBrev(sakstype: PenService.SakType, includeVedtak: Boolean): List<LetterMetadata> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
@@ -45,18 +36,26 @@ class BrevmetadataService(config: Config) {
         if (httpResponse.status.isSuccess()) {
             return httpResponse.body<List<BrevdataDto>>()
                 .filter { it.redigerbart }
-                .filter { includeVedtak || it.brevkategori != BrevdataDto.BrevkategoriCode.VEDTAK }
-                .map{ it.mapToMetadata() }
+                .filter { filterForKontekst(it, includeVedtak) }
+                .map { it.mapToMetadata() }
         } else {
             logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
             return emptyList()
         }
     }
 
+    private fun filterForKontekst(brevdataDto: BrevdataDto, includeVedtak: Boolean): Boolean =
+        when(brevdataDto.brevkontekst){
+            ALLTID -> true
+            SAK -> !includeVedtak
+            VEDTAK -> includeVedtak
+            null -> false
+        }
+
     private fun BrevdataDto.mapToMetadata() =
         LetterMetadata(
             name = dekode,     // TODO handle missing fields in front-end instead.
-            id = brevkodeIBrevsystem ?: "MissingCode",
+            id = brevkodeIBrevsystem,
             spraak = sprak ?: emptyList(),
             brevsystem = when (brevsystem) {
                 BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
@@ -71,7 +70,6 @@ class BrevmetadataService(config: Config) {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }.body<List<BrevdataDto>>()
-            .filter { it.redigerbart }
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
             .map { it.mapToMetadata() }
     }
@@ -81,6 +79,130 @@ class BrevmetadataService(config: Config) {
             contentType(ContentType.Application.Json)
         }.body<BrevdataDto>()
     }
+
+//    fun execute(request: HentBrevMenyRequest): HentBrevMenyResponse {
+//        validateRequest(request)
+//
+//        val sak: Sak = fetchSakFromDb(request)
+//        var brevdataList: List<Brevdata> = brevdataService.hentBrevdataForSaktype(sak.getSakType().getCode(), false)
+//        if (!org.apache.commons.lang3.BooleanUtils.isTrue(request.isVisFlere())) {
+//            if (org.apache.commons.lang3.BooleanUtils.isTrue(request.isErVeileder())) {
+//                brevdataList = filterBrevdataOnVeileder(brevdataList)
+//            } else {
+//                if (request.getKravId() != null) {
+//                    val krav: KravHode = fetchKravFromDb(request)
+//
+//                    brevdataList = filterBrevdataOnKravGjelder(brevdataList, krav)
+//                    brevdataList = filterBrevdataOnUtland(brevdataList, krav, sak)
+//                }
+//
+//                brevdataList = if (request.getVedtakId() == null) {
+//                    filterBrevdataOnSakKontekst(brevdataList)
+//                } else {
+//                    filterBrevdataOnVedtakKontekst(brevdataList)
+//                }
+//            }
+//        } else {
+//            if (request.getVedtakId() == null) {
+//                brevdataList = filterBrevdataOnSakKontekst(brevdataList)
+//            }
+//        }
+//        val response: HentBrevMenyResponse = HentBrevMenyResponse()
+//        response.setBrevdata(brevdataList)
+//        return response
+//    }
+//
+//    private fun filterBrevdataOnVeileder(brevdataList: List<Brevdata>): List<Brevdata> {
+//        return brevdataList.stream().filter(Predicate<Brevdata> { brevdata: Brevdata ->
+//            org.apache.commons.lang3.BooleanUtils.isTrue((brevdata as Brev).getSynligForVeileder())
+//        }).collect(Collectors.toList<Any>())
+//    }
+//
+//    private fun filterBrevdataOnKravGjelder(brevdataList: List<Brevdata>, kravHode: KravHode): List<Brevdata> {
+//        val filteredBrevdatList: MutableList<Brevdata> = ArrayList<Brevdata>()
+//        for (brevdata in brevdataList) {
+//            val brev: Brev = brevdata as Brev
+//            if (brev.getBrevkravtype() != null &&
+//                (brev.getBrevkravtype().equals(BrevKravTypeCode.ALLE) ||
+//                        kravHode.getKravGjelder().getCodeAsString().equals(brev.getBrevkravtype().toString()))
+//            ) {
+//                filteredBrevdatList.add(brev)
+//            }
+//        }
+//        return filteredBrevdatList
+//    }
+//
+//    private fun filterBrevdataOnUtland(brevdataList: List<Brevdata>, kravHode: KravHode, sak: Sak): List<Brevdata> {
+//        val utlandsStatus: BrevUtlandCode = if (sak.getSakType().isCodeEqualTo(SakTypeCode.GJENLEV) && org.apache.commons.lang3.BooleanUtils.isTrue(
+//                kravHode.getBoddArbeidUtlandAvdod()
+//            )
+//        ) {
+//            BrevUtlandCode.UTLAND
+//        } else if (sak.getSakType().isCodeEqualTo(SakTypeCode.BARNEP)
+//            && (org.apache.commons.lang3.BooleanUtils.isTrue(kravHode.getBoddArbeidUtlandFar()) || org.apache.commons.lang3.BooleanUtils.isTrue(
+//                kravHode.getBoddArbeidUtlandMor()
+//            ))
+//        ) {
+//            BrevUtlandCode.UTLAND
+//        } else if (org.apache.commons.lang3.BooleanUtils.isTrue(kravHode.getBoddArbeidUtland())) {
+//            BrevUtlandCode.UTLAND
+//        } else {
+//            BrevUtlandCode.NASJONALT
+//        }
+//
+//        return brevdataList.stream().filter(
+//            Predicate<Brevdata> { brevdata: Brevdata ->
+//                ((brevdata as Brev).getUtland() != null && ((brevdata as Brev).getUtland()
+//                    .equals(BrevUtlandCode.ALLTID) ||
+//                        utlandsStatus.equals((brevdata as Brev).getUtland())
+//                        )
+//                        )
+//            }
+//        ).collect(Collectors.toList<Any>())
+//    }
+//
+//    private fun filterBrevdataOnSakKontekst(brevdataList: List<Brevdata>): List<Brevdata> {
+//        return brevdataList.stream().filter(Predicate<Brevdata> { brevdata: Brevdata ->
+//            brevdataHas
+//            Brevkontekst(
+//                brevdata,
+//                BrevKontekstCode.SAK
+//            )
+//        }).collect(Collectors.toList<Any>())
+//    }
+//
+//    private fun filterBrevdataOnVedtakKontekst(brevdataList: List<Brevdata>): List<Brevdata> {
+//        return brevdataList.stream().filter(Predicate<Brevdata> { brevdata: Brevdata ->
+//            brevdataHasBrevkontekst(
+//                brevdata,
+//                BrevKontekstCode.VEDTAK
+//            )
+//        }).collect(Collectors.toList<Any>())
+//    }
+//
+//    private fun brevdataHasBrevkontekst(brevdata: Brevdata, brevKontekstCode: BrevKontekstCode): Boolean {
+//        var result = false
+//        if (BrevKontekstCode.SAK.equals(brevKontekstCode)) {
+//            if ((brevdata as Brev).getBrevkontekst() != null
+//                && EnumUtils.isEnumNameOfValue(
+//                    (brevdata as Brev).getBrevkontekst().toString(), BrevKontekstCode.SAK,
+//                    BrevKontekstCode.ALLTID
+//                )
+//            ) {
+//                result = true
+//            }
+//        } else if (BrevKontekstCode.VEDTAK.equals(brevKontekstCode)) {
+//            if ((brevdata as Brev).getBrevkontekst() != null
+//                && EnumUtils.isEnumNameOfValue(
+//                    (brevdata as Brev).getBrevkontekst().toString(), BrevKontekstCode.VEDTAK,
+//                    BrevKontekstCode.ALLTID
+//                )
+//            ) {
+//                result = true
+//            }
+//        }
+//        return result
+//    }
 }
 
 data class BrevdataDto(
@@ -93,20 +215,18 @@ data class BrevdataDto(
     val utland: String?,
     val brevregeltype: String?,
     val brevkravtype: String?,
-    val brevkontekst: String?,
+    val brevkontekst: BrevkontekstCode?,
     val dokumentkategori: DokumentkategoriCode,
     val synligForVeileder: Boolean?,
     val prioritet: Int?,
-    val brevkodeIBrevsystem: String?,
+    val brevkodeIBrevsystem: String,
     val brevsystem: BrevSystem,
     val brevgruppe: String?,
 ) {
     enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
-    enum class BrevSystem {
-        DOKSYS,
-        GAMMEL,     //EXSTREAM
-    }
+    enum class BrevSystem { DOKSYS, GAMMEL /*EXSTREAM*/ , }
+    enum class BrevkontekstCode { ALLTID, SAK, VEDTAK }
 
     enum class DokumentType {
         I, //Inngende dokument

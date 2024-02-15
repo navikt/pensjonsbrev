@@ -18,7 +18,7 @@ const notFoundRoute = new NotFoundRoute({
   getParentRoute: () => rootRoute,
   component: () => "Finner ikke siden",
 });
-asdfa
+
 // Set up a Router instance
 const router = createRouter({
   routeTree,
