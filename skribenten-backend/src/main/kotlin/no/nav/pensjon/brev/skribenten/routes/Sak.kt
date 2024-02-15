@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
+import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import no.nav.pensjon.brev.skribenten.services.respondWithResult
 import org.slf4j.LoggerFactory
 
@@ -30,7 +31,7 @@ fun Route.sakRoute(
 ) {
     route("/sak") {
         intercept(ApplicationCallPipeline.Call) {
-            sjekkEnhetstilgangTilSak(navansattService)
+            sjekkEnhetstilgangTilSak(navansattService, penService)
         }
         get("/{sakId}/") {
             val sakId = call.parameters.getOrFail("sakId")
@@ -56,16 +57,23 @@ fun Route.sakRoute(
 
 data class PidRequest(val pid: String)
 
-suspend fun PipelineContext<Unit, ApplicationCall>.sjekkEnhetstilgangTilSak(navansattService: NavansattService) {
+suspend fun PipelineContext<Unit, ApplicationCall>.sjekkEnhetstilgangTilSak(navansattService: NavansattService, penService: PenService) {
     val sakId = call.parameters["sakId"].toString()
     if (sakId.isEmpty()) {
         call.respond(HttpStatusCode.BadRequest, "SakId mangler i request")
         return
     }
-    if (!navansattService.harAnsattTilgangTilEnhet(call, sakId)) {
-        val message = "Navansatt: ${fetchLoggedInNavIdent(call)} har ikke enhetstilgang til sak"
-        logger.error(message)
-        call.respond(HttpStatusCode.Forbidden, message)
+    when(val sakSelection = penService.hentSak(call, sakId)) {
+        is ServiceResult.Error -> call.respond(sakSelection.statusCode, sakSelection.error)
+        is ServiceResult.Ok -> {
+            if(sakSelection.result.enhetId.isNullOrEmpty()){
+                call.respond(HttpStatusCode.BadRequest, "Sak har ikke enhetsId")
+            } else if (!navansattService.harAnsattTilgangTilEnhet(call, sakSelection.result.enhetId)) {
+                    val message = "Navansatt: ${fetchLoggedInNavIdent(call)} har ikke enhetstilgang til sak"
+                    logger.error(message)
+                    call.respond(HttpStatusCode.Forbidden, message)
+            }
+        }
     }
 }
 

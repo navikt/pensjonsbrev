@@ -24,8 +24,6 @@ class LegacyBrevService(
             val sakEnhetId = serviceResult.enhetId
             if (sakEnhetId == null) {
                 return BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
-            } else if (!navansattService.harAnsattTilgangTilEnhet(call = call, enhetsId = sakEnhetId)) {
-                return BestillOgRedigerBrevResponse(NAVANSATT_ENHETER_ERROR)
             } else {
                 val brevMetadata = brevmetadataService.getMal(request.brevkode)
                 return when (brevMetadata.brevsystem) {
@@ -268,7 +266,6 @@ class LegacyBrevService(
             SAF_ERROR,
             SKRIBENTEN_INTERNAL_ERROR,
             ENHETSID_MANGLER,
-            NAVANSATT_ENHETER_ERROR
         }
     }
 }
