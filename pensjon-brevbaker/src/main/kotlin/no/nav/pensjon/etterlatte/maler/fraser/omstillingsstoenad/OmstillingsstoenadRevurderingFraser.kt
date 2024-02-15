@@ -61,13 +61,20 @@ class OmstillingsstoenadRevurderingFraser {
                             paragraph {
                                 textExpr(
                                     Language.Bokmal to "Omstillingsstønaden din er endret fra ".expr() +
-                                            formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner hver måned " +
-                                            "før skatt. ",
+                                            formatertVirkningsdato + ".",
                                     Language.Nynorsk to "Omstillingsstønaden din er endret fra ".expr() +
-                                            formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner kvar " +
-                                            "månad før skatt.",
+                                            formatertVirkningsdato + ".",
                                     Language.English to "Your adjustment allowance will change on ".expr() +
-                                            formatertVirkningsdato + ". You will receive NOK " + formatertBeloep +
+                                            formatertVirkningsdato + "."
+                                )
+                            }
+                            paragraph {
+                                textExpr(
+                                    Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned " +
+                                            "før skatt. ",
+                                    Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner kvar " +
+                                            "månad før skatt.",
+                                    Language.English to "You will receive NOK ".expr() + formatertBeloep +
                                             " each month before tax."
                                 )
                             }
@@ -83,6 +90,16 @@ class OmstillingsstoenadRevurderingFraser {
                             }
                         }
                     }.orShow {
+                        paragraph {
+                            textExpr(
+                                Language.Bokmal to "Omstillingsstønaden din er endret fra ".expr() +
+                                        formatertVirkningsdato + ".",
+                                Language.Nynorsk to "Omstillingsstønaden din er endret fra ".expr() +
+                                        formatertVirkningsdato + ".",
+                                Language.English to "Your adjustment allowance will change on ".expr() +
+                                        formatertVirkningsdato + "."
+                            )
+                        }
                         paragraph {
                             text(
                                 Language.Bokmal to "Du får ikke utbetalt stønad. ",
@@ -108,7 +125,7 @@ class OmstillingsstoenadRevurderingFraser {
                         text(
                             Language.Bokmal to "Omstillingsstønaden din er vurdert på nytt. ",
                             Language.Nynorsk to "Omstillingsstønaden din er vurdert på nytt. ",
-                            Language.English to "We have re-evaluated your adjustment allowance."
+                            Language.English to "We have re-evaluated your adjustment allowance. "
                         )
                         showIf(harUtbetaling) {
                             textExpr(
