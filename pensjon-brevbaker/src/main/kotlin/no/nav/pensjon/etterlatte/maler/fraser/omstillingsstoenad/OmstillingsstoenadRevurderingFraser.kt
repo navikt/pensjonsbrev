@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -150,28 +151,11 @@ class OmstillingsstoenadRevurderingFraser {
             }
 
             paragraph {
-                text(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i " +
-                            "folketrygdloven § <riktig paragrafhenvisning> ",
-                    Language.Nynorsk to "Vedtaket er gjort etter føresegnene om omstillingsstønad i " +
-                            "folketrygdlova § <tilvising til rett paragraf> ",
-                    Language.English to "The decision was made in accordance with the provisions regarding " +
-                            "the adjustment allowance in the National Insurance Act – sections <correct paragraph reference> " +
-                            "National Insurance Act ",
+                textExpr(
+                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Language.Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova §§ <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Language.English to "This decision has been made pursuant to the provisions regarding adjustment allowance in the National Insurance Act – sections <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 and 22-13.", " and 22-12."),
                 )
-                showIf(etterbetaling) {
-                    text(
-                        Language.Bokmal to ", § 22-12 og § 22-13.",
-                        Language.Nynorsk to ", § 22-12 og § 22-13.",
-                        Language.English to ", 22-12 and 22-13."
-                    )
-                }.orShow {
-                    text(
-                        Language.Bokmal to "og § 22-12.",
-                        Language.Nynorsk to "og § 22-12.",
-                        Language.English to "and 22-12."
-                    )
-                }
             }
 
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
