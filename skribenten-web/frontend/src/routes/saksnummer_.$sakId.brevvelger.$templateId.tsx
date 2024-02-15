@@ -622,8 +622,8 @@ const samhandlerSearchValidationSchema = z.object({
 function VelgSamhandlerModal() {
   const reference = useRef<HTMLDialogElement>(null);
   const { idTSSEkstern } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
-
+  const [selectedIdTSSEkstern, setSelectedIdTSSEkstern] = useState<string | undefined>(undefined);
+  console.log(selectedIdTSSEkstern);
   const methods = useForm<z.infer<typeof samhandlerSearchValidationSchema>>({
     defaultValues: {
       samhandlerType: undefined,
@@ -664,45 +664,58 @@ function VelgSamhandlerModal() {
 
       <Modal header={{ heading: "Finn samhandler" }} ref={reference} width={600}>
         <Modal.Body>
-          <FormProvider {...methods}>
-            <VStack
-              as="form"
-              gap="4"
-              id="skjema"
-              method="dialog"
-              onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
-            >
-              <Controller
-                name="navn"
-                render={({ field, fieldState }) => (
-                  <Search
-                    error={fieldState.error?.message}
-                    hideLabel={false}
-                    label="Søk"
-                    onChange={(value) => field.onChange(value)}
-                    variant="primary"
-                  >
-                    <Search.Button form="skjema" icon={<FileSearchIcon />} loading={finnSamhandlerMutation.isPending} />
-                  </Search>
+          {selectedIdTSSEkstern === undefined ? (
+            <FormProvider {...methods}>
+              <VStack
+                as="form"
+                gap="4"
+                id="skjema"
+                method="dialog"
+                onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
+              >
+                <Controller
+                  name="navn"
+                  render={({ field, fieldState }) => (
+                    <Search
+                      error={fieldState.error?.message}
+                      hideLabel={false}
+                      label="Søk"
+                      onChange={(value) => field.onChange(value)}
+                      variant="primary"
+                    >
+                      <Search.Button
+                        form="skjema"
+                        icon={<FileSearchIcon />}
+                        loading={finnSamhandlerMutation.isPending}
+                      />
+                    </Search>
+                  )}
+                />
+                <SamhandlerTypeSelectFormPart />
+                {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
+                {finnSamhandlerMutation.error && (
+                  <ApiError error={finnSamhandlerMutation.error} title="Kunne ikke hente samhandlere." />
                 )}
-              />
-              <SamhandlerTypeSelectFormPart />
-              {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
-              {finnSamhandlerMutation.error && (
-                <ApiError error={finnSamhandlerMutation.error} title="Kunne ikke hente samhandlere." />
+                <SamhandlerSearchResults
+                  onSelect={(id) => {
+                    // reference.current?.close();
+                    // navigate({
+                    //   search: (s) => ({ ...s, idTSSEkstern: id }),
+                    //   replace: true,
+                    // });
+                    setSelectedIdTSSEkstern(id);
+                  }}
+                  samhandlere={finnSamhandlerMutation.data?.samhandlere ?? []}
+                />
+              </VStack>
+            </FormProvider>
+          ) : (
+            <VerifySamhandler
+              samhandler={finnSamhandlerMutation.data?.samhandlere?.find(
+                (samhandler) => samhandler.idTSSEkstern === selectedIdTSSEkstern,
               )}
-              <SamhandlerSearchResults
-                onSelect={(id) => {
-                  reference.current?.close();
-                  navigate({
-                    search: (s) => ({ ...s, idTSSEkstern: id }),
-                    replace: true,
-                  });
-                }}
-                samhandlere={finnSamhandlerMutation.data?.samhandlere ?? []}
-              />
-            </VStack>
-          </FormProvider>
+            />
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={() => reference.current?.close()} type="button" variant="secondary">
@@ -711,6 +724,42 @@ function VelgSamhandlerModal() {
         </Modal.Footer>
       </Modal>
     </>
+  );
+}
+
+function VerifySamhandler({ samhandler }: { samhandler: Samhandler }) {
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  return (
+    <VStack>
+      <Heading level="2" size="small">
+        {samhandler.samhandlerType}
+      </Heading>
+      <Table>
+        <Table.Body>
+          <Table.Row>
+            <Table.HeaderCell scope="row">Navn</Table.HeaderCell>
+            <Table.DataCell>{samhandler.navn}</Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.HeaderCell scope="row">Adresselinje 1</Table.HeaderCell>
+            <Table.DataCell>{samhandler.linje1}</Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.HeaderCell scope="row">Adresselinje 2</Table.HeaderCell>
+            <Table.DataCell>{samhandler.linje2}</Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.HeaderCell scope="row">Adresselinje 3</Table.HeaderCell>
+            <Table.DataCell>{samhandler.linje3}</Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.HeaderCell scope="row">Adresselinje 3</Table.HeaderCell>
+            <Table.DataCell>{samhandler.linje3}</Table.DataCell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
+    </VStack>
   );
 }
 
@@ -756,7 +805,6 @@ function SamhandlerSearchResults({
             <Table.ColumnHeader colSpan={2} sortKey="navn" sortable>
               Navn
             </Table.ColumnHeader>
-            {/*<Table.HeaderCell scope="col"></Table.HeaderCell>*/}
           </Table.Row>
         </Table.Header>
         <Table.Body>
