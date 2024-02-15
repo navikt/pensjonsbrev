@@ -127,10 +127,6 @@ object BarnepensjonRevurderingFraser {
                 Language.English to "(utfall jamfør tekstbibliotek)",
             ) }
 
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(FeilutbetalingUtenVarselRevurdering)
-            }
-
             paragraph {
                 text(
                     Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning> ",
@@ -151,6 +147,10 @@ object BarnepensjonRevurderingFraser {
                     )
                 }
 
+            }
+
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                includePhrase(FeilutbetalingUtenVarselRevurdering)
             }
         }
     }

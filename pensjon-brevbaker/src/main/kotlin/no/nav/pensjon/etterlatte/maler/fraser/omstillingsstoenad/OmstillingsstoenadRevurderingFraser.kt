@@ -149,10 +149,6 @@ class OmstillingsstoenadRevurderingFraser {
                 )
             }
 
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(FeilutbetalingUtenVarselRevurdering)
-            }
-
             paragraph {
                 text(
                     Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i " +
@@ -176,7 +172,10 @@ class OmstillingsstoenadRevurderingFraser {
                         Language.English to "and 22-12."
                     )
                 }
+            }
 
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                includePhrase(FeilutbetalingUtenVarselRevurdering)
             }
         }
     }
