@@ -63,8 +63,9 @@ suspend fun PipelineContext<Unit, ApplicationCall>.sjekkEnhetstilgangTilSak(nava
         call.respond(HttpStatusCode.BadRequest, "SakId mangler i request")
         return
     }
+    val loggedInNavIdent: String = fetchLoggedInNavIdent(call)
     val sakSelection = async { penService.hentSak(call, sakId) }
-    val enheter = async { navansattService.hentNavAnsattEnhetListe(call, sakId) }
+    val enheter = async { navansattService.hentNavAnsattEnhetListe(call, loggedInNavIdent) }
 
 
     sakSelection.await().map { sak ->
