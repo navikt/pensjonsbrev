@@ -764,7 +764,7 @@ function VerifySamhandler({ idTSSEkstern }: { idTSSEkstern: string }) {
 
   if (hentSamhandlerAdresseQuery.isPending) {
     return (
-      <VStack gap="2">
+      <VStack gap="4">
         <Skeleton height={30} variant="rectangle" width="100%" />
         <Skeleton height={30} variant="rectangle" width="100%" />
         <Skeleton height={30} variant="rectangle" width="100%" />
