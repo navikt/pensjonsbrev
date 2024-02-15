@@ -4,7 +4,6 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   Buildings3Icon,
-  FileSearchIcon,
   PencilIcon,
   PersonIcon,
   StarFillIcon,
@@ -22,7 +21,6 @@ import {
   Modal,
   Radio,
   RadioGroup,
-  Search,
   Select,
   Table,
   Tag,
@@ -680,25 +678,23 @@ function VelgSamhandlerModal() {
                 method="dialog"
                 onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
               >
-                <Controller
-                  name="navn"
-                  render={({ field, fieldState }) => (
-                    <Search
-                      error={fieldState.error?.message}
-                      hideLabel={false}
-                      label="Søk"
-                      onChange={(value) => field.onChange(value)}
-                      variant="primary"
-                    >
-                      <Search.Button
-                        form="skjema"
-                        icon={<FileSearchIcon />}
-                        loading={finnSamhandlerMutation.isPending}
-                      />
-                    </Search>
-                  )}
+                <TextField
+                  autoComplete="off"
+                  error={methods.formState.errors.navn?.message}
+                  label="Søk"
+                  {...methods.register("navn")}
                 />
                 <SamhandlerTypeSelectFormPart />
+                <Button
+                  css={css`
+                    width: fit-content;
+                    align-self: flex-end;
+                  `}
+                  form="skjema"
+                  loading={finnSamhandlerMutation.isPending}
+                >
+                  Søk
+                </Button>
                 {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
                 {finnSamhandlerMutation.error && (
                   <ApiError error={finnSamhandlerMutation.error} title="Kunne ikke hente samhandlere." />
