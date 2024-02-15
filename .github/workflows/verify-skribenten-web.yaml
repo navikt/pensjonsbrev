@@ -5,8 +5,8 @@ on:
     branches:
       - 'main'
     paths:
-      - .github/workflows/verify-web.yaml
-      - skribenten-web/**
+      - .github/workflows/verify-skribenten-web.yaml
+      - skribenten-web/frontend/**
 
 jobs:
   verify:
@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: skribenten-web/frontend
       - name: Install dependencies

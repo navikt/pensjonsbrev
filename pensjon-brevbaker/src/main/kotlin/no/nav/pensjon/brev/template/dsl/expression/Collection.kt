@@ -61,7 +61,7 @@ fun <In1, In2, Out> Expression<Collection<In2>>.map(
     )
 
 fun <In> Expression<Collection<In>>.map(mapper: BinaryOperation<In, Language, String>): Expression<Collection<String>> =
-    map(mapper, Expression.FromScope(ExpressionScope<Any, *>::language))
+    map(mapper, Expression.FromScope.language(ExpressionScope<Any, *>::language))
 
 fun Expression<Collection<String>>.format(): StringExpression = format(formatter = BinaryOperation.LocalizedCollectionFormat)
 

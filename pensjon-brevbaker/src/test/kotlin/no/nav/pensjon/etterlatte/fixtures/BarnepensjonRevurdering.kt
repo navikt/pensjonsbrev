@@ -7,6 +7,7 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
+import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.InnerElement
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
@@ -20,7 +21,10 @@ import java.time.Month
 
 fun createBarnepensjonRevurderingDTO() = BarnepensjonRevurderingDTO(
     innhold = createPlaceholderForRedigerbartInnhold(),
+    innholdForhaandsvarsel = createPlaceholderForRedigerbartInnhold(),
     erEndret = true,
+    erOmgjoering = false,
+    datoVedtakOmgjoering = null,
     beregning = BarnepensjonBeregning(
         innhold = listOf(),
         virkningsdato = LocalDate.of(2023, Month.MAY, 1),
@@ -91,8 +95,12 @@ fun createBarnepensjonRevurderingDTO() = BarnepensjonRevurderingDTO(
     bosattUtland = false,
     kunNyttRegelverk = false,
     harFlereUtbetalingsperioder = true,
+    harUtbetaling = true,
+    feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
 )
 
 fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderingRedigerbartUtfallDTO(
     erEtterbetaling = true,
+    harUtbetaling = false,
+    feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
 )

@@ -25,7 +25,7 @@ export const Route = createFileRoute("/saksnummer/$sakId")({
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { sakId } = Route.useParams();
-    return <ApiError error={error} text={`Klarte ikke hente saksnummer ${sakId}`} />;
+    return <ApiError error={error} title={`Klarte ikke hente saksnummer ${sakId}`} />;
   },
   component: SakBreadcrumbsPage,
   validateSearch: (search: Record<string, unknown>): { vedtaksId?: string } => ({

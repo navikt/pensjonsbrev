@@ -41,7 +41,7 @@ object BarnepensjonForeldreloesFraser {
                             ifElse(
                                 vedtattIPesys,
                                 "Vi viser til at du er innvilget barnepensjon. Stortinget har vedtatt nye regler for barnepensjon. Pensjonen din er derfor endret fra 1. januar 2024.".expr(),
-                                "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + "fordi begge foreldrene dine er registrert død.".expr()
+                                "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.".expr()
                             ),
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
@@ -95,7 +95,7 @@ object BarnepensjonForeldreloesFraser {
             showIf(vedtattIPesys) {
                 paragraph {
                     text(
-                        Language.Bokmal to "De nye reglene for barnepensjon har ingen søskenjustering, og du vil få pensjon til du er 20 år selv om du er under utdanning.",
+                        Language.Bokmal to "De nye reglene for barnepensjon har ingen søskenjustering, og du vil få pensjon til du er 20 år selv om du ikke er under utdanning.",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )
@@ -132,7 +132,7 @@ object BarnepensjonForeldreloesFraser {
                     item {
                         text(
                             Language.Bokmal to "minst en av foreldrene dine i de siste fem årene før dødsfallet " +
-                                    "var medlem i folketrygden, eller fikk pensjon eller uføretrygd fra folketrygden",
+                                    "var medlem i folketrygden, eller fikk pensjon eller uføretrygd fra folketrygden.",
                             Language.Nynorsk to "",
                             Language.English to "",
                         )
@@ -143,17 +143,17 @@ object BarnepensjonForeldreloesFraser {
                 showIf(etterbetaling) {
                     text(
                         Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
-                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9, § 22-12 og § 22-13.",
+                                "§§ 18-2, 18-3, 18-4, 18-5, 22-12 og 22-13.",
                         Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i " +
-                                "folketrygdlova §§ 17-2, 17-3, 17-4, 17-5, 17-6, 17-9 og 22-12 og § 22-13.",
+                                "folketrygdlova §§ 18-2, 18-3, 18-4, 18-5, 22-12 og 22-13.",
                         Language.English to "",
                     )
                 } orShow {
                     text(
                         Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
-                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9 og § 22-12.",
+                                "§§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
                         Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova " +
-                                "§§ 17-2, 17-3, 17-4, 17-5, 17-6, 17-9 og 22-12.",
+                                "§§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
                         Language.English to "",
                     )
                 }
@@ -188,17 +188,17 @@ object BarnepensjonForeldreloesFraser {
                     Language.Nynorsk to "Dersom du har rett på etterbetaling, vil du vanlegvis få denne i løpet av tre veker.",
                     Language.English to "If you are entitled to a back payment, you will normally receive this within three weeks.",
                 )
-            }
-            ifNotNull(etterbetaling) {
-                paragraph {
+                ifNotNull(etterbetaling) {
                     text(
-                        Language.Bokmal to "Det kan bli beregnet fradrag i etterbetalingen for skatt, eller ytelser du har mottatt fra NAV eller andre. " +
+                        Language.Bokmal to " Det kan bli beregnet fradrag i etterbetalingen for skatt, eller ytelser du har mottatt fra NAV eller andre. " +
                                 "Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. " +
                                 "Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )
                 }
+            }
+            ifNotNull(etterbetaling) {
                 paragraph {
                     text(
                         Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. " +
@@ -208,25 +208,6 @@ object BarnepensjonForeldreloesFraser {
                         Language.English to "",
                     )
                 }
-            }
-        }
-    }
-
-    object HvorLengeKanDuFaaBarnepensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title2 {
-                text(
-                    Language.Bokmal to "Hvor lenge kan du få barnepensjon?",
-                    Language.Nynorsk to "",
-                    Language.English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Language.Bokmal to "Du er innvilget barnepensjon til og med den kalendermåneden du fyller 20 år, så lenge du oppfyller vilkårene.",
-                    Language.Nynorsk to "",
-                    Language.English to "",
-                )
             }
         }
     }

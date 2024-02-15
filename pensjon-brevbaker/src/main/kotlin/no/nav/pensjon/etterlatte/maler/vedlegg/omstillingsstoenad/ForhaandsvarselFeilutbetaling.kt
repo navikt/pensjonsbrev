@@ -1,19 +1,19 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.innholdForhaandsvarsel as innholdForhaandsvarselOpphoer
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innholdForhaandsvarsel as innholdForhaansvarselRevurdering
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadForhaandsvarselFraser
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innholdForhaandsvarsel
 
 
 @TemplateModelHelpers
-val forhaandsvarselFeilutbetaling = createAttachment(
+val forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering = createAttachment(
     title = newText(
         Bokmal to "Forhåndsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
         Nynorsk to "Førehandsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
@@ -22,10 +22,24 @@ val forhaandsvarselFeilutbetaling = createAttachment(
     includeSakspart = false
 ) {
 
-    konverterElementerTilBrevbakerformat(innholdForhaandsvarsel)
+    konverterElementerTilBrevbakerformat(innholdForhaansvarselRevurdering)
 
-    includePhrase(OmstillingsstoenadForhaandsvarselFraser.SlikUttalerDuDeg)
-    includePhrase(OmstillingsstoenadForhaandsvarselFraser.HvaSkjerVidereIDinSak)
-    includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
-    includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
+    includePhrase(Felles.SlikUttalerDuDeg)
+    includePhrase(Felles.HvaSkjerVidereIDinSak)
+}
+
+@TemplateModelHelpers
+val forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer = createAttachment(
+    title = newText(
+        Bokmal to "Forhåndsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
+        Nynorsk to "Førehandsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
+        English to "Advance Notice of Possible Repayment of Incorrectly Paid Adjustment Allowance",
+    ),
+    includeSakspart = false
+) {
+
+    konverterElementerTilBrevbakerformat(innholdForhaandsvarselOpphoer)
+
+    includePhrase(Felles.SlikUttalerDuDeg)
+    includePhrase(Felles.HvaSkjerVidereIDinSak)
 }

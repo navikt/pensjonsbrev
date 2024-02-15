@@ -27,13 +27,14 @@ class LegacyBrevService(
             } else if (!navansattService.harAnsattTilgangTilEnhet(call = call, enhetsId = sakEnhetId)) {
                 return BestillOgRedigerBrevResponse(NAVANSATT_ENHETER_ERROR)
             } else {
-                return when (brevmetadataService.getMal(request.brevkode).brevsystem) {
+                val brevMetadata = brevmetadataService.getMal(request.brevkode)
+                return when (brevMetadata.brevsystem) {
                     BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request, sakEnhetId)
                     BrevdataDto.BrevSystem.GAMMEL -> bestillExstreamBrev(
                         call = call,
                         request = request,
                         navIdent = fetchLoggedInNavIdent(call),
-                        metadata = brevmetadataService.getMal(request.brevkode),
+                        metadata = brevMetadata,
                         navn = fetchLoggedInName(call),
                         enhetsId = serviceResult.enhetId
                     )
@@ -171,6 +172,27 @@ class LegacyBrevService(
         return call.getLoggedInName() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker i claim")
     }
 
+    suspend fun harTilgangTilEnhet(call: ApplicationCall, enhetsId: String): Boolean {
+        return navansattService.harAnsattTilgangTilEnhet(
+            call = call,
+            ansattId = fetchLoggedInNavIdent(call = call),
+            enhetsId = enhetsId
+        ).let { when (it) {
+            is ServiceResult.Error -> false
+            is ServiceResult.Ok -> it.result
+        }}
+    }
+
+    /**
+     * @param brevkode ID til brevet som bestilles
+     * @param gjelderPid brukeren brevet gjelder
+     * @param landkode      land som brevet skal til. Kun for e-blanketter
+     * @param mottakerText  mottaker i fritekst. Kun for e-blanketter
+     * @param isSensitive   om brevet inneholder sensitive opplysninger som ikke skal vises ved nivå 3 pålogging.
+     * Brukes ikke i doksys brev ettersom det settes senere i prosessen.
+     * @param vedtaksId     vedtakId dersom brevet er ett vedtaksbrev. Brukes for å hente opplysninger om vedtaket for vedtaksbrev.
+     * @param idTSSEkstern  overstyring av mottaker til samhandler med TSS id
+     * */
     data class OrderLetterRequest(
         val brevkode: String,
         val spraak: SpraakKode,
@@ -178,9 +200,10 @@ class LegacyBrevService(
         val gjelderPid: String,
         val landkode: String? = null,
         val mottakerText: String? = null,
-        val isSensitive: Boolean,
+        val isSensitive: Boolean?,
         val vedtaksId: Long? = null,
-    )
+        val idTSSEkstern: String? = null,
+        )
 
     data class BestillOgRedigerBrevResponse(
         val url: String?,

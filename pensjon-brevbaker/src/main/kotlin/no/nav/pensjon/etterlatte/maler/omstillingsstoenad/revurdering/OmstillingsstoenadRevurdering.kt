@@ -38,7 +38,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.lavEllerIngenInntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetaling
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 import java.time.LocalDate
 
@@ -132,6 +132,6 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
         includeAttachment(beregningAvOmstillingsstoenad, beregning)
         includeAttachment(informasjonOmOmstillingsstoenad, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
-        includeAttachment(forhaandsvarselFeilutbetaling, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
+        includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }
 }

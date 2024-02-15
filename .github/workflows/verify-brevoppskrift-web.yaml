@@ -1,0 +1,36 @@
+name: "verify: brevoppskrift-web"
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - .github/workflows/verify-brevoppskrift-web.yaml
+      - brevoppskrift-web/frontend/**
+
+jobs:
+  verify:
+    name: Verify tests, lint and typescript errors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: brevoppskrift-web/frontend
+      - name: Install dependencies
+        working-directory: brevoppskrift-web/frontend
+        run: npm i
+
+      - name: Run ESLint
+        working-directory: brevoppskrift-web/frontend
+        run: npm run lint
+
+      - name: Run stylelint
+        working-directory: brevoppskrift-web/frontend
+        run: npm run stylelint
+
+      - name: Check for typescript errors
+        working-directory: brevoppskrift-web/frontend
+        run: npm run check-types

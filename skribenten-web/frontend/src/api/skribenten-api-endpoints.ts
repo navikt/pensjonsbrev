@@ -16,8 +16,9 @@ import type {
   HentsamhandlerResponseDto,
   KontaktAdresseResponse,
   LetterMetadata,
+  OrderDoksysLetterRequest,
   OrderEblankettRequest,
-  OrderLetterRequest,
+  OrderExstreamLetterRequest,
   PidRequest,
   PreferredLanguage,
   SakDto,
@@ -154,16 +155,23 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-export async function orderLetter(orderLetterRequest: OrderLetterRequest | OrderEblankettRequest) {
-  const response = (
-    await axios.post<BestillOgRedigerBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/bestillbrev`, orderLetterRequest)
-  ).data;
+export async function orderLetter(
+  orderLetterRequest: OrderExstreamLetterRequest | OrderEblankettRequest | OrderDoksysLetterRequest,
+) {
+  const response = await axios.post<BestillOgRedigerBrevResponse>(
+    `${SKRIBENTEN_API_BASE_PATH}/bestillbrev`,
+    orderLetterRequest,
+  );
 
-  if (response.failureType) {
-    throw new Error(response.failureType);
+  if (response.data.failureType) {
+    throw convertResponseToAxiosError({ message: response.data.failureType, response });
+  }
+  const url = response.data.url;
+  if (!url) {
+    throw convertResponseToAxiosError({ message: "Responsen mangler url for redigering", response });
   }
 
-  return response.url ?? "";
+  return url;
 }
 
 export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
@@ -173,17 +181,16 @@ export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
 export const hentSamhandler = {
   queryKey: samhandlerKeys.idTSSEkstern,
   queryFn: async (request: HentSamhandlerRequestDto) => {
-    const response = (
-      await axios.post<HentsamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request)
-    ).data;
+    const response = await axios.post<HentsamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request);
 
-    if (response.failure) {
-      throw new Error(response.failure);
+    if (response.data.failure) {
+      throw convertResponseToAxiosError({ message: response.data.failure, response });
     }
 
-    return response.success;
+    return response.data.success;
   },
 };
+
 export const hentSamhandlerAdresse = {
   queryKey: samhandlerAdresseKeys.idTSSEkstern,
   queryFn: async (request: HentSamhandlerAdresseRequestDto) => {
@@ -193,10 +200,13 @@ export const hentSamhandlerAdresse = {
     );
 
     if (response.data.failureType) {
-      // TODO: generalize
-      throw new AxiosError(response.data.failureType, "200", undefined, request, response);
+      throw convertResponseToAxiosError({ message: response.data.failureType, response });
     }
 
     return response.data.adresse;
   },
 };
+
+function convertResponseToAxiosError({ message, response }: { message: string; response: AxiosResponse }) {
+  return new AxiosError(message, undefined, undefined, undefined, response);
+}

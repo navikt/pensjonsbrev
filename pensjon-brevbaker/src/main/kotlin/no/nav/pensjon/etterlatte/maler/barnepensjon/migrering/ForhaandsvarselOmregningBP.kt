@@ -170,9 +170,9 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
                 )
                 kontakttelefonPensjon(erBosattUtlandet)
                 text(
-                    Language.Bokmal to " hverdager 9-15.",
-                    Language.Nynorsk to ", kvardagar 9–15. ",
-                    Language.English to ") weekdays 9-15."
+                    Language.Bokmal to " hverdager mellom kl. 09.00-15.00.",
+                    Language.Nynorsk to ", kvardagar mellom kl. 09.00–15.00. ",
+                    Language.English to ") weekdays between 09.00-15.00."
                 )
             }
 

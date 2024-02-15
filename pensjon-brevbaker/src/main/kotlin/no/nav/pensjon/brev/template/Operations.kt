@@ -55,6 +55,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
     }
 
+    // TODO: Should be a binary operation
     data class IfNull<In>(val then: In) : UnaryOperation<In?, In>() {
         override fun apply(input: In?): In = input ?: then
     }
@@ -70,7 +71,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
 typealias LocalizedFormatter<T> = BinaryOperation<T, Language, String>
 
-abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
+abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
+    data class Documentation(val name: String, val syntax: Notation) {
+        enum class Notation { PREFIX, INFIX, POSTFIX, FUNCTION }
+    }
 
     abstract fun apply(first: In1, second: In2): Out
 
@@ -98,7 +102,7 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: Boolean, second: Boolean): Boolean = first || second
     }
 
-    object And : BinaryOperation<Boolean, Boolean, Boolean>() {
+    object And : BinaryOperation<Boolean, Boolean, Boolean>(Documentation("and", Documentation.Notation.INFIX)) {
         override fun apply(first: Boolean, second: Boolean): Boolean = first && second
     }
 
@@ -125,7 +129,7 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
             String.format(second.locale(), "%.2f", first)
     }
 
-    object LocalizedIntFormat : LocalizedFormatter<Int>() {
+    object LocalizedIntFormat : LocalizedFormatter<Int>(Documentation("localizedFormat", Documentation.Notation.FUNCTION)) {
         override fun apply(first: Int, second: Language): String =
             String.format(second.locale(), "%d", first)
     }
