@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ArrowLeftIcon,
   ArrowRightIcon,
   Buildings3Icon,
   FileSearchIcon,
@@ -64,7 +65,7 @@ import type {
   SamhandlerPostadresse,
 } from "~/types/apiTypes";
 import { BrevSystem, SamhandlerTypeCode, SpraakKode } from "~/types/apiTypes";
-import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
+import { SAMHANDLER_ENUM_TO_TEXT, SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
@@ -621,9 +622,10 @@ const samhandlerSearchValidationSchema = z.object({
 
 function VelgSamhandlerModal() {
   const reference = useRef<HTMLDialogElement>(null);
+  const navigate = useNavigate({ from: Route.fullPath });
   const { idTSSEkstern } = Route.useSearch();
   const [selectedIdTSSEkstern, setSelectedIdTSSEkstern] = useState<string | undefined>(undefined);
-  console.log(selectedIdTSSEkstern);
+
   const methods = useForm<z.infer<typeof samhandlerSearchValidationSchema>>({
     defaultValues: {
       samhandlerType: undefined,
@@ -647,6 +649,8 @@ function VelgSamhandlerModal() {
       return await finnSamhandler(request);
     },
   });
+
+  console.log(finnSamhandlerMutation.data);
 
   return (
     <>
@@ -698,11 +702,6 @@ function VelgSamhandlerModal() {
                 )}
                 <SamhandlerSearchResults
                   onSelect={(id) => {
-                    // reference.current?.close();
-                    // navigate({
-                    //   search: (s) => ({ ...s, idTSSEkstern: id }),
-                    //   replace: true,
-                    // });
                     setSelectedIdTSSEkstern(id);
                   }}
                   samhandlere={finnSamhandlerMutation.data?.samhandlere ?? []}
@@ -710,14 +709,46 @@ function VelgSamhandlerModal() {
               </VStack>
             </FormProvider>
           ) : (
-            <VerifySamhandler
-              samhandler={finnSamhandlerMutation.data?.samhandlere?.find(
-                (samhandler) => samhandler.idTSSEkstern === selectedIdTSSEkstern,
-              )}
-            />
+            <VStack gap="4">
+              <Heading level="2" size="small">
+                {
+                  SAMHANDLER_ENUM_TO_TEXT[
+                    finnSamhandlerMutation.data?.samhandlere?.find(
+                      (samhandler) => samhandler.idTSSEkstern === selectedIdTSSEkstern,
+                    )?.samhandlerType
+                  ]
+                }
+              </Heading>
+              <VerifySamhandler idTSSEkstern={selectedIdTSSEkstern} />
+              <Button
+                css={css`
+                  width: fit-content;
+                  align-self: flex-start;
+                `}
+                icon={<ArrowLeftIcon />}
+                onClick={() => setSelectedIdTSSEkstern(undefined)}
+                variant="tertiary"
+              >
+                Tilbake til søk
+              </Button>
+            </VStack>
           )}
         </Modal.Body>
         <Modal.Footer>
+          {selectedIdTSSEkstern && (
+            <Button
+              onClick={() => {
+                reference.current?.close();
+                navigate({
+                  search: (s) => ({ ...s, idTSSEkstern: selectedIdTSSEkstern }),
+                  replace: true,
+                });
+              }}
+              variant="primary"
+            >
+              Bekreft ny mottaker
+            </Button>
+          )}
           <Button onClick={() => reference.current?.close()} type="button" variant="secondary">
             Avbryt
           </Button>
@@ -727,39 +758,41 @@ function VelgSamhandlerModal() {
   );
 }
 
-function VerifySamhandler({ samhandler }: { samhandler: Samhandler }) {
-  const navigate = useNavigate({ from: Route.fullPath });
+function VerifySamhandler({ idTSSEkstern }: { idTSSEkstern: string }) {
+  const hentSamhandlerAdresseData = useQuery({
+    queryKey: hentSamhandlerAdresse.queryKey(idTSSEkstern),
+    queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: idTSSEkstern }),
+  }).data;
+
+  if (!hentSamhandlerAdresseData) {
+    return <></>;
+  }
 
   return (
-    <VStack>
-      <Heading level="2" size="small">
-        {samhandler.samhandlerType}
-      </Heading>
-      <Table>
-        <Table.Body>
-          <Table.Row>
-            <Table.HeaderCell scope="row">Navn</Table.HeaderCell>
-            <Table.DataCell>{samhandler.navn}</Table.DataCell>
-          </Table.Row>
-          <Table.Row>
-            <Table.HeaderCell scope="row">Adresselinje 1</Table.HeaderCell>
-            <Table.DataCell>{samhandler.linje1}</Table.DataCell>
-          </Table.Row>
-          <Table.Row>
-            <Table.HeaderCell scope="row">Adresselinje 2</Table.HeaderCell>
-            <Table.DataCell>{samhandler.linje2}</Table.DataCell>
-          </Table.Row>
-          <Table.Row>
-            <Table.HeaderCell scope="row">Adresselinje 3</Table.HeaderCell>
-            <Table.DataCell>{samhandler.linje3}</Table.DataCell>
-          </Table.Row>
-          <Table.Row>
-            <Table.HeaderCell scope="row">Adresselinje 3</Table.HeaderCell>
-            <Table.DataCell>{samhandler.linje3}</Table.DataCell>
-          </Table.Row>
-        </Table.Body>
-      </Table>
-    </VStack>
+    <Table>
+      <Table.Body>
+        <InversedTableRow label="Navn" value={hentSamhandlerAdresseData.navn} />
+        <InversedTableRow label="Adresselinje 1" value={hentSamhandlerAdresseData.linje1} />
+        <InversedTableRow label="Adresselinje 2" value={hentSamhandlerAdresseData.linje2} />
+        <InversedTableRow label="Adresselinje 3" value={hentSamhandlerAdresseData.linje3} />
+        <InversedTableRow label="Postnummer" value={hentSamhandlerAdresseData.postnr} />
+        <InversedTableRow label="Poststed" value={hentSamhandlerAdresseData.poststed} />
+        <InversedTableRow label="Land" value={hentSamhandlerAdresseData.land} />
+      </Table.Body>
+    </Table>
+  );
+}
+
+function InversedTableRow({ label, value }: { label: string; value?: string }) {
+  if (!value) {
+    return <></>;
+  }
+
+  return (
+    <Table.Row>
+      <Table.HeaderCell scope="row">{label}</Table.HeaderCell>
+      <Table.DataCell>{value}</Table.DataCell>
+    </Table.Row>
   );
 }
 
