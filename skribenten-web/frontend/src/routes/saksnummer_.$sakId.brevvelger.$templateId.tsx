@@ -11,6 +11,7 @@ import {
   StarIcon,
 } from "@navikt/aksel-icons";
 import type { SortState } from "@navikt/ds-react";
+import { Skeleton } from "@navikt/ds-react";
 import {
   Alert,
   BodyShort,
@@ -756,25 +757,37 @@ function VelgSamhandlerModal() {
 }
 
 function VerifySamhandler({ idTSSEkstern }: { idTSSEkstern: string }) {
-  const hentSamhandlerAdresseData = useQuery({
+  const hentSamhandlerAdresseQuery = useQuery({
     queryKey: hentSamhandlerAdresse.queryKey(idTSSEkstern),
     queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: idTSSEkstern }),
-  }).data;
+  });
 
-  if (!hentSamhandlerAdresseData) {
-    return <></>;
+  if (hentSamhandlerAdresseQuery.isPending) {
+    return (
+      <VStack gap="2">
+        <Skeleton height={30} variant="rectangle" width="100%" />
+        <Skeleton height={30} variant="rectangle" width="100%" />
+        <Skeleton height={30} variant="rectangle" width="100%" />
+        <Skeleton height={30} variant="rectangle" width="100%" />
+        <Skeleton height={30} variant="rectangle" width="100%" />
+      </VStack>
+    );
+  }
+
+  if (hentSamhandlerAdresseQuery.isError) {
+    return <ApiError error={hentSamhandlerAdresseQuery.error} title="Fant ikke samhandleradresse" />;
   }
 
   return (
     <Table>
       <Table.Body>
-        <InversedTableRow label="Navn" value={hentSamhandlerAdresseData.navn} />
-        <InversedTableRow label="Adresselinje 1" value={hentSamhandlerAdresseData.linje1} />
-        <InversedTableRow label="Adresselinje 2" value={hentSamhandlerAdresseData.linje2} />
-        <InversedTableRow label="Adresselinje 3" value={hentSamhandlerAdresseData.linje3} />
-        <InversedTableRow label="Postnummer" value={hentSamhandlerAdresseData.postnr} />
-        <InversedTableRow label="Poststed" value={hentSamhandlerAdresseData.poststed} />
-        <InversedTableRow label="Land" value={hentSamhandlerAdresseData.land} />
+        <InversedTableRow label="Navn" value={hentSamhandlerAdresseQuery.data.navn} />
+        <InversedTableRow label="Adresselinje 1" value={hentSamhandlerAdresseQuery.data.linje1} />
+        <InversedTableRow label="Adresselinje 2" value={hentSamhandlerAdresseQuery.data.linje2} />
+        <InversedTableRow label="Adresselinje 3" value={hentSamhandlerAdresseQuery.data.linje3} />
+        <InversedTableRow label="Postnummer" value={hentSamhandlerAdresseQuery.data.postnr} />
+        <InversedTableRow label="Poststed" value={hentSamhandlerAdresseQuery.data.poststed} />
+        <InversedTableRow label="Land" value={hentSamhandlerAdresseQuery.data.land} />
       </Table.Body>
     </Table>
   );
