@@ -10,6 +10,8 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
+import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 
 class NavansattService(config: Config, authService: AzureADService) {
 
@@ -37,6 +39,21 @@ class NavansattService(config: Config, authService: AzureADService) {
             is ServiceResult.Error -> ServiceResult.Error(error = enheter.error, statusCode = enheter.statusCode)
             is ServiceResult.Ok -> ServiceResult.Ok(result = enheter.result.any { it.id == enhetsId })
         }
+    }
+
+    suspend fun harAnsattTilgangTilEnhet(call: ApplicationCall, enhetsId: String): Boolean {
+        return harAnsattTilgangTilEnhet(
+            call = call,
+            ansattId = fetchLoggedInNavIdent(call = call),
+            enhetsId = enhetsId
+        ).let { when (it) {
+            is ServiceResult.Error -> false
+            is ServiceResult.Ok -> it.result
+        }}
+    }
+
+    private fun fetchLoggedInNavIdent(call: ApplicationCall): String {
+        return call.getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke ident på innlogget bruker i claim")
     }
 }
 

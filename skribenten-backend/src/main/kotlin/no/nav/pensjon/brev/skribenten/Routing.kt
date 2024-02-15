@@ -6,9 +6,25 @@ import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
-import no.nav.pensjon.brev.skribenten.routes.*
+import no.nav.pensjon.brev.skribenten.routes.bestillBrevRoute
+import no.nav.pensjon.brev.skribenten.routes.brevbakerRoute
+import no.nav.pensjon.brev.skribenten.routes.brevmalerRoute
+import no.nav.pensjon.brev.skribenten.routes.healthRoute
+import no.nav.pensjon.brev.skribenten.routes.kodeverkRoute
+import no.nav.pensjon.brev.skribenten.routes.meRoute
+import no.nav.pensjon.brev.skribenten.routes.sakRoute
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
-import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.BrevbakerService
+import no.nav.pensjon.brev.skribenten.services.BrevmetadataService
+import no.nav.pensjon.brev.skribenten.services.KrrService
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService
+import no.nav.pensjon.brev.skribenten.services.NavansattService
+import no.nav.pensjon.brev.skribenten.services.PdlService
+import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
+import no.nav.pensjon.brev.skribenten.services.SafService
+import no.nav.pensjon.brev.skribenten.services.TjenestebussIntegrasjonService
+import no.nav.pensjon.brev.skribenten.services.initDatabase
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
@@ -34,8 +50,13 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             brevbakerRoute(brevbakerService)
             bestillBrevRoute(legacyBrevService)
             kodeverkRoute(penService)
-            penRoute(penService)
-            personRoute(pdlService, pensjonPersonDataService, krrService)
+            sakRoute(
+                penService, navansattService,
+                legacyBrevService,
+                pdlService,
+                pensjonPersonDataService,
+                krrService,
+            )
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
             meRoute(servicesConfig.getConfig("navansatt"), authService)
         }
