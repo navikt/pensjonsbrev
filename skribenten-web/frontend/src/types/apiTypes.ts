@@ -283,7 +283,7 @@ export type KontaktAdresseResponse = {
   type: AdresseType;
 };
 
-type AdresseType =
+export type AdresseType =
   | "MATRIKKELADRESSE"
   | "POSTADRESSE_I_FRITT_FORMAT"
   | "POSTBOKSADRESSE"

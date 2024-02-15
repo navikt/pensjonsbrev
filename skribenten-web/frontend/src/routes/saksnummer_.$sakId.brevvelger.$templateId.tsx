@@ -64,7 +64,7 @@ import type {
   SamhandlerPostadresse,
 } from "~/types/apiTypes";
 import { BrevSystem, SamhandlerTypeCode, SpraakKode } from "~/types/apiTypes";
-import { SAMHANDLER_ENUM_TO_TEXT, SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
+import { getAdresseTypeName, SAMHANDLER_ENUM_TO_TEXT, SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
@@ -503,7 +503,7 @@ function PersonAdresse() {
         Mottaker
       </Heading>
       <span>
-        {navn} ({adresseQuery.data?.type})
+        {navn} ({getAdresseTypeName(adresseQuery.data?.type)})
       </span>
       <VStack gap="0">
         {adresseQuery.data && adresseQuery.data.adresselinjer.map((linje) => <span key={linje}>{linje}</span>)}
