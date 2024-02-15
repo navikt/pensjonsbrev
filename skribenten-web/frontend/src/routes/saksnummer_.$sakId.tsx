@@ -47,7 +47,7 @@ function SakBreadcrumbsPage() {
 function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
+    queryFn: () => getNavn.queryFn(sak?.sakId?.toString() as string, sak?.foedselsnr as string),
     enabled: !!sak,
   });
   const { vedtaksId } = Route.useSearch();

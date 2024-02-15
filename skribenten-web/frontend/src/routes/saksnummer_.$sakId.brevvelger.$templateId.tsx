@@ -156,7 +156,7 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
   const { sak } = Route.useLoaderData();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
-    mutationFn: orderLetter,
+    mutationFn: (payload) => orderLetter(sakId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -212,7 +212,7 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
   const { sak } = Route.useLoaderData();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderDoksysLetterRequest>({
-    mutationFn: orderLetter,
+    mutationFn: (payload) => orderLetter(sakId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -271,7 +271,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   });
 
   const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
-    mutationFn: orderLetter,
+    mutationFn: (payload) => orderLetter(sakId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -476,8 +476,9 @@ function PersonAdresse() {
 
   const adresseQuery = useQuery({
     queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
-    queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
+    queryFn: () => getKontaktAdresse.queryFn(sak.sakId.toString(), sak.foedselsnr),
   });
+
   return (
     <>
       <Heading level="3" size="xsmall">

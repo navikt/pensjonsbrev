@@ -86,16 +86,17 @@ export const getSak = {
 
 export const getNavn = {
   queryKey: navnKeys.pid,
-  queryFn: async (pid: string) =>
-    (await axios.post<PidRequest, AxiosResponse<string>>(`${SKRIBENTEN_API_BASE_PATH}/person/navn`, { pid })).data,
+  queryFn: async (sakId: string, pid: string) =>
+    (await axios.post<PidRequest, AxiosResponse<string>>(`${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/navn`, { pid }))
+      .data,
 };
 
 export const getPreferredLanguage = {
   queryKey: preferredLanguageKeys.pid,
-  queryFn: async (pid: string) =>
+  queryFn: async (sakId: string, pid: string) =>
     (
       await axios.post<PidRequest, AxiosResponse<PreferredLanguage>>(
-        `${SKRIBENTEN_API_BASE_PATH}/person/foretrukketSpraak`,
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/foretrukketSpraak`,
         {
           pid,
         },
@@ -112,10 +113,10 @@ export const getLetterTemplate = {
 
 export const getKontaktAdresse = {
   queryKey: adresseKeys.pid,
-  queryFn: async (pid: string) =>
+  queryFn: async (sakId: string, pid: string) =>
     (
       await axios.post<PidRequest, AxiosResponse<KontaktAdresseResponse>>(
-        `${SKRIBENTEN_API_BASE_PATH}/person/adresse`,
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/adresse`,
         {
           pid,
         },
@@ -156,10 +157,11 @@ export async function deleteFavoritt(id: string) {
 }
 
 export async function orderLetter(
+  sakId: string,
   orderLetterRequest: OrderExstreamLetterRequest | OrderEblankettRequest | OrderDoksysLetterRequest,
 ) {
   const response = await axios.post<BestillOgRedigerBrevResponse>(
-    `${SKRIBENTEN_API_BASE_PATH}/bestillbrev`,
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/bestillbrev`,
     orderLetterRequest,
   );
 
