@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Outlet } from "@tanstack/react-router";
 import React from "react";
 
-import { getNavn } from "~/api/skribenten-api-endpoints";
+import { getFavoritter, getKontaktAdresse, getNavn, getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import { getSak } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
@@ -21,7 +21,23 @@ export const Route = createFileRoute("/saksnummer/$sakId")({
 
     return { getSakQueryOptions };
   },
-  loader: ({ context: { queryClient, getSakQueryOptions } }) => queryClient.ensureQueryData(getSakQueryOptions),
+  loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
+    const sak = await queryClient.ensureQueryData(getSakQueryOptions);
+
+    // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.
+    queryClient.prefetchQuery({
+      queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
+      queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
+    });
+
+    queryClient.prefetchQuery(getFavoritter);
+    queryClient.prefetchQuery({
+      queryKey: getPreferredLanguage.queryKey(sak.foedselsnr),
+      queryFn: () => getPreferredLanguage.queryFn(sak.foedselsnr),
+    });
+
+    return sak;
+  },
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { sakId } = Route.useParams();
@@ -50,6 +66,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
     queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
     enabled: !!sak,
   });
+
   const { vedtaksId } = Route.useSearch();
 
   if (!sak) {
