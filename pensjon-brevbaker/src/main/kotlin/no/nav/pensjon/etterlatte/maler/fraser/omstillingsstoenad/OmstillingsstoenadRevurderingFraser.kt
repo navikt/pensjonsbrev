@@ -277,8 +277,8 @@ class OmstillingsstoenadRevurderingFraser {
                             "mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
                             "tilbake omstillingsstønad».",
                     Language.English to "Because your allowance has been reduced retroactively, you received " +
-                            "more than you were owed. See the attachment Advance Notice of Possible Repayment of " +
-                            "Incorrectly Paid Adjustment Allowance.",
+                            "more than you were owed. See the attachment Advance notice – we are assessing whether " +
+                            "you must repay adjustment allowance.",
                 )
             }
         }
@@ -322,8 +322,8 @@ class OmstillingsstoenadRevurderingFraser {
                             "fått for mykje utbetalt. Sjå vedlegget «Førehandsvarsel om eventuell tilbakekrevjing " +
                             "av feilutbetalt omstillingsstønad».",
                     Language.English to "You have been overpaid because your Adjustment Allowance has been " +
-                            "terminated retroactively. See the Attachment Advance Notice of Possible Repayment of " +
-                            "Incorrectly Paid Adjustment Allowance.",
+                            "terminated retroactively. See the Attachment Advance notice – we are assessing whether " +
+                            "you must repay adjustment allowance.",
                 )
             }
         }

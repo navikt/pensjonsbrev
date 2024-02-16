@@ -177,8 +177,8 @@ object BarnepensjonRevurderingFraser {
                             "for mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
                             "tilbake pensjon».",
                     Language.English to "Because you stopped receiving a pension at some time in the past, " +
-                            "you received more than you were owed. See the attachment Advance Notice of Possible " +
-                            "Repayment of Incorrectly Paid Pension.",
+                            "you received more than you were owed. See the attachment Advance notice – we are " +
+                            "assessing whether you must repay children’s pension.",
                 )
             }
         }
@@ -221,8 +221,8 @@ object BarnepensjonRevurderingFraser {
                             "mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
                             "tilbake barnepensjon».",
                     Language.English to "Because your allowance has been reduced retroactively, you received " +
-                            "more than you were owed. See the attachment Advance Notice of Possible Repayment of " +
-                            "Incorrectly Paid Pension.",
+                            "more than you were owed. See the attachment Advance notice – we are assessing whether " +
+                            "you must repay children’s pension.",
                 )
             }
         }
