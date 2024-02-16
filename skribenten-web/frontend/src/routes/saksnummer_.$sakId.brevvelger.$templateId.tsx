@@ -696,7 +696,7 @@ function VelgSamhandlerModal() {
                 <Button
                   css={css`
                     width: fit-content;
-                    align-self: flex-end;
+                    align-self: flex-start;
                   `}
                   form="skjema"
                   loading={finnSamhandlerMutation.isPending}
