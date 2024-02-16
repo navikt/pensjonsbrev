@@ -39,8 +39,8 @@ object BarnepensjonRevurderingFraser {
                 paragraph {
                     textExpr(
                         Language.Bokmal to "Barnepensjonen din er endret fra ".expr() + formatertVirkningsdato + ".",
-                        Language.Nynorsk to "".expr(),
-                        Language.English to "".expr(),
+                        Language.Nynorsk to "Barnepensjonen din er endra frå ".expr() + formatertVirkningsdato + ".",
+                        Language.English to "Your children’s pension will change on ".expr() + formatertVirkningsdato + ".",
                     )
                 }
                 showIf(harUtbetaling) {
@@ -51,8 +51,14 @@ object BarnepensjonRevurderingFraser {
                                         "skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se beløp for " +
                                         "tidligere perioder og hvordan vi har beregnet barnepensjonen din i vedlegg " +
                                         "«Beregning av barnepensjon».",
-                                Language.Nynorsk to "".expr(),
-                                Language.English to "".expr()
+                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før " +
+                                        "skatt frå " + formatertNyesteUtbetalingsperiodeDatoFom + ". I " +
+                                        "vedlegget «Utrekning av barnepensjon» kan du sjå beløp for tidlegare " +
+                                        "periodar og korleis vi har rekna ut barnepensjonen din.",
+                                Language.English to "You will receive NOK ".expr() + formatertBeloep + " each " +
+                                        "month before tax, starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
+                                        ". You can see amounts for previous periods and how we calculated your " +
+                                        "children's pension in the attachment, Calculation of Children’s Pension."
                             )
                         }
 
@@ -61,16 +67,21 @@ object BarnepensjonRevurderingFraser {
                             textExpr(
                                 Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før " +
                                         "skatt.",
-                                Language.Nynorsk to "".expr(),
-                                Language.English to "".expr()
+                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før " +
+                                        "skatt.",
+                                Language.English to "ou will receive NOK ".expr() + formatertBeloep + " each " +
+                                        "month before tax. "
                             )
                         }
                         paragraph {
                             text(
                                 Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
                                         "«Beregning av barnepensjon».",
-                                Language.Nynorsk to "",
-                                Language.English to ""
+                                Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis " +
+                                        "vi har rekna ut barnepensjonen din.",
+                                Language.English to "You can find more information about how we have calculated " +
+                                        "your children's pension in the attachment, Calculation of Children's " +
+                                        "Pension."
                             )
                         }
                     }
@@ -78,8 +89,19 @@ object BarnepensjonRevurderingFraser {
                     paragraph {
                         text(
                             Language.Bokmal to "Du får ikke utbetalt pensjon.",
-                            Language.Nynorsk to "",
-                            Language.English to ""
+                            Language.Nynorsk to "Du får ikkje utbetalt pensjon.",
+                            Language.English to "You will not receive the pension."
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
+                                    "«Beregning av barnepensjon».",
+                            Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis " +
+                                    "vi har rekna ut barnepensjonen din.",
+                            Language.English to "You can find more information about how we have calculated " +
+                                    "your children's pension in the attachment, Calculation of Children's " +
+                                    "Pension."
                         )
                     }
                 }
@@ -88,28 +110,35 @@ object BarnepensjonRevurderingFraser {
                 paragraph {
                     text(
                         Language.Bokmal to "Barnepensjonen din er vurdert på nytt. ",
-                        Language.Nynorsk to "",
-                        Language.English to ""
+                        Language.Nynorsk to "Barnepensjonen din er vurdert på nytt. ",
+                        Language.English to "We have re-evaluated your children’s pension. "
                     )
                     showIf(harUtbetaling) {
                         textExpr(
-                            Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + "kroner per måned før skatt.",
-                            Language.Nynorsk to "".expr(),
-                            Language.English to "".expr()
+                            Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + " kroner per måned " +
+                                    "før skatt.",
+                            Language.Nynorsk to "Du får framleis ".expr() + formatertBeloep + " kroner per månad " +
+                                    "før skatt.",
+                            Language.English to "You will continue to receive NOK ".expr() + formatertBeloep +
+                                    " per month before tax. "
                         )
                     }.orShow {
                         text(
                             Language.Bokmal to "Du får fortsatt ikke utbetalt pensjon.",
-                            Language.Nynorsk to "",
-                            Language.English to ""
+                            Language.Nynorsk to "Du får framleis ikkje utbetalt pensjon.",
+                            Language.English to "You will still not receive the pension."
                         )
                     }
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget «Beregning av barnepensjon».",
-                        Language.Nynorsk to "",
-                        Language.English to ""
+                        Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
+                                "«Beregning av barnepensjon».",
+                        Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis vi " +
+                                "har rekna ut barnepensjonen din.",
+                        Language.English to "You can find more information about how we have calculated " +
+                                "your children's pension in the attachment, Calculation of Children's " +
+                                "Pension."
                     )
                 }
             }
