@@ -200,8 +200,8 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
             paragraph {
                 text(
                     Bokmal to "Du må sjekke at du har et kontonummer registrert hos NAV. Du må også bekrefte at opplysningene som er vedlagt er riktige, eller gi nye opplysninger for å få riktig barnepensjon.",
-                    Nynorsk to "Sjekk at du har eit kontonummer registrert hos NAV.",
-                    English to "You must check that you have an account number registered with NAV.",
+                    Nynorsk to "Sjekk at du har eit kontonummer registrert hos NAV. For å få rett barnepensjon må du også stadfeste at dei vedlagde opplysningane stemmer, eller gi nye, korrekte opplysningar.",
+                    English to "You need to make sure that your bank account is registered with NAV. You also need to confirm that the associated information is correct or provide us with new/updated information to receive the right amount of children’s pension.",
                 )
             }
             includePhrase(ForhaandsvarselGjenoppstaattFraser.KontonummerOgSkatt(erBosattUtlandet))
