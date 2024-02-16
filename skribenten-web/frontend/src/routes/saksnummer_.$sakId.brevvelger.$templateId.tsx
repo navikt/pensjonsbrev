@@ -118,6 +118,12 @@ export function SelectedTemplate() {
         gap: var(--a-spacing-5);
         border-right: 1px solid var(--a-gray-400);
 
+        // Override form elements to be same size as xsmall headings
+        label,
+        legend {
+          font-size: var(--a-font-size-heading-xsmall);
+        }
+
         form {
           display: flex;
           flex-direction: column;
