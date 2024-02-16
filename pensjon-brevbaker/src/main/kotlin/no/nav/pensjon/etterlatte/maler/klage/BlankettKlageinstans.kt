@@ -104,7 +104,6 @@ object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseDTO>, Hovedmal
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
-
         title {
             text(
                 Language.Bokmal to "Klage oversendelsesblankett",
@@ -114,7 +113,6 @@ object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseDTO>, Hovedmal
         }
 
         outline {
-
             title2 {
                 text(
                     Language.Bokmal to "Informasjon om saken",
@@ -152,9 +150,7 @@ object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseDTO>, Hovedmal
             formaterPunktMedSvar("Hjemmel", hjemmel)
 
             formaterTekstlinjer("Innstilling til NAV Klageinstans", oversendelseLinjer)
-
             formaterTekstlinjer("Intern kommentar", internKommentarLinjer)
-
         }
     }
 
