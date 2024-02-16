@@ -23,6 +23,7 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadOpphoerDTO
@@ -52,6 +53,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRed
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
@@ -111,6 +113,7 @@ object Fixtures {
             OmstillingsstoenadInnvilgelseDTO::class -> createOmstillingsstoenadInnvilgelseDTO() as T
             OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class -> createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() as T
             OmstillingstoenadAvslagDTO::class -> createOmstillingsstoenadAvslagDTO() as T
+            OmstillingstoenadAvslagRedigerbartUtfallDTO::class -> createOmstillingsstoenadAvslagRedigerbartUtfallDTO() as T
             OmstillingsstoenadRevurderingDTO::class -> createOmstillingsstoenadRevurderingDTO() as T
             OmstillingsstoenadRevurderingRedigerbartUtfallDTO::class -> createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() as T
             OmstillingsstoenadOpphoerDTO::class -> createOmstillingsstoenadOpphoerDTO() as T

@@ -11,8 +11,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
@@ -25,9 +25,8 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
 
 data class OmstillingstoenadAvslagDTO(
     override val innhold: List<Element>,
-    val avdoedNavn: String,
     val bosattUtland: Boolean,
-): BrevDTO
+): FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>, Hovedmal {

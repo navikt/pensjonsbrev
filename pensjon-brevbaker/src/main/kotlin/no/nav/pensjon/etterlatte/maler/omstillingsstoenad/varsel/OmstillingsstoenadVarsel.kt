@@ -9,17 +9,17 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
+import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
-object OmstillingsstoenadVarsel : EtterlatteTemplate<ManueltBrevDTO>, Hovedmal {
+object OmstillingsstoenadVarsel : EtterlatteTemplate<ManueltBrevMedTittelDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_VARSEL
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
+        letterDataType = ManueltBrevMedTittelDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varselbrev omstillingsstønad",
