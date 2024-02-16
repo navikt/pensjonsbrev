@@ -47,7 +47,7 @@ export function BrevvelgerPage() {
           border-right: 1px solid var(--a-gray-400);
         }
 
-        // When no template is selected, let the brevvelger use entire width
+        /* When no template is selected, let the brevvelger use entire width */
         > :only-child {
           grid-column: span 2;
         }

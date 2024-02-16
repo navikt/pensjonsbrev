@@ -8,12 +8,12 @@ export function ApiError({ error, text }: { error: unknown; text: string }) {
     const correlationId = error.response?.headers["x-request-id"];
     return (
       <Alert
-          size="small"
         css={css`
           margin-top: var(--a-spacing-4);
           width: fit-content;
           align-self: center;
         `}
+        size="small"
         variant="error"
       >
         <Heading level="2" size="small" spacing>
