@@ -3,7 +3,7 @@ import { Accordion, Alert, Button, Search } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
-import { groupBy } from "lodash";
+import {groupBy, sortBy} from "lodash";
 import { useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
@@ -59,9 +59,11 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
 
   const favoritter = useQuery(getFavoritter).data ?? [];
 
-  const brevmalerMatchingSearchTerm = letterTemplates.filter((template) =>
-    template.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  const brevmalerMatchingSearchTerm = sortBy(
+    letterTemplates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
+    (template) => template.name,
   );
+
   const matchingFavoritter = brevmalerMatchingSearchTerm.filter(({ id }) => favoritter.includes(id));
 
   const brevmalerGroupedByType = {
