@@ -96,6 +96,7 @@ export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId"
         css={css`
           height: fit-content;
         `}
+        size="small"
         variant="info"
       >
         Fant ikke brevmal med id {templateId}
@@ -336,7 +337,7 @@ function BestillOgRedigerButton({
     <VStack gap="4">
       {orderMutation.error && <ApiError error={orderMutation.error} title="Bestilling feilet" />}
       {orderMutation.isSuccess ? (
-        <Alert variant="success">
+        <Alert size="small" variant="success">
           <Heading level="3" size="xsmall">
             Brev bestilt
           </Heading>
@@ -695,7 +696,11 @@ function VelgSamhandlerModal() {
                 >
                   Søk
                 </Button>
-                {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
+                {finnSamhandlerMutation.data?.samhandlere.length === 0 && (
+                  <Alert size="small" variant="info">
+                    Ingen treff
+                  </Alert>
+                )}
                 {finnSamhandlerMutation.error && (
                   <ApiError error={finnSamhandlerMutation.error} title="Kunne ikke hente samhandlere." />
                 )}

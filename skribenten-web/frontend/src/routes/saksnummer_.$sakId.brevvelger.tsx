@@ -104,7 +104,11 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         indent={false}
         size="small"
       >
-        {Object.keys(brevmalerGroupedByType).length === 0 && <Alert variant="info">Ingen treff</Alert>}
+        {Object.keys(brevmalerGroupedByType).length === 0 && (
+          <Alert size="small" variant="info">
+            Ingen treff
+          </Alert>
+        )}
         {Object.entries(brevmalerGroupedByType).map(([type, brevmaler]) => {
           return (
             <Accordion.Item key={type} open={searchTerm.length > 0 ? true : undefined}>
