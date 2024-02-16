@@ -46,6 +46,11 @@ export function BrevvelgerPage() {
           border-left: 1px solid var(--a-gray-400);
           border-right: 1px solid var(--a-gray-400);
         }
+
+        // When no template is selected, let the brevvelger use entire width
+        > :only-child {
+          grid-column: span 2;
+        }
       `}
     >
       <Brevmaler letterTemplates={letterTemplates ?? []} />
