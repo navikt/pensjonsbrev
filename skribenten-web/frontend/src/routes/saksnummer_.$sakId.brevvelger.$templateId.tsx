@@ -65,6 +65,7 @@ import type {
 } from "~/types/apiTypes";
 import { BrevSystem, SamhandlerTypeCode, SpraakKode } from "~/types/apiTypes";
 import { getAdresseTypeName, SAMHANDLER_ENUM_TO_TEXT, SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
+import { capitalizeString } from "~/utils/stringUtils";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
@@ -699,6 +700,7 @@ function VelgSamhandlerModal() {
                   `}
                   form="skjema"
                   loading={finnSamhandlerMutation.isPending}
+                  size="small"
                 >
                   Søk
                 </Button>
@@ -732,6 +734,7 @@ function VelgSamhandlerModal() {
                 `}
                 icon={<ArrowLeftIcon />}
                 onClick={() => setSelectedIdTSSEkstern(undefined)}
+                size="small"
                 variant="tertiary"
               >
                 Tilbake til søk
@@ -749,12 +752,13 @@ function VelgSamhandlerModal() {
                   replace: true,
                 });
               }}
+              size="small"
               variant="primary"
             >
               Bekreft ny mottaker
             </Button>
           )}
-          <Button onClick={() => reference.current?.close()} type="button" variant="secondary">
+          <Button onClick={() => reference.current?.close()} size="small" type="button" variant="secondary">
             Avbryt
           </Button>
         </Modal.Footer>
@@ -808,7 +812,7 @@ function InversedTableRow({ label, value }: { label: string; value?: string }) {
   return (
     <Table.Row>
       <Table.HeaderCell scope="row">{label}</Table.HeaderCell>
-      <Table.DataCell>{value}</Table.DataCell>
+      <Table.DataCell>{capitalizeString(value)}</Table.DataCell>
     </Table.Row>
   );
 }
@@ -860,7 +864,7 @@ function SamhandlerSearchResults({
         <Table.Body>
           {sortedSamhandlere.map((samhandler) => (
             <Table.Row key={samhandler.idTSSEkstern}>
-              <Table.HeaderCell scope="row">{samhandler.navn}</Table.HeaderCell>
+              <Table.HeaderCell scope="row">{capitalizeString(samhandler.navn)}</Table.HeaderCell>
               <Table.DataCell>
                 <Button
                   onClick={() => onSelect(samhandler.idTSSEkstern)}
