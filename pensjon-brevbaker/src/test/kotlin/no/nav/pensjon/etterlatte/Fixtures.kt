@@ -11,8 +11,7 @@ import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesRedigerbarDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInformasjonDoedsfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkDTO
@@ -21,6 +20,8 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOpphoerDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOpphoerRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
 import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseDTO
@@ -37,6 +38,7 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
@@ -64,27 +66,30 @@ import java.time.LocalDate
 import kotlin.reflect.KClass
 
 object Fixtures {
-
-    val felles = Felles(
-        dokumentDato = LocalDate.of(2020, 1, 1),
-        saksnummer = "1337123",
-        avsenderEnhet = NAVEnhet(
-            nettside = "nav.no",
-            navn = "NAV Familie- og pensjonsytelser Porsgrunn",
-            telefonnummer = Telefonnummer("55553334"),
-        ),
-        bruker = Bruker(
-            fornavn = "Test",
-            mellomnavn = "bruker",
-            etternavn = "Testerson",
-            foedselsnummer = Foedselsnummer("01019878910"),
-        ),
-        signerendeSaksbehandlere = SignerendeSaksbehandlere(
-            saksbehandler = "Ole Saksbehandler",
-            attesterendeSaksbehandler = "Per Attesterende",
-        ),
-        vergeNavn = null,
-    )
+    val felles =
+        Felles(
+            dokumentDato = LocalDate.of(2020, 1, 1),
+            saksnummer = "1337123",
+            avsenderEnhet =
+                NAVEnhet(
+                    nettside = "nav.no",
+                    navn = "NAV Familie- og pensjonsytelser Porsgrunn",
+                    telefonnummer = Telefonnummer("55553334"),
+                ),
+            bruker =
+                Bruker(
+                    fornavn = "Test",
+                    mellomnavn = "bruker",
+                    etternavn = "Testerson",
+                    foedselsnummer = Foedselsnummer("01019878910"),
+                ),
+            signerendeSaksbehandlere =
+                SignerendeSaksbehandlere(
+                    saksbehandler = "Ole Saksbehandler",
+                    attesterendeSaksbehandler = "Per Attesterende",
+                ),
+            vergeNavn = null,
+        )
 
     val fellesAuto = felles.copy(signerendeSaksbehandlere = null)
 
@@ -104,6 +109,7 @@ object Fixtures {
             BarnepensjonRevurderingRedigerbartUtfallDTO::class -> createBarnepensjonRevurderingRedigerbartUtfallDTO() as T
             BarnepensjonOmregnetNyttRegelverkDTO::class -> createBarnepensjonOmregnetNyttRegelverkDTO() as T
             BarnepensjonOmregnetNyttRegelverkFerdigDTO::class -> createBarnepensjonOmregnetNyttRegelverkFerdigDTO() as T
+            BarnepensjonInformasjonDoedsfallDTO::class -> createBarnepensjonInformasjonDoedsfallDTO() as T
 
             BarnepensjonVarselDTO::class -> createBarnepensjonVarsel() as T
             BarnepensjonVarselRedigerbartUtfallDTO::class -> createBarnepensjonVarselRedigerbartUtfall() as T
