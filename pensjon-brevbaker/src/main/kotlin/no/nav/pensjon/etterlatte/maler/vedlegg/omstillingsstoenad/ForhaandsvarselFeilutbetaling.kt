@@ -16,8 +16,8 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 val forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering = createAttachment(
     title = newText(
         Bokmal to "Forhåndsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
-        Nynorsk to "Førehandsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
-        English to "Advance Notice of Possible Repayment of Incorrectly Paid Adjustment Allowance",
+        Nynorsk to "Førehandsvarsel – vi vurderer om du må betale tilbake omstillingsstønad",
+        English to "Advance notice – we are assessing whether you must repay adjustment allowance",
     ),
     includeSakspart = false
 ) {
@@ -33,7 +33,7 @@ val forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer = createAttachment(
     title = newText(
         Bokmal to "Forhåndsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
         Nynorsk to "Førehandsvarsel - vi vurderer om du må betale tilbake omstillingsstønad",
-        English to "Advance Notice of Possible Repayment of Incorrectly Paid Adjustment Allowance",
+        English to "Advance notice – we are assessing whether you must repay adjustment allowance",
     ),
     includeSakspart = false
 ) {

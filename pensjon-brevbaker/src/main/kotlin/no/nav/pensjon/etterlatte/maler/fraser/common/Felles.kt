@@ -15,9 +15,9 @@ object Felles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Language.Bokmal to "",
-                    Language.Nynorsk to "",
-                    Language.English to "",
+                    Bokmal to "",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
         }
@@ -57,18 +57,22 @@ object Felles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Slik uttaler du deg",
-                    Language.Nynorsk to "",
-                    Language.English to "",
+                    Bokmal to "Slik uttaler du deg",
+                    Nynorsk to "Slik uttaler du deg",
+                    English to "How to provide a statement",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på " +
+                    Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på " +
                             "${Constants.BESKJED_TIL_NAV_URL} og velge «Send beskjed til NAV». Du kan også sende " +
                             "uttalelsen din til oss i posten. Adressen finner du på ${Constants.ETTERSENDELSE_URL}.",
-                    Language.Nynorsk to "",
-                    Language.English to "",
+                    Nynorsk to "Du kan sende svar til oss ved å logge inn på " +
+                            "${Constants.BESKJED_TIL_NAV_URL} og velje «Send beskjed til NAV». Alternativt kan du " +
+                            "sende oss svar i posten. Adressa finn du på ${Constants.ETTERSENDELSE_URL}.",
+                    English to "You can send us a statement regarding the matter by logging in to: " +
+                            "${Constants.BESKJED_TIL_NAV_URL} and selecting «Send beskjed til NAV». You can also " +
+                            "send us your statement by post. The address can be found at: ${Constants.ETTERSENDELSE_URL}.",
                 )
             }
         }
@@ -78,18 +82,22 @@ object Felles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Hva skjer videre i din sak",
-                    Language.Nynorsk to "",
-                    Language.English to "",
+                    Bokmal to "Hva skjer videre i din sak",
+                    Nynorsk to "Kva som skjer vidare i saka",
+                    English to "What will happen further in your case",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Når fristen for uttale er gått ut, vil vi gjøre et vedtak og sende det " +
+                    Bokmal to "Når fristen for uttale er gått ut, vil vi gjøre et vedtak og sende det " +
                             "til deg. Hvis du må betale tilbake hele eller deler av beløpet, gir vi beskjed i " +
                             "vedtaket om hvordan du betaler tilbake.",
-                    Language.Nynorsk to "",
-                    Language.English to "",
+                    Nynorsk to "Når svarfristen har gått ut, fattar vi eit vedtak og sender det til deg. " +
+                            "Dersom du må betale tilbake heile eller delar av beløpet, forklarer vi i vedtaket " +
+                            "korleis du betaler tilbake.",
+                    English to "When the deadline for providing statements has expired, we will make a decision " +
+                            "and send it to you. If you are required to repay the whole or part of the amount, we will " +
+                            "inform you in the decision of how to make repayments.",
                 )
             }
         }
