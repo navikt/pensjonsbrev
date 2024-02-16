@@ -11,8 +11,6 @@ import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesRedigerbarDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkDTO
@@ -21,6 +19,9 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOpphoerDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOpphoerRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
+import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagRedigerbartUtfallDTO
@@ -52,6 +53,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
@@ -124,6 +126,7 @@ object Fixtures {
 
             AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
             AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T
+            KlageOversendelseDTO::class -> createKlageOversendelseDTO() as T
 
             ManueltBrevDTO::class -> createManueltBrevDTO() as T
             ManueltBrevMedTittelDTO::class -> createTomMalInformasjonsbrev() as T
