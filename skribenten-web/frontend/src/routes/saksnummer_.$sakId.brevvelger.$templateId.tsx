@@ -864,7 +864,7 @@ function SamhandlerSearchResults({
               <Table.DataCell>
                 <Button
                   onClick={() => onSelect(samhandler.idTSSEkstern)}
-                  size="small"
+                  size="xsmall"
                   type="button"
                   variant="secondary-neutral"
                 >
