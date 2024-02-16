@@ -44,7 +44,7 @@ function SamhandlerTypeSelect({
   const currentOption = options.find((option) => option.value === value);
 
   return (
-    <SelectLayoutWrapper description={description} error={error} htmlFor="samhandlerType" label="SamhandlerType">
+    <SelectLayoutWrapper description={description} error={error} htmlFor="samhandlerType" label="Samhandlertype">
       <BasicSelect
         inputId="samhandlerType"
         onChange={(option) => onChange(option?.value)}

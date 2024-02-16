@@ -1,4 +1,4 @@
-import type { SakType } from "./apiTypes";
+import type { AdresseType, SakType } from "./apiTypes";
 import { SamhandlerTypeCode, SpraakKode } from "./apiTypes";
 
 export const SPRAAK_ENUM_TO_TEXT = {
@@ -151,3 +151,11 @@ export const SAMHANDLER_ENUM_TO_TEXT = {
   [SamhandlerTypeCode.YH]: "Yrkeshygieniker",
   [SamhandlerTypeCode.YM]: "Yrkesmedisiner",
 };
+
+export function getAdresseTypeName(adresseType?: AdresseType) {
+  if (adresseType?.toLowerCase().includes("verge")) {
+    return "verge";
+  }
+
+  return "bruker";
+}

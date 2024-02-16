@@ -1,6 +1,16 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightIcon, PencilIcon, PlusIcon, StarFillIcon, StarIcon, XMarkIcon } from "@navikt/aksel-icons";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  Buildings3Icon,
+  PencilIcon,
+  PersonIcon,
+  StarFillIcon,
+  StarIcon,
+} from "@navikt/aksel-icons";
+import type { SortState } from "@navikt/ds-react";
+import { Skeleton } from "@navikt/ds-react";
 import {
   Alert,
   BodyShort,
@@ -21,7 +31,8 @@ import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import React, { useEffect, useRef } from "react";
+import { sortBy } from "lodash";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
@@ -33,6 +44,7 @@ import {
   getFavoritter,
   getKontaktAdresse,
   getLetterTemplate,
+  getNavn,
   hentSamhandler,
   hentSamhandlerAdresse,
   orderLetter,
@@ -48,10 +60,11 @@ import type {
   OrderDoksysLetterRequest,
   OrderEblankettRequest,
   OrderExstreamLetterRequest,
+  Samhandler,
   SamhandlerPostadresse,
 } from "~/types/apiTypes";
 import { BrevSystem, SamhandlerTypeCode, SpraakKode } from "~/types/apiTypes";
-import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
+import { getAdresseTypeName, SAMHANDLER_ENUM_TO_TEXT, SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
   component: SelectedTemplate,
@@ -178,7 +191,6 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Divider />
-      <VelgSamhandlerModal />
       <Adresse />
       <FormProvider {...methods}>
         <form
@@ -478,20 +490,33 @@ function PersonAdresse() {
     queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
     queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
   });
+
+  const { data: navn } = useQuery({
+    queryKey: getNavn.queryKey(sak?.foedselsnr as string),
+    queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
+    enabled: !!sak,
+  });
+
   return (
-    <>
+    <VStack gap="2">
       <Heading level="3" size="xsmall">
-        Adresse
+        Mottaker
       </Heading>
-      {adresseQuery.data && <BodyShort>{adresseQuery.data.adresseString}</BodyShort>}
+      <span>
+        {navn} ({getAdresseTypeName(adresseQuery.data?.type)})
+      </span>
+      <VStack gap="0">
+        {adresseQuery.data && adresseQuery.data.adresselinjer.map((linje) => <span key={linje}>{linje}</span>)}
+      </VStack>
       {adresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
       {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
-      <Divider />
-    </>
+      <VelgSamhandlerModal />
+    </VStack>
   );
 }
 function SamhandlerAdresse() {
   const { idTSSEkstern } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
 
   const hentSamhandlerAdresseQuery = useQuery({
     queryKey: hentSamhandlerAdresse.queryKey(idTSSEkstern as string),
@@ -500,32 +525,49 @@ function SamhandlerAdresse() {
   });
 
   return (
-    <>
+    <VStack gap="2">
       <Heading level="3" size="xsmall">
-        Adresse
+        Mottaker
       </Heading>
-      {hentSamhandlerAdresseQuery.data && (
-        <BodyShort>{formatSamhandlerAdresse(hentSamhandlerAdresseQuery.data)}</BodyShort>
-      )}
+      {hentSamhandlerAdresseQuery.data && <FormattedSamhandlerAdresse adresse={hentSamhandlerAdresseQuery.data} />}
       {hentSamhandlerAdresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
       {hentSamhandlerAdresseQuery.error && (
         <ApiError error={hentSamhandlerAdresseQuery.error} title="Fant ikke adresse" />
       )}
-      <Divider />
-    </>
+      <Button
+        css={css`
+          width: fit-content;
+        `}
+        icon={<PersonIcon />}
+        onClick={() =>
+          navigate({
+            search: (s) => ({ ...s, idTSSEkstern: undefined }),
+            replace: true,
+          })
+        }
+        size="small"
+        variant="secondary"
+      >
+        Endre til bruker
+      </Button>
+    </VStack>
   );
 }
 
-function formatSamhandlerAdresse(adresse: SamhandlerPostadresse) {
-  const { land, linje1, postnr, poststed } = adresse;
+function FormattedSamhandlerAdresse({ adresse }: { adresse: SamhandlerPostadresse }) {
+  const { land, linje1, postnr, poststed, navn } = adresse;
 
-  const defaultAddressLine = `${linje1}, ${postnr} ${poststed}`;
-
-  if (land !== "NOR") {
-    return `${defaultAddressLine} ${land}`;
-  }
-
-  return defaultAddressLine;
+  return (
+    <>
+      <span>{navn} (samhandler)</span>
+      <VStack gap="0">
+        <span>{linje1}</span>
+        <span>
+          {postnr} {poststed} {land === "NOR" ? "" : `, ${land}`}
+        </span>
+      </VStack>
+    </>
+  );
 }
 
 function FavoriteButton() {
@@ -581,6 +623,7 @@ function VelgSamhandlerModal() {
   const reference = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate({ from: Route.fullPath });
   const { idTSSEkstern } = Route.useSearch();
+  const [selectedIdTSSEkstern, setSelectedIdTSSEkstern] = useState<string | undefined>(undefined);
 
   const methods = useForm<z.infer<typeof samhandlerSearchValidationSchema>>({
     defaultValues: {
@@ -606,108 +649,221 @@ function VelgSamhandlerModal() {
     },
   });
 
+  const selectedSamhandler = finnSamhandlerMutation.data?.samhandlere?.find(
+    (samhandler) => samhandler.idTSSEkstern === selectedIdTSSEkstern,
+  );
+
   return (
     <>
-      <Heading level="3" size="xsmall">
-        Samhandler
-      </Heading>
-
       <HStack align="center" gap="4">
         {idTSSEkstern && <span>{hentSamhandlerQuery.data?.navn}</span>}
         <Button
-          icon={idTSSEkstern ? <PencilIcon /> : <PlusIcon />}
+          icon={idTSSEkstern ? <PencilIcon /> : <Buildings3Icon />}
           onClick={() => reference.current?.showModal()}
           size="small"
           variant="secondary"
         >
-          {idTSSEkstern ? "Endre" : "Finn samhandler"}
+          {idTSSEkstern ? "Endre" : "Endre til samhandler"}
         </Button>
-        {idTSSEkstern && (
-          <Button
-            icon={<XMarkIcon />}
-            onClick={() =>
-              navigate({
-                search: (s) => ({ ...s, idTSSEkstern: undefined }),
-                replace: true,
-              })
-            }
-            size="small"
-            variant="danger"
-          >
-            Fjern
-          </Button>
-        )}
       </HStack>
 
-      <Modal header={{ heading: "Søk etter samhandler" }} ref={reference} width={600}>
+      <Modal header={{ heading: "Finn samhandler" }} ref={reference} width={600}>
         <Modal.Body>
-          <FormProvider {...methods}>
-            <VStack
-              as="form"
-              gap="4"
-              id="skjema"
-              method="dialog"
-              onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
-            >
-              <TextField
-                autoComplete="off"
-                error={methods.formState.errors.navn?.message}
-                label="Søk"
-                {...methods.register("navn")}
-              />
-              <SamhandlerTypeSelectFormPart />
-              {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
-              {finnSamhandlerMutation.error && (
-                <ApiError error={finnSamhandlerMutation.error} title="Kunne ikke hente samhandlere." />
-              )}
-              {(finnSamhandlerMutation.data?.samhandlere.length ?? 0) > 0 && (
-                <>
-                  <div>Fant {finnSamhandlerMutation.data?.samhandlere.length} treff</div>
-                  <Table>
-                    <Table.Header>
-                      <Table.Row>
-                        <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
-                        <Table.HeaderCell scope="col"></Table.HeaderCell>
-                      </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                      {finnSamhandlerMutation.data?.samhandlere.map((samhandler) => (
-                        <Table.Row key={samhandler.idTSSEkstern}>
-                          <Table.HeaderCell scope="row">{samhandler.navn}</Table.HeaderCell>
-                          <Table.DataCell>
-                            <Button
-                              onClick={() => {
-                                reference.current?.close();
-                                navigate({
-                                  search: (s) => ({ ...s, idTSSEkstern: samhandler.idTSSEkstern }),
-                                  replace: true,
-                                });
-                              }}
-                              size="small"
-                              type="button"
-                              variant="secondary"
-                            >
-                              Velg
-                            </Button>
-                          </Table.DataCell>
-                        </Table.Row>
-                      ))}
-                    </Table.Body>
-                  </Table>
-                </>
-              )}
+          {selectedIdTSSEkstern === undefined && (
+            <FormProvider {...methods}>
+              <VStack
+                as="form"
+                gap="4"
+                id="skjema"
+                method="dialog"
+                onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
+              >
+                <TextField
+                  autoComplete="off"
+                  error={methods.formState.errors.navn?.message}
+                  label="Søk"
+                  {...methods.register("navn")}
+                />
+                <SamhandlerTypeSelectFormPart />
+                <Button
+                  css={css`
+                    width: fit-content;
+                    align-self: flex-end;
+                  `}
+                  form="skjema"
+                  loading={finnSamhandlerMutation.isPending}
+                >
+                  Søk
+                </Button>
+                {finnSamhandlerMutation.data?.samhandlere.length === 0 && <Alert variant="info">Ingen treff</Alert>}
+                {finnSamhandlerMutation.error && (
+                  <ApiError error={finnSamhandlerMutation.error} title="Kunne ikke hente samhandlere." />
+                )}
+                <SamhandlerSearchResults
+                  onSelect={(id) => {
+                    setSelectedIdTSSEkstern(id);
+                  }}
+                  samhandlere={finnSamhandlerMutation.data?.samhandlere ?? []}
+                />
+              </VStack>
+            </FormProvider>
+          )}
+          {selectedSamhandler && (
+            <VStack gap="4">
+              <Heading level="2" size="small">
+                {SAMHANDLER_ENUM_TO_TEXT[selectedSamhandler.samhandlerType]}
+              </Heading>
+              <VerifySamhandler idTSSEkstern={selectedSamhandler.idTSSEkstern} />
+              <Button
+                css={css`
+                  width: fit-content;
+                  align-self: flex-start;
+                `}
+                icon={<ArrowLeftIcon />}
+                onClick={() => setSelectedIdTSSEkstern(undefined)}
+                variant="tertiary"
+              >
+                Tilbake til søk
+              </Button>
             </VStack>
-          </FormProvider>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <Button form="skjema" loading={finnSamhandlerMutation.isPending}>
-            Søk
-          </Button>
+          {selectedIdTSSEkstern && (
+            <Button
+              onClick={() => {
+                reference.current?.close();
+                navigate({
+                  search: (s) => ({ ...s, idTSSEkstern: selectedIdTSSEkstern }),
+                  replace: true,
+                });
+              }}
+              variant="primary"
+            >
+              Bekreft ny mottaker
+            </Button>
+          )}
           <Button onClick={() => reference.current?.close()} type="button" variant="secondary">
             Avbryt
           </Button>
         </Modal.Footer>
       </Modal>
     </>
+  );
+}
+
+function VerifySamhandler({ idTSSEkstern }: { idTSSEkstern: string }) {
+  const hentSamhandlerAdresseQuery = useQuery({
+    queryKey: hentSamhandlerAdresse.queryKey(idTSSEkstern),
+    queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: idTSSEkstern }),
+  });
+
+  if (hentSamhandlerAdresseQuery.isPending) {
+    return (
+      <VStack gap="4">
+        <Skeleton height={30} variant="rectangle" width="100%" />
+        <Skeleton height={30} variant="rectangle" width="100%" />
+        <Skeleton height={30} variant="rectangle" width="100%" />
+        <Skeleton height={30} variant="rectangle" width="100%" />
+        <Skeleton height={30} variant="rectangle" width="100%" />
+      </VStack>
+    );
+  }
+
+  if (hentSamhandlerAdresseQuery.isError) {
+    return <ApiError error={hentSamhandlerAdresseQuery.error} title="Fant ikke samhandleradresse" />;
+  }
+
+  return (
+    <Table>
+      <Table.Body>
+        <InversedTableRow label="Navn" value={hentSamhandlerAdresseQuery.data.navn} />
+        <InversedTableRow label="Adresselinje 1" value={hentSamhandlerAdresseQuery.data.linje1} />
+        <InversedTableRow label="Adresselinje 2" value={hentSamhandlerAdresseQuery.data.linje2} />
+        <InversedTableRow label="Adresselinje 3" value={hentSamhandlerAdresseQuery.data.linje3} />
+        <InversedTableRow label="Postnummer" value={hentSamhandlerAdresseQuery.data.postnr} />
+        <InversedTableRow label="Poststed" value={hentSamhandlerAdresseQuery.data.poststed} />
+        <InversedTableRow label="Land" value={hentSamhandlerAdresseQuery.data.land} />
+      </Table.Body>
+    </Table>
+  );
+}
+
+function InversedTableRow({ label, value }: { label: string; value?: string }) {
+  if (!value) {
+    return <></>;
+  }
+
+  return (
+    <Table.Row>
+      <Table.HeaderCell scope="row">{label}</Table.HeaderCell>
+      <Table.DataCell>{value}</Table.DataCell>
+    </Table.Row>
+  );
+}
+
+function SamhandlerSearchResults({
+  samhandlere,
+  onSelect,
+}: {
+  samhandlere: Samhandler[];
+  onSelect: (idTSSEkstern: string) => void;
+}) {
+  const [sort, setSort] = useState<SortState | undefined>({
+    orderBy: "navn",
+    direction: "ascending",
+  });
+
+  if (samhandlere.length === 0) {
+    return <></>;
+  }
+
+  const handleSort = (sortKey: string | undefined) => {
+    if (sortKey) {
+      setSort({
+        orderBy: sortKey,
+        direction: sort && sortKey === sort.orderBy && sort.direction === "ascending" ? "descending" : "ascending",
+      });
+    } else {
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      setSort(undefined);
+    }
+  };
+
+  const sortedSamhandlereAscending = sort?.orderBy ? sortBy(samhandlere, sort.orderBy) : samhandlere;
+  const reversed = sort?.direction === "descending";
+
+  const sortedSamhandlere = reversed ? sortedSamhandlereAscending.reverse() : sortedSamhandlereAscending;
+
+  return (
+    <VStack gap="2">
+      <BodyShort size="small">{sortedSamhandlere.length} treff</BodyShort>
+      <Table onSortChange={(sortKey) => handleSort(sortKey)} sort={sort}>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader colSpan={2} sortKey="navn" sortable>
+              Navn
+            </Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {sortedSamhandlere.map((samhandler) => (
+            <Table.Row key={samhandler.idTSSEkstern}>
+              <Table.HeaderCell scope="row">{samhandler.navn}</Table.HeaderCell>
+              <Table.DataCell>
+                <Button
+                  onClick={() => onSelect(samhandler.idTSSEkstern)}
+                  size="small"
+                  type="button"
+                  variant="secondary-neutral"
+                >
+                  Velg
+                </Button>
+              </Table.DataCell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </VStack>
   );
 }

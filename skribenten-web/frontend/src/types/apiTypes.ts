@@ -137,7 +137,7 @@ export type HentsamhandlerResponseDto = {
 
 export type Samhandler = {
   navn: string;
-  samhandlerType: string;
+  samhandlerType: SamhandlerTypeCode;
   offentligId: string;
   idType: string;
   idTSSEkstern: string;
@@ -280,7 +280,20 @@ export enum SamhandlerTypeCode {
 export type KontaktAdresseResponse = {
   adresseString: string;
   adresselinjer: string[];
+  type: AdresseType;
 };
+
+export type AdresseType =
+  | "MATRIKKELADRESSE"
+  | "POSTADRESSE_I_FRITT_FORMAT"
+  | "POSTBOKSADRESSE"
+  | "REGOPPSLAG_ADRESSE"
+  | "UKJENT_BOSTED"
+  | "UTENLANDSK_ADRESSE"
+  | "UTENLANDSK_ADRESSE_I_FRITT_FORMAT"
+  | "VEGADRESSE"
+  | "VERGE_PERSON_POSTADRESSE"
+  | "VERGE_SAMHANDLER_POSTADRESSE";
 
 export type Avtaleland = {
   navn: string;

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getPreferredLanguage, getSak } from "../api/skribenten-api-endpoints";
+import { getPreferredLanguage, getSak } from "~/api/skribenten-api-endpoints";
 
 export function usePreferredLanguage(sakId: string) {
   const sak = useQuery({
