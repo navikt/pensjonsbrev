@@ -15,6 +15,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
     "prettier", "plugin:unicorn/recommended",
     "plugin:testing-library/react",
     "plugin:react-hooks/recommended"
@@ -43,6 +44,7 @@ module.exports = {
     "import/prefer-default-export": "off",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
+    "@tanstack/query/exhaustive-deps": "off",
     "@typescript-eslint/consistent-type-imports": ["warn"],
     "@typescript-eslint/switch-exhaustiveness-check": "error",
     ...IGNORED_UNICORN_RULES,
