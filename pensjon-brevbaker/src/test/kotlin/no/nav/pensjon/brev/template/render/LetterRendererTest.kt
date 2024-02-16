@@ -16,10 +16,10 @@ class LetterRendererTest {
     val letter = Letter(LetterExample.template, Fixtures.create<LetterExampleDto>(), Bokmal, felles)
 
     class MockRenderer : LetterRenderer<RenderedHtmlLetter>() {
-        var letterScope: ExpressionScope<*, *>? = null
+        var letterScope: ExpressionScope<*>? = null
         var template: LetterTemplate<*, *>? = null
 
-        override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedHtmlLetter {
+        override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): RenderedHtmlLetter {
             letterScope = scope
             this.template = template
 
@@ -27,14 +27,14 @@ class LetterRendererTest {
         }
 
         @JvmName("publicRenderOutlineContent")
-        fun publicRender(scope: ExpressionScope<*, *>, elements: List<OutlineElement<*>>, renderBlock: (scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>) -> Unit) =
+        fun publicRender(scope: ExpressionScope<*>, elements: List<OutlineElement<*>>, renderBlock: (scope: ExpressionScope<*>, element: Element.OutlineContent<*>) -> Unit) =
             render(scope, elements, renderBlock)
 
         @JvmName("publicRenderParagraphContent")
-        fun publicRender(scope: ExpressionScope<*, *>, elements: List<ParagraphContentElement<*>>, renderBlock: (scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent<*>) -> Unit) =
+        fun publicRender(scope: ExpressionScope<*>, elements: List<ParagraphContentElement<*>>, renderBlock: (scope: ExpressionScope<*>, element: Element.OutlineContent.ParagraphContent<*>) -> Unit) =
             render(scope, elements, renderBlock)
 
-        fun publicRenderAttachments(scope: ExpressionScope<*, *>, attachments: List<IncludeAttachment<*, *>>, renderBlock: (scope: ExpressionScope<*, *>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) =
+        fun publicRenderAttachments(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderBlock: (scope: ExpressionScope<*>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) =
             render(scope, attachments, renderBlock)
     }
 
@@ -62,7 +62,7 @@ class LetterRendererTest {
         )
 
         val actualElements = mutableListOf<Element.OutlineContent<*>>()
-        val actualScopes = mutableListOf<ExpressionScope<*, *>>()
+        val actualScopes = mutableListOf<ExpressionScope<*>>()
         MockRenderer().publicRender(
             expectedScope,
             expectedElements.map { ContentOrControlStructure.Content(it) }) { scope, element ->
@@ -93,7 +93,7 @@ class LetterRendererTest {
         )
 
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
-        val actualScopes = mutableListOf<ExpressionScope<*, *>>()
+        val actualScopes = mutableListOf<ExpressionScope<*>>()
         MockRenderer().publicRender(ExpressionScope(Unit, felles, Bokmal), content.elements) { scope, element ->
             actualElements.add(element)
             actualScopes.add(scope)
@@ -123,7 +123,7 @@ class LetterRendererTest {
             Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
         )
 
-        val actualScopes = mutableListOf<ExpressionScope<*, *>>()
+        val actualScopes = mutableListOf<ExpressionScope<*>>()
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
         MockRenderer().publicRender(expectedScope, content.elements) { scope, element ->
             actualElements.add(element)
@@ -153,7 +153,7 @@ class LetterRendererTest {
             Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
         )
 
-        val actualScopes = mutableListOf<ExpressionScope<*, *>>()
+        val actualScopes = mutableListOf<ExpressionScope<*>>()
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
         MockRenderer().publicRender(expectedScope, content.elements) { scope, element ->
             actualElements.add(element)
@@ -204,7 +204,7 @@ class LetterRendererTest {
             override val propertyType = "TestVedleggDto"
             override val selector = LetterData::vedlegg
         }
-        val vedleggDataExpr = Expression.FromScope.argument(ExpressionScope<LetterData, *>::argument).select(vedleggDataSelector)
+        val vedleggDataExpr = Expression.FromScope.Argument<LetterData>().select(vedleggDataSelector)
 
         var evaluatedAttachmentScopedExpr: String? = null
         MockRenderer().publicRenderAttachments(
@@ -218,7 +218,7 @@ class LetterRendererTest {
     }
 
 
-    private fun assertScopeEquals(expected: ExpressionScope<*, *>, actual: ExpressionScope<*, *>?) {
+    private fun assertScopeEquals(expected: ExpressionScope<*>, actual: ExpressionScope<*>?) {
         assertEquals(expected.felles, actual?.felles)
         assertEquals(expected.argument, actual?.argument)
         assertEquals(expected.language, actual?.language)
