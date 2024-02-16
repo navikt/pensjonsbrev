@@ -46,6 +46,11 @@ export function BrevvelgerPage() {
           border-left: 1px solid var(--a-gray-400);
           border-right: 1px solid var(--a-gray-400);
         }
+
+        /* When no template is selected, let the brevvelger use entire width */
+        > :only-child {
+          grid-column: span 2;
+        }
       `}
     >
       <Brevmaler letterTemplates={letterTemplates ?? []} />
@@ -104,7 +109,11 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         indent={false}
         size="small"
       >
-        {Object.keys(brevmalerGroupedByType).length === 0 && <Alert variant="info">Ingen treff</Alert>}
+        {Object.keys(brevmalerGroupedByType).length === 0 && (
+          <Alert size="small" variant="info">
+            Ingen treff
+          </Alert>
+        )}
         {Object.entries(brevmalerGroupedByType).map(([type, brevmaler]) => {
           return (
             <Accordion.Item key={type} open={searchTerm.length > 0 ? true : undefined}>
