@@ -3,7 +3,7 @@ import { Accordion, Alert, Button, Search } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
-import {groupBy, sortBy} from "lodash";
+import { groupBy, sortBy } from "lodash";
 import { useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
