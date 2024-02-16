@@ -16,8 +16,8 @@ class BarnepensjonForhaandsvarselFraser {
                             "mye utbetalt i barnepensjon fra og med <dato> til og med <dato>.",
                     Language.Nynorsk to "Som følgje av vedtaket som er gjort, har du fått utbetalt <beløp> " +
                             "kroner for mykje i barnepensjon frå og med <dato> til og med <dato>.",
-                    Language.English to "As a result of a decision of <dato>. You have received NOK <beløp> " +
-                            "overpaid in children’s pension from and including <dato> up to and including <dato>.",
+                    Language.English to "As a result of a decision that has been made you have received NOK " +
+                            "<beløp> overpaid in children’s pension from and including <dato> up to and including <dato>.",
                 )
             }
             paragraph {
