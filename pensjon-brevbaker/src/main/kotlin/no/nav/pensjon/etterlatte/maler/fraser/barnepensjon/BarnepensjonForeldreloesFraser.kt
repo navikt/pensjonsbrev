@@ -116,37 +116,40 @@ object BarnepensjonForeldreloesFraser {
             paragraph {
                 text(
                     Language.Bokmal to "Barnepensjon gis på bakgrunn av at",
-                    Language.Nynorsk to "Det blir gitt barnepensjon på bakgrunn av at",
-                    Language.English to "",
+                    Language.Nynorsk to "Barnepensjon blir innvilga på bakgrunn av at",
+                    Language.English to "The children’s pension has been granted because",
                 )
                 list {
                     item {
                         text(
                             Language.Bokmal to "du har mistet begge foreldrene dine",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "du har mista begge foreldre",
+                            Language.English to "you have lost both your parents",
                         )
                     }
                     item {
                         text(
                             Language.Bokmal to "du er under 20 år",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "du er under 20 år",
+                            Language.English to "you are under the age of 20",
                         )
                     }
                     item {
                         text(
                             Language.Bokmal to "du er medlem i folketrygden",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "du er medlem i folketrygda",
+                            Language.English to "you are a member of the national insurance scheme",
                         )
                     }
                     item {
                         text(
                             Language.Bokmal to "minst en av foreldrene dine i de siste fem årene før dødsfallet " +
                                     "var medlem i folketrygden, eller fikk pensjon eller uføretrygd fra folketrygden.",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "eine eller begge foreldra dine var medlem i folketrygda eller " +
+                                    "fekk pensjon/uføretrygd frå folketrygda dei siste fem åra før sin død",
+                            Language.English to "at least one of your parents was a member of the national " +
+                                    "insurance scheme in the last five years before his or her death, or received a " +
+                                    "pension or disability pension from the scheme",
                         )
                     }
                 }
