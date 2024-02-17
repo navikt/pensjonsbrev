@@ -200,11 +200,16 @@ object BarnepensjonForeldreloesFraser {
                 )
                 ifNotNull(etterbetaling) {
                     text(
-                        Language.Bokmal to " Det kan bli beregnet fradrag i etterbetalingen for skatt, eller ytelser du har mottatt fra NAV eller andre. " +
-                                "Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. " +
-                                "Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
-                        Language.Nynorsk to "",
-                        Language.English to "",
+                        Language.Bokmal to " Det kan bli beregnet fradrag i etterbetalingen for skatt, eller ytelser " +
+                                "du har mottatt fra NAV eller andre. Hvis Skatteetaten eller andre ordninger har krav i " +
+                                "etterbetalingen kan denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
+                        Language.Nynorsk to "et kan bli gjort frådrag i etterbetalinga for skatt eller ytingar du " +
+                                "har fått frå NAV eller andre. Dersom Skatteetaten eller andre ordningar har krav i " +
+                                "etterbetalinga, kan denne bli forseinka. Frådrag i etterbetalinga vil gå fram av utbetalingsmeldinga.",
+                        Language.English to "Deductions may be calculated from the back payment for tax, " +
+                                "benefits you have received from NAV or others, such as occupational pension schemes. " +
+                                "If the Norwegian Tax Administration or other schemes are entitled to the back payment, " +
+                                "the payment to you may be delayed. Deductions from the back payment will be stated in the disbursement notice.",
                     )
                 }
             }
@@ -214,8 +219,12 @@ object BarnepensjonForeldreloesFraser {
                         Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. " +
                                 "Gjelder etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
                                 "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
-                        Language.Nynorsk to "",
-                        Language.English to "",
+                        Language.Nynorsk to "Det blir vanlegvis trekt skatt av etterbetaling. " +
+                                "Dersom etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane " +
+                                "til Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+                        Language.English to "Tax is usually deducted from back payments. If the back payment applies " +
+                                "to previous years, NAV will deduct the tax at the Tax Administration's standard rates. " +
+                                "You can read more about the rates here: ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
                     )
                 }
             }
