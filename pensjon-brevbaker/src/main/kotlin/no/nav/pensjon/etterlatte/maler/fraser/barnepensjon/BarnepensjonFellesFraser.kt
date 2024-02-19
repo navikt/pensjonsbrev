@@ -163,4 +163,55 @@ object BarnepensjonFellesFraser {
             }
         }
     }
+
+    data class UtbetalingAvBarnepensjon(
+        val etterbetaling: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Utbetaling av barnepensjon",
+                    Language.Nynorsk to "Utbetaling av barnepensjon",
+                    Language.English to "Payment of the children's pension",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. Du finner utbetalingsdatoer på ${Constants.UTBETALINGSDATOER_URL}.",
+                    Language.Nynorsk to "Pensjonen blir utbetalt innan den 20. kvar månad. Du finn utbetalingsdatoane på ${Constants.UTBETALINGSDATOER_URL}.",
+                    Language.English to "The pension is paid by the 20th of each month. You can find payout dates online: ${Constants.Engelsk.UTBETALINGSDATOER_URL}.",
+                )
+            }
+            showIf(etterbetaling) {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Du får etterbetalt pensjon. Vanligvis vil du få denne i løpet av " +
+                                "tre uker. Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan " +
+                                "denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
+                        Language.Nynorsk to "Du får etterbetalt pensjon. Normalt sett får du denne i løpet av " +
+                                "tre veker. Dersom Skatteetaten eller andre ordningar har krav i etterbetalinga, kan " +
+                                "denne bli forseinka. Frådrag i etterbetalinga vil gå fram av utbetalingsmeldinga.",
+                        Language.English to "You will receive a back payment on your pension. You will usually " +
+                                "receive this back payment within three weeks. If the Norwegian Tax Administration or " +
+                                "other schemes are entitled to the back payment, the payment to you may be delayed. " +
+                                "Deductions from the back payment will be stated in the disbursement notice.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder " +
+                                "etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
+                                "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+                        Language.Nynorsk to "Det blir vanlegvis trekt skatt av etterbetaling. Dersom " +
+                                "etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane til " +
+                                "Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+                        Language.English to "Tax is usually deducted from back payments. If the back payment " +
+                                "applies to previous years, NAV will deduct the tax at the Tax Administration's " +
+                                "standard rates. You can read more about the rates here: " +
+                                "${Constants.SKATTETREKK_ETTERBETALING_URL}. ",
+                    )
+                }
+            }
+        }
+    }
 }

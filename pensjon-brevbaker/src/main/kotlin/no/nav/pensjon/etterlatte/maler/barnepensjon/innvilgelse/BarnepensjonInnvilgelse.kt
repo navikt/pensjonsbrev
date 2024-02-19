@@ -25,7 +25,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonGammeltOgNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
@@ -72,7 +71,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         outline {
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(etterbetaling.notNull()))
+            includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling.notNull()))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))

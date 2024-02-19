@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -13,7 +14,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
@@ -104,23 +104,11 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(
-                BarnepensjonForeldreloesFraser.UtbetalingAvBarnepensjon(
-                    beregning.beregningsperioder,
-                    etterbetaling
-                )
-            )
-
+            includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling.notNull()))
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon)
-
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
-            includePhrase(
-                BarnepensjonFellesFraser.HarDuSpoersmaal(
-                    brukerUnder18Aar,
-                    bosattUtland
-                )
-            )
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
 
         // Beregning av barnepensjon nytt regelverk

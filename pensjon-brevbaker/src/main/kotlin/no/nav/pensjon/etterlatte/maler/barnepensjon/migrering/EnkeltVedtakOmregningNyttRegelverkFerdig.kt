@@ -56,7 +56,7 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
             konverterElementerTilBrevbakerformat(innhold)
 
             includePhrase(
-                BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
+                BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(
                     etterbetaling.notNull()
                 )
             )

@@ -14,7 +14,7 @@ import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
@@ -50,7 +50,7 @@ object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<Barnepensjo
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(BarnepensjonRevurderingFraser.UtfallRedigerbart(erEtterbetaling, feilutbetaling))
             showIf(harUtbetaling) {
-                includePhrase(BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(erEtterbetaling))
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(erEtterbetaling))
             }
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselRevurdering)
