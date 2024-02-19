@@ -116,7 +116,11 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         )}
         {Object.entries(brevmalerGroupedByType).map(([type, brevmaler]) => {
           return (
-            <Accordion.Item key={type} open={searchTerm.length > 0 ? true : undefined}>
+            <Accordion.Item
+              defaultOpen={type === "FAVORITTER"}
+              key={type}
+              open={searchTerm.length > 0 ? true : undefined}
+            >
               <Accordion.Header
                 css={css`
                   flex-direction: row-reverse;
