@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.klage
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -55,10 +56,10 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
             showIf(data.sakType.equalTo(SakType.BARNEPENSJON)) {
                 includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
                 includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
-                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal)
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(true.expr(), false.expr()))
             } orShow {
                 includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
-                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
         }

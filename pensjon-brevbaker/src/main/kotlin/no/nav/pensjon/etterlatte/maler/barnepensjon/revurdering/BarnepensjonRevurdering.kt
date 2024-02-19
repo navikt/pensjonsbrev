@@ -37,7 +37,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonGammeltOgNyttRegelverk
@@ -131,9 +130,9 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
             konverterElementerTilBrevbakerformat(innhold)
 
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon)
-            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
+            includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
+            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
 
         // Beregning av barnepensjon nytt og gammelt regelverk
