@@ -120,7 +120,7 @@ object BarnepensjonInnvilgelseFraser {
                         Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder " +
                                 "etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
                                 "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
-                        Language.Nynorsk to "Det blir normalt sett bli trekt skatt av etterbetaling. Dersom " +
+                        Language.Nynorsk to "Det blir vanlegvis trekt skatt av etterbetaling. Dersom " +
                                 "etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane til " +
                                 "Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
                         Language.English to "Tax is usually deducted from back payments. If the back payment " +
@@ -145,7 +145,7 @@ object BarnepensjonInnvilgelseFraser {
             paragraph {
                 text(
                     Language.Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for utbetalingen av barnepensjon, eller retten til å få barnepensjon. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
-                    Language.Nynorsk to "Du pliktar å melde frå til oss om endringar som påverkar utbetalinga di av barnepensjon eller retten på barnepensjon. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
+                    Language.Nynorsk to "Du pliktar å melde frå til oss om endringar som har innverknad på utbetalinga av eller retten på barnepensjon. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
                     Language.English to "You are obligated to notify us any of changes that affect the payment of a children's pension, or the right to receive a children's pension. You will see which changes you must report in the attachment Your Rights and Obligations.",
                 )
             }
@@ -190,10 +190,10 @@ object BarnepensjonInnvilgelseFraser {
                             "hverdager mellom kl. 09.00-15.00. ",
                     Language.Nynorsk to "Du finn meir informasjon på ".expr() + Constants.BARNEPENSJON_URL + ". " +
                             "Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " + kontaktTelefon + " " +
-                            ", kvardagar mellom kl. 09.00–15.00.",
+                            ", kvardagar mellom kl. 09.00–15.00. ",
                     Language.English to "For more information, visit us online: ".expr() + Constants.Engelsk.BARNEPENSJON_URL + ". " +
                             "If you cannot find the answer to your question, you can call us by phone (" + kontaktTelefon + ") " +
-                            "weekdays between 09.00-15.00."
+                            "weekdays between 09.00-15.00. "
                 )
                 showIf(brukerUnder18Aar) {
                     text(
