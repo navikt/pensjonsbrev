@@ -18,9 +18,8 @@ const templateId = "UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO";
 function TemplateExplorer() {
   const d = Route.useLoaderData();
 
-  return d.title.map((cocs) => {
-    console.log(cocs);
-    return <ContentOrControlStructureComponent cocs={cocs} />;
+  return d.title.map((cocs, index) => {
+    return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
   });
 }
 
@@ -46,7 +45,7 @@ function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
     case ElementType.TITLE1:
     case ElementType.TITLE2: {
-      return content.text.map((cocs) => <ContentOrControlStructureComponent cocs={cocs} />);
+      return content.text.map((cocs, index) => <ContentOrControlStructureComponent cocs={cocs} key={index} />);
     }
     case ElementType.PARAGRAPH_TEXT_LITERAL: {
       return <span>{content.text}</span>;
@@ -55,11 +54,15 @@ function ContentComponent({ content }: { content: Element }) {
       return <span>Expression TODO</span>;
     }
     case ElementType.PARAGRAPH: {
-      return content.text.map((cocs) => <ContentOrControlStructureComponent cocs={cocs} />);
+      return content.text.map((cocs, index) => <ContentOrControlStructureComponent cocs={cocs} key={index} />);
+    }
+    case ElementType.PARAGRAPH_TABLE: {
+      return <span>TABLE TODO</span>;
+    }
+    case ElementType.PARAGRAPH_ITEMLIST: {
+      return <span>ITEMLIST TODO</span>;
     }
   }
-
-  return <span>ContentComponent</span>;
 }
 
 function ConditionalComponent<E>({ conditional }: { conditional: Conditional<E> }) {
@@ -76,8 +79,8 @@ function ShowIf({ cocs }: { cocs: ContentOrControlStructure<any>[] }) {
   return (
     <div>
       <span>Show if: </span>
-      {cocs.map((a) => (
-        <ContentOrControlStructureComponent cocs={a} />
+      {cocs.map((a, index) => (
+        <ContentOrControlStructureComponent cocs={a} key={index} />
       ))}
     </div>
   );
@@ -87,8 +90,8 @@ function ShowElse({ cocs }: { cocs: ContentOrControlStructure<any>[] }) {
   return (
     <div>
       <span>Show else: </span>
-      {cocs.map((a) => (
-        <ContentOrControlStructureComponent cocs={a} />
+      {cocs.map((a, index) => (
+        <ContentOrControlStructureComponent cocs={a} key={index} />
       ))}
     </div>
   );
