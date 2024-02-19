@@ -19,13 +19,17 @@ function TemplateExplorer() {
   const templateDocumentation = Route.useLoaderData();
 
   return (
-    <div>
-      {templateDocumentation.title.map((cocs, index) => {
-        return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
-      })}
-      {templateDocumentation.outline.map((cocs, index) => {
-        return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
-      })}
+    <div className="preview">
+      <div>
+        {templateDocumentation.title.map((cocs, index) => {
+          return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
+        })}
+      </div>
+      <div>
+        {templateDocumentation.outline.map((cocs, index) => {
+          return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
+        })}
+      </div>
     </div>
   );
 }
@@ -74,7 +78,7 @@ function ContentComponent({ content }: { content: Element }) {
 
 function ConditionalComponent<E extends Element>({ conditional }: { conditional: Conditional<E> }) {
   return (
-    <div>
+    <div className="conditional">
       <ExpressionComponent expression={conditional.predicate} />
       <ShowIf cocs={conditional.showIf} />
       <ShowElse cocs={conditional.showElse} />
@@ -85,7 +89,6 @@ function ConditionalComponent<E extends Element>({ conditional }: { conditional:
 function ShowIf<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
   return (
     <div>
-      <span>Show if: </span>
       {cocs.map((a, index) => (
         <ContentOrControlStructureComponent cocs={a} key={index} />
       ))}
@@ -94,9 +97,12 @@ function ShowIf<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E
 }
 
 function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
+  if (cocs.length === 0) {
+    return <></>;
+  }
   return (
     <div>
-      <span>Show else: </span>
+      <span className="expression">Ellers:</span>
       {cocs.map((a, index) => (
         <ContentOrControlStructureComponent cocs={a} key={index} />
       ))}
@@ -105,5 +111,5 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
 }
 
 function ExpressionComponent({ expression }: { expression: Expression }) {
-  return <span>Expression TODO</span>;
+  return <span className="expression">Hvis: Expression TODO</span>;
 }

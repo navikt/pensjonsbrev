@@ -18,3 +18,17 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+.preview {
+    width: 820px;
+    align-self: center;
+}
+
+.expression {
+    color: var(--a-blue-600);
+}
+
+.conditional {
+    background: aquamarine;
+    margin: 1rem 0 1rem 1rem;
+}
