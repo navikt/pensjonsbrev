@@ -21,6 +21,8 @@ body {
 
 .preview {
     width: 820px;
+    background: white;
+    padding: 3rem;
     align-self: center;
 }
 

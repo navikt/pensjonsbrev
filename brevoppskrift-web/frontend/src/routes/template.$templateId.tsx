@@ -1,3 +1,4 @@
+import { BodyLong, Heading } from "@navikt/ds-react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { getTemplate } from "~/api/brevbaker-api-endpoints";
@@ -54,18 +55,38 @@ function ForEachComponent() {
 
 function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
-    case ElementType.TITLE1:
+    case ElementType.TITLE1: {
+      return (
+        <Heading size="small" spacing>
+          {content.text.map((cocs, index) => (
+            <ContentOrControlStructureComponent cocs={cocs} key={index} />
+          ))}
+        </Heading>
+      );
+    }
     case ElementType.TITLE2: {
-      return content.text.map((cocs, index) => <ContentOrControlStructureComponent cocs={cocs} key={index} />);
+      return (
+        <Heading size="xsmall" spacing>
+          {content.text.map((cocs, index) => (
+            <ContentOrControlStructureComponent cocs={cocs} key={index} />
+          ))}
+        </Heading>
+      );
     }
     case ElementType.PARAGRAPH_TEXT_LITERAL: {
-      return <span>{content.text}</span>;
+      return <span className="paragraph-text-literal">{content.text}</span>;
     }
     case ElementType.PARAGRAPH_TEXT_EXPRESSION: {
-      return <span>Expression TODO</span>;
+      return <ExpressionComponent expression={content.expression} />;
     }
     case ElementType.PARAGRAPH: {
-      return content.paragraph.map((cocs, index) => <ContentOrControlStructureComponent cocs={cocs} key={index} />);
+      return (
+        <BodyLong spacing>
+          {content.paragraph.map((cocs, index) => (
+            <ContentOrControlStructureComponent cocs={cocs} key={index} />
+          ))}
+        </BodyLong>
+      );
     }
     case ElementType.PARAGRAPH_TABLE: {
       return <span>TABLE TODO</span>;
@@ -79,6 +100,7 @@ function ContentComponent({ content }: { content: Element }) {
 function ConditionalComponent<E extends Element>({ conditional }: { conditional: Conditional<E> }) {
   return (
     <div className="conditional">
+      <span>Hvis: </span>
       <ExpressionComponent expression={conditional.predicate} />
       <ShowIf cocs={conditional.showIf} />
       <ShowElse cocs={conditional.showElse} />
@@ -111,5 +133,10 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
 }
 
 function ExpressionComponent({ expression }: { expression: Expression }) {
-  return <span className="expression">Hvis: Expression TODO</span>;
+  return (
+    <span className="expression">
+      {expression.first?.scopeName}
+      {expression.operator?.text}
+    </span>
+  );
 }
