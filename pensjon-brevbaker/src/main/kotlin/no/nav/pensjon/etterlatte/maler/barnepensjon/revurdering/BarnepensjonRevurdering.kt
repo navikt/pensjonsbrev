@@ -92,9 +92,9 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
             showIf(erOmgjoering) {
                 ifNotNull(datoVedtakOmgjoering) {
                     textExpr(
-                        Bokmal to "omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
-                        Nynorsk to "gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
-                        English to "reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
+                        Bokmal to "omgjort vedtaket om barnepensjon av ".expr() + it.format(),
+                        Nynorsk to "gjort om vedtaket om barnepensjon av ".expr() + it.format(),
+                        English to "reversed our decision regarding the  children's pension on ".expr() + it.format(),
                     )
                 }
             }.orShow {

@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -15,6 +16,11 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.da
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.ytelseFoerAvkorting
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
 data class Beregningsperiodetabell(
@@ -50,20 +56,8 @@ data class Beregningsperiodetabell(
                 forEach(beregningsperioder) {
                     row {
                         cell { includePhrase(PeriodeITabell(it.datoFOM, it.datoTOM)) }
-                        cell {
-                            textExpr(
-                                Language.Bokmal to it.grunnbeloep.format() + " kr",
-                                Language.Nynorsk to it.grunnbeloep.format() + " kr",
-                                Language.English to "NOK ".expr() + it.grunnbeloep.format(),
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Language.Bokmal to it.utbetaltBeloep.format() + " kr",
-                                Language.Nynorsk to it.utbetaltBeloep.format() + " kr",
-                                Language.English to "NOK ".expr() + it.utbetaltBeloep.format(),
-                            )
-                        }
+                        cell { includePhrase(Felles.KronerText(it.grunnbeloep)) }
+                        cell { includePhrase(Felles.KronerText(it.utbetaltBeloep)) }
                     }
                 }
             }

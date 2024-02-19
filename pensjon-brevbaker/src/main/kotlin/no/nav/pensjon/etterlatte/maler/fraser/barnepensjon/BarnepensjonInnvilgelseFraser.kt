@@ -106,8 +106,13 @@ object BarnepensjonInnvilgelseFraser {
                         Language.Bokmal to "Du får etterbetalt pensjon. Vanligvis vil du få denne i løpet av " +
                                 "tre uker. Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan " +
                                 "denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
-                        Language.Nynorsk to "",
-                        Language.English to "",
+                        Language.Nynorsk to "Du får etterbetalt pensjon. Normalt sett får du denne i løpet av " +
+                                "tre veker. Dersom Skatteetaten eller andre ordningar har krav i etterbetalinga, kan " +
+                                "denne bli forseinka. Frådrag i etterbetalinga vil gå fram av utbetalingsmeldinga.",
+                        Language.English to "You will receive a back payment on your pension. You will usually " +
+                                "receive this back payment within three weeks. If the Norwegian Tax Administration or " +
+                                "other schemes are entitled to the back payment, the payment to you may be delayed. " +
+                                "Deductions from the back payment will be stated in the disbursement notice.",
                     )
                 }
                 paragraph {
