@@ -81,28 +81,26 @@ object BarnepensjonFellesFraser {
         }
     }
 
-    object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object MeldFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "TODO engelsk"
+                    Language.Bokmal to "Du må melde fra om endringer",
+                    Language.Nynorsk to "Du må melde frå om endringar",
+                    Language.English to "You must report changes",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
-                            "oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
-                            "rask og god hjelp.",
-                    Nynorsk to "TODO nynorsk",
-                    English to "TODO engelsk"
+                    Language.Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for utbetalingen av barnepensjon, eller retten til å få barnepensjon. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
+                    Language.Nynorsk to "Du pliktar å melde frå til oss om endringar som har innverknad på utbetalinga av eller retten på barnepensjon. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
+                    Language.English to "You are obligated to notify us any of changes that affect the payment of a children's pension, or the right to receive a children's pension. You will see which changes you must report in the attachment Your Rights and Obligations.",
                 )
             }
         }
     }
 
-    data class HarDuSpoersmaalNy(
+    data class HarDuSpoersmaal(
         val brukerUnder18Aar: Expression<Boolean>,
         val bosattUtland: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
