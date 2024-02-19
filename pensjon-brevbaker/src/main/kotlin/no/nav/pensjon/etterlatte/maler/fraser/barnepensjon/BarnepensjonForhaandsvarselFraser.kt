@@ -69,7 +69,7 @@ class BarnepensjonForhaandsvarselFraser {
                             "utbetalinga frå rett tidspunkt. Dette har ført til at du har fått ei feilutbetaling. >",
                     Language.English to "<Fritekst. Eks.: The children’s pension payments should have stopped " +
                             "the month after you were adopted. We did not receive the information in time to stop " +
-                            "the payment at the right time. This has resulted in payment in error to you. >",
+                            "the payment at the right time. This has resulted in an incorrect payment to you. >",
                 )
             }
 
@@ -223,12 +223,12 @@ class BarnepensjonForhaandsvarselFraser {
                             "god nok informasjon frå oss. // forstod eller burde ha forstått at beløpet du fekk, " +
                             "skuldast ein feil // ikkje forstod eller kunne forventast å forstå at beløpet du fekk, " +
                             "skuldast ein feil.>  ",
-                    Language.English to "Our provisional assessment is that you < the information you gave us " +
-                            "was lacking // incorrect // necessary information arrived late ///, even after receiving " +
-                            "adequate information from us. //, because you have not received adequate information from " +
-                            "us. // understood or should have understood that the amount you received was due to an " +
-                            "error // not understood or should have understood that the amount you received was due " +
-                            "to an error.>",
+                    Language.English to "Our provisional assessment is that you < understood or should have " +
+                            "understood that the amount you received was due to an error. // not understood or " +
+                            "should have understood that the amount you received was due to an error. // " +
+                            "gave us insufficient information // gave us incorrect information // gave us " +
+                            "the necessary information to late ///, even after receiving adequate information " +
+                            "from us. //, because you have not received adequate information from us. > ",
                 )
             }
         }
