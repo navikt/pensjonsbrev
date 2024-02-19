@@ -34,7 +34,7 @@ export type Title2 = {
 };
 export type Paragraph = {
   elementType: ElementType.PARAGRAPH;
-  text: ContentOrControlStructure<ParagraphContent>[];
+  paragraph: ContentOrControlStructure<ParagraphContent>[];
 };
 
 export type ParagraphContent = Text | ItemList | Table;

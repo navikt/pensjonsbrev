@@ -16,14 +16,21 @@ export const Route = createFileRoute("/template/$templateId")({
 
 const templateId = "UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO";
 function TemplateExplorer() {
-  const d = Route.useLoaderData();
+  const templateDocumentation = Route.useLoaderData();
 
-  return d.title.map((cocs, index) => {
-    return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
-  });
+  return (
+    <div>
+      {templateDocumentation.title.map((cocs, index) => {
+        return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
+      })}
+      {templateDocumentation.outline.map((cocs, index) => {
+        return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
+      })}
+    </div>
+  );
 }
 
-function ContentOrControlStructureComponent<E>({ cocs }: { cocs: ContentOrControlStructure<E> }) {
+function ContentOrControlStructureComponent<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E> }) {
   switch (cocs.controlStructureType) {
     case ContentOrControlStructureType.CONDITIONAL: {
       return <ConditionalComponent conditional={cocs} />;
@@ -54,7 +61,7 @@ function ContentComponent({ content }: { content: Element }) {
       return <span>Expression TODO</span>;
     }
     case ElementType.PARAGRAPH: {
-      return content.text.map((cocs, index) => <ContentOrControlStructureComponent cocs={cocs} key={index} />);
+      return content.paragraph.map((cocs, index) => <ContentOrControlStructureComponent cocs={cocs} key={index} />);
     }
     case ElementType.PARAGRAPH_TABLE: {
       return <span>TABLE TODO</span>;
@@ -65,7 +72,7 @@ function ContentComponent({ content }: { content: Element }) {
   }
 }
 
-function ConditionalComponent<E>({ conditional }: { conditional: Conditional<E> }) {
+function ConditionalComponent<E extends Element>({ conditional }: { conditional: Conditional<E> }) {
   return (
     <div>
       <ExpressionComponent expression={conditional.predicate} />
@@ -75,7 +82,7 @@ function ConditionalComponent<E>({ conditional }: { conditional: Conditional<E> 
   );
 }
 
-function ShowIf({ cocs }: { cocs: ContentOrControlStructure<any>[] }) {
+function ShowIf<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
   return (
     <div>
       <span>Show if: </span>
@@ -86,7 +93,7 @@ function ShowIf({ cocs }: { cocs: ContentOrControlStructure<any>[] }) {
   );
 }
 
-function ShowElse({ cocs }: { cocs: ContentOrControlStructure<any>[] }) {
+function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
   return (
     <div>
       <span>Show else: </span>
