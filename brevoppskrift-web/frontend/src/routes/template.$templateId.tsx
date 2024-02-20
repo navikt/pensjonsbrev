@@ -104,7 +104,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.PARAGRAPH: {
       return (
-        <BodyLong spacing>
+        <BodyLong as="div" spacing>
           {content.paragraph.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -115,7 +115,22 @@ function ContentComponent({ content }: { content: Element }) {
       return <span>TABLE TODO</span>;
     }
     case ElementType.PARAGRAPH_ITEMLIST: {
-      return <span>ITEMLIST TODO</span>;
+      return (
+        <ul>
+          {content.items.map((cocs, index) => (
+            <ContentOrControlStructureComponent cocs={cocs} key={index} />
+          ))}
+        </ul>
+      );
+    }
+    case ElementType.PARAGRAPH_ITEMLIST_ITEM: {
+      return (
+        <li>
+          {content.text.map((cocs, index) => (
+            <ContentOrControlStructureComponent cocs={cocs} key={index} />
+          ))}
+        </li>
+      );
     }
   }
 }
