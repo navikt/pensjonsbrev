@@ -38,9 +38,9 @@ export type Paragraph = {
 };
 
 export type ParagraphContent = Text | ItemList | Table;
-export type Text = ParagraphLiteral | ParagraphExpression;
-export type ParagraphLiteral = { text: string; elementType: ElementType.PARAGRAPH_TEXT_LITERAL };
-export type ParagraphExpression = { expression: Expression; elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION };
+export type Text = TextLiteral | TextExpression;
+export type TextLiteral = { text: string; elementType: ElementType.PARAGRAPH_TEXT_LITERAL };
+export type TextExpression = { expression: Expression; elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION };
 export type ItemList = {
   elementType: ElementType.PARAGRAPH_ITEMLIST;
   items: ContentOrControlStructure<Item>[];

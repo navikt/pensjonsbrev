@@ -31,6 +31,15 @@ function TemplateExplorer() {
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
         })}
       </div>
+      <div>
+        {templateDocumentation.attachments.map((attachment, index) => (
+          <div key={index}>
+            {attachment.outline.map((cocs, index) => (
+              <ContentOrControlStructureComponent cocs={cocs} key={index} />
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
