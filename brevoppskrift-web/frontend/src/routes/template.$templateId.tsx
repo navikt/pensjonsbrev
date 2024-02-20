@@ -156,14 +156,32 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
 }
 
 function ExpressionComponent({ expression }: { expression: Expression }) {
-  return (
-    <span className="expression">
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/*@ts-expect-error*/}
-      {expression.first?.scopeName}
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/*@ts-expect-error*/}
-      {expression.operator?.text}
-    </span>
-  );
+  return <span className="expression">{expressionToText(expression)}</span>;
+}
+
+function expressionToText(expression: Expression): string {
+  if ("scopeName" in expression) return expression.scopeName;
+  if ("value" in expression) return expression.value;
+
+  const firstExpressionResolved = expressionToText(expression.first);
+  const secondExpressionResolved = expression.second ? `, ${expressionToText(expression.second)}` : "";
+
+  switch (expression.operator.syntax) {
+    case "FUNCTION": {
+      return `${expression.operator.text}(${firstExpressionResolved}${secondExpressionResolved})`;
+    }
+    case "POSTFIX": {
+      return `${stripPackageNameFromType(expression.type)}${expression.operator.text}`;
+    }
+    case "INFIX": {
+      return `${firstExpressionResolved} ${expression.operator.text} ${secondExpressionResolved}`;
+    }
+    case "PREFIX": {
+      return `${expression.operator.text}${firstExpressionResolved}${secondExpressionResolved}`;
+    }
+  }
+}
+
+function stripPackageNameFromType(type?: string) {
+  return type?.replace("no.nav.pensjon.brevbaker.api.model.", "") ?? "";
 }
