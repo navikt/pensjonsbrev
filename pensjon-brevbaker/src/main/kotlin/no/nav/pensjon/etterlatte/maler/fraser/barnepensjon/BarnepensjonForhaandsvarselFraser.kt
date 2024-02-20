@@ -211,18 +211,17 @@ class BarnepensjonForhaandsvarselFraser {
 
             paragraph {
                 text(
-                    Language.Bokmal to "Vår foreløpige vurdering er at du <har gitt oss mangelfulle " +
-                            "opplysninger // har gitt oss feil opplysninger // har gitt oss nødvendige opplysninger " +
-                            "for sent //, selv om du har fått god informasjon fra oss. //, fordi du ikke har fått " +
-                            "god nok informasjon fra oss. // forstod eller burde forstått at beløpet du fikk, " +
-                            "skyldtes en feil // ikke forstod eller burde forstått at beløpet du fikk, " +
-                            "skyldtes en feil.> ",
-                    Language.Nynorsk to "Vurderinga vår så langt er at du < har gitt oss mangelfulle " +
-                            "opplysningar // har gitt oss feil opplysningar // ga oss dei nødvendige opplysningane " +
-                            "for seint //, sjølv om du har fått god informasjon frå oss. //, fordi du ikkje fekk " +
-                            "god nok informasjon frå oss. // forstod eller burde ha forstått at beløpet du fekk, " +
-                            "skuldast ein feil // ikkje forstod eller kunne forventast å forstå at beløpet du fekk, " +
-                            "skuldast ein feil.>  ",
+                    Language.Bokmal to "Vår foreløpige vurdering er at du < forstod eller burde forstått at " +
+                            "beløpet du fikk, skyldtes en feil. // ikke forstod eller burde forstått at beløpet du " +
+                            "fikk, skyldtes en feil. // har gitt oss mangelfulle opplysninger // har gitt oss feil " +
+                            "opplysninger // har gitt oss nødvendige opplysninger for sent ///, selv om du har fått " +
+                            "god informasjon fra oss. //, fordi du ikke har fått god nok informasjon fra oss.> ",
+                    Language.Nynorsk to "Vurderinga vår så langt er at du < forstod eller burde ha forstått at " +
+                            "beløpet du fekk, skuldast ein feil. // ikkje forstod eller kunne forventast å forstå at " +
+                            "beløpet du fekk, skuldast ein feil. // har gitt oss mangelfulle opplysningar // har " +
+                            "gitt oss feil opplysningar // ga oss dei nødvendige opplysningane for seint ///, sjølv " +
+                            "om du har fått god informasjon frå oss. //, fordi du ikkje fekk god nok informasjon " +
+                            "frå oss.> ",
                     Language.English to "Our provisional assessment is that you < understood or should have " +
                             "understood that the amount you received was due to an error. // not understood or " +
                             "should have understood that the amount you received was due to an error. // " +

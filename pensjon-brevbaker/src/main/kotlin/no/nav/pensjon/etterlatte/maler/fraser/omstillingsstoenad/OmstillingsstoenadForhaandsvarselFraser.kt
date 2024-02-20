@@ -209,24 +209,24 @@ class OmstillingsstoenadForhaandsvarselFraser {
 
             paragraph {
                 text(
-                    Language.Bokmal to "Vår foreløpige vurdering er at du <har gitt oss mangelfulle " +
-                            "opplysninger // har gitt oss feil opplysninger // har gitt oss nødvendige opplysninger " +
-                            "for sent //, selv om du har fått god informasjon fra oss. //, fordi du ikke har fått " +
-                            "god nok informasjon fra oss. // forstod eller burde forstått at beløpet du fikk, " +
-                            "skyldtes en feil // ikke forstod eller burde forstått at beløpet du fikk, " +
-                            "skyldtes en feil.> ",
-                    Language.Nynorsk to "Vurderinga vår så langt er at du < har gitt oss mangelfulle " +
+                    Language.Bokmal to "Vår foreløpige vurdering er at du < forstod eller burde forstått at " +
+                            "beløpet du fikk, skyldtes en feil. // ikke forstod eller burde forstått at beløpet du " +
+                            "fikk, skyldtes en feil. // har gitt oss mangelfulle opplysninger // har gitt oss " +
+                            "feil opplysninger // har gitt oss nødvendige opplysninger for sent ///, selv om du " +
+                            "har fått god informasjon fra oss. //, fordi du ikke har fått god nok informasjon " +
+                            "fra oss.> ",
+                    Language.Nynorsk to "Vurderinga vår så langt er at du < forstod eller burde ha forstått " +
+                            "at beløpet du fekk, skuldast ein feil. // ikkje forstod eller kunne forventast å " +
+                            "forstå at beløpet du fekk, skuldast ein feil. // har gitt oss mangelfulle " +
                             "opplysningar // har gitt oss feil opplysningar // ga oss dei nødvendige opplysningane " +
-                            "for seint //, sjølv om du har fått god informasjon frå oss. //, fordi du ikkje fekk " +
-                            "god nok informasjon frå oss. // forstod eller burde ha forstått at beløpet du fekk, " +
-                            "skuldast ein feil // ikkje forstod eller kunne forventast å forstå at beløpet du fekk, " +
-                            "skuldast ein feil.>  ",
-                    Language.English to "Our provisional assessment is that you < the information you gave us " +
-                            "was lacking // incorrect // necessary information arrived late //, even after receiving " +
-                            "adequate information from us. //, because you have not received adequate information from " +
-                            "us. // understood or should have understood that the amount you received was due to an " +
-                            "error // not understood or should have understood that the amount you received was due " +
-                            "to an error.>",
+                            "for seint ///, sjølv om du har fått god informasjon frå oss. //, fordi du ikkje fekk " +
+                            "god nok informasjon frå oss.> ",
+                    Language.English to "Our provisional assessment is that you < understood or should have " +
+                            "understood that the amount you received was due to an error. // not understood or " +
+                            "should have understood that the amount you received was due to an error. // have given " +
+                            "us insufficient information // have given us incorrect information // have given us " +
+                            "the necessary information to late ///, even after receiving adequate information from " +
+                            "us. //, because you have not received adequate information from us. > ",
                 )
             }
         }
