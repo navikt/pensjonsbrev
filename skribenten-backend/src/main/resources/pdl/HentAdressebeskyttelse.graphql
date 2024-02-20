@@ -1,0 +1,8 @@
+
+query PdlNavnQuery($ident: ID!) {
+    hentPerson(ident: $ident) {,
+         adressebeskyttelse{
+                   gradering
+               }
+    }
+}

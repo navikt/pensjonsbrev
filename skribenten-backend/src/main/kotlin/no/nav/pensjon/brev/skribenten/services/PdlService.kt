@@ -47,10 +47,21 @@ class PdlService(config: Config, authService: AzureADService) {
         val extensions: JsonNode?,
     )
 
+    // PersonMed navn
     private data class DataWrapperPersonMedNavn(val hentPerson: PersonMedNavn?)
     private data class PersonMedNavn(val navn: List<Navn>? = null)
     data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String) {
         fun format() = "$fornavn ${mellomnavn?.plus(" ") ?: ""}${etternavn}"
+    }
+
+    // PersonMedAdressebeskyttelse
+    private data class DataWrapperPersonMedAdressebeskyttelse(val hentPerson: PersonMedAdressebeskyttelse?)
+    private data class PersonMedAdressebeskyttelse(val gradering: Gradering?)
+    enum class Gradering(val gruppetilgang: String) {
+        FORTROLIG("AD-rollen 0000-GA-Fortrolig_Adresse"),
+        STRENGT_FORTROLIG("AD-rollen 0000-GA-Strengt_Fortrolig_Adresse"),
+        STRENGT_FORTROLIG_UTLAND("AD-rolle 0000-GA-Person-EndreStrengtFortroligUtland"),
+        INGEN("")
     }
 
     private val hentNavnQuery = PdlService::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
@@ -72,6 +83,22 @@ class PdlService(config: Config, authService: AzureADService) {
         }.toServiceResult<PDLResponse<DataWrapperPersonMedNavn>>()
             .map {
                 it.data?.hentPerson?.navn?.firstOrNull()?.format() ?: "" // TODO hvordan får vi error her?
+            }
+    }
+
+    suspend fun hentAdressebeskyttelse(call: ApplicationCall, fnr: String): ServiceResult<Gradering> {
+        return client.post(call, "") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(
+                PDLQuery(
+                    query = hentNavnQuery,
+                    variables = FnrVariables(fnr)
+                )
+            )
+        }.toServiceResult<PDLResponse<DataWrapperPersonMedAdressebeskyttelse>>()
+            .map {
+                it.data?.hentPerson?.gradering// ?: Gradering.INGEN
             }
     }
 }

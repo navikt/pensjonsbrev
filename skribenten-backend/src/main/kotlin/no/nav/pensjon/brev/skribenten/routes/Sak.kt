@@ -7,15 +7,18 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.ktor.util.pipeline.*
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 import no.nav.pensjon.brev.skribenten.services.KrrService
 import no.nav.pensjon.brev.skribenten.services.LegacyBrevService
+import no.nav.pensjon.brev.skribenten.services.NAVEnhet
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
+import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import no.nav.pensjon.brev.skribenten.services.respondWithResult
 import org.slf4j.LoggerFactory
 
@@ -31,7 +34,7 @@ fun Route.sakRoute(
 ) {
     route("/sak/{sakId}") {
         intercept(ApplicationCallPipeline.Call) {
-            sjekkEnhetstilgangTilSak(navansattService, penService)
+            sjekkTilganger(navansattService, pdlService, penService)
         }
         get("") {
             val sakId = call.parameters.getOrFail("sakId")
@@ -57,7 +60,34 @@ fun Route.sakRoute(
 
 data class PidRequest(val pid: String)
 
-suspend fun PipelineContext<Unit, ApplicationCall>.sjekkEnhetstilgangTilSak(navansattService: NavansattService, penService: PenService) {
+
+private suspend fun PipelineContext<Unit, ApplicationCall>.sjekkGruppetilgang(
+    navansattService: NavansattService,
+    sakSelection: Deferred<ServiceResult<PenService.SakSelection>>,
+    pdlService: PdlService
+) {
+    navansattService.hentGruppetilgang(call, fetchLoggedInNavIdent(call)).map { grupper ->
+        when (val sak = sakSelection.await()) {
+            is ServiceResult.Error -> call.respond(HttpStatusCode.InternalServerError, "En feil oppstod under henting av sak fra PEN")
+            is ServiceResult.Ok -> {
+                when (val adressebeskyttelse = pdlService.hentAdressebeskyttelse(call, sak.result.foedselsnr)) {
+                    is ServiceResult.Error -> call.respond(HttpStatusCode.InternalServerError, "En feil oppstod under henting av adressebeskyttelse fra PDL")
+                    is ServiceResult.Ok -> {
+                        if (grupper.groups.none { gruppe -> gruppe == adressebeskyttelse.result.gruppetilgang }) {
+                            call.respond(HttpStatusCode.NotFound) // Vi ønsker ikke å utlevere informasjon som kan utledes
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+suspend fun PipelineContext<Unit, ApplicationCall>.sjekkTilganger(
+    navansattService: NavansattService,
+    pdlService: PdlService,
+    penService: PenService
+) {
     val sakId = call.parameters["sakId"].toString()
     if (sakId.isEmpty()) {
         call.respond(HttpStatusCode.BadRequest, "SakId mangler i request")
@@ -67,7 +97,14 @@ suspend fun PipelineContext<Unit, ApplicationCall>.sjekkEnhetstilgangTilSak(nava
     val sakSelection = async { penService.hentSak(call, sakId) }
     val enheter = async { navansattService.hentNavAnsattEnhetListe(call, loggedInNavIdent) }
 
+    sjekkEnhetstilgang(sakSelection, enheter)
+    sjekkGruppetilgang(navansattService, sakSelection, pdlService)
+}
 
+private suspend fun PipelineContext<Unit, ApplicationCall>.sjekkEnhetstilgang(
+    sakSelection: Deferred<ServiceResult<PenService.SakSelection>>,
+    enheter: Deferred<ServiceResult<List<NAVEnhet>>>
+) {
     sakSelection.await().map { sak ->
         enheter.await().map { result ->
             result.any { it.id == sak.enhetId }
