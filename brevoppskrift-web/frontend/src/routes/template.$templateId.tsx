@@ -1,8 +1,15 @@
-import { BodyLong, Heading } from "@navikt/ds-react";
+import { BodyLong, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { getTemplate } from "~/api/brevbaker-api-endpoints";
-import type { Conditional, ContentOrControlStructure, Element, Expression } from "~/api/brevbakerTypes";
+import type {
+  Attachment,
+  Conditional,
+  ContentOrControlStructure,
+  Element,
+  Expression,
+  TemplateDocumentation,
+} from "~/api/brevbakerTypes";
 import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
 
 export const Route = createFileRoute("/template/$templateId")({
@@ -20,6 +27,22 @@ function TemplateExplorer() {
   const templateDocumentation = Route.useLoaderData();
 
   return (
+    <>
+      <Heading size="medium" spacing>
+        Oppskrift for {templateId}
+      </Heading>
+      <VStack gap="4">
+        <Document templateDocumentation={templateDocumentation} />
+        {templateDocumentation.attachments.map((attachment, index) => (
+          <Document key={index} templateDocumentation={attachment} />
+        ))}
+      </VStack>
+    </>
+  );
+}
+
+function Document({ templateDocumentation }: { templateDocumentation: TemplateDocumentation | Attachment }) {
+  return (
     <div className="preview">
       <div>
         {templateDocumentation.title.map((cocs, index) => {
@@ -30,15 +53,6 @@ function TemplateExplorer() {
         {templateDocumentation.outline.map((cocs, index) => {
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
         })}
-      </div>
-      <div>
-        {templateDocumentation.attachments.map((attachment, index) => (
-          <div key={index}>
-            {attachment.outline.map((cocs, index) => (
-              <ContentOrControlStructureComponent cocs={cocs} key={index} />
-            ))}
-          </div>
-        ))}
       </div>
     </div>
   );
