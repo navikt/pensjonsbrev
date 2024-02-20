@@ -123,9 +123,10 @@ function ContentComponent({ content }: { content: Element }) {
 function ConditionalComponent<E extends Element>({ conditional }: { conditional: Conditional<E> }) {
   return (
     <div className="conditional">
-      <span>Hvis: </span>
-      <ExpressionComponent expression={conditional.predicate} />
-      <ShowIf cocs={conditional.showIf} />
+      <div className="show-if">
+        <ExpressionComponent expression={conditional.predicate} />
+        <ShowIf cocs={conditional.showIf} />
+      </div>
       <ShowElse cocs={conditional.showElse} />
     </div>
   );
@@ -146,17 +147,19 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
     return <></>;
   }
   return (
-    <div>
-      <span className="expression">Ellers:</span>
-      {cocs.map((a, index) => (
-        <ContentOrControlStructureComponent cocs={a} key={index} />
-      ))}
+    <div className="show-else">
+      <code>Else</code>
+      <div>
+        {cocs.map((a, index) => (
+          <ContentOrControlStructureComponent cocs={a} key={index} />
+        ))}
+      </div>
     </div>
   );
 }
 
 function ExpressionComponent({ expression }: { expression: Expression }) {
-  return <span className="expression">{expressionToText(expression)}</span>;
+  return <code className="expression">{expressionToText(expression)}</code>;
 }
 
 function expressionToText(expression: Expression): string {
