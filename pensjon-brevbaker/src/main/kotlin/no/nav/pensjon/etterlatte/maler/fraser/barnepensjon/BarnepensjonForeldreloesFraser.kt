@@ -58,8 +58,8 @@ object BarnepensjonForeldreloesFraser {
                         Language.Nynorsk to "Du får ".expr() + formatertBeloep +
                                 " kroner per månad før skatt frå " + formatertFom +
                                 ". I vedlegget «Utrekning av barnepensjon» kan du sjå beløp for tidlegare periodar og korleis vi har rekna ut pensjonen.",
-                        Language.English to "You will receive ".expr() + formatertBeloep +
-                                " kroner each month before tax, starting on " + formatertFom +
+                        Language.English to "You will receive NOK ".expr() + formatertBeloep +
+                                " each month before tax, starting on " + formatertFom +
                                 ". You can see amounts for previous periods and how we calculated your pension in the attachment," +
                                         " Calculation of Children’s Pension.".expr(),
                     )
