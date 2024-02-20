@@ -249,7 +249,7 @@ object BarnepensjonRevurderingFraser {
                     Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått for " +
                             "mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
                             "tilbake barnepensjon».",
-                    Language.English to "Because your allowance has been reduced retroactively, you received " +
+                    Language.English to "Because your pension has been reduced retroactively, you received " +
                             "more than you were owed. See the attachment Advance notice – we are assessing whether " +
                             "you must repay children’s pension.",
                 )
