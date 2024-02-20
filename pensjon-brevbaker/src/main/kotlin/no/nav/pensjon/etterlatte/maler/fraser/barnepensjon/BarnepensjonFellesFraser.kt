@@ -18,16 +18,16 @@ object BarnepensjonFellesFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Language.Bokmal to "(utfall jamfør tekstbibliotek)",
-                    Language.Nynorsk to "(utfall jamfør tekstbibliotek)",
-                    Language.English to "(utfall jamfør tekstbibliotek)",
+                    Bokmal to "(utfall jamfør tekstbibliotek)",
+                    Nynorsk to "(utfall jamfør tekstbibliotek)",
+                    English to "(utfall jamfør tekstbibliotek)",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning>.",
-                    Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova § <riktig paragrafhenvisning>.",
-                    Language.English to "This decision has been made pursuant to the provisions regarding children's pensions in the National Insurance Act – sections <riktig paragrafhenvisning>.",
+                    Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § <riktig paragrafhenvisning>.",
+                    Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova § <riktig paragrafhenvisning>.",
+                    English to "This decision has been made pursuant to the provisions regarding children's pensions in the National Insurance Act – sections <riktig paragrafhenvisning>.",
                 )
             }
         }
@@ -81,28 +81,26 @@ object BarnepensjonFellesFraser {
         }
     }
 
-    object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object MeldFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "TODO engelsk"
+                    Bokmal to "Du må melde fra om endringer",
+                    Nynorsk to "Du må melde frå om endringar",
+                    English to "You must report changes",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
-                            "oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
-                            "rask og god hjelp.",
-                    Nynorsk to "TODO nynorsk",
-                    English to "TODO engelsk"
+                    Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for utbetalingen av barnepensjon, eller retten til å få barnepensjon. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
+                    Nynorsk to "Du pliktar å melde frå til oss om endringar som har innverknad på utbetalinga av eller retten på barnepensjon. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
+                    English to "You are obligated to notify us any of changes that affect the payment of a children's pension, or the right to receive a children's pension. You will see which changes you must report in the attachment Your Rights and Obligations.",
                 )
             }
         }
     }
 
-    data class HarDuSpoersmaalNy(
+    data class HarDuSpoersmaal(
         val brukerUnder18Aar: Expression<Boolean>,
         val bosattUtland: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -151,20 +149,68 @@ object BarnepensjonFellesFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Hvor lenge kan du få barnepensjon?",
-                    Language.Nynorsk to "Kor lenge kan du få barnepensjon?",
-                    Language.English to "How long will you receive the children’s pension?",
+                    Bokmal to "Hvor lenge kan du få barnepensjon?",
+                    Nynorsk to "Kor lenge kan du få barnepensjon?",
+                    English to "How long will you receive the children’s pension?",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du er innvilget barnepensjon til og med den kalendermåneden du fyller 20 år, " +
-                            "så lenge du oppfyller vilkårene.",
-                    Language.Nynorsk to "Under føresetnad av at du innfrir vilkåra, kan du få barnepensjon fram til " +
-                            "og med kalendermånaden du fyller 20 år. ",
-                    Language.English to "You will receive the children’s pension until and including the calendar " +
-                            "month in which you turn 20, as long as you satisfy the conditions.",
+                    Bokmal to "Du er innvilget barnepensjon til og med den kalendermåneden du fyller 20 år, så lenge du oppfyller vilkårene.",
+                    Nynorsk to "Under føresetnad av at du innfrir vilkåra, kan du få barnepensjon fram til og med kalendermånaden du fyller 20 år.",
+                    English to "You will receive the children’s pension until and including the calendar month in which you turn 20, as long as you satisfy the conditions.",
                 )
+            }
+        }
+    }
+
+    data class UtbetalingAvBarnepensjon(
+        val etterbetaling: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Utbetaling av barnepensjon",
+                    Nynorsk to "Utbetaling av barnepensjon",
+                    English to "Payment of the children's pension",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. Du finner utbetalingsdatoer på ${Constants.UTBETALINGSDATOER_URL}.",
+                    Nynorsk to "Pensjonen blir utbetalt innan den 20. kvar månad. Du finn utbetalingsdatoane på ${Constants.UTBETALINGSDATOER_URL}.",
+                    English to "The pension is paid by the 20th of each month. You can find payout dates online: ${Constants.Engelsk.UTBETALINGSDATOER_URL}.",
+                )
+            }
+            showIf(etterbetaling) {
+                paragraph {
+                    text(
+                        Bokmal to "Du får etterbetalt pensjon. Vanligvis vil du få denne i løpet av " +
+                                "tre uker. Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan " +
+                                "denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
+                        Nynorsk to "Du får etterbetalt pensjon. Normalt sett får du denne i løpet av " +
+                                "tre veker. Dersom Skatteetaten eller andre ordningar har krav i etterbetalinga, kan " +
+                                "denne bli forseinka. Frådrag i etterbetalinga vil gå fram av utbetalingsmeldinga.",
+                        English to "You will receive a back payment on your pension. You will usually " +
+                                "receive this back payment within three weeks. If the Norwegian Tax Administration or " +
+                                "other schemes are entitled to the back payment, the payment to you may be delayed. " +
+                                "Deductions from the back payment will be stated in the disbursement notice.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder " +
+                                "etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
+                                "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+                        Nynorsk to "Det blir vanlegvis trekt skatt av etterbetaling. Dersom " +
+                                "etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane til " +
+                                "Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+                        English to "Tax is usually deducted from back payments. If the back payment " +
+                                "applies to previous years, NAV will deduct the tax at the Tax Administration's " +
+                                "standard rates. You can read more about the rates here: " +
+                                "${Constants.SKATTETREKK_ETTERBETALING_URL}. ",
+                    )
+                }
             }
         }
     }
