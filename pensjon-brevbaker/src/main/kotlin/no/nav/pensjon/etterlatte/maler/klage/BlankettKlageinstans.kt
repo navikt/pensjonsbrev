@@ -42,13 +42,13 @@ data class KlageOversendelseDTO(
     val formkrav: Formkrav,
     val hjemmel: String,
     val sakType: SakType,
-    val internKommentar: String,
+    val internKommentar: String?,
     val ovesendelseTekst: String,
     val klager: String,
     val klageDato: LocalDate
 ) : BrevDTO {
     val oversendelseLinjer = ovesendelseTekst.split("\n")
-    val internKommentarLinjer = internKommentar.split("\n")
+    val internKommentarLinjer = internKommentar?.split("\n")
     val sakTypeTekst = when (sakType) {
         SakType.OMSTILLINGSSTOENAD -> "omstillingsstønad"
         SakType.BARNEPENSJON -> "barnepensjon"
@@ -56,15 +56,15 @@ data class KlageOversendelseDTO(
 }
 
 data class Formkrav(
-    val vedtaketKlagenGjelder: VedtakKlagenGjelder,
+    val vedtaketKlagenGjelder: VedtakKlagenGjelder?,
     val erKlagenSignert: Boolean,
     val gjelderKlagenNoeKonkretIVedtaket: Boolean,
     val erKlagerPartISaken: Boolean,
     val erKlagenFramsattInnenFrist: Boolean,
     val erFormkraveneOppfylt: Boolean,
-    val begrunnelse: String
+    val begrunnelse: String?
 ) {
-    val begrunnelseLinjer = begrunnelse.split("\n")
+    val begrunnelseLinjer = begrunnelse?.split("\n")
 }
 
 data class VedtakKlagenGjelder(
@@ -72,12 +72,12 @@ data class VedtakKlagenGjelder(
     val vedtakType: VedtakType
 ) {
     val vedtakTypeFormatert = when (vedtakType) {
-        VedtakType.INNVILGELSE -> "innvilgelse"
-        VedtakType.OPPHOER -> "opphør"
-        VedtakType.AVSLAG -> "avslag på søknad"
-        VedtakType.ENDRING -> "revurdering"
-        VedtakType.TILBAKEKREVING -> "tilbakekreving"
-        VedtakType.AVVIST_KLAGE -> "avvist klage"
+        VedtakType.INNVILGELSE -> "Innvilgelse"
+        VedtakType.OPPHOER -> "Opphør"
+        VedtakType.AVSLAG -> "Avslag på søknad"
+        VedtakType.ENDRING -> "Revurdering"
+        VedtakType.TILBAKEKREVING -> "Tilbakekreving"
+        VedtakType.AVVIST_KLAGE -> "Avvist klage"
     }
 }
 
@@ -132,25 +132,33 @@ object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseDTO>, Hovedmal
                 )
             }
 
-            formaterPunktMedSvar("Dato vedtak attestert", formkrav.vedtaketKlagenGjelder.datoAttestert.format())
-            formaterPunktMedSvar("Type vedtak", formkrav.vedtaketKlagenGjelder.vedtakTypeFormatert)
+            ifNotNull(formkrav.vedtaketKlagenGjelder) {
+                formaterPunktMedSvar("Dato vedtak attestert", it.datoAttestert.format())
+                formaterPunktMedSvar("Type vedtak", it.vedtakTypeFormatert)
+            } orShow {
+                formaterPunktMedSvar("Vedtak som klages på", "Det klages ikke på et konkret vedtak".expr())
+            }
 
             formaterKrav("Er klagen signert?", formkrav.erKlagenSignert)
             formaterKrav("Er klager part i saken?", formkrav.erKlagerPartISaken)
             formaterKrav("Er klagen framsatt innen frist?", formkrav.erKlagenFramsattInnenFrist)
             formaterKrav("Klages det på konkrete elementer i vedtaket?", formkrav.gjelderKlagenNoeKonkretIVedtaket)
 
-            formaterTekstlinjer("Begrunnelse", formkrav.begrunnelseLinjer)
+            ifNotNull(formkrav.begrunnelseLinjer) {
+                formaterTekstlinjer("Begrunnelse", it)
+            }
 
 
             title2 {
                 text(Language.Bokmal to "Vurdering", Language.Nynorsk to "Vurdering", Language.English to "Vurdering")
             }
-            formaterPunktMedSvar("Vedtak", "Oppretthold vedtak".expr())
+            formaterPunktMedSvar("Utfall", "Oppretthold vedtak".expr())
             formaterPunktMedSvar("Hjemmel", hjemmel)
 
             formaterTekstlinjer("Innstilling til NAV Klageinstans", oversendelseLinjer)
-            formaterTekstlinjer("Intern kommentar", internKommentarLinjer)
+            ifNotNull(internKommentarLinjer) {
+                formaterTekstlinjer("Intern kommentar", it)
+            }
         }
     }
 
