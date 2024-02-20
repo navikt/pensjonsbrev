@@ -135,7 +135,11 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
 function ExpressionComponent({ expression }: { expression: Expression }) {
   return (
     <span className="expression">
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/*@ts-expect-error*/}
       {expression.first?.scopeName}
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/*@ts-expect-error*/}
       {expression.operator?.text}
     </span>
   );
