@@ -1,13 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+const templateId = "UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO";
+
 export const Route = createFileRoute("/")({
-  component: () => (
-    <div>
-      <button
-        onClick={() => fetch("/brevbaker/templates/autobrev/UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO/doc/BOKMAL")}
-      >
-        Hent litt data
-      </button>
-    </div>
-  ),
+  loader: ({ navigate, preload }) => {
+    if (!preload) {
+      navigate({ to: `/template/${templateId}` });
+    }
+  },
 });
