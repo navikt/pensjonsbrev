@@ -21,7 +21,7 @@ object Constants {
     const val OMS_REGULERING_URL = "$NAV_URL/omstillingsstønad#regulering"
     const val OMS_ETTEROPPGJOER_URL = "$NAV_URL/omstillingsstønad#etteroppgjør"
     const val OMS_HVORMYE_URL = "$NAV_URL/omstillingsstønad#hvor-mye"
-    const val OMS_HVORLENGE_URL = "$NAV_URL/omstillingsstønad#hvor-mye"
+    const val OMS_HVORLENGE_URL = "$NAV_URL/omstillingsstønad#hvor-lenge"
     const val OMS_AKTIVITET_URL = "$NAV_URL/omstillingsstønad#aktivitet"
     const val OMS_URL = "$NAV_URL/omstillingsstønad"
     const val POSTADRESSE = "NAV skanning, Postboks 1400, 0109 OSLO"

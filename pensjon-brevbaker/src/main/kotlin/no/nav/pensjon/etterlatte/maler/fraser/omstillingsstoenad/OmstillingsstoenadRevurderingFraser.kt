@@ -53,7 +53,8 @@ class OmstillingsstoenadRevurderingFraser {
                                     Language.English to "Your adjustment allowance will change on ".expr() +
                                             formatertVirkningsdato + ". You will receive NOK " + formatertBeloep +
                                             " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
-                                            ". Read more about amounts for previous periods in the attachment Calculation of " +
+                                            ". Read more about amounts for previous periods and how we have calculated " +
+                                            "your Adjustment Allowance in the attachment Calculation of " +
                                             "Adjustment Allowance."
                                 )
                             }
@@ -62,7 +63,7 @@ class OmstillingsstoenadRevurderingFraser {
                                 textExpr(
                                     Language.Bokmal to "Omstillingsstønaden din er endret fra ".expr() +
                                             formatertVirkningsdato + ".",
-                                    Language.Nynorsk to "Omstillingsstønaden din er endret fra ".expr() +
+                                    Language.Nynorsk to "Omstillingsstønaden din har blitt endra frå ".expr() +
                                             formatertVirkningsdato + ".",
                                     Language.English to "Your adjustment allowance will change on ".expr() +
                                             formatertVirkningsdato + "."
@@ -84,8 +85,8 @@ class OmstillingsstoenadRevurderingFraser {
                                             "«Beregning av omstillingsstønad».",
                                     Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av " +
                                             "omstillingsstønad» korleis vi har rekna ut omstillingsstønaden din.",
-                                    Language.English to "Read more about amounts for previous periods in the " +
-                                            "attachment Calculation of Adjustment Allowance.",
+                                    Language.English to "Read more about how we calculated your Adjustment " +
+                                            "Allowance in the attachment Calculation of Adjustment Allowance.",
                                 )
                             }
                         }
@@ -114,8 +115,8 @@ class OmstillingsstoenadRevurderingFraser {
                                         "«Beregning av omstillingsstønad».",
                                 Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                         "korleis vi har rekna ut omstillingsstønaden din.",
-                                Language.English to "Read more about amounts for previous periods in the " +
-                                        "attachment Calculation of Adjustment Allowance. ",
+                                Language.English to "Read more about how we calculated your Adjustment Allowance in " +
+                                        "the attachment Calculation of Adjustment Allowance.",
                             )
                         }
                     }
@@ -149,8 +150,8 @@ class OmstillingsstoenadRevurderingFraser {
                                     "«Beregning av omstillingsstønad».",
                             Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                     "korleis vi har rekna ut omstillingsstønaden din.",
-                            Language.English to "Read more about amounts for previous periods in the attachment " +
-                                    "Calculation of Adjustment Allowance.",
+                            Language.English to "Read more about how we calculated your Adjustment Allowance in " +
+                                    "the attachment Calculation of Adjustment Allowance.",
                         )
                     }
                 }
@@ -170,7 +171,7 @@ class OmstillingsstoenadRevurderingFraser {
             paragraph {
                 textExpr(
                     Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
-                    Language.Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova §§ <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Language.Nynorsk to "Vedtaket er gjort etter føresegnene om omstillingsstønad i folketrygdlova §§ <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
                     Language.English to "This decision has been made pursuant to the provisions regarding adjustment allowance in the National Insurance Act – sections <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 and 22-13.", " and 22-12."),
                 )
             }
