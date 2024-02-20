@@ -37,7 +37,7 @@ export type Paragraph = {
   paragraph: ContentOrControlStructure<ParagraphContent>[];
 };
 
-export type ParagraphContent = Text | ItemList | Table | Item;
+export type ParagraphContent = Text | ItemList | Item | Table | Row;
 export type Text = TextLiteral | TextExpression;
 export type TextLiteral = { text: string; elementType: ElementType.PARAGRAPH_TEXT_LITERAL };
 export type TextExpression = { expression: Expression; elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION };

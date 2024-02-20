@@ -1,4 +1,4 @@
-import { BodyLong, Heading, VStack } from "@navikt/ds-react";
+import { BodyLong, Heading, Table, VStack } from "@navikt/ds-react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { getTemplate } from "~/api/brevbaker-api-endpoints";
@@ -73,7 +73,9 @@ function ContentOrControlStructureComponent<E extends Element>({ cocs }: { cocs:
 }
 
 function ForEachComponent() {
-  return <span>ForEachComponent: TODO</span>;
+  // TODO
+  return <></>;
+  // return <span>ForEachComponent: TODO</span>;
 }
 
 function ContentComponent({ content }: { content: Element }) {
@@ -112,7 +114,39 @@ function ContentComponent({ content }: { content: Element }) {
       );
     }
     case ElementType.PARAGRAPH_TABLE: {
-      return <span>TABLE TODO</span>;
+      return (
+        <Table>
+          <Table.Header>
+            <Table.Row>
+              {content.header.cells.map((cell, index) => (
+                <Table.HeaderCell key={index} scope="col">
+                  {cell.text.map((t, index) => (
+                    <ContentOrControlStructureComponent cocs={t} key={index} />
+                  ))}
+                </Table.HeaderCell>
+              ))}
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {content.rows.map((r, index) => (
+              <ContentOrControlStructureComponent cocs={r} key={index} />
+            ))}
+          </Table.Body>
+        </Table>
+      );
+    }
+    case ElementType.PARAGRAPH_TABLE_ROW: {
+      return (
+        <Table.Row>
+          {content.cells.map((cell, index) => (
+            <Table.DataCell key={index}>
+              {cell.text.map((t, index) => (
+                <ContentOrControlStructureComponent cocs={t} key={index} />
+              ))}
+            </Table.DataCell>
+          ))}
+        </Table.Row>
+      );
     }
     case ElementType.PARAGRAPH_ITEMLIST: {
       return (
