@@ -68,8 +68,8 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
         trygdetid.beregningsMetodeFraGrunnlag,
         trygdetid.beregningsMetodeAnvendt,
         trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden,
-        Expression.Literal(false),
-        Expression.Literal(""), // Ikke relevant for gammelOgNyRegel
+        false.expr(),
+        "".expr() // Ikke relevant for gammelOgNyRegel
     )
     beregnetBarnepensjonGammeltOgNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder)
     perioderMedRegistrertTrygdetid(trygdetid.trygdetidsperioder, trygdetid.beregningsMetodeAnvendt)

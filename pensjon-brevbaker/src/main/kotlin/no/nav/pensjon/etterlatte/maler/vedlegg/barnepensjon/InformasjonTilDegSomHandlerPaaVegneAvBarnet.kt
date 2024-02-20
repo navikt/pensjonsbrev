@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -144,8 +145,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Når kontonummer er i en utenlandsk bank, må du være oppmerksom på at det er et gebyr for hver utbetaling. Det kan også ta litt lenger tid før pengene er på kontoen. Du finner mer informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
-            Nynorsk to "If the bank account is held by a foreign bank, be aware that a minor fee may be charged for each payment. It will also take a little more time before the money reaches your account. More information on payments is available online: ${Constants.Utland.UTBETALING_INFO}.",
-            English to "Når kontonummer er i ein utanlandsk bank, må du vere merksam på at det blir trekt eit gebyr for kvar utbetaling. Det kan også ta litt lenger tid før pengane er på kontoen din. Du finn meir informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
+            Nynorsk to "Når kontonummer er i ein utanlandsk bank, må du vere merksam på at det blir trekt eit gebyr for kvar utbetaling. Det kan også ta litt lenger tid før pengane er på kontoen din. Du finn meir informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
+            English to "If the bank account is held by a foreign bank, be aware that a minor fee may be charged for each payment. It will also take a little more time before the money reaches your account. More information on payments is available online: ${Constants.Utland.UTBETALING_INFO}.",
         )
     }
 }
@@ -160,18 +161,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten å få " +
-                    "beskjed om dette. Hvis du opplyste om ønsket skattetrekk i søknaden, har vi registrert " +
-                    "dette for i år. Du må selv sjekke om dette skattetrekket overføres ved årsskiftet. " +
-                    "Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}.",
-            Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at vi har fått beskjed om det. " +
-                    "Dersom du opplyste om ønskt skattetrekk i søknaden, har vi registrert dette for i år. " +
-                    "Du må sjølv sjekke om dette skattetrekket blir overført ved årsskiftet. " +
-                    "Du kan lese meir om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}.",
-            English to "Children's pensions are taxable, but we do not deduct tax without being notified. " +
-                    "If you stated the desired tax deduction in the application, we will have registered it for this year. " +
-                    "You must check whether this tax deduction will be continued until the end of the year. " +
-                    "You can read more about voluntary tax withholding online: ${Constants.SKATTETREKK_PENGESTOETTE_URL}.",
+            Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Du må kontakte Skatteetaten for å avklare om du bør endre skattekortet eller sende inn frivillig skattetrekk til NAV.",
+            Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at du har gitt beskjed om det. Kontakt Skatteetaten for å avklare om du bør endre skattekortet eller sende inn frivillig skattetrekk til NAV.",
+            English to "Children’s pension is taxable; however, we do not deduct tax if you do not notify us to do so. You must contact the Tax Administration to clarify whether you need to change your tax card or submit voluntary tax deductions to NAV.",
         )
     }
 }
@@ -186,9 +178,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikke er skattemessig bosatt i Norge. Les mer om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
-            Nynorsk to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
-            English to "The Norwegian Tax Administration can answer any questions you may have about taxes regarding pension payments for people who are not tax residents in Norway. Read more about NAV and taxes here: ${Constants.SKATTETREKK_KILDESKATT_URL}.",
+            Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikke er skattemessig bosatt i Norge. Les mer om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
+            Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at du har gitt beskjed om det. Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
+            English to "Children’s pension is taxable; however, we do not deduct tax if you do not notify us to do so. The Tax Administration will respond to any queries regarding tax on pensions for those who are resident in Norway for tax purposes. Read more about tax at:  ${Constants.SKATTETREKK_KILDESKATT_URL}.",
         )
     }
 }

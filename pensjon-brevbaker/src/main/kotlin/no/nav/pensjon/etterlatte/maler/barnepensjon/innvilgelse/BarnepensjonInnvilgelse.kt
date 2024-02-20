@@ -14,7 +14,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
@@ -25,7 +24,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.kunNyttRegelverk
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonGammeltOgNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
@@ -72,10 +71,10 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         outline {
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(etterbetaling.notNull()))
-            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
+            includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling.notNull()))
+            includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
+            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
 
         // Beregning av barnepensjon nytt og gammelt regelverk

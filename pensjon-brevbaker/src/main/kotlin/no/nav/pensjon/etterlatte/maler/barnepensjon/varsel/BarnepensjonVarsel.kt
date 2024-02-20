@@ -16,7 +16,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.erBosattUtlandet
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.erUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
 
@@ -53,7 +53,7 @@ object BarnepensjonVarsel : EtterlatteTemplate<BarnepensjonVarselDTO>, Hovedmal 
         outline {
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
         }
 
         includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning)

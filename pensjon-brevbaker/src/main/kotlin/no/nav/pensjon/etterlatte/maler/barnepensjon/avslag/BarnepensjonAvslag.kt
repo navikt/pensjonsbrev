@@ -55,7 +55,7 @@ object BarnepensjonAvslag : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal 
 
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaalNy(brukerUnder18Aar, bosattUtland))
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
 
         // Nasjonal

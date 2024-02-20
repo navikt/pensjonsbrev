@@ -77,7 +77,7 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
             }
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaalNy(brukerUnder18Aar, bosattUtland))
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
 
         // Nasjonal
