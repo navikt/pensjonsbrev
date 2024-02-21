@@ -26,8 +26,22 @@ body {
     align-self: center;
 }
 
-.expression {
+.show-if > code:first-child:before {
+    content: "If ";
+}
+
+.show-if > div:nth-child(2) {
+    margin-left: 1rem;
+}
+
+.show-else > div:nth-child(2) {
+    margin-left: 1rem;
+}
+
+.expression, code {
+    white-space: nowrap;
     color: var(--a-blue-600);
+    background: var(--a-gray-100);
 }
 
 .conditional {
