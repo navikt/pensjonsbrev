@@ -3,7 +3,7 @@ import { Accordion, Alert, Button, Search } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
-import { groupBy, sortBy } from "lodash";
+import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
@@ -70,15 +70,24 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
   );
 
   const matchingFavoritter = brevmalerMatchingSearchTerm.filter(({ id }) => favoritter.includes(id));
+  const [eblanketter, brevmaler] = partition(
+    brevmalerMatchingSearchTerm,
+    (brevmal) => brevmal.dokumentkategoriCode === "E_BLANKETT",
+  );
 
-  const brevmalerGroupedByType = {
+  const groupedBrevmaler = groupBy(brevmaler, (brevmal) => brevmal.brevkategoriCode ?? "OTHER");
+
+  const brevmalerGroupedByType: Record<string, LetterMetadata[]> = {
     ...(matchingFavoritter.length > 0 ? { FAVORITTER: matchingFavoritter } : {}),
-    ...groupBy(
-      brevmalerMatchingSearchTerm,
-      // Group by brevkategoriCode if it exists. If E-blankett, group by dokumentKategoriCode or else put them in "Annet" category
-      (brevmal) => brevmal.brevkategoriCode ?? (brevmal.dokumentkategoriCode === "E_BLANKETT" ? "E_BLANKETT" : "OTHER"),
-    ),
+    ...groupedBrevmaler,
+    ...(eblanketter.length > 0 ? { E_BLANKETT: eblanketter } : {}),
   };
+
+  const sortedCategoryKeys = [
+    "FAVORITTER",
+    ...sortBy(Object.keys(groupedBrevmaler), (type) => CATEGORY_TRANSLATIONS[type]),
+    "E_BLANKETT",
+  ];
 
   return (
     <div
@@ -114,7 +123,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
             Ingen treff
           </Alert>
         )}
-        {Object.entries(brevmalerGroupedByType).map(([type, brevmaler]) => {
+        {sortedCategoryKeys.map((type) => {
           return (
             <Accordion.Item
               defaultOpen={type === "FAVORITTER"}
@@ -136,7 +145,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
                     flex-direction: column;
                   `}
                 >
-                  {brevmaler.map((template) => (
+                  {brevmalerGroupedByType[type].map((template) => (
                     <BrevmalButton key={template.id} letterMetadata={template} />
                   ))}
                 </div>
