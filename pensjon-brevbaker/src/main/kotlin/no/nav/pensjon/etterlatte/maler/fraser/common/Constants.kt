@@ -31,6 +31,7 @@ object Constants {
         const val SKRIVTILOSS_URL = "${Constants.SKRIVTILOSS_URL}/en"
         const val KONTONUMMER_URL = "${Constants.KONTONUMMER_URL}/en"
         const val FULLMAKT_URL = "${Constants.FULLMAKT_URL}/en"
+        const val KONTAKT_URL = "${Constants.NAV_URL}/kontaktoss/en"
     }
 
     object Utland {
