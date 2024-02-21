@@ -1,17 +1,20 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon
 
 import com.typesafe.config.Config
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.ClientFactory
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3
+import org.apache.cxf.feature.Feature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
-import org.apache.cxf.ws.addressing.WSAddressingFeature
 import javax.xml.namespace.QName
+import javax.xml.ws.handler.Handler
+import javax.xml.ws.handler.soap.SOAPMessageContext
 
-class DokumentProduksjonClient(config: Config, securityHandler: STSSercuritySOAPHandler, callIdSoapHandler: TjenestebussService.CallIdSoapHandler) {
+class DokumentProduksjonClientFactory(config: Config, private val securityHandler: STSSercuritySOAPHandler) : ClientFactory<DokumentproduksjonV3> {
 
     private val dokprodUrl = config.getString("url")
-    private val jaxWsProxyFactoryBean = JaxWsProxyFactoryBean().apply {
+
+    override fun create(handlers: List<Handler<SOAPMessageContext>>, features: List<Feature>): DokumentproduksjonV3 = JaxWsProxyFactoryBean().apply {
         val name = "Dokumentproduksjon_v3"
         val portName = "Dokumentproduksjon_v3Port"
         val namespace = "http://nav.no/tjeneste/virksomhet/dokumentproduksjon/v3/Binding"
@@ -20,8 +23,7 @@ class DokumentProduksjonClient(config: Config, securityHandler: STSSercuritySOAP
         serviceName = QName(namespace, name)
         endpointName = QName(namespace, portName)
         serviceClass = DokumentproduksjonV3::class.java
-        handlers = listOf(securityHandler, callIdSoapHandler)
-        features = listOf(WSAddressingFeature())
-    }
-    fun client(): DokumentproduksjonV3 = jaxWsProxyFactoryBean.create() as DokumentproduksjonV3
+        this.handlers = handlers + securityHandler
+        this.features = features
+    }.create(DokumentproduksjonV3::class.java)
 }

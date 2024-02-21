@@ -1,21 +1,21 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.exstreambrev
 
 import com.typesafe.config.Config
+import no.nav.inf.psak.dokbrev.PSAKDokBrev
 import no.nav.lib.pen.psakpselv.asbo.brev.ASBOPenHentBrevklientURLRequest
 import no.nav.lib.pen.psakpselv.asbo.brev.ASBOPenHentBrevklientURLResponse
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.RedigerExstreamDokumentRequestDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.slf4j.LoggerFactory
 import java.net.URI
+import kotlin.time.Duration.Companion.days
 
 const val TOKEN_QUERY_KEY = "token="
 const val BREVKLIENT_WIDTH = "300"
 const val BREVKLIENT_HEIGHT = "30"
 
-class RedigerExstreamBrevService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
+class RedigerExstreamBrevService(config: Config, psakDokbrevClientFactory: PsakDokbrevClientFactory) : TjenestebussService<PSAKDokBrev>(psakDokbrevClientFactory, pingExpiration = 1.days) {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val psakDokbrevClient = PsakDokbrevClient(config, securityHandler, callIdHandler).client()
     private val brevklientSystemId = config.getString("brevklient.systemid")
     private val brevklientPassword = config.getString("brevklient.password")
     private val brevklientRootUrl = config.getString("brevklient.rootUrl")
@@ -36,7 +36,7 @@ class RedigerExstreamBrevService(config: Config, securityHandler: STSSercuritySO
     fun hentExstreamBrevUrl(requestDto: RedigerExstreamDokumentRequestDto): RedigerExstreamDokumentResponseDto {
         try {
             val response: ASBOPenHentBrevklientURLResponse =
-                psakDokbrevClient.hentBrevklientURL(ASBOPenHentBrevklientURLRequest().apply {
+                client.hentBrevklientURL(ASBOPenHentBrevklientURLRequest().apply {
                     dokumentId = requestDto.journalpostId
                     systemId = brevklientSystemId
                     passord = brevklientPassword
@@ -63,6 +63,10 @@ class RedigerExstreamBrevService(config: Config, securityHandler: STSSercuritySO
             return RedigerExstreamDokumentResponseDto.failure(message)
         }
     }
+
+    override val name = "RedigerExstreamBrev"
+
+    override fun sendPing(): Boolean? = null
 }
 
 data class RedigerExstreamDokumentResponseDto(val url: String?, val failure: String?) {

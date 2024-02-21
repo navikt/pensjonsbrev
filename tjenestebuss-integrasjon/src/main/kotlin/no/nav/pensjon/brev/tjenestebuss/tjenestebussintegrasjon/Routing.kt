@@ -17,13 +17,19 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.Metrics.configureMetrics
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzureADConfig
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivClientFactory
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExstreamRequestDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentProduksjonClientFactory
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.exstreambrev.PsakDokbrevClientFactory
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.exstreambrev.RedigerExstreamBrevService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.PsakSamhandlerClientFactory
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.PsakSamhandlerTjenestebussService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerClientFactory
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.SamhandlerTypeCode
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.setupServiceStatus
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.withCallId
@@ -79,13 +85,13 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
         val servicesConfig = config.getConfig("services")
         val psakSamhandlerTjenestebussService =
-            PsakSamhandlerTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
-        val samhandlerService = SamhandlerService(servicesConfig.getConfig("samhandlerService"))
+            PsakSamhandlerTjenestebussService(PsakSamhandlerClientFactory(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler))
+        val samhandlerService = SamhandlerService(SamhandlerClientFactory(servicesConfig.getConfig("samhandlerService")))
         val arkivTjenestebussService =
-            ArkivTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
+            ArkivTjenestebussService(ArkivClientFactory(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler))
         val dokumentProduksjonService =
-            DokumentproduksjonService(servicesConfig.getConfig("dokprod"), stsSercuritySOAPHandler)
-        val redigerExstreamBrevService = RedigerExstreamBrevService(servicesConfig, stsSercuritySOAPHandler)
+            DokumentproduksjonService(DokumentProduksjonClientFactory(servicesConfig.getConfig("dokprod"), stsSercuritySOAPHandler))
+        val redigerExstreamBrevService = RedigerExstreamBrevService(servicesConfig, PsakDokbrevClientFactory(servicesConfig, stsSercuritySOAPHandler))
 
 
         get("/isAlive") {
@@ -95,6 +101,15 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         get("/isReady") {
             call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
         }
+
+        setupServiceStatus(
+            stsService,
+            psakSamhandlerTjenestebussService,
+            samhandlerService,
+            arkivTjenestebussService,
+            dokumentProduksjonService,
+            redigerExstreamBrevService
+        )
 
         authenticate(azureADConfig.name) {
             get("/ping") {
