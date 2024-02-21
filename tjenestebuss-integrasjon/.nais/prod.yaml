@@ -1,5 +1,6 @@
 app-name: "pensjonsbrev-tjenestebuss"
 ingresses:
+  - "https://pensjonsbrev-tjenestebuss.intern.nav.no"
   - "https://pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io"
 env:
   - name: TJENESTEBUSS_URL
