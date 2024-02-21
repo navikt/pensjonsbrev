@@ -1,0 +1,38 @@
+app-name: "pensjonsbrev-tjenestebuss"
+ingresses:
+  - "https://pensjonsbrev-tjenestebuss.intern.nav.no"
+  - "https://pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io"
+env:
+  - name: TJENESTEBUSS_URL
+    value: "https://tjenestebuss.adeo.no/"
+  - name: STS_URL
+    value: "https://security-token-service.nais.adeo.no"
+  - name: DOKPROD_URL
+    value: "https://dokprod.nais.adeo.no/"
+  - name: BREVKLIENT_ROOTURL
+    value: "https://wasapp.adeo.no/brevweb/StartBrevKlient.jsp"
+  - name: BREVKLIENT_CHROMEROOTURL
+    value: "https://wasapp.adeo.no//brevweb/"
+  - name: SAMHANDLERSERVICE_URL
+    value: "https://wasapp.adeo.no/"
+
+groups:
+  - "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e" #0000-GA-PENSJON_SAKSBEHANDLER
+
+
+vaultPaths:
+  - kvPath: "serviceuser/data/prod/srvpensjonsbrev-esb"
+    mountPath: "/secrets/sts"
+  - kvPath: "/kv/prod/fss/pensjonsbrev-tjenestebuss/pensjonsbrev"
+    mountPath: "/secrets/pensjonsbrev"
+inboundRules:
+  - application: skribenten-backend
+    namespace: pensjonsbrev
+    cluster: prod-gcp
+
+externalHosts:
+  - tjenestebuss.adeo.no
+  - security-token-service.nais.adeo.no
+  - dokprod.nais.adeo.no
+  - login.microsoftonline.com
+  - wasapp.adeo.no
