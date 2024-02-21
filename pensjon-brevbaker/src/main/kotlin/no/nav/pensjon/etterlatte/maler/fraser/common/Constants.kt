@@ -9,7 +9,7 @@ object Constants {
     const val SKRIVTILOSS_URL = "$NAV_URL/skrivtiloss"
     const val KONTONUMMER_URL = "$NAV_URL/kontonummer"
     const val ENDRING_KONTONUMMER_URL = "$NAV_URL/start/soknad-endring-bankkontonummer"
-    const val KONTAKT_URL = "$NAV_URL/kontakt"
+    const val KONTAKT_URL = "$NAV_URL/kontaktoss"
     const val KLAGE_URL = "$NAV_URL/klage"
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
@@ -31,7 +31,7 @@ object Constants {
         const val SKRIVTILOSS_URL = "${Constants.SKRIVTILOSS_URL}/en"
         const val KONTONUMMER_URL = "${Constants.KONTONUMMER_URL}/en"
         const val FULLMAKT_URL = "${Constants.FULLMAKT_URL}/en"
-        const val KONTAKT_URL = "${Constants.NAV_URL}/kontaktoss/en"
+        const val KONTAKT_URL = "${Constants.KONTAKT_URL}/en"
     }
 
     object Utland {
