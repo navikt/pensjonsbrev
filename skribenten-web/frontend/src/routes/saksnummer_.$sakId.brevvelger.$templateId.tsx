@@ -510,9 +510,18 @@ function PersonAdresse() {
       <Heading level="3" size="xsmall">
         Mottaker
       </Heading>
-      <span>
-        {navn} ({getAdresseTypeName(adresseQuery.data?.type)})
-      </span>
+      <VStack gap="1">
+        {navn}{" "}
+        <Tag
+          css={css`
+            width: fit-content;
+          `}
+          size="small"
+          variant="alt1"
+        >
+          {getAdresseTypeName(adresseQuery.data?.type)}
+        </Tag>
+      </VStack>
       <VStack gap="0">
         {adresseQuery.data && adresseQuery.data.adresselinjer.map((linje) => <span key={linje}>{linje}</span>)}
       </VStack>
@@ -615,7 +624,7 @@ function FavoriteButton() {
       icon={<StarIcon aria-hidden />}
       onClick={() => toggleFavoritesMutation.mutate(templateId)}
       size="small"
-      variant="secondary"
+      variant="secondary-neutral"
     >
       Legg til som favoritt
     </Button>

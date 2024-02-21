@@ -84,10 +84,10 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
   };
 
   const sortedCategoryKeys = [
-    "FAVORITTER",
-    ...sortBy(Object.keys(groupedBrevmaler), (type) => CATEGORY_TRANSLATIONS[type]),
-    "E_BLANKETT",
-  ];
+    matchingFavoritter.length > 0 ? ["FAVORITTER"] : [],
+    sortBy(Object.keys(groupedBrevmaler), (type) => CATEGORY_TRANSLATIONS[type]),
+    eblanketter.length > 0 ? ["E_BLANKETT"] : [],
+  ].flat();
 
   return (
     <div
