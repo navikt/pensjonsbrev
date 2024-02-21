@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Accordion, Alert, Button, Search } from "@navikt/ds-react";
+import { Accordion, Alert, Button, Heading, Search } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
@@ -98,8 +98,12 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         gap: var(--a-spacing-6);
       `}
     >
+      <Heading level="1" size="medium">
+        Brevmeny
+      </Heading>
       <Search
-        label="Filtrer brevmaler"
+        hideLabel={false}
+        label="Søk etter brevmal"
         onChange={(value) => setSearchTerm(value)}
         size="small"
         value={searchTerm}
