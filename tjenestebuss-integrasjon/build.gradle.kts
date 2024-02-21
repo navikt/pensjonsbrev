@@ -3,11 +3,9 @@ import io.ktor.plugin.features.*
 val javaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
+val hamkrestVersion: String by project
 val logbackVersion: String by project
 val logstashVersion: String by project
-val mockkVersion: String by project
-val dokumentproduksjonVersion: String by project
-val samhandlerVersion: String by project
 val micrometerVersion: String by project
 
 plugins {
@@ -45,6 +43,7 @@ ktor {
 
 val cxfVersion = "3.6.2"
 val esbVersion = "2023.11.01-10.31-1bc8315f412e"
+val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
 	implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 	implementation("io.ktor:ktor-server-call-id:$ktorVersion")
@@ -63,8 +62,8 @@ dependencies {
 	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:$esbVersion")
 	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:$esbVersion")
 	implementation("no.nav.pensjon.pesys-esb-wsclient:pen-arkiv-esb-wsclient-legacy:$esbVersion")
-	implementation("no.nav.tjenestespesifikasjoner:dokumentproduksjon-v3-tjenestespesifikasjon:$dokumentproduksjonVersion")
-	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$samhandlerVersion")
+	implementation("no.nav.tjenestespesifikasjoner:dokumentproduksjon-v3-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
+	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
 
 	implementation("javax.xml.ws:jaxws-api:2.3.1")
 	@Suppress("GradlePackageUpdate")
@@ -81,11 +80,12 @@ dependencies {
 	implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
 
+	// Test
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-	testImplementation("io.mockk:mockk:${mockkVersion}")
 	testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
-
-
+	testImplementation("com.sun.xml.bind:jaxb-core:2.2.11")
+	testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
+	testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
 }
 
 repositories {

@@ -110,15 +110,8 @@ export function SelectedTemplate() {
   const { letterTemplate } = Route.useLoaderData();
 
   return (
-    <div
+    <VStack
       css={css`
-        display: flex;
-        padding: var(--a-spacing-6) var(--a-spacing-4);
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--a-spacing-5);
-        border-right: 1px solid var(--a-gray-400);
-
         /* Override form elements to be same size as xsmall headings */
         label,
         legend {
@@ -132,10 +125,11 @@ export function SelectedTemplate() {
           justify-content: space-between;
         }
       `}
+      gap="5"
     >
       <FavoriteButton />
       <Brevmal letterTemplate={letterTemplate} />
-    </div>
+    </VStack>
   );
 }
 
@@ -510,9 +504,18 @@ function PersonAdresse() {
       <Heading level="3" size="xsmall">
         Mottaker
       </Heading>
-      <span>
-        {navn} ({getAdresseTypeName(adresseQuery.data?.type)})
-      </span>
+      <VStack gap="1">
+        {navn}{" "}
+        <Tag
+          css={css`
+            width: fit-content;
+          `}
+          size="small"
+          variant="alt1"
+        >
+          {getAdresseTypeName(adresseQuery.data?.type)}
+        </Tag>
+      </VStack>
       <VStack gap="0">
         {adresseQuery.data && adresseQuery.data.adresselinjer.map((linje) => <span key={linje}>{linje}</span>)}
       </VStack>
@@ -615,7 +618,7 @@ function FavoriteButton() {
       icon={<StarIcon aria-hidden />}
       onClick={() => toggleFavoritesMutation.mutate(templateId)}
       size="small"
-      variant="secondary"
+      variant="secondary-neutral"
     >
       Legg til som favoritt
     </Button>
