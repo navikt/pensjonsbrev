@@ -1,6 +1,5 @@
 app-name: "pensjonsbrev-tjenestebuss"
 ingresses:
-  - "https://pensjonsbrev-tjenestebuss.intern.nav.no"
   - "https://pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io"
 env:
   - name: TJENESTEBUSS_URL
@@ -18,7 +17,6 @@ env:
 
 groups:
   - "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e" #0000-GA-PENSJON_SAKSBEHANDLER
-
 
 vaultPaths:
   - kvPath: "serviceuser/data/prod/srvpensjonsbrev-esb"
