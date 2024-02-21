@@ -16,6 +16,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 data class BarnepensjonInformasjonDoedsfallDTO(
     override val innhold: List<Element>,
@@ -132,16 +133,16 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du finner mer informasjon på nav.no/barnepensjon. På nav.no/kontakt kan du chatte eller skrive til oss.",
-                        Nynorsk to "Du finn meir informasjon på nav.no/barnepensjon. Du kan chatte med oss eller skrive til oss på nav.no/kontakt.",
-                        English to "You can find more information at nav.no/barnepensjon.",
+                        Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
+                        Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Du kan chatte med oss eller skrive til oss på ${Constants.KONTAKT_URL}.",
+                        English to "You can find more information at ${Constants.Engelsk.BARNEPENSJON_URL}. At ${Constants.Engelsk.KONTAKT_URL} you can chat or write to us.",
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon + 47 55 55 33 34, hverdager kl. 09.00 - 15.00.",
-                        Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon + 47 55 55 33 34, kvardagar kl. 09.00 til 15.00.",
-                        English to "At nav.no/kontakt you can chat or write to us. If you do not find the answer at nav.no, you can call us at +47 55 55 33 34, Weekdays from 09:00 to 15:00.",
+                        Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon ${Constants.Utland.KONTAKTTELEFON_PENSJON}, hverdager kl. 09.00 - 15.00.",
+                        Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon ${Constants.Utland.KONTAKTTELEFON_PENSJON}, kvardagar kl. 09.00 til 15.00.",
+                        English to "If you do not find the answer at nav.no, you can call us at ${Constants.Utland.KONTAKTTELEFON_PENSJON}, weekdays from 09:00 to 15:00.",
                     )
                 }
             }
