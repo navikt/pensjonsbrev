@@ -110,15 +110,8 @@ export function SelectedTemplate() {
   const { letterTemplate } = Route.useLoaderData();
 
   return (
-    <div
+    <VStack
       css={css`
-        display: flex;
-        padding: var(--a-spacing-6) var(--a-spacing-4);
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--a-spacing-5);
-        border-right: 1px solid var(--a-gray-400);
-
         /* Override form elements to be same size as xsmall headings */
         label,
         legend {
@@ -132,10 +125,11 @@ export function SelectedTemplate() {
           justify-content: space-between;
         }
       `}
+      gap="5"
     >
       <FavoriteButton />
       <Brevmal letterTemplate={letterTemplate} />
-    </div>
+    </VStack>
   );
 }
 

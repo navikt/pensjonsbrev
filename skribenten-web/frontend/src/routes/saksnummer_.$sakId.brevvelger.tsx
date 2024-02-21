@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Accordion, Alert, Button, Heading, Search } from "@navikt/ds-react";
+import { Accordion, Alert, Button, Heading, Search, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
@@ -32,24 +32,27 @@ export function BrevvelgerPage() {
   return (
     <div
       css={css`
-        background: var(--a-white);
-        display: grid;
-        align-self: center;
-        max-width: 1108px;
-        grid-template-columns: minmax(432px, 720px) minmax(336px, 388px);
-        gap: var(--a-spacing-4);
-        justify-content: space-between;
+        display: flex;
         flex: 1;
+        justify-content: center;
 
         > :first-of-type {
-          padding: var(--a-spacing-4);
+          background: white;
+          min-width: 432px;
+          max-width: 720px;
+          flex: 1;
           border-left: 1px solid var(--a-gray-400);
           border-right: 1px solid var(--a-gray-400);
+          padding: var(--a-spacing-6);
         }
 
-        /* When no template is selected, let the brevvelger use entire width */
-        > :only-child {
-          grid-column: span 2;
+        > :nth-of-type(2) {
+          background: white;
+          min-width: 336px;
+          max-width: 388px;
+          border-right: 1px solid var(--a-gray-400);
+          padding: var(--a-spacing-4);
+          flex: 1;
         }
       `}
     >
@@ -90,14 +93,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
   ].flat();
 
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: column;
-        padding: var(--a-spacing-6) var(--a-spacing-4);
-        gap: var(--a-spacing-6);
-      `}
-    >
+    <VStack gap="6">
       <Heading level="1" size="medium">
         Brevmeny
       </Heading>
@@ -158,7 +154,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
           );
         })}
       </Accordion>
-    </div>
+    </VStack>
   );
 }
 
