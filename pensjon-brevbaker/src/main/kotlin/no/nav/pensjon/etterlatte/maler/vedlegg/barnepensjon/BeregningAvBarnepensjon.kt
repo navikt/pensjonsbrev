@@ -308,7 +308,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     English to "To achieve a full pension, at least one of the parents must have accumulated 40 years ".expr() +
                             "of contribution time. Contribution time above 40 years of coverage is not included in the calculation. " +
                             "Your pension has been calculated based on the contribution time of " + bruktAvdoedNavn + ". " +
-                            "The deceased`s total contribution time amounts to " + aarTrygdetid.format() + " years.",
+                            "The deceased's total contribution time amounts to " + aarTrygdetid.format() + " years.",
                 )
             }
 

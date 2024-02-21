@@ -1,12 +1,15 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse
 
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -76,8 +79,8 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
             showIf(vedtattIPesys) {
                 text(
                     Bokmal to "Barnepensjonen er endret fra 1. januar 2024",
-                    Nynorsk to "",
-                    English to "",
+                    Language.Nynorsk to "Barnepensjonen er endra frå 1. januar 2024",
+                    Language.English to "Your children’s pension has been changed as of 1 January 2024",
                 )
             }.orShow {
                 text(

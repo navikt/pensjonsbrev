@@ -33,10 +33,10 @@ object BarnepensjonForeldreloesFraser {
 
             paragraph {
                 showIf(vedtattIPesys) {
-                    textExpr(
-                        Language.Bokmal to "Vi viser til at du er innvilget barnepensjon. Stortinget har vedtatt nye regler for barnepensjon. Pensjonen din er derfor endret fra 1. januar 2024.".expr(),
-                        Language.Nynorsk to "".expr(),
-                        Language.English to "".expr()
+                    text(
+                        Language.Bokmal to "Vi viser til at du er innvilget barnepensjon. Stortinget har vedtatt nye regler for barnepensjon. Pensjonen din er derfor endret fra 1. januar 2024.",
+                        Language.Nynorsk to "Vi viser til at du er innvilga barnepensjon. Stortinget har vedteke nye reglar for barnepensjon. Pensjonen din er difor endra frå og med 1. januar 2024.",
+                        Language.English to "You are currently receiving a children’s pension. The Norwegian Parliament (Stortinget) has adopted new rules regarding children's pensions. Your pension has therefore been changed from 1 January 2024.",
                     )
                 }.orShow {
                     textExpr(
@@ -105,8 +105,8 @@ object BarnepensjonForeldreloesFraser {
                 paragraph {
                     text(
                         Language.Bokmal to "De nye reglene for barnepensjon har ingen søskenjustering, og du vil få pensjon til du er 20 år selv om du ikke er under utdanning.",
-                        Language.Nynorsk to "",
-                        Language.English to "",
+                        Language.Nynorsk to "Dei nye reglane for barnepensjon har inga søskenjustering, og du vil få pensjon til du er 20 år sjølv om du ikkje er under utdanning.",
+                        Language.English to "The new rules for children’s pensions have no sibling adjustment, and you will receive pension until you are 20 years old even if you are not in education.",
                     )
                 }
             }
