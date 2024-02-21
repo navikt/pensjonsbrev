@@ -1,14 +1,15 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler
 
 import com.typesafe.config.Config
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.ClientFactory
 import no.nav.virksomhet.tjenester.samhandler.v2.binding.Samhandler
+import org.apache.cxf.feature.Feature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
-import org.apache.cxf.ws.addressing.WSAddressingFeature
 import java.util.*
 import javax.xml.namespace.QName
 import javax.xml.soap.SOAPElement
 import javax.xml.soap.SOAPFactory
+import javax.xml.ws.handler.Handler
 import javax.xml.ws.handler.MessageContext
 import javax.xml.ws.handler.soap.SOAPHandler
 import javax.xml.ws.handler.soap.SOAPMessageContext
@@ -22,11 +23,12 @@ private const val XML_SCHEMA_INS_URL = "http://www.w3.org/2001/XMLSchema-instanc
 private const val WSSE = "wsse"
 
 
-class SamhandlerClient(config: Config, callIdHandler: TjenestebussService.CallIdSoapHandler) {
+class SamhandlerClientFactory(config: Config) : ClientFactory<Samhandler> {
     private val samhandlerClientUrl = config.getString("url")
     private val samhandlerUsername = config.getString("username")
     private val samhandlerPassword = config.getString("password")
-    private val jaxWsProxyFactoryBean = JaxWsProxyFactoryBean().apply {
+
+    override fun create(handlers: List<Handler<SOAPMessageContext>>, features: List<Feature>): Samhandler = JaxWsProxyFactoryBean().apply {
         val name = "Samhandler"
         val portName = "SamhandlerPort"
         val namespace = "http://nav.no/virksomhet/tjenester/samhandler/v2/Binding/"
@@ -35,11 +37,9 @@ class SamhandlerClient(config: Config, callIdHandler: TjenestebussService.CallId
         serviceName = QName(namespace, name)
         endpointName = QName(namespace, portName)
         serviceClass = Samhandler::class.java
-        handlers = listOf(BasicAuthSoapSecurityHandler(samhandlerUsername, samhandlerPassword), callIdHandler)
-        features = listOf(WSAddressingFeature())
-    }
-
-    fun client(): Samhandler = jaxWsProxyFactoryBean.create() as Samhandler
+        this.handlers = handlers + (BasicAuthSoapSecurityHandler(samhandlerUsername, samhandlerPassword))
+        this.features = features
+    }.create(Samhandler::class.java)
 
 }
 

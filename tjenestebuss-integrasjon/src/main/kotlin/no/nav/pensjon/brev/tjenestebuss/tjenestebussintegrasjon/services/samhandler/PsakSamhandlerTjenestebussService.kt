@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler
 
-import com.typesafe.config.Config
 import no.nav.inf.psak.samhandler.FinnSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenSamhandlerIkkeFunnetMsg
+import no.nav.inf.psak.samhandler.PSAKSamhandler
 import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenFinnSamhandlerRequest
 import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenHentSamhandlerRequest
 import no.nav.lib.pen.psakpselv.fault.FaultPenBase
@@ -11,18 +11,16 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.FinnSamhandlerRe
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.HentSamhandlerRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.slf4j.LoggerFactory
 
-class PsakSamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
+class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFactory) : TjenestebussService<PSAKSamhandler>(clientFactory) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    private val psakSamhandlerClient = PsakSamhandlerClient(config, securityHandler, callIdHandler).client()
 
     fun hentSamhandler(requestDto: HentSamhandlerRequestDto): HentSamhandlerResponseDto {
         try {
-            val response = psakSamhandlerClient.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
+            val response = client.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
                 idTSSEkstern = requestDto.idTSSEkstern
                 hentDetaljert = requestDto.hentDetaljert
             })
@@ -49,7 +47,7 @@ class PsakSamhandlerTjenestebussService(config: Config, securityHandler: STSSerc
         try {
             logger.info("Finn samhandler med type: ${requestDto.samhandlerType}")
 
-            val samhandlerResponse = psakSamhandlerClient.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
+            val samhandlerResponse = client.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
                 navn = requestDto.navn
                 samhandlerType = requestDto.samhandlerType.name
             })
@@ -72,6 +70,14 @@ class PsakSamhandlerTjenestebussService(config: Config, securityHandler: STSSerc
             return FinnSamhandlerResponseDto("Feil ved henting av samhandler")
         }
     }
+
+    override fun sendPing(): Boolean {
+        hentSamhandler(HentSamhandlerRequestDto("123", false))
+        return true
+    }
+
+    override val name = "PsakSamhandlerTjenestebuss"
+
 }
 
 private fun FaultPenBase.prettyPrint() =

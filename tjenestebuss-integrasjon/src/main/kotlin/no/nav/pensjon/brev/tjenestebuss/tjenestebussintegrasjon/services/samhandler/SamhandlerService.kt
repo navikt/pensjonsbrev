@@ -1,20 +1,20 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler
 
-import com.typesafe.config.Config
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.HentSamhandlerAdresseResponseDto.FailureType.GENERISK
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.HentSamhandlerAdresseResponseDto.FailureType.NOT_FOUND
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.HentSamhandlerAdresseResponseDto.SamhandlerPostadresse
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import no.nav.virksomhet.tjenester.samhandler.meldinger.v2.HentSamhandlerPrioritertAdresseRequest
 import no.nav.virksomhet.tjenester.samhandler.v2.binding.HentSamhandlerPrioritertAdresseSamhandlerIkkeFunnet
+import no.nav.virksomhet.tjenester.samhandler.v2.binding.Samhandler
 import org.slf4j.LoggerFactory
 
-class SamhandlerService(config: Config) : TjenestebussService() {
-    private val samhandlerClient = SamhandlerClient(config, callIdHandler).client()
+class SamhandlerService(clientFactory: SamhandlerClientFactory) : TjenestebussService<Samhandler>(clientFactory) {
     private val logger = LoggerFactory.getLogger(SamhandlerService::class.java)
+
     fun hentSamhandlerPostadresse(tssEksternId: String): HentSamhandlerAdresseResponseDto =
         try {
-            samhandlerClient.hentSamhandlerPrioritertAdresse(
+            client.hentSamhandlerPrioritertAdresse(
                 HentSamhandlerPrioritertAdresseRequest().apply {
                     this.ident = tssEksternId
                     this.identKode = "TSS_EKSTERN_ID"
@@ -38,6 +38,13 @@ class SamhandlerService(config: Config) : TjenestebussService() {
             logger.error("Feil ved henting av samhandler mot samhandlerv2. ${e.message}")
             HentSamhandlerAdresseResponseDto(GENERISK)
         }
+
+    override val name = "SamhandlerV2"
+
+    override fun sendPing(): Boolean {
+        hentSamhandlerPostadresse("123")
+        return true
+    }
 }
 
 data class HentSamhandlerAdresseResponseDto(

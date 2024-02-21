@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv
 
-import com.typesafe.config.Config
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.maskerFnr
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExstreamBrevResponseDto.FailureType.*
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import no.nav.virksomhet.tjenester.arkiv.meldinger.v1.BestillBrevRequest
 import no.nav.virksomhet.tjenester.arkiv.meldinger.v1.Sakskontekst
@@ -12,6 +10,7 @@ import org.slf4j.LoggerFactory
 import javax.xml.bind.JAXBElement
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.namespace.QName
+import kotlin.time.Duration.Companion.days
 
 private val elektroniskVarslingTrue = JAXBElement(
     QName("", "tillattelektroniskvarsling"),
@@ -20,10 +19,8 @@ private val elektroniskVarslingTrue = JAXBElement(
     true
 )
 
-class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
+class ArkivTjenestebussService(clientFactory: ArkivClientFactory) : TjenestebussService<Arkiv>(clientFactory, pingExpiration = 1.days) {
     private val logger = LoggerFactory.getLogger(this::class.java)
-
-    private val arkivClient = ArkivClient(config, securityHandler, callIdHandler).client()
 
     /**
      * Bestiller Exstream brev
@@ -33,7 +30,7 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
      */
     fun bestillBrev(request: BestillBrevExstreamRequestDto): BestillExstreamBrevResponseDto {
         try {
-            val response = arkivClient.bestillBrev(BestillBrevRequest().apply {
+            val response = client.bestillBrev(BestillBrevRequest().apply {
                 brevKode = request.brevKode
                 brevGruppe = request.brevGruppe
                 redigerbart =
@@ -76,6 +73,9 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
             return BestillExstreamBrevResponseDto(ADRESSE_MANGLER)
         }
     }
+
+    override val name = "ArkivTjenestebuss"
+    override fun sendPing(): Boolean? = null
 }
 
 data class BestillExstreamBrevResponseDto(
