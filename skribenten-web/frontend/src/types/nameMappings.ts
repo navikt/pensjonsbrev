@@ -154,8 +154,8 @@ export const SAMHANDLER_ENUM_TO_TEXT = {
 
 export function getAdresseTypeName(adresseType?: AdresseType) {
   if (adresseType?.toLowerCase().includes("verge")) {
-    return "verge";
+    return "Verge";
   }
 
-  return "bruker";
+  return "Bruker";
 }

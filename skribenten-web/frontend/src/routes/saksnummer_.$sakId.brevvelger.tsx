@@ -1,9 +1,9 @@
 import { css } from "@emotion/react";
-import { Accordion, Alert, Button, Search } from "@navikt/ds-react";
+import { Accordion, Alert, Button, Heading, Search, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
-import { groupBy, sortBy } from "lodash";
+import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
@@ -32,24 +32,27 @@ export function BrevvelgerPage() {
   return (
     <div
       css={css`
-        background: var(--a-white);
-        display: grid;
-        align-self: center;
-        max-width: 1108px;
-        grid-template-columns: minmax(432px, 720px) minmax(336px, 388px);
-        gap: var(--a-spacing-4);
-        justify-content: space-between;
+        display: flex;
         flex: 1;
+        justify-content: center;
 
         > :first-of-type {
-          padding: var(--a-spacing-4);
+          background: white;
+          min-width: 432px;
+          max-width: 720px;
+          flex: 1;
           border-left: 1px solid var(--a-gray-400);
           border-right: 1px solid var(--a-gray-400);
+          padding: var(--a-spacing-6);
         }
 
-        /* When no template is selected, let the brevvelger use entire width */
-        > :only-child {
-          grid-column: span 2;
+        > :nth-of-type(2) {
+          background: white;
+          min-width: 336px;
+          max-width: 388px;
+          border-right: 1px solid var(--a-gray-400);
+          padding: var(--a-spacing-4);
+          flex: 1;
         }
       `}
     >
@@ -70,27 +73,33 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
   );
 
   const matchingFavoritter = brevmalerMatchingSearchTerm.filter(({ id }) => favoritter.includes(id));
+  const [eblanketter, brevmaler] = partition(
+    brevmalerMatchingSearchTerm,
+    (brevmal) => brevmal.dokumentkategoriCode === "E_BLANKETT",
+  );
 
-  const brevmalerGroupedByType = {
+  const groupedBrevmaler = groupBy(brevmaler, (brevmal) => brevmal.brevkategoriCode ?? "OTHER");
+
+  const brevmalerGroupedByType: Record<string, LetterMetadata[]> = {
     ...(matchingFavoritter.length > 0 ? { FAVORITTER: matchingFavoritter } : {}),
-    ...groupBy(
-      brevmalerMatchingSearchTerm,
-      // Group by brevkategoriCode if it exists. If E-blankett, group by dokumentKategoriCode or else put them in "Annet" category
-      (brevmal) => brevmal.brevkategoriCode ?? (brevmal.dokumentkategoriCode === "E_BLANKETT" ? "E_BLANKETT" : "OTHER"),
-    ),
+    ...groupedBrevmaler,
+    ...(eblanketter.length > 0 ? { E_BLANKETT: eblanketter } : {}),
   };
 
+  const sortedCategoryKeys = [
+    matchingFavoritter.length > 0 ? ["FAVORITTER"] : [],
+    sortBy(Object.keys(groupedBrevmaler), (type) => CATEGORY_TRANSLATIONS[type]),
+    eblanketter.length > 0 ? ["E_BLANKETT"] : [],
+  ].flat();
+
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: column;
-        padding: var(--a-spacing-6) var(--a-spacing-4);
-        gap: var(--a-spacing-6);
-      `}
-    >
+    <VStack gap="6">
+      <Heading level="1" size="medium">
+        Brevmeny
+      </Heading>
       <Search
-        label="Filtrer brevmaler"
+        hideLabel={false}
+        label="Søk etter brevmal"
         onChange={(value) => setSearchTerm(value)}
         size="small"
         value={searchTerm}
@@ -114,7 +123,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
             Ingen treff
           </Alert>
         )}
-        {Object.entries(brevmalerGroupedByType).map(([type, brevmaler]) => {
+        {sortedCategoryKeys.map((type) => {
           return (
             <Accordion.Item
               defaultOpen={type === "FAVORITTER"}
@@ -136,7 +145,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
                     flex-direction: column;
                   `}
                 >
-                  {brevmaler.map((template) => (
+                  {brevmalerGroupedByType[type].map((template) => (
                     <BrevmalButton key={template.id} letterMetadata={template} />
                   ))}
                 </div>
@@ -145,7 +154,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
           );
         })}
       </Accordion>
-    </div>
+    </VStack>
   );
 }
 

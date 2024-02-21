@@ -6,7 +6,7 @@ export function Divider() {
       css={css`
         width: 100%;
         height: 1px;
-        background: var(--a-grayalpha-300);
+        background: var(--a-grayalpha-50);
       `}
     />
   );

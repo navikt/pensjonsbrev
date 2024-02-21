@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Dropdown, InternalHeader } from "@navikt/ds-react";
 import { Link as RouterLink } from "@tanstack/react-router";
 
-import { useUserInfo } from "../hooks/useUserInfo";
+import { useUserInfo } from "~/hooks/useUserInfo";
 
 export function AppHeader() {
   return (
@@ -10,7 +10,7 @@ export function AppHeader() {
       css={css`
         position: sticky;
         top: 0;
-        z-index: var(--a-z-index-focus);
+        z-index: var(--a-z-index-popover);
       `}
     >
       <InternalHeader.Title as="h1">
