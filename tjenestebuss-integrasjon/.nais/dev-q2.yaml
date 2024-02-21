@@ -19,7 +19,6 @@ env:
 groups:
   - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
 
-
 vaultPaths:
   - kvPath: "serviceuser/data/dev/srvpensjonsbrev-esb"
     mountPath: "/secrets/sts"
@@ -38,3 +37,4 @@ externalHosts:
   - security-token-service.dev.adeo.no
   - dokprod-q2.dev.intern.nav.no
   - login.microsoftonline.com
+  - wasapp.adeo.no
