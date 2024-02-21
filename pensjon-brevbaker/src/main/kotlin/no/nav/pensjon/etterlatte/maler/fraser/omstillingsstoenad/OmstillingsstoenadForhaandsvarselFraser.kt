@@ -67,7 +67,7 @@ class OmstillingsstoenadForhaandsvarselFraser {
                     Language.Nynorsk to "<Fritekst. Døme: Du fekk innvilga omstillingsstønad frå oss trass " +
                             "i at vilkåra ikkje var oppfylte. Dette har ført til at du har fått ei feilutbetaling. >",
                     Language.English to "<Fritekst. Eks.: We granted you an adjustment allowance even though " +
-                            "some of the conditions were not met. This has resulted in payment in error to you. >",
+                            "some of the conditions were not met. This has resulted in an incorrect payment to you. >",
                 )
             }
 

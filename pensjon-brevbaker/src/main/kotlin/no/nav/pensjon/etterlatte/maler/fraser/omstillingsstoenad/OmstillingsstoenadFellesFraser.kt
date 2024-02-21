@@ -35,7 +35,7 @@ object OmstillingsstoenadFellesFraser {
                             "endringar du må seie frå om. ",
                     English to "You are obligated to notify us of any changes that affect the payment of " +
                             "the adjustment allowance, or the right to receive the allowance. You will see " +
-                            "which changes you must report in the attachment, Your Rights and Obligations."
+                            "which changes you must report in the attachment Your Rights and Obligations."
                 )
             }
         }
@@ -209,8 +209,8 @@ object OmstillingsstoenadFellesFraser {
                         text(
                             Bokmal to "Du får omstillingsstønad frem til det er gått tre år fra datoen for dødsfallet, så " +
                                     "lenge du oppfyller vilkårene.",
-                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad i " +
-                                    "tre år frå datoen for dødsfallet. ",
+                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
+                                    "fram til det har gått tre år sidan datoen for dødsfallet.",
                             English to "You are eligible for adjustment allowance for three years from the " +
                                     "date of the death, as long as you meet the conditions for receiving the allowance.",
                         )
@@ -221,8 +221,8 @@ object OmstillingsstoenadFellesFraser {
                                     "og hensiktsmessig.",
                             Nynorsk to "Stønaden kan bli forlenga med inntil to år dersom du tek utdanning " +
                                     "som er nødvendig og føremålstenleg.",
-                            English to "The allowance can be extended for up to two years if you are obtaining an " +
-                                    "education, vocational training that is necessary and suitable.",
+                            English to "The allowance can be extended for two years if you begin an education or " +
+                                    "vocational training that is necessary and suitable.",
                         )
                     }
                 }.orShow {
