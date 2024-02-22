@@ -167,9 +167,9 @@ object OmstillingsstoenadInnvilgelseFraser {
             }
             paragraph {
                 textExpr(
-                    Bokmal to ("Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven " +
-                            "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9").expr() +
-                            ifElse(etterbetaling, ", § 22-12 og § 22-13.", " og § 22-12."),
+                    Bokmal to ("Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven §§ " +
+                            "17-2, 17-3, 17-4, 17-5, 17-6, 17-9").expr() +
+                            ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
                     Nynorsk to ("Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova " +
                             "§§ 17-2, 17-3, 17-4, 17-5, 17-6, 17-9").expr() +
                             ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
