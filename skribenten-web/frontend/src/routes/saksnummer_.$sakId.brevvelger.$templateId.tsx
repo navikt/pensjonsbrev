@@ -374,7 +374,7 @@ function SelectSensitivity() {
           legend="Er brevet sensitivt?"
           {...field}
           error={fieldState.error?.message}
-          size="small"
+          size="medium"
           value={field.value ?? null}
         >
           <Radio value>Ja</Radio>
@@ -398,7 +398,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   }, [preferredLanguage, setValue, letterTemplate.spraak]);
 
   return (
-    <Select {...register("spraak")} label="Språk" size="small">
+    <Select {...register("spraak")} label="Språk" size="medium">
       {letterTemplate.spraak.map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
@@ -509,7 +509,7 @@ function PersonAdresse() {
           css={css`
             width: fit-content;
           `}
-          size="small"
+          size="xsmall"
           variant="alt1"
         >
           {getAdresseTypeName(adresseQuery.data?.type)}
@@ -682,7 +682,7 @@ function VelgSamhandlerModal() {
         </Button>
       </HStack>
 
-      <Modal header={{ heading: "Finn samhandler" }} ref={reference} width={600}>
+      <Modal header={{ heading: "Finn samhandler" }} portal={document.body} ref={reference} width={600}>
         <Modal.Body>
           {selectedIdTSSEkstern === undefined && (
             <FormProvider {...methods}>
@@ -871,7 +871,14 @@ function SamhandlerSearchResults({
         <Table.Body>
           {sortedSamhandlere.map((samhandler) => (
             <Table.Row key={samhandler.idTSSEkstern}>
-              <Table.HeaderCell scope="row">{capitalizeString(samhandler.navn)}</Table.HeaderCell>
+              <Table.DataCell
+                css={css`
+                  font-weight: var(--a-font-weight-regular);
+                `}
+                scope="row"
+              >
+                {capitalizeString(samhandler.navn)}
+              </Table.DataCell>
               <Table.DataCell>
                 <Button
                   onClick={() => onSelect(samhandler.idTSSEkstern)}
