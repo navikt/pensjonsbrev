@@ -343,8 +343,7 @@ function BestillOgRedigerButton({
             Brev bestilt
           </Heading>
           <span>
-            Redigering skal åpne seg selv, hvis ikke er popup blokkert av nettleseren din.{" "}
-            <Link href={orderMutation.data}>Klikk her for å prøve åpne på nytt</Link>
+            Åpnet ikke brevet seg? <Link href={orderMutation.data}>Klikk her for å prøve igjen</Link>
           </span>
         </Alert>
       ) : (

@@ -1,41 +1,45 @@
 import { css } from "@emotion/react";
-import { Alert, CopyButton, Heading, HStack } from "@navikt/ds-react";
+import { FilesIcon } from "@navikt/aksel-icons";
+import { Alert, CopyButton, Heading, HStack, Link } from "@navikt/ds-react";
 import { ErrorComponent } from "@tanstack/react-router";
 import { AxiosError } from "axios";
 
+const PORTEN_URL = "https://jira.adeo.no/plugins/servlet/desk/portal/541";
 export function ApiError({ error, title }: { error: unknown; title: string }) {
   if (error instanceof AxiosError) {
     const correlationId = error.response?.headers["x-request-id"];
     return (
       <Alert
         css={css`
-          margin-top: var(--a-spacing-4);
-          width: fit-content;
           align-self: center;
+          width: 100%;
         `}
         size="small"
         variant="error"
       >
-        <Heading level="2" size="small" spacing>
+        <Heading level="2" size="small">
           {title}
         </Heading>
         <div>
           {correlationId && (
             <>
-              <HStack align="center" gap="0">
-                <span>Hvis det skjer igjen, rapporter feilen og oppgi følgende ID:</span>
+              <HStack align="center" gap="1">
+                <span>
+                  Hvis det skjer igjen, kopier ID nedenfor og{" "}
+                  <Link href={PORTEN_URL} target="_blank">
+                    meld feil i Porten
+                  </Link>
+                </span>
                 <CopyButton
                   copyText={correlationId}
                   css={css`
-                    border: 1px solid black;
-
-                    span:not(.navds-copybutton__icon) {
-                      white-space: nowrap;
-                      overflow: hidden;
-                      text-overflow: ellipsis;
-                    }
+                    border-radius: 4px;
+                    border: 2px solid var(--a-border-default);
                   `}
-                  text={correlationId}
+                  icon={<FilesIcon />}
+                  size="small"
+                  text="Kopier ID"
+                  variant="action"
                 />
               </HStack>
             </>
