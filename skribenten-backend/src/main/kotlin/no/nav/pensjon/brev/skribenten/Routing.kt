@@ -30,6 +30,8 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         healthRoute()
 
         authenticate(authConfig.name) {
+            setupServiceStatus(safService, penService, pensjonPersonDataService, pdlService, krrService, brevbakerService, brevmetadataService, tjenestebussIntegrasjonService, navansattService)
+
             brevmalerRoute(brevmetadataService, skribentenConfig.getConfig("groups"))
             brevbakerRoute(brevbakerService)
             bestillBrevRoute(legacyBrevService)
@@ -37,7 +39,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             penRoute(penService)
             personRoute(pdlService, pensjonPersonDataService, krrService)
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
-            meRoute(servicesConfig.getConfig("navansatt"), authService)
+            meRoute()
         }
     }
 }

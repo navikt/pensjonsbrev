@@ -1,22 +1,16 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import com.typesafe.config.Config
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 import no.nav.pensjon.brev.skribenten.services.FavouritesService
-import no.nav.pensjon.brev.skribenten.services.NavansattService
-import org.slf4j.LoggerFactory
 
-fun Route.meRoute(navansattConfig: Config, authService: AzureADService) {
+fun Route.meRoute() {
 
     val favouritesService = FavouritesService()
-    val navansattService = NavansattService(navansattConfig, authService)
-    val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.routes.Route.meRoute")
 
     route("/me") {
         post("/favourites") {

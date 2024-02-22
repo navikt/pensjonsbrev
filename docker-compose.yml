@@ -13,10 +13,10 @@ services:
   pensjon-brevbaker:
     environment:
       - PDF_BUILDER_URL=http://pdf-bygger:8080
-      - AZURE_OPENID_CONFIG_JWKS_URI=http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri
+      - AZURE_OPENID_CONFIG_JWKS_URI=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
-      - AZURE_APP_CLIENT_ID=brevbaker-123
-      - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"pen-AzureClientId"}]
+      - AZURE_APP_CLIENT_ID=66a118a6-95db-4a64-be81-3af02048a46e
+      - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend-lokal","clientId":"d8057f3d-871b-4ea9-973e-f5facdc04590"}]
       # Allows requests without auth-header #opens up debug port
       - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     build: ./pensjon-brevbaker

@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
 
-class KrrService(config: Config, authService: AzureADService) {
+class KrrService(config: Config, authService: AzureADService): ServiceStatus {
     private val krrUrl = config.getString("url")
     private val krrScope = config.getString("scope")
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -79,4 +79,9 @@ class KrrService(config: Config, authService: AzureADService) {
             }
     }
 
+    override val name = "KRR"
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        client.get(call, "/internal/health/readiness")
+            .toServiceResult<String>()
+            .map { true }
 }

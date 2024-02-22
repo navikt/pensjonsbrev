@@ -31,7 +31,7 @@ data class KontaktAdresseResponseDto(
     }
 }
 
-class PensjonPersonDataService(config: Config, authService: AzureADService) {
+class PensjonPersonDataService(config: Config, authService: AzureADService): ServiceStatus {
 
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
@@ -54,4 +54,9 @@ class PensjonPersonDataService(config: Config, authService: AzureADService) {
             }
         }.toServiceResult<KontaktAdresseResponseDto>()
 
+    override val name = "Pensjon PersonData"
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        client.get(call, "/actuator/health/liveness")
+            .toServiceResult<String>()
+            .map { true }
 }

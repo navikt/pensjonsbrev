@@ -34,7 +34,7 @@ enum class JournalpostLoadingResult {
     ERROR, NOT_READY, READY
 }
 
-class SafService(config: Config, authService: AzureADService) {
+class SafService(config: Config, authService: AzureADService): ServiceStatus {
     private val safUrl = config.getString("url")
     private val safScope = config.getString("scope")
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -123,5 +123,7 @@ class SafService(config: Config, authService: AzureADService) {
     suspend fun getFirstDocumentInJournal(call: ApplicationCall, journalpostId: String): ServiceResult<HentDokumenterResponse> =
         getDocumentsInJournal(call, journalpostId)
 
-
+    override val name = "SAF"
+    override suspend fun ping(call: ApplicationCall) =
+        client.options(call, "").toServiceResult<String>().map { true }
 }
