@@ -45,4 +45,7 @@ class AzureADOnBehalfOfAuthorizedHttpClient(private val scope: String, private v
 
     suspend fun delete(call: ApplicationCall, url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
         request(call, url, HttpMethod.Delete, block)
+
+    suspend fun options(call: ApplicationCall, url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
+        request(call, url, HttpMethod.Options, block)
 }

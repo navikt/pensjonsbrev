@@ -19,7 +19,7 @@ import java.util.*
 import javax.xml.datatype.DatatypeFactory
 import javax.xml.datatype.XMLGregorianCalendar
 
-class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) {
+class TjenestebussIntegrasjonService(config: Config, authService: AzureADService): ServiceStatus {
 
     private val tjenestebussIntegrasjonUrl = config.getString("url")
     private val tjenestebussIntegrasjonScope = config.getString("scope")
@@ -168,4 +168,11 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         cal.time = Date()
         return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal)
     }
+
+    override val name = "Tjenestebuss-integrasjon"
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        tjenestebussIntegrasjonClient.get(call, "/isReady").toServiceResult<String>().map { true }
+
+    suspend fun status(call: ApplicationCall): ServiceResult<TjenestebussStatus> =
+        tjenestebussIntegrasjonClient.get(call, "/status").toServiceResult()
 }

@@ -20,7 +20,7 @@ import java.time.*
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
-class BrevbakerService(config: Config, authService: AzureADService) {
+class BrevbakerService(config: Config, authService: AzureADService): ServiceStatus {
     private val brevbakerUrl = config.getString("url")
 
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(config.getString("scope"), authService) {
@@ -57,6 +57,13 @@ class BrevbakerService(config: Config, authService: AzureADService) {
                 )
             )
         }.toServiceResult()
+
+    override val name = "Brevbaker"
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        client.get(call, "/ping_authorized")
+            .toServiceResult<String>()
+            .map { true }
+
 }
 
 object RenderedJsonLetterModule : SimpleModule() {

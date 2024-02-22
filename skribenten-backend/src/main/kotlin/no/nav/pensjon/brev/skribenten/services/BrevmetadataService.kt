@@ -11,10 +11,11 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import org.slf4j.LoggerFactory
 
-class BrevmetadataService(config: Config) {
+class BrevmetadataService(config: Config): ServiceStatus {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = HttpClient(CIO) {
@@ -79,6 +80,10 @@ class BrevmetadataService(config: Config) {
             contentType(ContentType.Application.Json)
         }.body<BrevdataDto>()
     }
+
+    override val name = "Brevmetadata"
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        httpClient.get("/api/internal/isReady").toServiceResult<String>().map { true }
 }
 
 data class BrevdataDto(
