@@ -6,38 +6,7 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
-import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageFerdigDTO
-import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesRedigerbarDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInformasjonDoedsfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkFerdigDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOpphoerDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOpphoerRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
-import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseDTO
-import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadOpphoerDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadpphoerRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingFerdigDTO
-import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingInnholdDTO
-import no.nav.pensjon.etterlatte.fixtures.createTomMal
-import no.nav.pensjon.etterlatte.fixtures.createTomMalInformasjonsbrev
+import no.nav.pensjon.etterlatte.fixtures.*
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
@@ -60,6 +29,7 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
@@ -120,6 +90,7 @@ object Fixtures {
             BarnepensjonVarselDTO::class -> createBarnepensjonVarsel() as T
             BarnepensjonVarselRedigerbartUtfallDTO::class -> createBarnepensjonVarselRedigerbartUtfall() as T
 
+            OmstillingsstoenadInformasjonDoedsfall::class -> createOmstillingsstoenadInformasjonDoedsfallDto() as T
             OmstillingsstoenadInnvilgelseDTO::class -> createOmstillingsstoenadInnvilgelseDTO() as T
             OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class -> createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() as T
             OmstillingstoenadAvslagDTO::class -> createOmstillingsstoenadAvslagDTO() as T

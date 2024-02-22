@@ -140,9 +140,9 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon ${Constants.Utland.KONTAKTTELEFON_PENSJON}, hverdager kl. 09.00 - 15.00.",
-                        Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon ${Constants.Utland.KONTAKTTELEFON_PENSJON}, kvardagar kl. 09.00 til 15.00.",
-                        English to "If you do not find the answer at nav.no, you can call us at ${Constants.Utland.KONTAKTTELEFON_PENSJON}, weekdays from 09:00 to 15:00.",
+                        Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}, hverdager kl. 09.00 - 15.00.",
+                        Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}, kvardagar kl. 09.00 til 15.00.",
+                        English to "If you do not find the answer at nav.no, you can call us at ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}, weekdays from 09:00 to 15:00.",
                     )
                 }
             }

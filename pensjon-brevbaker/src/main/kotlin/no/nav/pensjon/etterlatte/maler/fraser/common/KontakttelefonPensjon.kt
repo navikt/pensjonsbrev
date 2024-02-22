@@ -5,13 +5,14 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
 
 fun ParagraphOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, out Any>.kontakttelefonPensjon(utland: Expression<Boolean>) =
     showIf(utland) {
         text(
-            Language.Bokmal to Constants.Utland.KONTAKTTELEFON_PENSJON,
-            Language.Nynorsk to Constants.Utland.KONTAKTTELEFON_PENSJON,
-            Language.English to Constants.Utland.KONTAKTTELEFON_PENSJON
+            Language.Bokmal to KONTATTELEFON_PENSJON_MED_LANDKODE,
+            Language.Nynorsk to KONTATTELEFON_PENSJON_MED_LANDKODE,
+            Language.English to KONTATTELEFON_PENSJON_MED_LANDKODE
         )
     } orShow {
         text(
