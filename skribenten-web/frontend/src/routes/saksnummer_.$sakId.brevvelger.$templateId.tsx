@@ -358,7 +358,7 @@ function BestillOgRedigerButton({
           type="submit"
           variant="primary"
         >
-          Bestill og rediger brev
+          Åpne brev
         </Button>
       )}
     </VStack>
@@ -682,7 +682,7 @@ function VelgSamhandlerModal() {
         </Button>
       </HStack>
 
-      <Modal header={{ heading: "Finn samhandler" }} portal={document.body} ref={reference} width={600}>
+      <Modal header={{ heading: "Finn samhandler" }} portal ref={reference} width={600}>
         <Modal.Body>
           {selectedIdTSSEkstern === undefined && (
             <FormProvider {...methods}>
@@ -879,10 +879,10 @@ function SamhandlerSearchResults({
               >
                 {capitalizeString(samhandler.navn)}
               </Table.DataCell>
-              <Table.DataCell>
+              <Table.DataCell align="right">
                 <Button
                   onClick={() => onSelect(samhandler.idTSSEkstern)}
-                  size="xsmall"
+                  size="small"
                   type="button"
                   variant="secondary-neutral"
                 >
