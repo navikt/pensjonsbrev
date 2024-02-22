@@ -193,7 +193,6 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Divider />
-      <Adresse />
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((submittedValues) => {
@@ -208,7 +207,8 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
             return orderLetterMutation.mutate(orderLetterRequest);
           })}
         >
-          <VStack gap="4">
+          <VStack gap="8">
+            <Adresse />
             <SelectLanguage letterTemplate={letterTemplate} />
             <SelectSensitivity />
           </VStack>
@@ -343,8 +343,7 @@ function BestillOgRedigerButton({
             Brev bestilt
           </Heading>
           <span>
-            Redigering skal åpne seg selv, hvis ikke er popup blokkert av nettleseren din.{" "}
-            <Link href={orderMutation.data}>Klikk her for å prøve åpne på nytt</Link>
+            Åpnet ikke brevet seg? <Link href={orderMutation.data}>Klikk her for å prøve igjen</Link>
           </span>
         </Alert>
       ) : (
@@ -359,7 +358,7 @@ function BestillOgRedigerButton({
           type="submit"
           variant="primary"
         >
-          Bestill og rediger brev
+          Åpne brev
         </Button>
       )}
     </VStack>
@@ -375,7 +374,7 @@ function SelectSensitivity() {
           legend="Er brevet sensitivt?"
           {...field}
           error={fieldState.error?.message}
-          size="small"
+          size="medium"
           value={field.value ?? null}
         >
           <Radio value>Ja</Radio>
@@ -399,7 +398,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   }, [preferredLanguage, setValue, letterTemplate.spraak]);
 
   return (
-    <Select {...register("spraak")} label="Språk" size="small">
+    <Select {...register("spraak")} label="Språk" size="medium">
       {letterTemplate.spraak.map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
@@ -510,7 +509,7 @@ function PersonAdresse() {
           css={css`
             width: fit-content;
           `}
-          size="small"
+          size="xsmall"
           variant="alt1"
         >
           {getAdresseTypeName(adresseQuery.data?.type)}
@@ -633,6 +632,7 @@ const samhandlerSearchValidationSchema = z.object({
 function VelgSamhandlerModal() {
   const reference = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate({ from: Route.fullPath });
+  const { letterTemplate } = Route.useLoaderData();
   const { idTSSEkstern } = Route.useSearch();
   const [selectedIdTSSEkstern, setSelectedIdTSSEkstern] = useState<string | undefined>(undefined);
 
@@ -660,6 +660,10 @@ function VelgSamhandlerModal() {
     },
   });
 
+  if (letterTemplate.brevsystem !== "EXSTREAM") {
+    return <></>;
+  }
+
   const selectedSamhandler = finnSamhandlerMutation.data?.samhandlere?.find(
     (samhandler) => samhandler.idTSSEkstern === selectedIdTSSEkstern,
   );
@@ -678,7 +682,7 @@ function VelgSamhandlerModal() {
         </Button>
       </HStack>
 
-      <Modal header={{ heading: "Finn samhandler" }} ref={reference} width={600}>
+      <Modal header={{ heading: "Finn samhandler" }} portal ref={reference} width={600}>
         <Modal.Body>
           {selectedIdTSSEkstern === undefined && (
             <FormProvider {...methods}>
@@ -867,11 +871,18 @@ function SamhandlerSearchResults({
         <Table.Body>
           {sortedSamhandlere.map((samhandler) => (
             <Table.Row key={samhandler.idTSSEkstern}>
-              <Table.HeaderCell scope="row">{capitalizeString(samhandler.navn)}</Table.HeaderCell>
-              <Table.DataCell>
+              <Table.DataCell
+                css={css`
+                  font-weight: var(--a-font-weight-regular);
+                `}
+                scope="row"
+              >
+                {capitalizeString(samhandler.navn)}
+              </Table.DataCell>
+              <Table.DataCell align="right">
                 <Button
                   onClick={() => onSelect(samhandler.idTSSEkstern)}
-                  size="xsmall"
+                  size="small"
                   type="button"
                   variant="secondary-neutral"
                 >
