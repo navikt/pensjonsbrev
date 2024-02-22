@@ -193,7 +193,6 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Divider />
-      <Adresse />
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((submittedValues) => {
@@ -208,7 +207,8 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
             return orderLetterMutation.mutate(orderLetterRequest);
           })}
         >
-          <VStack gap="4">
+          <VStack gap="8">
+            <Adresse />
             <SelectLanguage letterTemplate={letterTemplate} />
             <SelectSensitivity />
           </VStack>
@@ -632,6 +632,7 @@ const samhandlerSearchValidationSchema = z.object({
 function VelgSamhandlerModal() {
   const reference = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate({ from: Route.fullPath });
+  const { letterTemplate } = Route.useLoaderData();
   const { idTSSEkstern } = Route.useSearch();
   const [selectedIdTSSEkstern, setSelectedIdTSSEkstern] = useState<string | undefined>(undefined);
 
@@ -658,6 +659,10 @@ function VelgSamhandlerModal() {
       return await finnSamhandler(request);
     },
   });
+
+  if (letterTemplate.brevsystem !== "EXSTREAM") {
+    return <></>;
+  }
 
   const selectedSamhandler = finnSamhandlerMutation.data?.samhandlere?.find(
     (samhandler) => samhandler.idTSSEkstern === selectedIdTSSEkstern,

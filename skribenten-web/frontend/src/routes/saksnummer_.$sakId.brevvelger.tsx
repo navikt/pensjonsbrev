@@ -193,7 +193,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
           search: (s) => s,
         })
       }
-      size="small"
+      size="medium"
       variant="tertiary"
     >
       {letterMetadata.name}
