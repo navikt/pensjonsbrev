@@ -75,7 +75,6 @@ function ContentOrControlStructureComponent<E extends Element>({ cocs }: { cocs:
 function ForEachComponent() {
   // TODO
   return <></>;
-  // return <span>ForEachComponent: TODO</span>;
 }
 
 function ContentComponent({ content }: { content: Element }) {
@@ -216,17 +215,16 @@ function expressionToText(expression: Expression): string {
   if ("value" in expression) return expression.value;
 
   const firstExpressionResolved = expressionToText(expression.first);
-  const secondExpressionResolved = expression.second ? `, ${expressionToText(expression.second)}` : "";
-
+  const secondExpressionResolved = expression.second ? `${expressionToText(expression.second)}` : "";
   switch (expression.operator.syntax) {
     case "FUNCTION": {
       return `${expression.operator.text}(${firstExpressionResolved}${secondExpressionResolved})`;
     }
     case "POSTFIX": {
-      return `${stripPackageNameFromType(expression.type)}${expression.operator.text}`;
+      return `${firstExpressionResolved}${expression.operator.text}`;
     }
     case "INFIX": {
-      return `${firstExpressionResolved} ${expression.operator.text} ${secondExpressionResolved}`;
+      return `${firstExpressionResolved}${expression.operator.text}${secondExpressionResolved}`;
     }
     case "PREFIX": {
       return `${expression.operator.text}${firstExpressionResolved}${secondExpressionResolved}`;
@@ -235,5 +233,5 @@ function expressionToText(expression: Expression): string {
 }
 
 function stripPackageNameFromType(type?: string) {
-  return type?.replace("no.nav.pensjon.brevbaker.api.model.", "") ?? "";
+  return type?.replace(/.*\./, "") ?? "";
 }

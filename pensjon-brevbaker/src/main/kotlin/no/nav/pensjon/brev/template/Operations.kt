@@ -78,7 +78,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     abstract fun apply(first: In1, second: In2): Out
 
-    class Equal<In> : BinaryOperation<In, In, Boolean>() {
+    class Equal<In> : BinaryOperation<In, In, Boolean>(Documentation("==", Documentation.Notation.INFIX)) {
         override fun apply(first: In, second: In): Boolean = first == second
     }
 
@@ -129,7 +129,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
             String.format(second.locale(), "%.2f", first)
     }
 
-    object LocalizedIntFormat : LocalizedFormatter<Int>(Documentation("localizedFormat", Documentation.Notation.FUNCTION)) {
+    object LocalizedIntFormat : LocalizedFormatter<Int>() {
         override fun apply(first: Int, second: Language): String =
             String.format(second.locale(), "%d", first)
     }

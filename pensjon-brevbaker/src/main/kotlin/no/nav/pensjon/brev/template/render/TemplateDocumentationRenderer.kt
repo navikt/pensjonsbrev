@@ -142,12 +142,16 @@ object TemplateDocumentationRenderer {
 
     private fun renderExpression(expr: Expression<*>): TemplateDocumentation.Expression =
         when (expr) {
-            is Expression.BinaryInvoke<*, *, *> -> TemplateDocumentation.Expression.Invoke(
-                renderOperation(expr.operation),
-                renderExpression(expr.first),
-                renderExpression(expr.second),
-                "TODO"
-            )
+            is Expression.BinaryInvoke<*, *, *> ->
+                if (shouldSkipBinaryInvoke(expr))
+                    renderExpression(expr.first)
+                else
+                    TemplateDocumentation.Expression.Invoke(
+                        renderOperation(expr.operation),
+                        renderExpression(expr.first),
+                        renderExpression(expr.second),
+                        "TODO"
+                    )
 
             is Expression.FromScope.Language -> TemplateDocumentation.Expression.LetterData("language")
             is Expression.FromScope.Felles -> TemplateDocumentation.Expression.LetterData("felles")
@@ -156,6 +160,9 @@ object TemplateDocumentationRenderer {
             is Expression.Literal -> TemplateDocumentation.Expression.Literal(expr.value.toString())
             is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr)
         }
+
+    private fun shouldSkipBinaryInvoke(expr: Expression.BinaryInvoke<*, *, *>): Boolean =
+        expr.operation::class.simpleName?.contains("localized", ignoreCase = true) == true
 
     private fun renderUnaryInvoke(expr: Expression.UnaryInvoke<*, *>): TemplateDocumentation.Expression =
         when (expr.operation) {
@@ -180,14 +187,21 @@ object TemplateDocumentationRenderer {
             )
 
             is UnaryOperation.MapCollection<*, *> -> TODO()
-            is UnaryOperation.Not -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.Not -> if(expr.value is Expression.BinaryInvoke<*, *, *> && expr.value.operation is BinaryOperation.Equal<*>) {
+                TemplateDocumentation.Expression.Invoke(
+                    operator = Operation("!=", Documentation.Notation.INFIX),
+                    first = renderExpression(expr.value.first),
+                    second = renderExpression(expr.value.second),
+                )
+            } else TemplateDocumentation.Expression.Invoke(
                 operator = Operation("!", Documentation.Notation.PREFIX),
-                first = renderExpression(expr.value)
+                first = renderExpression(expr.value),
             )
 
             is UnaryOperation.SafeCall -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("?.", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
+                operator = Operation("?.${expr.operation.selector.propertyName}", Documentation.Notation.POSTFIX),
+                first = renderExpression(expr.value),
+                type = expr.operation.selector.propertyType,
             )
 
             is UnaryOperation.Select -> if (expr.operation.selector != intValueSelector) {
