@@ -170,7 +170,7 @@ class OmstillingsstoenadRevurderingFraser {
 
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven §§ <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
                     Language.Nynorsk to "Vedtaket er gjort etter føresegnene om omstillingsstønad i folketrygdlova §§ <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
                     Language.English to "This decision has been made pursuant to the provisions regarding adjustment allowance in the National Insurance Act – sections <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 and 22-13.", " and 22-12."),
                 )
