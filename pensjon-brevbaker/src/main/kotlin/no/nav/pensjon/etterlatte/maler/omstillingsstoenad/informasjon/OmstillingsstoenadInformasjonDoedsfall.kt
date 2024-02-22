@@ -16,6 +16,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.fraser.common.*
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.avdoedNavn
 
 data class OmstillingstoenadInformasjonDoedsfallDTO(
@@ -249,9 +250,9 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon + 47 55 55 33 34, hverdager kl. 09.00 - 15.00.",
-                        Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon + 47 55 55 33 34, kvardagar kl. 09.00 til 15.00.",
-                        English to "If you do not find the answer at nav.no, you can call us at +47 55 55 33 34, weekdays from 09:00 to 15:00.",
+                        Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon ${KONTATTELEFON_PENSJON_MED_LANDKODE}, hverdager kl. 09.00 - 15.00.",
+                        Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon ${KONTATTELEFON_PENSJON_MED_LANDKODE}, kvardagar kl. 09.00 til 15.00.",
+                        English to "If you do not find the answer at nav.no, you can call us at ${KONTATTELEFON_PENSJON_MED_LANDKODE}, weekdays from 09:00 to 15:00.",
                     )
                 }
             }
