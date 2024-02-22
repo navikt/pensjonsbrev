@@ -16,6 +16,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.fraser.common.*
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.avdoedNavn
 
@@ -159,9 +160,9 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du kan lese mer om grunnbeløp på nav.no/grunnbelop.",
-                        Nynorsk to "Du kan lese meir om grunnbeløp på nav.no/grunnbelop.",
-                        English to "You can read more about the National Insurance basic amount at nav.no/grunnbelop.",
+                        Bokmal to "Du kan lese mer om grunnbeløp på ${GRUNNBELOEP_URL}.",
+                        Nynorsk to "Du kan lese meir om grunnbeløp på ${GRUNNBELOEP_URL}.",
+                        English to "You can read more about the National Insurance basic amount at ${GRUNNBELOEP_URL}.",
                     )
                 }
 
