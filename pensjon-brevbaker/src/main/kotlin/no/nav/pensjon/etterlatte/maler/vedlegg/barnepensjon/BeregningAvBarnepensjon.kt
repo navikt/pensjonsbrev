@@ -68,8 +68,6 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
         trygdetid.beregningsMetodeFraGrunnlag,
         trygdetid.beregningsMetodeAnvendt,
         trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden,
-        false.expr(),
-        "".expr() // Ikke relevant for gammelOgNyRegel
     )
     beregnetBarnepensjonGammeltOgNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder)
     perioderMedRegistrertTrygdetid(trygdetid.trygdetidsperioder, trygdetid.beregningsMetodeAnvendt)
@@ -98,22 +96,27 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
                          "til grunn i beregningen. Hvis begge foreldrene hadde full trygdetid, er det tilfeldig hvilken " +
                          "som blir lagt til grunn. Hvis ingen av foreldrene hadde full trygdetid, reduseres barnepensjonen " +
                          "forholdsmessig tilsvarende trygdetiden til den av foreldrene som hadde lengst trygdetid.",
-                 Nynorsk to "",
-                 English to "",
+                 Nynorsk to "Når begge foreldra er døde, vil forelderen med lengst trygdetid bli lagd til grunn " +
+                         "i utrekninga. Dersom begge foreldra hadde full trygdetid, er det tilfeldig kva for ei trygdetid " +
+                         "som blir lagt til grunn. Dersom ingen av foreldra hadde full trygdetid, blir barnepensjonen " +
+                         "redusert forholdsmessig tilsvarande trygdetida til forelderen med lengst trygdetid.",
+                 English to "When both parents are deceased, the parent with the longest contribution time " +
+                         "will be used as the basis for calculation. If both parents had full contribution time, " +
+                         "it is random which one is used as a basis. If neither of the parents reached full " +
+                         "contribution time, the children’s pension will be reduced proportionately based on " +
+                         "the contribution time of the parent that had the longest contribution time.",
              )
          }
     }
-    grunnbeloepetNyttRegelverk(grunnbeloep, erForeldreloes)
+    grunnbeloepetNyttRegelverk()
     trygdetid(
         trygdetid.beregnetTrygdetidAar,
         trygdetid.prorataBroek,
         trygdetid.beregningsMetodeFraGrunnlag,
         trygdetid.beregningsMetodeAnvendt,
-        trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden,
-        erForeldreloes,
-        bruktAvdoed.ifNull("")
+        trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden
     )
-    beregnetBarnepensjonNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder, erForeldreloes)
+    beregnetBarnepensjonNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder)
     perioderMedRegistrertTrygdetid(trygdetid.trygdetidsperioder, trygdetid.beregningsMetodeAnvendt)
 }
 
@@ -205,10 +208,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.grunnbeloepetNyttRegelverk(
-    grunnbeloep: Expression<Kroner>,
-    erForldreloes: Expression<Boolean>
-) {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.grunnbeloepetNyttRegelverk() {
 
     title2 {
         text(
@@ -218,17 +218,33 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         )
     }
     paragraph {
-        showIf(erForldreloes) {
+        showIf(erForeldreloes) {
             textExpr(
-                Bokmal to "Når begge foreldrene er døde, blir den årlige pensjonen lik 2,25 ganger grunnbeløpet. Folketrygdens grunnbeløp per i dag er ".expr() + grunnbeloep.format() + " kroner. Dette deles på 12 måneder. Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år.",
-                Nynorsk to "".expr(),
-                English to "".expr()
+                Bokmal to "Når begge foreldrene er døde, blir den årlige pensjonen lik 2,25 ganger grunnbeløpet. ".expr() +
+                        "Folketrygdens grunnbeløp per i dag er " + grunnbeloep.format() + " kroner. " +
+                        "Dette deles på 12 måneder. Grunnbeløpet blir regulert 1. mai hvert år. " +
+                        "Økningen etterbetales vanligvis i juni hvert år.",
+                Nynorsk to "Barnepensjonen per år utgjer 2,25 gongar grunnbeløpet i folketrygda (G) når begge ".expr() +
+                        "foreldra er døde.  Grunnbeløpet i folketrygda er per i dag " + grunnbeloep.format() + " kroner. " +
+                        "Beløpet blir fordelt på 12 utbetalingar i året.  Grunnbeløpet blir regulert 1. mai kvart år. " +
+                        "Auken blir vanlegvis etterbetalt i juni kvart år.",
+                English to "When both parents are deceased, the children's pension per year amounts to 2,25 x the ".expr() +
+                        "national insurance basic amount (G). The national insurance basic amount currently amounts " +
+                        "to NOK " + grunnbeloep.format() + ". This amount is distributed in 12 payments a year. The basic amount is " +
+                        "adjusted on 1 May each year. You will receive payment of any increase in June of each year. "
             )
         }.orShow {
             textExpr(
-                Bokmal to "Barnepensjonen utgjør en ganger folketrygdens grunnbeløp (G). Folketrygdens grunnbeløp er per i dag ".expr()  + grunnbeloep.format() + " kroner. Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år. ",
-                Nynorsk to "Barnepensjonen per år utgjer éin gong grunnbeløpet i folketrygda (G).  Grunnbeløpet i folketrygda er per i dag  ".expr()  + grunnbeloep.format() + " kroner.  Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
-                English to "The children's pension per year amounts to 1 x the national insurance basic amount (G).  The national insurance basic amount currently amounts to ".expr()  + grunnbeloep.format() + " kroner.  The basic amount is adjusted on 1 May each year. You will receive payment of any increase in June of each year. ",
+                Bokmal to "Barnepensjonen utgjør en ganger folketrygdens grunnbeløp (G). ".expr() +
+                        "Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + " kroner. " +
+                        "Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år. ",
+                Nynorsk to "Barnepensjonen per år utgjer éin gong grunnbeløpet i folketrygda (G). ".expr() +
+                        "Grunnbeløpet i folketrygda er per i dag  " + grunnbeloep.format() + " kroner. " +
+                        "Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
+                English to "The children's pension per year amounts to 1 x the national insurance basic ".expr() +
+                        "amount (G). The national insurance basic amount currently amounts to " +
+                        grunnbeloep.format() + " kroner.  The basic amount is adjusted on 1 May each year. " +
+                        "You will receive payment of any increase in June of each year. ",
             )
         }
     }
@@ -240,8 +256,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     beregningsMetodeFraGrunnlag: Expression<BeregningsMetode>,
     beregningsMetodeAnvendt: Expression<BeregningsMetode>,
     mindreEnnFireFemtedelerAvOpptjeningstiden: Expression<Boolean>,
-    erForeldreloes: Expression<Boolean>,
-    bruktAvdoed: Expression<String>
 ) {
     title2 {
         text(
@@ -251,40 +265,101 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         )
     }
 
+    val bruktAvdoedNavn = bruktAvdoed.ifNull("")
     showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.NASJONAL)) {
         paragraph {
             text(
-                Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
-                Nynorsk to "Trygdetida svarer til talet på år avdøde var medlem i folketrygda etter fylte 16 år. Dersom personen døydde før fylte 67 år, blir det vanlegvis rekna ut framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år. ",
-                English to "Contribution time is the number of years the deceased has been a member of the Norwegian National Insurance Scheme after reaching the age of 16. For deceased persons under 67 years of age at the time of death, the general rule is to calculate future contribution time up to and including the year the deceased would have turned 66.",
+                Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter " +
+                        "fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis beregnet " +
+                        "framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
+                Nynorsk to "Trygdetida svarer til talet på år avdøde var medlem i folketrygda etter fylte " +
+                        "16 år. Dersom personen døydde før fylte 67 år, blir det vanlegvis rekna ut framtidig " +
+                        "trygdetid fram til og med det året avdøde ville ha fylt 66 år. ",
+                English to "Contribution time is the number of years the deceased has been a member of the " +
+                        "Norwegian National Insurance Scheme after reaching the age of 16. For deceased persons under " +
+                        "67 years of age at the time of death, the general rule is to calculate future contribution " +
+                        "time up to and including the year the deceased would have turned 66.",
             )
         }
         paragraph {
-            // TODO skal brukes brev som ikke er foreldreløs senere
-            val foreldreloes = ifElse(erForeldreloes, " Pensjonen din er beregnet etter trygdetiden til ".expr() + bruktAvdoed + ".", "".expr())
-            textExpr(
-                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.".expr() + foreldreloes + " Avdødes samlede trygdetid er beregnet til ".expr() + aarTrygdetid.format() + " år.",
-                Nynorsk to "For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i utrekninga. Den utrekna trygdetida til avdøde er totalt ".expr() + aarTrygdetid.format() + " år.",
-                English to "To be entitled to a full pension, the deceased must have accumulated at least 40 years of contribution time. Contribution time above 40 years of coverage is not included in the calculation. The deceased's total calculated contribution time is ".expr() + aarTrygdetid.format() + " years.",
-            )
+            showIf(erForeldreloes.not()) {
+                textExpr(
+                    Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. ".expr() +
+                            "Trygdetid over 40 år blir ikke tatt med i beregningen. Avdødes samlede trygdetid er " +
+                            "beregnet til " + aarTrygdetid.format() + " år.",
+                    Nynorsk to "For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. ".expr() +
+                            "Trygdetid over 40 år blir ikkje teken med i utrekninga. Den utrekna trygdetida til avdøde " +
+                            "er totalt " + aarTrygdetid.format() + " år.",
+                    English to "To be entitled to a full pension, the deceased must have ".expr() +
+                            "accumulated at least 40 years of contribution time. Contribution time " +
+                            "above 40 years of coverage is not included in the calculation. " +
+                            "The deceased's total calculated contribution time is " + aarTrygdetid.format() + " years.",
+                )
+            }.orShow {
+                textExpr(
+                    Bokmal to "For å få full pensjon må minst en av foreldrene ha hatt minst 40 års trygdetid. ".expr() +
+                            "Trygdetid over 40 år blir ikke tatt med i beregningen. Pensjonen din er beregnet " +
+                            "etter trygdetiden til " + bruktAvdoedNavn + ". Avdødes samlede trygdetid er " +
+                            "beregnet til " + aarTrygdetid.format() + " år.",
+                    Nynorsk to "For at det skal kunne betalast ut full pensjon, må minst éin av foreldra ".expr() +
+                            "ha hatt minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
+                            "Pensjonen din er rekna ut etter trygdetida til " + bruktAvdoedNavn + ". " +
+                            "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år",
+                    English to "To achieve a full pension, at least one of the parents must have accumulated 40 years ".expr() +
+                            "of contribution time. Contribution time above 40 years of coverage is not included in the calculation. " +
+                            "Your pension has been calculated based on the contribution time of " + bruktAvdoedNavn + ". " +
+                            "The deceased's total contribution time amounts to " + aarTrygdetid.format() + " years.",
+                )
+            }
+
         }
         showIf(mindreEnnFireFemtedelerAvOpptjeningstiden) {
             paragraph {
                 text(
-                    Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig trygdetid. Siden avdøde har vært medlem i folketrygden i mindre enn 4/5 av tiden mellom fylte 16 år og dødsfallstidspunktet (opptjeningstiden), blir framtidig trygdetid redusert til 40 år minus 4/5 av opptjeningstiden. Dette er mindre enn det tabellen viser.",
-                    Nynorsk to "Tabellen under «Periodar med registrert trygdetid» viser full framtidig trygdetid. Ettersom avdøde var medlem av folketrygda i mindre enn 4/5 av tida mellom fylte 16 år og fram til sin død (oppteningstid), blir framtidig trygdetid redusert til 40 år minus 4/5 av oppteningstida. Dette er mindre enn det tabellen viser.",
-                    English to "The table in “Periods with Registered Contribution Time” shows the entire future contribution time. Since the deceased has been a member of the National Insurance Scheme for less than 4/5 of the time between turning 16 and the date of the death (qualifying period), the future contribution time is reduced to 40 years minus 4/5 of the qualifying period. This is less than what the table show.",
+                    Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig trygdetid. " +
+                            "Siden avdøde har vært medlem i folketrygden i mindre enn 4/5 av tiden mellom fylte 16 år og " +
+                            "dødsfallstidspunktet (opptjeningstiden), blir framtidig trygdetid redusert til 40 år " +
+                            "minus 4/5 av opptjeningstiden. Dette er mindre enn det tabellen viser.",
+                    Nynorsk to "Tabellen under «Periodar med registrert trygdetid» viser full framtidig trygdetid. " +
+                            "Ettersom avdøde var medlem av folketrygda i mindre enn 4/5 av tida mellom fylte 16 år og " +
+                            "fram til sin død (oppteningstid), blir framtidig trygdetid redusert til 40 år minus 4/5 av " +
+                            "oppteningstida. Dette er mindre enn det tabellen viser.",
+                    English to "The table in “Periods with Registered Contribution Time” shows the entire " +
+                            "future contribution time. Since the deceased has been a member of the National Insurance " +
+                            "Scheme for less than 4/5 of the time between turning 16 and the date of the death " +
+                            "(qualifying period), the future contribution time is reduced to 40 years minus 4/5 of " +
+                            "the qualifying period. This is less than what the table show.",
                 )
             }
         }
     }
     showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.PRORATA)) {
         paragraph {
-            textExpr(
-                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.".expr() + ifElse(erForeldreloes, " Pensjonen din er beregnet etter trygdetiden til ".expr() + bruktAvdoed + " Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år.".expr(), "".expr())  ,
-                Nynorsk to "For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i utrekninga.".expr() + ifElse(erForeldreloes, "", ""),
-                English to "To be entitled to a full pension, the deceased must have accumulated at least 40 years of contribution time. Contribution time above 40 years of coverage is not included in the calculation.".expr() + ifElse(erForeldreloes, "", ""),
-            )
+            showIf(erForeldreloes.not()) {
+                text(
+                    Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid " +
+                            "over 40 år blir ikke tatt med i beregningen.",
+                    Nynorsk to "For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. " +
+                            "Trygdetid over 40 år blir ikkje teken med i utrekninga.",
+                    English to "To be entitled to a full pension, the deceased must have accumulated at least 40 years " +
+                            "of contribution time. Contribution time above 40 years of coverage is not included in the calculation.",
+                )
+            }.orShow {
+                textExpr(
+                    Bokmal to "For å få full pensjon må minst en av foreldrene ha hatt minst 40 års trygdetid. ".expr() +
+                            "Trygdetid over 40 år blir ikke tatt med i beregningen. Pensjonen din er beregnet etter " +
+                            "trygdetiden til " + bruktAvdoedNavn + ". Avdødes samlede trygdetid er beregnet " +
+                            "til " + aarTrygdetid.format() + " år.",
+                    Nynorsk to "For at det skal kunne betalast ut full pensjon, må minst éin av foreldra ha hatt ".expr() +
+                            "minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
+                            "Pensjonen din er rekna ut etter trygdetida til " + bruktAvdoedNavn + ". " +
+                            "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år.",
+                    English to "To achieve a full pension, at least one of the parents must have accumulated ".expr() +
+                            "40 years of contribution time. Contribution time above 40 years of coverage is not included " +
+                            "in the calculation. Your pension has been calculated based on the contribution time " +
+                            "of " + bruktAvdoedNavn + ". The deceased total contribution time amounts to " + aarTrygdetid.format() + " years.",
+                )
+            }
         }
         paragraph {
             textExpr(
@@ -298,17 +373,41 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         showIf(erForeldreloes.not()) {
             paragraph {
                 text(
-                    Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Når grunnlag for pensjon er oppfylt etter nasjonale regler, og avdøde også har opptjening av medlemsperioder i land som Norge har trygdeavtale med, skal trygdetid gis etter den beste beregningen av kun nasjonal opptjening og av sammenlagt opptjening i Norge og avtaleland.",
-                    Nynorsk to "For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i utrekninga. Når grunnlaget for pensjon er oppfylt etter nasjonale reglar, og avdøde også har opptening av medlemsperiodar i land som Noreg har trygdeavtale med, skal det bli gitt trygdetid etter den utrekninga som er best av berre nasjonal opptening og samanlagd opptening i Noreg og avtaleland.",
-                    English to "To be entitled to a full pension, the deceased must have accumulated at least 40 years of contribution time. Contribution time above 40 years of coverage is not included in the calculation. When the basis for the pension is met according to national rules, and the deceased has also accrued membership periods in countries with which Norway has a national insurance agreement, the contribution time must be stated according to the best calculation of (only) national contribution and of the combined contribution time in Norway and the agreement country(ies).",
+                    Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. " +
+                            "Trygdetid over 40 år blir ikke tatt med i beregningen. Når grunnlag for pensjon er " +
+                            "oppfylt etter nasjonale regler, og avdøde også har opptjening av medlemsperioder i land " +
+                            "som Norge har trygdeavtale med, skal trygdetid gis etter den beste beregningen av kun " +
+                            "nasjonal opptjening og av sammenlagt opptjening i Norge og avtaleland.",
+                    Nynorsk to "For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. " +
+                            "Trygdetid over 40 år blir ikkje teken med i utrekninga. Når grunnlaget for pensjon er " +
+                            "oppfylt etter nasjonale reglar, og avdøde også har opptening av medlemsperiodar i land " +
+                            "som Noreg har trygdeavtale med, skal det bli gitt trygdetid etter den utrekninga som er " +
+                            "best av berre nasjonal opptening og samanlagd opptening i Noreg og avtaleland.",
+                    English to "To be entitled to a full pension, the deceased must have accumulated at least " +
+                            "40 years of contribution time. Contribution time above 40 years of coverage is not " +
+                            "included in the calculation. When the basis for the pension is met according to national " +
+                            "rules, and the deceased has also accrued membership periods in countries with which " +
+                            "Norway has a national insurance agreement, the contribution time must be stated according " +
+                            "to the best calculation of (only) national contribution and of the combined " +
+                            "contribution time in Norway and the agreement country(ies).",
                 )
             }
         }.orShow {
             paragraph {
                 textExpr(
-                    Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Pensjonen din er beregnet etter trygdetiden til ".expr() + bruktAvdoed  + ". Avdødes samlede trygdetid er beregnet til ".expr() + aarTrygdetid.format() + " år",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
+                    Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. ".expr() +
+                            "Trygdetid over 40 år blir ikke tatt med i beregningen. Pensjonen din er beregnet etter " +
+                            "trygdetiden til " + bruktAvdoedNavn  + ". Avdødes samlede trygdetid er beregnet " +
+                            "til " + aarTrygdetid.format() + " år",
+                    Nynorsk to "For at det skal kunne betalast ut full pensjon, må minst éin av foreldra ha hatt ".expr() +
+                            "minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
+                            "Pensjonen din er rekna ut etter trygdetida til " + bruktAvdoedNavn  + ". " +
+                            "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år.",
+                    English to "To achieve a full pension, at least one of the parents must have accumulated ".expr() +
+                            "40 years of contribution time. Contribution time above 40 years of coverage is not " +
+                            "included in the calculation. Your pension has been calculated based on the contribution " +
+                            "time of " + bruktAvdoedNavn  + ". The deceased total contribution time amounts to " +
+                            aarTrygdetid.format() + " years. ",
                 )
             }
             paragraph {
@@ -361,7 +460,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     prorataBroek: Expression<IntBroek?>,
     beregningsMetodeAnvendt: Expression<BeregningsMetode>,
     beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>,
-    erForldreloes: Expression<Boolean>
 ) {
     title2 {
         text(

@@ -87,7 +87,7 @@ fun createBarnepensjonForeldreloesDTO() =
         ),
         bosattUtland = true,
         brukerUnder18Aar = true,
-        kunNyttRegelverk = false,
+        kunNyttRegelverk = true,
         bareEnPeriode = true,
         flerePerioder = true,
         ingenUtbetaling = true,
