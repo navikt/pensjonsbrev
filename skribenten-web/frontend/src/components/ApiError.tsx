@@ -83,10 +83,10 @@ function mapFailureTypes(failureType: FailureType) {
       return "Har ikke tilgang til å produsere brev på brukeren.";
     }
     case "DOKSYS_REDIGERING_IKKE_TILGANG": {
-      return "Prøver å redigere ett brev hvor man ikke har tilgang til bruker/enhet.";
+      return "Prøver å redigere et brev hvor man ikke har tilgang til bruker/enhet.";
     }
     case "DOKSYS_REDIGERING_UNDER_REDIGERING": {
-      return "Brevet er allerede åpent for redigering. Det kan hende det er noen andre som har åpnet den eller at du allerede har den åpnet.";
+      return "Brevet er allerede åpent for redigering. Det kan hende at du eller noen andre allerede har åpnet brevet.";
     }
     default: {
       return "Teknisk feil.";
