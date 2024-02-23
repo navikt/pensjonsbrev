@@ -86,7 +86,7 @@ function SelectLanguage() {
         margin-bottom: var(--a-spacing-8);
       `}
       label="Språk"
-      onChange={(event) => navigate({ search: { language: event.target.value } })}
+      onChange={(event) => navigate({ search: { language: event.target.value }, replace: true })}
       size="medium"
       value={language}
     >
