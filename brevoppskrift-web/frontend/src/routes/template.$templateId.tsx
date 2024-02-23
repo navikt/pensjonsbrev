@@ -1,7 +1,8 @@
-import { BodyLong, Heading, Table, VStack } from "@navikt/ds-react";
-import { createFileRoute } from "@tanstack/react-router";
+import { css } from "@emotion/react";
+import { BodyLong, Heading, Select, Table, VStack } from "@navikt/ds-react";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 
-import { getTemplate } from "~/api/brevbaker-api-endpoints";
+import { getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
 import type {
   Attachment,
   Conditional,
@@ -13,31 +14,82 @@ import type {
 import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
 
 export const Route = createFileRoute("/template/$templateId")({
-  loader: ({ context }) => {
-    return context.queryClient.ensureQueryData({
-      queryKey: getTemplate.queryKey(templateId),
-      queryFn: () => getTemplate.queryFn(templateId),
+  loaderDeps: ({ search: { language } }) => ({ language }),
+  loader: async ({ context, navigate, deps }) => {
+    const description = await context.queryClient.ensureQueryData({
+      queryKey: getTemplateDescription.queryKey(templateId),
+      queryFn: () => getTemplateDescription.queryFn(templateId),
     });
+
+    const defaultLanguage = description.languages[0];
+    if (!defaultLanguage) {
+      throw notFound();
+    }
+
+    if (!deps.language) {
+      navigate({
+        search: () => ({
+          language: defaultLanguage,
+        }),
+      });
+    }
+
+    const language = deps.language ?? defaultLanguage;
+
+    const documentation = await context.queryClient.ensureQueryData({
+      queryKey: getTemplateDocumentation.queryKey(templateId, language),
+      queryFn: () => getTemplateDocumentation.queryFn(templateId, language),
+    });
+
+    return { documentation, description };
   },
+  validateSearch: (search: Record<string, unknown>): { language?: string } => ({
+    language: search.language?.toString(),
+  }),
   component: TemplateExplorer,
 });
 
 const templateId = "UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO";
 function TemplateExplorer() {
-  const templateDocumentation = Route.useLoaderData();
+  const { documentation } = Route.useLoaderData();
 
   return (
     <>
       <Heading size="medium" spacing>
         Oppskrift for {templateId}
       </Heading>
+      <SelectLanguage />
       <VStack gap="4">
-        <Document templateDocumentation={templateDocumentation} />
-        {templateDocumentation.attachments.map((attachment, index) => (
+        <Document templateDocumentation={documentation} />
+        {documentation.attachments.map((attachment, index) => (
           <Document key={index} templateDocumentation={attachment} />
         ))}
       </VStack>
     </>
+  );
+}
+
+function SelectLanguage() {
+  const { description } = Route.useLoaderData();
+  const { language } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  return (
+    <Select
+      css={css`
+        margin-bottom: var(--a-spacing-8);
+      `}
+      label="Språk"
+      onChange={(event) => navigate({ search: { language: event.target.value } })}
+      size="medium"
+      value={language}
+    >
+      {description.languages.map((language) => (
+        <option key={language} value={language}>
+          {language}
+        </option>
+      ))}
+    </Select>
   );
 }
 
