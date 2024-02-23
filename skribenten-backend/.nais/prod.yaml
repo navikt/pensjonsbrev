@@ -23,38 +23,19 @@ outboundRules:
   - application: digdir-krr-proxy
     namespace: team-rocket
     cluster: prod-gcp
-  - application: pensjonsbrev-tjenestebuss
-    namespace: pensjonsbrev
-    cluster: prod-fss
-    # TODO: pre-auth
-  - application: navansatt
-    namespace: pensjondeployer
-    cluster: prod-fss
-    # TODO: pre-auth
-  - application: pensjon-persondata
-    namespace: pensjon-person
-    cluster: prod-fss
-    # TODO: pre-auth
-  - application: pensjon-pen
-    namespace: pensjondeployer
-    cluster: prod-fss
-    # TODO: pre-auth pdl
-  - application: pdl-api
-    namespace: pdl
-    cluster: prod-fss
-    # TODO: pre-auth
-  - application: saf
-    namespace: teamdokumenthandtering
-    cluster: prod-fss
-
 
 # TODO: oppdater skribenten url i pesys
 externalHosts:
+  # TODO: pre-auth pdl
   - pdl-api.prod-fss-pub.nais.io
+  # TODO: pre-auth
   - pensjon-pen.prod-fss-pub.nais.io
+  # TODO: pre-auth
   - saf.prod-fss-pub.nais.io
+  # TODO: pre-auth
   - pensjon-persondata.prod-fss-pub.nais.io
   - pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io
+  # TODO: pre-auth
   - navansatt.prod-fss-pub.nais.io
 
 env:

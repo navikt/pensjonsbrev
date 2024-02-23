@@ -22,24 +22,6 @@ outboundRules:
   - application: digdir-krr-proxy
     namespace: team-rocket
     cluster: dev-gcp
-  - application: pensjonsbrev-tjenestebuss-q2
-    namespace: pensjonsbrev
-    cluster: dev-fss
-  - application: navansatt
-    namespace: teampensjon
-    cluster: dev-fss
-  - application: pensjon-persondata-q2
-    namespace: pensjon-person
-    cluster: dev-fss
-  - application: pensjon-pen-q2
-    namespace: pensjon-q2
-    cluster: dev-fss
-  - application: pdl-api
-    namespace: pdl
-    cluster: dev-fss
-  - application: saf
-    namespace: teamdokumenthandtering
-    cluster: prod-fss
 
 externalHosts:
   - pdl-api.dev-fss-pub.nais.io
