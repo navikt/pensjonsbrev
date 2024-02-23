@@ -1,3 +1,10 @@
+export type TemplateDescription = {
+  name: string;
+  letterDataClass: string;
+  languages: string[];
+  metadata: unknown;
+};
+
 export type TemplateDocumentation = {
   title: ContentOrControlStructure<Text>[];
   outline: ContentOrControlStructure<OutlineContent>[];
