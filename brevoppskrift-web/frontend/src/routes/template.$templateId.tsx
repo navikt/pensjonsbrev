@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, Table, VStack } from "@navikt/ds-react";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 
-import { getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
+import { getAllBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
 import type {
   Attachment,
   Conditional,
@@ -15,10 +15,15 @@ import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes
 
 export const Route = createFileRoute("/template/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
-  loader: async ({ context, navigate, deps }) => {
+  loader: async ({ context, navigate, deps, params, preload }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: getAllBrevkoder.queryKey,
+      queryFn: () => getAllBrevkoder.queryFn(),
+    });
+
     const description = await context.queryClient.ensureQueryData({
-      queryKey: getTemplateDescription.queryKey(templateId),
-      queryFn: () => getTemplateDescription.queryFn(templateId),
+      queryKey: getTemplateDescription.queryKey(params.templateId),
+      queryFn: () => getTemplateDescription.queryFn(params.templateId),
     });
 
     const defaultLanguage = description.languages[0];
@@ -26,8 +31,9 @@ export const Route = createFileRoute("/template/$templateId")({
       throw notFound();
     }
 
-    if (!deps.language) {
+    if (!deps.language && !preload) {
       navigate({
+        replace: true,
         search: () => ({
           language: defaultLanguage,
         }),
@@ -37,8 +43,8 @@ export const Route = createFileRoute("/template/$templateId")({
     const language = deps.language ?? defaultLanguage;
 
     const documentation = await context.queryClient.ensureQueryData({
-      queryKey: getTemplateDocumentation.queryKey(templateId, language),
-      queryFn: () => getTemplateDocumentation.queryFn(templateId, language),
+      queryKey: getTemplateDocumentation.queryKey(params.templateId, language),
+      queryFn: () => getTemplateDocumentation.queryFn(params.templateId, language),
     });
 
     return { documentation, description };
@@ -49,9 +55,9 @@ export const Route = createFileRoute("/template/$templateId")({
   component: TemplateExplorer,
 });
 
-const templateId = "UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO";
 function TemplateExplorer() {
   const { documentation } = Route.useLoaderData();
+  const { templateId } = Route.useParams();
 
   return (
     <>
@@ -80,7 +86,7 @@ function SelectLanguage() {
         margin-bottom: var(--a-spacing-8);
       `}
       label="Språk"
-      onChange={(event) => navigate({ search: { language: event.target.value } })}
+      onChange={(event) => navigate({ search: { language: event.target.value }, replace: true })}
       size="medium"
       value={language}
     >
