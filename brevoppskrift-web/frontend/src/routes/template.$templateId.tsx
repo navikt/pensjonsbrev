@@ -55,7 +55,6 @@ export const Route = createFileRoute("/template/$templateId")({
   component: TemplateExplorer,
 });
 
-// const templateId = "UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO";
 function TemplateExplorer() {
   const { documentation } = Route.useLoaderData();
   const { templateId } = Route.useParams();
