@@ -676,6 +676,7 @@ function VelgSamhandlerModal() {
           icon={idTSSEkstern ? <PencilIcon /> : <Buildings3Icon />}
           onClick={() => reference.current?.showModal()}
           size="small"
+          type="button"
           variant="secondary"
         >
           {idTSSEkstern ? "Endre" : "Endre til samhandler"}
@@ -693,13 +694,13 @@ function VelgSamhandlerModal() {
                 method="dialog"
                 onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
               >
+                <SamhandlerTypeSelectFormPart />
                 <TextField
                   autoComplete="off"
                   error={methods.formState.errors.navn?.message}
-                  label="Søk"
+                  label="Navn"
                   {...methods.register("navn")}
                 />
-                <SamhandlerTypeSelectFormPart />
                 <Button
                   css={css`
                     width: fit-content;
