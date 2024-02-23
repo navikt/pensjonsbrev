@@ -24,6 +24,10 @@ export const templateDocumentationKeys = {
     [...templateDocumentationKeys.all, templateId, language] as const,
 };
 
+export const brevkoderKeys = {
+  all: ["BREVKODER"] as const,
+};
+
 export const getTemplateDescription = {
   queryKey: templateDescriptionKeys.id,
   queryFn: async (templateId: string) =>
@@ -38,4 +42,9 @@ export const getTemplateDocumentation = {
         `${BREVBAKER_API_BASE_PATH}/templates/autobrev/${templateId}/doc/${language}`,
       )
     ).data,
+};
+
+export const getAllBrevkoder = {
+  queryKey: brevkoderKeys.all,
+  queryFn: async () => (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/autobrev`)).data,
 };
