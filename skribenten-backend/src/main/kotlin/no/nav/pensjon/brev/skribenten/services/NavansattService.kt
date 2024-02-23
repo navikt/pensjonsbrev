@@ -11,7 +11,7 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 
-class NavansattService(config: Config, authService: AzureADService) {
+class NavansattService(config: Config, authService: AzureADService): ServiceStatus {
 
     private val navansattUrl = config.getString("url")
     private val navansattScope = config.getString("scope")
@@ -35,6 +35,11 @@ class NavansattService(config: Config, authService: AzureADService) {
     suspend fun hentGruppetilgang(call: ApplicationCall, ansattId: String): ServiceResult<Gruppetilgang> {
         return client.get(call, "/navansatt/$ansattId").toServiceResult<Gruppetilgang>()
     }
+
+    override val name = "Nav Ansatt"
+
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        client.get(call, "ping-authenticated").toServiceResult<String>().map { true }
 }
 
 

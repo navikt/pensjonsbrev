@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.name
@@ -105,7 +104,7 @@ class TemplateTest {
 
         val expected = Content(
             Element.OutlineContent.ParagraphContent.Text.Expression<LangBokmal>(
-                Expression.FromScope.argument(ExpressionScope<SomeDto, *>::argument).name
+                Expression.FromScope.Argument<SomeDto>().name
             )
         )
 

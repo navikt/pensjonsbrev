@@ -11,9 +11,11 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import org.slf4j.LoggerFactory
 
-class BrevmetadataService(config: Config) {
+class BrevmetadataService(config: Config): ServiceStatus {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = HttpClient(CIO) {
@@ -27,7 +29,7 @@ class BrevmetadataService(config: Config) {
         }
     }
 
-    suspend fun getRedigerbareBrev(sakstype: String, includeVedtak: Boolean): List<LetterMetadata> {
+    suspend fun getRedigerbareBrev(sakstype: PenService.SakType, isVedtaksKontekst: Boolean): List<LetterMetadata> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
@@ -35,18 +37,26 @@ class BrevmetadataService(config: Config) {
         if (httpResponse.status.isSuccess()) {
             return httpResponse.body<List<BrevdataDto>>()
                 .filter { it.redigerbart }
-                .filter { includeVedtak || it.brevkategori != BrevdataDto.BrevkategoriCode.VEDTAK }
-                .map{ it.mapToMetadata() }
+                .filter { filterForKontekst(it, isVedtaksKontekst) }
+                .map { it.mapToMetadata() }
         } else {
             logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
             return emptyList()
         }
     }
 
+    private fun filterForKontekst(brevmetadata: BrevdataDto, isVedtaksKontekst: Boolean): Boolean =
+        when(brevmetadata.brevkontekst){
+            ALLTID -> true
+            SAK -> !isVedtaksKontekst
+            VEDTAK -> isVedtaksKontekst
+            null -> false
+        }
+
     private fun BrevdataDto.mapToMetadata() =
         LetterMetadata(
             name = dekode,     // TODO handle missing fields in front-end instead.
-            id = brevkodeIBrevsystem ?: "MissingCode",
+            id = brevkodeIBrevsystem,
             spraak = sprak ?: emptyList(),
             brevsystem = when (brevsystem) {
                 BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
@@ -61,7 +71,6 @@ class BrevmetadataService(config: Config) {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }.body<List<BrevdataDto>>()
-            .filter { it.redigerbart }
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
             .map { it.mapToMetadata() }
     }
@@ -71,6 +80,10 @@ class BrevmetadataService(config: Config) {
             contentType(ContentType.Application.Json)
         }.body<BrevdataDto>()
     }
+
+    override val name = "Brevmetadata"
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        httpClient.get("/api/internal/isReady").toServiceResult<String>().map { true }
 }
 
 data class BrevdataDto(
@@ -83,20 +96,18 @@ data class BrevdataDto(
     val utland: String?,
     val brevregeltype: String?,
     val brevkravtype: String?,
-    val brevkontekst: String?,
+    val brevkontekst: BrevkontekstCode?,
     val dokumentkategori: DokumentkategoriCode,
     val synligForVeileder: Boolean?,
     val prioritet: Int?,
-    val brevkodeIBrevsystem: String?,
+    val brevkodeIBrevsystem: String,
     val brevsystem: BrevSystem,
     val brevgruppe: String?,
 ) {
     enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
-    enum class BrevSystem {
-        DOKSYS,
-        GAMMEL,     //EXSTREAM
-    }
+    enum class BrevSystem { DOKSYS, GAMMEL /*EXSTREAM*/ , }
+    enum class BrevkontekstCode { ALLTID, SAK, VEDTAK }
 
     enum class DokumentType {
         I, //Inngende dokument

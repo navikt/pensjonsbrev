@@ -13,6 +13,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.ServiceStatus
 import java.time.LocalDateTime
 
 data class UserToken(
@@ -30,7 +31,7 @@ data class UserToken(
     fun isValid(expirationLeeway: Long) = !isExpired(expirationLeeway)
 }
 
-class STSService(stsConfig: Config) {
+class STSService(stsConfig: Config) : ServiceStatus {
     private val mutex = Mutex()
 
     private var token: UserToken? = null
@@ -56,7 +57,6 @@ class STSService(stsConfig: Config) {
     suspend fun getToken(): UserToken {
         mutex.withLock {
             val currentToken = token
-            //TODO leeway from config
             return if (currentToken != null && currentToken.isValid(10)) {
                 currentToken
             } else {
@@ -78,4 +78,7 @@ class STSService(stsConfig: Config) {
         }
         return response.body()
     }
+
+    override val name = "REST STS"
+    override suspend fun ping(): Boolean = getToken().isValid(10)
 }

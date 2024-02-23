@@ -18,3 +18,33 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+.preview {
+    width: 820px;
+    background: white;
+    padding: 3rem;
+    align-self: center;
+}
+
+.show-if > code:first-child:before {
+    content: "If ";
+}
+
+.show-if > div:nth-child(2) {
+    margin-left: 1rem;
+}
+
+.show-else > div:nth-child(2) {
+    margin-left: 1rem;
+}
+
+.expression, code {
+    white-space: nowrap;
+    color: var(--a-blue-600);
+    background: var(--a-gray-100);
+}
+
+.conditional {
+    background: aquamarine;
+    margin: 1rem 0 1rem 1rem;
+}

@@ -14,16 +14,20 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.avdoedNavn
 
+
+data class OmstillingstoenadAvslagRedigerbartUtfallDTO(val avdoedNavn: String) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
-object OmstillingsstoenadAvslagRedigerbartUtfall : EtterlatteTemplate<OmstillingstoenadAvslagDTO>, Delmal {
+object OmstillingsstoenadAvslagRedigerbartUtfall : EtterlatteTemplate<OmstillingstoenadAvslagRedigerbartUtfallDTO>,
+    Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_AVSLAG_UTFALL
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = OmstillingstoenadAvslagDTO::class,
+        letterDataType = OmstillingstoenadAvslagRedigerbartUtfallDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - begrunnelse for avslag",

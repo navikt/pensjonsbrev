@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 data class NullBrevDto(val test1: String?, val test2: String?)
+@Suppress("unused")
 @TemplateModelHelpers
 object Helpers : HasModel<NullBrevDto>
 
@@ -52,8 +53,8 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull and orIfNotNull adds a conditional checks`() {
-        val navn = Expression.FromScope.argument(ExpressionScope<NullBrevDto, *>::argument).test1
-        val noegreier = Expression.FromScope.argument(ExpressionScope<NullBrevDto, *>::argument).test2
+        val navn = Expression.FromScope.Argument<NullBrevDto>().test1
+        val noegreier = Expression.FromScope.Argument<NullBrevDto>().test2
 
         @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
         val expected = template.copy(

@@ -4,4 +4,6 @@ interface BrevDTO {
     val innhold: List<Element>
 }
 
+interface FerdigstillingBrevDTO : BrevDTO
+
 interface RedigerbartUtfallBrevDTO

@@ -21,7 +21,7 @@ class BaseTest {
 
     @Test
     fun `ifElse expression evaluates to correct branch`() {
-        val expr = ifElse(Expression.FromScope.argument(ExpressionScope<Int, *>::argument) equalTo 2, "hei", "hade bra")
+        val expr = ifElse(Expression.FromScope.Argument<Int>() equalTo 2, "hei", "hade bra")
 
         val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
 

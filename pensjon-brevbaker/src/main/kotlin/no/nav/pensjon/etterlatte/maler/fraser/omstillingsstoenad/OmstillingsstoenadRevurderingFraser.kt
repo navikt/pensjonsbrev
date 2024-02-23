@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -52,7 +53,8 @@ class OmstillingsstoenadRevurderingFraser {
                                     Language.English to "Your adjustment allowance will change on ".expr() +
                                             formatertVirkningsdato + ". You will receive NOK " + formatertBeloep +
                                             " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
-                                            ". Read more about amounts for previous periods in the attachment Calculation of " +
+                                            ". Read more about amounts for previous periods and how we have calculated " +
+                                            "your Adjustment Allowance in the attachment Calculation of " +
                                             "Adjustment Allowance."
                                 )
                             }
@@ -60,13 +62,20 @@ class OmstillingsstoenadRevurderingFraser {
                             paragraph {
                                 textExpr(
                                     Language.Bokmal to "Omstillingsstønaden din er endret fra ".expr() +
-                                            formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner hver måned " +
-                                            "før skatt. ",
-                                    Language.Nynorsk to "Omstillingsstønaden din er endret fra ".expr() +
-                                            formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner kvar " +
-                                            "månad før skatt.",
+                                            formatertVirkningsdato + ".",
+                                    Language.Nynorsk to "Omstillingsstønaden din har blitt endra frå ".expr() +
+                                            formatertVirkningsdato + ".",
                                     Language.English to "Your adjustment allowance will change on ".expr() +
-                                            formatertVirkningsdato + ". You will receive NOK " + formatertBeloep +
+                                            formatertVirkningsdato + "."
+                                )
+                            }
+                            paragraph {
+                                textExpr(
+                                    Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned " +
+                                            "før skatt. ",
+                                    Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner kvar " +
+                                            "månad før skatt.",
+                                    Language.English to "You will receive NOK ".expr() + formatertBeloep +
                                             " each month before tax."
                                 )
                             }
@@ -76,12 +85,22 @@ class OmstillingsstoenadRevurderingFraser {
                                             "«Beregning av omstillingsstønad».",
                                     Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av " +
                                             "omstillingsstønad» korleis vi har rekna ut omstillingsstønaden din.",
-                                    Language.English to "Read more about amounts for previous periods in the " +
-                                            "attachment Calculation of Adjustment Allowance.",
+                                    Language.English to "Read more about how we calculated your Adjustment " +
+                                            "Allowance in the attachment Calculation of Adjustment Allowance.",
                                 )
                             }
                         }
                     }.orShow {
+                        paragraph {
+                            textExpr(
+                                Language.Bokmal to "Omstillingsstønaden din er endret fra ".expr() +
+                                        formatertVirkningsdato + ".",
+                                Language.Nynorsk to "Omstillingsstønaden din er endret fra ".expr() +
+                                        formatertVirkningsdato + ".",
+                                Language.English to "Your adjustment allowance will change on ".expr() +
+                                        formatertVirkningsdato + "."
+                            )
+                        }
                         paragraph {
                             text(
                                 Language.Bokmal to "Du får ikke utbetalt stønad. ",
@@ -96,8 +115,8 @@ class OmstillingsstoenadRevurderingFraser {
                                         "«Beregning av omstillingsstønad».",
                                 Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                         "korleis vi har rekna ut omstillingsstønaden din.",
-                                Language.English to "Read more about amounts for previous periods in the " +
-                                        "attachment Calculation of Adjustment Allowance. ",
+                                Language.English to "Read more about how we calculated your Adjustment Allowance in " +
+                                        "the attachment Calculation of Adjustment Allowance.",
                             )
                         }
                     }
@@ -107,7 +126,7 @@ class OmstillingsstoenadRevurderingFraser {
                         text(
                             Language.Bokmal to "Omstillingsstønaden din er vurdert på nytt. ",
                             Language.Nynorsk to "Omstillingsstønaden din er vurdert på nytt. ",
-                            Language.English to "We have re-evaluated your adjustment allowance."
+                            Language.English to "We have re-evaluated your adjustment allowance. "
                         )
                         showIf(harUtbetaling) {
                             textExpr(
@@ -131,8 +150,8 @@ class OmstillingsstoenadRevurderingFraser {
                                     "«Beregning av omstillingsstønad».",
                             Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                     "korleis vi har rekna ut omstillingsstønaden din.",
-                            Language.English to "Read more about amounts for previous periods in the attachment " +
-                                    "Calculation of Adjustment Allowance.",
+                            Language.English to "Read more about how we calculated your Adjustment Allowance in " +
+                                    "the attachment Calculation of Adjustment Allowance.",
                         )
                     }
                 }
@@ -149,34 +168,16 @@ class OmstillingsstoenadRevurderingFraser {
                 )
             }
 
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(FeilutbetalingUtenVarselRevurdering)
+            paragraph {
+                textExpr(
+                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven §§ <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Language.Nynorsk to "Vedtaket er gjort etter føresegnene om omstillingsstønad i folketrygdlova §§ <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Language.English to "This decision has been made pursuant to the provisions regarding adjustment allowance in the National Insurance Act – sections <riktig paragrafhenvisning>".expr() + ifElse(etterbetaling, ", 22-12 and 22-13.", " and 22-12."),
+                )
             }
 
-            paragraph {
-                text(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i " +
-                            "folketrygdloven § <riktig paragrafhenvisning> ",
-                    Language.Nynorsk to "Vedtaket er gjort etter føresegnene om omstillingsstønad i " +
-                            "folketrygdlova § <tilvising til rett paragraf> ",
-                    Language.English to "The decision was made in accordance with the provisions regarding " +
-                            "the adjustment allowance in the National Insurance Act – sections <correct paragraph reference> " +
-                            "National Insurance Act ",
-                )
-                showIf(etterbetaling) {
-                    text(
-                        Language.Bokmal to ", § 22-12 og § 22-13.",
-                        Language.Nynorsk to ", § 22-12 og § 22-13.",
-                        Language.English to ", 22-12 and 22-13."
-                    )
-                }.orShow {
-                    text(
-                        Language.Bokmal to "og § 22-12.",
-                        Language.Nynorsk to "og § 22-12.",
-                        Language.English to "and 22-12."
-                    )
-                }
-
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                includePhrase(FeilutbetalingUtenVarselRevurdering)
             }
         }
     }
@@ -277,8 +278,8 @@ class OmstillingsstoenadRevurderingFraser {
                             "mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
                             "tilbake omstillingsstønad».",
                     Language.English to "Because your allowance has been reduced retroactively, you received " +
-                            "more than you were owed. See the attachment Advance Notice of Possible Repayment of " +
-                            "Incorrectly Paid Adjustment Allowance.",
+                            "more than you were owed. See the attachment Advance notice – we are assessing whether " +
+                            "you must repay adjustment allowance.",
                 )
             }
         }
@@ -322,8 +323,8 @@ class OmstillingsstoenadRevurderingFraser {
                             "fått for mykje utbetalt. Sjå vedlegget «Førehandsvarsel om eventuell tilbakekrevjing " +
                             "av feilutbetalt omstillingsstønad».",
                     Language.English to "You have been overpaid because your Adjustment Allowance has been " +
-                            "terminated retroactively. See the Attachment Advance Notice of Possible Repayment of " +
-                            "Incorrectly Paid Adjustment Allowance.",
+                            "terminated retroactively. See the Attachment Advance notice – we are assessing whether " +
+                            "you must repay adjustment allowance.",
                 )
             }
         }

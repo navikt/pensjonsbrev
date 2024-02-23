@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
 import java.time.LocalDate
 
-class PenService(config: Config, authService: AzureADService) {
+class PenService(config: Config, authService: AzureADService): ServiceStatus {
     private val penUrl = config.getString("url")
     private val penScope = config.getString("scope")
 
@@ -103,5 +103,12 @@ class PenService(config: Config, authService: AzureADService) {
 
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>> =
         client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>>()
+
+    override val name = "PEN"
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        client.get(call, "/pen/actuator/health/readiness")
+            .toServiceResult<String>()
+            .map { true }
+
 }
 

@@ -15,9 +15,23 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 data class KontaktAdresseResponseDto(
     val adresseString: String,
     val adresselinjer: List<String>,
-)
+    val type: Adressetype,
+){
+    enum class Adressetype {
+        MATRIKKELADRESSE,
+        POSTADRESSE_I_FRITT_FORMAT,
+        POSTBOKSADRESSE,
+        REGOPPSLAG_ADRESSE,
+        UKJENT_BOSTED,
+        UTENLANDSK_ADRESSE,
+        UTENLANDSK_ADRESSE_I_FRITT_FORMAT,
+        VEGADRESSE,
+        VERGE_PERSON_POSTADRESSE,
+        VERGE_SAMHANDLER_POSTADRESSE,
+    }
+}
 
-class PensjonPersonDataService(config: Config, authService: AzureADService) {
+class PensjonPersonDataService(config: Config, authService: AzureADService): ServiceStatus {
 
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
@@ -40,4 +54,9 @@ class PensjonPersonDataService(config: Config, authService: AzureADService) {
             }
         }.toServiceResult<KontaktAdresseResponseDto>()
 
+    override val name = "Pensjon PersonData"
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        client.get(call, "/actuator/health/liveness")
+            .toServiceResult<String>()
+            .map { true }
 }

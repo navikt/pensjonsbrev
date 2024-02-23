@@ -15,9 +15,9 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 @TemplateModelHelpers
 val forhaandsvarselFeilutbetalingBarnepensjonRevurdering = createAttachment(
     title = newText(
-        Bokmal to "Forhåndsvarsel - vi vurderer om du må betale tilbake pensjon",
-        Nynorsk to "Førehandsvarsel - vi vurderer om du må betale tilbake pensjon",
-        English to "Advance Notice of Possible Repayment of Incorrectly Paid Pension",
+        Bokmal to "Forhåndsvarsel - vi vurderer om du må betale tilbake barnepensjon",
+        Nynorsk to "Førehandsvarsel – vi vurderer om du må betale tilbake barnepensjon",
+        English to "Advance notice – we are assessing whether you must repay children’s pension",
     ),
     includeSakspart = false
 ) {
@@ -31,9 +31,9 @@ val forhaandsvarselFeilutbetalingBarnepensjonRevurdering = createAttachment(
 @TemplateModelHelpers
 val forhaandsvarselFeilutbetalingBarnepensjonOpphoer = createAttachment(
     title = newText(
-        Bokmal to "Forhåndsvarsel - vi vurderer om du må betale tilbake pensjon",
-        Nynorsk to "Førehandsvarsel - vi vurderer om du må betale tilbake pensjon",
-        English to "Advance Notice of Possible Repayment of Incorrectly Paid Pension",
+        Bokmal to "Forhåndsvarsel - vi vurderer om du må betale tilbake barnepensjon",
+        Nynorsk to "Førehandsvarsel – vi vurderer om du må betale tilbake barnepensjon",
+        English to "Advance notice – we are assessing whether you must repay children’s pension",
     ),
     includeSakspart = false
 ) {

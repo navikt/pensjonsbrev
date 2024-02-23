@@ -13,6 +13,7 @@ export function ApiError({ error, text }: { error: unknown; text: string }) {
           width: fit-content;
           align-self: center;
         `}
+        size="small"
         variant="error"
       >
         <Heading level="2" size="small" spacing>

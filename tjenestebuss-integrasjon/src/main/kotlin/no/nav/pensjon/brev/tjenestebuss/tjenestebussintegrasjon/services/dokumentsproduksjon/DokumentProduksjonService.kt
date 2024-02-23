@@ -1,19 +1,14 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon
 
-import com.typesafe.config.Config
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.RedigerDoksysDokumentRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto.FailureType.*
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.*
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSRedigerDokumentRequest
 import org.slf4j.LoggerFactory
 
-class DokumentproduksjonService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
+class DokumentproduksjonService(clientFactory: DokumentProduksjonClientFactory) : TjenestebussService<DokumentproduksjonV3>(clientFactory) {
     private val logger = LoggerFactory.getLogger(this::class.java)
-
-    private val dokumentProduksjonClient = DokumentProduksjonClient(config, securityHandler, callIdHandler).client()
-
 
     /**
      * Henter metaforce uri som benyttes for å redigere et DOKSYS brev.
@@ -23,7 +18,7 @@ class DokumentproduksjonService(config: Config, securityHandler: STSSercuritySOA
      */
     fun redigerDokument(requestDto: RedigerDoksysDokumentRequestDto): RedigerDoksysDokumentResponseDto {
         try {
-            val response = dokumentProduksjonClient.redigerDokument(WSRedigerDokumentRequest().apply {
+            val response = client.redigerDokument(WSRedigerDokumentRequest().apply {
                 journalpostId = requestDto.journalpostId
                 dokumentId = requestDto.dokumentId
             })
@@ -43,6 +38,13 @@ class DokumentproduksjonService(config: Config, securityHandler: STSSercuritySOA
                 }
             )
         }
+    }
+
+    override val name = "DokumentProduksjonV3"
+
+    override fun sendPing(): Boolean {
+        client.ping()
+        return true
     }
 }
 

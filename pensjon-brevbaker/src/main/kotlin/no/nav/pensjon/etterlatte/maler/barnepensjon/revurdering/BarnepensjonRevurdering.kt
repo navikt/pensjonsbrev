@@ -37,7 +37,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonGammeltOgNyttRegelverk
@@ -92,9 +91,9 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
             showIf(erOmgjoering) {
                 ifNotNull(datoVedtakOmgjoering) {
                     textExpr(
-                        Bokmal to "omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
-                        Nynorsk to "gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
-                        English to "reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
+                        Bokmal to "omgjort vedtaket om barnepensjon av ".expr() + it.format(),
+                        Nynorsk to "gjort om vedtaket om barnepensjon av ".expr() + it.format(),
+                        English to "reversed our decision regarding the  children's pension on ".expr() + it.format(),
                     )
                 }
             }.orShow {
@@ -131,9 +130,9 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
             konverterElementerTilBrevbakerformat(innhold)
 
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon)
-            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
+            includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
+            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
 
         // Beregning av barnepensjon nytt og gammelt regelverk

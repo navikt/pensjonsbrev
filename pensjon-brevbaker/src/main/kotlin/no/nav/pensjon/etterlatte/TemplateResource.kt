@@ -7,6 +7,7 @@ import no.nav.pensjon.etterlatte.maler.andre.TomMalInformasjonsbrev
 import no.nav.pensjon.etterlatte.maler.andre.UtsattKlagefrist
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslag
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfall
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseForeldreloes
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseForeldreloesRedigerbartUfall
@@ -22,6 +23,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarsel
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigstilling
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnhold
+import no.nav.pensjon.etterlatte.maler.klage.BlankettKlageinstans
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslagRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelse
@@ -56,7 +58,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         BarnepensjonVarselRedigerbartUtfall,
         BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall,
         BarnepensjonVedleggForhaandsvarselRedigerbartUtfall,
-
+        BarnepensjonInformasjonDoedsfall,
         // Omstillingsstønad
         OmstillingsstoenadAvslag,
         OmstillingsstoenadAvslagRedigerbartUtfall,
@@ -70,21 +72,18 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall,
         OmstillingsstoenadVarsel,
         OmstillingsstoenadVarselRedigerbartUtfall,
-
         // Tilbakekreving
         TilbakekrevingInnhold,
         TilbakekrevingFerdig,
-
         // Klage
         AvvistKlageInnhold,
         AvvistKlageFerdigstilling,
-
+        BlankettKlageinstans,
         // Informasjonsbrev
         TomMal,
         TomDelmal,
         TomMalInformasjonsbrev,
         UtsattKlagefrist,
-
         // Div migrering mm.
         ForhaandsvarselOmregningBP,
         EnkeltVedtakOmregningNyttRegelverk,
@@ -103,15 +102,11 @@ class TemplateResource(
     private val redigerbareBrevMap: Map<EtterlatteBrevKode, EtterlatteTemplate<*>> =
         redigerbareTemplates.associateBy { it.kode }
 
-    fun getAutoBrev(): Set<EtterlatteBrevKode> =
-        autoBrevMap.keys
+    fun getAutoBrev(): Set<EtterlatteBrevKode> = autoBrevMap.keys
 
-    fun getAutoBrev(kode: EtterlatteBrevKode): LetterTemplate<*, *>? =
-        autoBrevMap[kode]?.template
+    fun getAutoBrev(kode: EtterlatteBrevKode): LetterTemplate<*, *>? = autoBrevMap[kode]?.template
 
-    fun getRedigerbareBrev(): Set<EtterlatteBrevKode> =
-        redigerbareBrevMap.keys
+    fun getRedigerbareBrev(): Set<EtterlatteBrevKode> = redigerbareBrevMap.keys
 
-    fun getRedigerbartBrev(kode: EtterlatteBrevKode): LetterTemplate<*, *>? =
-        redigerbareBrevMap[kode]?.template
+    fun getRedigerbartBrev(kode: EtterlatteBrevKode): LetterTemplate<*, *>? = redigerbareBrevMap[kode]?.template
 }

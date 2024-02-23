@@ -9,23 +9,20 @@ object Constants {
     const val SKRIVTILOSS_URL = "$NAV_URL/skrivtiloss"
     const val KONTONUMMER_URL = "$NAV_URL/kontonummer"
     const val ENDRING_KONTONUMMER_URL = "$NAV_URL/start/soknad-endring-bankkontonummer"
-    const val KONTAKT_URL = "$NAV_URL/kontakt"
+    const val KONTAKT_URL = "$NAV_URL/kontaktoss"
     const val KLAGE_URL = "$NAV_URL/klage"
-    const val KLAGERETTIGHETER_URL = "$NAV_URL/klagerettigheter"
+    const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelopet"
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
-    const val DITT_NAV = "$NAV_URL/dittnav"
-    const val SKATTETREKK_PENGESTOETTE_URL = "$NAV_URL/skatt-pengestotte"
     const val SKATTETREKK_ETTERBETALING_URL = "$NAV_URL/skattetrekk#etterbetaling"
     const val SKATTETREKK_KILDESKATT_URL = "$NAV_URL/skattetrekk#kildeskatt"
-    const val OMS_REGULERING_URL = "$NAV_URL/omstillingsstønad#regulering"
     const val OMS_ETTEROPPGJOER_URL = "$NAV_URL/omstillingsstønad#etteroppgjør"
-    const val OMS_HVORMYE_URL = "$NAV_URL/omstillingsstønad#hvor-mye"
-    const val OMS_HVORLENGE_URL = "$NAV_URL/omstillingsstønad#hvor-mye"
+    const val OMS_HVORLENGE_URL = "$NAV_URL/omstillingsstønad#hvor-lenge"
     const val OMS_AKTIVITET_URL = "$NAV_URL/omstillingsstønad#aktivitet"
     const val OMS_URL = "$NAV_URL/omstillingsstønad"
     const val POSTADRESSE = "NAV skanning, Postboks 1400, 0109 OSLO"
     const val KONTAKTTELEFON_PENSJON = "55 55 33 34"
+    const val KONTATTELEFON_PENSJON_MED_LANDKODE = "+ 47 $KONTAKTTELEFON_PENSJON"
     const val KONTAKTTELEFON_GENERELL = "55 55 33 33"
     const val KONTAKTTELEFON_SKATT = "800 80 000"
 
@@ -36,13 +33,12 @@ object Constants {
         const val SKRIVTILOSS_URL = "${Constants.SKRIVTILOSS_URL}/en"
         const val KONTONUMMER_URL = "${Constants.KONTONUMMER_URL}/en"
         const val FULLMAKT_URL = "${Constants.FULLMAKT_URL}/en"
+        const val KONTAKT_URL = "${Constants.KONTAKT_URL}/en"
     }
 
     object Utland {
         const val UTBETALING_INFO = "${NAV_URL}/utbetaling-utland"
         const val ENDRE_KONTONUMMER_SKJEMA_URL = "${NAV_URL}/soknader/en#bank-account-number-how-to-change"
-        const val KONTAKTTELEFON_PENSJON = "+47 ${Constants.KONTAKTTELEFON_PENSJON}"
-        const val KONTAKTTELEFON_GENERELL = "+47 ${Constants.KONTAKTTELEFON_GENERELL}"
         const val KONTAKTTELEFON_SKATT = "+47 22 07 70 00"
     }
 }
