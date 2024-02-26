@@ -1,0 +1,89 @@
+app-name: "skribenten-backend"
+
+ingresses:
+  - "https://pensjon-skribenten-api.intern.nav.no"
+
+groups:
+  - "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e" #0000-GA-PENSJON_SAKSBEHANDLER
+  - "7c2f2439-b67a-41c0-b50b-0abb02e3b479" #0000-GA-Pensjon_Utland
+
+inboundRules:
+  - application: skribenten-web
+    namespace: pensjonsbrev
+    cluster: prod-gcp
+
+outboundRules:
+  - application: pensjon-brevbaker
+    namespace: pensjonsbrev
+    cluster: prod-gcp
+  - application: pensjon-brevmetadata
+    namespace: pensjonsbrev
+    cluster: prod-gcp
+    # TODO: pre-auth
+  - application: digdir-krr-proxy
+    namespace: team-rocket
+    cluster: prod-gcp
+
+# TODO: oppdater skribenten url i pesys
+externalHosts:
+  # TODO: pre-auth pdl
+  - pdl-api.prod-fss-pub.nais.io
+  # TODO: pre-auth
+  - pensjon-pen.prod-fss-pub.nais.io
+  # TODO: pre-auth
+  - saf.prod-fss-pub.nais.io
+  # TODO: pre-auth
+  - pensjon-persondata.prod-fss-pub.nais.io
+  - pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io
+  # TODO: pre-auth
+  - navansatt.prod-fss-pub.nais.io
+
+env:
+  - name: CORS_ALLOW_HOST
+    value: "pensjon-skribenten.intern.nav.no"
+
+  - name: PEN_URL
+    value: "https://pensjon-pen.prod-fss-pub.nais.io/pen/springapi/"
+  - name: PEN_SCOPE
+    value: "api://prod-fss.pensjondeployer.pensjon-pen/.default"
+
+  - name: BREVBAKER_URL
+    value: "http://pensjon-brevbaker"
+  - name: BREVBAKER_SCOPE
+    value: "api://prod-gcp.pensjonsbrev.pensjon-brevbaker/.default"
+
+  - name: BREVMETADATA_URL
+    value: "http://pensjon-brevmetadata"
+
+  - name: PDL_URL
+    value: "https://pdl-api.prod-fss-pub.nais.io/graphql"
+  - name: PDL_SCOPE
+    value: "api://prod-fss.pdl.pdl-api/.default"
+
+  - name: SAF_URL
+    value: "https://saf.prod-fss-pub.nais.io/graphql"
+  - name: SAF_SCOPE
+    value: "api://prod-fss.teamdokumenthandtering.saf/.default"
+
+  - name: KRR_URL
+    value: "http://digdir-krr-proxy.team-rocket"
+  - name: KRR_SCOPE
+    value: "api://prod-gcp.team-rocket.digdir-krr-proxy/.default"
+
+  - name: PENSJON_PERSONDATA_URL
+    value: "https://pensjon-persondata.prod-fss-pub.nais.io"
+  - name: PENSJON_PERSONDATA_SCOPE
+    value: "api://prod-fss.pensjon-person.pensjon-persondata/.default"
+
+  - name: TJENESTEBUSS_INTEGRASJON_URL
+    value: "https://pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io"
+  - name: TJENESTEBUSS_INTEGRASJON_SCOPE
+    value: "api://prod-fss.pensjonsbrev.pensjonsbrev-tjenestebuss/.default"
+
+  - name: NAVANSATT_URL
+    value: "https://navansatt.prod-fss-pub.nais.io/"
+  - name: NAVANSATT_SCOPE
+    value: "api://prod-fss.pensjondeployer.navansatt/.default"
+
+  - name: GROUPS_PENSJON_UTLAND
+    value: "7c2f2439-b67a-41c0-b50b-0abb02e3b479"

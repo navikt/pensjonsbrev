@@ -16,3 +16,6 @@ preAuthorized:
   - name: penbatch
     namespace: pensjon-batch
     cluster: prod-fss
+  - name: skribenten-backend
+    namespace: pensjonsbrev
+    cluster: prod-gcp

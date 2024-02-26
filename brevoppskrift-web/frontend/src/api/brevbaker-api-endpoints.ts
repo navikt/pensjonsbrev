@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-import type { TemplateDocumentation } from "~/api/brevbakerTypes";
+import type { TemplateDescription, TemplateDocumentation } from "~/api/brevbakerTypes";
 
 const BREVBAKER_API_BASE_PATH = "/brevbaker";
 
@@ -12,14 +12,39 @@ const BREVBAKER_API_BASE_PATH = "/brevbaker";
  * Anbefalt lesing for react-query key factory pattern: https://tkdodo.eu/blog/effective-react-query-keys
  */
 
-export const templateKeys = {
-  all: ["TEMPLATE"] as const,
-  id: (templateId: string) => [...templateKeys.all, templateId] as const,
+export const templateDescriptionKeys = {
+  all: ["TEMPLATE_DESCRIPTION"] as const,
+  id: (templateId: string) => [...templateDescriptionKeys.all, templateId] as const,
 };
 
-export const getTemplate = {
-  queryKey: templateKeys.id,
+export const templateDocumentationKeys = {
+  all: ["TEMPLATE_DOCUMENTATION"] as const,
+  id: (templateId: string) => [...templateDocumentationKeys.all, templateId] as const,
+  idWithLanguage: (templateId: string, language: string) =>
+    [...templateDocumentationKeys.all, templateId, language] as const,
+};
+
+export const brevkoderKeys = {
+  all: ["BREVKODER"] as const,
+};
+
+export const getTemplateDescription = {
+  queryKey: templateDescriptionKeys.id,
   queryFn: async (templateId: string) =>
-    (await axios.get<TemplateDocumentation>(`${BREVBAKER_API_BASE_PATH}/templates/autobrev/${templateId}/doc/BOKMAL`))
-      .data,
+    (await axios.get<TemplateDescription>(`${BREVBAKER_API_BASE_PATH}/templates/autobrev/${templateId}`)).data,
+};
+
+export const getTemplateDocumentation = {
+  queryKey: templateDocumentationKeys.idWithLanguage,
+  queryFn: async (templateId: string, language: string) =>
+    (
+      await axios.get<TemplateDocumentation>(
+        `${BREVBAKER_API_BASE_PATH}/templates/autobrev/${templateId}/doc/${language}`,
+      )
+    ).data,
+};
+
+export const getAllBrevkoder = {
+  queryKey: brevkoderKeys.all,
+  queryFn: async () => (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/autobrev`)).data,
 };
