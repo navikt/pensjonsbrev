@@ -4,8 +4,21 @@ ingresses:
   - "https://pensjon-skribenten-api.intern.nav.no"
 
 groups:
-  - "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e" #0000-GA-PENSJON_SAKSBEHANDLER
-  - "7c2f2439-b67a-41c0-b50b-0abb02e3b479" #0000-GA-Pensjon_Utland
+  #0000-GA-PENSJON_SAKSBEHANDLER
+  - name: "PENSJON_SAKSBEHANDLER"
+    id: "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e"
+  #0000-GA-Pensjon_Utland
+  - name: "Pensjon_Utland"
+    id: "7c2f2439-b67a-41c0-b50b-0abb02e3b479"
+  #0000-GA-Fortrolig_Adresse
+  - name: "Fortrolig_Adresse"
+    id: "9ec6487d-f37a-4aad-a027-cd221c1ac32b"
+  #0000-GA-Strengt_Fortrolig_Adresse
+  - name: "Strengt_Fortrolig_Adresse"
+    id: "ad7b87a6-9180-467c-affc-20a566b0fec0"
+  #0000-GA-Person-EndreStrengtFortroligUtland
+  - name: "EndreStrengtFortroligUtland"
+    id: "d9555b40-e0ab-4c6d-ba0b-0f1b9ecc252b"
 
 inboundRules:
   - application: skribenten-web
@@ -84,6 +97,3 @@ env:
     value: "https://navansatt.prod-fss-pub.nais.io/"
   - name: NAVANSATT_SCOPE
     value: "api://prod-fss.pensjondeployer.navansatt/.default"
-
-  - name: GROUPS_PENSJON_UTLAND
-    value: "7c2f2439-b67a-41c0-b50b-0abb02e3b479"
