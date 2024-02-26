@@ -101,7 +101,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         hideLabel={false}
         label="Søk etter brevmal"
         onChange={(value) => setSearchTerm(value)}
-        size="small"
+        size="medium"
         value={searchTerm}
         variant="simple"
       />
@@ -193,7 +193,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
           search: (s) => s,
         })
       }
-      size="small"
+      size="medium"
       variant="tertiary"
     >
       {letterMetadata.name}

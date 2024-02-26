@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 
 private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
 
-class PdlService(config: Config, authService: AzureADService) {
+class PdlService(config: Config, authService: AzureADService): ServiceStatus {
     private val pdlUrl = config.getString("url")
     private val pdlScope = config.getString("scope")
 
@@ -74,4 +74,11 @@ class PdlService(config: Config, authService: AzureADService) {
                 it.data?.hentPerson?.navn?.firstOrNull()?.format() ?: "" // TODO hvordan får vi error her?
             }
     }
+
+    override val name = "PDL"
+    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+        client.options(call, "")
+            .toServiceResult<String>()
+            .map { true }
+
 }

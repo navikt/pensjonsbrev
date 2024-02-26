@@ -1,3 +1,5 @@
+app-name: "skribenten-backend"
+
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
 
@@ -20,15 +22,6 @@ outboundRules:
   - application: digdir-krr-proxy
     namespace: team-rocket
     cluster: dev-gcp
-  - application: pensjonsbrev-tjenestebuss-q2
-    namespace: pensjonsbrev
-    cluster: dev-fss
-  - application: navansatt
-    namespace: teampensjon
-    cluster: dev-fss
-  - application: pensjon-persondata-q2
-    namespace: pensjon-person
-    cluster: dev-fss
 
 externalHosts:
   - pdl-api.dev-fss-pub.nais.io
@@ -41,39 +34,49 @@ externalHosts:
 env:
   - name: CORS_ALLOW_HOST
     value: "pensjon-skribenten-web-q2.intern.dev.nav.no"
+
   - name: PEN_URL
     value: "https://pensjon-pen-q2.dev-fss-pub.nais.io/pen/springapi/"
   - name: PEN_SCOPE
     value: "api://dev-fss.pensjon-q2.pensjon-pen-q2/.default"
+
   - name: BREVBAKER_URL
     value: "http://pensjon-brevbaker"
   - name: BREVBAKER_SCOPE
     value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
+
   - name: BREVMETADATA_URL
     value: "http://pensjon-brevmetadata-q2"
+
   - name: PDL_URL
     value: "https://pdl-api.dev-fss-pub.nais.io/graphql"
   - name: PDL_SCOPE
     value: "api://dev-fss.pdl.pdl-api/.default"
+
   - name: SAF_URL
     value: "https://saf-q2.dev-fss-pub.nais.io/graphql"
   - name: SAF_SCOPE
     value: "api://dev-fss.teamdokumenthandtering.saf/.default"
+
+  - name: KRR_URL
+    value: "http://digdir-krr-proxy.team-rocket"
   - name: KRR_SCOPE
     value: "api://dev-gcp.team-rocket.digdir-krr-proxy/.default"
-  - name: KRR_URL
-    value: "https://digdir-krr-proxy.intern.dev.nav.no"
-  - name: PENSJON_PERSONDATA_SCOPE
-    value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
+
   - name: PENSJON_PERSONDATA_URL
     value: "https://pensjon-persondata-q2.dev-fss-pub.nais.io"
+  - name: PENSJON_PERSONDATA_SCOPE
+    value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
+
   - name: TJENESTEBUSS_INTEGRASJON_URL
     value: "https://pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io"
   - name: TJENESTEBUSS_INTEGRASJON_SCOPE
     value: "api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default"
+
   - name: NAVANSATT_URL
     value: "https://navansatt.dev-fss-pub.nais.io/"
   - name: NAVANSATT_SCOPE
     value: "api://dev-fss.teampensjon.navansatt/.default"
+
   - name: GROUPS_PENSJON_UTLAND
     value: "bda6bd68-77e6-4c00-96b9-7ecf5df7413c"

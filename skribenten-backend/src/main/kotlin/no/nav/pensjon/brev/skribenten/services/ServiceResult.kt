@@ -22,6 +22,9 @@ sealed class ServiceResult<Result : Any> {
         is Ok -> result
         is Error -> func(error, statusCode)
     }
+
+    fun resultOrNull(): Result? =
+        if (this is Ok) result else null
 }
 
 suspend inline fun <reified R : Any> PipelineContext<Unit, ApplicationCall>.respondWithResult(
