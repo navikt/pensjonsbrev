@@ -38,12 +38,13 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         authenticate(authConfig.name) {
             setupServiceStatus(safService, penService, pensjonPersonDataService, pdlService, krrService, brevbakerService, brevmetadataService, tjenestebussIntegrasjonService, navansattService)
 
-            brevmalerRoute(brevmetadataService, skribentenConfig.getConfig("groups"))
+            brevmalerRoute(brevmetadataService)
             brevbakerRoute(brevbakerService)
             bestillBrevRoute(legacyBrevService)
             kodeverkRoute(penService)
             sakRoute(
-                penService, navansattService,
+                penService,
+                navansattService,
                 legacyBrevService,
                 pdlService,
                 pensjonPersonDataService,

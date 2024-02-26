@@ -1,15 +1,16 @@
 import io.ktor.plugin.features.*
 
+val apiModelVersion: String by project
+val exposedVersion: String by project
+val hamkrestVersion: String by project
+val jacksonJsr310Version: String by project
 val javaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
-val apiModelVersion: String by project
-val jacksonJsr310Version: String by project
 val mockkVersion: String by project
-val exposedVersion: String by project
 
 plugins {
     application
@@ -104,8 +105,9 @@ dependencies {
     implementation("io.ktor:ktor-server-caching-headers-jvm:2.3.3")
 
     // Test
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:${mockkVersion}")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
 }

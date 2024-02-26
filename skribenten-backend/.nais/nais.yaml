@@ -48,7 +48,7 @@ spec:
       claims:
         groups:
           {{#each groups as |group|}}
-             - id: {{group}}
+             - id: {{group.id}}
           {{/each}}
         extra:
           - azp_name
@@ -79,6 +79,10 @@ spec:
     {{/each}}
   env:
     {{#each env as |e|}}
-       - name: {{e.name}}
-         value: {{{e.value}}}
+      - name: {{e.name}}
+        value: {{{e.value}}}
+    {{/each}}
+    {{#each groups as |g|}}
+      - name: AD_GROUP_{{g.name}}
+        value: {{g.id}}
     {{/each}}

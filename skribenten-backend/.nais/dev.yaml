@@ -2,8 +2,21 @@ ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
 
 groups:
-  - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
-  - "bda6bd68-77e6-4c00-96b9-7ecf5df7413c" #0000-GA-Pensjon_Utland
+  #0000-GA-PENSJON_SAKSBEHANDLER
+  - name: "PENSJON_SAKSBEHANDLER"
+    id: "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf"
+  #0000-GA-Pensjon_Utland
+  - name: "Pensjon_Utland"
+    id: "bda6bd68-77e6-4c00-96b9-7ecf5df7413c"
+  #0000-GA-Fortrolig_Adresse
+  - name: "Fortrolig_Adresse"
+    id: "ea930b6b-9397-44d9-b9e6-f4cf527a632a"
+  #0000-GA-Strengt_Fortrolig_Adresse
+  - name: "Strengt_Fortrolig_Adresse"
+    id: "5ef775f2-61f8-4283-bf3d-8d03f428aa14"
+  #0000-GA-Person-EndreStrengtFortroligUtland
+  - name: "EndreStrengtFortroligUtland"
+    id: "fc792042-93d8-4d5e-a501-55c45c03c576"
 
 inboundRules:
   - application: skribenten-web

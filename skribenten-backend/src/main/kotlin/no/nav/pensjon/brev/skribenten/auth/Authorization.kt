@@ -14,7 +14,16 @@ import java.net.URL
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.auth.Authentication")
 
-data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, val clientId: String, val tokenUri: String, val clientSecret: String, val preAuthorizedApps: List<PreAuthorizedApp>, val requireAzureAdClaims: Boolean) {
+data class JwtConfig(
+    val name: String,
+    val issuer: String,
+    val jwksUrl: String,
+    val clientId: String,
+    val tokenUri: String,
+    val clientSecret: String,
+    val preAuthorizedApps: List<PreAuthorizedApp>,
+    val requireAzureAdClaims: Boolean
+) {
     data class PreAuthorizedApp(val name: String, val clientId: String)
 }
 
@@ -32,7 +41,7 @@ fun Config.requireAzureADConfig() =
             preAuthorizedApps = parsePreAuthorizedApps(it.getString("preAuthApps")),
             requireAzureAdClaims = true
         )
-    }.also { logger.debug("AzureAD: $it") }
+    }.also { logger.debug("AzureAD: {}", it) }
 
 private fun parsePreAuthorizedApps(preAuthApps: String): List<JwtConfig.PreAuthorizedApp> =
     try {
@@ -76,11 +85,13 @@ private fun ApplicationCall.userAccessToken(): UserAccessToken =
         } else throw InvalidAuthorization("Requires 'Bearer' authorization scheme, was: ${it?.authScheme}")
     }
 
-class InvalidAuthorization(msg: String, cause: Throwable? = null): Exception(msg, cause)
+class InvalidAuthorization(msg: String, cause: Throwable? = null) : Exception(msg, cause)
+
+class MissingClaimException(msg: String) : UnauthorizedException(msg)
 
 @JvmInline
 value class UserAccessToken(val token: String)
-data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Payload): Principal {
+data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Payload) : Principal {
     private val onBehalfOfTokens = mutableMapOf<String, TokenResponse.OnBehalfOfToken>()
 
     fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken? = onBehalfOfTokens[scope]
@@ -88,5 +99,18 @@ data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Paylo
         onBehalfOfTokens[scope] = token
     }
 
-    fun getUserId(): String = jwtPayload.subject
+    private fun getClaimAsString(claim: String): String =
+        jwtPayload.getClaim(claim).asString()
+            ?: throw MissingClaimException("Missing claim: $claim")
+
+    val navIdent: String by lazy { getClaimAsString("NAVident") }
+    val fullName: String by lazy { getClaimAsString("name") }
+    val groups: List<ADGroup> by lazy {
+        jwtPayload.getClaim("groups")?.asList(String::class.java)?.map { ADGroup(it) }
+            ?: emptyList()
+    }
+
+
+    fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
+
 }

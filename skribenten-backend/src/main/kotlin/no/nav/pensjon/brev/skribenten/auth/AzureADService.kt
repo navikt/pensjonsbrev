@@ -14,10 +14,8 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
+import no.nav.pensjon.brev.skribenten.principal
 import java.time.LocalDateTime
-
-class UnauthorizedException(msg: String) : Exception(msg)
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes(JsonSubTypes.Type(TokenResponse.OnBehalfOfToken::class), JsonSubTypes.Type(TokenResponse.ErrorResponse::class))
@@ -76,7 +74,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
     }
 
     suspend fun getOnBehalfOfToken(call: ApplicationCall, scope: String): TokenResponse {
-        val principal: UserPrincipal = call.authentication.principal() ?: throw UnauthorizedException("ApplicationCall doesn't have a UserPrincipal")
+        val principal: UserPrincipal = call.principal()
 
         // TODO: Legge til støtte for bruk av refresh_token?
         return principal.getOnBehalfOfToken(scope)?.takeIf { it.isValid() }

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
@@ -12,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 
 private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
+private const val HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE = "/pdl/HentAdressebeskyttelse.graphql"
 
 class PdlService(config: Config, authService: AzureADService): ServiceStatus {
     private val pdlUrl = config.getString("url")
@@ -30,7 +32,6 @@ class PdlService(config: Config, authService: AzureADService): ServiceStatus {
         }
     }
 
-
     data class PDLQuery<T : Any>(
         val query: String,
         val variables: T
@@ -43,9 +44,11 @@ class PdlService(config: Config, authService: AzureADService): ServiceStatus {
 
     private data class PDLResponse<T : Any>(
         val data: T?,
-        val errors: JsonNode?,
+        val errors: List<PDLError>?,
         val extensions: JsonNode?,
     )
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class PDLError(val message: String)
 
     // PersonMed navn
     private data class DataWrapperPersonMedNavn(val hentPerson: PersonMedNavn?)
@@ -57,15 +60,18 @@ class PdlService(config: Config, authService: AzureADService): ServiceStatus {
     // PersonMedAdressebeskyttelse
     private data class DataWrapperPersonMedAdressebeskyttelse(val hentPerson: PersonMedAdressebeskyttelse?)
     private data class PersonMedAdressebeskyttelse(val gradering: Gradering?)
-    enum class Gradering(val gruppetilgang: String) {
-        FORTROLIG("AD-rollen 0000-GA-Fortrolig_Adresse"),
-        STRENGT_FORTROLIG("AD-rollen 0000-GA-Strengt_Fortrolig_Adresse"),
-        STRENGT_FORTROLIG_UTLAND("AD-rolle 0000-GA-Person-EndreStrengtFortroligUtland"),
-        INGEN("")
+    enum class Gradering {
+        FORTROLIG,
+        STRENGT_FORTROLIG,
+        STRENGT_FORTROLIG_UTLAND,
+        INGEN
     }
 
     private val hentNavnQuery = PdlService::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
         ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
+
+    private val hentAdressebeskyttelseQuery = this::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
+        ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE")
 
     suspend fun hentNavn(call: ApplicationCall, fnr: String): ServiceResult<String> {
         return client.post(call, "") {
@@ -86,21 +92,34 @@ class PdlService(config: Config, authService: AzureADService): ServiceStatus {
             }
     }
 
-    suspend fun hentAdressebeskyttelse(call: ApplicationCall, fnr: String): ServiceResult<Gradering> {
+    suspend fun hentAdressebeskyttelse(call: ApplicationCall, fnr: String): ServiceResult<Gradering?> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(
                 PDLQuery(
-                    query = hentNavnQuery,
+                    query = hentAdressebeskyttelseQuery,
                     variables = FnrVariables(fnr)
                 )
             )
         }.toServiceResult<PDLResponse<DataWrapperPersonMedAdressebeskyttelse>>()
+            .handleGraphQLErrors()
             .map {
-                it.data?.hentPerson?.gradering// ?: Gradering.INGEN
+                it.hentPerson?.gradering
             }
     }
+
+    private fun <T : Any> ServiceResult<PDLResponse<T>>.handleGraphQLErrors(): ServiceResult<T> =
+        when (this) {
+            is ServiceResult.Error -> ServiceResult.Error(error, statusCode)
+            is ServiceResult.Ok -> if (result.errors?.isNotEmpty() == true) {
+                ServiceResult.Error(result.errors.joinToString(separator = " | ") { it.message }, HttpStatusCode.InternalServerError)
+            } else if (result.data != null) {
+                ServiceResult.Ok(result.data)
+            } else {
+                ServiceResult.Error("Fant ikke person", HttpStatusCode.NotFound)
+            }
+        }
 
     override val name = "PDL"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
