@@ -19,6 +19,9 @@ import no.nav.pensjon.brev.template.render.*
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateDescription
 import no.nav.pensjon.etterlatte.etterlatteRouting
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.javaType
 
 private val letterResource = LetterResource()
 
@@ -27,8 +30,36 @@ data class RedigerbarTemplateDescription(
     val modelSpecification: TemplateModelSpecification,
 )
 
+data class TypeDocumentation(
+    val name: String,
+    val typeName: String,
+    val fields: List<TypeDocumentation>
+)
+
+@OptIn(ExperimentalStdlibApi::class)
+fun constructTypeDocumentation(n: String, classifier: String): TypeDocumentation {
+    var fields = emptyList<TypeDocumentation>()
+    var typeName = classifier
+    try {
+        val classToDocument = Class.forName(classifier).kotlin
+        typeName = classToDocument.simpleName.toString()
+        if (!classifier.contains("java") && !classifier.contains("kotlin")) {
+            fields = classToDocument.memberProperties.mapNotNull { r ->
+                val simpleName = r.returnType.javaType.typeName.toString()
+                constructTypeDocumentation(n = r.name, classifier = simpleName)
+            }
+        }
+    } catch (_: Exception) {}
+
+    typeName = typeName.replace("java.util.", "").replace("java.lang.", "")
+    return TypeDocumentation(name = n, typeName= typeName, fields = fields)
+}
+
 fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService) =
     routing {
+        get("/class/{name}") {
+            call.respond(constructTypeDocumentation("obj", call.parameters.getOrFail("name")))
+        }
         route("/templates") {
 
             route("/autobrev") {
