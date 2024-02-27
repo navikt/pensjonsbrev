@@ -98,19 +98,7 @@ function DataView({
           `}
           key={key}
         >
-          {key}: {/*{value.isPrimitive ? (*/}
-          {/*  <span className="primitive">{value.className}</span>*/}
-          {/*) : (*/}
-          {/*  <Link*/}
-          {/*    from="/template/$templateId/type/$type"*/}
-          {/*    params={(p) => ({ ...p, type: value.className })}*/}
-          {/*    search*/}
-          {/*    to="/template/$templateId/type/$type"*/}
-          {/*  >*/}
-          {/*    {trimClassName(value.className)}*/}
-          {/*  </Link>*/}
-          {/*)}*/}
-          <Type fieldType={value} />
+          {key}: <Type fieldType={value} />
           {value.nullable ? "?" : ""}
         </span>
       ))}
