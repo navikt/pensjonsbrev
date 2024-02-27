@@ -26,8 +26,8 @@ function TypeView() {
     <div
       css={css`
         width: 800px;
+        max-width: 50%;
         background: var(--a-bg-subtle);
-        //background: aquamarine;
         position: fixed;
         right: 0;
         height: 100%;
@@ -77,6 +77,7 @@ function TypeView() {
                 {trimClassName(value.className)}
               </Link>
             )}
+            {value.isOptional ? "?" : ""}
           </span>
         ))}
         <span>)</span>

@@ -72,7 +72,7 @@ fun constructFlatTypeDocumentation(classifier: String): SimpleTypeDocumentation 
     val fields = classToDocument.memberProperties.associate { it ->
         val type = it.returnType.javaType.typeName.toString()
         val isPrimitive = it.returnType.toString().contains(Regex("(java|kotlin)"))
-        it.name to Field(isOptional = false, isPrimitive = isPrimitive, className = formatPrimitiveObjectToPrimitive(type))
+        it.name to Field(isOptional = it.returnType.isMarkedNullable, isPrimitive = isPrimitive, className = formatPrimitiveObjectToPrimitive(type))
     }
 
     return SimpleTypeDocumentation(className = className, fields = fields)
