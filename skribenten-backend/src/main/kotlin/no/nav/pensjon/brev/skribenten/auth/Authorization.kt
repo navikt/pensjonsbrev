@@ -41,7 +41,7 @@ fun Config.requireAzureADConfig() =
             preAuthorizedApps = parsePreAuthorizedApps(it.getString("preAuthApps")),
             requireAzureAdClaims = true
         )
-    }.also { logger.debug("AzureAD: {}", it) }
+    }
 
 private fun parsePreAuthorizedApps(preAuthApps: String): List<JwtConfig.PreAuthorizedApp> =
     try {
