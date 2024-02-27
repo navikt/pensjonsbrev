@@ -19,9 +19,6 @@ import no.nav.pensjon.brev.template.render.*
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateDescription
 import no.nav.pensjon.etterlatte.etterlatteRouting
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.javaType
 
 private val letterResource = LetterResource()
 
