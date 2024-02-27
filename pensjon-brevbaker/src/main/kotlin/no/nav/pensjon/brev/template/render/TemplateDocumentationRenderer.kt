@@ -14,6 +14,7 @@ object TemplateDocumentationRenderer {
             title = renderText(template.title, lang),
             outline = renderOutline(template.outline, lang),
             attachments = template.attachments.map { renderAttachment(it, lang) },
+            templateModelSpecification = template.modelSpecification,
         )
 
     private fun renderAttachment(attachment: IncludeAttachment<*, *>, lang: Language): TemplateDocumentation.Attachment =
@@ -266,6 +267,7 @@ data class TemplateDocumentation(
     val title: List<ContentOrControlStructure<Element.ParagraphContent.Text>>,
     val outline: List<ContentOrControlStructure<Element.OutlineContent>>,
     val attachments: List<Attachment>,
+    val templateModelSpecification: TemplateModelSpecification
 ) {
     data class Attachment(
         val title: List<ContentOrControlStructure<Element.ParagraphContent.Text>>,

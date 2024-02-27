@@ -14,6 +14,7 @@ export type TemplateDocumentation = {
   title: ContentOrControlStructure<Text>[];
   outline: ContentOrControlStructure<OutlineContent>[];
   attachments: Attachment[];
+  templateModelSpecification: LetterModelSpecification;
 };
 
 export type Attachment = {
@@ -109,3 +110,41 @@ export type Invoke = {
 };
 export type Operation = { text: string; syntax: Notation };
 export type Notation = "PREFIX" | "INFIX" | "POSTFIX" | "FUNCTION";
+
+export type LetterModelSpecification = {
+  readonly types: ObjectTypeSpecifications;
+  readonly letterModelTypeName: string;
+};
+
+export type ObjectTypeSpecifications = {
+  readonly [name: string]: ObjectTypeSpecification;
+};
+
+export type ObjectTypeSpecification = {
+  readonly [field: string]: FieldType;
+};
+
+export type FieldType = TScalar | TEnum | TArray | TObject;
+
+export type TScalar = {
+  readonly type: "scalar";
+  readonly nullable: boolean;
+  readonly kind: ScalarKind;
+};
+export type TEnum = {
+  readonly type: "enum";
+  readonly nullable: boolean;
+  readonly values: string[];
+};
+export type TArray = {
+  readonly type: "array";
+  readonly nullable: boolean;
+  readonly items: FieldType;
+};
+export type TObject = {
+  readonly type: "object";
+  readonly nullable: boolean;
+  readonly typeName: string;
+};
+
+export type ScalarKind = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE";

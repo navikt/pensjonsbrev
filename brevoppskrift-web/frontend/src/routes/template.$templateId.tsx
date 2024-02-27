@@ -12,6 +12,7 @@ import type {
   TemplateDocumentation,
 } from "~/api/brevbakerTypes";
 import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
+import { DataClasses, InspectedDataClass } from "~/components/DataClasses";
 
 export const Route = createFileRoute("/template/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -49,8 +50,9 @@ export const Route = createFileRoute("/template/$templateId")({
 
     return { documentation, description };
   },
-  validateSearch: (search: Record<string, unknown>): { language?: string } => ({
+  validateSearch: (search: Record<string, unknown>): { language?: string; inspectedModel?: string } => ({
     language: search.language?.toString(),
+    inspectedModel: search.inspectedModel?.toString(),
   }),
   component: TemplateExplorer,
 });
@@ -64,8 +66,9 @@ function TemplateExplorer() {
       <Heading size="medium" spacing>
         Oppskrift for {templateId}
       </Heading>
-      <Outlet />
+      <InspectedDataClass />
       <SelectLanguage />
+      <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
       <VStack gap="4">
         <Document templateDocumentation={documentation} />
         {documentation.attachments.map((attachment, index) => (
