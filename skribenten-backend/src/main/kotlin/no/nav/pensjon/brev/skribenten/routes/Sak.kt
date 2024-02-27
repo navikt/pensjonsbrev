@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
@@ -22,9 +21,9 @@ fun Route.sakRoute(
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             call.respond(sak)
         }
-        post("/bestillbrev") {
-            val request = call.receive<LegacyBrevService.OrderLetterRequest>()
-            call.respond(legacyBrevService.bestillBrev(call, request))
+        post<BestillBrevRequest>("/bestillbrev") { request ->
+            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            call.respond(legacyBrevService.bestillBrev(call, request.toDomain(sak)))
         }
         get("/navn") {
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
@@ -51,4 +50,16 @@ private data class BestillBrevRequest(
     val isSensitive: Boolean?,
     val vedtaksId: Long? = null,
     val idTSSEkstern: String? = null,
-)
+) {
+    fun toDomain(sak: PenService.SakSelection) = LegacyBrevService.OrderLetterRequest(
+        brevkode = brevkode,
+        spraak = spraak,
+        sakId = sak.sakId,
+        gjelderPid = sak.foedselsnr,
+        landkode = landkode,
+        mottakerText = mottakerText,
+        isSensitive = isSensitive,
+        vedtaksId = vedtaksId,
+        idTSSEkstern = idTSSEkstern,
+    )
+}
