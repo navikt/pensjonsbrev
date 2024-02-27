@@ -21,7 +21,7 @@ function TypeView() {
   return (
     <div
       css={css`
-        width: 600px;
+        width: 800px;
         background: var(--a-bg-subtle);
         //background: aquamarine;
         position: fixed;
@@ -29,6 +29,8 @@ function TypeView() {
         height: 100%;
         border-left: 1px solid var(--a-border-divider);
         padding: var(--a-spacing-4);
+        white-space: nowrap;
+        overflow: scroll;
 
         .field {
           margin-left: var(--a-spacing-16);
@@ -50,11 +52,15 @@ function TypeView() {
         </span>
         {Object.entries(typeDocumentation.fields).map(([key, value]) => (
           <span className="field" key={key}>
-            {key}: <span className={value.fields ? "type" : "primitive"}>{value.className}</span>
+            {key}: <span className={value.isPrimitive ? "primitive" : "type"}>{trimClassName(value.className)}</span>
           </span>
         ))}
         <span>)</span>
       </VStack>
     </div>
   );
+}
+
+function trimClassName(className: string) {
+  return className.replace(/(.*)[$.]/, "");
 }

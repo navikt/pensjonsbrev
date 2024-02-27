@@ -37,7 +37,7 @@ data class TypeDocumentation(
 
 data class SimpleTypeDocumentation(
     val className: String,
-    val fields: Map<String, String>,
+    val fields: Map<String, Field>,
 )
 
 data class Field(
@@ -68,14 +68,14 @@ fun constructTypeDocumentation(classifier: String): TypeDocumentation {
 @OptIn(ExperimentalStdlibApi::class)
 fun constructFlatTypeDocumentation(classifier: String): SimpleTypeDocumentation {
     val classToDocument = Class.forName(classifier).kotlin
-    val className = classToDocument.simpleName.toString()
+    val className = classToDocument.simpleName.toString().replace("java.util.", "").replace("java.lang.", "")
     val fields = classToDocument.memberProperties.associate { r ->
-        val simpleName = r.returnType.javaType.typeName.toString()
-        val isPrimitive = classifier.contains("java") && !classifier.contains("kotlin");
-        r.name to Field(isOptional = false, isPrimitive = ) simpleName
+        val type = r.returnType.javaType.typeName.toString()
+//        val fieldName = r.returnType. classToDocument.simpleName.toString().replace("java.util.", "").replace("java.lang.", "")
+        val isPrimitive = r.returnType.toString().contains(Regex("(java|kotlin)"))
+        r.name to Field(isOptional = false, isPrimitive = isPrimitive, className = type)
     }
 
-    className = className.replace("java.util.", "").replace("java.lang.", "")
     return SimpleTypeDocumentation(className = className, fields = fields)
 }
 
