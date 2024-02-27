@@ -246,9 +246,9 @@ object BarnepensjonRevurderingFraser {
                     Language.Bokmal to "Siden pensjonen din er redusert tilbake i tid, har du fått for mye " +
                             "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale tilbake " +
                             "barnepensjon».",
-                    Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått for " +
-                            "mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
-                            "tilbake barnepensjon».",
+                    Language.Nynorsk to "Fordi pensjonen din er redusert tilbake i tid, har du fått utbetalt " +
+                            "for mykje. Sjå vedlegget «Førehandsvarsel – vi vurderer om du må betale tilbake " +
+                            "barnepensjon».",
                     Language.English to "Because your pension has been reduced retroactively, you received " +
                             "more than you were owed. See the attachment Advance notice – we are assessing whether " +
                             "you must repay children’s pension.",
