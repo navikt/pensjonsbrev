@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, Table, VStack } from "@navikt/ds-react";
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound, Outlet, useNavigate } from "@tanstack/react-router";
 
 import { getAllBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
 import type {
@@ -64,6 +64,7 @@ function TemplateExplorer() {
       <Heading size="medium" spacing>
         Oppskrift for {templateId}
       </Heading>
+      <Outlet />
       <SelectLanguage />
       <VStack gap="4">
         <Document templateDocumentation={documentation} />
@@ -83,6 +84,7 @@ function SelectLanguage() {
   return (
     <Select
       css={css`
+        width: 200px;
         margin-bottom: var(--a-spacing-8);
       `}
       label="Språk"

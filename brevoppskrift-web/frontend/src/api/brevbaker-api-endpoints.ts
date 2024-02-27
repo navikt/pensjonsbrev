@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-import type { TemplateDescription, TemplateDocumentation } from "~/api/brevbakerTypes";
+import {TemplateDescription, TemplateDocumentation, TypeDocumentation} from "~/api/brevbakerTypes";
 
 const BREVBAKER_API_BASE_PATH = "/brevbaker";
 
@@ -22,6 +22,11 @@ export const templateDocumentationKeys = {
   id: (templateId: string) => [...templateDocumentationKeys.all, templateId] as const,
   idWithLanguage: (templateId: string, language: string) =>
     [...templateDocumentationKeys.all, templateId, language] as const,
+};
+
+export const typeDocumentationKeys = {
+  all: ["TYPE_DOCUMENTATION"] as const,
+  id: (typeId: string) => [...typeDocumentationKeys.all, typeId] as const,
 };
 
 export const brevkoderKeys = {
@@ -47,4 +52,9 @@ export const getTemplateDocumentation = {
 export const getAllBrevkoder = {
   queryKey: brevkoderKeys.all,
   queryFn: async () => (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/autobrev`)).data,
+};
+
+export const getTypeDocumentation = {
+  queryKey: typeDocumentationKeys.id,
+  queryFn: async (typeId: string) => (await axios.get<TypeDocumentation>(`${BREVBAKER_API_BASE_PATH}/class/${typeId}`)).data,
 };

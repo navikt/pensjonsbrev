@@ -1,3 +1,8 @@
+export type TypeDocumentation = {
+  className: string;
+  fields: Record<string, TypeDocumentation>;
+};
+
 export type TemplateDescription = {
   name: string;
   letterDataClass: string;
