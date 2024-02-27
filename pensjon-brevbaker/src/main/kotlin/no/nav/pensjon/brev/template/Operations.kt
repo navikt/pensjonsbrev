@@ -82,23 +82,23 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: In, second: In): Boolean = first == second
     }
 
-    class GreaterThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+    class GreaterThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation(">", Documentation.Notation.INFIX)) {
         override fun apply(first: T, second: T): Boolean = first > second
     }
 
-    class GreaterThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+    class GreaterThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation(">=", Documentation.Notation.INFIX)) {
         override fun apply(first: T, second: T): Boolean = first >= second
     }
 
-    class LessThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+    class LessThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation("<=", Documentation.Notation.INFIX)) {
         override fun apply(first: T, second: T): Boolean = first <= second
     }
 
-    class LessThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+    class LessThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation("<", Documentation.Notation.INFIX)) {
         override fun apply(first: T, second: T): Boolean = first < second
     }
 
-    object Or : BinaryOperation<Boolean, Boolean, Boolean>() {
+    object Or : BinaryOperation<Boolean, Boolean, Boolean>(Documentation("or", Documentation.Notation.INFIX)) {
         override fun apply(first: Boolean, second: Boolean): Boolean = first || second
     }
 

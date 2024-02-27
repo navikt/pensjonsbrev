@@ -287,7 +287,7 @@ function expressionToText(expression: Expression): string {
       return `${firstExpressionResolved}${expression.operator.text}`;
     }
     case "INFIX": {
-      return `${firstExpressionResolved}${expression.operator.text}${secondExpressionResolved}`;
+      return `${firstExpressionResolved} ${expression.operator.text} ${secondExpressionResolved}`;
     }
     case "PREFIX": {
       return `${expression.operator.text}${firstExpressionResolved}${secondExpressionResolved}`;
