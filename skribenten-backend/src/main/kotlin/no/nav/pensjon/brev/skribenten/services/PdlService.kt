@@ -59,7 +59,9 @@ class PdlService(config: Config, authService: AzureADService): ServiceStatus {
 
     // PersonMedAdressebeskyttelse
     private data class DataWrapperPersonMedAdressebeskyttelse(val hentPerson: PersonMedAdressebeskyttelse?)
-    private data class PersonMedAdressebeskyttelse(val gradering: Gradering?)
+    private data class PersonMedAdressebeskyttelse(val adressebeskyttelse: List<Adressebeskyttelse>) {
+        data class Adressebeskyttelse(val gradering: Gradering)
+    }
     enum class Gradering {
         FORTROLIG,
         STRENGT_FORTROLIG,
@@ -92,7 +94,7 @@ class PdlService(config: Config, authService: AzureADService): ServiceStatus {
             }
     }
 
-    suspend fun hentAdressebeskyttelse(call: ApplicationCall, fnr: String): ServiceResult<Gradering?> {
+    suspend fun hentAdressebeskyttelse(call: ApplicationCall, fnr: String): ServiceResult<List<Gradering>> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -105,7 +107,7 @@ class PdlService(config: Config, authService: AzureADService): ServiceStatus {
         }.toServiceResult<PDLResponse<DataWrapperPersonMedAdressebeskyttelse>>()
             .handleGraphQLErrors()
             .map {
-                it.hentPerson?.gradering
+                it.hentPerson?.adressebeskyttelse?.map { b -> b.gradering } ?: emptyList()
             }
     }
 

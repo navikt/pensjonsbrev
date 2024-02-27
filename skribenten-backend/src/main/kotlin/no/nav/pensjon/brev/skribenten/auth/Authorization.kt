@@ -110,7 +110,6 @@ data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Paylo
             ?: emptyList()
     }
 
-
     fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
 
 }

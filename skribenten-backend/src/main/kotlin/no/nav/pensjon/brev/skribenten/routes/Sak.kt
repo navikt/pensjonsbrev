@@ -4,7 +4,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.services.*
 
@@ -19,26 +18,37 @@ fun Route.sakRoute(
     route("/sak/{sakId}") {
         install(AuthorizeAnsattSakTilgang(navansattService, pdlService, penService))
 
-        get("") {
-            val sakId = call.parameters.getOrFail("sakId")
-            respondWithResult(penService.hentSak(call, sakId))
+        get {
+            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            call.respond(sak)
         }
         post("/bestillbrev") {
             val request = call.receive<LegacyBrevService.OrderLetterRequest>()
             call.respond(legacyBrevService.bestillBrev(call, request))
         }
-        post<PidRequest>("/navn") {
-            respondWithResult(pdlService.hentNavn(call, it.pid))
+        get("/navn") {
+            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            respondWithResult(pdlService.hentNavn(call, sak.foedselsnr))
         }
 
-        post<PidRequest>("/adresse") {
-            respondWithResult(pensjonPersonDataService.hentKontaktadresse(call, it.pid))
+        get("/adresse") {
+            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            respondWithResult(pensjonPersonDataService.hentKontaktadresse(call, sak.foedselsnr))
         }
 
-        post<PidRequest>("/foretrukketSpraak") {
-            call.respond(krrService.getPreferredLocale(call, it.pid))
+        get("/foretrukketSpraak") {
+            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            call.respond(krrService.getPreferredLocale(call, sak.foedselsnr))
         }
     }
 }
 
-data class PidRequest(val pid: String)
+private data class BestillBrevRequest(
+    val brevkode: String,
+    val spraak: SpraakKode,
+    val landkode: String? = null,
+    val mottakerText: String? = null,
+    val isSensitive: Boolean?,
+    val vedtaksId: Long? = null,
+    val idTSSEkstern: String? = null,
+)

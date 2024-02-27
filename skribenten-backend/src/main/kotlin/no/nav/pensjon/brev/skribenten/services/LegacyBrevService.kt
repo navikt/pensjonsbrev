@@ -179,7 +179,7 @@ class LegacyBrevService(
         val isSensitive: Boolean?,
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
-        )
+    )
 
     data class BestillOgRedigerBrevResponse(
         val url: String?,

@@ -5,10 +5,12 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
+import io.ktor.util.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.NAME
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.SAK_ID_PARAM
+import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.sakKey
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 import org.slf4j.LoggerFactory
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory
 object AuthorizeAnsattSakTilgang {
     const val NAME = "AuthorizeAnsattSakTilgang"
     const val SAK_ID_PARAM = "sakId"
+    val sakKey = AttributeKey<PenService.SakSelection>("AuthorizeAnsattSakTilgang:sak")
 }
 
 private val logger = LoggerFactory.getLogger(AuthorizeAnsattSakTilgang::class.java)
@@ -36,6 +39,8 @@ fun AuthorizeAnsattSakTilgang(
             val enheterDeferred = async { navansattService.hentNavAnsattEnhetListe(call, navIdent) }
 
             val ikkeTilgang = sakDeferred.await().map { sak ->
+                call.attributes.put(sakKey, sak)
+
                 val adressebeskyttelseDeffered = async { pdlService.hentAdressebeskyttelse(call, sak.foedselsnr) }
 
                 sjekkEnhetstilgang(navIdent, sak, enheterDeferred.await())
@@ -49,11 +54,11 @@ fun AuthorizeAnsattSakTilgang(
     }
 }
 
-private fun sjekkAdressebeskyttelse(adressebeskyttelse: ServiceResult<PdlService.Gradering?>, principal: UserPrincipal): AuthAnsattSakTilgangResponse? =
+private fun sjekkAdressebeskyttelse(adressebeskyttelse: ServiceResult<List<PdlService.Gradering>>, principal: UserPrincipal): AuthAnsattSakTilgangResponse? =
     adressebeskyttelse.map { gradering ->
-        val adGruppe = gradering.toADGruppe()
+        val adGrupper = gradering.mapNotNull { it.toADGruppe() }
 
-        if (adGruppe != null && !principal.isInGroup(adGruppe)) {
+        if (adGrupper.any { !principal.isInGroup(it) }) {
             logger.warn("Tilgang til sak avvist for ${principal.navIdent}: har ikke tilgang til gradering")
             AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)
         } else null
