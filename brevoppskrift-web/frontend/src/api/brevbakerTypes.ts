@@ -1,8 +1,3 @@
-export type TypeDocumentation = {
-  className: string;
-  fields: Record<string, { isPrimitive: boolean; isOptional: boolean; className: string }>;
-};
-
 export type TemplateDescription = {
   name: string;
   letterDataClass: string;
