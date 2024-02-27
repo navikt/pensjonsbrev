@@ -6,6 +6,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.NAME
@@ -43,7 +44,7 @@ fun AuthorizeAnsattSakTilgang(
 
                 val adressebeskyttelseDeffered = async { pdlService.hentAdressebeskyttelse(call, sak.foedselsnr) }
 
-                sjekkEnhetstilgang(navIdent, sak, enheterDeferred.await())
+                sjekkEnhetstilgang(navIdent, sak, enheterDeferred)
                     ?: sjekkAdressebeskyttelse(adressebeskyttelseDeffered.await(), principal)
             }.catch(::AuthAnsattSakTilgangResponse)
 
@@ -61,24 +62,26 @@ private fun sjekkAdressebeskyttelse(adressebeskyttelse: ServiceResult<List<PdlSe
         if (adGrupper.any { !principal.isInGroup(it) }) {
             logger.warn("Tilgang til sak avvist for ${principal.navIdent}: har ikke tilgang til gradering")
             AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)
-        } else null
+        } else null // får tilgang
     }.catch { msg, status ->
         logger.warn("En feil oppstod ved sjekk av adressebeskyttelse: $status - $msg")
         AuthAnsattSakTilgangResponse("En feil oppstod ved sjekk av adressebeskyttelse", HttpStatusCode.InternalServerError)
     }
 
-private fun sjekkEnhetstilgang(navIdent: String, sak: PenService.SakSelection, enheterResult: ServiceResult<List<NAVEnhet>>): AuthAnsattSakTilgangResponse? =
-    enheterResult.map { enheter ->
-        if (sak.enhetId.isNullOrBlank()) {
-            logger.error("Tilgang til sak ${sak.sakId} avvist fordi den mangler enhet")
-            AuthAnsattSakTilgangResponse("Sak er ikke tilordnet enhet", HttpStatusCode.BadRequest)
-        } else if (enheter.none { it.id == sak.enhetId }) {
-            logger.warn("Tilgang til sak ${sak.sakId} avvist for $navIdent: mangler enhetstilgang")
-            AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
-        } else null
-    }.catch { msg, status ->
-        logger.error("Kunne ikke henter NAVenheter for ansatt $navIdent: $status - $msg")
-        AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
+private suspend fun sjekkEnhetstilgang(navIdent: String, sak: PenService.SakSelection, enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>): AuthAnsattSakTilgangResponse? =
+    if (sak.enhetId.isNullOrBlank()) {
+        logger.error("Tilgang til sak ${sak.sakId} avvist fordi den mangler enhet")
+        AuthAnsattSakTilgangResponse("Sak er ikke tilordnet enhet", HttpStatusCode.BadRequest)
+    } else {
+        enheterResult.await().map { enheter ->
+            if (enheter.none { it.id == sak.enhetId }) {
+                logger.warn("Tilgang til sak ${sak.sakId} avvist for $navIdent: mangler tilgang til enhet ${sak.enhetId}")
+                AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
+            } else null // får tilgang
+        }.catch { msg, status ->
+            logger.error("Kunne ikke henter NAVenheter for ansatt $navIdent: $status - $msg")
+            AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
+        }
     }
 
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)
