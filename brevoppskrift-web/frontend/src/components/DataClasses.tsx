@@ -3,7 +3,6 @@ import { ArrowLeftIcon, XMarkIcon } from "@navikt/aksel-icons";
 import { Button, HStack, VStack } from "@navikt/ds-react";
 import { Link, useLoaderData, useNavigate, useRouter, useSearch } from "@tanstack/react-router";
 import { capitalize } from "lodash";
-import { Simulate } from "react-dom/test-utils";
 
 import type { FieldType, LetterModelSpecification, ObjectTypeSpecification } from "~/api/brevbakerTypes";
 

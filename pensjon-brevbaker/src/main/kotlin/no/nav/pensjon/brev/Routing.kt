@@ -30,66 +30,8 @@ data class RedigerbarTemplateDescription(
     val modelSpecification: TemplateModelSpecification,
 )
 
-data class TypeDocumentation(
-    val className: String,
-    val fields: Map<String, TypeDocumentation>?
-)
-
-data class SimpleTypeDocumentation(
-    val className: String,
-    val fields: Map<String, Field>,
-)
-
-data class Field(
-    val isOptional: Boolean,
-    val className: String,
-    val isPrimitive: Boolean,
-)
-
-@OptIn(ExperimentalStdlibApi::class)
-fun constructTypeDocumentation(classifier: String): TypeDocumentation {
-    var fields = emptyMap<String, TypeDocumentation>()
-    var className = classifier
-    try {
-        val classToDocument = Class.forName(classifier).kotlin
-        className = classToDocument.simpleName.toString()
-        if (!classifier.contains("java") && !classifier.contains("kotlin")) {
-            fields = classToDocument.memberProperties.associate { r ->
-                val simpleName = r.returnType.javaType.typeName.toString()
-                r.name to constructTypeDocumentation(classifier = simpleName)
-            }
-        }
-    } catch (_: Exception) {}
-
-    className = className.replace("java.util.", "").replace("java.lang.", "")
-    return TypeDocumentation(className = className, fields = fields)
-}
-
-@OptIn(ExperimentalStdlibApi::class)
-fun constructFlatTypeDocumentation(classifier: String): SimpleTypeDocumentation {
-    val classToDocument = Class.forName(classifier).kotlin
-    val className = classToDocument.simpleName.toString()
-    val fields = classToDocument.memberProperties.associate { it ->
-        val type = it.returnType.javaType.typeName.toString()
-        val isPrimitive = it.returnType.toString().contains(Regex("(java|kotlin)"))
-        it.name to Field(isOptional = it.returnType.isMarkedNullable, isPrimitive = isPrimitive, className = formatPrimitiveObjectToPrimitive(type))
-    }
-
-    return SimpleTypeDocumentation(className = className, fields = fields)
-}
-
-fun formatPrimitiveObjectToPrimitive(name: String): String =
-    if (name.contains("java."))  name.replace(Regex(".*\\."), "")
-    else name
-
 fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService) =
     routing {
-        get("/class/{name}") {
-            call.respond(constructTypeDocumentation(call.parameters.getOrFail("name")))
-        }
-        get("/simpleclass/{name}") {
-            call.respond(constructFlatTypeDocumentation(call.parameters.getOrFail("name")))
-        }
         route("/templates") {
 
             route("/autobrev") {
