@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
-import { VStack } from "@navikt/ds-react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeftIcon, XMarkIcon } from "@navikt/aksel-icons";
+import { Button, HStack, VStack } from "@navikt/ds-react";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 
 import { getTypeDocumentation } from "~/api/brevbaker-api-endpoints";
 
@@ -18,6 +19,9 @@ export const Route = createFileRoute("/template/$templateId/type/$type")({
 
 function TypeView() {
   const { typeDocumentation } = Route.useLoaderData();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const { history } = useRouter();
+
   return (
     <div
       css={css`
@@ -39,13 +43,21 @@ function TypeView() {
           color: var(--a-red-500);
         }
         .primitive {
-          color: var(--a-blue-400);
-        }
-        .type {
           color: var(--a-purple-400);
         }
       `}
     >
+      <HStack align="end" gap="4" justify="space-between">
+        <Button icon={<ArrowLeftIcon />} onClick={() => history.go(-1)} size="small" variant="secondary-neutral" />
+        <Button
+          icon={<XMarkIcon />}
+          onClick={() =>
+            navigate({ replace: true, to: "/template/$templateId", params: (p) => ({ templateId: p.templateId }) })
+          }
+          size="small"
+          variant="secondary-neutral"
+        />
+      </HStack>
       <VStack gap="1">
         <span>
           <span className="data-class">data class</span> {typeDocumentation.className}(
@@ -59,6 +71,7 @@ function TypeView() {
               <Link
                 from="/template/$templateId/type/$type"
                 params={(p) => ({ ...p, type: value.className })}
+                search
                 to="/template/$templateId/type/$type"
               >
                 {trimClassName(value.className)}

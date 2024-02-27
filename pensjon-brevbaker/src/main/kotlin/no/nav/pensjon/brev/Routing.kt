@@ -68,16 +68,19 @@ fun constructTypeDocumentation(classifier: String): TypeDocumentation {
 @OptIn(ExperimentalStdlibApi::class)
 fun constructFlatTypeDocumentation(classifier: String): SimpleTypeDocumentation {
     val classToDocument = Class.forName(classifier).kotlin
-    val className = classToDocument.simpleName.toString().replace("java.util.", "").replace("java.lang.", "")
-    val fields = classToDocument.memberProperties.associate { r ->
-        val type = r.returnType.javaType.typeName.toString()
-//        val fieldName = r.returnType. classToDocument.simpleName.toString().replace("java.util.", "").replace("java.lang.", "")
-        val isPrimitive = r.returnType.toString().contains(Regex("(java|kotlin)"))
-        r.name to Field(isOptional = false, isPrimitive = isPrimitive, className = type)
+    val className = classToDocument.simpleName.toString()
+    val fields = classToDocument.memberProperties.associate { it ->
+        val type = it.returnType.javaType.typeName.toString()
+        val isPrimitive = it.returnType.toString().contains(Regex("(java|kotlin)"))
+        it.name to Field(isOptional = false, isPrimitive = isPrimitive, className = formatPrimitiveObjectToPrimitive(type))
     }
 
     return SimpleTypeDocumentation(className = className, fields = fields)
 }
+
+fun formatPrimitiveObjectToPrimitive(name: String): String =
+    if (name.contains("java."))  name.replace(Regex(".*\\."), "")
+    else name
 
 fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService) =
     routing {
