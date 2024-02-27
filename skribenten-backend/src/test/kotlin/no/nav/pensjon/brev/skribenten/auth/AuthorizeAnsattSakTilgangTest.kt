@@ -42,11 +42,11 @@ class AuthorizeAnsattSakTilgangTest {
         ADGroups.init(
             ConfigValueFactory.fromMap(
                 mapOf(
-                    "pensjonUtland" to "AD_GROUP_Pensjon_Utland",
-                    "pensjonSaksbehandler" to "AD_GROUP_Pensjon_Utland",
-                    "fortroligAdresse" to "AD_GROUP_Fortrolig_Adresse",
-                    "strengtFortroligAdresse" to "AD_GROUP_Strengt_Fortrolig_Adresse",
-                    "strengtFortroligUtland" to "AD_GROUP_EndreStrengtFortroligUtland",
+                    "pensjonUtland" to "ad gruppe id for Pensjon_Utland",
+                    "pensjonSaksbehandler" to "ad gruppe id for PENSJON_SAKSBEHANDLER",
+                    "fortroligAdresse" to "ad gruppe id for Fortrolig_Adresse",
+                    "strengtFortroligAdresse" to "ad gruppe id for Strengt_Fortrolig_Adresse",
+                    "strengtFortroligUtland" to "ad gruppe id for EndreStrengtFortroligUtland",
                 )
             ).toConfig()
         )
