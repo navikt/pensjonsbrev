@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
-import no.nav.pensjon.brev.skribenten.getLoggedInName
-import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
+import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExstreamBrevResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
@@ -15,7 +13,6 @@ class LegacyBrevService(
     private val brevmetadataService: BrevmetadataService,
     private val safService: SafService,
     private val penService: PenService,
-    private val navansattService: NavansattService
 ) {
     private val logger = LoggerFactory.getLogger(LegacyBrevService::class.java)
     suspend fun bestillBrev(call: ApplicationCall, request: OrderLetterRequest): BestillOgRedigerBrevResponse =
@@ -23,8 +20,6 @@ class LegacyBrevService(
             val sakEnhetId = serviceResult.enhetId
             if (sakEnhetId == null) {
                 return BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
-            } else if (!harTilgangTilEnhet(call = call, enhetsId = sakEnhetId)) {
-                return BestillOgRedigerBrevResponse(NAVANSATT_ENHETER_ERROR)
             } else {
                 val brevMetadata = brevmetadataService.getMal(request.brevkode)
                 return when (brevMetadata.brevsystem) {
@@ -32,9 +27,9 @@ class LegacyBrevService(
                     BrevdataDto.BrevSystem.GAMMEL -> bestillExstreamBrev(
                         call = call,
                         request = request,
-                        navIdent = fetchLoggedInNavIdent(call),
+                        navIdent = call.principal().navIdent,
                         metadata = brevMetadata,
-                        navn = fetchLoggedInName(call),
+                        navn = call.principal().fullName,
                         enhetsId = serviceResult.enhetId
                     )
                 }
@@ -163,24 +158,6 @@ class LegacyBrevService(
             BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
         }
 
-    private fun fetchLoggedInNavIdent(call: ApplicationCall): String {
-        return call.getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke ident på innlogget bruker i claim")
-    }
-
-    private fun fetchLoggedInName(call: ApplicationCall): String {
-        return call.getLoggedInName() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker i claim")
-    }
-
-    suspend fun harTilgangTilEnhet(call: ApplicationCall, enhetsId: String): Boolean {
-        return navansattService.harAnsattTilgangTilEnhet(
-            call = call,
-            ansattId = fetchLoggedInNavIdent(call = call),
-            enhetsId = enhetsId
-        ).let { when (it) {
-            is ServiceResult.Error -> false
-            is ServiceResult.Ok -> it.result
-        }}
-    }
 
     /**
      * @param brevkode ID til brevet som bestilles
@@ -202,7 +179,7 @@ class LegacyBrevService(
         val isSensitive: Boolean?,
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
-        )
+    )
 
     data class BestillOgRedigerBrevResponse(
         val url: String?,
@@ -267,7 +244,6 @@ class LegacyBrevService(
             SAF_ERROR,
             SKRIBENTEN_INTERNAL_ERROR,
             ENHETSID_MANGLER,
-            NAVANSATT_ENHETER_ERROR
         }
     }
 }

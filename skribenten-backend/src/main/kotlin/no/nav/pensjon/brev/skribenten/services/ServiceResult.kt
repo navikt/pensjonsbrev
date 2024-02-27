@@ -8,12 +8,11 @@ import io.ktor.server.response.*
 import io.ktor.util.pipeline.*
 import no.nav.pensjon.brev.skribenten.auth.*
 
-// TODO rename to ServiceResult when all usages of it are removed
-sealed class ServiceResult<Result : Any> {
-    data class Ok<Result : Any>(val result: Result) : ServiceResult<Result>()
-    data class Error<Result : Any>(val error: String, val statusCode: HttpStatusCode) : ServiceResult<Result>()
+sealed class ServiceResult<Result> {
+    data class Ok<Result>(val result: Result) : ServiceResult<Result>()
+    data class Error<Result>(val error: String, val statusCode: HttpStatusCode) : ServiceResult<Result>()
 
-    inline fun <T : Any> map(func: (Result) -> T): ServiceResult<T> = when (this) {
+    inline fun <T> map(func: (Result) -> T): ServiceResult<T> = when (this) {
         is Ok -> Ok(func(result))
         is Error -> Error(error, statusCode)
     }
@@ -25,6 +24,7 @@ sealed class ServiceResult<Result : Any> {
 
     fun resultOrNull(): Result? =
         if (this is Ok) result else null
+
 }
 
 suspend inline fun <reified R : Any> PipelineContext<Unit, ApplicationCall>.respondWithResult(
