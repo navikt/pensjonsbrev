@@ -144,6 +144,7 @@ function Type({ fieldType }: { fieldType: FieldType }) {
         <Link
           from="/template/$templateId"
           preload={false}
+          replace
           search={(s) => ({ ...s, inspectedModel: fieldType.typeName })}
         >
           {trimClassName(fieldType.typeName)}
