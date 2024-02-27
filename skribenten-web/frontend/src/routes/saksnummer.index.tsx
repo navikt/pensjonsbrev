@@ -49,7 +49,11 @@ function SaksnummerPage() {
       <TextField
         {...register("saksnummer")}
         autoComplete="off"
-        error={hentSakMutation.isError ? "Finner ikke saksnummer" : undefined}
+        error={
+          hentSakMutation.isError
+            ? hentSakMutation.error?.response?.data?.toString() || "Finner ikke saksnummer"
+            : undefined
+        }
         label="Saksnummer"
       />
       <Button loading={hentSakMutation.isPending} type="submit">
