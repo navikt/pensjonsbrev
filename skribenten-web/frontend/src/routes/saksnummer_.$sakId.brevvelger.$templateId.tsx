@@ -488,13 +488,13 @@ function PersonAdresse() {
   const { sak } = Route.useLoaderData();
 
   const adresseQuery = useQuery({
-    queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
-    queryFn: () => getKontaktAdresse.queryFn(sak.sakId.toString(), sak.foedselsnr),
+    queryKey: getKontaktAdresse.queryKey(sak.sakId.toString()),
+    queryFn: () => getKontaktAdresse.queryFn(sak.sakId.toString()),
   });
 
   const { data: navn } = useQuery({
-    queryKey: getNavn.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
+    queryKey: getNavn.queryKey(sak.sakId.toString()),
+    queryFn: () => getNavn.queryFn(sak.sakId.toString()),
     enabled: !!sak,
   });
 

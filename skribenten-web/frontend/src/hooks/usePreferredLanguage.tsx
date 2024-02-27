@@ -10,7 +10,7 @@ export function usePreferredLanguage(sakId: string) {
 
   return useQuery({
     queryKey: getPreferredLanguage.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getPreferredLanguage.queryFn(sak?.sakId.toString() as string, sak?.foedselsnr as string),
+    queryFn: () => getPreferredLanguage.queryFn(sak?.sakId.toString() as string),
     enabled: !!sak,
   }).data?.spraakKode;
 }

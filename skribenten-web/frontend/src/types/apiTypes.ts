@@ -55,10 +55,6 @@ export enum SpraakKode {
   Nynorsk = "NN",
 }
 
-export type PidRequest = {
-  pid: string;
-};
-
 export type BaseLetterRequest = {
   brevkode: string;
   spraak: SpraakKode;

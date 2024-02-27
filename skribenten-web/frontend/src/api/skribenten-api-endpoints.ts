@@ -19,7 +19,6 @@ import type {
   OrderDoksysLetterRequest,
   OrderEblankettRequest,
   OrderExstreamLetterRequest,
-  PidRequest,
   PreferredLanguage,
   SakDto,
 } from "~/types/apiTypes";
@@ -38,7 +37,7 @@ export const saksnummerKeys = {
 
 export const navnKeys = {
   all: ["NAVN"] as const,
-  pid: (pid: string) => [...navnKeys.all, pid] as const,
+  sakId: (sakId: string) => [...navnKeys.all, sakId] as const,
 };
 
 export const letterTemplatesKeys = {
@@ -61,7 +60,7 @@ export const avtalelandKeys = {
 
 export const adresseKeys = {
   all: ["ADRESSE"],
-  pid: (pid: string) => [...adresseKeys.all, pid] as const,
+  sakId: (sakId: string) => [...adresseKeys.all, sakId] as const,
 };
 
 export const samhandlerKeys = {
@@ -76,7 +75,7 @@ export const samhandlerAdresseKeys = {
 
 export const preferredLanguageKeys = {
   all: ["PREFERRED_LANGUAGE"] as const,
-  pid: (pid: string) => [...preferredLanguageKeys.all, pid] as const,
+  sakId: (sakId: string) => [...preferredLanguageKeys.all, sakId] as const,
 };
 
 export const getSak = {
@@ -85,23 +84,14 @@ export const getSak = {
 };
 
 export const getNavn = {
-  queryKey: navnKeys.pid,
-  queryFn: async (sakId: string, pid: string) =>
-    (await axios.post<PidRequest, AxiosResponse<string>>(`${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/navn`, { pid }))
-      .data,
+  queryKey: navnKeys.sakId,
+  queryFn: async (sakId: string) => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/navn`)).data,
 };
 
 export const getPreferredLanguage = {
-  queryKey: preferredLanguageKeys.pid,
-  queryFn: async (sakId: string, pid: string) =>
-    (
-      await axios.post<PidRequest, AxiosResponse<PreferredLanguage>>(
-        `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/foretrukketSpraak`,
-        {
-          pid,
-        },
-      )
-    ).data,
+  queryKey: preferredLanguageKeys.sakId,
+  queryFn: async (sakId: string) =>
+    (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/foretrukketSpraak`)).data,
 };
 
 export const getLetterTemplate = {
@@ -112,16 +102,9 @@ export const getLetterTemplate = {
 };
 
 export const getKontaktAdresse = {
-  queryKey: adresseKeys.pid,
-  queryFn: async (sakId: string, pid: string) =>
-    (
-      await axios.post<PidRequest, AxiosResponse<KontaktAdresseResponse>>(
-        `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/adresse`,
-        {
-          pid,
-        },
-      )
-    ).data,
+  queryKey: adresseKeys.sakId,
+  queryFn: async (sakId: string) =>
+    (await axios.get<KontaktAdresseResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/adresse`)).data,
 };
 
 export const getFavoritter = {
