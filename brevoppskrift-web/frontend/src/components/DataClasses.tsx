@@ -1,12 +1,11 @@
 import { css } from "@emotion/react";
 import { ArrowLeftIcon, XMarkIcon } from "@navikt/aksel-icons";
 import { Button, HStack, VStack } from "@navikt/ds-react";
-import { getRouteApi, Link, useLoaderData, useNavigate, useRouter, useSearch } from "@tanstack/react-router";
+import { Link, useLoaderData, useNavigate, useRouter, useSearch } from "@tanstack/react-router";
 import { capitalize } from "lodash";
 import { Simulate } from "react-dom/test-utils";
 
 import type { FieldType, LetterModelSpecification, ObjectTypeSpecification } from "~/api/brevbakerTypes";
-import select = Simulate.select;
 
 export function DataClasses({ templateModelSpecification }: { templateModelSpecification: LetterModelSpecification }) {
   return (
@@ -154,7 +153,15 @@ function Type({ fieldType }: { fieldType: FieldType }) {
       );
     }
     case "object": {
-      return <span>{trimClassName(fieldType.typeName)}</span>;
+      return (
+        <Link
+          from="/template/$templateId"
+          preload={false}
+          search={(s) => ({ ...s, inspectedModel: fieldType.typeName })}
+        >
+          {trimClassName(fieldType.typeName)}
+        </Link>
+      );
     }
   }
 }
