@@ -32,11 +32,8 @@ class NavansattService(config: Config, authService: AzureADService): ServiceStat
         return client.get(call, "navansatt/$ansattId/enheter").toServiceResult<List<NAVEnhet>>()
     }
 
-    suspend fun harAnsattTilgangTilEnhet(call: ApplicationCall, ansattId: String, enhetsId: String): ServiceResult<Boolean> {
-        return when (val enheter = hentNavAnsattEnhetListe(call, ansattId)) {
-            is ServiceResult.Error -> ServiceResult.Error(error = enheter.error, statusCode = enheter.statusCode)
-            is ServiceResult.Ok -> ServiceResult.Ok(result = enheter.result.any { it.id == enhetsId })
-        }
+    suspend fun hentGruppetilgang(call: ApplicationCall, ansattId: String): ServiceResult<Gruppetilgang> {
+        return client.get(call, "/navansatt/$ansattId").toServiceResult<Gruppetilgang>()
     }
 
     override val name = "Nav Ansatt"
@@ -50,4 +47,9 @@ class NavansattService(config: Config, authService: AzureADService): ServiceStat
 data class NAVEnhet(
     val id: String,
     val navn: String,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Gruppetilgang(
+    val groups: List<String>
 )

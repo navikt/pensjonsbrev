@@ -25,6 +25,9 @@ fun main() {
     val skribentenConfig: Config = ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
         .resolveWith(ConfigFactory.load("azuread")) // loads azuread secrets for local
         .getConfig("skribenten")
+
+    ADGroups.init(skribentenConfig.getConfig("groups"))
+
     embeddedServer(Netty, port = skribentenConfig.getInt("port"), host = "0.0.0.0") {
         skribentenApp(skribentenConfig)
     }.start(wait = true)
@@ -49,6 +52,9 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
     install(StatusPages) {
         exception<JacksonException> { call, cause ->
             call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown cause")
+        }
+        exception<UnauthorizedException> { call, cause ->
+            call.respond(HttpStatusCode.Unauthorized, cause.msg)
         }
     }
 

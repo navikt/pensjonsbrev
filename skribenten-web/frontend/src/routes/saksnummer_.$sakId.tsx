@@ -26,14 +26,14 @@ export const Route = createFileRoute("/saksnummer/$sakId")({
 
     // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.
     queryClient.prefetchQuery({
-      queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
-      queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
+      queryKey: getKontaktAdresse.queryKey(sak.sakId.toString()),
+      queryFn: () => getKontaktAdresse.queryFn(sak.sakId.toString()),
     });
 
     queryClient.prefetchQuery(getFavoritter);
     queryClient.prefetchQuery({
-      queryKey: getPreferredLanguage.queryKey(sak.foedselsnr),
-      queryFn: () => getPreferredLanguage.queryFn(sak.foedselsnr),
+      queryKey: getPreferredLanguage.queryKey(sak.sakId.toString()),
+      queryFn: () => getPreferredLanguage.queryFn(sak.sakId.toString()),
     });
 
     return sak;
@@ -63,7 +63,7 @@ function SakBreadcrumbsPage() {
 function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
+    queryFn: () => getNavn.queryFn(sak?.sakId?.toString() as string),
     enabled: !!sak,
   });
 

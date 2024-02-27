@@ -168,10 +168,9 @@ const eblankettValidationSchema = baseOrderLetterValidationSchema.extend({
 function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
-  const { sak } = Route.useLoaderData();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
-    mutationFn: orderLetter,
+    mutationFn: (payload) => orderLetter(sakId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -198,8 +197,6 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
           onSubmit={methods.handleSubmit((submittedValues) => {
             const orderLetterRequest = {
               brevkode: letterTemplate.id,
-              sakId: Number(sakId),
-              gjelderPid: sak.foedselsnr,
               vedtaksId,
               idTSSEkstern,
               ...submittedValues,
@@ -223,10 +220,9 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
 function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
-  const { sak } = Route.useLoaderData();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderDoksysLetterRequest>({
-    mutationFn: orderLetter,
+    mutationFn: (payload) => orderLetter(sakId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -251,8 +247,6 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
           onSubmit={methods.handleSubmit((submittedValues) => {
             const orderLetterRequest = {
               brevkode: letterTemplate.id,
-              sakId: Number(sakId),
-              gjelderPid: sak.foedselsnr,
               vedtaksId,
               ...submittedValues,
             };
@@ -272,7 +266,6 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
 
 function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { sakId } = Route.useParams();
-  const { sak } = Route.useLoaderData();
 
   const { vedtaksId } = Route.useSearch();
 
@@ -285,7 +278,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   });
 
   const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
-    mutationFn: orderLetter,
+    mutationFn: (payload) => orderLetter(sakId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -301,8 +294,6 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
           onSubmit={methods.handleSubmit((submittedValues) => {
             const orderLetterRequest = {
               brevkode: letterTemplate.id,
-              sakId: Number(sakId),
-              gjelderPid: sak.foedselsnr,
               vedtaksId,
               ...submittedValues,
             };
@@ -488,13 +479,13 @@ function PersonAdresse() {
   const { sak } = Route.useLoaderData();
 
   const adresseQuery = useQuery({
-    queryKey: getKontaktAdresse.queryKey(sak.foedselsnr),
-    queryFn: () => getKontaktAdresse.queryFn(sak.foedselsnr),
+    queryKey: getKontaktAdresse.queryKey(sak.sakId.toString()),
+    queryFn: () => getKontaktAdresse.queryFn(sak.sakId.toString()),
   });
 
   const { data: navn } = useQuery({
-    queryKey: getNavn.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
+    queryKey: getNavn.queryKey(sak.sakId.toString()),
+    queryFn: () => getNavn.queryFn(sak.sakId.toString()),
     enabled: !!sak,
   });
 
