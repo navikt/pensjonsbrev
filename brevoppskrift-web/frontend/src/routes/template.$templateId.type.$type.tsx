@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { VStack } from "@navikt/ds-react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { getTypeDocumentation } from "~/api/brevbaker-api-endpoints";
 
@@ -52,7 +52,18 @@ function TypeView() {
         </span>
         {Object.entries(typeDocumentation.fields).map(([key, value]) => (
           <span className="field" key={key}>
-            {key}: <span className={value.isPrimitive ? "primitive" : "type"}>{trimClassName(value.className)}</span>
+            {key}:{" "}
+            {value.isPrimitive ? (
+              <span className="primitive">{value.className}</span>
+            ) : (
+              <Link
+                from="/template/$templateId/type/$type"
+                params={(p) => ({ ...p, type: value.className })}
+                to="/template/$templateId/type/$type"
+              >
+                {trimClassName(value.className)}
+              </Link>
+            )}
           </span>
         ))}
         <span>)</span>
