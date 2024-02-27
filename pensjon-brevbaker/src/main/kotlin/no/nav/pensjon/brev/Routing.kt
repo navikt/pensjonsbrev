@@ -35,6 +35,17 @@ data class TypeDocumentation(
     val fields: Map<String, TypeDocumentation>?
 )
 
+data class SimpleTypeDocumentation(
+    val className: String,
+    val fields: Map<String, String>,
+)
+
+data class Field(
+    val isOptional: Boolean,
+    val className: String,
+    val isPrimitive: Boolean,
+)
+
 @OptIn(ExperimentalStdlibApi::class)
 fun constructTypeDocumentation(classifier: String): TypeDocumentation {
     var fields = emptyMap<String, TypeDocumentation>()
@@ -54,10 +65,27 @@ fun constructTypeDocumentation(classifier: String): TypeDocumentation {
     return TypeDocumentation(className = className, fields = fields)
 }
 
+@OptIn(ExperimentalStdlibApi::class)
+fun constructFlatTypeDocumentation(classifier: String): SimpleTypeDocumentation {
+    val classToDocument = Class.forName(classifier).kotlin
+    val className = classToDocument.simpleName.toString()
+    val fields = classToDocument.memberProperties.associate { r ->
+        val simpleName = r.returnType.javaType.typeName.toString()
+        val isPrimitive = classifier.contains("java") && !classifier.contains("kotlin");
+        r.name to Field(isOptional = false, isPrimitive = ) simpleName
+    }
+
+    className = className.replace("java.util.", "").replace("java.lang.", "")
+    return SimpleTypeDocumentation(className = className, fields = fields)
+}
+
 fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService) =
     routing {
         get("/class/{name}") {
             call.respond(constructTypeDocumentation(call.parameters.getOrFail("name")))
+        }
+        get("/simpleclass/{name}") {
+            call.respond(constructFlatTypeDocumentation(call.parameters.getOrFail("name")))
         }
         route("/templates") {
 
