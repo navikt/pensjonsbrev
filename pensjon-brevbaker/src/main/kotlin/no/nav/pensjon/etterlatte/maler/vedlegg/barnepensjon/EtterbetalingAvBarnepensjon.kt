@@ -27,11 +27,11 @@ val etterbetalingAvBarnepensjon = createAttachment(
 ) {
     paragraph {
         textExpr(
-            Bokmal to "Du får etterbetalt stønad fra ".expr() + fraDato.format() + " til " + tilDato.format() +
+            Bokmal to "Du får etterbetalt barnepensjon fra ".expr() + fraDato.format() + " til " + tilDato.format() +
                     ". Vanligvis vil du få denne etterbetalingen i løpet av tre uker.",
-            Nynorsk to "Du får etterbetalt stønad frå ".expr() + fraDato.format() + " til " + tilDato.format() +
+            Nynorsk to "Du får etterbetalt barnepensjon frå ".expr() + fraDato.format() + " til " + tilDato.format() +
                     ". Vanlegvis får du denne etterbetalinga i løpet av tre veker.   ".expr(),
-            English to "You will receive the back payment for your benefits for from ".expr() + fraDato.format() + " to " + tilDato.format() +
+            English to "You will receive the back payment for your children's pension from ".expr() + fraDato.format() + " to " + tilDato.format() +
                     "You will usually receive this back payment within three weeks.",
         )
     }
