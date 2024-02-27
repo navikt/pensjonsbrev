@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, Table, VStack } from "@navikt/ds-react";
-import { createFileRoute, notFound, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 
 import { getAllBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
 import type {
@@ -270,27 +270,82 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
 }
 
 function ExpressionComponent({ expression }: { expression: Expression }) {
-  return <code className="expression">{expressionToText(expression)}</code>;
+  return (
+    <code className="expression">
+      <ExpressionToText expression={expression} />
+    </code>
+  );
 }
 
-function expressionToText(expression: Expression): string {
+function ExpressionToText({ expression }: { expression: Expression }) {
   if ("scopeName" in expression) return expression.scopeName;
   if ("value" in expression) return expression.value;
 
-  const firstExpressionResolved = expressionToText(expression.first);
-  const secondExpressionResolved = expression.second ? `${expressionToText(expression.second)}` : "";
+  const firstExpressionResolved = <ExpressionToText expression={expression.first} />;
+  const secondExpressionResolved = expression.second ? <ExpressionToText expression={expression.second} /> : "";
   switch (expression.operator.syntax) {
     case "FUNCTION": {
-      return `${expression.operator.text}(${firstExpressionResolved}${secondExpressionResolved})`;
+      return (
+        <span>
+          {expression.operator.text}
+          <span
+            css={css`
+              color: purple;
+            `}
+          >
+            (
+          </span>
+          {firstExpressionResolved}
+          {secondExpressionResolved}
+          <span
+            css={css`
+              color: purple;
+            `}
+          >
+            )
+          </span>
+        </span>
+      );
     }
     case "POSTFIX": {
-      return `${firstExpressionResolved}${expression.operator.text}`;
+      return (
+        <Link
+          css={css`
+            color: brown;
+          `}
+          from={Route.fullPath}
+          preload={false}
+          replace
+          search={(s) => ({ ...s, inspectedModel: expression.type })}
+        >
+          {firstExpressionResolved}
+          {expression.operator.text}
+        </Link>
+      );
     }
     case "INFIX": {
-      return `${firstExpressionResolved} ${expression.operator.text} ${secondExpressionResolved}`;
+      return (
+        <span>
+          {firstExpressionResolved}{" "}
+          <span
+            css={css`
+              color: red;
+            `}
+          >
+            {expression.operator.text}
+          </span>{" "}
+          {secondExpressionResolved}
+        </span>
+      );
     }
     case "PREFIX": {
-      return `${expression.operator.text}${firstExpressionResolved}${secondExpressionResolved}`;
+      return (
+        <span>
+          {expression.operator.text}
+          {firstExpressionResolved}
+          {secondExpressionResolved}
+        </span>
+      );
     }
   }
 }
