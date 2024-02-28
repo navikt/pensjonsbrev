@@ -49,7 +49,7 @@ class PenService(config: Config, authService: AzureADService): ServiceStatus {
 
 
     private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak> =
-        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak>()
+        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult()
 
     suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection> =
         fetchSak(call, sakId).map {

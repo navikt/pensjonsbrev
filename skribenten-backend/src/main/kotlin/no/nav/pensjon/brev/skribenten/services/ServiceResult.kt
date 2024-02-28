@@ -41,7 +41,7 @@ suspend inline fun <reified R : Any> PipelineContext<Unit, ApplicationCall>.resp
 }
 
 
-suspend inline fun <reified R : Any> HttpResponse.toServiceResult(): ServiceResult<R> =
+suspend inline fun <reified R> HttpResponse.toServiceResult(): ServiceResult<R> =
     if (status.isSuccess()) {
         ServiceResult.Ok(body())
     } else {
@@ -49,7 +49,7 @@ suspend inline fun <reified R : Any> HttpResponse.toServiceResult(): ServiceResu
     }
 
 
-suspend inline fun <reified R : Any> AuthorizedHttpClientResult.toServiceResult(): ServiceResult<R> =
+suspend inline fun <reified R> AuthorizedHttpClientResult.toServiceResult(): ServiceResult<R> =
     when (this) {
         is AuthorizedHttpClientResult.Error -> ServiceResult.Error("Feil ved token-utveksling correlation_id: ${error.correlation_id} Description:${error.error_description}", HttpStatusCode.Unauthorized)
         is AuthorizedHttpClientResult.Response -> response.toServiceResult()
