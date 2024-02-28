@@ -89,7 +89,7 @@ class AuthorizeAnsattSakTilgangTest {
             }
         }
         install(StatusPages) {
-            exception<UnauthorizedException> { call, cause ->  call.respond(HttpStatusCode.Unauthorized, cause.msg)}
+            exception<UnauthorizedException> { call, cause -> call.respond(HttpStatusCode.Unauthorized, cause.msg) }
         }
         routing {
             authenticate("my domain") {
@@ -244,7 +244,7 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${testSak.sakId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
-        assertEquals("En feil oppstod ved sjekk av adressebeskyttelse", response.bodyAsText())
+        assertEquals("En feil oppstod ved validering av tilgang til sak", response.bodyAsText())
     }
 
     @Test
@@ -265,7 +265,10 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `forbidden fra PDL resulterer i not found svar`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr) } returns ServiceResult.Error("Ikke tilgang til person", HttpStatusCode.Forbidden)
+        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr) } returns ServiceResult.Error(
+            "Ikke tilgang til person",
+            HttpStatusCode.Forbidden
+        )
 
         val response = client.get("/sak/${sakVikafossen.sakId}")
         assertEquals(HttpStatusCode.NotFound, response.status)

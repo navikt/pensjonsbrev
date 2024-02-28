@@ -64,7 +64,7 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
                 @Suppress("EnumEntryName")
                 enum class ErrorCode { unauthenticated, unauthorized, not_found, bad_request, server_error }
                 @JsonIgnoreProperties(ignoreUnknown = true)
-                data class Details(val type: String?, val cause: String?, val policy: String?, val errors: List<String>)
+                data class Details(val type: String?, val cause: String?, val policy: String?, val errors: List<String>?)
             }
         }
     }
@@ -157,7 +157,7 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
             logger.warn("Got multiple errors from PDL, only first is included in response.")
         }
         filter { it.extensions?.code != PDLResponse.PDLError.PDLExtensions.ErrorCode.not_found }
-            .forEach { logger.error("${it.message}: {}", it.extensions) }
+            .forEach { logger.info("${it.message}: {}", it.extensions) }
     }
 
     override val name = "PDL"

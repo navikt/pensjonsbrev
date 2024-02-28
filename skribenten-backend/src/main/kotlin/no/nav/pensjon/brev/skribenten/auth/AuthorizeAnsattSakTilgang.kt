@@ -79,7 +79,7 @@ private suspend fun sjekkEnhetstilgang(
     enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>
 ): AuthAnsattSakTilgangResponse? =
     if (sak.enhetId.isNullOrBlank()) {
-        logger.error("Tilgang til sak ${sak.sakId} avvist fordi den mangler enhet")
+        logger.warn("Tilgang til sak ${sak.sakId} avvist fordi den mangler enhet")
         AuthAnsattSakTilgangResponse("Sak er ikke tilordnet enhet", HttpStatusCode.BadRequest)
     } else {
         enheterResult.await().map { enheter ->
