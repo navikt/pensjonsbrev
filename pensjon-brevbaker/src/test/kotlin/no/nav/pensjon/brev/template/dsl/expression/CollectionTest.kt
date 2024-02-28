@@ -138,7 +138,7 @@ class CollectionTest {
         listOf(Language.Bokmal, Language.Nynorsk, Language.English).forEach {
             val scope = ExpressionScope(Unit, Fixtures.felles, it)
             assertEquals(
-                BinaryOperation.LocalizedCollectionFormat.apply(fnrs.map { it.value }, it),
+                LocalizedFormatter.CollectionFormat.apply(fnrs.map { it.value }, it),
                 fnrs.expr().map(valueSelector).format().eval(scope)
             )
         }

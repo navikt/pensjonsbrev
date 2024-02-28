@@ -3,9 +3,6 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.expression.Predicate
 import no.nav.pensjon.brevbaker.api.model.*
-import java.text.NumberFormat
-import java.time.LocalDate
-import java.time.format.FormatStyle
 import kotlin.math.absoluteValue
 
 abstract class Operation {
@@ -69,8 +66,6 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     }
 }
 
-typealias LocalizedFormatter<T> = BinaryOperation<T, Language, String>
-
 abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
     data class Documentation(val name: String, val syntax: Notation) {
         enum class Notation { PREFIX, INFIX, POSTFIX, FUNCTION }
@@ -78,27 +73,27 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     abstract fun apply(first: In1, second: In2): Out
 
-    class Equal<In> : BinaryOperation<In, In, Boolean>() {
+    class Equal<In> : BinaryOperation<In, In, Boolean>(Documentation("==", Documentation.Notation.INFIX)) {
         override fun apply(first: In, second: In): Boolean = first == second
     }
 
-    class GreaterThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+    class GreaterThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation(">", Documentation.Notation.INFIX)) {
         override fun apply(first: T, second: T): Boolean = first > second
     }
 
-    class GreaterThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+    class GreaterThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation(">=", Documentation.Notation.INFIX)) {
         override fun apply(first: T, second: T): Boolean = first >= second
     }
 
-    class LessThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+    class LessThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation("<=", Documentation.Notation.INFIX)) {
         override fun apply(first: T, second: T): Boolean = first <= second
     }
 
-    class LessThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+    class LessThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation("<", Documentation.Notation.INFIX)) {
         override fun apply(first: T, second: T): Boolean = first < second
     }
 
-    object Or : BinaryOperation<Boolean, Boolean, Boolean>() {
+    object Or : BinaryOperation<Boolean, Boolean, Boolean>(Documentation("or", Documentation.Notation.INFIX)) {
         override fun apply(first: Boolean, second: Boolean): Boolean = first || second
     }
 
@@ -112,49 +107,6 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     class IntPlus<T : IntValue>(val constructor: (Int) -> T) : BinaryOperation<T, T, T>() {
         override fun apply(first: T, second: T): T = constructor(first.value + second.value)
-    }
-
-    object LocalizedShortDateFormat : LocalizedFormatter<LocalDate>() {
-        override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second, FormatStyle.SHORT)).replace(' ', ' ') //space to non braking space
-    }
-
-    object LocalizedDateFormat : LocalizedFormatter<LocalDate>() {
-        override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second, FormatStyle.LONG)).replace(' ', ' ') //space to non braking space
-    }
-
-    object LocalizedDoubleFormat : LocalizedFormatter<Double>() {
-        override fun apply(first: Double, second: Language): String =
-            String.format(second.locale(), "%.2f", first)
-    }
-
-    object LocalizedIntFormat : LocalizedFormatter<Int>(Documentation("localizedFormat", Documentation.Notation.FUNCTION)) {
-        override fun apply(first: Int, second: Language): String =
-            String.format(second.locale(), "%d", first)
-    }
-
-    object LocalizedCurrencyFormat : LocalizedFormatter<Int>() {
-        override fun apply(first: Int, second: Language): String =
-            NumberFormat.getNumberInstance(second.locale())
-                .apply { maximumFractionDigits = 0 }
-                .format(first)
-    }
-
-    object LocalizedCollectionFormat : LocalizedFormatter<Collection<String>>() {
-        override fun apply(first: Collection<String>, second: Language): String {
-            return if (first.size == 1) {
-                first.first()
-            } else {
-                val lastSeparator = when (second) {
-                    Language.Bokmal -> " og "
-                    Language.Nynorsk -> " og "
-                    Language.English -> " and "
-                }
-                first.take(first.size - 1).joinToString(", ") + lastSeparator + first.last()
-            }
-        }
-
     }
 
     data class MapCollection<In1, In2, Out>(val mapper: BinaryOperation<In1, In2, Out>): BinaryOperation<Collection<In1>, In2, Collection<Out>>() {

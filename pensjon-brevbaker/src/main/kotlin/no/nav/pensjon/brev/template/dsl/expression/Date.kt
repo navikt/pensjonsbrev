@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.*
 import java.time.LocalDate
 
 fun Expression<LocalDate>.format(short: Boolean = false) =
-    format(formatter = if(short) BinaryOperation.LocalizedShortDateFormat else BinaryOperation.LocalizedDateFormat)
+    format(formatter = if(short) LocalizedFormatter.ShortDateFormat else LocalizedFormatter.DateFormat)
 
 private object LocalDateSelectors {
     val yearSelector = object : TemplateModelSelector<LocalDate, Int> {

@@ -17,7 +17,7 @@ fun Expression<Telefonnummer>.format() =
     Expression.UnaryInvoke(this, UnaryOperation.FormatPhoneNumber)
 
 @JvmName("formatKroner")
-fun Expression<Kroner>.format() = select(intValueSelector).format(formatter = BinaryOperation.LocalizedCurrencyFormat)
+fun Expression<Kroner>.format() = select(intValueSelector).format(formatter = LocalizedFormatter.CurrencyFormat)
 
 @JvmName("formatIntValue")
 fun Expression<IntValue>.format() = select(intValueSelector).format()
