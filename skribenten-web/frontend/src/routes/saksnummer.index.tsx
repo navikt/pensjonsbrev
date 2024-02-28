@@ -8,6 +8,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 import { getSak } from "~/api/skribenten-api-endpoints";
+import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 
 export const Route = createFileRoute("/saksnummer/")({
@@ -42,16 +43,17 @@ function SaksnummerPage() {
         flex-direction: column;
         align-self: center;
         margin-top: var(--a-spacing-8);
-        width: 290px;
+        width: 340px;
       `}
       onSubmit={handleSubmit((values) => hentSakMutation.mutate(values))}
     >
-      <TextField
-        {...register("saksnummer")}
-        autoComplete="off"
-        error={hentSakMutation.isError ? "Finner ikke saksnummer" : undefined}
-        label="Saksnummer"
-      />
+      <TextField {...register("saksnummer")} autoComplete="off" label="Saksnummer" />
+      {hentSakMutation.error && (
+        <ApiError
+          error={hentSakMutation.error}
+          title={hentSakMutation.error?.response?.data?.toString() || "Finner ikke saksnummer"}
+        />
+      )}
       <Button loading={hentSakMutation.isPending} type="submit">
         Åpne brevvelger
       </Button>
