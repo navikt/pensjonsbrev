@@ -14,6 +14,7 @@ object TemplateDocumentationRenderer {
             title = renderText(template.title, lang),
             outline = renderOutline(template.outline, lang),
             attachments = template.attachments.map { renderAttachment(it, lang) },
+            templateModelSpecification = template.modelSpecification,
         )
 
     private fun renderAttachment(attachment: IncludeAttachment<*, *>, lang: Language): TemplateDocumentation.Attachment =
@@ -142,12 +143,16 @@ object TemplateDocumentationRenderer {
 
     private fun renderExpression(expr: Expression<*>): TemplateDocumentation.Expression =
         when (expr) {
-            is Expression.BinaryInvoke<*, *, *> -> TemplateDocumentation.Expression.Invoke(
-                renderOperation(expr.operation),
-                renderExpression(expr.first),
-                renderExpression(expr.second),
-                "TODO"
-            )
+            is Expression.BinaryInvoke<*, *, *> ->
+                if (expr.operation is LocalizedFormatter<*>)
+                    renderExpression(expr.first)
+                else
+                    TemplateDocumentation.Expression.Invoke(
+                        renderOperation(expr.operation),
+                        renderExpression(expr.first),
+                        renderExpression(expr.second),
+                        "TODO"
+                    )
 
             is Expression.FromScope.Language -> TemplateDocumentation.Expression.LetterData("language")
             is Expression.FromScope.Felles -> TemplateDocumentation.Expression.LetterData("felles")
@@ -180,14 +185,21 @@ object TemplateDocumentationRenderer {
             )
 
             is UnaryOperation.MapCollection<*, *> -> TODO()
-            is UnaryOperation.Not -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.Not -> if(expr.value is Expression.BinaryInvoke<*, *, *> && expr.value.operation is BinaryOperation.Equal<*>) {
+                TemplateDocumentation.Expression.Invoke(
+                    operator = Operation("!=", Documentation.Notation.INFIX),
+                    first = renderExpression(expr.value.first),
+                    second = renderExpression(expr.value.second),
+                )
+            } else TemplateDocumentation.Expression.Invoke(
                 operator = Operation("!", Documentation.Notation.PREFIX),
-                first = renderExpression(expr.value)
+                first = renderExpression(expr.value),
             )
 
             is UnaryOperation.SafeCall -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("?.", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
+                operator = Operation("?.${expr.operation.selector.propertyName}", Documentation.Notation.POSTFIX),
+                first = renderExpression(expr.value),
+                type = expr.operation.selector.propertyType,
             )
 
             is UnaryOperation.Select -> if (expr.operation.selector != intValueSelector) {
@@ -252,6 +264,7 @@ data class TemplateDocumentation(
     val title: List<ContentOrControlStructure<Element.ParagraphContent.Text>>,
     val outline: List<ContentOrControlStructure<Element.OutlineContent>>,
     val attachments: List<Attachment>,
+    val templateModelSpecification: TemplateModelSpecification
 ) {
     data class Attachment(
         val title: List<ContentOrControlStructure<Element.ParagraphContent.Text>>,
