@@ -80,7 +80,7 @@ jobs:
           VARS: "skribenten-web/bff/.nais/bff-dev.yaml"
 
 #  deploy-prod:
-#    name: Deploy app to dev
+#    name: Deploy app to prod
 #    permissions:
 #      contents: read
 #      id-token: write
