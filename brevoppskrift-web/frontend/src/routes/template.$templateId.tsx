@@ -63,13 +63,13 @@ function TemplateExplorer() {
 
   return (
     <>
-      <Heading size="medium" spacing>
-        Oppskrift for {templateId}
-      </Heading>
       <InspectedDataClass />
-      <SelectLanguage />
       <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
-      <VStack gap="4">
+      <VStack gap="4" align="center">
+        <Heading size="medium" spacing>
+          Oppskrift for {templateId}
+        </Heading>
+        <SelectLanguage />
         <Document templateDocumentation={documentation} />
         {documentation.attachments.map((attachment, index) => (
           <Document key={index} templateDocumentation={attachment} />
