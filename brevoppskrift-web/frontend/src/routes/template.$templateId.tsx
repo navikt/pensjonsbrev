@@ -164,7 +164,11 @@ function ContentComponent({ content }: { content: Element }) {
       return <span className="paragraph-text-literal">{content.text}</span>;
     }
     case ElementType.PARAGRAPH_TEXT_EXPRESSION: {
-      return <ExpressionComponent expression={content.expression} />;
+      return (
+        <span className="expression">
+          <ExpressionToText expression={content.expression} />
+        </span>
+      );
     }
     case ElementType.PARAGRAPH: {
       return (
@@ -235,7 +239,10 @@ function ConditionalComponent<E extends Element>({ conditional }: { conditional:
   return (
     <div className="conditional">
       <div className="show-if">
-        <ExpressionComponent expression={conditional.predicate} />
+        <div className="expression">
+          <code>If </code>
+          <ExpressionToText expression={conditional.predicate} />
+        </div>
         <ShowIf cocs={conditional.showIf} />
       </div>
       <ShowElse cocs={conditional.showElse} />
@@ -265,14 +272,6 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
           <ContentOrControlStructureComponent cocs={a} key={index} />
         ))}
       </div>
-    </div>
-  );
-}
-
-function ExpressionComponent({ expression }: { expression: Expression }) {
-  return (
-    <div className="expression">
-      <ExpressionToText expression={expression} />
     </div>
   );
 }
@@ -310,9 +309,6 @@ function ExpressionToText({ expression }: { expression: Expression }) {
     case "POSTFIX": {
       return (
         <Link
-          css={css`
-            color: brown;
-          `}
           from={Route.fullPath}
           preload={false}
           replace

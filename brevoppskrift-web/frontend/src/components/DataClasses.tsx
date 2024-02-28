@@ -40,6 +40,7 @@ export function InspectedDataClass() {
     return <></>;
   }
   const selectedModel = documentation.templateModelSpecification.types[inspectedModel];
+  const modelIsPrimitive = !selectedModel;
 
   return (
     <div
@@ -67,7 +68,8 @@ export function InspectedDataClass() {
           variant="secondary-neutral"
         />
       </HStack>
-      <DataView name={inspectedModel} objectTypeSpecification={selectedModel} />
+      {selectedModel && <DataView name={inspectedModel} objectTypeSpecification={selectedModel} />}
+      {modelIsPrimitive && <span>{inspectedModel}</span>}
     </div>
   );
 }
