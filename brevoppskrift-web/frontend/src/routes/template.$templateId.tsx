@@ -271,9 +271,9 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
 
 function ExpressionComponent({ expression }: { expression: Expression }) {
   return (
-    <code className="expression">
+    <div className="expression">
       <ExpressionToText expression={expression} />
-    </code>
+    </div>
   );
 }
 
@@ -316,7 +316,7 @@ function ExpressionToText({ expression }: { expression: Expression }) {
           from={Route.fullPath}
           preload={false}
           replace
-          search={(s) => ({ ...s, inspectedModel: expression.type })}
+          search={(s) => ({ ...s, inspectedModel: expression.type?.replace("?", "") })}
         >
           {firstExpressionResolved}
           {expression.operator.text}
@@ -333,7 +333,8 @@ function ExpressionToText({ expression }: { expression: Expression }) {
             `}
           >
             {expression.operator.text}
-          </span>{" "}
+          </span>
+          {expression.operator.text === "and" || expression.operator.text === "or" ? <br /> : ""}
           {secondExpressionResolved}
         </span>
       );
@@ -348,8 +349,4 @@ function ExpressionToText({ expression }: { expression: Expression }) {
       );
     }
   }
-}
-
-function stripPackageNameFromType(type?: string) {
-  return type?.replace(/.*\./, "") ?? "";
 }
