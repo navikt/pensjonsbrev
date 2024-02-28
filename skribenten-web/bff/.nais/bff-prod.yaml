@@ -1,0 +1,25 @@
+app-name: "skribenten-web"
+
+ingresses:
+  - "https://pensjon-skribenten.intern.nav.no"
+
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: EXPRESS_HOST
+    value: "::"
+  - name: EXPRESS_PORT
+    value: "8080"
+  - name: SKRIBENTEN_API_URL
+    value: "http://skribenten-backend"
+  - name: SKRIBENTEN_API_SCOPE
+    value: "api://prod-gcp.pensjonsbrev.skribenten-backend/.default"
+
+groups:
+  - "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e" #0000-GA-PENSJON_SAKSBEHANDLER
+  - "7c2f2439-b67a-41c0-b50b-0abb02e3b479" #0000-GA-Pensjon_Utland
+
+outboundApps:
+  - application: skribenten-backend
+    namespace: pensjonsbrev
+    cluster: prod-gcp
