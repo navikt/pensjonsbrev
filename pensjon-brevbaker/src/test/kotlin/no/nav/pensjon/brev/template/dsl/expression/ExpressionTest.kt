@@ -33,7 +33,7 @@ class ExpressionTest {
         val expected = Expression.BinaryInvoke(
             first = expr,
             second = Expression.FromScope.Language,
-            operation = BinaryOperation.LocalizedDateFormat
+            operation = LocalizedFormatter.DateFormat
         )
 
         assertEquals(expected, expr.format())

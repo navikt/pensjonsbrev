@@ -32,7 +32,7 @@ object Barnetillegg {
                     English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato +
                             ", for " + ifElse(barnFlertall, "children", "the child") + " born",
                 )
-                includePhrase(Felles.TextOrList(foedselsdatoPaaBarnMedOpphoertBarnetillegg.map(BinaryOperation.LocalizedDateFormat)))
+                includePhrase(Felles.TextOrList(foedselsdatoPaaBarnMedOpphoertBarnetillegg.map(LocalizedFormatter.DateFormat)))
             }
         }
     }
