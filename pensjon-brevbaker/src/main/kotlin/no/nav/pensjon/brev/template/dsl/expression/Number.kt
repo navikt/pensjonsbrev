@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.pensjon.brev.template.BinaryOperation
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.TemplateModelSelector
-import no.nav.pensjon.brev.template.UnaryOperation
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
@@ -20,10 +17,10 @@ private val Expression<IntValue>.value: Expression<Int>
         UnaryOperation.Select(intValueSelector)
     )
 
-fun Expression<Double>.format(): Expression<String> = format(formatter = BinaryOperation.LocalizedDoubleFormat)
+fun Expression<Double>.format(): Expression<String> = format(formatter = LocalizedFormatter.DoubleFormat)
 
 @JvmName("formatInt")
-fun Expression<Int>.format(): Expression<String> = format(formatter = BinaryOperation.LocalizedIntFormat)
+fun Expression<Int>.format(): Expression<String> = format(formatter = LocalizedFormatter.IntFormat)
 
 
 operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kroner> =

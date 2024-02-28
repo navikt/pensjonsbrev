@@ -22,27 +22,27 @@ class OperationsTest {
     fun `LocalizedCollectionFormat uses comma and localized separator before last item`() {
         val list = listOf("Alexander", "Jeremy", "Håkon", "Agne")
 
-        assertEquals("Alexander, Jeremy, Håkon og Agne", BinaryOperation.LocalizedCollectionFormat.apply(list, Language.Bokmal))
-        assertEquals("Alexander, Jeremy, Håkon og Agne", BinaryOperation.LocalizedCollectionFormat.apply(list, Language.Nynorsk))
-        assertEquals("Alexander, Jeremy, Håkon and Agne", BinaryOperation.LocalizedCollectionFormat.apply(list, Language.English))
+        assertEquals("Alexander, Jeremy, Håkon og Agne", LocalizedFormatter.CollectionFormat.apply(list, Language.Bokmal))
+        assertEquals("Alexander, Jeremy, Håkon og Agne", LocalizedFormatter.CollectionFormat.apply(list, Language.Nynorsk))
+        assertEquals("Alexander, Jeremy, Håkon and Agne", LocalizedFormatter.CollectionFormat.apply(list, Language.English))
     }
 
     @Test
     fun `LocalizedCollectionFormat has no separator for only one item`() {
         val list = listOf("Agne")
 
-        assertEquals("Agne", BinaryOperation.LocalizedCollectionFormat.apply(list, Language.Bokmal))
-        assertEquals("Agne", BinaryOperation.LocalizedCollectionFormat.apply(list, Language.Nynorsk))
-        assertEquals("Agne", BinaryOperation.LocalizedCollectionFormat.apply(list, Language.English))
+        assertEquals("Agne", LocalizedFormatter.CollectionFormat.apply(list, Language.Bokmal))
+        assertEquals("Agne", LocalizedFormatter.CollectionFormat.apply(list, Language.Nynorsk))
+        assertEquals("Agne", LocalizedFormatter.CollectionFormat.apply(list, Language.English))
     }
 
     @Test
     fun `LocalizedCollectionFormat has no comma for only two items`() {
         val list = listOf("Agne", "Jeremy")
 
-        assertEquals("Agne og Jeremy", BinaryOperation.LocalizedCollectionFormat.apply(list, Language.Bokmal))
-        assertEquals("Agne og Jeremy", BinaryOperation.LocalizedCollectionFormat.apply(list, Language.Nynorsk))
-        assertEquals("Agne and Jeremy", BinaryOperation.LocalizedCollectionFormat.apply(list, Language.English))
+        assertEquals("Agne og Jeremy", LocalizedFormatter.CollectionFormat.apply(list, Language.Bokmal))
+        assertEquals("Agne og Jeremy", LocalizedFormatter.CollectionFormat.apply(list, Language.Nynorsk))
+        assertEquals("Agne and Jeremy", LocalizedFormatter.CollectionFormat.apply(list, Language.English))
     }
 
 

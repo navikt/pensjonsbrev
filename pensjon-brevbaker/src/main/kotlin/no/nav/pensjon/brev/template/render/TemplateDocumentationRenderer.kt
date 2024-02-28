@@ -144,7 +144,7 @@ object TemplateDocumentationRenderer {
     private fun renderExpression(expr: Expression<*>): TemplateDocumentation.Expression =
         when (expr) {
             is Expression.BinaryInvoke<*, *, *> ->
-                if (shouldSkipBinaryInvoke(expr))
+                if (expr.operation is LocalizedFormatter<*>)
                     renderExpression(expr.first)
                 else
                     TemplateDocumentation.Expression.Invoke(
@@ -161,9 +161,6 @@ object TemplateDocumentationRenderer {
             is Expression.Literal -> TemplateDocumentation.Expression.Literal(expr.value.toString())
             is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr)
         }
-
-    private fun shouldSkipBinaryInvoke(expr: Expression.BinaryInvoke<*, *, *>): Boolean =
-        expr.operation::class.simpleName?.contains("localized", ignoreCase = true) == true
 
     private fun renderUnaryInvoke(expr: Expression.UnaryInvoke<*, *>): TemplateDocumentation.Expression =
         when (expr.operation) {
