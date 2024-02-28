@@ -65,7 +65,7 @@ function TemplateExplorer() {
     <>
       <InspectedDataClass />
       <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
-      <VStack gap="4" align="center">
+      <VStack align="center" gap="4">
         <Heading size="medium" spacing>
           Oppskrift for {templateId}
         </Heading>
