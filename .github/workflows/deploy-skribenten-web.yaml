@@ -80,11 +80,11 @@ jobs:
           VARS: "skribenten-web/bff/.nais/bff-dev.yaml"
 
 #  deploy-prod:
+#    name: Deploy app to dev
 #    permissions:
 #      contents: read
 #      id-token: write
 #    if: github.ref == 'refs/heads/main'
-#    name: Deploy app to prod
 #    needs: build
 #    runs-on: ubuntu-latest
 #    steps:
@@ -93,5 +93,6 @@ jobs:
 #        uses: nais/deploy/actions/deploy@v2
 #        env:
 #          CLUSTER: prod-gcp
-#          RESOURCE: .nais/web/web-prod.yaml
+#          RESOURCE: skribenten-web/bff/.nais/nais.yaml
 #          VAR: image=${{needs.build.outputs.image}}
+#          VARS: "skribenten-web/bff/.nais/bff-prod.yaml"
