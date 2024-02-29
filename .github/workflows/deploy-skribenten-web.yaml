@@ -79,19 +79,19 @@ jobs:
           VAR: image=${{needs.build.outputs.image}}
           VARS: "skribenten-web/bff/.nais/bff-dev.yaml"
 
-  deploy-prod:
-    permissions:
-      contents: read
-      id-token: write
-    if: github.ref == 'refs/heads/main'
-    name: Deploy app to prod
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to PROD
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: .nais/web/web-prod.yaml
-          VAR: image=${{needs.build.outputs.image}}
+#  deploy-prod:
+#    permissions:
+#      contents: read
+#      id-token: write
+#    if: github.ref == 'refs/heads/main'
+#    name: Deploy app to prod
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Deploy to PROD
+#        uses: nais/deploy/actions/deploy@v2
+#        env:
+#          CLUSTER: prod-gcp
+#          RESOURCE: .nais/web/web-prod.yaml
+#          VAR: image=${{needs.build.outputs.image}}
