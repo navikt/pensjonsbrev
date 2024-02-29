@@ -139,12 +139,14 @@ function ContentOrControlStructureComponent<E extends Element>({ cocs }: { cocs:
 function ForEachComponent({ content }: { content: ForEach<Element> }) {
   return (
     <>
-      <code>For hver X i</code>: <ExpressionToText expression={content.items} />
-      <div>
+      <div className="expression">
+        <code>For hver X i:</code> <ExpressionToText expression={content.items} />
+      </div>
+      <>
         {content.body.map((b, index) => (
           <ContentOrControlStructureComponent cocs={b} key={index} />
         ))}
-      </div>
+      </>
     </>
   );
 }
