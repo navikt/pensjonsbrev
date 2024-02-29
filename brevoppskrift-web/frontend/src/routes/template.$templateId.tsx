@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyLong, Heading, Select, Table, VStack } from "@navikt/ds-react";
+import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 
 import { getAllBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
@@ -190,38 +190,55 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.PARAGRAPH_TABLE: {
       return (
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              {content.header.cells.map((cell, index) => (
-                <Table.HeaderCell key={index} scope="col">
-                  {cell.text.map((t, index) => (
-                    <ContentOrControlStructureComponent cocs={t} key={index} />
-                  ))}
-                </Table.HeaderCell>
-              ))}
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {content.rows.map((r, index) => (
-              <ContentOrControlStructureComponent cocs={r} key={index} />
-            ))}
-          </Table.Body>
-        </Table>
-      );
-    }
-    case ElementType.PARAGRAPH_TABLE_ROW: {
-      return (
-        <Table.Row>
-          {content.cells.map((cell, index) => (
-            <Table.DataCell key={index}>
+        <div
+          css={css`
+            display: grid;
+            gap: 1px;
+            grid-template-columns: repeat(${content.header.cells.length}, 1fr);
+            border: 1px solid black;
+            background: purple;
+
+            //Indent cells that are conditional to an expression
+            .expression + .cell {
+              padding-left: var(--a-spacing-4);
+            }
+
+            .cell {
+              background: azure;
+            }
+
+            .conditional,
+            .show-if,
+            .show-else {
+              display: contents;
+            }
+
+            .expression {
+              grid-column: span ${content.header.cells.length};
+            }
+          `}
+        >
+          {content.header.cells.map((cell, index) => (
+            <b className="cell" key={index}>
               {cell.text.map((t, index) => (
                 <ContentOrControlStructureComponent cocs={t} key={index} />
               ))}
-            </Table.DataCell>
+            </b>
           ))}
-        </Table.Row>
+          {content.rows.map((r, index) => (
+            <ContentOrControlStructureComponent cocs={r} key={index} />
+          ))}
+        </div>
       );
+    }
+    case ElementType.PARAGRAPH_TABLE_ROW: {
+      return content.cells.map((cell, index) => (
+        <span className="cell" key={index}>
+          {cell.text.map((t, index) => (
+            <ContentOrControlStructureComponent cocs={t} key={index} />
+          ))}
+        </span>
+      ));
     }
     case ElementType.PARAGRAPH_ITEMLIST: {
       return (
@@ -261,11 +278,11 @@ function ConditionalComponent<E extends Element>({ conditional }: { conditional:
 
 function ShowIf<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
   return (
-    <div>
+    <>
       {cocs.map((a, index) => (
         <ContentOrControlStructureComponent cocs={a} key={index} />
       ))}
-    </div>
+    </>
   );
 }
 
@@ -275,12 +292,14 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
   }
   return (
     <div className="show-else">
-      <code>Else</code>
-      <div>
+      <div className="expression">
+        <code>Else</code>
+      </div>
+      <>
         {cocs.map((a, index) => (
           <ContentOrControlStructureComponent cocs={a} key={index} />
         ))}
-      </div>
+      </>
     </div>
   );
 }

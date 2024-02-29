@@ -20,13 +20,13 @@ body {
 }
 
 .preview {
-    width: 820px;
+    width: 1000px;
     background: white;
     padding: 3rem;
     align-self: center;
 }
 
-.show-if {
+.show-if, .show-else {
     > .expression, code {
         background: var(--a-blue-100);
     }
