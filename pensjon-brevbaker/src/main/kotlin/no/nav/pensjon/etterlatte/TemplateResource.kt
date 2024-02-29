@@ -24,6 +24,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRed
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigstilling
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnhold
 import no.nav.pensjon.etterlatte.maler.klage.BlankettKlageinstans
+import no.nav.pensjon.etterlatte.maler.klage.OvesendelsesbrevKlage
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslagRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelse
@@ -79,6 +80,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         AvvistKlageInnhold,
         AvvistKlageFerdigstilling,
         BlankettKlageinstans,
+        OvesendelsesbrevKlage,
         // Informasjonsbrev
         TomMal,
         TomDelmal,
