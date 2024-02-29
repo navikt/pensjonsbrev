@@ -198,15 +198,16 @@ function ContentComponent({ content }: { content: Element }) {
             gap: 1px;
             grid-template-columns: repeat(${content.header.cells.length}, 1fr);
             border: 1px solid black;
-            background: purple;
-
-            //Indent cells that are conditional to an expression
-            .expression + .cell {
-              padding-left: var(--a-spacing-4);
-            }
+            background: black;
+            overflow: auto;
 
             .cell {
-              background: azure;
+              background: white;
+            }
+
+            /* Indent cells that are conditional to an expression */
+            .expression + .cell {
+              padding-left: var(--a-spacing-4);
             }
 
             .conditional,
