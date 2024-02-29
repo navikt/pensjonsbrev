@@ -349,7 +349,7 @@ function ExpressionToText({ expression }: { expression: Expression }) {
       );
     }
     case "POSTFIX": {
-      const isDeepestPostFix = expression.first?.scopeName === "argument"; // TODO: create guard function
+      const isDeepestPostFix = "scopeName" in expression.first && expression.first?.scopeName === "argument";
       const content = (
         <>
           {firstExpressionResolved}
