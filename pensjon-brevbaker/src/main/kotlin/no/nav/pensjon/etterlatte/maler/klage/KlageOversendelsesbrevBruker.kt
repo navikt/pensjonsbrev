@@ -46,7 +46,7 @@ data class KlageOversendelseBrukerDTO(
 }
 
 @TemplateModelHelpers
-object OvesendelsesbrevKlage : EtterlatteTemplate<KlageOversendelseBrukerDTO>, Hovedmal {
+object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBrukerDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.KLAGE_OVERSENDELSE_BRUKER
 
     override val template = createTemplate(
@@ -85,7 +85,7 @@ object OvesendelsesbrevKlage : EtterlatteTemplate<KlageOversendelseBrukerDTO>, H
                 )
             }
 
-            title2 {
+            title1 {
                 text(
                     Language.Bokmal to "Dette er vurderingen vi har sendt til NAV Klageinstans",
                     Language.Nynorsk to "",
@@ -94,7 +94,7 @@ object OvesendelsesbrevKlage : EtterlatteTemplate<KlageOversendelseBrukerDTO>, H
             }
             formaterTekstlinjer(innstillingTekstLinjer)
 
-            title2 {
+            title1 {
                 text(
                     Language.Bokmal to "Har du nye opplysninger?",
                     Language.Nynorsk to "",
@@ -111,7 +111,7 @@ object OvesendelsesbrevKlage : EtterlatteTemplate<KlageOversendelseBrukerDTO>, H
                 )
             }
 
-            title2 {
+            title1 {
                 text(
                     Language.Bokmal to "Har du spørsmål?",
                     Language.Nynorsk to "",
@@ -129,12 +129,12 @@ object OvesendelsesbrevKlage : EtterlatteTemplate<KlageOversendelseBrukerDTO>, H
                 textExpr(
                     Language.Bokmal to "Du kan også kontakte NAV Klageinstans på ".expr() + sakUrl(sakType) + " eller telefon " + ifElse(
                         bosattIUtlandet,
-                        "+47".expr(),
-                        "".expr()
-                    ) + "${Constants.KONTAKTTELEFON_PENSJON}, hverdager 09.00-15.00. Hvis du oppgir fødselsnummer" + ifElse(
+                        Constants.KONTATTELEFON_PENSJON_MED_LANDKODE,
+                        Constants.KONTAKTTELEFON_PENSJON
+                    ) + ", hverdager 09.00-15.00. Hvis du oppgir fødselsnummer" + ifElse(
                         harVerge,
                         " til den du er verge for".expr(),
-                        ifElse(under18Aar, " til barnet".expr(), "".expr())
+                        ifElse(under18Aar, " til barnet", "")
                     ) + ", kan vi lettere gi deg rask hjelp.",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
