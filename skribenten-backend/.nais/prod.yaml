@@ -1,8 +1,5 @@
 app-name: "skribenten-backend"
 
-ingresses:
-  - "https://pensjon-skribenten-api.intern.nav.no"
-
 groups:
   #0000-GA-PENSJON_SAKSBEHANDLER
   - name: "PENSJON_SAKSBEHANDLER"
