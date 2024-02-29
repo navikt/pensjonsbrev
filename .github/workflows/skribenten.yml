@@ -15,8 +15,6 @@ on:
       - "gradle.properties"
       - "skribenten-backend/**"
       - ".github/workflows/skribenten.yml"
-env:
-  "IMAGE_TAG": "${{ github.sha }}"
 
 jobs:
   build-skribenten-backend:
@@ -44,8 +42,6 @@ jobs:
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
           ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
           ./gradlew :skribenten-backend:build
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
@@ -69,7 +65,7 @@ jobs:
     needs: "build-skribenten-backend"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - name: "Deploy Skribenten backend to DEV"
         uses: "nais/deploy/actions/deploy@v2"
         env:
@@ -89,7 +85,7 @@ jobs:
     needs: "build-skribenten-backend"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - name: "Deploy Skribenten backend to prod"
         uses: "nais/deploy/actions/deploy@v2"
         env:
