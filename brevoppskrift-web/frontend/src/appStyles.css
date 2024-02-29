@@ -27,14 +27,11 @@ body {
 }
 
 .show-if, .show-else {
-    > .expression, code {
-        background: var(--a-blue-100);
-    }
-}
-
-.show-if, .show-else {
     > .conditional {
         margin-left: 1rem;
+    }
+    > .expression, code {
+        background: var(--a-blue-100);
     }
 }
 
@@ -44,6 +41,6 @@ body {
 }
 
 .conditional {
-    background: aquamarine;
+    background: var(--a-lightblue-100);
     margin: 1rem 0;
 }
