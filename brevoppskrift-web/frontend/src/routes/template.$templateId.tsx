@@ -383,7 +383,6 @@ function ExpressionToText({ expression }: { expression: Expression }) {
           >
             {expression.operator.text}
           </span>{" "}
-          {/*{expression.operator.text === "and" || expression.operator.text === "or" ? <br /> : ""}*/}
           {secondExpressionResolved}
         </span>
       );
