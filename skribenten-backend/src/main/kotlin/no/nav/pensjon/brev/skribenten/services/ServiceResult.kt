@@ -41,16 +41,18 @@ suspend inline fun <reified R : Any> PipelineContext<Unit, ApplicationCall>.resp
 }
 
 
-suspend inline fun <reified R : Any> HttpResponse.toServiceResult(): ServiceResult<R> =
+suspend inline fun <reified R> HttpResponse.toServiceResult(): ServiceResult<R> =
+    toServiceResult { ServiceResult.Error(it.bodyAsText(), it.status) }
+
+suspend inline fun <reified R> HttpResponse.toServiceResult(noinline errorHandler: suspend (HttpResponse) -> ServiceResult<R>): ServiceResult<R> =
     if (status.isSuccess()) {
         ServiceResult.Ok(body())
     } else {
-        ServiceResult.Error(body(), status)
+        errorHandler(this)
     }
 
-
-suspend inline fun <reified R : Any> AuthorizedHttpClientResult.toServiceResult(): ServiceResult<R> =
+suspend inline fun <reified R> AuthorizedHttpClientResult.toServiceResult(noinline errorHandler: (suspend (HttpResponse) -> ServiceResult<R>)? = null): ServiceResult<R> =
     when (this) {
         is AuthorizedHttpClientResult.Error -> ServiceResult.Error("Feil ved token-utveksling correlation_id: ${error.correlation_id} Description:${error.error_description}", HttpStatusCode.Unauthorized)
-        is AuthorizedHttpClientResult.Response -> response.toServiceResult()
+        is AuthorizedHttpClientResult.Response -> errorHandler?.let { response.toServiceResult(it) } ?: response.toServiceResult()
     }

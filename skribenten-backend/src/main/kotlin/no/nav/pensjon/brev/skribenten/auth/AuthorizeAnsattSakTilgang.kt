@@ -42,10 +42,11 @@ fun AuthorizeAnsattSakTilgang(
             val ikkeTilgang = sakDeferred.await().map { sak ->
                 call.attributes.put(sakKey, sak)
 
-                val adressebeskyttelseDeffered = async { pdlService.hentAdressebeskyttelse(call, sak.foedselsnr) }
-
-                sjekkEnhetstilgang(navIdent, sak, enheterDeferred)
-                    ?: sjekkAdressebeskyttelse(adressebeskyttelseDeffered.await(), principal)
+                // Rekkefølgen på disse har betydning. Om sjekkEnhetstilgang kjøres først så vil vi svare med "Mangler enhetstilgang til sak".
+                // - Dette avslører at det finnes en sak for angitt sakId.
+                // - Men det avslører ikke at fodselsnummer eksisterer og at det er en adressebeskyttet person.
+                sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr), principal)
+                    ?: sjekkEnhetstilgang(navIdent, sak, enheterDeferred)
             }.catch(::AuthAnsattSakTilgangResponse)
 
             if (ikkeTilgang != null) {
@@ -63,14 +64,22 @@ private fun sjekkAdressebeskyttelse(adressebeskyttelse: ServiceResult<List<PdlSe
             logger.warn("Tilgang til sak avvist for ${principal.navIdent}: har ikke tilgang til gradering")
             AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)
         } else null // får tilgang
-    }.catch { msg, status ->
-        logger.warn("En feil oppstod ved sjekk av adressebeskyttelse: $status - $msg")
-        AuthAnsattSakTilgangResponse("En feil oppstod ved sjekk av adressebeskyttelse", HttpStatusCode.InternalServerError)
+    }.catch { _, status ->
+        when (status) {
+            HttpStatusCode.Forbidden -> AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)
+            else -> {
+                AuthAnsattSakTilgangResponse("En feil oppstod ved validering av tilgang til sak", HttpStatusCode.InternalServerError)
+            }
+        }
     }
 
-private suspend fun sjekkEnhetstilgang(navIdent: String, sak: PenService.SakSelection, enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>): AuthAnsattSakTilgangResponse? =
+private suspend fun sjekkEnhetstilgang(
+    navIdent: String,
+    sak: PenService.SakSelection,
+    enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>
+): AuthAnsattSakTilgangResponse? =
     if (sak.enhetId.isNullOrBlank()) {
-        logger.error("Tilgang til sak ${sak.sakId} avvist fordi den mangler enhet")
+        logger.warn("Tilgang til sak ${sak.sakId} avvist fordi den mangler enhet")
         AuthAnsattSakTilgangResponse("Sak er ikke tilordnet enhet", HttpStatusCode.BadRequest)
     } else {
         enheterResult.await().map { enheter ->
