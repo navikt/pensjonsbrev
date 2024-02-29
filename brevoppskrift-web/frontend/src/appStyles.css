@@ -27,7 +27,7 @@ body {
 }
 
 .show-if {
-    .expression, code {
+    > .expression, code {
         background: var(--a-blue-100);
     }
 }
@@ -41,7 +41,8 @@ body {
 }
 
 .expression {
-    white-space: nowrap;
+    background: var(--a-purple-100);
+    white-space: break-spaces;
 }
 
 .conditional {

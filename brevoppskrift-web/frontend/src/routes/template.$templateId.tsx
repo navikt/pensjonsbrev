@@ -9,6 +9,7 @@ import type {
   ContentOrControlStructure,
   Element,
   Expression,
+  ForEach,
   TemplateDocumentation,
 } from "~/api/brevbakerTypes";
 import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
@@ -130,14 +131,22 @@ function ContentOrControlStructureComponent<E extends Element>({ cocs }: { cocs:
       return <ContentComponent content={cocs.content} />;
     }
     case ContentOrControlStructureType.FOR_EACH: {
-      return <ForEachComponent />;
+      return <ForEachComponent content={cocs} />;
     }
   }
 }
 
-function ForEachComponent() {
-  // TODO
-  return <></>;
+function ForEachComponent({ content }: { content: ForEach<Element> }) {
+  return (
+    <>
+      <code>For hver X i</code>: <ExpressionToText expression={content.items} />
+      <div>
+        {content.body.map((b, index) => (
+          <ContentOrControlStructureComponent cocs={b} key={index} />
+        ))}
+      </div>
+    </>
+  );
 }
 
 function ContentComponent({ content }: { content: Element }) {
@@ -277,7 +286,19 @@ function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure
 }
 
 function ExpressionToText({ expression }: { expression: Expression }) {
-  if ("scopeName" in expression) return expression.scopeName;
+  if ("scopeName" in expression) {
+    switch (expression.scopeName) {
+      case "forEach_item": {
+        return "X"; // TODO: forskjellig navn for nøstede forEach
+      }
+      case "argument": {
+        return "";
+      }
+      default: {
+        return expression.scopeName;
+      }
+    }
+  }
   if ("value" in expression) return expression.value;
 
   const firstExpressionResolved = <ExpressionToText expression={expression.first} />;
@@ -307,17 +328,28 @@ function ExpressionToText({ expression }: { expression: Expression }) {
       );
     }
     case "POSTFIX": {
-      return (
-        <Link
-          from={Route.fullPath}
-          preload={false}
-          replace
-          search={(s) => ({ ...s, inspectedModel: expression.type?.replace("?", "") })}
-        >
+      const isDeepestPostFix = expression.first?.scopeName === "argument"; // TODO: create guard function
+      const content = (
+        <>
           {firstExpressionResolved}
           {expression.operator.text}
-        </Link>
+        </>
       );
+
+      if (isDeepestPostFix) {
+        return (
+          <Link
+            from={Route.fullPath}
+            preload={false}
+            replace
+            search={(s) => ({ ...s, inspectedModel: expression.type?.replace("?", "") })}
+          >
+            {content}
+          </Link>
+        );
+      }
+
+      return <span>{content}</span>;
     }
     case "INFIX": {
       return (
@@ -329,8 +361,8 @@ function ExpressionToText({ expression }: { expression: Expression }) {
             `}
           >
             {expression.operator.text}
-          </span>
-          {expression.operator.text === "and" || expression.operator.text === "or" ? <br /> : ""}
+          </span>{" "}
+          {/*{expression.operator.text === "and" || expression.operator.text === "or" ? <br /> : ""}*/}
           {secondExpressionResolved}
         </span>
       );
