@@ -1,5 +1,3 @@
-import io.ktor.plugin.features.*
-
 val apiModelVersion: String by project
 val exposedVersion: String by project
 val hamkrestVersion: String by project
@@ -23,23 +21,10 @@ version = "0.0.1"
 application {
     mainClass.set("no.nav.pensjon.brev.skribenten.SkribentenAppKt")
 }
-data class GithubImageRegistry(override val toImage: Provider<String>, override val username: Provider<String>, override val password: Provider<String>) : DockerImageRegistry
 
 ktor {
     fatJar {
         archiveFileName.set("app.jar")
-    }
-    docker {
-        jreVersion.set(JavaVersion.VERSION_17)
-        localImageName.set("pensjon-skribenten")
-        imageTag.set(providers.environmentVariable("IMAGE_TAG").orElse("latest"))
-        externalRegistry.set(
-            GithubImageRegistry(
-                toImage = providers.environmentVariable("IMAGE_SKRIBENTEN_BACKEND"),
-                username = providers.environmentVariable("GITHUB_REPOSITORY"),
-                password = providers.environmentVariable("GITHUB_TOKEN"),
-            )
-        )
     }
 }
 
@@ -86,7 +71,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-    implementation("org.postgresql:postgresql:42.7.0")
+    implementation("org.postgresql:postgresql:42.7.2")
     implementation("com.zaxxer:HikariCP:5.1.0")
 
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
@@ -102,7 +87,7 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
-    implementation("io.ktor:ktor-server-caching-headers-jvm:2.3.3")
+    implementation("io.ktor:ktor-server-caching-headers-jvm:$ktorVersion")
 
     // Test
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
