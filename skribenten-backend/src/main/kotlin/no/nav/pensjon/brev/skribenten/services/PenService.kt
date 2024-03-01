@@ -11,10 +11,9 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
 import java.time.LocalDate
 
-class PenService(config: Config, authService: AzureADService): ServiceStatus {
+class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     private val penUrl = config.getString("url")
     private val penScope = config.getString("scope")
 
@@ -36,7 +35,7 @@ class PenService(config: Config, authService: AzureADService): ServiceStatus {
         val foedselsdato: LocalDate,
         val sakType: SakType,
         val enhetId: String,
-        )
+    )
 
     enum class SakType { AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG, UFOREP, }
     data class SakSelection(
@@ -59,7 +58,7 @@ class PenService(config: Config, authService: AzureADService): ServiceStatus {
                 foedselsdato = it.foedselsdato,
                 sakType = it.sakType,
                 enhetId = it.enhetId
-                )
+            )
         }
 
     data class BestilDoksysBrevRequest(
@@ -72,13 +71,14 @@ class PenService(config: Config, authService: AzureADService): ServiceStatus {
 
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
-        request: OrderLetterRequest,
+        request: LegacyBrevService.BestillDoksysBrevRequest,
         enhetsId: String,
-        ): ServiceResult<BestillDoksysBrevResponse> =
-        client.post(call, "brev/skribenten/doksys/sak/${request.sakId}") {
+        sakId: Long,
+    ): ServiceResult<BestillDoksysBrevResponse> =
+        client.post(call, "brev/skribenten/doksys/sak/$sakId") {
             setBody(
                 BestilDoksysBrevRequest(
-                    sakId = request.sakId,
+                    sakId = sakId,
                     brevkode = request.brevkode,
                     journalfoerendeEnhet = enhetsId,
                     sprakKode = request.spraak,

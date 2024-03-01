@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExstreamBrevResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse.FailureType.*
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.FailureType.*
 import org.slf4j.LoggerFactory
 
 class LegacyBrevService(
@@ -15,65 +15,142 @@ class LegacyBrevService(
     private val penService: PenService,
 ) {
     private val logger = LoggerFactory.getLogger(LegacyBrevService::class.java)
-    suspend fun bestillBrev(call: ApplicationCall, request: OrderLetterRequest): BestillOgRedigerBrevResponse =
-        penService.hentSak(call, request.sakId.toString()).map { serviceResult ->
-            val sakEnhetId = serviceResult.enhetId
-            if (sakEnhetId == null) {
-                return BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
+
+    suspend fun bestillOgRedigerDoksysBrev(
+        call: ApplicationCall,
+        request: BestillDoksysBrevRequest,
+        enhetsId: String,
+        sakId: Long,
+    ): BestillOgRedigerBrevResponse {
+        val brevMetadata = brevmetadataService.getMal(request.brevkode)
+        val result = bestillDoksysBrev(call, request, enhetsId, sakId)
+        return if (result.failureType != null) {
+            BestillOgRedigerBrevResponse(result)
+        } else if (result.journalpostId == null) {
+            logger.error("Tom response fra doksys bestilling")
+            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+        } else {
+            if (brevMetadata.redigerbart) {
+                BestillOgRedigerBrevResponse(ventPaaJournalpostOgRedigerDoksysBrev(call, result.journalpostId))
             } else {
-                val brevMetadata = brevmetadataService.getMal(request.brevkode)
-                return when (brevMetadata.brevsystem) {
-                    BrevdataDto.BrevSystem.DOKSYS -> bestillDoksysBrev(call, request, sakEnhetId)
-                    BrevdataDto.BrevSystem.GAMMEL -> bestillExstreamBrev(
-                        call = call,
-                        request = request,
-                        navIdent = call.principal().navIdent,
-                        metadata = brevMetadata,
-                        navn = call.principal().fullName,
-                        enhetsId = serviceResult.enhetId
-                    )
-                }
+                BestillOgRedigerBrevResponse(result)
             }
-        }.catch { message, httpStatusCode ->
-            logger.error("En feil oppstod under henting av Sak med sakId. ${request.sakId} , med message: $message , statuscode: $httpStatusCode")
-            return BestillOgRedigerBrevResponse(PenService.BestillDoksysBrevResponse.FailureType.INTERNAL_SERVICE_CALL_FAILIURE)
         }
+    }
+
+    suspend fun bestillOgRedigerExstreamBrev(
+        call: ApplicationCall,
+        enhetsId: String,
+        gjelderPid: String,
+        request: BestillExstreamBrevRequest,
+        sakId: Long,
+    ): BestillOgRedigerBrevResponse {
+        val brevMetadata = brevmetadataService.getMal(request.brevkode)
+        val result = bestillExstreamBrev(
+            brevkode = request.brevkode,
+            call = call,
+            enhetsId = enhetsId,
+            gjelderPid = gjelderPid,
+            idTSSEkstern = request.idTSSEkstern,
+            isSensitive = request.isSensitive,
+            metadata = brevMetadata,
+            sakId = sakId,
+            spraak = request.spraak,
+            vedtaksId = request.vedtaksId,
+        )
+        return if (result.failureType != null) {
+            BestillOgRedigerBrevResponse(result)
+        } else if (result.journalpostId == null) {
+            logger.error("Tom response fra exstream bestilling")
+            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+        } else {
+            if (brevMetadata.redigerbart) {
+                BestillOgRedigerBrevResponse(redigerExstreamBrev(call, result.journalpostId))
+            } else {
+                BestillOgRedigerBrevResponse(result)
+            }
+        }
+    }
+
+    suspend fun bestillOgRedigerEblankett(
+        call: ApplicationCall,
+        enhetsId: String,
+        gjelderPid: String,
+        request: BestillEblankettRequest,
+        sakId: Long,
+    ): BestillOgRedigerBrevResponse {
+        val brevMetadata = brevmetadataService.getMal(request.brevkode)
+        val result = bestillExstreamBrev(
+            brevkode = request.brevkode,
+            call = call,
+            enhetsId = enhetsId,
+            gjelderPid = gjelderPid,
+            isSensitive = request.isSensitive,
+            metadata = brevMetadata,
+            sakId = sakId,
+            spraak = SpraakKode.NB,
+        )
+        return if (result.failureType != null) {
+            BestillOgRedigerBrevResponse(result)
+        } else if (result.journalpostId == null) {
+            logger.error("Tom response fra exstream bestilling")
+            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+        } else {
+            BestillOgRedigerBrevResponse(redigerExstreamBrev(call, result.journalpostId))
+        }
+    }
 
     private suspend fun bestillExstreamBrev(
+        brevkode: String,
         call: ApplicationCall,
-        request: OrderLetterRequest,
-        navIdent: String,
-        metadata: BrevdataDto,
-        navn: String,
         enhetsId: String,
-    ): BestillOgRedigerBrevResponse =
-        tjenestebussIntegrasjonService.bestillExstreamBrev(call, request, navIdent, metadata, navn, enhetsId)
-            .map {
-                if (it.failureType != null) {
-                    BestillOgRedigerBrevResponse(it.failureType)
-                } else if (it.journalpostId != null) {
-                    ventPaaJournalOgRedigerExstreamBrev(call, it.journalpostId)
-                } else {
-                    logger.error("Tom response fra tjenestebuss-integrasjon")
-                    BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
-                }
-            }.catch { message, httpStatusCode ->
-                logger.error("Feil ved bestilling av brev fra exstream mot tjenestebuss-integrasjon: $message Status:$httpStatusCode")
-                BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+        gjelderPid: String,
+        idTSSEkstern: String? = null,
+        isSensitive: Boolean,
+        metadata: BrevdataDto,
+        sakId: Long,
+        spraak: SpraakKode,
+        vedtaksId: Long? = null,
+    ): BestillBrevResponse =
+        tjenestebussIntegrasjonService.bestillExstreamBrev(
+            brevkode = brevkode,
+            call = call,
+            enhetsId = enhetsId,
+            gjelderPid = gjelderPid,
+            idTSSEkstern = idTSSEkstern,
+            isSensitive = isSensitive,
+            metadata = metadata,
+            name = call.principal().fullName,
+            navIdent = call.principal().navIdent,
+            sakId = sakId,
+            spraak = spraak,
+            vedtaksId = vedtaksId,
+        ).map {
+            if (it.failureType != null) {
+                BestillBrevResponse(it.failureType)
+            } else if (it.journalpostId != null) {
+                BestillBrevResponse(it.journalpostId)
+            } else {
+                logger.error("Tom response fra tjenestebuss-integrasjon")
+                BestillBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
             }
+        }.catch { message, httpStatusCode ->
+            logger.error("Feil ved bestilling av brev fra exstream mot tjenestebuss-integrasjon: $message Status:$httpStatusCode")
+            BestillBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+        }
 
-    private suspend fun ventPaaJournalOgRedigerExstreamBrev(
+    private suspend fun redigerExstreamBrev(
         call: ApplicationCall,
         journalpostId: String,
-    ): BestillOgRedigerBrevResponse {
+    ): RedigerBrevResponse {
         val status = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
         when (status) {
-            ERROR -> return BestillOgRedigerBrevResponse(SAF_ERROR)
-            NOT_READY -> return BestillOgRedigerBrevResponse(FERDIGSTILLING_TIMEOUT)
+            ERROR -> return RedigerBrevResponse(SAF_ERROR)
+            NOT_READY -> return RedigerBrevResponse(FERDIGSTILLING_TIMEOUT)
             READY -> {
                 return tjenestebussIntegrasjonService.redigerExstreamBrev(call, journalpostId)
                     .map { exstreamResponse ->
-                        BestillOgRedigerBrevResponse(
+                        RedigerBrevResponse(
                             url = exstreamResponse.url,
                             failureType = exstreamResponse.failure?.let {
                                 logger.error("Feil ved redigering av exstream brev $it")
@@ -82,124 +159,108 @@ class LegacyBrevService(
                         )
                     }.catch { message, httpStatusCode ->
                         logger.error("Feil ved bestilling av redigering av exstream brev mot tjenestebuss integrasjon: $message Status: $httpStatusCode")
-                        BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                        RedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
                     }
-
             }
         }
     }
 
     private suspend fun bestillDoksysBrev(
         call: ApplicationCall,
-        request: OrderLetterRequest,
-        enhetsId: String
-    ): BestillOgRedigerBrevResponse =
-        penService.bestillDoksysBrev(call, request, enhetsId)
+        request: BestillDoksysBrevRequest,
+        enhetsId: String,
+        sakId: Long
+    ): BestillBrevResponse =
+        penService.bestillDoksysBrev(call, request, enhetsId, sakId)
             .map { response ->
                 if (response.failure != null) {
-                    BestillOgRedigerBrevResponse(response.failure)
+                    BestillBrevResponse(response.failure)
                 } else if (response.journalpostId != null) {
-                    ventPaaJournalOgRedigerDoksysBrev(call, response.journalpostId)
+                    BestillBrevResponse(response.journalpostId)
                 } else {
                     logger.error("Tom response fra pesys")
-                    BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                    BestillBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
                 }
             }.catch { message, httpStatusCode ->
                 logger.error("Feil ved bestilling av doksys brev $message status: $httpStatusCode")
-                BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                BestillBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
             }
 
-    private suspend fun ventPaaJournalOgRedigerDoksysBrev(call: ApplicationCall, journalpostId: String): BestillOgRedigerBrevResponse =
+    private suspend fun ventPaaJournalpostOgRedigerDoksysBrev(call: ApplicationCall, journalpostId: String): RedigerBrevResponse =
         when (safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)) {
-            ERROR -> BestillOgRedigerBrevResponse(SAF_ERROR)
-            NOT_READY -> BestillOgRedigerBrevResponse(FERDIGSTILLING_TIMEOUT)
+            ERROR -> RedigerBrevResponse(SAF_ERROR)
+            NOT_READY -> RedigerBrevResponse(FERDIGSTILLING_TIMEOUT)
             READY -> {
                 safService.getFirstDocumentInJournal(call, journalpostId)
                     .map { safResponse ->
                         if (safResponse.errors != null) {
                             logger.error("Feil fra saf ved henting av dokument med journalpostId $journalpostId ${safResponse.errors}")
-                            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                            RedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
                         } else if (safResponse.data != null) {
                             val dokumentId = safResponse.data.journalpost.dokumenter.firstOrNull()?.dokumentInfoId
                             if (dokumentId != null) {
-                                redigerDoksysBrev(tjenestebussIntegrasjonService, call, journalpostId, dokumentId)
+                                redigerDoksysBrev(call, journalpostId, dokumentId)
                             } else {
                                 logger.error("Fant ingen dokumenter for redigering ved henting av journalpostId $journalpostId")
-                                BestillOgRedigerBrevResponse(SAF_ERROR)
+                                RedigerBrevResponse(SAF_ERROR)
                             }
                         } else {
                             logger.error("Tom response fra saf ved henting av dokument")
-                            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                            RedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
                         }
                     }.catch { message, httpStatusCode ->
                         logger.error("Feil ved henting av dokumentId fra SAF ved redigering av doksys brev $message status: $httpStatusCode")
-                        BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                        RedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
                     }
             }
         }
 
     private suspend fun redigerDoksysBrev(
-        tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
         call: ApplicationCall,
         journalpostId: String,
-        dokumentId: String
+        dokumentId: String,
     ) = tjenestebussIntegrasjonService.redigerDoksysBrev(call, journalpostId, dokumentId)
         .map {
             if (it.metaforceURI != null) {
-                BestillOgRedigerBrevResponse(it.metaforceURI.replace("\"", ""))
+                RedigerBrevResponse(it.metaforceURI.replace("\"", ""))
             } else if (it.failure != null) {
-                BestillOgRedigerBrevResponse(it.failure)
+                RedigerBrevResponse(it.failure)
             } else {
                 logger.error("Tom response ved redigering av doksys brev ved redigering av journal: $journalpostId")
-                BestillOgRedigerBrevResponse(DOKSYS_REDIGERING_UFORVENTET)
+                RedigerBrevResponse(DOKSYS_REDIGERING_UFORVENTET)
             }
         }.catch { message, httpStatusCode ->
             logger.error("Feil ved redigering av doksys brev $message status: $httpStatusCode")
-            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+            RedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
         }
 
-
-    /**
-     * @param brevkode ID til brevet som bestilles
-     * @param gjelderPid brukeren brevet gjelder
-     * @param landkode      land som brevet skal til. Kun for e-blanketter
-     * @param mottakerText  mottaker i fritekst. Kun for e-blanketter
-     * @param isSensitive   om brevet inneholder sensitive opplysninger som ikke skal vises ved nivå 3 pålogging.
-     * Brukes ikke i doksys brev ettersom det settes senere i prosessen.
-     * @param vedtaksId     vedtakId dersom brevet er ett vedtaksbrev. Brukes for å hente opplysninger om vedtaket for vedtaksbrev.
-     * @param idTSSEkstern  overstyring av mottaker til samhandler med TSS id
-     * */
-    data class OrderLetterRequest(
+    data class BestillDoksysBrevRequest(
         val brevkode: String,
         val spraak: SpraakKode,
-        val sakId: Long,
-        val gjelderPid: String,
-        val landkode: String? = null,
-        val mottakerText: String? = null,
-        val isSensitive: Boolean?,
+        val vedtaksId: Long? = null,
+    )
+
+    data class BestillExstreamBrevRequest(
+        val brevkode: String,
+        val spraak: SpraakKode,
+        val isSensitive: Boolean,
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
     )
 
-    data class BestillOgRedigerBrevResponse(
-        val url: String?,
-        val failureType: FailureType?,
-    ) {
-        constructor(failure: FailureType) : this(url = null, failureType = failure)
-        constructor(url: String) : this(url = url, failureType = null)
+    data class BestillEblankettRequest(
+        val brevkode: String,
+        val landkode: String,
+        val mottakerText: String,
+        val isSensitive: Boolean,
+    )
 
-        constructor(failure: RedigerDoksysDokumentResponseDto.FailureType) : this(
-            when (failure) {
-                RedigerDoksysDokumentResponseDto.FailureType.UNDER_REDIGERING -> DOKSYS_REDIGERING_UNDER_REDIGERING
-                RedigerDoksysDokumentResponseDto.FailureType.IKKE_REDIGERBART -> DOKSYS_REDIGERING_IKKE_REDIGERBART
-                RedigerDoksysDokumentResponseDto.FailureType.VALIDERING_FEILET -> DOKSYS_REDIGERING_VALIDERING_FEILET
-                RedigerDoksysDokumentResponseDto.FailureType.IKKE_FUNNET -> DOKSYS_REDIGERING_IKKE_FUNNET
-                RedigerDoksysDokumentResponseDto.FailureType.IKKE_TILGANG -> DOKSYS_REDIGERING_IKKE_TILGANG
-                RedigerDoksysDokumentResponseDto.FailureType.LUKKET -> DOKSYS_REDIGERING_LUKKET
-                RedigerDoksysDokumentResponseDto.FailureType.UFORVENTET -> DOKSYS_REDIGERING_UFORVENTET
-                RedigerDoksysDokumentResponseDto.FailureType.ENHETSID_MANGLER -> ENHETSID_MANGLER
-            }
-        )
+    data class BestillBrevResponse(
+        val journalpostId: String?,
+        val failureType: FailureType?
+    ) {
+        constructor(failure: FailureType) : this(journalpostId = null, failureType = failure)
+        constructor(journalpostId: String) : this(journalpostId = journalpostId, failureType = null)
 
         constructor(failure: PenService.BestillDoksysBrevResponse.FailureType) : this(
             when (failure) {
@@ -220,30 +281,71 @@ class LegacyBrevService(
                 BestillExstreamBrevResponseDto.FailureType.OPPRETTE_JOURNALPOST -> EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST
             }
         )
-
-        enum class FailureType {
-            DOKSYS_BESTILLING_ADDRESS_NOT_FOUND,
-            DOKSYS_BESTILLING_INTERNAL_SERVICE_CALL_FAILIURE,
-            DOKSYS_BESTILLING_PERSON_NOT_FOUND,
-            DOKSYS_BESTILLING_TPS_CALL_FAILIURE,
-            DOKSYS_BESTILLING_UNAUTHORIZED,
-            DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR,
-            DOKSYS_REDIGERING_IKKE_FUNNET,
-            DOKSYS_REDIGERING_IKKE_REDIGERBART,
-            DOKSYS_REDIGERING_IKKE_TILGANG,
-            DOKSYS_REDIGERING_LUKKET,
-            DOKSYS_REDIGERING_UFORVENTET,
-            DOKSYS_REDIGERING_UNDER_REDIGERING,
-            DOKSYS_REDIGERING_VALIDERING_FEILET,
-            EXSTREAM_BESTILLING_ADRESSE_MANGLER,
-            EXSTREAM_BESTILLING_HENTE_BREVDATA,
-            EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
-            EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST,
-            EXSTREAM_REDIGERING_GENERELL,
-            FERDIGSTILLING_TIMEOUT,
-            SAF_ERROR,
-            SKRIBENTEN_INTERNAL_ERROR,
-            ENHETSID_MANGLER,
-        }
     }
+
+    data class RedigerBrevResponse(
+        val url: String?,
+        val failureType: FailureType?
+    ) {
+        constructor(failure: FailureType) : this(url = null, failureType = failure)
+        constructor(url: String) : this(url = url, failureType = null)
+        constructor(failure: RedigerDoksysDokumentResponseDto.FailureType) : this(
+            when (failure) {
+                RedigerDoksysDokumentResponseDto.FailureType.UNDER_REDIGERING -> DOKSYS_REDIGERING_UNDER_REDIGERING
+                RedigerDoksysDokumentResponseDto.FailureType.IKKE_REDIGERBART -> DOKSYS_REDIGERING_IKKE_REDIGERBART
+                RedigerDoksysDokumentResponseDto.FailureType.VALIDERING_FEILET -> DOKSYS_REDIGERING_VALIDERING_FEILET
+                RedigerDoksysDokumentResponseDto.FailureType.IKKE_FUNNET -> DOKSYS_REDIGERING_IKKE_FUNNET
+                RedigerDoksysDokumentResponseDto.FailureType.IKKE_TILGANG -> DOKSYS_REDIGERING_IKKE_TILGANG
+                RedigerDoksysDokumentResponseDto.FailureType.LUKKET -> DOKSYS_REDIGERING_LUKKET
+                RedigerDoksysDokumentResponseDto.FailureType.UFORVENTET -> DOKSYS_REDIGERING_UFORVENTET
+                RedigerDoksysDokumentResponseDto.FailureType.ENHETSID_MANGLER -> ENHETSID_MANGLER
+            }
+        )
+
+    }
+
+    data class BestillOgRedigerBrevResponse(
+        val url: String?,
+        val journalpostId: String?,
+        val failureType: FailureType?,
+    ) {
+        constructor(failureType: FailureType?) : this(null, null, failureType)
+        constructor(bestillBrevResponse: BestillBrevResponse) : this(
+            url = null,
+            journalpostId = bestillBrevResponse.journalpostId,
+            failureType = bestillBrevResponse.failureType
+        )
+
+        constructor(redigerBrevResponse: RedigerBrevResponse) : this(
+            url = redigerBrevResponse.url,
+            journalpostId = null,
+            failureType = redigerBrevResponse.failureType
+        )
+    }
+
+    enum class FailureType {
+        DOKSYS_BESTILLING_ADDRESS_NOT_FOUND,
+        DOKSYS_BESTILLING_INTERNAL_SERVICE_CALL_FAILIURE,
+        DOKSYS_BESTILLING_PERSON_NOT_FOUND,
+        DOKSYS_BESTILLING_TPS_CALL_FAILIURE,
+        DOKSYS_BESTILLING_UNAUTHORIZED,
+        DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR,
+        DOKSYS_REDIGERING_IKKE_FUNNET,
+        DOKSYS_REDIGERING_IKKE_REDIGERBART,
+        DOKSYS_REDIGERING_IKKE_TILGANG,
+        DOKSYS_REDIGERING_LUKKET,
+        DOKSYS_REDIGERING_UFORVENTET,
+        DOKSYS_REDIGERING_UNDER_REDIGERING,
+        DOKSYS_REDIGERING_VALIDERING_FEILET,
+        EXSTREAM_BESTILLING_ADRESSE_MANGLER,
+        EXSTREAM_BESTILLING_HENTE_BREVDATA,
+        EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
+        EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST,
+        EXSTREAM_REDIGERING_GENERELL,
+        FERDIGSTILLING_TIMEOUT,
+        SAF_ERROR,
+        SKRIBENTEN_INTERNAL_ERROR,
+        ENHETSID_MANGLER,
+    }
+
 }

@@ -5,6 +5,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillBrevResponse
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.FailureType.ENHETSID_MANGLER
 
 fun Route.sakRoute(
     penService: PenService,
@@ -21,9 +24,45 @@ fun Route.sakRoute(
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             call.respond(sak)
         }
-        post<BestillBrevRequest>("/bestillbrev") { request ->
-            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-            call.respond(legacyBrevService.bestillBrev(call, request.toDomain(sak)))
+        route("/bestillBrev") {
+            post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
+                val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+                call.respond(sak.enhetId?.let {
+                    legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = sak.enhetId, sak.sakId)
+                } ?: BestillBrevResponse(ENHETSID_MANGLER))
+            }
+            route("/exstream") {
+                post<LegacyBrevService.BestillExstreamBrevRequest> { request ->
+                    val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+                    call.respond(
+                        sak.enhetId?.let {
+                            legacyBrevService.bestillOgRedigerExstreamBrev(
+                                call = call,
+                                enhetsId = sak.enhetId,
+                                gjelderPid = sak.foedselsnr,
+                                request = request,
+                                sakId = sak.sakId,
+                            )
+                        } ?: BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
+                    )
+                }
+
+                post<LegacyBrevService.BestillEblankettRequest>("/eblankett") { request ->
+                    val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+                    call.respond(
+                        sak.enhetId?.let {
+                            legacyBrevService.bestillOgRedigerEblankett(
+                                call = call,
+                                enhetsId = sak.enhetId,
+                                gjelderPid = sak.foedselsnr,
+                                request = request,
+                                sakId = sak.sakId,
+                            )
+                        } ?: BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
+                    )
+
+                }
+            }
         }
         get("/navn") {
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
@@ -40,26 +79,4 @@ fun Route.sakRoute(
             call.respond(krrService.getPreferredLocale(call, sak.foedselsnr))
         }
     }
-}
-
-private data class BestillBrevRequest(
-    val brevkode: String,
-    val spraak: SpraakKode,
-    val landkode: String? = null,
-    val mottakerText: String? = null,
-    val isSensitive: Boolean?,
-    val vedtaksId: Long? = null,
-    val idTSSEkstern: String? = null,
-) {
-    fun toDomain(sak: PenService.SakSelection) = LegacyBrevService.OrderLetterRequest(
-        brevkode = brevkode,
-        spraak = spraak,
-        sakId = sak.sakId,
-        gjelderPid = sak.foedselsnr,
-        landkode = landkode,
-        mottakerText = mottakerText,
-        isSensitive = isSensitive,
-        vedtaksId = vedtaksId,
-        idTSSEkstern = idTSSEkstern,
-    )
 }

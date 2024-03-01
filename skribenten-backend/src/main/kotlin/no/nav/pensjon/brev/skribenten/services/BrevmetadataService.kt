@@ -15,7 +15,7 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import org.slf4j.LoggerFactory
 
-class BrevmetadataService(config: Config): ServiceStatus {
+class BrevmetadataService(config: Config) : ServiceStatus {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = HttpClient(CIO) {
@@ -36,7 +36,6 @@ class BrevmetadataService(config: Config): ServiceStatus {
 
         if (httpResponse.status.isSuccess()) {
             return httpResponse.body<List<BrevdataDto>>()
-                .filter { it.redigerbart }
                 .filter { filterForKontekst(it, isVedtaksKontekst) }
                 .map { it.mapToMetadata() }
         } else {
@@ -46,7 +45,7 @@ class BrevmetadataService(config: Config): ServiceStatus {
     }
 
     private fun filterForKontekst(brevmetadata: BrevdataDto, isVedtaksKontekst: Boolean): Boolean =
-        when(brevmetadata.brevkontekst){
+        when (brevmetadata.brevkontekst) {
             ALLTID -> true
             SAK -> !isVedtaksKontekst
             VEDTAK -> isVedtaksKontekst
@@ -55,7 +54,7 @@ class BrevmetadataService(config: Config): ServiceStatus {
 
     private fun BrevdataDto.mapToMetadata() =
         LetterMetadata(
-            name = dekode,     // TODO handle missing fields in front-end instead.
+            name = dekode,
             id = brevkodeIBrevsystem,
             spraak = sprak ?: emptyList(),
             brevsystem = when (brevsystem) {
@@ -63,7 +62,8 @@ class BrevmetadataService(config: Config): ServiceStatus {
                 BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
             },
             brevkategoriCode = this.brevkategori,
-            dokumentkategoriCode = this.dokumentkategori
+            dokumentkategoriCode = this.dokumentkategori,
+            redigerbart = redigerbart
         )
 
 
@@ -106,7 +106,7 @@ data class BrevdataDto(
 ) {
     enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
-    enum class BrevSystem { DOKSYS, GAMMEL /*EXSTREAM*/ , }
+    enum class BrevSystem { DOKSYS, GAMMEL /*EXSTREAM*/, }
     enum class BrevkontekstCode { ALLTID, SAK, VEDTAK }
 
     enum class DokumentType {
@@ -134,5 +134,6 @@ data class LetterMetadata(
     val spraak: List<SpraakKode>, // Enkelte brev er egentlig bare bokmål, men har null i metadata.
     val brevkategoriCode: BrevdataDto.BrevkategoriCode?,
     val dokumentkategoriCode: BrevdataDto.DokumentkategoriCode?,
+    val redigerbart: Boolean,
 )
 

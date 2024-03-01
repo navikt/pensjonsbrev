@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExstreamRequestDto.SakskontekstDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseResponseDto.FailureType.GENERISK
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.OrderLetterRequest
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentkategoriCode.SED
 import org.slf4j.LoggerFactory
 import java.util.*
 import javax.xml.datatype.DatatypeFactory
@@ -91,12 +91,20 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
 
 
     suspend fun bestillExstreamBrev(
+        brevkode: String,
         call: ApplicationCall,
-        request: OrderLetterRequest,
-        navIdent: String,
+        enhetsId: String,
+        gjelderPid: String,
+        idTSSEkstern: String? = null,
+        isSensitive: Boolean,
+        landkode: String? = null,
         metadata: BrevdataDto,
+        mottakerText: String? = null,
         name: String,
-        enhetsId: String
+        navIdent: String,
+        sakId: Long,
+        spraak: SpraakKode,
+        vedtaksId: Long? = null,
     ): ServiceResult<BestillExstreamBrevResponseDto> {
         val isEblankett = metadata.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT
         val isNotat = metadata.dokType == BrevdataDto.DokumentType.N
@@ -106,41 +114,38 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             accept(ContentType.Application.Json)
             setBody(
                 BestillBrevExstreamRequestDto(
-                    brevKode = request.brevkode, // ID på brev,
+                    brevKode = brevkode, // ID på brev
                     brevGruppe = metadata.brevgruppe
-                        ?: throw BadRequestException("Fant ikke brevgruppe gitt exstream brev :${request.brevkode}"),
+                        ?: throw BadRequestException("Fant ikke brevgruppe gitt exstream brev :${brevkode}"),
                     isRedigerbart = metadata.redigerbart,
-                    sprakkode = request.spraak.toString(),
-                    brevMottakerNavn = request.mottakerText?.takeIf { isEblankett },        // custom felt kun for sed/eblankett
+                    sprakkode = spraak.toString(),
+                    brevMottakerNavn = mottakerText?.takeIf { isEblankett },// custom felt kun for sed/eblankett
+
                     sakskontekstDto = SakskontekstDto(
                         journalenhet = enhetsId,                            // NAV org enhet nr som skriver brevet. Kommer med i signatur.
-                        gjelder = request.gjelderPid,                       // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
+                        gjelder = gjelderPid,                               // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
                         dokumentdato = getCurrentGregorianTime(),           // nåværende dato.
                         dokumenttype = metadata.dokType.toString(),         // Inngående, utgående, notat
                         fagsystem = "PEN",
                         fagomradekode = "PEN",                              // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
                         innhold = metadata.dekode,                          // Visningsnavn
-                        kategori = if (isEblankett) BrevdataDto.DokumentkategoriCode.SED.toString() else metadata.dokumentkategori.toString(),    // Kategori for dokumentet
-                        saksid = request.sakId.toString(),// sakid
+                        kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),    // Kategori for dokumentet
+                        saksid = sakId.toString(),                          // sakid
                         saksbehandlernavn = name,
                         saksbehandlerId = navIdent,
                         kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
-                        land = request.landkode.takeIf { isEblankett },
-                        //TODO sett verge om det er verge og samhandler om det overstyres
-                        mottaker = bestemExstreamMottaker(isEblankett, isNotat, request),
-                        vedtaksId = request.vedtaksId?.toString(),
+                        land = landkode.takeIf { isEblankett },
+                        mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
+                        vedtaksId = vedtaksId?.toString(),
+                        isSensitive = isSensitive,
                     )
                 )
             )
         }.toServiceResult<BestillExstreamBrevResponseDto>()
     }
 
-    private fun bestemExstreamMottaker(isEblankett: Boolean, isNotat: Boolean, request: OrderLetterRequest) =
-        if (isEblankett || isNotat) {
-            null
-        } else {
-            request.idTSSEkstern ?: request.gjelderPid
-        }
+    private fun bestemExstreamMottaker(isEblankett: Boolean, isNotat: Boolean, idTSSEkstern: String?, gjelderPid: String, ) =
+        if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid
 
     suspend fun redigerDoksysBrev(
         call: ApplicationCall,
@@ -150,7 +155,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         tjenestebussIntegrasjonClient.post(call, "/redigerDoksysBrev") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(RedigerDoksysDokumentRequestDto(journalpostId = journalpostId, dokumentId = dokumentId))
+            setBody(RedigerDoksysDokumentRequestDto(journalpostId, dokumentId))
         }.toServiceResult<RedigerDoksysDokumentResponseDto>()
 
     suspend fun redigerExstreamBrev(
