@@ -21,12 +21,15 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.aarsinntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.fratrekkInnAar
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.relevantMaanederInnAar
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
@@ -53,6 +56,11 @@ val beregningAvOmstillingsstoenad = createAttachment(
 }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning>.beregning() {
+    val grunnbeloep = sisteBeregningsperiode.grunnbeloep
+    val aarsinntekt = sisteBeregningsperiode.aarsinntekt
+    val fratrekkInnAar = sisteBeregningsperiode.fratrekkInnAar
+    val gjenvaerendeMaaneder = sisteBeregningsperiode.relevantMaanederInnAar
+
     paragraph {
         textExpr(
             Bokmal to "Full omstillingsstønad beregnes utfra 2,25 ganger folketrygdens ".expr() +
@@ -162,11 +170,28 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
 
     showIf(inntekt.greaterThan(0)) {
         paragraph {
+            text(
+                Bokmal to "I innvilgelsesåret skal inntekt opptjent før innvilgelse trekkes fra, og resterende " +
+                        "forventet inntekt fordeles på gjenværende måneder.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
             textExpr(
-                Bokmal to "".expr() + "Vi har lagt til grunn at du har en forventet inntekt på " +
-                        inntekt.format() + " kroner fra " +
-                        sisteBeregningsperiode.datoFOM.format() + ". Stønad per måned er redusert med " +
-                        inntekt.format() + " kroner minus et halvt grunnbeløp ganget med 45 prosent, delt på 12 måneder.",
+                Bokmal to "Din oppgitte årsinntekt er ".expr() + aarsinntekt.format() + " kroner. Fratrekk " +
+                        "for inntekt så langt i år er " + fratrekkInnAar.format() + " kroner. Vi har lagt til grunn " +
+                        "at du har en forventet inntekt på " + inntekt.format() + " kroner fra " +
+                        sisteBeregningsperiode.datoFOM.format() + ".",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "Stønad per måned er redusert med ".expr() + inntekt.format() + " minus " +
+                        "0,5 G / 12 måneder × " + gjenvaerendeMaaneder.format() + " måneder × 45 %. Beløpet " +
+                        "deles på " + gjenvaerendeMaaneder.format() + " måneder.",
                 Nynorsk to "".expr() + "Vi har lagt til grunn at du har ei forventa inntekt på " +
                         inntekt.format() + " kroner frå " + sisteBeregningsperiode.datoFOM.format() + ". " +
                         "Stønad per månad er redusert med " + inntekt.format() + " minus eit halvt grunnbeløp " +
