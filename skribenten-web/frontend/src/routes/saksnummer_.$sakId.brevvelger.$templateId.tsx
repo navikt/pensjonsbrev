@@ -47,7 +47,9 @@ import {
   getNavn,
   hentSamhandler,
   hentSamhandlerAdresse,
-  orderLetter,
+  orderDoksysLetter,
+  orderEblankett,
+  orderExstreamLetter,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
@@ -159,7 +161,7 @@ const exstreamOrderLetterValidationSchema = baseOrderLetterValidationSchema.exte
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
 });
 
-const eblankettValidationSchema = baseOrderLetterValidationSchema.extend({
+const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),
   mottakerText: z.string().min(1, "Obligatorisk"),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
@@ -170,7 +172,7 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
-    mutationFn: (payload) => orderLetter(sakId, payload),
+    mutationFn: (payload) => orderExstreamLetter(sakId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -222,7 +224,7 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
   const { vedtaksId } = Route.useSearch();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderDoksysLetterRequest>({
-    mutationFn: (payload) => orderLetter(sakId, payload),
+    mutationFn: (payload) => orderDoksysLetter(sakId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -278,7 +280,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   });
 
   const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
-    mutationFn: (payload) => orderLetter(sakId, payload),
+    mutationFn: (payload) => orderEblankett(sakId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -301,7 +303,6 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
           })}
         >
           <VStack gap="4">
-            <SelectLanguage letterTemplate={letterTemplate} />
             <SelectSensitivity />
             <SelectAvtaleland />
             <TextField
