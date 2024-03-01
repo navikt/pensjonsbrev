@@ -87,7 +87,7 @@ object BarnepensjonFellesFraser {
                 text(
                     Bokmal to "Du må melde fra om endringer",
                     Nynorsk to "Du må melde frå om endringar",
-                    English to "You must report changes",
+                    English to "You must report any changes",
                 )
             }
             paragraph {
@@ -138,7 +138,7 @@ object BarnepensjonFellesFraser {
                     text(
                         Bokmal to " hverdager mellom kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
                         Nynorsk to ", kvardagar mellom kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                        English to ") weekdays between 09.00-15.00. If you provide your child's national identity number, we can more easily provide you with quick and good help."
+                        English to ") weekdays between 09.00-15.00. If you provide your national identity number, we can more easily provide you with quick and good help."
                     )
                 }
             }
