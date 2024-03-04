@@ -23,7 +23,7 @@ import java.time.LocalDate
 data class AvvistKlageInnholdDTO(
     val sakType: SakType,
     val klageDato: LocalDate,
-    val datoForVedtaketKlagenGjelder: LocalDate,
+    val datoForVedtaketKlagenGjelder: LocalDate?,
 
     )
 
@@ -53,12 +53,23 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
         outline {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Vi viser til klagen din av ".expr() + klageDato.format() + " på vedtak om "
-                            + sakType.format(SaktypeFormatter) + " av " + datoForVedtaketKlagenGjelder.format() + ". "
-                            + "Klagen avvises fordi <den er satt frem for sent/mangler fullmakt/andre grunner>.",
-                    Language.Nynorsk to "Dette er en placeholder for vedtaksbrevet for avvisning av klage".expr(),
-                    Language.English to "Dette er en placeholder for vedtaksbrevet for avvisning av klage".expr()
+                    Language.Bokmal to "Vi viser til klagen din av ".expr() + klageDato.format(),
+                    Language.Nynorsk to "".expr(),
+                    Language.English to "".expr()
                 )
+                ifNotNull(datoForVedtaketKlagenGjelder) { paaklagdVedtakDato ->
+                    textExpr(
+                        Language.Bokmal to " på vedtak om ".expr() + sakType.format(SaktypeFormatter) + " av " + paaklagdVedtakDato.format(),
+                        Language.Nynorsk to "".expr(),
+                        Language.English to "".expr()
+                    )
+                }
+                textExpr(
+                    Language.Bokmal to ". Klagen avvises fordi <den er satt frem for sent/mangler fullmakt/andre grunner>.".expr(),
+                    Language.Nynorsk to "".expr(),
+                    Language.English to "".expr()
+                )
+
             }
             title1 {
                 text(
@@ -140,9 +151,11 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                 )
             }
             title2 {
-                text(Language.Bokmal to "Ved muntlig klage / manglende underskrift:",
+                text(
+                    Language.Bokmal to "Ved muntlig klage / manglende underskrift:",
                     Language.Nynorsk to "",
-                    Language.English to "")
+                    Language.English to ""
+                )
             }
             paragraph {
                 text(
