@@ -16,7 +16,6 @@ import {
   BodyShort,
   Button,
   Heading,
-  HStack,
   Link,
   Modal,
   Radio,
@@ -45,7 +44,6 @@ import {
   getKontaktAdresse,
   getLetterTemplate,
   getNavn,
-  hentSamhandler,
   hentSamhandlerAdresse,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
@@ -125,7 +123,7 @@ export function SelectedTemplate() {
           justify-content: space-between;
         }
       `}
-      gap="5"
+      gap="4"
     >
       <FavoriteButton />
       <Brevmal letterTemplate={letterTemplate} />
@@ -364,6 +362,15 @@ function SelectSensitivity() {
         <RadioGroup
           legend="Er brevet sensitivt?"
           {...field}
+          css={css`
+            .navds-radio-buttons {
+              margin: 0 !important;
+            }
+
+            .navds-radio__label {
+              padding: var(--a-spacing-2) 0;
+            }
+          `}
           error={fieldState.error?.message}
           size="medium"
           value={field.value ?? null}
@@ -490,29 +497,30 @@ function PersonAdresse() {
   });
 
   return (
-    <VStack gap="2">
+    <div
+      css={css`
+        h3 {
+          margin-bottom: var(--a-spacing-1);
+        }
+
+        button {
+          margin-top: var(--a-spacing-2);
+        }
+      `}
+    >
       <Heading level="3" size="xsmall">
         Mottaker
       </Heading>
-      <VStack gap="1">
-        {navn}{" "}
-        <Tag
-          css={css`
-            width: fit-content;
-          `}
-          size="xsmall"
-          variant="alt1"
-        >
-          {getAdresseTypeName(adresseQuery.data?.type)}
-        </Tag>
-      </VStack>
+      <div>
+        {navn} ({getAdresseTypeName(adresseQuery.data?.type)})
+      </div>
       <VStack gap="0">
         {adresseQuery.data && adresseQuery.data.adresselinjer.map((linje) => <span key={linje}>{linje}</span>)}
       </VStack>
       {adresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
       {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
       <VelgSamhandlerModal />
-    </VStack>
+    </div>
   );
 }
 function SamhandlerAdresse() {
@@ -526,7 +534,17 @@ function SamhandlerAdresse() {
   });
 
   return (
-    <VStack gap="2">
+    <div
+      css={css`
+        h3 {
+          margin-bottom: var(--a-spacing-1);
+        }
+
+        button {
+          margin-top: var(--a-spacing-2);
+        }
+      `}
+    >
       <Heading level="3" size="xsmall">
         Mottaker
       </Heading>
@@ -551,7 +569,7 @@ function SamhandlerAdresse() {
       >
         Endre til bruker
       </Button>
-    </VStack>
+    </div>
   );
 }
 
@@ -560,7 +578,7 @@ function FormattedSamhandlerAdresse({ adresse }: { adresse: SamhandlerPostadress
 
   return (
     <>
-      <span>{navn} (samhandler)</span>
+      <span>{navn} (Samhandler)</span>
       <VStack gap="0">
         <span>{linje1}</span>
         <span>
@@ -635,12 +653,6 @@ function VelgSamhandlerModal() {
     resolver: zodResolver(samhandlerSearchValidationSchema),
   });
 
-  const hentSamhandlerQuery = useQuery({
-    queryKey: hentSamhandler.queryKey(idTSSEkstern as string),
-    queryFn: () => hentSamhandler.queryFn({ hentDetaljert: false, idTSSEkstern: idTSSEkstern as string }),
-    enabled: !!idTSSEkstern,
-  });
-
   const finnSamhandlerMutation = useMutation<
     FinnSamhandlerResponseDto,
     AxiosError<Error> | Error,
@@ -661,18 +673,15 @@ function VelgSamhandlerModal() {
 
   return (
     <>
-      <HStack align="center" gap="4">
-        {idTSSEkstern && <span>{hentSamhandlerQuery.data?.navn}</span>}
-        <Button
-          icon={idTSSEkstern ? <PencilIcon /> : <Buildings3Icon />}
-          onClick={() => reference.current?.showModal()}
-          size="small"
-          type="button"
-          variant="secondary"
-        >
-          {idTSSEkstern ? "Endre" : "Endre til samhandler"}
-        </Button>
-      </HStack>
+      <Button
+        icon={idTSSEkstern ? <PencilIcon /> : <Buildings3Icon />}
+        onClick={() => reference.current?.showModal()}
+        size="small"
+        type="button"
+        variant="secondary"
+      >
+        {idTSSEkstern ? "Endre" : "Endre til samhandler"}
+      </Button>
 
       <Modal header={{ heading: "Finn samhandler" }} portal ref={reference} width={600}>
         <Modal.Body>
@@ -683,7 +692,12 @@ function VelgSamhandlerModal() {
                 gap="4"
                 id="skjema"
                 method="dialog"
-                onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
+                onSubmit={(event) => {
+                  // NOTE: It is important to stop propagation of the event here, otherwise the main form will trigger - and potentially order a letter.
+                  // Though the modal is rendered outside the other form in the DOM, React still consideres them children and will propagate this submitEvent.
+                  event?.stopPropagation();
+                  methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))(event);
+                }}
               >
                 <SamhandlerTypeSelectFormPart />
                 <TextField
