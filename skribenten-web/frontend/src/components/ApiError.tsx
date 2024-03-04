@@ -10,7 +10,7 @@ import { FAILURE_TYPES } from "~/types/apiTypes";
 const PORTEN_URL = "https://jira.adeo.no/plugins/servlet/desk/portal/541";
 export function ApiError({ error, title }: { error: unknown; title: string }) {
   if (error instanceof AxiosError) {
-    const correlationId = error.response?.headers["x-request-id"] ?? "asd";
+    const correlationId = error.response?.headers["x-request-id"];
     return (
       <Alert
         css={css`
