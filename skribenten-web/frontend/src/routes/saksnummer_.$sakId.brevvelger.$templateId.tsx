@@ -366,6 +366,7 @@ function SelectSensitivity() {
             .navds-radio-buttons {
               margin: 0 !important;
             }
+
             .navds-radio__label {
               padding: var(--a-spacing-2) 0;
             }
@@ -501,6 +502,7 @@ function PersonAdresse() {
         h3 {
           margin-bottom: var(--a-spacing-1);
         }
+
         button {
           margin-top: var(--a-spacing-2);
         }
@@ -537,6 +539,7 @@ function SamhandlerAdresse() {
         h3 {
           margin-bottom: var(--a-spacing-1);
         }
+
         button {
           margin-top: var(--a-spacing-2);
         }
