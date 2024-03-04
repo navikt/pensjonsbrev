@@ -45,7 +45,7 @@ docker-compose up -d --build
    ```bash
    (cd skribenten-web/bff && npm i && npm run build)
    (cd skribenten-web/frontend && npm i)
-   ./gradlew :tjenestebuss-integrasjon:publishImageToLocalRegistry :skribenten-backend:build :pensjon-brevbaker:build :pdf-bygger:build
+   (./gradlew build)
    (cd brevoppskrift-web/bff && npm i && npm run build)
    (cd brevoppskrift-web/frontend && npm i)
    ```
