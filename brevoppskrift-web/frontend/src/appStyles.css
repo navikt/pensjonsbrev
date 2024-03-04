@@ -20,31 +20,27 @@ body {
 }
 
 .preview {
-    width: 820px;
+    width: 1000px;
     background: white;
     padding: 3rem;
     align-self: center;
 }
 
-.show-if > code:first-child:before {
-    content: "If ";
+.show-if, .show-else {
+    > .conditional {
+        margin-left: 1rem;
+    }
+    > .expression, code {
+        background: var(--a-blue-100);
+    }
 }
 
-.show-if > div:nth-child(2) {
-    margin-left: 1rem;
-}
-
-.show-else > div:nth-child(2) {
-    margin-left: 1rem;
-}
-
-.expression, code {
-    white-space: nowrap;
-    color: var(--a-blue-600);
-    background: var(--a-gray-100);
+.expression {
+    background: var(--a-purple-100);
+    white-space: break-spaces;
 }
 
 .conditional {
-    background: aquamarine;
-    margin: 1rem 0 1rem 1rem;
+    background: var(--a-lightblue-100);
+    margin: 1rem 0;
 }

@@ -56,6 +56,10 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
         exception<UnauthorizedException> { call, cause ->
             call.respond(HttpStatusCode.Unauthorized, cause.msg)
         }
+        exception<Exception> { call, cause ->
+            call.application.log.error(cause.message, cause)
+            call.respond(HttpStatusCode.InternalServerError, "Ukjent intern feil")
+        }
     }
 
     install(ContentNegotiation) {

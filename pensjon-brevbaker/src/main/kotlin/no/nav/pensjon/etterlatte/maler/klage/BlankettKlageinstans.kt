@@ -24,20 +24,20 @@ import no.nav.pensjon.etterlatte.maler.klage.FormkravSelectors.erKlagenSignert
 import no.nav.pensjon.etterlatte.maler.klage.FormkravSelectors.erKlagerPartISaken
 import no.nav.pensjon.etterlatte.maler.klage.FormkravSelectors.gjelderKlagenNoeKonkretIVedtaket
 import no.nav.pensjon.etterlatte.maler.klage.FormkravSelectors.vedtaketKlagenGjelder
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseDTOSelectors.formkrav
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseDTOSelectors.hjemmel
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseDTOSelectors.internKommentarLinjer
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseDTOSelectors.klageDato
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseDTOSelectors.klager
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseDTOSelectors.oversendelseLinjer
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseDTOSelectors.sakTypeTekst
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTOSelectors.formkrav
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTOSelectors.hjemmel
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTOSelectors.internKommentarLinjer
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTOSelectors.klageDato
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTOSelectors.klager
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTOSelectors.oversendelseLinjer
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTOSelectors.sakTypeTekst
 import no.nav.pensjon.etterlatte.maler.klage.VedtakKlagenGjelderSelectors.datoAttestert
 import no.nav.pensjon.etterlatte.maler.klage.VedtakKlagenGjelderSelectors.vedtakTypeFormatert
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.SakType
 import java.time.LocalDate
 
 
-data class KlageOversendelseDTO(
+data class KlageOversendelseBlankettDTO(
     override val innhold: List<Element>,
     val formkrav: Formkrav,
     val hjemmel: String,
@@ -91,11 +91,11 @@ enum class VedtakType {
 }
 
 @TemplateModelHelpers
-object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseDTO>, Hovedmal {
+object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseBlankettDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.KLAGE_OVERSENDELSE_BLANKETT
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = KlageOversendelseDTO::class,
+        letterDataType = KlageOversendelseBlankettDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Blankett oversendelse klage",

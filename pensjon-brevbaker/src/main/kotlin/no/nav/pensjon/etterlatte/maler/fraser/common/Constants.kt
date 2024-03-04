@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 object Constants {
     const val NAV_URL = "nav.no"
+    const val SAKSBEHANDLINGSTIDER_URL = "$NAV_URL/saksbehandlingstider"
     const val BARNEPENSJON_URL = "$NAV_URL/barnepensjon"
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
     const val UTBETALING_URL = "$NAV_URL/utbetalinger"
@@ -25,6 +26,8 @@ object Constants {
     const val KONTATTELEFON_PENSJON_MED_LANDKODE = "+ 47 $KONTAKTTELEFON_PENSJON"
     const val KONTAKTTELEFON_GENERELL = "55 55 33 33"
     const val KONTAKTTELEFON_SKATT = "800 80 000"
+    const val SAKSBEHANDLINGSTIDER_BP = "$SAKSBEHANDLINGSTIDER_URL#barnepensjon"
+    const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#omstillingsstonad"
 
     object Engelsk {
         const val UTBETALINGSDATOER_URL = "${Constants.UTBETALINGSDATOER_URL}/en"

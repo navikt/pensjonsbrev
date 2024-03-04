@@ -1,4 +1,6 @@
-import io.ktor.plugin.features.*
+import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin.SHADOW_JAR_TASK_NAME
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
 
 val javaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
@@ -21,23 +23,16 @@ application {
 	mainClass.set("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
 }
 
-data class GithubImageRegistry(override val toImage: Provider<String>, override val username: Provider<String>, override val password: Provider<String>) : DockerImageRegistry
+// Merge cxf/bus-extensions.txt fra alle cxf-avhengigheter
+tasks.named(SHADOW_JAR_TASK_NAME, ShadowJar::class.java) {
+	transform(AppendingTransformer::class.java) {
+		resource = "META-INF/cxf/bus-extensions.txt"
+	}
+}
 
 ktor {
 	fatJar {
 		archiveFileName.set("app.jar")
-	}
-	docker {
-		jreVersion.set(JavaVersion.VERSION_17)
-		localImageName.set("tjenestebuss-integrasjon")
-		imageTag.set(providers.environmentVariable("IMAGE_TAG").orElse("latest"))
-		externalRegistry.set(
-			GithubImageRegistry(
-				toImage = providers.environmentVariable("IMAGE_TJENESTEBUSS_INTEGRASJON"),
-				username = providers.environmentVariable("GITHUB_REPOSITORY"),
-				password = providers.environmentVariable("GITHUB_TOKEN"),
-			)
-		)
 	}
 }
 

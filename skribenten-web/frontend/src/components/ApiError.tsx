@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { FilesIcon } from "@navikt/aksel-icons";
-import { Alert, CopyButton, Heading, HStack, Link } from "@navikt/ds-react";
+import { Alert, CopyButton, Heading, Link, VStack } from "@navikt/ds-react";
 import { ErrorComponent } from "@tanstack/react-router";
 import { AxiosError } from "axios";
 
@@ -16,6 +16,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
         css={css`
           align-self: center;
           width: 100%;
+          max-width: 512px;
         `}
         size="small"
         variant="error"
@@ -23,9 +24,9 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
         <Heading level="2" size="small">
           {title}
         </Heading>
-        <div>
-          {correlationId && (
-            <HStack align="center" gap="1">
+        {correlationId && (
+          <VStack gap="1">
+            <div>
               <span>{mapErrorMessage(error.message)}</span>
               <span>
                 Hvis det skjer igjen, kopier ID nedenfor og{" "}
@@ -33,20 +34,22 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
                   meld feil i Porten
                 </Link>
               </span>
-              <CopyButton
-                copyText={correlationId}
-                css={css`
-                  border-radius: 4px;
-                  border: 2px solid var(--a-border-default);
-                `}
-                icon={<FilesIcon />}
-                size="small"
-                text="Kopier ID"
-                variant="action"
-              />
-            </HStack>
-          )}
-        </div>
+            </div>
+            <CopyButton
+              copyText={correlationId}
+              css={css`
+                border-radius: 4px;
+                background: white;
+                width: fit-content;
+                box-shadow: inset 0 0 0 2px var(--a-border-default);
+              `}
+              icon={<FilesIcon />}
+              size="small"
+              text="Kopier ID"
+              variant="neutral"
+            />
+          </VStack>
+        )}
       </Alert>
     );
   }

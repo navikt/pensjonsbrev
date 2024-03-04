@@ -6,12 +6,17 @@ import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillDoksysBrevRequest
+import org.slf4j.LoggerFactory
 import java.time.LocalDate
+
+private val logger = LoggerFactory.getLogger(PenService::class.java)
 
 class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     private val penUrl = config.getString("url")
@@ -46,9 +51,16 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         val enhetId: String?,
     )
 
+    private suspend fun <R> handlePenErrorResponse(response: HttpResponse): ServiceResult<R> =
+        if (response.status == HttpStatusCode.InternalServerError) {
+            logger.error("En feil oppstod ved henting av sak fra Pesys: ${response.bodyAsText()}")
+            ServiceResult.Error("Ukjent feil oppstod ved henting av sak fra Pesys", HttpStatusCode.InternalServerError)
+        } else {
+            ServiceResult.Error(response.bodyAsText(), response.status)
+        }
 
     private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak> =
-        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak>()
+        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult(::handlePenErrorResponse)
 
     suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection> =
         fetchSak(call, sakId).map {
@@ -69,12 +81,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         val vedtaksId: Long?,
     )
 
-    suspend fun bestillDoksysBrev(
-        call: ApplicationCall,
-        request: LegacyBrevService.BestillDoksysBrevRequest,
-        enhetsId: String,
-        sakId: Long,
-    ): ServiceResult<BestillDoksysBrevResponse> =
+    suspend fun bestillDoksysBrev(call: ApplicationCall, request: BestillDoksysBrevRequest, enhetsId: String, sakId: Long): ServiceResult<BestillDoksysBrevResponse> =
         client.post(call, "brev/skribenten/doksys/sak/$sakId") {
             setBody(
                 BestilDoksysBrevRequest(
@@ -86,7 +93,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult<BestillDoksysBrevResponse>()
+        }.toServiceResult(::handlePenErrorResponse)
 
     data class Avtaleland(val navn: String, val kode: String)
 
@@ -102,7 +109,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     }
 
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>> =
-        client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>>()
+        client.get(call, "brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
 
     override val name = "PEN"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =

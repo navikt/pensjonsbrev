@@ -1,4 +1,4 @@
-name: "Build and deploy tjenestebuss-integrasjon"
+name: "Tjenestebuss-integrasjon"
 on:
   workflow_dispatch:
   pull_request:
@@ -15,18 +15,18 @@ on:
       - "gradle.properties"
       - "tjenestebuss-integrasjon/**"
       - ".github/workflows/tjenestebuss-integrasjon.yml"
-env:
-  "IMAGE_TAG": "${{ github.sha }}"
-  "IMAGE_TJENESTEBUSS_INTEGRASJON": "ghcr.io/${{ github.repository }}/pensjon-tjenestebuss-integrasjon"
 
 jobs:
   build-tjenestebuss-integrasjon:
     name: "Build tjenestebuss-integrasjon backend"
     runs-on: "ubuntu-latest"
     permissions:
-      packages: write
+      contents: "read"
+      id-token: "write"
+    outputs:
+      image: ${{ steps.docker-push.outputs.image }}
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - uses: "gradle/wrapper-validation-action@v1"
       - uses: "actions/cache@v3"
         with:
@@ -39,9 +39,20 @@ jobs:
           "java-version": "17"
       - name: "compile and run tests"
         run: |
-          ./gradlew :tjenestebuss-integrasjon:publishImage
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+          ./gradlew :tjenestebuss-integrasjon:build
+      - name: "Build and publish container image to GAR"
+        uses: nais/docker-build-push@v0
+        id: docker-push
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+        with:
+          team: pensjonsbrev
+          image_suffix: tjenestebuss-integrasjon
+          push_image: true
+          pull: true
+          docker_context: ./tjenestebuss-integrasjon
+          dockerfile: tjenestebuss-integrasjon/Dockerfile
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
 
   deploy-tjenestebuss-integrasjon-dev:
     name: "Deploy tjenestebuss-integrasjon to dev"
@@ -52,14 +63,14 @@ jobs:
     needs: "build-tjenestebuss-integrasjon"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - name: "Deploy tjenestebus-integrasjon backend to DEV"
         uses: "nais/deploy/actions/deploy@v2"
         env:
           "ENVIRONMENT": "dev-fss:tjenestebuss-integrasjon"
           "CLUSTER": "dev-fss"
           "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
-          "VAR": image=${{ format('{0}:{1}', env.IMAGE_TJENESTEBUSS_INTEGRASJON, env.IMAGE_TAG) }}
+          "VAR": image=${{ needs.build-tjenestebuss-integrasjon.outputs.image }}
           "VARS": "tjenestebuss-integrasjon/.nais/dev-q2.yaml"
 
   deploy-tjenestebuss-integrasjon-prod:
@@ -71,12 +82,12 @@ jobs:
     needs: "build-tjenestebuss-integrasjon"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - name: "Deploy tjenestebus-integrasjon backend to prod"
         uses: "nais/deploy/actions/deploy@v2"
         env:
           "ENVIRONMENT": "prod-fss:tjenestebuss-integrasjon"
           "CLUSTER": "prod-fss"
           "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
-          "VAR": image=${{ format('{0}:{1}', env.IMAGE_TJENESTEBUSS_INTEGRASJON, env.IMAGE_TAG) }}
+          "VAR": image=${{ needs.build-tjenestebuss-integrasjon.outputs.image }}
           "VARS": "tjenestebuss-integrasjon/.nais/prod.yaml"
