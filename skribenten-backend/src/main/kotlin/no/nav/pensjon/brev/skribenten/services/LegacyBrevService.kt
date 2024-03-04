@@ -89,6 +89,8 @@ class LegacyBrevService(
             metadata = brevMetadata,
             sakId = sakId,
             spraak = SpraakKode.NB,
+            landkode = request.landkode,
+            mottakerText = request.mottakerText
         )
         return if (result.failureType != null) {
             BestillOgRedigerBrevResponse(result)
@@ -111,6 +113,8 @@ class LegacyBrevService(
         sakId: Long,
         spraak: SpraakKode,
         vedtaksId: Long? = null,
+        landkode: String? = null,
+        mottakerText: String? = null,
     ): BestillBrevResponse =
         tjenestebussIntegrasjonService.bestillExstreamBrev(
             brevkode = brevkode,
@@ -125,6 +129,8 @@ class LegacyBrevService(
             sakId = sakId,
             spraak = spraak,
             vedtaksId = vedtaksId,
+            landkode = landkode,
+            mottakerText = mottakerText,
         ).map {
             if (it.failureType != null) {
                 BestillBrevResponse(it.failureType)

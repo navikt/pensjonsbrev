@@ -19,7 +19,7 @@ import java.util.*
 import javax.xml.datatype.DatatypeFactory
 import javax.xml.datatype.XMLGregorianCalendar
 
-class TjenestebussIntegrasjonService(config: Config, authService: AzureADService): ServiceStatus {
+class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) : ServiceStatus {
 
     private val tjenestebussIntegrasjonUrl = config.getString("url")
     private val tjenestebussIntegrasjonScope = config.getString("scope")
@@ -143,9 +143,6 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             )
         }.toServiceResult<BestillExstreamBrevResponseDto>()
     }
-
-    private fun bestemExstreamMottaker(isEblankett: Boolean, isNotat: Boolean, idTSSEkstern: String?, gjelderPid: String, ) =
-        if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid
 
     suspend fun redigerDoksysBrev(
         call: ApplicationCall,
