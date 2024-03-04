@@ -13,10 +13,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
+import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.datoForVedtaketKlagenGjelder
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.klageDato
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.sakType
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.SakType
 import java.time.LocalDate
 
 
@@ -59,7 +60,7 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                 )
                 ifNotNull(datoForVedtaketKlagenGjelder) { paaklagdVedtakDato ->
                     textExpr(
-                        Language.Bokmal to " på vedtak om ".expr() + sakType.format(SaktypeFormatter) + " av " + paaklagdVedtakDato.format(),
+                        Language.Bokmal to " på vedtak om ".expr() + sakType.format() + " av " + paaklagdVedtakDato.format(),
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr()
                     )

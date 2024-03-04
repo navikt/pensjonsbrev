@@ -1,8 +1,8 @@
 package no.nav.pensjon.etterlatte.fixtures
 
+import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.SakType
 import java.time.LocalDate
 
 fun createAvvistKlageInnholdDTO() = AvvistKlageInnholdDTO(
