@@ -16,6 +16,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
         css={css`
           align-self: center;
           width: 100%;
+          max-width: 512px;
         `}
         size="small"
         variant="error"
@@ -42,7 +43,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
                 icon={<FilesIcon />}
                 size="small"
                 text="Kopier ID"
-                variant="action"
+                variant="neutral"
               />
             </HStack>
           )}
