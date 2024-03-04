@@ -20,7 +20,7 @@ function SaksnummerPage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const { handleSubmit, register } = useForm({
     defaultValues: {
-      saksnummer: "22972355",
+      saksnummer: "",
     },
   });
 
