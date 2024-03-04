@@ -10,7 +10,6 @@ import { getSak } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
-import { formatDateWithoutTimezone } from "~/utils/dateUtils";
 
 export const Route = createFileRoute("/saksnummer/$sakId")({
   beforeLoad: ({ params: { sakId } }) => {

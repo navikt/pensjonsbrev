@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { FilesIcon } from "@navikt/aksel-icons";
-import { Alert, CopyButton, Heading, HStack, Link, VStack } from "@navikt/ds-react";
+import { Alert, CopyButton, Heading, Link, VStack } from "@navikt/ds-react";
 import { ErrorComponent } from "@tanstack/react-router";
 import { AxiosError } from "axios";
 
