@@ -691,7 +691,7 @@ function VelgSamhandlerModal() {
                 method="dialog"
                 onSubmit={(event) => {
                   // NOTE: It is important to stop propagation of the event here, otherwise the main form will trigger - and potentially order a letter.
-                  // Though the modal is rendered outside of the other form in the DOM, React still consideres them children and will propagate this submitEvent.
+                  // Though the modal is rendered outside the other form in the DOM, React still consideres them children and will propagate this submitEvent.
                   event?.stopPropagation();
                   methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))(event);
                 }}
