@@ -78,6 +78,14 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
             }
 
             paragraph {
+                text(
+                    Language.Bokmal to "Klageinstansen vurderer alle sider av saken på selvstendig grunnlag. Resultatet av klagebehandlingen kan bli at vårt vedtak ikke blir endret, eller at det blir endret helt eller delvis. Klageinstansen kan også oppheve vedtaket vårt, og sende saken tilbake til oss for helt eller delvis ny behandling.",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
+
+            paragraph {
                 textExpr(
                     Language.Bokmal to "Saksbehandlingstiden til NAV Klageinstans finner du på ".expr() + ifElse(sakType.equalTo(SakType.BARNEPENSJON), Constants.SAKSBEHANDLINGSTIDER_BP.expr(), Constants.SAKSBEHANDLINGSTIDER_OMS.expr()) + ".",
                     Language.Nynorsk to "".expr(),
