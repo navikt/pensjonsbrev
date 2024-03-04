@@ -88,8 +88,8 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
           display: flex;
           padding: var(--a-spacing-2) var(--a-spacing-8);
           align-items: center;
-          border-bottom: 1px solid var(--global-gray-400, #aab0ba);
-          background: var(--surface-default, #fff);
+          border-bottom: 1px solid var(--a-gray-400);
+          background: var(--a-surface-default);
 
           span {
             display: flex;
@@ -110,7 +110,6 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
           {sak.foedselsnr} <CopyButton copyText={sak.foedselsnr} size="small" />
         </span>
         <span>{navn ?? ""}</span>
-        <span>Født: {formatDateWithoutTimezone(new Date(...sak.foedselsdato))}</span>
         <span>Sakstype: {SAK_TYPE_TO_TEXT[sak.sakType]}</span>
         <span>
           Saksnummer: {sak.sakId} <CopyButton copyText={sak.sakId.toString()} size="small" />

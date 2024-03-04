@@ -495,16 +495,7 @@ function PersonAdresse() {
         Mottaker
       </Heading>
       <VStack gap="1">
-        {navn}{" "}
-        <Tag
-          css={css`
-            width: fit-content;
-          `}
-          size="xsmall"
-          variant="alt1"
-        >
-          {getAdresseTypeName(adresseQuery.data?.type)}
-        </Tag>
+        {navn} ({getAdresseTypeName(adresseQuery.data?.type)})
       </VStack>
       <VStack gap="0">
         {adresseQuery.data && adresseQuery.data.adresselinjer.map((linje) => <span key={linje}>{linje}</span>)}
