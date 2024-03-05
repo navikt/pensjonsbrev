@@ -42,7 +42,8 @@ object TemplateDocumentationRenderer {
                 TemplateDocumentation.ContentOrControlStructure.Conditional(
                     predicate = renderExpression(contentOrStructure.predicate),
                     showIf = renderContentOrStructure(contentOrStructure.showIf, mapper),
-                    showElse = renderContentOrStructure(contentOrStructure.showElse, mapper),
+                    elseIf = liftNestedIfElse(contentOrStructure.showElse, mapper),
+                    showElse = emptyList(),
                 )
             )
 
@@ -53,6 +54,13 @@ object TemplateDocumentationRenderer {
                 )
             )
         }
+
+    private fun  <T : Element<*>, R : TemplateDocumentation.Element> liftNestedIfElse(showElse: List<ContentOrControlStructure<*, T>>, mapper: (T) -> List<R>): List<TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf<R>> {
+        val first = showElse.firstOrNull()
+        return if (showElse.size == 1 && first is ContentOrControlStructure.Conditional) {
+            listOf(TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf(renderExpression(first.predicate), renderContentOrStructure(first.showIf, mapper))) + liftNestedIfElse(first.showElse, mapper)
+        } else emptyList()
+    }
 
     private fun renderOutline(
         outline: List<OutlineElement<*>>,
@@ -280,8 +288,11 @@ data class TemplateDocumentation(
         data class Conditional<E : Element>(
             val predicate: Expression,
             val showIf: List<ContentOrControlStructure<E>>,
+            val elseIf: List<ElseIf<E>>,
             val showElse: List<ContentOrControlStructure<E>>,
-        ) : ContentOrControlStructure<E>(Type.CONDITIONAL)
+        ) : ContentOrControlStructure<E>(Type.CONDITIONAL) {
+            data class ElseIf<E : Element>(val predicate: Expression, val showIf: List<ContentOrControlStructure<E>>)
+        }
 
         data class ForEach<E : Element>(
             val items: Expression,
