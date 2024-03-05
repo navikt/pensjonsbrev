@@ -60,11 +60,15 @@ function SaksnummerPage() {
       <Button
         onClick={(event) => {
           event.preventDefault();
-          window.open("https://nrk.no");
+          setTimeout(() => popup(), 5000);
         }}
       >
         test link
       </Button>
     </form>
   );
+}
+
+function popup() {
+  setTimeout(() => window.open("https://nrk.no"), 5000);
 }
