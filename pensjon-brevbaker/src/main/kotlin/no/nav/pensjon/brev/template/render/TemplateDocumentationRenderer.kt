@@ -38,14 +38,17 @@ object TemplateDocumentationRenderer {
         when (contentOrStructure) {
             is ContentOrControlStructure.Content -> mapper(contentOrStructure.content).map { TemplateDocumentation.ContentOrControlStructure.Content(it) }
 
-            is ContentOrControlStructure.Conditional -> listOf(
-                TemplateDocumentation.ContentOrControlStructure.Conditional(
-                    predicate = renderExpression(contentOrStructure.predicate),
-                    showIf = renderContentOrStructure(contentOrStructure.showIf, mapper),
-                    elseIf = liftNestedIfElse(contentOrStructure.showElse, mapper),
-                    showElse = emptyList(),
+            is ContentOrControlStructure.Conditional -> {
+                val elseIf = liftNestedIfElse(contentOrStructure.showElse, mapper)
+                listOf(
+                    TemplateDocumentation.ContentOrControlStructure.Conditional(
+                        predicate = renderExpression(contentOrStructure.predicate),
+                        showIf = renderContentOrStructure(contentOrStructure.showIf, mapper),
+                        elseIf = elseIf.first,
+                        showElse = elseIf.second ?: emptyList(),
+                    )
                 )
-            )
+            }
 
             is ContentOrControlStructure.ForEach<*, T, *> -> listOf(
                 TemplateDocumentation.ContentOrControlStructure.ForEach(
@@ -55,11 +58,17 @@ object TemplateDocumentationRenderer {
             )
         }
 
-    private fun  <T : Element<*>, R : TemplateDocumentation.Element> liftNestedIfElse(showElse: List<ContentOrControlStructure<*, T>>, mapper: (T) -> List<R>): List<TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf<R>> {
+    private fun  <T : Element<*>, R : TemplateDocumentation.Element> liftNestedIfElse(
+        showElse: List<ContentOrControlStructure<*, T>>,
+        mapper: (T) -> List<R>
+    ): Pair<List<TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf<R>>, List<TemplateDocumentation.ContentOrControlStructure<R>>?> {
         val first = showElse.firstOrNull()
         return if (showElse.size == 1 && first is ContentOrControlStructure.Conditional) {
-            listOf(TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf(renderExpression(first.predicate), renderContentOrStructure(first.showIf, mapper))) + liftNestedIfElse(first.showElse, mapper)
-        } else emptyList()
+            val (nestedIfElse, nestedElse) = liftNestedIfElse(first.showElse, mapper)
+            (listOf(TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf(renderExpression(first.predicate), renderContentOrStructure(first.showIf, mapper))) + (nestedIfElse)) to nestedElse
+        } else {
+            emptyList<TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf<R>>() to renderContentOrStructure(showElse, mapper)
+        }
     }
 
     private fun renderOutline(
