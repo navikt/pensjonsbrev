@@ -1,0 +1,11 @@
+## Oppkrift
+
+1. Modifiser DTO
+2. Bump pensjon-brevbaker-api-model
+3. Ta i bruk ny versjon av api model i gradle.properties
+4. Kjør "publishToMavenLocal" i api model for å teste "pensjon-brevbaker" lokalt
+5. Bygg pensjon-brevbaker
+6. Fiks røde linjer ;)
+7. Kjør relevant test for brevmal med profile "manualTest"
+
+
