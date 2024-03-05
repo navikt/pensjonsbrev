@@ -44,3 +44,16 @@ body {
     background: var(--a-lightblue-100);
     margin: 1rem 0;
 }
+
+.highlight {
+    @keyframes highlight {
+        0% {
+            background-color: var(--a-orange-400);
+        }
+        100% {
+            background-color: initial;
+        }
+    }
+
+    animation: highlight 2s ease-in;
+}

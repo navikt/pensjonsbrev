@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
-import { ArrowLeftIcon, XMarkIcon } from "@navikt/aksel-icons";
-import { Button, HStack, VStack } from "@navikt/ds-react";
-import { Link, useLoaderData, useNavigate, useRouter, useSearch } from "@tanstack/react-router";
+import { VStack } from "@navikt/ds-react";
+import { Link, useSearch } from "@tanstack/react-router";
 import { capitalize } from "lodash";
+import { useRef } from "react";
 
 import type { FieldType, LetterModelSpecification, ObjectTypeSpecification } from "~/api/brevbakerTypes";
 
@@ -30,50 +30,6 @@ export function DataClasses({ templateModelSpecification }: { templateModelSpeci
   );
 }
 
-export function InspectedDataClass() {
-  const { history } = useRouter();
-  const navigate = useNavigate({ from: "/template/$templateId" });
-  const { inspectedModel } = useSearch({ from: "/template/$templateId" });
-  const { documentation } = useLoaderData({ from: "/template/$templateId" });
-
-  if (!inspectedModel) {
-    return <></>;
-  }
-  const selectedModel = documentation.templateModelSpecification.types[inspectedModel];
-  const modelIsPrimitive = !selectedModel;
-
-  return (
-    <div
-      css={css`
-        width: 800px;
-        max-width: 50%;
-        background: var(--a-bg-subtle);
-        position: fixed;
-        right: 0;
-        height: 100%;
-        border-left: 1px solid var(--a-border-divider);
-        padding: var(--a-spacing-4);
-        white-space: nowrap;
-        overflow: scroll;
-      `}
-    >
-      <HStack align="end" gap="4" justify="space-between">
-        <Button icon={<ArrowLeftIcon />} onClick={() => history.go(-1)} size="small" variant="secondary-neutral" />
-        <Button
-          icon={<XMarkIcon />}
-          onClick={() =>
-            navigate({ replace: true, to: "/template/$templateId", params: (p) => ({ templateId: p.templateId }) })
-          }
-          size="small"
-          variant="secondary-neutral"
-        />
-      </HStack>
-      {selectedModel && <DataView name={inspectedModel} objectTypeSpecification={selectedModel} />}
-      {modelIsPrimitive && <span>{inspectedModel}</span>}
-    </div>
-  );
-}
-
 function DataView({
   name,
   objectTypeSpecification,
@@ -81,9 +37,17 @@ function DataView({
   name: string;
   objectTypeSpecification: ObjectTypeSpecification;
 }) {
+  const { highlightedDataClass } = useSearch({ from: "/template/$templateId" });
+  const reference = useRef<HTMLSpanElement>(null);
+
+  const isHighlighted = highlightedDataClass === trimClassName(name);
+  if (isHighlighted && reference.current) {
+    reference.current.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   return (
-    <VStack gap="1">
-      <span>
+    <VStack className={isHighlighted ? "highlight" : undefined} gap="1">
+      <span ref={reference}>
         <span
           css={css`
             color: var(--a-red-500);
@@ -94,18 +58,37 @@ function DataView({
         {trimClassName(name)}(
       </span>
       {Object.entries(objectTypeSpecification).map(([key, value]) => (
-        <span
-          css={css`
-            margin-left: var(--a-spacing-16);
-          `}
-          key={key}
-        >
-          {key}: <Type fieldType={value} />
-          {value.nullable ? "?" : ""}
-        </span>
+        <DataField fieldType={value} key={key} name={key} />
       ))}
       <span>)</span>
     </VStack>
+  );
+}
+
+function DataField({ name, fieldType }: { name: string; fieldType: FieldType }) {
+  const { highlightedDataField } = useSearch({ from: "/template/$templateId" });
+  const reference = useRef<HTMLSpanElement>(null);
+
+  const isHighlighted = highlightedDataField === name;
+
+  if (isHighlighted && reference.current) {
+    reference.current.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  return (
+    <span
+      className={isHighlighted ? "highlight" : undefined}
+      css={[
+        css`
+          margin-left: var(--a-spacing-16);
+        `,
+      ]}
+      key={name}
+      ref={reference}
+    >
+      {name}: <Type fieldType={fieldType} />
+      {fieldType.nullable ? "?" : ""}
+    </span>
   );
 }
 
@@ -156,6 +139,6 @@ function Type({ fieldType }: { fieldType: FieldType }) {
   }
 }
 
-function trimClassName(className: string) {
+export function trimClassName(className: string) {
   return className.replace(/(.*)[$.]/, "");
 }
