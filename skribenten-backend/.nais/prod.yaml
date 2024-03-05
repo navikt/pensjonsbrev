@@ -29,23 +29,16 @@ outboundRules:
   - application: pensjon-brevmetadata
     namespace: pensjonsbrev
     cluster: prod-gcp
-    # TODO: pre-auth
   - application: digdir-krr-proxy
     namespace: team-rocket
     cluster: prod-gcp
 
-# TODO: oppdater skribenten url i pesys
 externalHosts:
-  # TODO: pre-auth pdl
   - pdl-api.prod-fss-pub.nais.io
-  # TODO: pre-auth
   - pensjon-pen.prod-fss-pub.nais.io
-  # TODO: pre-auth
   - saf.prod-fss-pub.nais.io
-  # TODO: pre-auth
   - pensjon-persondata.prod-fss-pub.nais.io
   - pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io
-  # TODO: pre-auth
   - navansatt.prod-fss-pub.nais.io
 
 env:
