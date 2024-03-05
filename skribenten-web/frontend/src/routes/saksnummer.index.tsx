@@ -57,18 +57,6 @@ function SaksnummerPage() {
       <Button loading={hentSakMutation.isPending} type="submit">
         Åpne brevvelger
       </Button>
-      <Button
-        onClick={(event) => {
-          event.preventDefault();
-          setTimeout(() => popup(), 5000);
-        }}
-      >
-        test link
-      </Button>
     </form>
   );
-}
-
-function popup() {
-  setTimeout(() => window.open("https://nrk.no"), 5000);
 }
