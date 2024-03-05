@@ -3,7 +3,6 @@ package no.nav.pensjon.etterlatte.maler.klage
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
-import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
@@ -22,6 +21,8 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
+import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.bosattIUtlandet
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.harVerge
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.innstillingTekstLinjer
@@ -29,7 +30,6 @@ import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.sakType
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.under18Aar
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.vedtakDato
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.SakType
 import java.time.LocalDate
 
 data class KlageOversendelseBrukerDTO(
@@ -71,7 +71,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
         outline {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Vi har ".expr() + klageDato.format() + " fått klagen din på vedtaket om " + sakType.format(SaktypeFormatter) + " som ble gjort " + vedtakDato.format() + ", og har kommet frem til at vi ikke endrer vedtaket. NAV Klageinstans skal vurdere saken din på nytt.",
+                    Language.Bokmal to "Vi har ".expr() + klageDato.format() + " fått klagen din på vedtaket om " + sakType.format() + " som ble gjort " + vedtakDato.format() + ", og har kommet frem til at vi ikke endrer vedtaket. NAV Klageinstans skal vurdere saken din på nytt.",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
                 )
@@ -87,7 +87,8 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
 
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Saksbehandlingstiden til NAV Klageinstans finner du på ".expr() + ifElse(sakType.equalTo(SakType.BARNEPENSJON), Constants.SAKSBEHANDLINGSTIDER_BP.expr(), Constants.SAKSBEHANDLINGSTIDER_OMS.expr()) + ".",
+                    Language.Bokmal to "Saksbehandlingstiden til NAV Klageinstans finner du på ".expr() + ifElse(sakType.equalTo(
+                        SakType.BARNEPENSJON), Constants.SAKSBEHANDLINGSTIDER_BP.expr(), Constants.SAKSBEHANDLINGSTIDER_OMS.expr()) + ".",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
                 )
@@ -154,23 +155,6 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
 
 fun sakUrl(sakType: Expression<SakType>): Expression<String> {
     return ifElse(sakType.equalTo(SakType.BARNEPENSJON), Constants.BARNEPENSJON_URL.expr(), Constants.OMS_URL.expr())
-}
-
-
-object SaktypeFormatter : LocalizedFormatter<SakType>() {
-    override fun apply(sakType: SakType, spraak: Language): String {
-        return when (spraak) {
-            Language.Bokmal, Language.Nynorsk -> when (sakType) {
-                SakType.BARNEPENSJON -> "barnepensjon"
-                SakType.OMSTILLINGSSTOENAD -> "omstillingsstønad"
-            }
-
-            Language.English -> when (sakType) {
-                SakType.BARNEPENSJON -> "children's pension"
-                SakType.OMSTILLINGSSTOENAD -> "adjustment allowance"
-            }
-        }
-    }
 }
 
 fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>.formaterTekstlinjer(

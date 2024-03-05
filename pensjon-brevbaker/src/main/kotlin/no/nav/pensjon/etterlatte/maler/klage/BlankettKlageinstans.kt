@@ -18,6 +18,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.klage.FormkravSelectors.begrunnelseLinjer
 import no.nav.pensjon.etterlatte.maler.klage.FormkravSelectors.erKlagenFramsattInnenFrist
 import no.nav.pensjon.etterlatte.maler.klage.FormkravSelectors.erKlagenSignert
@@ -33,7 +34,6 @@ import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTOSelecto
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTOSelectors.sakTypeTekst
 import no.nav.pensjon.etterlatte.maler.klage.VedtakKlagenGjelderSelectors.datoAttestert
 import no.nav.pensjon.etterlatte.maler.klage.VedtakKlagenGjelderSelectors.vedtakTypeFormatert
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.SakType
 import java.time.LocalDate
 
 

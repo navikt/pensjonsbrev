@@ -2,8 +2,8 @@ package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -16,6 +16,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.harForeldelse
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.harRenter
@@ -31,11 +32,6 @@ data class TilbakekrevingInnholdDTO(
     val perioder: List<TilbakekrevingPeriode>,
     val summer: TilbakekrevingBeloeper
 )
-
-enum class SakType {
-    BARNEPENSJON,
-    OMSTILLINGSSTOENAD
-}
 
 data class TilbakekrevingPeriode(
     val maaned: LocalDate,
