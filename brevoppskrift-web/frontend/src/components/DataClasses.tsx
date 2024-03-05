@@ -130,7 +130,7 @@ function Type({ fieldType }: { fieldType: FieldType }) {
           from="/template/$templateId"
           preload={false}
           replace
-          search={(s) => ({ ...s, inspectedModel: fieldType.typeName })}
+          search={(s) => ({ ...s, highlightedDataClass: trimClassName(fieldType.typeName).replace("?", "") })}
         >
           {trimClassName(fieldType.typeName)}
         </Link>
