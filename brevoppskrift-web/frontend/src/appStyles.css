@@ -45,15 +45,16 @@ body {
     margin: 1rem 0;
 }
 
-.highlight {
-    @keyframes highlight {
-        0% {
-            background-color: var(--a-orange-400);
-        }
-        100% {
-            background-color: initial;
-        }
+@keyframes highlight-animation {
+    0% {
+        background-color: var(--a-orange-400);
     }
+    100% {
+        background-color: var(--a-orange-200);
+    }
+}
 
-    animation: highlight 2s ease-in;
+.highlight {
+    background: var(--a-orange-200);
+    animation: highlight-animation 0.5s ease-out;
 }
