@@ -287,9 +287,11 @@ function ConditionalComponent<E extends Element>({ conditional }: { conditional:
 
 function ShowElseIf<E extends Element>({ cocs }: { cocs: ElseIf<E> }) {
   return (
-    <div>
-      <code>Else If </code>
-      <ExpressionToText expression={cocs.predicate} />
+    <div className="show-if">
+      <div className="expression">
+        <code>Else If </code>
+        <ExpressionToText expression={cocs.predicate} />
+      </div>
       {cocs.showIf.map((a, index) => (
         <ContentOrControlStructureComponent cocs={a} key={index} />
       ))}
