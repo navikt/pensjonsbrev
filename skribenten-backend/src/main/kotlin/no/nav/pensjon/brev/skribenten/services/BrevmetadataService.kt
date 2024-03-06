@@ -37,6 +37,7 @@ class BrevmetadataService(config: Config) : ServiceStatus {
         if (httpResponse.status.isSuccess()) {
             return httpResponse.body<List<BrevdataDto>>()
                 .filter { filterForKontekst(it, isVedtaksKontekst) }
+                .filter { it.redigerbart } // TODO ikke filtrer ut og legg til støtte for auto-brev. Krever design endringer.
                 .map { it.mapToMetadata() }
         } else {
             logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")

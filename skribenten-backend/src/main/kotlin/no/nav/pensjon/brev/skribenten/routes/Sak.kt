@@ -60,7 +60,6 @@ fun Route.sakRoute(
                             )
                         } ?: BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
                     )
-
                 }
             }
         }

@@ -45,9 +45,10 @@ docker-compose up -d --build
    ```bash
    (cd skribenten-web/bff && npm i && npm run build)
    (cd skribenten-web/frontend && npm i)
-   (./gradlew build)
    (cd brevoppskrift-web/bff && npm i && npm run build)
    (cd brevoppskrift-web/frontend && npm i)
+   ./gradlew build
+
    ```
 5. Kjør alle backend-tjenester
    ```bash
