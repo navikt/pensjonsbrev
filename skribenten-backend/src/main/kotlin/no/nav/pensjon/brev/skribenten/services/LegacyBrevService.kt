@@ -151,13 +151,12 @@ class LegacyBrevService(
     private suspend fun redigerExstreamBrev(
         call: ApplicationCall,
         journalpostId: String,
-    ): RedigerBrevResponse {
-        val status = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
-        when (status) {
-            ERROR -> return RedigerBrevResponse(SAF_ERROR)
-            NOT_READY -> return RedigerBrevResponse(FERDIGSTILLING_TIMEOUT)
+    ): RedigerBrevResponse =
+        when (safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)) {
+            ERROR -> RedigerBrevResponse(SAF_ERROR)
+            NOT_READY -> RedigerBrevResponse(FERDIGSTILLING_TIMEOUT)
             READY -> {
-                return tjenestebussIntegrasjonService.redigerExstreamBrev(call, journalpostId)
+                tjenestebussIntegrasjonService.redigerExstreamBrev(call, journalpostId)
                     .map { exstreamResponse ->
                         RedigerBrevResponse(
                             url = exstreamResponse.url,
@@ -172,7 +171,6 @@ class LegacyBrevService(
                     }
             }
         }
-    }
 
     private suspend fun bestillDoksysBrev(
         call: ApplicationCall,
