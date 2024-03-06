@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.typesafe.config.Config
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -15,10 +16,10 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import org.slf4j.LoggerFactory
 
-class BrevmetadataService(config: Config): ServiceStatus {
+class BrevmetadataService(config: Config, clientEngine: HttpClientEngine = CIO.create()): ServiceStatus {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
-    private val httpClient = HttpClient(CIO) {
+    private val httpClient = HttpClient(clientEngine) {
         defaultRequest {
             url(brevmetadataUrl)
         }
@@ -63,9 +64,13 @@ class BrevmetadataService(config: Config): ServiceStatus {
                 BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
             },
             brevkategoriCode = this.brevkategori,
-            dokumentkategoriCode = this.dokumentkategori
+            dokumentkategoriCode = this.dokumentkategori,
+            redigerbarBrevtittel = isRedigerbarBrevtittel(),
         )
 
+    private fun BrevdataDto.isRedigerbarBrevtittel(): Boolean =
+        brevkodeIBrevsystem == Brevkoder.FRITEKSTBREV_KODE
+                || (dokType == BrevdataDto.DokumentType.N && brevkodeIBrevsystem !in Brevkoder.ikkeRedigerbarBrevtittel)
 
     suspend fun getEblanketter(): List<LetterMetadata> {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
@@ -134,5 +139,14 @@ data class LetterMetadata(
     val spraak: List<SpraakKode>, // Enkelte brev er egentlig bare bokmål, men har null i metadata.
     val brevkategoriCode: BrevdataDto.BrevkategoriCode?,
     val dokumentkategoriCode: BrevdataDto.DokumentkategoriCode?,
+    val redigerbarBrevtittel: Boolean,
 )
 
+object Brevkoder {
+    const val FRITEKSTBREV_KODE = "PE_IY_05_300"
+    const val POSTERINGSGRUNNLAG_KODE = "PE_OK_06_100"
+    const val POSTERINGSGRUNNLAG_VIRK0101_KODE = "PE_OK_06_101"
+    const val POSTERINGSGRUNNLAG_VIRK0102_KODE = "PE_OK_06_102"
+
+    val ikkeRedigerbarBrevtittel = setOf(POSTERINGSGRUNNLAG_KODE, POSTERINGSGRUNNLAG_VIRK0101_KODE, POSTERINGSGRUNNLAG_VIRK0102_KODE)
+}
