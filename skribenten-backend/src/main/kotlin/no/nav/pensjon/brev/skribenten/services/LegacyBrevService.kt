@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.server.application.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExstreamBrevResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
@@ -21,22 +23,23 @@ class LegacyBrevService(
         request: BestillDoksysBrevRequest,
         enhetsId: String,
         sakId: Long,
-    ): BestillOgRedigerBrevResponse {
-        val brevMetadata = brevmetadataService.getMal(request.brevkode)
-        val result = bestillDoksysBrev(call, request, enhetsId, sakId)
-        return if (result.failureType != null) {
-            BestillOgRedigerBrevResponse(result)
-        } else if (result.journalpostId == null) {
-            logger.error("Tom response fra doksys bestilling")
-            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
-        } else {
-            if (brevMetadata.redigerbart) {
-                BestillOgRedigerBrevResponse(ventPaaJournalpostOgRedigerDoksysBrev(call, result.journalpostId))
-            } else {
+    ): BestillOgRedigerBrevResponse =
+        coroutineScope {
+            val brevMetadata = async { brevmetadataService.getMal(request.brevkode) }
+            val result = bestillDoksysBrev(call, request, enhetsId, sakId)
+            return@coroutineScope if (result.failureType != null) {
                 BestillOgRedigerBrevResponse(result)
+            } else if (result.journalpostId == null) {
+                logger.error("Tom response fra doksys bestilling")
+                BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+            } else {
+                if (brevMetadata.await().redigerbart) {
+                    BestillOgRedigerBrevResponse(ventPaaJournalpostOgRedigerDoksysBrev(call, result.journalpostId))
+                } else {
+                    BestillOgRedigerBrevResponse(result)
+                }
             }
         }
-    }
 
     suspend fun bestillOgRedigerExstreamBrev(
         call: ApplicationCall,
