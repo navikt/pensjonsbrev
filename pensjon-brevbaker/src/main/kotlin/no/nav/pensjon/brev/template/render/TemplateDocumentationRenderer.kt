@@ -45,7 +45,7 @@ object TemplateDocumentationRenderer {
                         predicate = renderExpression(contentOrStructure.predicate),
                         showIf = renderContentOrStructure(contentOrStructure.showIf, mapper),
                         elseIf = elseIf.first,
-                        showElse = elseIf.second ?: emptyList(),
+                        showElse = elseIf.second,
                     )
                 )
             }
@@ -58,14 +58,20 @@ object TemplateDocumentationRenderer {
             )
         }
 
-    private fun  <T : Element<*>, R : TemplateDocumentation.Element> liftNestedIfElse(
+    private fun <T : Element<*>, R : TemplateDocumentation.Element> liftNestedIfElse(
         showElse: List<ContentOrControlStructure<*, T>>,
         mapper: (T) -> List<R>
-    ): Pair<List<TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf<R>>, List<TemplateDocumentation.ContentOrControlStructure<R>>?> {
+    ): Pair<List<TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf<R>>, List<TemplateDocumentation.ContentOrControlStructure<R>>> {
         val first = showElse.firstOrNull()
         return if (showElse.size == 1 && first is ContentOrControlStructure.Conditional) {
-            val (nestedIfElse, nestedElse) = liftNestedIfElse(first.showElse, mapper)
-            (listOf(TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf(renderExpression(first.predicate), renderContentOrStructure(first.showIf, mapper))) + (nestedIfElse)) to nestedElse
+            liftNestedIfElse(first.showElse, mapper).let { (nestedIfElse, nestedElse) ->
+                listOf(
+                    TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf(
+                        renderExpression(first.predicate),
+                        renderContentOrStructure(first.showIf, mapper)
+                    )
+                ).plus(nestedIfElse) to nestedElse
+            }
         } else {
             emptyList<TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf<R>>() to renderContentOrStructure(showElse, mapper)
         }
@@ -161,15 +167,15 @@ object TemplateDocumentationRenderer {
     private fun renderExpression(expr: Expression<*>): TemplateDocumentation.Expression =
         when (expr) {
             is Expression.BinaryInvoke<*, *, *> ->
-                if (expr.operation is LocalizedFormatter<*>)
-                    renderExpression(expr.first)
-                else
-                    TemplateDocumentation.Expression.Invoke(
+                when (expr.operation) {
+                    is LocalizedFormatter<*> -> renderExpression(expr.first)
+                    else -> TemplateDocumentation.Expression.Invoke(
                         renderOperation(expr.operation),
                         renderExpression(expr.first),
                         renderExpression(expr.second),
                         "TODO"
                     )
+                }
 
             is Expression.FromScope.Language -> TemplateDocumentation.Expression.LetterData("language")
             is Expression.FromScope.Felles -> TemplateDocumentation.Expression.LetterData("felles")
@@ -202,7 +208,7 @@ object TemplateDocumentationRenderer {
             )
 
             is UnaryOperation.MapCollection<*, *> -> TODO()
-            is UnaryOperation.Not -> if(expr.value is Expression.BinaryInvoke<*, *, *> && expr.value.operation is BinaryOperation.Equal<*>) {
+            is UnaryOperation.Not -> if (expr.value is Expression.BinaryInvoke<*, *, *> && expr.value.operation is BinaryOperation.Equal<*>) {
                 TemplateDocumentation.Expression.Invoke(
                     operator = Operation("!=", Documentation.Notation.INFIX),
                     first = renderExpression(expr.value.first),
@@ -237,6 +243,11 @@ object TemplateDocumentationRenderer {
             is UnaryOperation.ToString -> TemplateDocumentation.Expression.Invoke(
                 operator = Operation("str", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value),
+            )
+
+            is UnaryOperation.IsEmpty -> TemplateDocumentation.Expression.Invoke(
+                operator = Operation(text = "isEmpty", Documentation.Notation.FUNCTION),
+                first = renderExpression(expr.value)
             )
         }
 
