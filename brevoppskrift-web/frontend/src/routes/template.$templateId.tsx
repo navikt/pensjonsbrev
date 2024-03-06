@@ -13,7 +13,7 @@ import type {
   TemplateDocumentation,
 } from "~/api/brevbakerTypes";
 import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
-import { DataClasses, InspectedDataClass } from "~/components/DataClasses";
+import { DataClasses, trimClassName } from "~/components/DataClasses";
 
 export const Route = createFileRoute("/template/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -51,9 +51,12 @@ export const Route = createFileRoute("/template/$templateId")({
 
     return { documentation, description };
   },
-  validateSearch: (search: Record<string, unknown>): { language?: string; inspectedModel?: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { language?: string; highlightedDataClass?: string; highlightedDataField?: string } => ({
     language: search.language?.toString(),
-    inspectedModel: search.inspectedModel?.toString(),
+    highlightedDataClass: search.highlightedDataClass?.toString(),
+    highlightedDataField: search.highlightedDataField?.toString(),
   }),
   component: TemplateExplorer,
 });
@@ -64,7 +67,6 @@ function TemplateExplorer() {
 
   return (
     <>
-      <InspectedDataClass />
       <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
       <VStack align="center" gap="4">
         <Heading size="medium" spacing>
@@ -359,12 +361,17 @@ function ExpressionToText({ expression }: { expression: Expression }) {
       );
 
       if (isDeepestPostFix) {
+        const isPrimitive = expression.type?.includes("kotlin") || expression.type?.includes("java"); // TODO: too basic?
         return (
           <Link
             from={Route.fullPath}
             preload={false}
             replace
-            search={(s) => ({ ...s, inspectedModel: expression.type?.replace("?", "") })}
+            search={(s) => ({
+              ...s,
+              highlightedDataClass: isPrimitive ? undefined : trimClassName(expression.type ?? "").replace("?", ""),
+              highlightedDataField: isPrimitive ? expression.operator.text.replace(".", "") : undefined,
+            })}
           >
             {content}
           </Link>

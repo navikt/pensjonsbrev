@@ -14,12 +14,13 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
+import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.sakType
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.SakType
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
 
 
 data class AvvistKlageFerdigDTO(
@@ -63,5 +64,7 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
         }
+        // Vet ikke hva utlandstilknytning er. Går for bosatt utland for nå
+        includeAttachment(klageOgAnkeUtland, innhold)
     }
 }

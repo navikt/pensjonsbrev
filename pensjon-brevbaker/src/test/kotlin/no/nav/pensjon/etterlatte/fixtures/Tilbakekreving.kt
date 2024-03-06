@@ -1,10 +1,7 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.ElementType
-import no.nav.pensjon.etterlatte.maler.InnerElement
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.SakType
+import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeper
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTO

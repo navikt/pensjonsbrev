@@ -1,11 +1,11 @@
 package no.nav.pensjon.etterlatte.fixtures
 
+import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.klage.Formkrav
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTO
 import no.nav.pensjon.etterlatte.maler.klage.VedtakKlagenGjelder
 import no.nav.pensjon.etterlatte.maler.klage.VedtakType
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.SakType
 import java.time.LocalDate
 
 fun createKlageOversendelseBlankettDTO() = KlageOversendelseBlankettDTO(
