@@ -28,7 +28,7 @@ fun Route.sakRoute(
             post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
                 call.respond(sak.enhetId?.let {
-                    legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = sak.enhetId, sak.sakId)
+                    legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = it, sak.sakId)
                 } ?: BestillBrevResponse(ENHETSID_MANGLER))
             }
             route("/exstream") {
@@ -38,7 +38,7 @@ fun Route.sakRoute(
                         sak.enhetId?.let {
                             legacyBrevService.bestillOgRedigerExstreamBrev(
                                 call = call,
-                                enhetsId = sak.enhetId,
+                                enhetsId = it,
                                 gjelderPid = sak.foedselsnr,
                                 request = request,
                                 sakId = sak.sakId,
@@ -53,7 +53,7 @@ fun Route.sakRoute(
                         sak.enhetId?.let {
                             legacyBrevService.bestillOgRedigerEblankett(
                                 call = call,
-                                enhetsId = sak.enhetId,
+                                enhetsId = it,
                                 gjelderPid = sak.foedselsnr,
                                 request = request,
                                 sakId = sak.sakId,
