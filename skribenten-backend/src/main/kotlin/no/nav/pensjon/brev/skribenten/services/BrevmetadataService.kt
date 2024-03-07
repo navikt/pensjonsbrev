@@ -69,10 +69,6 @@ class BrevmetadataService(config: Config, clientEngine: HttpClientEngine = CIO.c
             redigerbarBrevtittel = isRedigerbarBrevtittel(),
         )
 
-    private fun BrevdataDto.isRedigerbarBrevtittel(): Boolean =
-        brevkodeIBrevsystem == Brevkoder.FRITEKSTBREV_KODE
-                || (dokType == BrevdataDto.DokumentType.N && brevkodeIBrevsystem !in Brevkoder.ikkeRedigerbarBrevtittel)
-
     suspend fun getEblanketter(): List<LetterMetadata> {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
             contentType(ContentType.Application.Json)
@@ -110,16 +106,23 @@ data class BrevdataDto(
     val brevsystem: BrevSystem,
     val brevgruppe: String?,
 ) {
+    @Suppress("unused")
     enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }
+    @Suppress("unused")
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
     enum class BrevSystem { DOKSYS, GAMMEL /*EXSTREAM*/, }
     enum class BrevkontekstCode { ALLTID, SAK, VEDTAK }
 
+    @Suppress("unused")
     enum class DokumentType {
         I, //Inngende dokument
         N, //Notat
         U, //Utgende dokument
     }
+
+    fun isRedigerbarBrevtittel(): Boolean =
+        brevkodeIBrevsystem == Brevkoder.FRITEKSTBREV_KODE
+                || (dokType == DokumentType.N && brevkodeIBrevsystem !in Brevkoder.ikkeRedigerbarBrevtittel)
 }
 
 
