@@ -53,18 +53,18 @@ services:
       - PEN_SCOPE=api://dev-fss.pensjon-q2.pensjon-pen-q2/.default
       - PEN_URL=https://pensjon-pen-q2.dev.adeo.no/pen/springapi/
       - PENSJON_PERSONDATA_SCOPE=api://dev-fss.pensjon-person.pensjon-persondata-q2/.default
-      - PENSJON_PERSONDATA_URL=https://pensjon-persondata-q2.dev.intern.nav.no
+      - PENSJON_PERSONDATA_URL=https://pensjon-persondata-q2.dev-fss-pub.nais.io
       - SAF_SCOPE=api://dev-fss.teamdokumenthandtering.saf/.default
       - SAF_URL=https://saf-q2.dev-fss-pub.nais.io/graphql
       - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
       - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
       - NAVANSATT_URL=https://navansatt.dev-fss-pub.nais.io
       - NAVANSATT_SCOPE=api://dev-fss.teampensjon.navansatt/.default
-      - AD_GROUP_PENSJON_SAKSBEHANDLER=0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e
-      - AD_GROUP_Pensjon_Utland=7c2f2439-b67a-41c0-b50b-0abb02e3b479
-      - AD_GROUP_Fortrolig_Adresse=9ec6487d-f37a-4aad-a027-cd221c1ac32b
-      - AD_GROUP_Strengt_Fortrolig_Adresse=ad7b87a6-9180-467c-affc-20a566b0fec0
-      - AD_GROUP_EndreStrengtFortroligUtland=d9555b40-e0ab-4c6d-ba0b-0f1b9ecc252b
+      - AD_GROUP_PENSJON_SAKSBEHANDLER=8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf
+      - AD_GROUP_Pensjon_Utland=bda6bd68-77e6-4c00-96b9-7ecf5df7413c
+      - AD_GROUP_Fortrolig_Adresse=ea930b6b-9397-44d9-b9e6-f4cf527a632a
+      - AD_GROUP_Strengt_Fortrolig_Adresse=5ef775f2-61f8-4283-bf3d-8d03f428aa14
+      - AD_GROUP_EndreStrengtFortroligUtland=fc792042-93d8-4d5e-a501-55c45c03c576
 
   skribenten-backend-db:
     profiles:

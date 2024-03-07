@@ -21,9 +21,38 @@ fun Route.sakRoute(
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             call.respond(sak)
         }
-        post<BestillBrevRequest>("/bestillbrev") { request ->
-            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-            call.respond(legacyBrevService.bestillBrev(call, request.toDomain(sak)))
+        route("/bestillBrev") {
+            post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
+                val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+                call.respond(legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = sak.enhetId, sak.sakId))
+            }
+            route("/exstream") {
+                post<LegacyBrevService.BestillExstreamBrevRequest> { request ->
+                    val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+                    call.respond(
+                        legacyBrevService.bestillOgRedigerExstreamBrev(
+                            call = call,
+                            enhetsId = sak.enhetId,
+                            gjelderPid = sak.foedselsnr,
+                            request = request,
+                            sakId = sak.sakId,
+                        )
+                    )
+                }
+
+                post<LegacyBrevService.BestillEblankettRequest>("/eblankett") { request ->
+                    val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+                    call.respond(
+                        legacyBrevService.bestillOgRedigerEblankett(
+                            call = call,
+                            enhetsId = sak.enhetId,
+                            gjelderPid = sak.foedselsnr,
+                            request = request,
+                            sakId = sak.sakId,
+                        )
+                    )
+                }
+            }
         }
         get("/navn") {
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
@@ -40,26 +69,4 @@ fun Route.sakRoute(
             call.respond(krrService.getPreferredLocale(call, sak.foedselsnr))
         }
     }
-}
-
-private data class BestillBrevRequest(
-    val brevkode: String,
-    val spraak: SpraakKode,
-    val landkode: String? = null,
-    val mottakerText: String? = null,
-    val isSensitive: Boolean?,
-    val vedtaksId: Long? = null,
-    val idTSSEkstern: String? = null,
-) {
-    fun toDomain(sak: PenService.SakSelection) = LegacyBrevService.OrderLetterRequest(
-        brevkode = brevkode,
-        spraak = spraak,
-        sakId = sak.sakId,
-        gjelderPid = sak.foedselsnr,
-        landkode = landkode,
-        mottakerText = mottakerText,
-        isSensitive = isSensitive,
-        vedtaksId = vedtaksId,
-        idTSSEkstern = idTSSEkstern,
-    )
 }

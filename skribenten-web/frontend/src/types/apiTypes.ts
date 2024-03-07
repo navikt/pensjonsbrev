@@ -69,7 +69,7 @@ export type OrderExstreamLetterRequest = BaseLetterRequest & {
   idTSSEkstern?: string;
 };
 
-export type OrderEblankettRequest = BaseLetterRequest & {
+export type OrderEblankettRequest = Omit<BaseLetterRequest, "spraak"> & {
   isSensitive: boolean;
   landkode: string;
   mottakerText: string;

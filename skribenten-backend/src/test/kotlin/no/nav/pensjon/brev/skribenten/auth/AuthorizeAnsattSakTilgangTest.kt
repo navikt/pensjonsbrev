@@ -221,15 +221,6 @@ class AuthorizeAnsattSakTilgangTest {
     }
 
     @Test
-    fun `feiler med bad request om sak mangler enhetId`() = runBlocking {
-        val sakUtenEnhet = testSak.copy(sakId = testSak.sakId + 1, enhetId = null)
-        coEvery { penService.hentSak(any(), "${sakUtenEnhet.sakId}") } returns ServiceResult.Ok(sakUtenEnhet)
-
-        val response = client.get("/sak/${sakUtenEnhet.sakId}")
-        assertEquals(HttpStatusCode.BadRequest, response.status)
-    }
-
-    @Test
     fun `svarer med internal server error om hentNavAnsattEnhetListe feiler`() = runBlocking {
         coEvery { navansattService.hentNavAnsattEnhetListe(any(), any()) } returns ServiceResult.Error("Ansatt finnes ikke", HttpStatusCode.NotFound)
 

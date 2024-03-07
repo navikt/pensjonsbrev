@@ -56,7 +56,10 @@ fun AuthorizeAnsattSakTilgang(
     }
 }
 
-private fun sjekkAdressebeskyttelse(adressebeskyttelse: ServiceResult<List<PdlService.Gradering>>, principal: UserPrincipal): AuthAnsattSakTilgangResponse? =
+private fun sjekkAdressebeskyttelse(
+    adressebeskyttelse: ServiceResult<List<PdlService.Gradering>>,
+    principal: UserPrincipal
+): AuthAnsattSakTilgangResponse? =
     adressebeskyttelse.map { gradering ->
         val adGrupper = gradering.mapNotNull { it.toADGruppe() }
 
@@ -78,19 +81,14 @@ private suspend fun sjekkEnhetstilgang(
     sak: PenService.SakSelection,
     enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>
 ): AuthAnsattSakTilgangResponse? =
-    if (sak.enhetId.isNullOrBlank()) {
-        logger.warn("Tilgang til sak ${sak.sakId} avvist fordi den mangler enhet")
-        AuthAnsattSakTilgangResponse("Sak er ikke tilordnet enhet", HttpStatusCode.BadRequest)
-    } else {
-        enheterResult.await().map { enheter ->
-            if (enheter.none { it.id == sak.enhetId }) {
-                logger.warn("Tilgang til sak ${sak.sakId} avvist for $navIdent: mangler tilgang til enhet ${sak.enhetId}")
-                AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
-            } else null // får tilgang
-        }.catch { msg, status ->
-            logger.error("Kunne ikke henter NAVenheter for ansatt $navIdent: $status - $msg")
-            AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
-        }
+    enheterResult.await().map { enheter ->
+        if (enheter.none { it.id == sak.enhetId }) {
+            logger.warn("Tilgang til sak ${sak.sakId} avvist for $navIdent: mangler tilgang til enhet ${sak.enhetId}")
+            AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
+        } else null // får tilgang
+    }.catch { msg, status ->
+        logger.error("Kunne ikke henter NAVenheter for ansatt $navIdent: $status - $msg")
+        AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
     }
 
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)

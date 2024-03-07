@@ -139,15 +139,34 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-export async function orderLetter(
-  sakId: string,
-  orderLetterRequest: OrderExstreamLetterRequest | OrderEblankettRequest | OrderDoksysLetterRequest,
-) {
+export async function orderExstreamLetter(sakId: string, orderLetterRequest: OrderExstreamLetterRequest) {
   const response = await axios.post<BestillOgRedigerBrevResponse>(
-    `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/bestillbrev`,
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/bestillBrev/exstream`,
     orderLetterRequest,
   );
 
+  return convertBestillOgRedigerBrevResponse(response);
+}
+
+export async function orderDoksysLetter(sakId: string, orderLetterRequest: OrderDoksysLetterRequest) {
+  const response = await axios.post<BestillOgRedigerBrevResponse>(
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/bestillBrev/doksys`,
+    orderLetterRequest,
+  );
+
+  return convertBestillOgRedigerBrevResponse(response);
+}
+
+export async function orderEblankett(sakId: string, orderLetterRequest: OrderEblankettRequest) {
+  const response = await axios.post<BestillOgRedigerBrevResponse>(
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/bestillBrev/exstream/eblankett`,
+    orderLetterRequest,
+  );
+
+  return convertBestillOgRedigerBrevResponse(response);
+}
+
+function convertBestillOgRedigerBrevResponse(response: AxiosResponse<BestillOgRedigerBrevResponse>) {
   if (response.data.failureType) {
     throw convertResponseToAxiosError({ message: response.data.failureType, response });
   }
