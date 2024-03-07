@@ -11,11 +11,11 @@ import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 
-export const Route = createFileRoute("/saksnummer/$sakId")({
-  beforeLoad: ({ params: { sakId } }) => {
+export const Route = createFileRoute("/saksnummer/$saksId")({
+  beforeLoad: ({ params: { saksId } }) => {
     const getSakQueryOptions = {
-      queryKey: getSak.queryKey(sakId),
-      queryFn: () => getSak.queryFn(sakId),
+      queryKey: getSak.queryKey(saksId),
+      queryFn: () => getSak.queryFn(saksId),
     };
 
     return { getSakQueryOptions };
@@ -25,22 +25,22 @@ export const Route = createFileRoute("/saksnummer/$sakId")({
 
     // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.
     queryClient.prefetchQuery({
-      queryKey: getKontaktAdresse.queryKey(sak.sakId.toString()),
-      queryFn: () => getKontaktAdresse.queryFn(sak.sakId.toString()),
+      queryKey: getKontaktAdresse.queryKey(sak.saksId.toString()),
+      queryFn: () => getKontaktAdresse.queryFn(sak.saksId.toString()),
     });
 
     queryClient.prefetchQuery(getFavoritter);
     queryClient.prefetchQuery({
-      queryKey: getPreferredLanguage.queryKey(sak.sakId.toString()),
-      queryFn: () => getPreferredLanguage.queryFn(sak.sakId.toString()),
+      queryKey: getPreferredLanguage.queryKey(sak.saksId.toString()),
+      queryFn: () => getPreferredLanguage.queryFn(sak.saksId.toString()),
     });
 
     return sak;
   },
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { sakId } = Route.useParams();
-    return <ApiError error={error} title={`Klarte ikke hente saksnummer ${sakId}`} />;
+    const { saksId } = Route.useParams();
+    return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
   },
   component: SakBreadcrumbsPage,
   validateSearch: (search: Record<string, unknown>): { vedtaksId?: string } => ({
@@ -62,7 +62,7 @@ function SakBreadcrumbsPage() {
 function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sak?.sakId?.toString() as string),
+    queryFn: () => getNavn.queryFn(sak?.saksId?.toString() as string),
     enabled: !!sak,
   });
 
@@ -111,7 +111,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
         <span>{navn ?? ""}</span>
         <span>Sakstype: {SAK_TYPE_TO_TEXT[sak.sakType]}</span>
         <span>
-          Saksnummer: {sak.sakId} <CopyButton copyText={sak.sakId.toString()} size="small" />
+          Saksnummer: {sak.saksId} <CopyButton copyText={sak.saksId.toString()} size="small" />
         </span>
         {vedtaksId && <span>vedtaksId: {vedtaksId}</span>}
       </div>

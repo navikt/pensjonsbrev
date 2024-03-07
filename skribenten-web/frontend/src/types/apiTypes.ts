@@ -1,5 +1,5 @@
 export type SakDto = {
-  readonly sakId: number;
+  readonly saksId: number;
   readonly foedselsnr: string;
   readonly foedselsdato: [number, number, number];
   readonly sakType: SakType;

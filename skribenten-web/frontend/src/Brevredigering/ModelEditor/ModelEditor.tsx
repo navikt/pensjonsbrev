@@ -6,7 +6,7 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { renderLetter } from "~/api/skribenten-api-endpoints";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
-import { TEST_TEMPLATE } from "~/routes/saksnummer_.$sakId.redigering.$templateId";
+import { TEST_TEMPLATE } from "~/routes/saksnummer_.$saksId.redigering.$templateId";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import { ObjectEditor } from "./components/ObjectEditor";
@@ -21,7 +21,7 @@ const TEST_DEFAULT_VALUES = {
 
 export const ModelEditor = () => {
   const letterModelSpecification = useLoaderData({
-    from: "/saksnummer/$sakId/redigering/$templateId",
+    from: "/saksnummer/$saksId/redigering/$templateId",
   });
 
   const methods = useForm({ shouldUnregister: true, defaultValues: TEST_DEFAULT_VALUES });
