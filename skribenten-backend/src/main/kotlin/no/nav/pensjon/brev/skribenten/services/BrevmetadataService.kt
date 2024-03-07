@@ -64,7 +64,7 @@ class BrevmetadataService(config: Config, clientEngine: HttpClientEngine = CIO.c
                 BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
                 BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
             },
-            brevkategoriCode = kategoriOverrides[brevkodeIBrevsystem] ?: this.brevkategori?.toKategoriTekst(),
+            brevkategori = kategoriOverrides[brevkodeIBrevsystem] ?: this.brevkategori?.toKategoriTekst(),
             dokumentkategoriCode = this.dokumentkategori,
             redigerbart = redigerbart,
             redigerbarBrevtittel = isRedigerbarBrevtittel(),
@@ -139,7 +139,7 @@ data class LetterMetadata(
     val id: String,
     val brevsystem: BrevSystem,
     val spraak: List<SpraakKode>, // Enkelte brev er egentlig bare bokmål, men har null i metadata.
-    val brevkategoriCode: String?,
+    val brevkategori: String?,
     val dokumentkategoriCode: BrevdataDto.DokumentkategoriCode?,
     val redigerbart: Boolean,
     val redigerbarBrevtittel: Boolean,
