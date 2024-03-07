@@ -30,6 +30,7 @@ class ArkivTjenestebussService(clientFactory: ArkivClientFactory) : Tjenestebuss
      */
     fun bestillBrev(request: BestillBrevExstreamRequestDto): BestillExstreamBrevResponseDto {
         try {
+            val saksKontekst = request.sakskontekstDto
             val response = client.bestillBrev(BestillBrevRequest().apply {
                 brevKode = request.brevKode
                 brevGruppe = request.brevGruppe
@@ -38,26 +39,26 @@ class ArkivTjenestebussService(clientFactory: ArkivClientFactory) : Tjenestebuss
                 sprakKode = request.sprakkode
                 brevMottakerNavn = request.brevMottakerNavn
                 sakskontekst = Sakskontekst().apply {
-                    dokumentdato = request.sakskontekstDto.dokumentdato
-                    dokumenttype = request.sakskontekstDto.dokumenttype
-                    fagomradeKode = request.sakskontekstDto.fagomradekode
-                    fagsystem = request.sakskontekstDto.fagsystem
-                    gjelder = request.sakskontekstDto.gjelder
-                    innhold = request.sakskontekstDto.innhold
-                    journalenhet = request.sakskontekstDto.journalenhet
-                    kategori = request.sakskontekstDto.kategori
-                    kravtype = request.sakskontekstDto.kravtype
-                    land = request.sakskontekstDto.land
-                    mottaker = request.sakskontekstDto.mottaker
-                    saksbehandlerId = request.sakskontekstDto.saksbehandlerId
-                    saksbehandlernavn = request.sakskontekstDto.saksbehandlernavn
-                    saksid = request.sakskontekstDto.saksid
-                    sensitivitetsgrad = "false"
-                    vedtaksInformasjon = request.sakskontekstDto.vedtaksId
+                    dokumentdato = saksKontekst.dokumentdato
+                    dokumenttype = saksKontekst.dokumenttype
+                    fagomradeKode = saksKontekst.fagomradekode
+                    fagsystem = saksKontekst.fagsystem
+                    gjelder = saksKontekst.gjelder
+                    innhold = saksKontekst.innhold
+                    journalenhet = saksKontekst.journalenhet
+                    kategori = saksKontekst.kategori
+                    kravtype = saksKontekst.kravtype
+                    land = saksKontekst.land
+                    mottaker = saksKontekst.mottaker
+                    saksbehandlerId = saksKontekst.saksbehandlerId
+                    saksbehandlernavn = saksKontekst.saksbehandlernavn
+                    saksid = saksKontekst.saksid
+                    sensitivitetsgrad = saksKontekst.isSensitive.toString()
+                    vedtaksInformasjon = saksKontekst.vedtaksId
                     tillattelektroniskvarsling = elektroniskVarslingTrue
                 }
             })
-            logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${request.sakskontekstDto.saksid} ")
+            logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${saksKontekst.saksid} ")
             return BestillExstreamBrevResponseDto(response.journalpostId)
         } catch (ex: BestillBrevOpprettelseJournalpostFeilet) {
             logger.error("En feil oppstod under opprettelse av journalpost: ${maskerFnr(ex.faultInfo.errorMessage)}")
@@ -116,6 +117,7 @@ data class BestillBrevExstreamRequestDto(
         val saksbehandlerId: String,
         val saksbehandlernavn: String,
         val saksid: String,
+        val isSensitive: Boolean,
         val vedtaksId: String?,
     )
 }
