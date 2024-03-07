@@ -37,6 +37,7 @@ export type LetterMetadata = {
   spraak: SpraakKode[];
   brevkategoriCode?: BrevkategoriCode;
   dokumentkategoriCode?: DokumentkategoriCode;
+  redigerbarBrevtittel: boolean;
 };
 
 export enum BrevSystem {
