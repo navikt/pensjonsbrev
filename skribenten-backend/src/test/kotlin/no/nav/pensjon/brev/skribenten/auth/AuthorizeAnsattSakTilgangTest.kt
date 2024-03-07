@@ -74,8 +74,8 @@ class AuthorizeAnsattSakTilgangTest {
         coEvery { hentAdressebeskyttelse(any(), testSak.foedselsnr) } returns ServiceResult.Ok(emptyList())
     }
     private val penService = mockk<PenService> {
-        coEvery { hentSak(any(), "${testSak.sakId}") } returns ServiceResult.Ok(testSak)
-        coEvery { hentSak(any(), "${sakVikafossen.sakId}") } returns ServiceResult.Ok(sakVikafossen)
+        coEvery { hentSak(any(), "${testSak.saksId}") } returns ServiceResult.Ok(testSak)
+        coEvery { hentSak(any(), "${sakVikafossen.saksId}") } returns ServiceResult.Ok(sakVikafossen)
     }
 
     private val server = embeddedServer(Netty, port = 0) {
@@ -97,13 +97,13 @@ class AuthorizeAnsattSakTilgangTest {
                     install(AuthorizeAnsattSakTilgang(navansattService, pdlService, penService))
 
                     get("/noSak/{noSak}") { call.respond("ingen sak") }
-                    get("/sakFromPlugin/{sakId}") {
+                    get("/sakFromPlugin/{saksId}") {
                         val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
                         call.respond(successResponse(sak.foedselsnr))
                     }
-                    get("/{sakId}") {
-                        val sakId = call.parameters.getOrFail("sakId")
-                        call.respond(successResponse(sakId))
+                    get("/{saksId}") {
+                        val saksId = call.parameters.getOrFail("saksId")
+                        call.respond(successResponse(saksId))
                     }
                 }
             }
@@ -124,13 +124,13 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `bruker faar tilgang til sak naar krav er oppfylt`() = runBlocking {
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(testSak.sakId.toString()), response.bodyAsText())
+        assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
     }
 
     @Test
-    fun `krever sakId path param`() = runBlocking {
+    fun `krever saksId path param`() = runBlocking {
         val response = client.get("/sak/noSak/123")
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
@@ -141,7 +141,7 @@ class AuthorizeAnsattSakTilgangTest {
             navansattService.hentNavAnsattEnhetListe(any(), NAVIdent)
         } returns ServiceResult.Ok(listOf(NAVEnhet("annen enhet", "annen enhet")))
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.Forbidden, response.status)
     }
 
@@ -151,7 +151,7 @@ class AuthorizeAnsattSakTilgangTest {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.FORTROLIG))
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
@@ -161,7 +161,7 @@ class AuthorizeAnsattSakTilgangTest {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
@@ -171,7 +171,7 @@ class AuthorizeAnsattSakTilgangTest {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG_UTLAND))
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
@@ -182,9 +182,9 @@ class AuthorizeAnsattSakTilgangTest {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.FORTROLIG))
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(testSak.sakId.toString()), response.bodyAsText())
+        assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
     }
 
     @Test
@@ -194,9 +194,9 @@ class AuthorizeAnsattSakTilgangTest {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(testSak.sakId.toString()), response.bodyAsText())
+        assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
     }
 
     @Test
@@ -206,16 +206,16 @@ class AuthorizeAnsattSakTilgangTest {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG_UTLAND))
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(testSak.sakId.toString()), response.bodyAsText())
+        assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
     }
 
     @Test
     fun `svarer med feil fra hentSak`() = runBlocking {
         coEvery { penService.hentSak(any(), any()) } returns ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
         assertEquals("Sak finnes ikke", response.bodyAsText())
     }
@@ -224,7 +224,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `svarer med internal server error om hentNavAnsattEnhetListe feiler`() = runBlocking {
         coEvery { navansattService.hentNavAnsattEnhetListe(any(), any()) } returns ServiceResult.Error("Ansatt finnes ikke", HttpStatusCode.NotFound)
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
         assertEquals("En feil oppstod ved henting av NAVEnheter for ansatt: $NAVIdent", response.bodyAsText())
     }
@@ -233,14 +233,14 @@ class AuthorizeAnsattSakTilgangTest {
     fun `svarer med internal server error om hentAdressebeskyttelse feiler`() = runBlocking {
         coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr) } returns ServiceResult.Error("En feil", HttpStatusCode.InternalServerError)
 
-        val response = client.get("/sak/${testSak.sakId}")
+        val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
         assertEquals("En feil oppstod ved validering av tilgang til sak", response.bodyAsText())
     }
 
     @Test
     fun `plugin lagrer sak som attribute tilgjengelig i route scope`() = runBlocking {
-        val response = client.get("/sak/sakFromPlugin/${testSak.sakId}")
+        val response = client.get("/sak/sakFromPlugin/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(successResponse(testSak.foedselsnr), response.bodyAsText())
     }
@@ -249,7 +249,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `svarer med not found for graderte brukere selv om saksbehandler mangler enhet vikafossen`() = runBlocking {
         coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr) } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
 
-        val response = client.get("/sak/${sakVikafossen.sakId}")
+        val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
         assertThat(response.bodyAsText(), isNullOrEmptyString)
     }
@@ -261,7 +261,7 @@ class AuthorizeAnsattSakTilgangTest {
             HttpStatusCode.Forbidden
         )
 
-        val response = client.get("/sak/${sakVikafossen.sakId}")
+        val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
         assertThat(response.bodyAsText(), isNullOrEmptyString)
     }
@@ -273,10 +273,10 @@ class AuthorizeAnsattSakTilgangTest {
             HttpStatusCode.Unauthorized
         )
 
-        val response = client.get("/sak/${sakVikafossen.sakId}")
+        val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
     }
 
-    private fun successResponse(sakId: String) =
-        "Fikk tilgang til den strengt bevoktede saken: $sakId"
+    private fun successResponse(saksId: String) =
+        "Fikk tilgang til den strengt bevoktede saken: $saksId"
 }

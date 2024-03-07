@@ -102,7 +102,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         mottakerText: String? = null,
         name: String,
         navIdent: String,
-        sakId: Long,
+        saksId: Long,
         spraak: SpraakKode,
         vedtaksId: Long? = null,
     ): ServiceResult<BestillExstreamBrevResponseDto> {
@@ -130,7 +130,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         fagomradekode = "PEN",                              // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
                         innhold = metadata.dekode,                          // Visningsnavn
                         kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),    // Kategori for dokumentet
-                        saksid = sakId.toString(),                          // sakid
+                        saksid = saksId.toString(),                          // saksid
                         saksbehandlernavn = name,
                         saksbehandlerId = navIdent,
                         kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
