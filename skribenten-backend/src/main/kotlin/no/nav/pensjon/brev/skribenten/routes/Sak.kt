@@ -24,38 +24,32 @@ fun Route.sakRoute(
         route("/bestillBrev") {
             post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-                call.respond(sak.enhetId.let {
-                    legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = it, sak.sakId)
-                })
+                call.respond(legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = sak.enhetId, sak.sakId))
             }
             route("/exstream") {
                 post<LegacyBrevService.BestillExstreamBrevRequest> { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
                     call.respond(
-                        sak.enhetId.let {
-                            legacyBrevService.bestillOgRedigerExstreamBrev(
-                                call = call,
-                                enhetsId = it,
-                                gjelderPid = sak.foedselsnr,
-                                request = request,
-                                sakId = sak.sakId,
-                            )
-                        }
+                        legacyBrevService.bestillOgRedigerExstreamBrev(
+                            call = call,
+                            enhetsId = sak.enhetId,
+                            gjelderPid = sak.foedselsnr,
+                            request = request,
+                            sakId = sak.sakId,
+                        )
                     )
                 }
 
                 post<LegacyBrevService.BestillEblankettRequest>("/eblankett") { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
                     call.respond(
-                        sak.enhetId.let {
-                            legacyBrevService.bestillOgRedigerEblankett(
-                                call = call,
-                                enhetsId = it,
-                                gjelderPid = sak.foedselsnr,
-                                request = request,
-                                sakId = sak.sakId,
-                            )
-                        }
+                        legacyBrevService.bestillOgRedigerEblankett(
+                            call = call,
+                            enhetsId = sak.enhetId,
+                            gjelderPid = sak.foedselsnr,
+                            request = request,
+                            sakId = sak.sakId,
+                        )
                     )
                 }
             }
