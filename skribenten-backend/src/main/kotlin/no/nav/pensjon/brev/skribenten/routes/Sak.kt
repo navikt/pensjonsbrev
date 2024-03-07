@@ -5,9 +5,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillBrevResponse
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillOgRedigerBrevResponse
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.FailureType.ENHETSID_MANGLER
 
 fun Route.sakRoute(
     penService: PenService,
