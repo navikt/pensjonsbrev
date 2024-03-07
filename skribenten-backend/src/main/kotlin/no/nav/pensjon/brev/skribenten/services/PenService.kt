@@ -86,7 +86,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         val brevkode: String,
         val journalfoerendeEnhet: String?,
         val sprakKode: SpraakKode?,
-        val vedtaksId: Long?,
+        val vedtakId: Long?,
     )
 
     suspend fun bestillDoksysBrev(
@@ -102,7 +102,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
                     brevkode = request.brevkode,
                     journalfoerendeEnhet = enhetsId,
                     sprakKode = request.spraak,
-                    vedtaksId = request.vedtaksId,
+                    vedtakId = request.vedtaksId,
                 )
             )
             contentType(ContentType.Application.Json)
