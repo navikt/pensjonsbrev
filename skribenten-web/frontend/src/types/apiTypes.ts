@@ -67,7 +67,7 @@ export type OrderDoksysLetterRequest = BaseLetterRequest;
 export type OrderExstreamLetterRequest = BaseLetterRequest & {
   isSensitive: boolean;
   idTSSEkstern?: string;
-  title?: string;
+  brevtittel?: string;
 };
 
 export type OrderEblankettRequest = Omit<BaseLetterRequest, "spraak"> & {

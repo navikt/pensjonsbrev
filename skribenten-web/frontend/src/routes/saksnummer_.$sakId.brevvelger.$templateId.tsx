@@ -157,11 +157,11 @@ const baseOrderLetterValidationSchema = z.object({
 
 const exstreamOrderLetterValidationSchema = baseOrderLetterValidationSchema.extend({
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
-  title: z.string().optional(),
+  brevtittel: z.string().optional(),
 });
 
 const exstreamWithTitleOrderLetterValidationSchema = exstreamOrderLetterValidationSchema.extend({
-  title: z.string().min(1, "Du må ha tittel for dette brevet"),
+  brevtittel: z.string().min(1, "Du må ha tittel for dette brevet"),
 });
 
 const eblankettValidationSchema = z.object({
@@ -188,7 +188,7 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: {
       isSensitive: undefined,
-      title: "",
+      brevtittel: "",
     },
     resolver: zodResolver(validationSchema),
   });
@@ -220,10 +220,10 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
             <Adresse />
             {letterTemplate.redigerbarBrevtittel ? (
               <TextField
-                {...methods.register("title")}
+                {...methods.register("brevtittel")}
                 autoComplete="off"
                 description="Gi brevet en kort og forklarende tittel."
-                error={methods.formState.errors.title?.message}
+                error={methods.formState.errors.brevtittel?.message}
                 label="Endre tittel"
                 size="medium"
               />
