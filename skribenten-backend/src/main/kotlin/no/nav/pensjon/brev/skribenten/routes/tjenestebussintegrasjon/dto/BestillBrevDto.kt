@@ -22,7 +22,7 @@ data class BestillBrevExstreamRequestDto(
     val sprakkode: String,
     val sakskontekstDto: SakskontekstDto,
     val brevMottakerNavn: String?,
-){
+) {
     data class SakskontekstDto(
         val dokumentdato: XMLGregorianCalendar,
         val dokumenttype: String,
@@ -38,6 +38,7 @@ data class BestillBrevExstreamRequestDto(
         val saksbehandlerId: String,
         val saksbehandlernavn: String,
         val saksid: String,
+        val isSensitive: Boolean,
         val vedtaksId: String?,
     )
 }
