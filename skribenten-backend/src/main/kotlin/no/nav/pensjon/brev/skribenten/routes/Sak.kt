@@ -27,15 +27,15 @@ fun Route.sakRoute(
         route("/bestillBrev") {
             post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-                call.respond(sak.enhetId?.let {
+                call.respond(sak.enhetId.let {
                     legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = it, sak.sakId)
-                } ?: BestillBrevResponse(ENHETSID_MANGLER))
+                })
             }
             route("/exstream") {
                 post<LegacyBrevService.BestillExstreamBrevRequest> { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
                     call.respond(
-                        sak.enhetId?.let {
+                        sak.enhetId.let {
                             legacyBrevService.bestillOgRedigerExstreamBrev(
                                 call = call,
                                 enhetsId = it,
@@ -43,14 +43,14 @@ fun Route.sakRoute(
                                 request = request,
                                 sakId = sak.sakId,
                             )
-                        } ?: BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
+                        }
                     )
                 }
 
                 post<LegacyBrevService.BestillEblankettRequest>("/eblankett") { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
                     call.respond(
-                        sak.enhetId?.let {
+                        sak.enhetId.let {
                             legacyBrevService.bestillOgRedigerEblankett(
                                 call = call,
                                 enhetsId = it,
@@ -58,7 +58,7 @@ fun Route.sakRoute(
                                 request = request,
                                 sakId = sak.sakId,
                             )
-                        } ?: BestillOgRedigerBrevResponse(ENHETSID_MANGLER)
+                        }
                     )
                 }
             }
