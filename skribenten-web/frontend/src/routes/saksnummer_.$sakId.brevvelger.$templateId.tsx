@@ -157,11 +157,16 @@ const baseOrderLetterValidationSchema = z.object({
 
 const exstreamOrderLetterValidationSchema = baseOrderLetterValidationSchema.extend({
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+  brevtittel: z.string().optional(),
+});
+
+const exstreamWithTitleOrderLetterValidationSchema = exstreamOrderLetterValidationSchema.extend({
+  brevtittel: z.string().min(1, "Du må ha tittel for dette brevet"),
 });
 
 const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),
-  mottakerText: z.string().min(1, "Obligatorisk"),
+  mottakerText: z.string().min(1, "Vennligst fyll inn mottaker"),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
 });
 
@@ -176,17 +181,24 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
     },
   });
 
-  const { reset } = orderLetterMutation;
-  useEffect(() => {
-    reset();
-  }, [templateId, reset]);
+  const validationSchema = letterTemplate.redigerbarBrevtittel
+    ? exstreamWithTitleOrderLetterValidationSchema
+    : exstreamOrderLetterValidationSchema;
 
-  const methods = useForm<z.infer<typeof exstreamOrderLetterValidationSchema>>({
+  const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: {
       isSensitive: undefined,
+      brevtittel: "",
     },
-    resolver: zodResolver(exstreamOrderLetterValidationSchema),
+    resolver: zodResolver(validationSchema),
   });
+
+  const { reset: resetMutation } = orderLetterMutation;
+  const { reset: resetForm } = methods;
+  useEffect(() => {
+    resetForm();
+    resetMutation();
+  }, [templateId, resetMutation, resetForm]);
 
   return (
     <>
@@ -206,6 +218,16 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
         >
           <VStack gap="8">
             <Adresse />
+            {letterTemplate.redigerbarBrevtittel ? (
+              <TextField
+                {...methods.register("brevtittel")}
+                autoComplete="off"
+                description="Gi brevet en kort og forklarende tittel."
+                error={methods.formState.errors.brevtittel?.message}
+                label="Endre tittel"
+                size="medium"
+              />
+            ) : undefined}
             <SelectLanguage letterTemplate={letterTemplate} />
             <SelectSensitivity />
           </VStack>

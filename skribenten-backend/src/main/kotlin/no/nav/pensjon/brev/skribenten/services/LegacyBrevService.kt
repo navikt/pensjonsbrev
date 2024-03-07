@@ -49,6 +49,12 @@ class LegacyBrevService(
         sakId: Long,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
+
+        val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
+        if (brevtittel.isNullOrBlank()) {
+            return BestillOgRedigerBrevResponse(EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
+        }
+
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
             call = call,
@@ -60,6 +66,7 @@ class LegacyBrevService(
             sakId = sakId,
             spraak = request.spraak,
             vedtaksId = request.vedtaksId,
+            brevtittel = brevtittel,
         )
         return if (result.failureType != null) {
             BestillOgRedigerBrevResponse(result)
@@ -93,7 +100,8 @@ class LegacyBrevService(
             sakId = sakId,
             spraak = SpraakKode.NB,
             landkode = request.landkode,
-            mottakerText = request.mottakerText
+            mottakerText = request.mottakerText,
+            brevtittel = brevMetadata.dekode,
         )
         return if (result.failureType != null) {
             BestillOgRedigerBrevResponse(result)
@@ -115,6 +123,7 @@ class LegacyBrevService(
         metadata: BrevdataDto,
         sakId: Long,
         spraak: SpraakKode,
+        brevtittel: String,
         vedtaksId: Long? = null,
         landkode: String? = null,
         mottakerText: String? = null,
@@ -134,6 +143,7 @@ class LegacyBrevService(
             vedtaksId = vedtaksId,
             landkode = landkode,
             mottakerText = mottakerText,
+            brevtittel = brevtittel,
         ).map {
             if (it.failureType != null) {
                 BestillBrevResponse(it.failureType)
@@ -253,6 +263,7 @@ class LegacyBrevService(
         val isSensitive: Boolean,
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
+        val brevtittel: String? = null,
     )
 
     data class BestillEblankettRequest(
