@@ -13,7 +13,11 @@ fun <Data : Any, Field> Expression<Data>.select(
 fun <T> T.expr(): Expression<T> = Expression.Literal(this)
 
 fun <T: Any> Expression<T?>.ifNull(then: T): Expression<T> =
-    Expression.UnaryInvoke(this, UnaryOperation.IfNull(then))
+    Expression.BinaryInvoke(
+        this,
+        then.expr(),
+        BinaryOperation.IfNull(),
+    )
 
 fun <T: Any> Expression<T?>.notNull(): Expression<Boolean> = notEqualTo(null)
 
