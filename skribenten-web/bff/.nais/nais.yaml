@@ -39,7 +39,7 @@ spec:
         - "http://localhost:8080/oauth2/callback"
     sidecar:
       enabled: true
-      autoLogin: true
+      autoLogin: false
 
   accessPolicy:
     outbound:

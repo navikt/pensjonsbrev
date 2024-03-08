@@ -1,3 +1,4 @@
+import type { NextFunction, Request, Response } from "express";
 import express from "express";
 
 import { setupActuators } from "./actuators.js";
@@ -17,8 +18,16 @@ setupActuators(server);
 server.set("trust proxy", 1);
 
 server.use(verifyJWTToken);
-setupSkribentenBackendApiProxy(server);
 
+server.use((error: Error, request: Request, response: Response, next: NextFunction) => {
+  if (error.name === "UnauthorizedError") {
+    response.redirect("/oauth2/login");
+  } else {
+    next(error);
+  }
+});
+
+setupSkribentenBackendApiProxy(server);
 internalRoutes(server);
 setupStaticRoutes(server);
 server.use(errorHandling);
