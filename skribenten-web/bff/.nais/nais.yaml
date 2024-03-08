@@ -40,6 +40,8 @@ spec:
     sidecar:
       enabled: true
       autoLogin: false
+      autoLoginIgnorePaths:
+        - "/bff/*"
 
   accessPolicy:
     outbound:
