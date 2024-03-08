@@ -109,6 +109,7 @@ services:
       - skribenten-web/bff/.env
     environment:
       - WONDERWALL_AUTO_LOGIN=true
+      - WONDERWALL_AUTO_LOGIN_IGNORE_PATHS=/bff/*
       - WONDERWALL_OPENID_PROVIDER=azure
       - WONDERWALL_INGRESS=http://localhost:8083
       - WONDERWALL_BIND_ADDRESS=0.0.0.0:8083
