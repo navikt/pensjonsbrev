@@ -69,7 +69,20 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                 )
             }
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            title1 {
+                text(
+                    Bokmal to "Du må melde fra om endringer",
+                    Nynorsk to "Du må melde frå om endringar",
+                    English to "You must notify any changes"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang.",
+                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong.",
+                    English to "You must notify us immediately of any changes in your situation."
+                )
+            }
 
             includePhrase(Felles.RettTilInnsynPesys)
 
