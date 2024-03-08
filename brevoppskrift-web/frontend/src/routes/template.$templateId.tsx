@@ -278,22 +278,22 @@ function ConditionalComponent<E extends Element>({ conditional }: { conditional:
         <ShowIf cocs={conditional.showIf} />
       </div>
       {conditional.elseIf.map((elseIf, index) => (
-        <ShowElseIf cocs={elseIf} key={index} />
+        <ShowElseIf elseIf={elseIf} key={index} />
       ))}
       <ShowElse cocs={conditional.showElse} />
     </div>
   );
 }
 
-function ShowElseIf<E extends Element>({ cocs }: { cocs: ElseIf<E> }) {
+function ShowElseIf<E extends Element>({ elseIf }: { elseIf: ElseIf<E> }) {
   return (
     <div className="show-if">
       <div className="expression">
         <code>Else If </code>
-        <ExpressionToText expression={cocs.predicate} />
+        <ExpressionToText expression={elseIf.predicate} />
       </div>
-      {cocs.showIf.map((a, index) => (
-        <ContentOrControlStructureComponent cocs={a} key={index} />
+      {elseIf.showIf.map((cocs, index) => (
+        <ContentOrControlStructureComponent cocs={cocs} key={index} />
       ))}
     </div>
   );
