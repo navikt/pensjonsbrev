@@ -73,7 +73,7 @@ class ExpressionEvalTest {
     fun `eval UnaryInvoke returns expected value`() {
         val evaluated: String = Expression.UnaryInvoke(
             Expression.Literal(4),
-            UnaryOperation.ToString()
+            UnaryOperation.ToString
         ).eval(scope)
 
         assertEquals("4", evaluated)
