@@ -35,7 +35,7 @@ export type LetterMetadata = {
   id: string;
   brevsystem: BrevSystem;
   spraak: SpraakKode[];
-  brevkategoriCode?: BrevkategoriCode;
+  brevkategori?: string;
   dokumentkategoriCode?: DokumentkategoriCode;
 };
 

@@ -78,18 +78,18 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
     (brevmal) => brevmal.dokumentkategoriCode === "E_BLANKETT",
   );
 
-  const groupedBrevmaler = groupBy(brevmaler, (brevmal) => brevmal.brevkategoriCode ?? "OTHER");
+  const groupedBrevmaler = groupBy(brevmaler, (brevmal) => brevmal.brevkategori ?? "Annet");
 
   const brevmalerGroupedByType: Record<string, LetterMetadata[]> = {
-    ...(matchingFavoritter.length > 0 ? { FAVORITTER: matchingFavoritter } : {}),
+    ...(matchingFavoritter.length > 0 ? { Favoritter: matchingFavoritter } : {}),
     ...groupedBrevmaler,
-    ...(eblanketter.length > 0 ? { E_BLANKETT: eblanketter } : {}),
+    ...(eblanketter.length > 0 ? { "E-blanketter": eblanketter } : {}),
   };
 
   const sortedCategoryKeys = [
-    matchingFavoritter.length > 0 ? ["FAVORITTER"] : [],
-    sortBy(Object.keys(groupedBrevmaler), (type) => CATEGORY_TRANSLATIONS[type]),
-    eblanketter.length > 0 ? ["E_BLANKETT"] : [],
+    matchingFavoritter.length > 0 ? ["Favoritter"] : [],
+    sortBy(Object.keys(groupedBrevmaler), (type) => type),
+    eblanketter.length > 0 ? ["E-blanketter"] : [],
   ].flat();
 
   return (
@@ -126,7 +126,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         {sortedCategoryKeys.map((type) => {
           return (
             <Accordion.Item
-              defaultOpen={type === "FAVORITTER"}
+              defaultOpen={type === "Favoritter"}
               key={type}
               open={searchTerm.length > 0 ? true : undefined}
             >
@@ -136,7 +136,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
                   justify-content: space-between;
                 `}
               >
-                {CATEGORY_TRANSLATIONS[type]}
+                {type}
               </Accordion.Header>
               <Accordion.Content>
                 <div
@@ -200,16 +200,3 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
     </Button>
   );
 }
-
-const CATEGORY_TRANSLATIONS: Record<string, string> = {
-  BREV_MED_SKJEMA: "Brev med skjema",
-  INFORMASJON: "Informasjon",
-  INNHENTE_OPPL: "Innhente opplysninger",
-  NOTAT: "Notat",
-  OVRIG: "Øvrig",
-  VARSEL: "Varsel",
-  VEDTAK: "Vedtak",
-  FAVORITTER: "Favoritter",
-  E_BLANKETT: "E-blanketter",
-  OTHER: "Annet",
-};
