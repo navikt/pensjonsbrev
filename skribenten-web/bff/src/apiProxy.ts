@@ -5,7 +5,7 @@ import config from "./config.js";
 
 export const setupSkribentenBackendApiProxy = (server: Express) =>
   addProxyHandler(server, {
-    ingoingUrl: "/skribenten-backend",
+    ingoingUrl: "/bff/skribenten-backend",
     outgoingUrl: config.skribentenBackendApiProxy.url,
     scope: config.skribentenBackendApiProxy.scope,
     flow: "ON_BEHALF_OF",
