@@ -41,21 +41,12 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Kroner): Kroner = Kroner(input.value.absoluteValue)
     }
 
-    object FormatPhoneNumber : UnaryOperation<Telefonnummer, String>() {
-        override fun apply(input: Telefonnummer): String = input.format()
-    }
-
     data class Select<In: Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
         override fun apply(input: In): Out = selector.selector(input)
     }
 
     data class SafeCall<In: Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>() {
         override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
-    }
-
-    // TODO: Should be a binary operation
-    data class IfNull<In>(val then: In) : UnaryOperation<In?, In>() {
-        override fun apply(input: In?): In = input ?: then
     }
 
     object Not : UnaryOperation<Boolean, Boolean>() {
@@ -112,6 +103,10 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     class IntPlus<T : IntValue>(val constructor: (Int) -> T) : BinaryOperation<T, T, T>() {
         override fun apply(first: T, second: T): T = constructor(first.value + second.value)
+    }
+
+    class IfNull<T : Any> : BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)) {
+        override fun apply(first: T?, second: T): T = first ?: second
     }
 
     data class MapCollection<In1, In2, Out>(val mapper: BinaryOperation<In1, In2, Out>): BinaryOperation<Collection<In1>, In2, Collection<Out>>() {

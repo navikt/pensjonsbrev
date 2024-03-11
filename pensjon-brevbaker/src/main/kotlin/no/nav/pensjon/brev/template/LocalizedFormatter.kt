@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.FormatStyle
@@ -30,6 +32,10 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
                 .format(first)
+    }
+
+    object TelefonnummerFormat : LocalizedFormatter<Telefonnummer>() {
+        override fun apply(first: Telefonnummer, second: Language): String = first.format()
     }
 
     object CollectionFormat : LocalizedFormatter<Collection<String>>() {
