@@ -5,12 +5,12 @@ import { jwtDecode } from "jwt-decode";
 import { getTokenFromRequestHeader } from "./tokenValidation.js";
 
 export const internalRoutes = (server: Express) => {
-  server.get("/bff/logout", (request, response) => {
+  server.get("/bff/internal/logout", (request, response) => {
     deleteCachedTokens(request);
     response.redirect("/oauth2/logout");
   });
 
-  server.get("/bff/userinfo", (request, response) => {
+  server.get("/bff/internal/userinfo", (request, response) => {
     const token = getTokenFromRequestHeader(request);
 
     if (!token) {
