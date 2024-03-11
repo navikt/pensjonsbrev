@@ -166,17 +166,7 @@ object TemplateDocumentationRenderer {
 
     private fun renderExpression(expr: Expression<*>): TemplateDocumentation.Expression =
         when (expr) {
-            is Expression.BinaryInvoke<*, *, *> ->
-                when (expr.operation) {
-                    is LocalizedFormatter<*> -> renderExpression(expr.first)
-                    else -> TemplateDocumentation.Expression.Invoke(
-                        renderOperation(expr.operation),
-                        renderExpression(expr.first),
-                        renderExpression(expr.second),
-                        "TODO"
-                    )
-                }
-
+            is Expression.BinaryInvoke<*, *, *> ->renderBinaryInvoke(expr)
             is Expression.FromScope.Language -> TemplateDocumentation.Expression.LetterData("language")
             is Expression.FromScope.Felles -> TemplateDocumentation.Expression.LetterData("felles")
             is Expression.FromScope.Argument -> TemplateDocumentation.Expression.LetterData("argument")
@@ -184,6 +174,26 @@ object TemplateDocumentationRenderer {
             is Expression.Literal -> TemplateDocumentation.Expression.Literal(expr.value.toString())
             is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr)
         }
+
+    private fun renderBinaryInvoke(expr: Expression.BinaryInvoke<*, *, *>) =
+        when (expr.operation) {
+            is LocalizedFormatter<*> -> renderExpression(expr.first)
+            is BinaryOperation.IfNull<*> ->
+               if (expr.second is Expression.Literal && expr.second.value == false) {
+                   renderExpression(expr.first)
+               } else {
+                   renderAnyBinaryInvoke(expr)
+               }
+            else -> renderAnyBinaryInvoke(expr)
+        }
+
+    private fun renderAnyBinaryInvoke(expr: Expression.BinaryInvoke<*, *, *>) =
+        TemplateDocumentation.Expression.Invoke(
+            renderOperation(expr.operation),
+            renderExpression(expr.first),
+            renderExpression(expr.second),
+            "TODO"
+        )
 
     private fun renderUnaryInvoke(expr: Expression.UnaryInvoke<*, *>): TemplateDocumentation.Expression =
         when (expr.operation) {
@@ -194,16 +204,6 @@ object TemplateDocumentationRenderer {
 
             is UnaryOperation.AbsoluteValueKroner -> TemplateDocumentation.Expression.Invoke(
                 operator = Operation("abs", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
-            )
-
-            is UnaryOperation.FormatPhoneNumber -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("format", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
-            )
-
-            is UnaryOperation.IfNull<*> -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation(" ?: ${expr.operation.then}", Documentation.Notation.POSTFIX),
                 first = renderExpression(expr.value)
             )
 
