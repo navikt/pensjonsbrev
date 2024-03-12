@@ -13,10 +13,11 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSele
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.nettoTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.renteTillegg
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.summer
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.perioder
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 
 @TemplateModelHelpers
-val tilbakekrevingVedlegg = createAttachment<LangBokmalNynorskEnglish, TilbakekrevingInnholdDTO>(
+val tilbakekrevingVedlegg = createAttachment(
     title = newText(
             Bokmal to "Oversikt over feiltutbetalinger",
             Nynorsk to "Oversikt over feiltutbetalinger",
@@ -32,6 +33,7 @@ val tilbakekrevingVedlegg = createAttachment<LangBokmalNynorskEnglish, Tilbakekr
         )
     }
     paragraph {
+        perioder
         table(
             header = {
                 column(1) {
