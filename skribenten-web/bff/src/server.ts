@@ -17,8 +17,9 @@ setupActuators(server);
 server.set("trust proxy", 1);
 
 server.use(verifyJWTToken);
-setupSkribentenBackendApiProxy(server);
 
+
+setupSkribentenBackendApiProxy(server);
 internalRoutes(server);
 setupStaticRoutes(server);
 server.use(errorHandling);

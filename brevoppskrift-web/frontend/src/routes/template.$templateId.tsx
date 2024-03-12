@@ -8,6 +8,7 @@ import type {
   Conditional,
   ContentOrControlStructure,
   Element,
+  ElseIf,
   Expression,
   ForEach,
   TemplateDocumentation,
@@ -276,7 +277,24 @@ function ConditionalComponent<E extends Element>({ conditional }: { conditional:
         </div>
         <ShowIf cocs={conditional.showIf} />
       </div>
+      {conditional.elseIf.map((elseIf, index) => (
+        <ShowElseIf elseIf={elseIf} key={index} />
+      ))}
       <ShowElse cocs={conditional.showElse} />
+    </div>
+  );
+}
+
+function ShowElseIf<E extends Element>({ elseIf }: { elseIf: ElseIf<E> }) {
+  return (
+    <div className="show-if">
+      <div className="expression">
+        <code>Else If </code>
+        <ExpressionToText expression={elseIf.predicate} />
+      </div>
+      {elseIf.showIf.map((cocs, index) => (
+        <ContentOrControlStructureComponent cocs={cocs} key={index} />
+      ))}
     </div>
   );
 }

@@ -24,7 +24,14 @@ import type {
 } from "~/types/apiTypes";
 import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
 
-const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
+const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
+
+axios.interceptors.response.use(undefined, (error) => {
+  if (error.response.status === 401) {
+    window.location.assign(error.response.headers.location);
+  }
+  return Promise.reject(error);
+});
 
 /**
  * Anbefalt lesing for react-query key factory pattern: https://tkdodo.eu/blog/effective-react-query-keys

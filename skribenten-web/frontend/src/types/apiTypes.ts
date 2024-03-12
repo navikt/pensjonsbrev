@@ -35,8 +35,9 @@ export type LetterMetadata = {
   id: string;
   brevsystem: BrevSystem;
   spraak: SpraakKode[];
-  brevkategoriCode?: BrevkategoriCode;
+  brevkategori?: string;
   dokumentkategoriCode?: DokumentkategoriCode;
+  redigerbarBrevtittel: boolean;
 };
 
 export enum BrevSystem {
@@ -66,6 +67,7 @@ export type OrderDoksysLetterRequest = BaseLetterRequest;
 export type OrderExstreamLetterRequest = BaseLetterRequest & {
   isSensitive: boolean;
   idTSSEkstern?: string;
+  brevtittel?: string;
 };
 
 export type OrderEblankettRequest = Omit<BaseLetterRequest, "spraak"> & {

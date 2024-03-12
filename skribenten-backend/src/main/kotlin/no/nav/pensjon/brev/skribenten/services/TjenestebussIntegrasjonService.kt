@@ -105,6 +105,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         saksId: Long,
         spraak: SpraakKode,
         vedtaksId: Long? = null,
+        brevtittel: String,
     ): ServiceResult<BestillExstreamBrevResponseDto> {
         val isEblankett = metadata.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT
         val isNotat = metadata.dokType == BrevdataDto.DokumentType.N
@@ -116,7 +117,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                 BestillBrevExstreamRequestDto(
                     brevKode = brevkode, // ID på brev
                     brevGruppe = metadata.brevgruppe
-                        ?: throw BadRequestException("Fant ikke brevgruppe gitt exstream brev :${brevkode}"),
+                        ?: throw BadRequestException("Fant ikke brevgruppe for gitt exstream brev :${brevkode}"),
                     isRedigerbart = metadata.redigerbart,
                     sprakkode = spraak.toString(),
                     brevMottakerNavn = mottakerText?.takeIf { isEblankett },// custom felt kun for sed/eblankett
@@ -128,7 +129,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         dokumenttype = metadata.dokType.toString(),         // Inngående, utgående, notat
                         fagsystem = "PEN",
                         fagomradekode = "PEN",                              // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
-                        innhold = metadata.dekode,                          // Visningsnavn
+                        innhold = brevtittel,                          // Visningsnavn
                         kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),    // Kategori for dokumentet
                         saksid = saksId.toString(),                          // saksid
                         saksbehandlernavn = name,

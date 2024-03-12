@@ -80,8 +80,15 @@ export type Conditional<E> = {
   controlStructureType: ContentOrControlStructureType.CONDITIONAL;
   predicate: Expression;
   showIf: ContentOrControlStructure<E>[];
+  elseIf: ElseIf<E>[];
   showElse: ContentOrControlStructure<E>[];
 };
+
+export type ElseIf<E> = {
+  predicate: Expression;
+  showIf: ContentOrControlStructure<E>[];
+};
+
 export type ForEach<E> = {
   controlStructureType: ContentOrControlStructureType.FOR_EACH;
   items: Expression;

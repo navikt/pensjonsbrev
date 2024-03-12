@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.expression.Predicate
-import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.IntValue
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import kotlin.math.absoluteValue
 
 abstract class Operation {
@@ -24,8 +25,8 @@ abstract class Operation {
 sealed class UnaryOperation<In, out Out> : Operation() {
     abstract fun apply(input: In): Out
 
-    class ToString<T : Any> : UnaryOperation<T, String>() {
-        override fun apply(input: T): String = input.toString()
+    object ToString : UnaryOperation<Any, String>() {
+        override fun apply(input: Any): String = input.toString()
     }
 
     object SizeOf : UnaryOperation<Collection<*>, Int>(){
@@ -40,10 +41,6 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Kroner): Kroner = Kroner(input.value.absoluteValue)
     }
 
-    object FormatPhoneNumber : UnaryOperation<Telefonnummer, String>() {
-        override fun apply(input: Telefonnummer): String = input.format()
-    }
-
     data class Select<In: Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
         override fun apply(input: In): Out = selector.selector(input)
     }
@@ -52,17 +49,16 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
     }
 
-    // TODO: Should be a binary operation
-    data class IfNull<In>(val then: In) : UnaryOperation<In?, In>() {
-        override fun apply(input: In?): In = input ?: then
-    }
-
     object Not : UnaryOperation<Boolean, Boolean>() {
         override fun apply(input: Boolean): Boolean = input.not()
     }
 
     data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>): UnaryOperation<Collection<In>, Collection<Out>>() {
         override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
+    }
+
+    object IsEmpty : UnaryOperation<Collection<*>, Boolean>() {
+        override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 }
 
@@ -109,6 +105,10 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: T, second: T): T = constructor(first.value + second.value)
     }
 
+    class IfNull<T : Any> : BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)) {
+        override fun apply(first: T?, second: T): T = first ?: second
+    }
+
     data class MapCollection<In1, In2, Out>(val mapper: BinaryOperation<In1, In2, Out>): BinaryOperation<Collection<In1>, In2, Collection<Out>>() {
         override fun apply(first: Collection<In1>, second: In2): Collection<Out> = first.map { mapper.apply(it, second) }
     }
@@ -123,10 +123,6 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     class Tuple<Out> : BinaryOperation<Out, Out, Pair<Out, Out>>() {
         override fun apply(first: Out, second: Out): Pair<Out, Out> = first to second
-    }
-
-    class ValidatePredicate<T> : BinaryOperation<Predicate<T>, T, Boolean>() {
-        override fun apply(first: Predicate<T>, second: T): Boolean = first.validate(second)
     }
 
     data class Flip<In1, In2, Out>(val operation: BinaryOperation<In2, In1, Out>): BinaryOperation<In1, In2, Out>() {
