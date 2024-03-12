@@ -15,9 +15,9 @@ export class SelectionService {
    *
    */
   getCursorOffset(): number {
-    const sel = window.getSelection() as Selection;
-    const range = sel.getRangeAt(0);
-    return range != null && range.collapsed ? range.startOffset : -1;
+    const sel = window.getSelection();
+    const range = sel?.getRangeAt(0);
+    return range?.collapsed ? range.startOffset : -1;
   }
 
   /**
