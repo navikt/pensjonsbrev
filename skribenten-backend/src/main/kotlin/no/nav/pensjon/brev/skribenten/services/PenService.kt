@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
@@ -44,6 +45,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
 
     enum class SakType { AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG, UFOREP, }
     data class SakSelection(
+        @JsonAlias("sakId")
         val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
