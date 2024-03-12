@@ -23,9 +23,10 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoTilsvarBruker
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoVarselEllerVedtak
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.helTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.sakType
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.skalBetaleTilbake
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.skalTilbakekreve
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.tilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.varselVedlagt
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
@@ -35,7 +36,8 @@ import java.time.LocalDate
 data class TilbakekrevingBrevDTO(
 	override val innhold: List<Element>,
 	val sakType: SakType,
-	val skalBetaleTilbake: Boolean,
+	val skalTilbakekreve: Boolean,
+	val helTilbakekreving: Boolean,
 	val bosattUtland: Boolean,
 
 	val varselVedlagt: Boolean,
@@ -46,6 +48,8 @@ data class TilbakekrevingBrevDTO(
 ): BrevDTO
 
 data class TilbakekrevingDTO(
+	val fraOgMed: LocalDate,
+	val tilOgMed: LocalDate,
 	val perioder: List<TilbakekrevingPeriode>,
 	val summer: TilbakekrevingBeloeper
 )
@@ -61,7 +65,7 @@ data class TilbakekrevingBeloeper(
 	val bruttoTilbakekreving: Kroner,
 	val nettoTilbakekreving: Kroner,
 	val fradragSkatt: Kroner,
-	val renteTillegg: Kroner
+	val renteTillegg: Kroner?
 )
 
 
@@ -81,7 +85,7 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 		),
 	) {
 		title {
-			showIf(skalBetaleTilbake) {
+			showIf(skalTilbakekreve) {
 				textExpr(
 					Bokmal to "Du må betale tilbake ".expr() + sakType.format(),
 					Nynorsk to "Du må betale tilbake barnepensjon".expr() + sakType.format(),
@@ -98,17 +102,22 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 
 		}
 		outline {
-			includePhrase(TilbakekrevingFraser.ViserTilVarselbrev(
-				sakType,
-				varselVedlagt,
-				datoVarselEllerVedtak,
-				datoTilsvarBruker
-			))
+			includePhrase(
+				TilbakekrevingFraser.ViserTilVarselbrev(
+					sakType,
+					varselVedlagt,
+					datoVarselEllerVedtak,
+					datoTilsvarBruker
+				)
+			)
 
-			showIf(skalBetaleTilbake) {
-				// TODO Du har fått utbetalt for my osv
+			showIf(skalTilbakekreve) {
+				includePhrase(
+					TilbakekrevingFraser.HovedInnholdSkalTilbakekreve(sakType, helTilbakekreving, tilbakekreving)
+				)
+				includePhrase(TilbakekrevingFraser.Skatt)
 			}.orShow {
-				// TODO Du har fått utbetalt for my osv
+				includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(sakType, tilbakekreving))
 			}
 
 			konverterElementerTilBrevbakerformat(innhold)

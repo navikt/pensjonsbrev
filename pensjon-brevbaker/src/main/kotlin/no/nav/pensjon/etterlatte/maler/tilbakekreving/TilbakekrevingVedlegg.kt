@@ -91,7 +91,7 @@ val tilbakekrevingVedlegg = createAttachment(
                     )
                 }
                 cell {
-                    includePhrase(Felles.KronerText(summer.renteTillegg))
+                    //includePhrase(Felles.KronerText(summer.renteTillegg))
                 }
             }
         }
