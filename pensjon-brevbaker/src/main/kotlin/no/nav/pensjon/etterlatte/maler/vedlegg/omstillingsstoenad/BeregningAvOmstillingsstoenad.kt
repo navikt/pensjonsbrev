@@ -24,8 +24,8 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.bere
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.aarsinntekt
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.fratrekkInnAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
@@ -53,6 +53,7 @@ val beregningAvOmstillingsstoenad = createAttachment(
     beregning()
     trygdetid(trygdetid)
     perioderMedRegistrertTrygdetid(trygdetid)
+    meldFraTilNav()
 }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning>.beregning() {
@@ -173,33 +174,42 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             text(
                 Bokmal to "I innvilgelsesåret skal inntekt opptjent før innvilgelse trekkes fra, og resterende " +
                         "forventet inntekt fordeles på gjenværende måneder.",
-                Nynorsk to "",
-                English to "",
+                Nynorsk to "I innvilgingsåret skal det trekkjast frå inntekt som blei tent opp før innvilginga. " +
+                        "Resterande forventa inntekt skal fordelast på dei resterande månadene.",
+                English to "In the year the allowance is granted, your income earned before the allowance is " +
+                        "granted, is deducted, and your remaining estimated income for the year is divided by " +
+                        "the number of remaining months.",
             )
         }
         paragraph {
             textExpr(
                 Bokmal to "Din oppgitte årsinntekt er ".expr() + aarsinntekt.format() + " kroner. Fratrekk " +
-                        "for inntekt så langt i år er " + fratrekkInnAar.format() + " kroner. Vi har lagt til grunn " +
+                        "for inntekt i år er " + fratrekkInnAar.format() + " kroner. Vi har lagt til grunn " +
                         "at du har en forventet inntekt på " + inntekt.format() + " kroner fra " +
-                        sisteBeregningsperiode.datoFOM.format() + ".",
-                Nynorsk to "".expr(),
-                English to "".expr(),
+                        virkningsdato.format() + ".",
+                Nynorsk to "Du har ei oppgitt årsinntekt på ".expr() + aarsinntekt.format() + " kroner. " +
+                        "Fråtrekk for inntekt i år er " + fratrekkInnAar.format() + " kroner. Vi har lagt til grunn " +
+                        "at du har ei forventa inntekt på " + inntekt.format() + " kroner frå " +
+                        virkningsdato.format() + ".",
+                English to "Your estimated annual income is NOK ".expr() + aarsinntekt.format() + ". " +
+                        "The deduction for income this year is NOK " + fratrekkInnAar.format() + ". We have " +
+                        "assumed that your estimated remaining annual income will be NOK " + inntekt.format() +
+                        " from " + virkningsdato.format() + ".",
             )
         }
         paragraph {
             textExpr(
-                Bokmal to "Stønad per måned er redusert på følgende måte: ".expr() + inntekt.format() + " " +
+                Bokmal to "Stønad per måned er redusert på følgende måte: ".expr() + inntekt.format() + " kroner " +
                         "minus (0,5 G / 12 måneder × " + gjenvaerendeMaaneder.format() + " måneder). Beløpet ganges " +
                         "med 45 prosent, og deles på " + gjenvaerendeMaaneder.format() + " måneder.",
-                Nynorsk to "".expr() + "Vi har lagt til grunn at du har ei forventa inntekt på " +
-                        inntekt.format() + " kroner frå " + sisteBeregningsperiode.datoFOM.format() + ". " +
-                        "Stønad per månad er redusert med " + inntekt.format() + " minus eit halvt grunnbeløp " +
-                        "gonga med 45 prosent, delt på 12 månader. ",
-                English to "".expr() + "Our calculation shows your anticipated income to be NOK " +
-                        inntekt.format() + " from " + sisteBeregningsperiode.datoFOM.format() + ". The monthly " +
-                        "payment is reduced by " + inntekt.format() + " minus half the basic amount × 45 percent, " +
-                        "divided into 12 months. ",
+                Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: ".expr() +
+                        inntekt.format() + " kroner minus (0,5 G / 12 månader × " + gjenvaerendeMaaneder.format() +
+                        " månader). Beløpet blir gonga med 45 prosent og delt på " + gjenvaerendeMaaneder.format() +
+                        " månader. ",
+                English to "The monthly allowance amount has been reduced as follows: NOK ".expr() +
+                        inntekt.format() + " minus (0.5 G / 12 months × " + gjenvaerendeMaaneder.format() +
+                        " months). The amount is multiplied by 45 percent and divided by " +
+                        gjenvaerendeMaaneder.format() + " months.",
             )
         }
     }.orShow {
@@ -457,5 +467,15 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
             )
         }
         includePhrase(Trygdetidstabell(trygdetid.trygdetidsperioder))
+    }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, OmstillingsstoenadBeregning>.meldFraTilNav() {
+    paragraph {
+        text(
+            Bokmal to "Hvis du mener at opplysningene brukt i beregningen er feil, må du melde fra til NAV. Det kan ha betydning for størrelsen på omstillingsstønaden din.",
+            Nynorsk to "Sei frå til NAV dersom du meiner at det er brukt feil opplysningar i utrekninga. Det kan ha betydning for kor mykje omstillingsstønad du får.",
+            English to "If you believe the information applied in the calculation is incorrect, you must notify NAV. Errors may affect your allowance amount."
+        )
     }
 }
