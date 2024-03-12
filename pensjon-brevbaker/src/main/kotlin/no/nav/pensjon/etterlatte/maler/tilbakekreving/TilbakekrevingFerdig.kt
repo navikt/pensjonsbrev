@@ -1,15 +1,11 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -23,13 +19,14 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.datoTilsvarBruker
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.datoVarselEllerVedtak
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.sakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.skalBetaleTilbake
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.varselVedlagt
@@ -45,14 +42,11 @@ data class TilbakekrevingFerdigDTO(
 data class TilbakekrevingInnholdDTO(
 	val sakType: SakType,
 	val skalBetaleTilbake: Boolean,
+	val bosattUtland: Boolean,
 
 	val varselVedlagt: Boolean,
 	val datoVarselEllerVedtak: LocalDate,
-
-	val tilsvarfraBruker: Boolean,
 	val datoTilsvarBruker: LocalDate?,
-
-	val bosattUtland: Boolean,
 
 	val harStrafferettslig: Boolean,
 	val harForeldelse: Boolean,
@@ -108,10 +102,38 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingFerdigDTO>, Hovedm
 
 		}
 		outline {
-			showIf(data.varselVedlagt) {
-				// TODO Vi viser til forhåndsvarsele osv..
-			}.orShow {
-				// TODO Vi viser til forhåndsvarsele osv..
+			paragraph {
+				showIf(data.varselVedlagt) {
+					textExpr(
+						Bokmal to "Vi viser til forhåndsvarselet vårt som fulgte vedtak datert ".expr() +
+								data.datoVarselEllerVedtak.format(),
+						Nynorsk to "Vi viser til forhåndsvarselet vårt som fulgte vedtak datert ".expr() +
+								data.datoVarselEllerVedtak.format(),
+						English to "Vi viser til forhåndsvarselet vårt som fulgte vedtak datert ".expr() +
+								data.datoVarselEllerVedtak.format(),
+					)
+				}.orShow {
+					textExpr(
+						Bokmal to "Vi viser til forhåndsvarselet vårt om at vi vurderer om du må betale tilbake ".expr() +
+								data.sakType.format() + " av " + data.datoVarselEllerVedtak.format(),
+						Nynorsk to "Vi viser til forhåndsvarselet vårt om at vi vurderer om du må betale tilbake ".expr() +
+								data.sakType.format() + " av " + data.datoVarselEllerVedtak.format(),
+						English to "Vi viser til forhåndsvarselet vårt om at vi vurderer om du må betale tilbake ".expr() +
+								data.sakType.format() + " av " + data.datoVarselEllerVedtak.format(),
+					)
+				}
+				ifNotNull(data.datoTilsvarBruker) { datoTilsvarBruker ->
+					textExpr(
+						Bokmal to ", og dine kommentarer til dette som vi mottok den".expr() + datoTilsvarBruker.format(),
+						Nynorsk to ", og dine kommentarer til dette som vi mottok den".expr() + datoTilsvarBruker.format(),
+						English to ", og dine kommentarer til dette som vi mottok den".expr() + datoTilsvarBruker.format(),
+					)
+				}
+				text(
+					Bokmal to ".",
+					Nynorsk to ".",
+					English to ".",
+				)
 			}
 
 			showIf(data.skalBetaleTilbake) {
