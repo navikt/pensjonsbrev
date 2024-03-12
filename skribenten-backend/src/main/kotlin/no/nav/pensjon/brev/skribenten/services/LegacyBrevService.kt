@@ -22,11 +22,11 @@ class LegacyBrevService(
         call: ApplicationCall,
         request: BestillDoksysBrevRequest,
         enhetsId: String,
-        sakId: Long,
+        saksId: Long,
     ): BestillOgRedigerBrevResponse =
         coroutineScope {
             val brevMetadata = async { brevmetadataService.getMal(request.brevkode) }
-            val result = bestillDoksysBrev(call, request, enhetsId, sakId)
+            val result = bestillDoksysBrev(call, request, enhetsId, saksId)
             return@coroutineScope if (result.failureType != null) {
                 BestillOgRedigerBrevResponse(result)
             } else if (result.journalpostId == null) {
@@ -46,7 +46,7 @@ class LegacyBrevService(
         enhetsId: String,
         gjelderPid: String,
         request: BestillExstreamBrevRequest,
-        sakId: Long,
+        saksId: Long,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
 
@@ -63,7 +63,7 @@ class LegacyBrevService(
             idTSSEkstern = request.idTSSEkstern,
             isSensitive = request.isSensitive,
             metadata = brevMetadata,
-            sakId = sakId,
+            saksId = saksId,
             spraak = request.spraak,
             vedtaksId = request.vedtaksId,
             brevtittel = brevtittel,
@@ -87,7 +87,7 @@ class LegacyBrevService(
         enhetsId: String,
         gjelderPid: String,
         request: BestillEblankettRequest,
-        sakId: Long,
+        saksId: Long,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
         val result = bestillExstreamBrev(
@@ -97,7 +97,7 @@ class LegacyBrevService(
             gjelderPid = gjelderPid,
             isSensitive = request.isSensitive,
             metadata = brevMetadata,
-            sakId = sakId,
+            saksId = saksId,
             spraak = SpraakKode.NB,
             landkode = request.landkode,
             mottakerText = request.mottakerText,
@@ -121,7 +121,7 @@ class LegacyBrevService(
         idTSSEkstern: String? = null,
         isSensitive: Boolean,
         metadata: BrevdataDto,
-        sakId: Long,
+        saksId: Long,
         spraak: SpraakKode,
         brevtittel: String,
         vedtaksId: Long? = null,
@@ -138,7 +138,7 @@ class LegacyBrevService(
             metadata = metadata,
             name = call.principal().fullName,
             navIdent = call.principal().navIdent,
-            sakId = sakId,
+            saksId = saksId,
             spraak = spraak,
             vedtaksId = vedtaksId,
             landkode = landkode,
@@ -186,9 +186,9 @@ class LegacyBrevService(
         call: ApplicationCall,
         request: BestillDoksysBrevRequest,
         enhetsId: String,
-        sakId: Long
+        saksId: Long
     ): BestillBrevResponse =
-        penService.bestillDoksysBrev(call, request, enhetsId, sakId)
+        penService.bestillDoksysBrev(call, request, enhetsId, saksId)
             .map { response ->
                 if (response.failure != null) {
                     BestillBrevResponse(response.failure)

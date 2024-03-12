@@ -67,7 +67,7 @@ import { BrevSystem, SamhandlerTypeCode, SpraakKode } from "~/types/apiTypes";
 import { getAdresseTypeName, SAMHANDLER_ENUM_TO_TEXT, SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 import { capitalizeString } from "~/utils/stringUtils";
 
-export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
+export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId")({
   component: SelectedTemplate,
   loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
   validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string } => ({
@@ -171,11 +171,11 @@ const eblankettValidationSchema = z.object({
 });
 
 function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  const { templateId, sakId } = Route.useParams();
+  const { templateId, saksId } = Route.useParams();
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
-    mutationFn: (payload) => orderExstreamLetter(sakId, payload),
+    mutationFn: (payload) => orderExstreamLetter(saksId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -240,11 +240,11 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
 }
 
 function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  const { templateId, sakId } = Route.useParams();
+  const { templateId, saksId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderDoksysLetterRequest>({
-    mutationFn: (payload) => orderDoksysLetter(sakId, payload),
+    mutationFn: (payload) => orderDoksysLetter(saksId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -287,7 +287,7 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
 }
 
 function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  const { sakId } = Route.useParams();
+  const { saksId } = Route.useParams();
 
   const { vedtaksId } = Route.useSearch();
 
@@ -300,7 +300,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   });
 
   const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
-    mutationFn: (payload) => orderEblankett(sakId, payload),
+    mutationFn: (payload) => orderEblankett(saksId, payload),
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
@@ -407,9 +407,9 @@ function SelectSensitivity() {
 }
 
 function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  const { sakId } = Route.useParams();
+  const { saksId } = Route.useParams();
   const { register, setValue } = useFormContext();
-  const preferredLanguage = usePreferredLanguage(sakId);
+  const preferredLanguage = usePreferredLanguage(saksId);
 
   // Update selected language if preferredLanguage was not loaded before form initialization.
   useEffect(() => {
@@ -509,13 +509,13 @@ function PersonAdresse() {
   const { sak } = Route.useLoaderData();
 
   const adresseQuery = useQuery({
-    queryKey: getKontaktAdresse.queryKey(sak.sakId.toString()),
-    queryFn: () => getKontaktAdresse.queryFn(sak.sakId.toString()),
+    queryKey: getKontaktAdresse.queryKey(sak.saksId.toString()),
+    queryFn: () => getKontaktAdresse.queryFn(sak.saksId.toString()),
   });
 
   const { data: navn } = useQuery({
-    queryKey: getNavn.queryKey(sak.sakId.toString()),
-    queryFn: () => getNavn.queryFn(sak.sakId.toString()),
+    queryKey: getNavn.queryKey(sak.saksId.toString()),
+    queryFn: () => getNavn.queryFn(sak.saksId.toString()),
     enabled: !!sak,
   });
 

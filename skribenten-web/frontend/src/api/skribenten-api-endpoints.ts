@@ -39,12 +39,12 @@ axios.interceptors.response.use(undefined, (error) => {
 
 export const saksnummerKeys = {
   all: ["SAK"] as const,
-  id: (sakId: string) => [...saksnummerKeys.all, sakId] as const,
+  id: (saksId: string) => [...saksnummerKeys.all, saksId] as const,
 };
 
 export const navnKeys = {
   all: ["NAVN"] as const,
-  sakId: (sakId: string) => [...navnKeys.all, sakId] as const,
+  saksId: (saksId: string) => [...navnKeys.all, saksId] as const,
 };
 
 export const letterTemplatesKeys = {
@@ -67,7 +67,7 @@ export const avtalelandKeys = {
 
 export const adresseKeys = {
   all: ["ADRESSE"],
-  sakId: (sakId: string) => [...adresseKeys.all, sakId] as const,
+  saksId: (saksId: string) => [...adresseKeys.all, saksId] as const,
 };
 
 export const samhandlerKeys = {
@@ -82,23 +82,23 @@ export const samhandlerAdresseKeys = {
 
 export const preferredLanguageKeys = {
   all: ["PREFERRED_LANGUAGE"] as const,
-  sakId: (sakId: string) => [...preferredLanguageKeys.all, sakId] as const,
+  saksId: (saksId: string) => [...preferredLanguageKeys.all, saksId] as const,
 };
 
 export const getSak = {
   queryKey: saksnummerKeys.id,
-  queryFn: async (sakId: string) => (await axios.get<SakDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}`)).data,
+  queryFn: async (saksId: string) => (await axios.get<SakDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}`)).data,
 };
 
 export const getNavn = {
-  queryKey: navnKeys.sakId,
-  queryFn: async (sakId: string) => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/navn`)).data,
+  queryKey: navnKeys.saksId,
+  queryFn: async (saksId: string) => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/navn`)).data,
 };
 
 export const getPreferredLanguage = {
-  queryKey: preferredLanguageKeys.sakId,
-  queryFn: async (sakId: string) =>
-    (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/foretrukketSpraak`)).data,
+  queryKey: preferredLanguageKeys.saksId,
+  queryFn: async (saksId: string) =>
+    (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/foretrukketSpraak`)).data,
 };
 
 export const getLetterTemplate = {
@@ -109,9 +109,9 @@ export const getLetterTemplate = {
 };
 
 export const getKontaktAdresse = {
-  queryKey: adresseKeys.sakId,
-  queryFn: async (sakId: string) =>
-    (await axios.get<KontaktAdresseResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/adresse`)).data,
+  queryKey: adresseKeys.saksId,
+  queryFn: async (saksId: string) =>
+    (await axios.get<KontaktAdresseResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/adresse`)).data,
 };
 
 export const getFavoritter = {
@@ -146,27 +146,27 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-export async function orderExstreamLetter(sakId: string, orderLetterRequest: OrderExstreamLetterRequest) {
+export async function orderExstreamLetter(saksId: string, orderLetterRequest: OrderExstreamLetterRequest) {
   const response = await axios.post<BestillOgRedigerBrevResponse>(
-    `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/bestillBrev/exstream`,
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/exstream`,
     orderLetterRequest,
   );
 
   return convertBestillOgRedigerBrevResponse(response);
 }
 
-export async function orderDoksysLetter(sakId: string, orderLetterRequest: OrderDoksysLetterRequest) {
+export async function orderDoksysLetter(saksId: string, orderLetterRequest: OrderDoksysLetterRequest) {
   const response = await axios.post<BestillOgRedigerBrevResponse>(
-    `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/bestillBrev/doksys`,
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/doksys`,
     orderLetterRequest,
   );
 
   return convertBestillOgRedigerBrevResponse(response);
 }
 
-export async function orderEblankett(sakId: string, orderLetterRequest: OrderEblankettRequest) {
+export async function orderEblankett(saksId: string, orderLetterRequest: OrderEblankettRequest) {
   const response = await axios.post<BestillOgRedigerBrevResponse>(
-    `${SKRIBENTEN_API_BASE_PATH}/sak/${sakId}/bestillBrev/exstream/eblankett`,
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/exstream/eblankett`,
     orderLetterRequest,
   );
 

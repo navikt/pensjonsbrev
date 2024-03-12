@@ -10,7 +10,7 @@ import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 
-export const Route = createFileRoute("/saksnummer/$sakId/brevvelger")({
+export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
   loader: async ({ context: { queryClient, getSakQueryOptions }, deps: { includeVedtak } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
@@ -159,8 +159,8 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
 }
 
 function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
-  const { templateId } = useParams({ from: "/saksnummer/$sakId/brevvelger/$templateId" });
-  const navigate = useNavigate({ from: "/saksnummer/$sakId/brevvelger/$templateId" });
+  const { templateId } = useParams({ from: "/saksnummer/$saksId/brevvelger/$templateId" });
+  const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger/$templateId" });
 
   // Ideally we would use the Link component as it gives native <a/> features.
   // However, when we render as many links as we do it slows down drastically. Try again when Tanstack Router has developed further
@@ -188,7 +188,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
       )}
       onClick={() =>
         navigate({
-          to: "/saksnummer/$sakId/brevvelger/$templateId",
+          to: "/saksnummer/$saksId/brevvelger/$templateId",
           params: { templateId: letterMetadata.id },
           search: (s) => s,
         })

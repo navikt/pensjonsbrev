@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
@@ -35,7 +36,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     }
 
     data class SakResponseDto(
-        val sakId: Long,
+        val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val sakType: SakType,
@@ -44,7 +45,8 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
 
     enum class SakType { AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG, UFOREP, }
     data class SakSelection(
-        val sakId: Long,
+        @JsonAlias("sakId")
+        val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val sakType: SakType,
@@ -59,11 +61,11 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
             ServiceResult.Error(response.bodyAsText(), response.status)
         }
 
-    private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<SakResponseDto> =
-        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult(::handlePenErrorResponse)
+    private suspend fun fetchSak(call: ApplicationCall, saksId: String): ServiceResult<SakResponseDto> =
+        client.get(call, "brev/skribenten/sak/$saksId").toServiceResult(::handlePenErrorResponse)
 
-    suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection> =
-        when (val sak = fetchSak(call, sakId)) {
+    suspend fun hentSak(call: ApplicationCall, saksId: String): ServiceResult<SakSelection> =
+        when (val sak = fetchSak(call, saksId)) {
             is ServiceResult.Error -> ServiceResult.Error(sak.error, sak.statusCode)
             is ServiceResult.Ok ->
                 if (sak.result.enhetId.isNullOrBlank()) {
@@ -71,7 +73,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
                 } else {
                     ServiceResult.Ok(
                         SakSelection(
-                            sakId = sak.result.sakId,
+                            saksId = sak.result.saksId,
                             foedselsnr = sak.result.foedselsnr,
                             foedselsdato = sak.result.foedselsdato,
                             sakType = sak.result.sakType,
@@ -82,27 +84,27 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         }
 
     data class BestilDoksysBrevRequest(
-        val sakId: Long,
+        val saksId: Long,
         val brevkode: String,
         val journalfoerendeEnhet: String?,
         val sprakKode: SpraakKode?,
-        val vedtakId: Long?,
+        val vedtaksId: Long?,
     )
 
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
         request: BestillDoksysBrevRequest,
         enhetsId: String,
-        sakId: Long
+        saksId: Long
     ): ServiceResult<BestillDoksysBrevResponse> =
-        client.post(call, "brev/skribenten/doksys/sak/$sakId") {
+        client.post(call, "brev/skribenten/doksys/sak/$saksId") {
             setBody(
                 BestilDoksysBrevRequest(
-                    sakId = sakId,
+                    saksId = saksId,
                     brevkode = request.brevkode,
                     journalfoerendeEnhet = enhetsId,
                     sprakKode = request.spraak,
-                    vedtakId = request.vedtaksId,
+                    vedtaksId = request.vedtaksId,
                 )
             )
             contentType(ContentType.Application.Json)
