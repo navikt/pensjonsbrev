@@ -5,10 +5,16 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeper
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTO
+import java.time.LocalDate
 
 fun createTilbakekrevingInnholdDTO() = TilbakekrevingInnholdDTO(
     sakType = SakType.OMSTILLINGSSTOENAD,
-    harRenter = true,
+    skalBetaleTilbake = true,
+    bosattUtland = false,
+    varselVedlagt = false,
+    datoVarselEllerVedtak = LocalDate.now(),
+    tilsvarfraBruker = false,
+    datoTilsvarBruker = null,
     harStrafferettslig = true,
     harForeldelse = true,
     perioder = emptyList(),
