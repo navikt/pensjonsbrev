@@ -98,7 +98,7 @@ val pensjonLatexSettings = languageSettings {
         text(
             Bokmal to "Saksbehandler",
             Nynorsk to "Saksbehandlar",
-            English to "Officer in charge",
+            English to "Caseworker",
         )
     }
     setting(LanguageSetting.Closing.automatiskInformasjonsbrev) {
