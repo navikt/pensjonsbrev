@@ -29,8 +29,8 @@ function SaksnummerPage() {
     onSuccess: (sak, values) => {
       queryClient.setQueryData(getSak.queryKey(values.saksnummer), sak);
       navigate({
-        to: "/saksnummer/$sakId/brevvelger",
-        params: { sakId: sak.sakId.toString() },
+        to: "/saksnummer/$saksId/brevvelger",
+        params: { saksId: sak.saksId.toString() },
       });
     },
   });

@@ -58,7 +58,7 @@ class ArkivTjenestebussService(clientFactory: ArkivClientFactory) : Tjenestebuss
                     tillattelektroniskvarsling = elektroniskVarslingTrue
                 }
             })
-            logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${saksKontekst.saksid} ")
+            logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i saksId: ${saksKontekst.saksid} ")
             return BestillExstreamBrevResponseDto(response.journalpostId)
         } catch (ex: BestillBrevOpprettelseJournalpostFeilet) {
             logger.error("En feil oppstod under opprettelse av journalpost: ${maskerFnr(ex.faultInfo.errorMessage)}")

@@ -14,7 +14,7 @@ fun Route.sakRoute(
     pensjonPersonDataService: PensjonPersonDataService,
     krrService: KrrService,
 ) {
-    route("/sak/{sakId}") {
+    route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang(navansattService, pdlService, penService))
 
         get {
@@ -24,7 +24,7 @@ fun Route.sakRoute(
         route("/bestillBrev") {
             post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-                call.respond(legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = sak.enhetId, sak.sakId))
+                call.respond(legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = sak.enhetId, sak.saksId))
             }
             route("/exstream") {
                 post<LegacyBrevService.BestillExstreamBrevRequest> { request ->
@@ -35,7 +35,7 @@ fun Route.sakRoute(
                             enhetsId = sak.enhetId,
                             gjelderPid = sak.foedselsnr,
                             request = request,
-                            sakId = sak.sakId,
+                            saksId = sak.saksId,
                         )
                     )
                 }
@@ -48,7 +48,7 @@ fun Route.sakRoute(
                             enhetsId = sak.enhetId,
                             gjelderPid = sak.foedselsnr,
                             request = request,
-                            sakId = sak.sakId,
+                            saksId = sak.saksId,
                         )
                     )
                 }

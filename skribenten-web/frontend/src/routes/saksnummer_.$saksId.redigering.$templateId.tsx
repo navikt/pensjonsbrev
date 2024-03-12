@@ -6,7 +6,7 @@ import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 
 export const TEST_TEMPLATE = "INFORMASJON_OM_SAKSBEHANDLINGSTID";
 
-export const Route = createFileRoute("/saksnummer/$sakId/redigering/$templateId")({
+export const Route = createFileRoute("/saksnummer/$saksId/redigering/$templateId")({
   beforeLoad: () => {
     const getTemplateQueryOptions = {
       queryKey: getTemplate.queryKey(TEST_TEMPLATE),
