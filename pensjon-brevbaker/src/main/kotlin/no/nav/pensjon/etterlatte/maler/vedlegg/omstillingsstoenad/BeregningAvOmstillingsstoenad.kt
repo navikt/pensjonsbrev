@@ -199,17 +199,15 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         }
         paragraph {
             textExpr(
-                Bokmal to "Stønad per måned er redusert på følgende måte: ".expr() + inntekt.format() + " kroner " +
-                        "minus (0,5 G / 12 måneder × " + gjenvaerendeMaaneder.format() + " måneder). Beløpet ganges " +
-                        "med 45 prosent, og deles på " + gjenvaerendeMaaneder.format() + " måneder.",
-                Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: ".expr() +
-                        inntekt.format() + " kroner minus (0,5 G / 12 månader × " + gjenvaerendeMaaneder.format() +
-                        " månader). Beløpet blir gonga med 45 prosent og delt på " + gjenvaerendeMaaneder.format() +
-                        " månader. ",
-                English to "The monthly allowance amount has been reduced as follows: NOK ".expr() +
-                        inntekt.format() + " minus (0.5 G / 12 months × " + gjenvaerendeMaaneder.format() +
-                        " months). The amount is multiplied by 45 percent and divided by " +
-                        gjenvaerendeMaaneder.format() + " months.",
+                Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + inntekt.format() +
+                        " kroner / " + gjenvaerendeMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
+                        "Beløpet ganges med 45 prosent.",
+                Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + inntekt.format() +
+                        " kroner / " + gjenvaerendeMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
+                        "Beløpet blir gonga med 45 prosent.",
+                English to "The monthly allowance amount has been reduced as follows: (NOK ".expr() +
+                        inntekt.format() + " / " + gjenvaerendeMaaneder.format() + " months) minus (0.5 G / 12 months). " +
+                        "The amount is multiplied by 45 percent.",
             )
         }
     }.orShow {
