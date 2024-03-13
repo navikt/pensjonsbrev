@@ -24,7 +24,6 @@ fun createTilbakekrevingFerdigDTO() =
 			tilOgMed = LocalDate.now(),
 			skalTilbakekreve = true,
 			helTilbakekreving = true,
-			harRenteTillegg = true,
 			perioder = emptyList(),
 			summer = TilbakekrevingBeloeper(
 				feilutbetaling = Kroner(100),

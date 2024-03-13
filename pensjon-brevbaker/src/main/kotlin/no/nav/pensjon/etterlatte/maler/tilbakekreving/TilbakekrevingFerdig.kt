@@ -49,7 +49,6 @@ data class TilbakekrevingDTO(
 	val tilOgMed: LocalDate,
 	val skalTilbakekreve: Boolean,
 	val helTilbakekreving: Boolean,
-	val harRenteTillegg: Boolean,
 	val perioder: List<TilbakekrevingPeriode>,
 	val summer: TilbakekrevingBeloeper
 )

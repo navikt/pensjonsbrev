@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -24,7 +25,6 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSele
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.nettoTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.renteTillegg
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.fraOgMed
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.harRenteTillegg
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.helTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.tilOgMed
@@ -112,7 +112,7 @@ object TilbakekrevingFraser {
 					English to "Vi har kommet frem til at du skal betale tilbake ".expr() +
 							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
 				)
-				showIf(tilbakekreving.harRenteTillegg) {
+				showIf(tilbakekreving.summer.renteTillegg.greaterThan(0)) {
 					textExpr(
 						Bokmal to " Du må også betale ".expr() + renteTillegg.format() +
 								" kroner i renter. Til sammen skal du betale " + nettoTilbakekreving.format() +
@@ -141,7 +141,7 @@ object TilbakekrevingFraser {
 					Nynorsk to "Vedtaket er gjort etter folketrygdloven § 22-15.",
 					English to "Vedtaket er gjort etter folketrygdloven § 22-15.",
 				)
-				showIf(tilbakekreving.harRenteTillegg) {
+				showIf(tilbakekreving.summer.renteTillegg.greaterThan(0)) {
 					text(
 						Bokmal to " §§ 22-15 og 22-17 a.",
 						Nynorsk to " §§ 22-15 og 22-17 a.",
