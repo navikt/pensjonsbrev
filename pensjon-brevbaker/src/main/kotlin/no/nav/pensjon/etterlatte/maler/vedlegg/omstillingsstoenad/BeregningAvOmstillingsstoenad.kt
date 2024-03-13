@@ -13,15 +13,18 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
+import no.nav.pensjon.etterlatte.maler.InntektendringType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.inntektendringType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.virkningsdato
@@ -30,6 +33,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.relevantMaanederInnAar
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.restanse
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
@@ -61,6 +65,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     val aarsinntekt = sisteBeregningsperiode.aarsinntekt
     val fratrekkInnAar = sisteBeregningsperiode.fratrekkInnAar
     val gjenvaerendeMaaneder = sisteBeregningsperiode.relevantMaanederInnAar
+    val restanse = sisteBeregningsperiode.restanse
+    val inntektHarOkt = inntektendringType.equalTo(InntektendringType.MER_INNTEKT)
 
     paragraph {
         textExpr(
@@ -210,6 +216,28 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                         "The amount is multiplied by 45 percent.",
             )
         }
+
+        showIf(restanse.greaterThan(0)) {
+            title2 {
+                text(
+                    Bokmal to "Restanse",
+	                Nynorsk to "",
+	                English to ""
+                )
+            }
+            paragraph {
+	            textExpr(
+		            Bokmal to "Siden den forventede inntekten din er ".expr() + ifElse(inntektHarOkt, "økt", "redusert") +
+                            " for inneværende år, har det oppstått en " + ifElse(inntektHarOkt, "feilutbetaling", "etterbetaling") +
+                            ", en restanse. For å minimere etteroppgjøret blir restansen fordelt på de resterende utbetalingsmånedene for inneværende år. Du får derfor " +
+                            restanse.format() + " kroner " + ifElse(inntektHarOkt, "mindre", "mer") +
+                            " enn det som fremgår i tabellen over, under “Utbetaling per måned”",
+		            Nynorsk to "".expr(),
+		            English to "".expr()
+	            )
+            }
+        }
+
     }.orShow {
         paragraph {
             text(
