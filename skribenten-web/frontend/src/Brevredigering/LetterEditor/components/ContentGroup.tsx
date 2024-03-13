@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
@@ -46,7 +46,11 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   }
 
   return (
-    <div>
+    <div
+      onKeyDown={(event) => {
+        console.log("Y coord from parent", getYCoord());
+      }}
+    >
       {contents.map((content, _contentIndex) => {
         switch (content.type) {
           case LITERAL: {
@@ -218,12 +222,18 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         if (event.key === "ArrowDown") {
           const x = getXCoord();
           const y = getYCoord();
-          const nextY = findOnLineBelow(contentEditableReference.current, 0);
-          console.log("keydown", x, y);
 
-          gotoCoord(x, nextY);
-
-          event.preventDefault();
+          setTimeout(() => {
+            const newY = getYCoord();
+            const newX = getXCoord();
+            console.log("original", x, y);
+            console.log("new", newX, newY);
+            if (newY === y && newX !== x) {
+              console.log("X changed, lets move");
+              const nextY = findOnLineBelow(contentEditableReference.current);
+              gotoCoord(x, nextY);
+            }
+          }, 1000);
         }
       }}
       ref={contentEditableReference}
@@ -265,7 +275,7 @@ function getYCoord() {
 const ASSUMED_LINE_HEIGHT = 25; // TODO: different between zooms and titles/paragraphs etc
 
 // function findCoordinateOfLine
-function findOnLineBelow(e: Element, line: number) {
+function findOnLineBelow(e: Element) {
   const currentBox = e.getBoundingClientRect();
   // const linesInCurrentBox = Math.round(currentBox.height / 25); // TODO: sound?
   // console.log(linesInCurrentBox);
@@ -299,7 +309,7 @@ function findOnLineBelow(e: Element, line: number) {
     // return nextBox.bottom - 2;
   }
 
-  return findOnLineBelow(next[0], 0);
+  return findOnLineBelow(next[0]);
 }
 
 function aggregateSibling(childNode: ChildNode | null, x: number) {
