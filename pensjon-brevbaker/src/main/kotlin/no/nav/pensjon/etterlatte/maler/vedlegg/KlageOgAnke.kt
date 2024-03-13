@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg
 
+import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -47,6 +48,33 @@ val klageOgAnkeNasjonal = createAttachment(
     hvordanSendeKlage(false.expr())
     hvaMaaKlagenInneholde(false.expr())
     duKanFaaDekketUtgifter()
+}
+
+fun klageOgAnke(
+	bosattUtland: Boolean,
+	tilbakekreving: Boolean = false,
+): AttachmentTemplate<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any> {
+	return createAttachment(
+		title = newText(
+			Bokmal to "Informasjon om klage og anke",
+			Nynorsk to "Informasjon om klage og anke",
+			English to "Information on Complaints and Appeals"
+		),
+		includeSakspart = false,
+	) {
+		veiledning()
+		if (tilbakekreving) {
+			innsynISaken()
+		}
+		hjelpFraAndre()
+		klagePaaVedtaket()
+		hvordanSendeKlage(bosattUtland.expr())
+		hvaMaaKlagenInneholde(bosattUtland.expr())
+		if (tilbakekreving) {
+			tilbakekreving()
+		}
+		duKanFaaDekketUtgifter()
+	}
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.duKanFaaDekketUtgifter() {
@@ -267,4 +295,50 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "If you have any questions or are unsure about anything, we will do our best to help you."
         )
     }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.innsynISaken() {
+	title2 {
+		text(
+			Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
+			Nynorsk to "",
+			English to ""
+		)
+	}
+	paragraph {
+		text(
+			Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på " + Constants.DIN_PENSJON_URL +
+					" for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon " +
+					Constants.KONTAKTTELEFON_PENSJON + ". ",
+			Nynorsk to "",
+			English to Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
+		)
+	}
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.tilbakekreving() {
+	title2 {
+		text(
+			Bokmal to "Tilbakekreving",
+			Nynorsk to "",
+			English to ""
+		)
+	}
+	paragraph {
+		text(
+			Bokmal to "Du må som hovedregel begynne å betale tilbake når du får fakturaen, selv om du klager på vedtaket. Dette framgår av forvaltningsloven § 42 med tilhørende rundskriv.  ",
+			Nynorsk to "",
+			English to ""
+		)
+	}
+	paragraph {
+		text(
+			Bokmal to "NAV kan av eget tiltak bestemme at tilbakekrevingen skal utsettes til klagen er behandlet, " +
+					"for eksempel hvis vi ser at det er sannsynlig at det påklagede vedtaket blir omgjort. " +
+					"Du kan også søke om utsettelse av tilbakebetaling til klagen er behandlet. " +
+					"Vi gjør deg oppmerksom på at det ikke gis utsettelse bare av økonomiske grunner.",
+			Nynorsk to "",
+			English to ""
+		)
+	}
 }

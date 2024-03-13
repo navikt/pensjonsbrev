@@ -28,7 +28,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelec
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.tilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.varselVedlagt
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.skalTilbakekreve
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
 import java.time.LocalDate
 
@@ -124,8 +124,8 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 
 		includeAttachment(tilbakekrevingVedlegg, tilbakekreving)
 		// Nasjonal
-		includeAttachment(klageOgAnkeNasjonal, innhold, bosattUtland.not())
+		includeAttachment(klageOgAnke(bosattUtland = false, tilbakekreving = true), innhold, bosattUtland.not())
 		// Bosatt utland
-		includeAttachment(klageOgAnkeUtland, innhold, bosattUtland)
+		includeAttachment(klageOgAnke(bosattUtland = true, tilbakekreving = true), innhold, bosattUtland)
 	}
 }
