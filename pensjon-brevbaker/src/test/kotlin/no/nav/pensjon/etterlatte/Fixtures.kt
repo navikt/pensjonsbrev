@@ -35,6 +35,7 @@ import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadpphoerRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingFerdigDTO
+import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingReidgerbartBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createTomMal
 import no.nav.pensjon.etterlatte.fixtures.createTomMalInformasjonsbrev
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
@@ -68,6 +69,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.Omstillingssto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTO
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingReidgerbartBrevDTO
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -131,6 +133,7 @@ object Fixtures {
             OmstillingsstoenadOpphoerRedigerbartUtfallDTO::class -> createOmstillingsstoenadpphoerRedigerbartUtfallDTO() as T
 
             TilbakekrevingBrevDTO::class -> createTilbakekrevingFerdigDTO() as T
+            TilbakekrevingReidgerbartBrevDTO::class -> createTilbakekrevingReidgerbartBrevDTO() as T
 
             AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
             AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T

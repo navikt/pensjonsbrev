@@ -5,7 +5,12 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeper
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTO
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingReidgerbartBrevDTO
 import java.time.LocalDate
+
+fun createTilbakekrevingReidgerbartBrevDTO() =  TilbakekrevingReidgerbartBrevDTO(
+	innhold = createPlaceholderForRedigerbartInnhold(),
+)
 
 fun createTilbakekrevingFerdigDTO() =
 	TilbakekrevingBrevDTO(
