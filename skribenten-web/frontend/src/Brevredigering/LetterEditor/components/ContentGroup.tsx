@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
@@ -46,11 +46,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   }
 
   return (
-    <div
-      onKeyDown={(event) => {
-        console.log("Y coord from parent", getYCoord());
-      }}
-    >
+    <div>
       {contents.map((content, _contentIndex) => {
         switch (content.type) {
           case LITERAL: {
@@ -220,20 +216,29 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           handleArrowRight(event);
         }
         if (event.key === "ArrowDown") {
-          const x = getXCoord();
-          const y = getYCoord();
+          const element = contentEditableReference.current;
+          const oldCoords = getCoords();
+
+          if (element === null || oldCoords === undefined) {
+            return;
+          }
 
           setTimeout(() => {
-            const newY = getYCoord();
-            const newX = getXCoord();
-            console.log("original", x, y);
-            console.log("new", newX, newY);
-            if (newY === y && newX !== x) {
-              console.log("X changed, lets move");
-              const nextY = findOnLineBelow(contentEditableReference.current);
-              gotoCoord(x, nextY);
+            const newCoords = getCoords();
+            if (newCoords === undefined) return;
+
+            console.log("original", oldCoords);
+            console.log("new", newCoords);
+
+            // Works most of the time
+            if (newCoords.y === oldCoords.y) {
+              console.log("Y did not change, lets move");
+              const nextY = findOnLineBelow(element);
+
+              const xToUse = newCoords.x === oldCoords.x ? newCoords.x : oldCoords.x;
+              gotoCoord(xToUse, nextY);
             }
-          }, 1000);
+          }, 20);
         }
       }}
       ref={contentEditableReference}
@@ -253,88 +258,26 @@ function gotoCoord(x: number, y: number) {
   selection?.addRange(range);
 }
 
-function getXCoord() {
+function getCoords() {
   const selection = window.getSelection();
   const range = selection?.getRangeAt(0);
   const rect = range?.getBoundingClientRect();
 
-  return rect?.x;
+  return rect ? { x: rect.x, y: rect.y } : undefined;
 }
 
-/**
- * Gets coordinate of top of the caret
- */
-function getYCoord() {
-  const selection = window.getSelection();
-  const range = selection?.getRangeAt(0);
-  const rect = range?.getBoundingClientRect();
-
-  return rect?.y;
-}
-
-const ASSUMED_LINE_HEIGHT = 25; // TODO: different between zooms and titles/paragraphs etc
-
-// function findCoordinateOfLine
-function findOnLineBelow(e: Element) {
-  const currentBox = e.getBoundingClientRect();
-  // const linesInCurrentBox = Math.round(currentBox.height / 25); // TODO: sound?
-  // console.log(linesInCurrentBox);
-  // const yCoord = getYCoord();
-  // const currentLine = yCoord - currentBox.top;
-  // console.log("currentline", currentLine);
+function findOnLineBelow(element: Element) {
+  const currentBox = element.getBoundingClientRect();
 
   const allEditables = [...document.querySelectorAll("[contenteditable]")];
-  const a = allEditables.indexOf(e);
+  const a = allEditables.indexOf(element);
   const next = allEditables.slice(a + 1);
 
   const nextBox = next[0].getBoundingClientRect();
 
-  const isBigBox = nextBox.height > 30;
-
   if (currentBox.bottom !== nextBox.bottom) {
-    console.log("Y", getYCoord());
-    console.log("prev", currentBox);
-    console.log("next", nextBox);
-    // console.log(e.computedStyleMap().get("font-size"));
-    console.log("fontsize", next[0].computedStyleMap().get("line-height"));
-
-    // if (isBigBox) {
-    //   return findOnLineBelow(next[0], 1);
-    // }
-
-    const targetTop = nextBox.top + 10;
-    const targetBottom = nextBox.bottom - 10;
-
-    return targetTop; // Works for single-line boxes
-    // return nextBox.bottom - 2;
+    return nextBox.top + 10;
   }
 
   return findOnLineBelow(next[0]);
-}
-
-function aggregateSibling(childNode: ChildNode | null, x: number) {
-  if (childNode === null) {
-    return x;
-  }
-
-  const l = childNode.textContent?.length ?? 0;
-  const previousSibling = childNode.previousSibling;
-
-  if (previousSibling === null) {
-    return x + l;
-  }
-
-  const range = document.createRange();
-  range.selectNodeContents(childNode);
-  const currentBottom = range.getBoundingClientRect().bottom;
-
-  range.selectNodeContents(previousSibling);
-  const previousBottom = range.getBoundingClientRect().bottom;
-  console.log(currentBottom, previousBottom);
-  // We moved to another line, therefore abort
-  if (currentBottom !== previousBottom) {
-    return x + l;
-  }
-
-  return aggregateSibling(previousSibling, x + l);
 }
