@@ -1,166 +1,132 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
+import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoTilsvarBruker
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoVarselEllerVedtak
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.tilbakekreving
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.varselVedlagt
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.skalTilbakekreve
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
+import java.time.LocalDate
 
-data class TilbakekrevingFerdigDTO(
-    override val innhold: List<Element>,
-    val data: TilbakekrevingInnholdDTO
-) : BrevDTO
+data class TilbakekrevingBrevDTO(
+	override val innhold: List<Element>,
+	val sakType: SakType,
+	val bosattUtland: Boolean,
+
+	val varselVedlagt: Boolean,
+	val datoVarselEllerVedtak: LocalDate,
+	val datoTilsvarBruker: LocalDate?,
+
+	val tilbakekreving: TilbakekrevingDTO
+): BrevDTO
+
+data class TilbakekrevingDTO(
+	val fraOgMed: LocalDate,
+	val tilOgMed: LocalDate,
+	val skalTilbakekreve: Boolean,
+	val helTilbakekreving: Boolean,
+	val harRenteTillegg: Boolean,
+	val perioder: List<TilbakekrevingPeriode>,
+	val summer: TilbakekrevingBeloeper
+)
+
+data class TilbakekrevingPeriode(
+	val maaned: LocalDate,
+	val beloeper: TilbakekrevingBeloeper,
+	val resultat: TilbakekrevingResultat
+)
+
+data class TilbakekrevingBeloeper(
+	val feilutbetaling: Kroner,
+	val bruttoTilbakekreving: Kroner,
+	val nettoTilbakekreving: Kroner,
+	val fradragSkatt: Kroner,
+	val renteTillegg: Kroner,
+)
 
 @TemplateModelHelpers
-object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingFerdigDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_FERDIG
+object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal {
+	override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_FERDIG
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = TilbakekrevingFerdigDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Tilbakekreving",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            showIf(data.sakType.equalTo(SakType.BARNEPENSJON)) {
-                text(
-                    Bokmal to "Du må betale tilbake barnepensjon",
-                    Nynorsk to "Du må betale tilbake barnepensjon",
-                    English to "Du må betale tilbake barnepensjon"
-                )
-            }
-            showIf(data.sakType.equalTo(SakType.OMSTILLINGSSTOENAD)) {
-                text(
-                    Bokmal to "Du må betale tilbake omstillingstønad",
-                    Nynorsk to "Du må betale tilbake omstillingstønad",
-                    English to "Du må betale tilbake omstillingstønad"
-                )
-            }
-        }
-        outline {
+	override val template = createTemplate(
+		name = kode.name,
+		letterDataType = TilbakekrevingBrevDTO::class,
+		languages = languages(Bokmal, Nynorsk, English),
+		letterMetadata = LetterMetadata(
+			displayTitle = "Vedtak - Tilbakekreving",
+			isSensitiv = true,
+			distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+			brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+		),
+	) {
+		title {
+			showIf(tilbakekreving.skalTilbakekreve) {
+				textExpr(
+					Bokmal to "Du må betale tilbake ".expr() + sakType.format(),
+					Nynorsk to "Du må betale tilbake ".expr() + sakType.format(),
+					English to "Du må betale tilbake ".expr() + sakType.format()
+				)
 
-            konverterElementerTilBrevbakerformat(innhold)
+			}.orShow {
+				textExpr(
+					Bokmal to "Du skal ikke betale tilbake ".expr() + sakType.format(),
+					Nynorsk to "Du skal ikke betale tilbake ".expr() + sakType.format(),
+					English to "Du skal ikke betale tilbake ".expr() + sakType.format(),
+				)
+			}
 
-            includePhrase(DuHarRettTilAaKlage)
-            includePhrase(DuHarRettTilInnsyn)
-            includePhrase(HarDuSpoersmaal(data.sakType))
-        }
+		}
+		outline {
+			includePhrase(
+				TilbakekrevingFraser.ViserTilVarselbrev(
+					sakType,
+					varselVedlagt,
+					datoVarselEllerVedtak,
+					datoTilsvarBruker
+				)
+			)
 
-        includeAttachment(tilbakekrevingVedlegg, data)
-    }
-}
+			showIf(tilbakekreving.skalTilbakekreve) {
+				includePhrase(
+					TilbakekrevingFraser.HovedInnholdSkalTilbakekreve(sakType, tilbakekreving)
+				)
+				includePhrase(TilbakekrevingFraser.Skatt)
+			}.orShow {
+				includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(sakType, tilbakekreving))
+			}
 
-private object DuHarRettTilAaKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        title2 {
-            text(
-                Bokmal to "Du har rett til å klage",
-                Nynorsk to "",
-                English to ""
-            )
-        }
-        paragraph {
-            text(
-                Bokmal to """
-Hvis du mener at vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok dette vedtaket.  
-Klagen kan sendes via innlogging på nettsiden vår nav.no, eller sendes til oss i posten. 
-Skriftlig klage som sendes i posten må inneholde navn, fødselsnummer og adresse, og den må være underskrevet av deg.
-Bruk gjerne skjemaet som du finner på ${Constants.KLAGE_URL}.  
-Klagen sendes til ${Constants.POSTADRESSE}.
-                """.trimIndent(),
-                Nynorsk to "",
-                English to ""
-            )
-        }
-        paragraph {
-            text(
-                Bokmal to "RESTERENDE FOR KLAGE KOMMER", // TODO EY-2806
-                Nynorsk to "",
-                English to "",
-            )
-        }
+			konverterElementerTilBrevbakerformat(innhold)
 
-    }
-}
+		}
 
-private object DuHarRettTilInnsyn : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        title2 {
-            text(
-                Bokmal to "Du har rett til innsyn",
-                Nynorsk to "",
-                English to ""
-            )
-        }
-        paragraph {
-            text(
-                Bokmal to """
-På nav.no/Min side kan du se dokumentene i saken din. 
-               """.trimIndent(),
-                Nynorsk to "",
-                English to ""
-            )
-        }
-    }
-}
-
-private data class HarDuSpoersmaal(val sakType: Expression<SakType>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        title2 {
-            text(
-                Bokmal to "Har du spørsmål?",
-                Nynorsk to "",
-                English to ""
-            )
-        }
-        paragraph {
-            showIf(sakType.equalTo(SakType.OMSTILLINGSSTOENAD)) {
-                text(
-                    Bokmal to "Du kan finne svar på ${Constants.OMS_URL} ",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            showIf(sakType.equalTo(SakType.BARNEPENSJON)) {
-                text(
-                    Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL} ",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            text(
-                Bokmal to """
-På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.
-Du kan også kontakte oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}, hverdager 09.00-15.00.
-Hvis du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.
-                """.trimIndent(),
-                Nynorsk to "",
-                English to ""
-            )
-        }
-    }
+		includeAttachment(tilbakekrevingVedlegg, tilbakekreving)
+		// Nasjonal
+		includeAttachment(klageOgAnkeNasjonal, innhold, bosattUtland.not())
+		// Bosatt utland
+		includeAttachment(klageOgAnkeUtland, innhold, bosattUtland)
+	}
 }
