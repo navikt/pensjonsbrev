@@ -217,37 +217,19 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
         if (event.key === "ArrowDown") {
           const element = contentEditableReference.current;
-          const oldCoords = getCoords();
+          const caretCoords = getCaretCoords();
 
-          if (element === null || oldCoords === undefined) {
+          if (element === null || caretCoords === undefined) {
             return;
           }
 
           const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedLower(element);
-          console.log("areAnyContentEditableSiblingsPlacedLower", areAnyContentEditableSiblingsPlacedLower(element));
 
           if (shouldDoItOurselves) {
             const nextY = findOnLineBelow(element);
-            gotoCoord(oldCoords.x, nextY);
+            gotoCoord(caretCoords.x, nextY);
             event.preventDefault();
           }
-
-          // setTimeout(() => {
-          //   const newCoords = getCoords();
-          //   if (newCoords === undefined) return;
-          //
-          //   console.log("original", oldCoords);
-          //   console.log("new", newCoords);
-          //
-          //   // Works most of the time
-          //   if (newCoords.y === oldCoords.y) {
-          //     console.log("Y did not change, lets move");
-          //     const nextY = findOnLineBelow(element);
-          //
-          //     const xToUse = newCoords.x === oldCoords.x ? newCoords.x : oldCoords.x;
-          //     gotoCoord(xToUse, nextY);
-          //   }
-          // }, 20);
         }
       }}
       ref={contentEditableReference}
@@ -256,9 +238,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 }
 
 function areAnyContentEditableSiblingsPlacedLower(element: HTMLSpanElement) {
-  const lastContentEditable = [...element.parentElement.querySelectorAll(":scope > [contenteditable]")].pop();
+  const lastContentEditable = element.parentElement
+    ? [...element.parentElement.querySelectorAll(":scope > [contenteditable]")].pop()
+    : undefined;
+  const caretCoords = getCaretCoords();
 
-  return lastContentEditable.getBoundingClientRect().bottom > element.getBoundingClientRect().bottom;
+  if (lastContentEditable === undefined || caretCoords === undefined) return false; // TODO: should not happen?
+
+  return lastContentEditable.getBoundingClientRect().bottom > caretCoords.y;
 }
 
 function gotoCoord(x: number, y: number) {
@@ -273,13 +260,12 @@ function gotoCoord(x: number, y: number) {
   selection?.addRange(range);
 }
 
-function getCoords() {
+function getCaretCoords() {
   const selection = window.getSelection();
   const range = selection?.getRangeAt(0);
   const rect = range?.getBoundingClientRect();
-  console.log(rect);
 
-  return rect ? { x: rect.x, y: rect.y } : undefined;
+  return rect ? { x: rect.x, y: rect.bottom } : undefined;
 }
 
 function findOnLineBelow(element: Element) {
