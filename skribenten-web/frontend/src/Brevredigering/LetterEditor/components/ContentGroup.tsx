@@ -223,27 +223,42 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
             return;
           }
 
-          setTimeout(() => {
-            const newCoords = getCoords();
-            if (newCoords === undefined) return;
+          const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedLower(element);
+          console.log("areAnyContentEditableSiblingsPlacedLower", areAnyContentEditableSiblingsPlacedLower(element));
 
-            console.log("original", oldCoords);
-            console.log("new", newCoords);
+          if (shouldDoItOurselves) {
+            const nextY = findOnLineBelow(element);
+            gotoCoord(oldCoords.x, nextY);
+            event.preventDefault();
+          }
 
-            // Works most of the time
-            if (newCoords.y === oldCoords.y) {
-              console.log("Y did not change, lets move");
-              const nextY = findOnLineBelow(element);
-
-              const xToUse = newCoords.x === oldCoords.x ? newCoords.x : oldCoords.x;
-              gotoCoord(xToUse, nextY);
-            }
-          }, 20);
+          // setTimeout(() => {
+          //   const newCoords = getCoords();
+          //   if (newCoords === undefined) return;
+          //
+          //   console.log("original", oldCoords);
+          //   console.log("new", newCoords);
+          //
+          //   // Works most of the time
+          //   if (newCoords.y === oldCoords.y) {
+          //     console.log("Y did not change, lets move");
+          //     const nextY = findOnLineBelow(element);
+          //
+          //     const xToUse = newCoords.x === oldCoords.x ? newCoords.x : oldCoords.x;
+          //     gotoCoord(xToUse, nextY);
+          //   }
+          // }, 20);
         }
       }}
       ref={contentEditableReference}
     />
   );
+}
+
+function areAnyContentEditableSiblingsPlacedLower(element: HTMLSpanElement) {
+  const lastContentEditable = [...element.parentElement.querySelectorAll(":scope > [contenteditable]")].pop();
+
+  return lastContentEditable.getBoundingClientRect().bottom > element.getBoundingClientRect().bottom;
 }
 
 function gotoCoord(x: number, y: number) {
@@ -262,6 +277,7 @@ function getCoords() {
   const selection = window.getSelection();
   const range = selection?.getRangeAt(0);
   const rect = range?.getBoundingClientRect();
+  console.log(rect);
 
   return rect ? { x: rect.x, y: rect.y } : undefined;
 }
