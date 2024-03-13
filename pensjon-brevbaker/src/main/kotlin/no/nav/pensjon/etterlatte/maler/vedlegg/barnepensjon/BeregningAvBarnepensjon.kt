@@ -31,8 +31,8 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.erForeldre
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.trygdetid
-import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
@@ -74,6 +74,7 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
     showIf(trygdetid.trygdetidsperioder.isNotEmpty()) {
         perioderMedRegistrertTrygdetid(trygdetid.trygdetidsperioder, trygdetid.beregningsMetodeAnvendt)
     }
+    meldFraTilNav()
 }
 
 @TemplateModelHelpers
@@ -662,5 +663,15 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             )
         }
         includePhrase(Trygdetidstabell(trygdetidsperioder))
+    }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.meldFraTilNav() {
+    paragraph {
+        text(
+            Bokmal to "Hvis du mener at opplysningene brukt i beregningen er feil, må du melde fra til NAV. Det kan ha betydning for størrelsen på pensjonen din.",
+            Nynorsk to "Sei frå til NAV dersom du meiner at det er brukt feil opplysningar i utrekninga. Det kan ha betydning for kor mykje pensjon du får.",
+            English to "If you believe the information applied in the calculation is incorrect, you must notify NAV. Errors may affect your pension amount."
+        )
     }
 }
