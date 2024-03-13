@@ -14,17 +14,17 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Element
 
-data class TilbakekrevingReidgerbartBrevDTO(
+data class TilbakekrevingRedigerbartBrevDTO(
 	override val innhold: List<Element> = emptyList(),
 ) : BrevDTO
 
 @TemplateModelHelpers
-object TilbakekrevingInnhold: EtterlatteTemplate<TilbakekrevingReidgerbartBrevDTO>, Delmal {
+object TilbakekrevingInnhold: EtterlatteTemplate<TilbakekrevingRedigerbartBrevDTO>, Delmal {
 	override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_INNHOLD
 
 	override val template = createTemplate(
 		name = kode.name,
-		letterDataType = TilbakekrevingReidgerbartBrevDTO::class,
+		letterDataType = TilbakekrevingRedigerbartBrevDTO::class,
 		languages = languages(Bokmal, Nynorsk, English),
 		letterMetadata = LetterMetadata(
 			displayTitle = "Vedtak - Tilbakekreving",

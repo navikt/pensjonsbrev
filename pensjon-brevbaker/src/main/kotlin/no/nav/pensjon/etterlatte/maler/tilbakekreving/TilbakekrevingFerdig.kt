@@ -23,12 +23,11 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoTilsvarBruker
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoVarselEllerVedtak
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.helTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.sakType
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.skalTilbakekreve
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.tilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.varselVedlagt
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.skalTilbakekreve
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
 import java.time.LocalDate
@@ -36,8 +35,6 @@ import java.time.LocalDate
 data class TilbakekrevingBrevDTO(
 	override val innhold: List<Element>,
 	val sakType: SakType,
-	val skalTilbakekreve: Boolean,
-	val helTilbakekreving: Boolean,
 	val bosattUtland: Boolean,
 
 	val varselVedlagt: Boolean,
@@ -50,6 +47,9 @@ data class TilbakekrevingBrevDTO(
 data class TilbakekrevingDTO(
 	val fraOgMed: LocalDate,
 	val tilOgMed: LocalDate,
+	val skalTilbakekreve: Boolean,
+	val helTilbakekreving: Boolean,
+	val harRenteTillegg: Boolean,
 	val perioder: List<TilbakekrevingPeriode>,
 	val summer: TilbakekrevingBeloeper
 )
@@ -66,7 +66,6 @@ data class TilbakekrevingBeloeper(
 	val nettoTilbakekreving: Kroner,
 	val fradragSkatt: Kroner,
 	val renteTillegg: Kroner,
-	val harRenteTillegg: Boolean
 )
 
 @TemplateModelHelpers
@@ -85,18 +84,18 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 		),
 	) {
 		title {
-			showIf(skalTilbakekreve) {
+			showIf(tilbakekreving.skalTilbakekreve) {
 				textExpr(
 					Bokmal to "Du må betale tilbake ".expr() + sakType.format(),
-					Nynorsk to "Du må betale tilbake barnepensjon".expr() + sakType.format(),
-					English to "Du må betale tilbake barnepensjon".expr() + sakType.format()
+					Nynorsk to "Du må betale tilbake ".expr() + sakType.format(),
+					English to "Du må betale tilbake ".expr() + sakType.format()
 				)
 
 			}.orShow {
 				textExpr(
-					Bokmal to "Du skal ikke betale tilbake barnepensjon".expr() + sakType.format(),
-					Nynorsk to "Du skal ikke tilbake barnepensjon".expr() + sakType.format(),
-					English to "Du skal ikke tilbake barnepensjon".expr() + sakType.format()
+					Bokmal to "Du skal ikke betale tilbake ".expr() + sakType.format(),
+					Nynorsk to "Du skal ikke betale tilbake ".expr() + sakType.format(),
+					English to "Du skal ikke betale tilbake ".expr() + sakType.format(),
 				)
 			}
 
@@ -111,9 +110,9 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 				)
 			)
 
-			showIf(skalTilbakekreve) {
+			showIf(tilbakekreving.skalTilbakekreve) {
 				includePhrase(
-					TilbakekrevingFraser.HovedInnholdSkalTilbakekreve(sakType, helTilbakekreving, tilbakekreving)
+					TilbakekrevingFraser.HovedInnholdSkalTilbakekreve(sakType, tilbakekreving)
 				)
 				includePhrase(TilbakekrevingFraser.Skatt)
 			}.orShow {

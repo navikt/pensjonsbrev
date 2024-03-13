@@ -21,10 +21,11 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.bruttoTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.harRenteTillegg
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.nettoTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.renteTillegg
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.fraOgMed
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.harRenteTillegg
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.helTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.tilOgMed
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.beloeper
@@ -79,12 +80,12 @@ object TilbakekrevingFraser {
 
 	data class HovedInnholdSkalTilbakekreve(
 		val sakType: Expression<SakType>,
-		val helTilbakekreving: Expression<Boolean>,
 		val tilbakekreving: Expression<TilbakekrevingDTO>
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
 			val nettoTilbakekreving = tilbakekreving.summer.nettoTilbakekreving
+			val renteTillegg = tilbakekreving.summer.renteTillegg
 			val fraOgMed = tilbakekreving.fraOgMed
 			val tilOgMed = tilbakekreving.tilOgMed
 
@@ -105,13 +106,13 @@ object TilbakekrevingFraser {
 			paragraph {
 				textExpr(
 					Bokmal to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(helTilbakekreving, "hele", "deler") + " av beløpet.",
+							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler") + " av beløpet.",
 					Nynorsk to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(helTilbakekreving, "hele", "deler") + " av beløpet.",
+							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler") + " av beløpet.",
 					English to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(helTilbakekreving, "hele", "deler") + " av beløpet.",
+							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler") + " av beløpet.",
 				)
-				ifNotNull(tilbakekreving.summer.renteTillegg) { renteTillegg ->
+				showIf(tilbakekreving.harRenteTillegg) {
 					textExpr(
 						Bokmal to " Du må også betale ".expr() + renteTillegg.format() +
 								" kroner i renter. Til sammen skal du betale " + nettoTilbakekreving.format() +
@@ -140,7 +141,7 @@ object TilbakekrevingFraser {
 					Nynorsk to "Vedtaket er gjort etter folketrygdloven § 22-15.",
 					English to "Vedtaket er gjort etter folketrygdloven § 22-15.",
 				)
-				showIf(tilbakekreving.summer.harRenteTillegg) {
+				showIf(tilbakekreving.harRenteTillegg) {
 					text(
 						Bokmal to " §§ 22-15 og 22-17 a.",
 						Nynorsk to " §§ 22-15 og 22-17 a.",

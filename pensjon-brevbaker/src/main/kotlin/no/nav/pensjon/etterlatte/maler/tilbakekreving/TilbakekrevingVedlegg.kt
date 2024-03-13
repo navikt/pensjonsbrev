@@ -1,7 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -9,10 +7,6 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.bruttoTilbakekreving
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.nettoTilbakekreving
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.renteTillegg
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.perioder
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 
