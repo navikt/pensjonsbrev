@@ -227,8 +227,30 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
           if (shouldDoItOurselves) {
             const nextY = findOnLineBelow(element);
-            gotoCoord(caretCoords.x, nextY);
-            event.preventDefault();
+
+            if (nextY) {
+              gotoCoord(caretCoords.x, nextY);
+              event.preventDefault();
+            }
+          }
+        }
+        if (event.key === "ArrowUp") {
+          const element = contentEditableReference.current;
+          const caretCoords = getCaretCoords();
+
+          if (element === null || caretCoords === undefined) {
+            return;
+          }
+
+          const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedHigher(element);
+
+          if (shouldDoItOurselves) {
+            const nextY = findOnLineAbove(element);
+
+            if (nextY) {
+              gotoCoord(caretCoords.x, nextY);
+              event.preventDefault();
+            }
           }
         }
       }}
@@ -245,11 +267,20 @@ function areAnyContentEditableSiblingsPlacedLower(element: HTMLSpanElement) {
 
   if (lastContentEditable === undefined || caretCoords === undefined) return false; // TODO: should not happen?
 
-  return lastContentEditable.getBoundingClientRect().bottom > caretCoords.y;
+  return lastContentEditable.getBoundingClientRect().bottom > caretCoords.bottom;
+}
+
+function areAnyContentEditableSiblingsPlacedHigher(element: HTMLSpanElement) {
+  const firstContentEditable = element.parentElement
+    ? [...element.parentElement.querySelectorAll(":scope > [contenteditable]")][0]
+    : undefined;
+  const caretCoords = getCaretCoords();
+
+  if (firstContentEditable === undefined || caretCoords === undefined) return false; // TODO: should not happen?
+  return caretCoords.top > firstContentEditable.getBoundingClientRect().top;
 }
 
 function gotoCoord(x: number, y: number) {
-  console.log("goto", x, y);
   const range = document.caretRangeFromPoint(x, y);
   if (range === null) {
     console.log("Could not get caret for position:", x, y);
@@ -265,21 +296,45 @@ function getCaretCoords() {
   const range = selection?.getRangeAt(0);
   const rect = range?.getBoundingClientRect();
 
-  return rect ? { x: rect.x, y: rect.bottom } : undefined;
+  return rect ? { x: rect.x, bottom: rect.bottom, top: rect.top } : undefined;
 }
 
 function findOnLineBelow(element: Element) {
   const currentBox = element.getBoundingClientRect();
 
   const allEditables = [...document.querySelectorAll("[contenteditable]")];
-  const a = allEditables.indexOf(element);
-  const next = allEditables.slice(a + 1);
+  const currentIndex = allEditables.indexOf(element);
+  const next = allEditables.slice(currentIndex + 1)[0];
 
-  const nextBox = next[0].getBoundingClientRect();
+  if (next === undefined) {
+    return undefined;
+  }
+
+  const nextBox = next.getBoundingClientRect();
 
   if (currentBox.bottom !== nextBox.bottom) {
     return nextBox.top + 10;
   }
 
-  return findOnLineBelow(next[0]);
+  return findOnLineBelow(next);
+}
+
+function findOnLineAbove(element: Element) {
+  const currentBox = element.getBoundingClientRect();
+
+  const allEditables = [...document.querySelectorAll("[contenteditable]")];
+  const currentIndex = allEditables.indexOf(element);
+  const previous = allEditables.slice(0, currentIndex).pop();
+
+  if (previous === undefined) {
+    return undefined;
+  }
+
+  const previousBox = previous.getBoundingClientRect();
+
+  if (currentBox.bottom !== previousBox.bottom) {
+    return previousBox.bottom - 10;
+  }
+
+  return findOnLineBelow(previous);
 }
