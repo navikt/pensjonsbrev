@@ -215,8 +215,116 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         if (event.key === "ArrowRight") {
           handleArrowRight(event);
         }
+        if (event.key === "ArrowDown") {
+          const x = getXCoord();
+          const y = getYCoord();
+          const nextY = findOnLineBelow(contentEditableReference.current, 0);
+          console.log("keydown", x, y);
+
+          gotoCoord(x, nextY);
+
+          event.preventDefault();
+        }
       }}
       ref={contentEditableReference}
     />
   );
+}
+
+function gotoCoord(x: number, y: number) {
+  console.log("goto", x, y);
+  const range = document.caretRangeFromPoint(x, y);
+  if (range === null) {
+    console.log("Could not get caret for position:", x, y);
+    return;
+  }
+  const selection = window.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+}
+
+function getXCoord() {
+  const selection = window.getSelection();
+  const range = selection?.getRangeAt(0);
+  const rect = range?.getBoundingClientRect();
+
+  return rect?.x;
+}
+
+/**
+ * Gets coordinate of top of the caret
+ */
+function getYCoord() {
+  const selection = window.getSelection();
+  const range = selection?.getRangeAt(0);
+  const rect = range?.getBoundingClientRect();
+
+  return rect?.y;
+}
+
+const ASSUMED_LINE_HEIGHT = 25; // TODO: different between zooms and titles/paragraphs etc
+
+// function findCoordinateOfLine
+function findOnLineBelow(e: Element, line: number) {
+  const currentBox = e.getBoundingClientRect();
+  // const linesInCurrentBox = Math.round(currentBox.height / 25); // TODO: sound?
+  // console.log(linesInCurrentBox);
+  // const yCoord = getYCoord();
+  // const currentLine = yCoord - currentBox.top;
+  // console.log("currentline", currentLine);
+
+  const allEditables = [...document.querySelectorAll("[contenteditable]")];
+  const a = allEditables.indexOf(e);
+  const next = allEditables.slice(a + 1);
+
+  const nextBox = next[0].getBoundingClientRect();
+
+  const isBigBox = nextBox.height > 30;
+
+  if (currentBox.bottom !== nextBox.bottom) {
+    console.log("Y", getYCoord());
+    console.log("prev", currentBox);
+    console.log("next", nextBox);
+    // console.log(e.computedStyleMap().get("font-size"));
+    console.log("fontsize", next[0].computedStyleMap().get("line-height"));
+
+    // if (isBigBox) {
+    //   return findOnLineBelow(next[0], 1);
+    // }
+
+    const targetTop = nextBox.top + 10;
+    const targetBottom = nextBox.bottom - 10;
+
+    return targetTop; // Works for single-line boxes
+    // return nextBox.bottom - 2;
+  }
+
+  return findOnLineBelow(next[0], 0);
+}
+
+function aggregateSibling(childNode: ChildNode | null, x: number) {
+  if (childNode === null) {
+    return x;
+  }
+
+  const l = childNode.textContent?.length ?? 0;
+  const previousSibling = childNode.previousSibling;
+
+  if (previousSibling === null) {
+    return x + l;
+  }
+
+  const range = document.createRange();
+  range.selectNodeContents(childNode);
+  const currentBottom = range.getBoundingClientRect().bottom;
+
+  range.selectNodeContents(previousSibling);
+  const previousBottom = range.getBoundingClientRect().bottom;
+  console.log(currentBottom, previousBottom);
+  // We moved to another line, therefore abort
+  if (currentBottom !== previousBottom) {
+    return x + l;
+  }
+
+  return aggregateSibling(previousSibling, x + l);
 }
