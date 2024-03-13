@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
 
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -17,12 +18,18 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.bruttoTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.harRenteTillegg
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.nettoTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.renteTillegg
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.fraOgMed
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.tilOgMed
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.beloeper
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.maaned
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.resultat
 import java.time.LocalDate
 
 object TilbakekrevingFraser {
@@ -133,7 +140,7 @@ object TilbakekrevingFraser {
 					Nynorsk to "Vedtaket er gjort etter folketrygdloven § 22-15.",
 					English to "Vedtaket er gjort etter folketrygdloven § 22-15.",
 				)
-				ifNotNull(tilbakekreving.summer.renteTillegg) {
+				showIf(tilbakekreving.summer.harRenteTillegg) {
 					text(
 						Bokmal to " §§ 22-15 og 22-17 a.",
 						Nynorsk to " §§ 22-15 og 22-17 a.",
@@ -194,10 +201,10 @@ object TilbakekrevingFraser {
 							". Dette er " + feilutbetaling.format() + " kroner inkludert skatt.",
 					Nynorsk to "Du har fått utbetalt for mye ".expr() + sakType.format() +
 							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Dette er "  + feilutbetaling.format() + " kroner inkludert skatt.",
+							". Dette er " + feilutbetaling.format() + " kroner inkludert skatt.",
 					English to "Du har fått utbetalt for mye ".expr() + sakType.format() +
 							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Dette er "  + feilutbetaling.format() + " kroner inkludert skatt.",
+							". Dette er " + feilutbetaling.format() + " kroner inkludert skatt.",
 				)
 			}
 
@@ -223,6 +230,157 @@ object TilbakekrevingFraser {
 					Nynorsk to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
 					English to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
 				)
+			}
+		}
+	}
+
+}
+
+object TilbakekrevingVedleggFraser {
+
+	data class OversiktOverFeilutbetalinger(
+		val summer: Expression<TilbakekrevingBeloeper>
+	): OutlinePhrase<LangBokmalNynorskEnglish>() {
+		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+			paragraph {
+				table(
+					header = {
+						column(1) {
+							text(
+								Bokmal to "Beløp som skal kreves tilbake i hele feilutbetalingsperioden",
+								Nynorsk to "Beløp som skal kreves tilbake i hele feilutbetalingsperioden",
+								English to "Beløp som skal kreves tilbake i hele feilutbetalingsperioden",
+							)
+						}
+						column(2) {}
+					}
+				) {
+					row {
+						cell {
+							text(
+								Bokmal to "Brutto tilbakekreving",
+								Nynorsk to "Brutto tilbakekreving",
+								English to "Brutto tilbakekreving",
+							)
+						}
+						cell {
+							includePhrase(Felles.KronerText(summer.bruttoTilbakekreving))
+						}
+					}
+					row {
+						cell {
+							text(
+								Bokmal to "- fradrag skatt",
+								Nynorsk to "- fradrag skatt",
+								English to "- fradrag skatt"
+							)
+						}
+						cell {
+							includePhrase(Felles.KronerText(summer.fradragSkatt))
+						}
+					}
+					row {
+						cell {
+							text(
+								Bokmal to "Netto tilbakekreving",
+								Nynorsk to "Netto tilbakekreving",
+								English to "Netto tilbakekreving",
+							)
+						}
+						cell {
+							includePhrase(Felles.KronerText(summer.nettoTilbakekreving))
+						}
+					}
+					row {
+						cell {
+							text(
+								Bokmal to "+ Rentetillegg",
+								Nynorsk to "+ Rentetillegg",
+								English to "+ Rentetillegg"
+							)
+						}
+						cell {
+							includePhrase(Felles.KronerText(summer.renteTillegg))
+						}
+					}
+				}
+			}
+		}
+	}
+
+	data class PeriodeTabell(
+		val perioder: Expression<List<TilbakekrevingPeriode>>
+	): OutlinePhrase<LangBokmalNynorskEnglish>() {
+		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+			paragraph {
+				table(
+					header = {
+						column(1) {
+							text(
+								Bokmal to "Måned/år",
+								Nynorsk to "",
+								English to "",
+							)
+						}
+						column(2) {
+							text(
+								Bokmal to "Feilutbetalt beløp",
+								Nynorsk to "",
+								English to "",
+							)
+						}
+						column(3) {
+							text(
+								Bokmal to "Resultat",
+								Nynorsk to "",
+								English to "",
+							)
+						}
+						column(4) {
+							text(
+								Bokmal to "Brutto tilbakekreving",
+								Nynorsk to "",
+								English to "",
+							)
+						}
+						column(5) {
+							text(
+								Bokmal to "Netto tilbakekreving",
+								Nynorsk to "",
+								English to "",
+							)
+						}
+					}
+				) {
+					forEach(perioder) { periode ->
+						row {
+							cell {
+								textExpr (
+									Bokmal to periode.maaned.format(),
+									Nynorsk to periode.maaned.format(),
+									English to periode.maaned.format(),
+								)
+							}
+							cell {
+								includePhrase(Felles.KronerText(periode.beloeper.feilutbetaling))
+							}
+							cell {
+								textExpr (
+									Bokmal to periode.resultat.format(),
+									Nynorsk to periode.resultat.format(),
+									English to periode.resultat.format(),
+								)
+							}
+							cell {
+								includePhrase(Felles.KronerText(periode.beloeper.bruttoTilbakekreving))
+							}
+							cell {
+								includePhrase(Felles.KronerText(periode.beloeper.nettoTilbakekreving))
+							}
+						}
+					}
+
+				}
 			}
 		}
 	}

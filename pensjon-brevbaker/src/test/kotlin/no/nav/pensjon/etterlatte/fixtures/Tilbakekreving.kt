@@ -26,7 +26,8 @@ fun createTilbakekrevingFerdigDTO() =
 				bruttoTilbakekreving = Kroner(100),
 				nettoTilbakekreving = Kroner(70),
 				fradragSkatt = Kroner(20),
-				renteTillegg = Kroner(10)
+				renteTillegg = Kroner(10),
+				harRenteTillegg = true
 			)
 		)
 	)

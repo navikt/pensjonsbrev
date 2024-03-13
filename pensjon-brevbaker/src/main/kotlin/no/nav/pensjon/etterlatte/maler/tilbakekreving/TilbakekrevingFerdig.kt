@@ -57,7 +57,7 @@ data class TilbakekrevingDTO(
 data class TilbakekrevingPeriode(
 	val maaned: LocalDate,
 	val beloeper: TilbakekrevingBeloeper,
-	val resultat: String
+	val resultat: TilbakekrevingResultat
 )
 
 data class TilbakekrevingBeloeper(
@@ -65,9 +65,9 @@ data class TilbakekrevingBeloeper(
 	val bruttoTilbakekreving: Kroner,
 	val nettoTilbakekreving: Kroner,
 	val fradragSkatt: Kroner,
-	val renteTillegg: Kroner?
+	val renteTillegg: Kroner,
+	val harRenteTillegg: Boolean
 )
-
 
 @TemplateModelHelpers
 object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal {
@@ -122,7 +122,6 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 
 			konverterElementerTilBrevbakerformat(innhold)
 
-			// TODO med vennlig hilsen? Allerede inkludert?
 		}
 
 		includeAttachment(tilbakekrevingVedlegg, tilbakekreving)
