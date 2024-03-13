@@ -84,7 +84,21 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                 )
             }
 
-            includePhrase(Felles.RettTilInnsynPesys)
+            title1 {
+                text(
+                    Bokmal to "Du har rett til innsyn",
+                    Nynorsk to "Du har rett til innsyn",
+                    English to "You have the right to access your file",
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Du har rett til å se dokumentene i saken din.",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di.",
+                    English to "You are entitled to see your case documents.",
+                )
+            }
 
             includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
         }
