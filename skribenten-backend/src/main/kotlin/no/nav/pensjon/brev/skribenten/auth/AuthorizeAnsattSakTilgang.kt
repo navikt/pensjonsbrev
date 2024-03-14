@@ -76,28 +76,30 @@ private fun sjekkAdressebeskyttelse(
         }
     }
 
-/**
- * Krever at saksbehandler har tilgang til enhet som sak tilhører.
- * Dersom sakstype er Generell og saken sin enhet er 0001 kreves det ikke at saksbehandler har tilgang til enhet 0001.
- * Dette fordi saksbehandler i disse tilfellene normalt ikke har tilgang til 0001 og benytter Generell sak for å lage notat.
- */
 private suspend fun sjekkEnhetstilgang(
     navIdent: String,
     sak: PenService.SakSelection,
     enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>
 ): AuthAnsattSakTilgangResponse? =
     enheterResult.await().map { enheter ->
-        if(sak.sakType == PenService.SakType.GENRL && sak.enhetId == "0001") {
-            return null // får tilgang
+        when {
+            erGenerellSakMedEnhet0001(sak) -> null // får tilgang
+            !harTilgangTilSakSinEnhet(enheter, sak) -> {
+                logger.warn("Tilgang til sak ${sak.saksId} avvist for $navIdent: mangler tilgang til enhet ${sak.enhetId}")
+                AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
+            }
+            else -> null // får tilgang
         }
-        else if (enheter.none { it.id == sak.enhetId }) {
-            logger.warn("Tilgang til sak ${sak.saksId} avvist for $navIdent: mangler tilgang til enhet ${sak.enhetId}")
-            AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
-        } else null // får tilgang
     }.catch { msg, status ->
         logger.error("Kunne ikke henter NAVenheter for ansatt $navIdent: $status - $msg")
         AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
     }
+
+private fun erGenerellSakMedEnhet0001(sak: PenService.SakSelection) =
+    sak.sakType == PenService.SakType.GENRL && sak.enhetId == "0001"
+
+private fun harTilgangTilSakSinEnhet(enheter: List<NAVEnhet>, sak: PenService.SakSelection) =
+    enheter.any { it.id == sak.enhetId }
 
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)
 
