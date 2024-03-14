@@ -3,9 +3,13 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
+import io.ktor.client.engine.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
@@ -17,6 +21,7 @@ data class KontaktAdresseResponseDto(
     val adresselinjer: List<String>,
     val type: Adressetype,
 ){
+    @Suppress("unused")
     enum class Adressetype {
         MATRIKKELADRESSE,
         POSTADRESSE_I_FRITT_FORMAT,
@@ -31,11 +36,11 @@ data class KontaktAdresseResponseDto(
     }
 }
 
-class PensjonPersonDataService(config: Config, authService: AzureADService): ServiceStatus {
+class PensjonPersonDataService(config: Config, authService: AzureADService, clientEngine: HttpClientEngine = CIO.create()): ServiceStatus {
 
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(scope, authService) {
+    private val client = AzureADOnBehalfOfAuthorizedHttpClient(scope, authService, clientEngine) {
         defaultRequest {
             url(pensjonPersondataURL)
         }
@@ -46,13 +51,18 @@ class PensjonPersonDataService(config: Config, authService: AzureADService): Ser
         }
     }
 
-    suspend fun hentKontaktadresse(call: ApplicationCall, pid: String): ServiceResult<KontaktAdresseResponseDto> =
+    suspend fun hentKontaktadresse(call: ApplicationCall, pid: String): ServiceResult<KontaktAdresseResponseDto?> =
         client.get(call, "/api/adresse/kontaktadresse") {
             parameter("checkForVerge", true)
             headers {
                 header("pid", pid)
             }
-        }.toServiceResult<KontaktAdresseResponseDto>()
+        }.toServiceResult<KontaktAdresseResponseDto?> {
+            when (it.status) {
+                HttpStatusCode.NotFound -> ServiceResult.Ok(null)
+                else -> ServiceResult.Error(it.bodyAsText(), it.status)
+            }
+        }
 
     override val name = "Pensjon PersonData"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
