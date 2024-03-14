@@ -1,3 +1,4 @@
+import { inRange, minBy } from "lodash";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -228,9 +229,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
             const next = findOnLineBelow(element);
 
             if (next) {
-              const isBetween = caretCoords.x > next.left && caretCoords.x < next.right;
-              const x = isBetween ? caretCoords.x : next.x;
-              gotoCoord(x, next.top + 10);
+              gotoCoord({ x: caretCoords.x, y: next.top + 10 });
               event.preventDefault();
             }
           }
@@ -249,9 +248,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
             const next = findOnLineAbove(element);
 
             if (next) {
-              const isBetween = caretCoords.x > next.left && caretCoords.x < next.right;
-              const x = isBetween ? caretCoords.x : next.x;
-              gotoCoord(x, next.bottom - 10);
+              gotoCoord({ x: caretCoords.x, y: next.bottom - 10 });
               event.preventDefault();
             }
           }
@@ -283,18 +280,46 @@ function areAnyContentEditableSiblingsPlacedHigher(element: HTMLSpanElement) {
   return caretCoords.top > firstContentEditable.getBoundingClientRect().top;
 }
 
-function gotoCoord(x: number, y: number) {
-  const roundX = Math.round(x);
-  const roundY = Math.round(y);
-  // console.log("GOTO:", roundX, roundY);
-  const range = document.caretRangeFromPoint(roundX, roundY);
+function gotoCoord(coords: { x: number; y: number }) {
+  console.log("orig coords", coords);
+  const { x, y } = fineAdjustCoordinates(coords);
+
+  // TODO: if latest e element is not contenteditable, seek to nearest editable.
+  console.log("GOTO:", x, y);
+  const range = document.caretRangeFromPoint(x, y);
   if (range === null) {
-    console.log("Could not get caret for position:", roundX, roundY);
+    console.log("Could not get caret for position:", x, y);
     return;
   }
   const selection = window.getSelection();
   selection?.removeAllRanges();
   selection?.addRange(range);
+}
+
+function fineAdjustCoordinates({ x, y }: { x: number; y: number }) {
+  const [clickedElement] = document.elementsFromPoint(x, y);
+
+  const specific = clickedElement.querySelector(":scope > [contenteditable]");
+
+  const seekedElement = specific || clickedElement; // explain why
+
+  const seekedElementIsContenteditable = seekedElement.hasAttribute("contenteditable");
+
+  if (seekedElementIsContenteditable) {
+    return { x, y };
+  }
+
+  const contentEditableSiblings = seekedElement.parentElement
+    ? [...seekedElement.parentElement.querySelectorAll(":scope > [contenteditable]")]
+    : undefined;
+
+  const seekedBox = seekedElement.getBoundingClientRect();
+  const boxes = contentEditableSiblings?.map((s) => s.getBoundingClientRect());
+  const siblingBoxes = boxes?.filter((b) => inRange(b.bottom, seekedBox.top, seekedBox.bottom)); // TODO: not caveats
+
+  const closest = minBy(siblingBoxes, (b) => Math.abs(b.x - seekedBox.x));
+
+  return { x: closest.x, y };
 }
 
 function getCaretCoords() {
