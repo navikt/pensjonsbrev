@@ -224,12 +224,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           }
 
           const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedLower(element);
-
           if (shouldDoItOurselves) {
-            const nextY = findOnLineBelow(element);
+            const next = findOnLineBelow(element);
 
-            if (nextY) {
-              gotoCoord(caretCoords.x, nextY);
+            if (next) {
+              const isBetween = caretCoords.x > next.left && caretCoords.x < next.right;
+              const x = isBetween ? caretCoords.x : next.x;
+              gotoCoord(x, next.top + 10);
               event.preventDefault();
             }
           }
@@ -245,10 +246,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedHigher(element);
 
           if (shouldDoItOurselves) {
-            const nextY = findOnLineAbove(element);
+            const next = findOnLineAbove(element);
 
-            if (nextY) {
-              gotoCoord(caretCoords.x, nextY);
+            if (next) {
+              const isBetween = caretCoords.x > next.left && caretCoords.x < next.right;
+              const x = isBetween ? caretCoords.x : next.x;
+              gotoCoord(x, next.bottom - 10);
               event.preventDefault();
             }
           }
@@ -281,9 +284,12 @@ function areAnyContentEditableSiblingsPlacedHigher(element: HTMLSpanElement) {
 }
 
 function gotoCoord(x: number, y: number) {
-  const range = document.caretRangeFromPoint(x, y);
+  const roundX = Math.round(x);
+  const roundY = Math.round(y);
+  // console.log("GOTO:", roundX, roundY);
+  const range = document.caretRangeFromPoint(roundX, roundY);
   if (range === null) {
-    console.log("Could not get caret for position:", x, y);
+    console.log("Could not get caret for position:", roundX, roundY);
     return;
   }
   const selection = window.getSelection();
@@ -294,9 +300,7 @@ function gotoCoord(x: number, y: number) {
 function getCaretCoords() {
   const selection = window.getSelection();
   const range = selection?.getRangeAt(0);
-  const rect = range?.getBoundingClientRect();
-
-  return rect ? { x: rect.x, bottom: rect.bottom, top: rect.top } : undefined;
+  return range?.getBoundingClientRect();
 }
 
 function findOnLineBelow(element: Element) {
@@ -313,7 +317,8 @@ function findOnLineBelow(element: Element) {
   const nextBox = next.getBoundingClientRect();
 
   if (currentBox.bottom !== nextBox.bottom) {
-    return nextBox.top + 10;
+    return nextBox;
+    // return nextBox.top + 10;
   }
 
   return findOnLineBelow(next);
@@ -333,8 +338,9 @@ function findOnLineAbove(element: Element) {
   const previousBox = previous.getBoundingClientRect();
 
   if (currentBox.bottom !== previousBox.bottom) {
-    return previousBox.bottom - 10;
+    return previousBox;
+    // return previousBox.bottom - 10;
   }
 
-  return findOnLineBelow(previous);
+  return findOnLineAbove(previous);
 }
