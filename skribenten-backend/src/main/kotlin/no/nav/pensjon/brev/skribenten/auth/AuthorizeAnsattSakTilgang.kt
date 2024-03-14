@@ -76,13 +76,21 @@ private fun sjekkAdressebeskyttelse(
         }
     }
 
+/**
+ * Krever at saksbehandler har tilgang til enhet som sak tilhører.
+ * Dersom sakstype er Generell og saken sin enhet er 0001 kreves det ikke at saksbehandler har tilgang til enhet 0001.
+ * Dette fordi saksbehandler i disse tilfellene normalt ikke har tilgang til 0001 og benytter Generell sak for å lage notat.
+ */
 private suspend fun sjekkEnhetstilgang(
     navIdent: String,
     sak: PenService.SakSelection,
     enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>
 ): AuthAnsattSakTilgangResponse? =
     enheterResult.await().map { enheter ->
-        if (enheter.none { it.id == sak.enhetId }) {
+        if(sak.sakType == PenService.SakType.GENRL && sak.enhetId == "0001") {
+            return null // får tilgang
+        }
+        else if (enheter.none { it.id == sak.enhetId }) {
             logger.warn("Tilgang til sak ${sak.saksId} avvist for $navIdent: mangler tilgang til enhet ${sak.enhetId}")
             AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
         } else null // får tilgang
