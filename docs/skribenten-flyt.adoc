@@ -1,0 +1,190 @@
+= Skribenten
+
+== Tilstandsdiagram
+[plantuml, target=img/state-diagram, format=svg]
+....
+[*] --> RedigereBrev : redigerBrev(brevkode)
+
+state "Redigere brev" as RedigereBrev {
+    [*] --> HentetBrevData : hentBrevData(brevkode)
+
+    state "Hentet brev data" as HentetBrevData
+        HentetBrevData : brevkode
+        HentetBrevData : brev_data
+
+    HentetBrevData --> RendretMal : rendreMal(brevkode, brev_data)
+
+    state "Rendret mal" as RendretMal
+        RendretMal : brevkode
+        RendretMal : brev_data
+        RendretMal : brev_innhold
+        RendretMal : bruker_data
+
+    RendretMal --> RedigertBrev : << user edits brev_innhold >>
+
+    state "Redigert brev" as RedigertBrev
+        RedigertBrev : brevkode
+        RedigertBrev : brev_data
+        RedigertBrev : brev_innhold
+        RedigertBrev : bruker_data
+        RedigertBrev : redigert_innhold
+
+    RedigertBrev --> EndretBrukerData : << user edits bruker_data >>
+
+    state "Endret malalternativer" as EndretBrukerData
+        EndretBrukerData : bruker_data
+
+    EndretBrukerData --> RendretMal : rendreMal(brevkode, brev_data, bruker_data)
+    RendretMal -> EndretBrukerData : << user edits bruker_data >>
+
+    RedigertBrev --> LagretBrev : lagreRedigertBrev(redigert_innhold)
+
+    state "Mellomlagret brev" as LagretBrev
+    LagretBrev --> [*]
+}
+
+....
+
+== Sekvensdiagram
+- Web: skribenten-web
+- API: skribenten-backend
+
+[plantuml, target=img/seq-diagram, format=svg]
+....
+actor Saksbehandler
+boundary Web
+boundary API
+participant Brev
+participant BrevPDF
+boundary Pesys
+boundary Brevbaker
+boundary DokArkiv
+
+Saksbehandler -> Web : redigerBrev(brevkode)
+activate Web
+
+== Initier brevredigering ==
+Web -> Web : Initier brevredigering
+activate Web
+
+
+Web -> API : GET /templates/{brevkode}
+activate API
+API -> Brevbaker : GET /templates/redigerbar/{brevkode}
+activate Brevbaker
+return TemplateDescription
+return TemplateDescription
+
+Web -> API : POST /letter/{brevkode}
+activate API
+
+API -> Pesys : GET /brevdata/{brevkode}
+activate Pesys
+return Brevdata
+
+API -> Brevbaker : POST /templates/redigerbar/{brevkode}
+activate Brevbaker
+return RenderedLetter
+return RenderedLetter
+
+note over Brev
+    Litt usikker på når og hvordan opprettelse
+    av brev egentlig bør knyttes opp.
+end note
+Web -> API : POST /sak/{saksId}/letter/{brevkode}
+activate API
+API -> Brev ** : << create letter >>
+return brev
+
+return
+
+Web --> Saksbehandler : Klar til redigering
+
+== Endre "malalternativer" ==
+Saksbehandler --> Web : Endret malalternativer
+Web -> Web
+activate Web
+
+Web -> API : POST /letter/{brevId}
+activate API
+
+API -> Pesys : GET /brevdata/{brevkode}
+activate Pesys
+return Brevdata
+
+API -> Brevbaker : POST /templates/redigerbar/{brevkode}
+activate Brevbaker
+return RenderedLetter
+
+API -> Brev : Malalternativer
+return RenderedLetter
+return
+
+== Rediger innhold ==
+Saksbehandler --> Web : Endret innhold
+Web -> Web
+activate Web
+
+note left Web
+    Noe timing/antall endringer
+    utløser dette
+end note
+
+Web -> API : POST /letter/{brevId}
+activate API
+API -> Brev : Innhold
+
+API -> Pesys : GET /brevdata/{brevkode}
+activate Pesys
+return Brevdata
+
+API -> Brevbaker : POST /templates/redigerbar/{brevkode}
+activate Brevbaker
+return RenderedLetter
+return RenderedLetter
+return
+
+Web --> Saksbehandler : Lagret
+
+== Ferdigstill ==
+Saksbehandler --> Web : Ferdigstill brev
+Web -> Web
+activate Web
+
+Web -> API : POST /letter/{brevId}/ferdigstill
+activate API
+
+API -> Brevbaker : Rendre PDF
+activate Brevbaker
+return BrevPDF
+
+note over BrevPDF
+    TODO: Må detaljere interaksjonen her
+end note
+API -> BrevPDF ** : << create PDF >>
+return
+return
+
+Web --> Saksbehandler : Be om bekreftelse
+Saksbehandler --> Web : Bekreft ferdigstill
+Web -> Web
+activate Web
+
+Web -> API : Send brev
+activate API
+API -> DokArkiv : Send brev
+activate DokArkiv
+return Journalpost ID
+
+API -> Brev !! : Slett mellomlagring
+Brev -> BrevPDF !! : Slett mellomlagring
+return Journalpost ID
+return
+
+....
+
+Må ha med:
+
+* Avbryt før sending av brev (altså etter ferdigstilling)
+* Kanseller brev fullstendig
+* Lagre valg gjort utenom redigering (mottaker, språk bla bla)
