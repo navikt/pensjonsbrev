@@ -221,7 +221,7 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
             {letterTemplate.redigerbarBrevtittel ? (
               <TextField
                 {...methods.register("brevtittel")}
-                autoComplete="off"
+                autoComplete="on"
                 description="Gi brevet en kort og forklarende tittel."
                 error={methods.formState.errors.brevtittel?.message}
                 label="Endre tittel"
