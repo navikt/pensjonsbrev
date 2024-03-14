@@ -21,6 +21,7 @@ data class KontaktAdresseResponseDto(
     val adresselinjer: List<String>,
     val type: Adressetype,
 ){
+    @Suppress("unused")
     enum class Adressetype {
         MATRIKKELADRESSE,
         POSTADRESSE_I_FRITT_FORMAT,
