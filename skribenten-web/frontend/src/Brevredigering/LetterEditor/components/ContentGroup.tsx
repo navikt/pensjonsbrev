@@ -284,8 +284,6 @@ function gotoCoord(coords: { x: number; y: number }) {
   console.log("orig coords", coords);
   const { x, y } = fineAdjustCoordinates(coords);
 
-  // TODO: if latest e element is not contenteditable, seek to nearest editable.
-  console.log("GOTO:", x, y);
   const range = document.caretRangeFromPoint(x, y);
   if (range === null) {
     console.log("Could not get caret for position:", x, y);
@@ -304,7 +302,6 @@ function fineAdjustCoordinates({ x, y }: { x: number; y: number }) {
   const seekedElement = specific || clickedElement; // explain why
 
   const seekedElementIsContenteditable = seekedElement.hasAttribute("contenteditable");
-
   if (seekedElementIsContenteditable) {
     return { x, y };
   }
@@ -317,9 +314,19 @@ function fineAdjustCoordinates({ x, y }: { x: number; y: number }) {
   const boxes = contentEditableSiblings?.map((s) => s.getBoundingClientRect());
   const siblingBoxes = boxes?.filter((b) => inRange(b.bottom, seekedBox.top, seekedBox.bottom)); // TODO: not caveats
 
-  const closest = minBy(siblingBoxes, (b) => Math.abs(b.x - seekedBox.x));
+  const closest = minBy(siblingBoxes, (b) => {
+    const distanceFromTheLeft = Math.abs(b.left - x);
+    const distanceFromTheRight = Math.abs(b.right - x);
 
-  return { x: closest.x, y };
+    return Math.min(distanceFromTheLeft, distanceFromTheRight);
+  });
+
+  const distanceFromTheLeft = Math.abs(closest.left - x);
+  const distanceFromTheRight = Math.abs(closest.right - x);
+
+  const a = distanceFromTheLeft < distanceFromTheRight ? closest.left : closest.right; // TODO: refactor??
+
+  return { x: a, y };
 }
 
 function getCaretCoords() {
