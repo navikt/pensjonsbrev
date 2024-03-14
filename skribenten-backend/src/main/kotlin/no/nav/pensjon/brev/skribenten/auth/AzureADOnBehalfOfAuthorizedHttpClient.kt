@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.auth
 
 import io.ktor.client.*
+import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -13,8 +14,13 @@ sealed class AuthorizedHttpClientResult {
     class Error(val error: TokenResponse.ErrorResponse) : AuthorizedHttpClientResult()
 }
 
-class AzureADOnBehalfOfAuthorizedHttpClient(private val scope: String, private val authService: AzureADService, clientConfigBlock: HttpClientConfig<CIOEngineConfig>.() -> Unit) {
-    private val client = HttpClient(CIO, clientConfigBlock)
+class AzureADOnBehalfOfAuthorizedHttpClient(
+    private val scope: String,
+    private val authService: AzureADService,
+    clientEngine: HttpClientEngine = CIO.create(),
+    clientConfigBlock: HttpClientConfig<*>.() -> Unit
+) {
+    private val client = HttpClient(clientEngine, clientConfigBlock)
 
     private suspend fun request(call: ApplicationCall, url: String, method: HttpMethod, block: HttpRequestBuilder.() -> Unit): AuthorizedHttpClientResult {
         return authService.getOnBehalfOfToken(call, scope).let { token ->
