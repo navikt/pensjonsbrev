@@ -353,6 +353,16 @@ object Ufoeretrygd {
             }
         }
     }
+
+    data class UfoeretrygdIkkeUtbetaltOver80ProsentAvOIFU(val inntektstakUfoeretrygdOrdinaer: Expression<Kroner>) : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            paragraph {
+                textExpr(
+                    Language.Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr() + inntektstakUfoeretrygdOrdinaer.format() + " kroner per år. Inntekten er justert opp til dagens verdi.",
+                )
+            }
+        }
+    }
 }
 
 

@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.maler.ufoereBrev.EndringUfoeretrygdPaaGrunnAvEndretIn
 import no.nav.pensjon.brev.maler.ufoereBrev.EndringUfoeretrygdPaaGrunnAvEndretInntektDtoSelectors.grunnbeloep
 import no.nav.pensjon.brev.maler.ufoereBrev.EndringUfoeretrygdPaaGrunnAvEndretInntektDtoSelectors.inntektEtterUfoerhet
 import no.nav.pensjon.brev.maler.ufoereBrev.EndringUfoeretrygdPaaGrunnAvEndretInntektDtoSelectors.inntektsgrense
-import no.nav.pensjon.brev.maler.ufoereBrev.EndringUfoeretrygdPaaGrunnAvEndretInntektDtoSelectors.inntektstakUfoeretrygdOrdinaer
 import no.nav.pensjon.brev.maler.ufoereBrev.EndringUfoeretrygdPaaGrunnAvEndretInntektDtoSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.maler.ufoereBrev.EndringUfoeretrygdPaaGrunnAvEndretInntektDtoSelectors.kravAarsak
 import no.nav.pensjon.brev.maler.ufoereBrev.EndringUfoeretrygdPaaGrunnAvEndretInntektDtoSelectors.nettoAkk
@@ -240,20 +239,7 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                     }
                 }
             }
-            // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu_x_08
-            // == 80 prosent av OIFU.
-            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu_x_08) THEN
-            //     INCLUDE
-            //ENDIF
 
-
-            showIf(inntektsgrenseUnder80ProsentAvInntektFoerUfoerhet) {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr() + inntektstakUfoeretrygdOrdinaer.format() + " kroner per år. Inntekten er justert opp til dagens verdi.",
-                    )
-                }
-            }
 
             //TBU1201
             //(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad > 0)
