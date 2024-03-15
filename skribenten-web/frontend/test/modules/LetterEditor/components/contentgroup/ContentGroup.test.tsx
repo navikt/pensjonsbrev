@@ -328,16 +328,3 @@ describe("ArrowRight will move focus to next editable content", () => {
     });
   });
 });
-
-describe("ArrowDown will move caret to the line below", () => {
-  test("Move directly down within same parent", async () => {
-    const { user } = setupComplex();
-    await user.click(screen.getByText("3. item"));
-    await user.keyboard("{ArrowDown}");
-
-    // screen.logTestingPlaygroundURL();
-  });
-  test("Move to block below if in bottom of paragraph", async () => {});
-  test("Move to end of line if at end of document", async () => {});
-  test("If element below is not editable move caret to nearest editable text", async () => {});
-});
