@@ -56,6 +56,7 @@ export function gotoCoordinates(coordinates: Coordinates) {
 
   const range = document.caretRangeFromPoint(x, y); // TODO: support firefox?
   if (range === null) {
+    // eslint-disable-next-line no-console
     console.log("Could not get caret for position:", x, y);
     return;
   }
@@ -103,6 +104,7 @@ export function fineAdjustCoordinates({ x, y }: Coordinates) {
 
   // If we found no closestRect we "failed" the caret will likely be lost and the user must click manually
   if (closestRect === undefined) {
+    // eslint-disable-next-line no-console
     console.error("Found no editable element on the same line");
     return { x, y };
   }

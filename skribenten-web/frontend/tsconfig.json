@@ -20,6 +20,6 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": ["src", "test", "cypress"],
+  "include": ["src", "test", "cypress", "cypress.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
