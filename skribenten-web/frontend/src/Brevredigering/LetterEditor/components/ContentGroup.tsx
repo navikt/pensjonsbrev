@@ -329,10 +329,13 @@ function fineAdjustCoordinates({ x, y }: { x: number; y: number }) {
   return { x: a, y };
 }
 
-function getCaretCoords() {
+export function getCaretCoords() {
+  return getRange()?.getBoundingClientRect();
+}
+
+export function getRange() {
   const selection = window.getSelection();
-  const range = selection?.getRangeAt(0);
-  return range?.getBoundingClientRect();
+  return selection?.getRangeAt(0);
 }
 
 function findOnLineBelow(element: Element) {
