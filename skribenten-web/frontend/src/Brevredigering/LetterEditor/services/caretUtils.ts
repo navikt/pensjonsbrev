@@ -36,7 +36,7 @@ export function areAnyContentEditableSiblingsPlacedLower(element: HTMLSpanElemen
     : undefined;
   const caretCoordinates = getCaretRect();
 
-  if (lastContentEditable === undefined || caretCoordinates === undefined) return false; // TODO: should not happen?
+  if (lastContentEditable === undefined || caretCoordinates === undefined) return false;
 
   return lastContentEditable.getBoundingClientRect().bottom > caretCoordinates.bottom;
 }
@@ -47,14 +47,16 @@ export function areAnyContentEditableSiblingsPlacedHigher(element: HTMLSpanEleme
     : undefined;
   const caretCoordinates = getCaretRect();
 
-  if (firstContentEditable === undefined || caretCoordinates === undefined) return false; // TODO: should not happen?
+  if (firstContentEditable === undefined || caretCoordinates === undefined) return false;
   return caretCoordinates.top > firstContentEditable.getBoundingClientRect().top;
 }
 
 export function gotoCoordinates(coordinates: Coordinates) {
   const { x, y } = fineAdjustCoordinates(coordinates);
 
-  const range = document.caretRangeFromPoint(x, y); // TODO: support firefox?
+  // This is a non-standard browser function, but it is the only fix I found. It is not implemented in Firefox
+  // https://developer.mozilla.org/en-US/docs/Web/API/Document/caretRangeFromPoint
+  const range = document.caretRangeFromPoint(x, y);
   if (range === null) {
     // eslint-disable-next-line no-console
     console.log("Could not get caret for position:", x, y);
