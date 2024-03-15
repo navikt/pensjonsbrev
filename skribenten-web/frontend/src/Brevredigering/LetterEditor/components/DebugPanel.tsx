@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { HStack } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 
-import { getCaretCoords, getRange } from "~/Brevredigering/LetterEditor/components/ContentGroup";
+import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 
 export function DebugPanel() {
@@ -17,7 +17,7 @@ export function DebugPanel() {
 
   const keyboardEventListener = () => {
     setCaretOffset(getRange()?.startOffset ?? 0);
-    setCaretPosition(getCaretCoords());
+    setCaretPosition(getCaretRect());
   };
 
   useEffect(() => {

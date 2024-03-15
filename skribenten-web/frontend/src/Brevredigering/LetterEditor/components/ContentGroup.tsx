@@ -218,9 +218,9 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
         if (event.key === "ArrowDown") {
           const element = contentEditableReference.current;
-          const caretCoords = getCaretCoords();
+          const caretCoordinates = getCaretRect();
 
-          if (element === null || caretCoords === undefined) {
+          if (element === null || caretCoordinates === undefined) {
             return;
           }
 
@@ -229,16 +229,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
             const next = findOnLineBelow(element);
 
             if (next) {
-              gotoCoord({ x: caretCoords.x, y: next.top + 10 });
+              gotoCoordinates({ x: caretCoordinates.x, y: next.top + 10 });
               event.preventDefault();
             }
           }
         }
         if (event.key === "ArrowUp") {
           const element = contentEditableReference.current;
-          const caretCoords = getCaretCoords();
+          const caretCoordinates = getCaretRect();
 
-          if (element === null || caretCoords === undefined) {
+          if (element === null || caretCoordinates === undefined) {
             return;
           }
 
@@ -248,7 +248,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
             const next = findOnLineAbove(element);
 
             if (next) {
-              gotoCoord({ x: caretCoords.x, y: next.bottom - 10 });
+              gotoCoordinates({ x: caretCoordinates.x, y: next.bottom - 10 });
               event.preventDefault();
             }
           }
@@ -263,28 +263,32 @@ function areAnyContentEditableSiblingsPlacedLower(element: HTMLSpanElement) {
   const lastContentEditable = element.parentElement
     ? [...element.parentElement.querySelectorAll(":scope > [contenteditable]")].pop()
     : undefined;
-  const caretCoords = getCaretCoords();
+  const caretCoordinates = getCaretRect();
 
-  if (lastContentEditable === undefined || caretCoords === undefined) return false; // TODO: should not happen?
+  if (lastContentEditable === undefined || caretCoordinates === undefined) return false; // TODO: should not happen?
 
-  return lastContentEditable.getBoundingClientRect().bottom > caretCoords.bottom;
+  return lastContentEditable.getBoundingClientRect().bottom > caretCoordinates.bottom;
 }
 
 function areAnyContentEditableSiblingsPlacedHigher(element: HTMLSpanElement) {
   const firstContentEditable = element.parentElement
     ? [...element.parentElement.querySelectorAll(":scope > [contenteditable]")][0]
     : undefined;
-  const caretCoords = getCaretCoords();
+  const caretCoordinates = getCaretRect();
 
-  if (firstContentEditable === undefined || caretCoords === undefined) return false; // TODO: should not happen?
-  return caretCoords.top > firstContentEditable.getBoundingClientRect().top;
+  if (firstContentEditable === undefined || caretCoordinates === undefined) return false; // TODO: should not happen?
+  return caretCoordinates.top > firstContentEditable.getBoundingClientRect().top;
 }
 
-function gotoCoord(coords: { x: number; y: number }) {
-  console.log("orig coords", coords);
-  const { x, y } = fineAdjustCoordinates(coords);
+type Coordinates = {
+  x: number;
+  y: number;
+};
 
-  const range = document.caretRangeFromPoint(x, y);
+function gotoCoordinates(coordinates: Coordinates) {
+  const { x, y } = fineAdjustCoordinates(coordinates);
+
+  const range = document.caretRangeFromPoint(x, y); // TODO: support firefox?
   if (range === null) {
     console.log("Could not get caret for position:", x, y);
     return;
@@ -294,42 +298,58 @@ function gotoCoord(coords: { x: number; y: number }) {
   selection?.addRange(range);
 }
 
-function fineAdjustCoordinates({ x, y }: { x: number; y: number }) {
+function fineAdjustCoordinates({ x, y }: Coordinates) {
+  // Get the most specific clicked element.
   const [clickedElement] = document.elementsFromPoint(x, y);
 
-  const specific = clickedElement.querySelector(":scope > [contenteditable]");
+  // The point might have been outside the editable element and the element we have is a parent.
+  const editableChildElement = clickedElement.querySelector(":scope > [contenteditable]");
 
-  const seekedElement = specific || clickedElement; // explain why
+  const seekedElement = editableChildElement || clickedElement;
 
   const seekedElementIsContenteditable = seekedElement.hasAttribute("contenteditable");
+
+  // If the seekedElement is editable we use the existing coordinates.
   if (seekedElementIsContenteditable) {
     return { x, y };
   }
 
-  const contentEditableSiblings = seekedElement.parentElement
+  // The element we clicked is likely a variable, or another not editable element. Now we attempt to find its most adjacent sibling that is editable.
+  const editableSiblings = seekedElement.parentElement
     ? [...seekedElement.parentElement.querySelectorAll(":scope > [contenteditable]")]
     : undefined;
 
-  const seekedBox = seekedElement.getBoundingClientRect();
-  const boxes = contentEditableSiblings?.map((s) => s.getBoundingClientRect());
-  const siblingBoxes = boxes?.filter((b) => inRange(b.bottom, seekedBox.top, seekedBox.bottom)); // TODO: not caveats
+  const currentFocusRect = seekedElement.getBoundingClientRect();
 
-  const closest = minBy(siblingBoxes, (b) => {
+  // ASSUMPTION: variable blocks are taller than editable elements.
+  // Attempt to find editableSiblings that are on the same line. The caveat is that a variable block have different top/bottom that normal editable lines.
+  // Therefore, we check if the editable element lies within the height of the seekedElement.
+  const rectsOnTheSameLine = editableSiblings
+    ?.map((s) => s.getBoundingClientRect())
+    ?.filter((b) => inRange(b.bottom, currentFocusRect.top, currentFocusRect.bottom));
+
+  const closestRect = minBy(rectsOnTheSameLine, (b) => {
     const distanceFromTheLeft = Math.abs(b.left - x);
     const distanceFromTheRight = Math.abs(b.right - x);
 
     return Math.min(distanceFromTheLeft, distanceFromTheRight);
   });
 
-  const distanceFromTheLeft = Math.abs(closest.left - x);
-  const distanceFromTheRight = Math.abs(closest.right - x);
+  // If we found no closestRect we "failed" the caret will likely be lost and the user must click manually
+  if (closestRect === undefined) {
+    console.error("Found no editable element on the same line");
+    return { x, y };
+  }
 
-  const a = distanceFromTheLeft < distanceFromTheRight ? closest.left : closest.right; // TODO: refactor??
+  const distanceFromTheLeft = Math.abs(closestRect.left - x);
+  const distanceFromTheRight = Math.abs(closestRect.right - x);
 
-  return { x: a, y };
+  const closestX = distanceFromTheLeft < distanceFromTheRight ? closestRect.left : closestRect.right;
+
+  return { x: closestX, y };
 }
 
-export function getCaretCoords() {
+export function getCaretRect() {
   return getRange()?.getBoundingClientRect();
 }
 
@@ -339,7 +359,7 @@ export function getRange() {
 }
 
 function findOnLineBelow(element: Element) {
-  const currentBox = element.getBoundingClientRect();
+  const currentRect = element.getBoundingClientRect();
 
   const allEditables = [...document.querySelectorAll("[contenteditable]")];
   const currentIndex = allEditables.indexOf(element);
@@ -349,18 +369,17 @@ function findOnLineBelow(element: Element) {
     return undefined;
   }
 
-  const nextBox = next.getBoundingClientRect();
+  const nextRect = next.getBoundingClientRect();
 
-  if (currentBox.bottom !== nextBox.bottom) {
-    return nextBox;
-    // return nextBox.top + 10;
+  if (currentRect.bottom !== nextRect.bottom) {
+    return nextRect;
   }
 
   return findOnLineBelow(next);
 }
 
 function findOnLineAbove(element: Element) {
-  const currentBox = element.getBoundingClientRect();
+  const currentRect = element.getBoundingClientRect();
 
   const allEditables = [...document.querySelectorAll("[contenteditable]")];
   const currentIndex = allEditables.indexOf(element);
@@ -370,11 +389,10 @@ function findOnLineAbove(element: Element) {
     return undefined;
   }
 
-  const previousBox = previous.getBoundingClientRect();
+  const previousRect = previous.getBoundingClientRect();
 
-  if (currentBox.bottom !== previousBox.bottom) {
-    return previousBox;
-    // return previousBox.bottom - 10;
+  if (currentRect.bottom !== previousRect.bottom) {
+    return previousRect;
   }
 
   return findOnLineAbove(previous);
