@@ -14,6 +14,21 @@ export function getCursorOffset() {
   const range = selection?.getRangeAt(0);
   return range?.collapsed ? range.startOffset : -1;
 }
+/**
+ * Focus cursor at the given offset in the node.
+ *
+ * @param node the node to focus cursor to
+ * @param offset the offset in the node
+ */
+export function focusAtOffset(node: ChildNode, offset: number) {
+  const range = document.createRange();
+  range.setStart(node, offset);
+  range.collapse();
+
+  const selection = window.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+}
 
 export function areAnyContentEditableSiblingsPlacedLower(element: HTMLSpanElement) {
   const lastContentEditable = element.parentElement

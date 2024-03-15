@@ -12,14 +12,13 @@ import {
   areAnyContentEditableSiblingsPlacedLower,
   findOnLineAbove,
   findOnLineBelow,
+  focusAtOffset,
   getCaretRect,
+  getCursorOffset,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import { SelectionService } from "~/Brevredigering/LetterEditor/services/SelectionService";
 import type { LiteralValue, RenderedLetter } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
-
-const selectService = new SelectionService(true);
 
 function getContent(letter: RenderedLetter, literalIndex: LiteralIndex) {
   const content = letter.blocks[literalIndex.blockIndex].content;
@@ -119,19 +118,19 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       contentEditableReference.current !== null &&
       editorState.focus.cursorPosition !== undefined
     ) {
-      selectService.focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
+      focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
     }
   }, [editorState.focus.cursorPosition, shouldBeFocused]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
-    const offset = selectService.getCursorOffset();
+    const offset = getCursorOffset();
 
     applyAction(Actions.split, setEditorState, literalIndex, offset);
   };
 
   const handleBackspace = (event: React.KeyboardEvent<HTMLSpanElement>) => {
-    const cursorPosition = selectService.getCursorOffset();
+    const cursorPosition = getCursorOffset();
     if (
       cursorPosition === 0 ||
       (contentEditableReference.current?.textContent?.startsWith("​") && cursorPosition === 1)
@@ -142,7 +141,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleDelete = (event: React.KeyboardEvent<HTMLSpanElement>) => {
-    const cursorIsAtEnd = selectService.getCursorOffset() >= content.text.length;
+    const cursorIsAtEnd = getCursorOffset() >= content.text.length;
     const cursorIsInLastContent =
       getContent(editorState.editedLetter.letter, literalIndex).length - 1 === literalIndex.contentIndex;
     if (cursorIsAtEnd && cursorIsInLastContent) {
@@ -156,7 +155,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
-    const cursorIsAtBeginning = selectService.getCursorOffset() === 0;
+    const cursorIsAtBeginning = getCursorOffset() === 0;
     if (!cursorIsAtBeginning) return;
 
     const previousSpanIndex = thisSpanIndex - 1;
@@ -165,7 +164,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     event.preventDefault();
     const nextFocus = allSpans[previousSpanIndex];
     nextFocus.focus();
-    selectService.focusAtOffset(nextFocus.childNodes[0], nextFocus.textContent?.length ?? 0);
+    focusAtOffset(nextFocus.childNodes[0], nextFocus.textContent?.length ?? 0);
   };
 
   const handleArrowRight = (event: React.KeyboardEvent<HTMLSpanElement>) => {
@@ -174,7 +173,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
-    const cursorIsAtEnd = selectService.getCursorOffset() >= content.text.length;
+    const cursorIsAtEnd = getCursorOffset() >= content.text.length;
     if (!cursorIsAtEnd) return;
 
     const nextSpanIndex = thisSpanIndex + 1;
@@ -184,7 +183,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     event.preventDefault();
     const nextFocus = allSpans[nextSpanIndex];
     nextFocus.focus();
-    selectService.focusAtOffset(nextFocus.childNodes[0], 0);
+    focusAtOffset(nextFocus.childNodes[0], 0);
   };
 
   const handleArrowUp = (event: React.KeyboardEvent<HTMLSpanElement>) => {
