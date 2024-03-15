@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -217,23 +218,29 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             )
         }
 
-        showIf(restanse.greaterThan(0)) {
+        showIf(restanse.notEqualTo(0)) {
             title2 {
                 text(
                     Bokmal to "Restanse",
-	                Nynorsk to "",
-	                English to ""
+	                Nynorsk to "Restanse",
+	                English to "Arrears"
                 )
             }
             paragraph {
 	            textExpr(
-		            Bokmal to "Siden den forventede inntekten din er ".expr() + ifElse(inntektHarOkt, "økt", "redusert") +
+		            Bokmal to "Siden den forventede inntekten din er ".expr() + ifElse(inntektHarOkt, "auka", "blitt redusert") +
                             " for inneværende år, har det oppstått en " + ifElse(inntektHarOkt, "feilutbetaling", "etterbetaling") +
                             ", en restanse. For å minimere etteroppgjøret blir restansen fordelt på de resterende utbetalingsmånedene for inneværende år. Du får derfor " +
                             restanse.format() + " kroner " + ifElse(inntektHarOkt, "mindre", "mer") +
-                            " enn det som fremgår i tabellen over, under “Utbetaling per måned”",
-		            Nynorsk to "".expr(),
-		            English to "".expr()
+                            " enn det som fremgår i tabellen over, under «Utbetaling per måned»",
+		            Nynorsk to "Då den forventa inntekta di for inneverande år har ".expr() + ifElse(inntektHarOkt, "økt", "redusert") +
+                            ", har det oppstått ei " + ifElse(inntektHarOkt, "feilutbetaling", "etterbetaling") + ", ein restanse. " +
+                            "For å minimere etteroppgjeret blir restansen fordelt på dei resterande utbetalingsmånadene for inneverande år. " +
+                            "Du får difor " + restanse.format() + " kroner " + ifElse(inntektHarOkt, "mindre", "meir") + " enn det som står under «Utbetaling per månad» i tabellen over.",
+		            English to "Since your estimated income for the current year has ".expr() + ifElse(inntektHarOkt, "been increased", "been reduced") +
+                            ", " + ifElse(inntektHarOkt, "a payment error", "retroactive payment") + " has occurred. This is called arrears. " +
+                            "To minimize the settlement, the arrears amount will be distributed across the remaining monthly payments for the current year. " +
+                            "You will therefore receive NOK " + restanse.format() + ifElse(inntektHarOkt, "less", "more") + " than the amount specified in the table above, under “Payout per month”."
 	            )
             }
         }
