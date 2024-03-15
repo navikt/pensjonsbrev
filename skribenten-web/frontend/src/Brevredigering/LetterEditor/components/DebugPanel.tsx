@@ -1,29 +1,38 @@
 import { css } from "@emotion/react";
+import { HStack } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 
+import { getCaretCoords, getRange } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 
 export function DebugPanel() {
   const { editorState } = useEditor();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [caretOffset, setCaretOffset] = useState(0);
+  const [caretPosition, setCaretPosition] = useState<DOMRect>();
 
   const mouseMoveEventListener = (event: MouseEvent) => {
     setMousePosition({ x: event.pageX, y: event.pageY });
   };
 
+  const keyboardEventListener = () => {
+    setCaretOffset(getRange()?.startOffset ?? 0);
+    setCaretPosition(getCaretCoords());
+  };
+
   useEffect(() => {
     document.addEventListener("mousemove", mouseMoveEventListener);
+    document.addEventListener("keyup", keyboardEventListener);
 
     return () => {
       document.removeEventListener("mousemove", mouseMoveEventListener);
+      document.removeEventListener("keyup", keyboardEventListener);
     };
   }, []);
 
   return (
     <div
       css={css`
-        display: flex;
-        gap: 1rem;
         padding: 1rem;
         margin-top: 1rem;
         align-self: flex-start;
@@ -31,14 +40,26 @@ export function DebugPanel() {
         width: 100%;
       `}
     >
-      {Object.entries(editorState.focus).map(([key, value]) => (
-        <div key={key}>
-          <b>{key}: </b>
-          <span>{value}</span>
-        </div>
-      ))}
-      <b>X: {mousePosition.x}</b>
-      <b>Y: {mousePosition.y}</b>
+      <HStack gap={"4"}>
+        MODEL:
+        {Object.entries(editorState.focus).map(([key, value]) => (
+          <div key={key}>
+            <b>{key}: </b>
+            <span>{value}</span>
+          </div>
+        ))}
+      </HStack>
+      <HStack gap={"4"}>
+        MOUSE:
+        <b>X: {mousePosition.x}</b>
+        <b>Y: {mousePosition.y}</b>
+      </HStack>
+      <HStack gap={"4"}>
+        CARET:
+        <b>offset: {caretOffset}</b>
+        <b>X: {caretPosition?.x}</b>
+        <b>Y: {caretPosition?.y}</b>
+      </HStack>
     </div>
   );
 }
