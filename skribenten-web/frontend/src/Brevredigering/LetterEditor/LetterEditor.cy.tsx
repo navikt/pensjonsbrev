@@ -2,7 +2,7 @@ import "./editor.css";
 
 import React from "react";
 
-import { getRange } from "~/Brevredigering/LetterEditor/components/ContentGroup";
+import { getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
 
 import { LetterEditor } from "./LetterEditor";
 

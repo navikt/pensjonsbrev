@@ -2,14 +2,14 @@ import { css } from "@emotion/react";
 import { HStack } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 
-import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
 
 export function DebugPanel() {
   const { editorState } = useEditor();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [caretOffset, setCaretOffset] = useState(0);
-  const [caretPosition, setCaretPosition] = useState<DOMRect>();
+  const [caretRect, setCaretRect] = useState<DOMRect>();
 
   const mouseMoveEventListener = (event: MouseEvent) => {
     setMousePosition({ x: event.pageX, y: event.pageY });
@@ -17,7 +17,7 @@ export function DebugPanel() {
 
   const keyboardEventListener = () => {
     setCaretOffset(getRange()?.startOffset ?? 0);
-    setCaretPosition(getCaretRect());
+    setCaretRect(getCaretRect());
   };
 
   useEffect(() => {
@@ -57,8 +57,8 @@ export function DebugPanel() {
       <HStack gap={"4"}>
         CARET:
         <b>offset: {caretOffset}</b>
-        <b>X: {caretPosition?.x}</b>
-        <b>Y: {caretPosition?.y}</b>
+        <b>X: {caretRect?.x}</b>
+        <b>Y: {caretRect?.y}</b>
       </HStack>
     </div>
   );

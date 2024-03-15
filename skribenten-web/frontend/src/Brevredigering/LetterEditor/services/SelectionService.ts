@@ -38,36 +38,6 @@ export class SelectionService {
   }
 
   /**
-   * Attempt to focus cursor at the end of the line nearest to the click.
-   *
-   * @param nodes the nodes to find point of focus in
-   * @param click the coordinates of the click
-   * @param focusStolen callback invoked if focus is stolen
-   */
-  focusEndOfClickedLine(nodes: HTMLElement[], click: ClickCoords, focusStolen?: () => void) {
-    this.warn("attempting to focus cursor at the end of the line nearest to click at: ", click);
-
-    const nodeDistances = nodes
-      .map((n) => this.getTextNodeWithDistances(n, click))
-      .filter((n): n is NodeDistances => n != null);
-
-    this.warn("all distances to click:", nodeDistances);
-
-    if (nodeDistances.length === 0) {
-      this.warn("found empty nodes, will focus cursor to start of line");
-      this.focusStartOfNode(nodes[0], focusStolen);
-    } else {
-      const nearest = this.findNodesOnTheLineVerticallyNearestClick(nodeDistances);
-      if (nearest.length > 0) {
-        this.warn("using nodes on the line vertically nearest the click:", nearest);
-        this.focusHorizontallyNearestClick(nearest, focusStolen);
-      } else {
-        this.warn("couldn't find any nodes on a line vertically near to the click");
-      }
-    }
-  }
-
-  /**
    * Focus cursor at the given offset in the node.
    *
    * @param node the node to focus cursor to
@@ -89,105 +59,7 @@ export class SelectionService {
     }
   }
 
-  /**
-   * Focus cursor to the node and offset horizontally nearest the click.
-   *
-   * @param nodes the nodes on the line vertically nearest the click
-   * @param focusStolen callback to indicate focus stolen
-   * @private
-   */
-  private focusHorizontallyNearestClick(nodes: NodeDistances[], focusStolen?: () => void) {
-    const nearest = this.findNearestHorizontally(nodes);
-    this.warn("found horizontally nearest node:", nearest);
 
-    const offset = this.findMaxOffsetInRect(nearest.node, nearest.rect);
-
-    if (offset === null) {
-      this.warn("couldn't find max offset in node:", nearest);
-    } else {
-      //should only add 1 to offset if it is the last character in the block
-      // @ts-expect-error -- not sure why node has no length attribute
-      if (offset === nearest.node.length - 1) {
-        this.warn("adding 1 to offset");
-        this.focusAtOffset(nearest.node, offset + 1, focusStolen);
-      } else {
-        this.focusAtOffset(nearest.node, offset, focusStolen);
-      }
-    }
-  }
-
-  /**
-   * Find the node that has the least horizontal distance, and the corresponding inner DOMRect.
-   * @param nodes the nodes with distances to find the node in
-   * @private
-   */
-  private findNearestHorizontally(nodes: NodeDistances[]): { node: ChildNode; rect: DOMRect } {
-    const nearest = nodes
-      .map((n) => ({
-        node: n.node,
-        // eslint-disable-next-line unicorn/no-array-reduce
-        distance: n.distances.reduce((previous, next) => (next.x <= previous.x ? next : previous)),
-      }))
-      // eslint-disable-next-line unicorn/no-array-reduce
-      .reduce((previous, next) => (next.distance.x <= previous.distance.x ? next : previous));
-
-    return { node: nearest.node, rect: nearest.distance.rect };
-  }
-
-  /**
-   * Filters the nodes that are on the line vertically nearest the click.
-   * Also filters the distances array to only contain those that are vertically nearest the clicked line.
-   *
-   * @param nodes the nodes to filter.
-   * @private
-   */
-  private findNodesOnTheLineVerticallyNearestClick(nodes: NodeDistances[]): NodeDistances[] {
-    const leastVerticalDistance = this.findLeastVerticalDistance(nodes);
-
-    this.warn("nearest vertical distance to click", leastVerticalDistance);
-
-    return nodes
-      .map((n) => ({ ...n, distances: n.distances.filter((d) => d.y === leastVerticalDistance) }))
-      .filter((n) => n.distances.length > 0);
-  }
-
-  private findLeastVerticalDistance(nodes: NodeDistances[]): number {
-    return (
-      nodes
-        .flatMap((n) => n.distances.map((d) => d.y))
-        // eslint-disable-next-line unicorn/no-array-reduce -- refactor to min function?
-        .reduce((previous, next) => (next < previous ? next : previous))
-    );
-  }
-
-  /**
-   * Get the inner text ChildNode of the node with it's inner client rects, and the distances for those rects to the click.
-   * @param node the node to use
-   * @param click the click to calculate the distances to
-   * @private
-   */
-  private getTextNodeWithDistances(node: HTMLElement, click: ClickCoords): NodeDistances | null {
-    const textNode = node.firstChild;
-    // @ts-expect-error -- not sure why node has no length attribute
-    if (textNode == null || textNode.length === 0) {
-      return null;
-    }
-
-    const range = document.createRange();
-    range.selectNodeContents(textNode);
-    const rects = range.getClientRects();
-
-    const distances: { rect: DOMRect; x: number; y: number }[] = [];
-    for (const rect of rects) {
-      distances.push({
-        rect,
-        x: Math.round(this.xDistanceFromClick(rect, click)),
-        y: Math.round(this.yDistanceFromClick(rect, click)),
-      });
-    }
-
-    return { node: textNode, distances };
-  }
 
   private yDistanceFromClick(rect: DOMRect, click: ClickCoords): number {
     return Math.abs(click.y - Math.max(Math.min(click.y, rect.bottom), rect.top));
