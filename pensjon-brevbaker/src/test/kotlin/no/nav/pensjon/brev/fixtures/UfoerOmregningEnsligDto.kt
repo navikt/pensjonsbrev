@@ -58,5 +58,4 @@ fun createUfoerOmregningEnsligDto() =
             ),
         ),
         harBarnetillegg = false,
-        harAvdoedRettigheterFoer2024 = true,
     )
