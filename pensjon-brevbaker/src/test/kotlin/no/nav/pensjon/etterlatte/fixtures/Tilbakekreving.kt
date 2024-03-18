@@ -17,6 +17,7 @@ fun createTilbakekrevingFerdigDTO() =
 		innhold = createPlaceholderForRedigerbartInnhold(),
 		sakType = SakType.OMSTILLINGSSTOENAD,
 		brukerNavn = "navn",
+		doedsbo = false,
 		bosattUtland = false,
 		varselVedlagt = false,
 		datoVarselEllerVedtak = LocalDate.now(),
