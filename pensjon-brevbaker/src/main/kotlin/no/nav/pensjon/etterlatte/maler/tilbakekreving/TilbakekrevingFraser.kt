@@ -111,8 +111,8 @@ object TilbakekrevingFraser {
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
-			val nettoTilbakekreving = tilbakekreving.summer.nettoTilbakekreving
 			val renteTillegg = tilbakekreving.summer.renteTillegg
+			val sumTilbakekreving = renteTillegg.plus(tilbakekreving.summer.nettoTilbakekreving)
 			val fraOgMed = tilbakekreving.fraOgMed
 			val tilOgMed = tilbakekreving.tilOgMed
 
@@ -139,17 +139,23 @@ object TilbakekrevingFraser {
 					English to "Vi har kommet frem til at du skal betale tilbake ".expr() +
 							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
 				)
-				showIf(tilbakekreving.summer.renteTillegg.greaterThan(0)) {
+				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
 						Bokmal to " Du må også betale ".expr() + renteTillegg.format() +
-								" kroner i renter. Til sammen skal du betale " + nettoTilbakekreving.format() +
+								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() +
 								" kroner etter at skatten er trukket fra.",
 						Nynorsk to " Du må også betale ".expr() + renteTillegg.format() +
-								" kroner i renter. Til sammen skal du betale " + nettoTilbakekreving.format() +
+								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() +
 								" kroner etter at skatten er trukket fra.",
 						English to " Du må også betale ".expr() + renteTillegg.format() +
-								" kroner i renter. Til sammen skal du betale " + nettoTilbakekreving.format() +
+								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() +
 								" kroner etter at skatten er trukket fra.",
+					)
+				}.orShow {
+					textExpr(
+						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner.",
+						Nynorsk to "".expr(),
+						English to "".expr(),
 					)
 				}
 			}
@@ -164,8 +170,8 @@ object TilbakekrevingFraser {
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
-			val nettoTilbakekreving = tilbakekreving.summer.nettoTilbakekreving
 			val renteTillegg = tilbakekreving.summer.renteTillegg
+			val sumTilbakekreving = renteTillegg.plus(tilbakekreving.summer.nettoTilbakekreving)
 			val fraOgMed = tilbakekreving.fraOgMed
 			val tilOgMed = tilbakekreving.tilOgMed
 
@@ -186,17 +192,17 @@ object TilbakekrevingFraser {
 					Nynorsk to "".expr(),
 					English to "".expr()
 				)
-				showIf(tilbakekreving.summer.renteTillegg.greaterThan(0)) {
+				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
 						Bokmal to " Boet må også betale ".expr() + renteTillegg.format() +
-								" kroner i renter. Til sammen skal boet betale " + nettoTilbakekreving.format() +
+								" kroner i renter. Til sammen skal boet betale " + sumTilbakekreving.format() +
 								" kroner etter at skatten er trukket fra.",
 						Nynorsk to "".expr(),
 						English to "".expr()
 					)
 				}.orShow {
 					textExpr(
-						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner.",
+						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner.",
 						Nynorsk to "".expr(),
 						English to "".expr()
 					)
