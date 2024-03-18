@@ -28,6 +28,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.helTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.tilOgMed
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.summer
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.beloeper
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.maaned
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.resultat
@@ -106,11 +107,11 @@ object TilbakekrevingFraser {
 			paragraph {
 				textExpr(
 					Bokmal to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler") + " av beløpet.",
+							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
 					Nynorsk to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler") + " av beløpet.",
+							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
 					English to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler") + " av beløpet.",
+							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
 				)
 				showIf(tilbakekreving.harRenteTillegg) {
 					textExpr(
