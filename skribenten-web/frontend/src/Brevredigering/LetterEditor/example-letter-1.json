@@ -1,0 +1,151 @@
+{
+  "title": "Informasjon om saksbehandlingstiden vår",
+  "sakspart": {
+    "gjelderNavn": "Test Testeson",
+    "gjelderFoedselsnummer": "12345678910",
+    "saksnummer": "1234",
+    "dokumentDato": "15.03.2024"
+  },
+  "blocks": [
+    {
+      "id": -29856172,
+      "editable": true,
+      "content": [
+        {
+          "id": 2054713812,
+          "text": "Vi har ",
+          "type": "LITERAL"
+        },
+        {
+          "id": -169301316,
+          "text": "4. januar 2024",
+          "type": "VARIABLE"
+        },
+        {
+          "id": -1820992704,
+          "text": " mottatt søknaden din om ",
+          "type": "LITERAL"
+        },
+        {
+          "id": 921220,
+          "text": "YTELSE",
+          "type": "VARIABLE"
+        },
+        {
+          "id": 1962386266,
+          "text": " fra trygdemyndighetene i ",
+          "type": "LITERAL"
+        },
+        {
+          "id": 1112569114,
+          "text": "LAND",
+          "type": "VARIABLE"
+        },
+        {
+          "id": 46,
+          "text": "CP1.",
+          "type": "LITERAL"
+        },
+        {
+          "id": 1993244052,
+          "items": [
+            {
+              "content": [
+                {
+                  "id": -1890568417,
+                  "text": "punkt 1 - TODO fjern punktliste - lang tekst som brekker over linje",
+                  "type": "LITERAL"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "id": 935219458,
+                  "text": "punkt 2 - TODO fjern punktliste",
+                  "type": "LITERAL"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "id": -1163733415,
+                  "text": "punkt 3 - TODO fjern punktliste",
+                  "type": "LITERAL"
+                }
+              ]
+            }
+          ],
+          "type": "ITEM_LIST"
+        }
+      ],
+      "type": "PARAGRAPH"
+    },
+    {
+      "id": -1125430838,
+      "editable": true,
+      "content": [
+        {
+          "id": -1505022304,
+          "text": "Saksbehandlingstiden vår er vanligvis ",
+          "type": "LITERAL"
+        },
+        {
+          "id": 1762521580,
+          "text": "4",
+          "type": "VARIABLE"
+        },
+        {
+          "id": 1027473067,
+          "text": " uker.",
+          "type": "LITERAL"
+        }
+      ],
+      "type": "PARAGRAPH"
+    },
+    {
+      "id": 1620092169,
+      "editable": true,
+      "content": [
+        {
+          "id": 1620092138,
+          "text": "Dersom vi trenger flere opplysninger fra deg, vil du høre fra oss.",
+          "type": "LITERAL"
+        }
+      ],
+      "type": "PARAGRAPH"
+    },
+    {
+      "id": -349491824,
+      "editable": true,
+      "content": [
+        {
+          "id": -349491855,
+          "text": "Meld fra om endringer",
+          "type": "LITERAL"
+        }
+      ],
+      "type": "TITLE1"
+    },
+    {
+      "id": 161611260,
+      "editable": true,
+      "content": [
+        {
+          "id": 161611229,
+          "text": "Du må melde fra til oss med en gang hvis det skjer endringer som kan ha betydning for saken din, for eksempel ved endring av sivilstand eller ved flytting.",
+          "type": "LITERAL"
+        }
+      ],
+      "type": "PARAGRAPH"
+    }
+  ],
+  "signatur": {
+    "hilsenTekst": "Med vennlig hilsen",
+    "saksbehandlerRolleTekst": "Saksbehandler",
+    "saksbehandlerNavn": "Ole Saksbehandler",
+    "attesterendeSaksbehandlerNavn": "",
+    "navAvsenderEnhet": "NAV Familie- og pensjonsytelser Porsgrunn"
+  }
+}
