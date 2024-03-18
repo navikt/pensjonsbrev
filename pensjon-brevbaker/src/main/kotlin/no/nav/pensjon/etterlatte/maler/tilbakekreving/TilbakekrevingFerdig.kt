@@ -29,13 +29,13 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelec
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.varselVedlagt
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.skalTilbakekreve
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
 import java.time.LocalDate
 
 data class TilbakekrevingBrevDTO(
 	override val innhold: List<Element>,
 	val sakType: SakType,
 	val bosattUtland: Boolean,
+	val brukerNavn: String,
 
 	val varselVedlagt: Boolean,
 	val datoVarselEllerVedtak: LocalDate,
@@ -111,8 +111,11 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 
 			showIf(tilbakekreving.skalTilbakekreve) {
 				includePhrase(
-					TilbakekrevingFraser.HovedInnholdSkalTilbakekreve(sakType, tilbakekreving)
+					TilbakekrevingFraser.KonklusjonTilbakekreving(sakType, tilbakekreving)
 				)
+				includePhrase(TilbakekrevingFraser.TrukketSkatt)
+				includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
+				includePhrase(TilbakekrevingFraser.ReferanseTilVedlegg)
 				includePhrase(TilbakekrevingFraser.Skatt)
 			}.orShow {
 				includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(sakType, tilbakekreving))

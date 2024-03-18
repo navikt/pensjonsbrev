@@ -16,9 +16,11 @@ fun createTilbakekrevingFerdigDTO() =
 	TilbakekrevingBrevDTO(
 		innhold = createPlaceholderForRedigerbartInnhold(),
 		sakType = SakType.OMSTILLINGSSTOENAD,
-		bosattUtland = false,varselVedlagt = false,
+		brukerNavn = "navn",
+		bosattUtland = false,
+		varselVedlagt = false,
 		datoVarselEllerVedtak = LocalDate.now(),
-		datoTilsvarBruker = null,
+		datoTilsvarBruker = LocalDate.now(),
 		tilbakekreving = TilbakekrevingDTO(
 			fraOgMed = LocalDate.now(),
 			tilOgMed = LocalDate.now(),
