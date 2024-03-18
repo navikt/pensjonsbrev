@@ -20,6 +20,12 @@ import {
 import type { LiteralValue, RenderedLetter } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
+/**
+ * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
+ * If y-coord is exactly at the edge it sometimes misses. To avoid that we move the point a little bit away from the line.
+ */
+const Y_COORD_SAFETY_MARGIN = 10;
+
 function getContent(letter: RenderedLetter, literalIndex: LiteralIndex) {
   const content = letter.blocks[literalIndex.blockIndex].content;
   const contentValue = content[literalIndex.contentIndex];
@@ -200,7 +206,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineAbove(element);
 
       if (next) {
-        gotoCoordinates({ x: caretCoordinates.x, y: next.bottom - 10 });
+        gotoCoordinates({ x: caretCoordinates.x, y: next.bottom - Y_COORD_SAFETY_MARGIN });
         event.preventDefault();
       }
     }
@@ -219,7 +225,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineBelow(element);
 
       if (next) {
-        gotoCoordinates({ x: caretCoordinates.x, y: next.top + 10 });
+        gotoCoordinates({ x: caretCoordinates.x, y: next.top + Y_COORD_SAFETY_MARGIN });
         event.preventDefault();
       }
     }
