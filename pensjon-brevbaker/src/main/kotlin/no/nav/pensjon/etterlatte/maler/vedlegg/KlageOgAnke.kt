@@ -63,9 +63,6 @@ fun klageOgAnke(
 		includeSakspart = false,
 	) {
 		veiledning()
-		if (tilbakekreving) {
-			innsynISaken()
-		}
 		hjelpFraAndre()
 		klagePaaVedtaket()
 		hvordanSendeKlage(bosattUtland.expr())
@@ -295,25 +292,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "If you have any questions or are unsure about anything, we will do our best to help you."
         )
     }
-}
-
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.innsynISaken() {
-	title2 {
-		text(
-			Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
-			Nynorsk to "",
-			English to ""
-		)
-	}
-	paragraph {
-		text(
-			Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på " + Constants.DIN_PENSJON_URL +
-					" for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon " +
-					Constants.KONTAKTTELEFON_PENSJON + ". ",
-			Nynorsk to "",
-			English to Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
-		)
-	}
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.tilbakekreving() {
