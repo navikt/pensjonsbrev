@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -21,21 +22,24 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.brukerNavn
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoTilsvarBruker
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoVarselEllerVedtak
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.doedsbo
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.sakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.tilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.varselVedlagt
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.skalTilbakekreve
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import java.time.LocalDate
 
 data class TilbakekrevingBrevDTO(
 	override val innhold: List<Element>,
 	val sakType: SakType,
 	val bosattUtland: Boolean,
+	val brukerNavn: String,
+	val doedsbo: Boolean,
 
 	val varselVedlagt: Boolean,
 	val datoVarselEllerVedtak: LocalDate,
@@ -49,7 +53,6 @@ data class TilbakekrevingDTO(
 	val tilOgMed: LocalDate,
 	val skalTilbakekreve: Boolean,
 	val helTilbakekreving: Boolean,
-	val harRenteTillegg: Boolean,
 	val perioder: List<TilbakekrevingPeriode>,
 	val summer: TilbakekrevingBeloeper
 )
@@ -85,12 +88,19 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 	) {
 		title {
 			showIf(tilbakekreving.skalTilbakekreve) {
-				textExpr(
-					Bokmal to "Du må betale tilbake ".expr() + sakType.format(),
-					Nynorsk to "Du må betale tilbake ".expr() + sakType.format(),
-					English to "Du må betale tilbake ".expr() + sakType.format()
-				)
-
+				showIf(doedsbo) {
+					textExpr(
+						Bokmal to "Dødsboet må betale tilbake ".expr() + sakType.format(),
+						Nynorsk to "".expr() + sakType.format(),
+						English to "".expr() + sakType.format()
+					)
+				}.orShow {
+					textExpr(
+						Bokmal to "Du må betale tilbake ".expr() + sakType.format(),
+						Nynorsk to "Du må betale tilbake ".expr() + sakType.format(),
+						English to "Du må betale tilbake ".expr() + sakType.format()
+					)
+				}
 			}.orShow {
 				textExpr(
 					Bokmal to "Du skal ikke betale tilbake ".expr() + sakType.format(),
@@ -101,20 +111,35 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 
 		}
 		outline {
-			includePhrase(
-				TilbakekrevingFraser.ViserTilVarselbrev(
-					sakType,
-					varselVedlagt,
-					datoVarselEllerVedtak,
-					datoTilsvarBruker
+			showIf(doedsbo) {
+				includePhrase(TilbakekrevingFraser.ViserTilVarselbrevDoedsbo(datoVarselEllerVedtak, datoTilsvarBruker))
+			}.orShow {
+				includePhrase(
+					TilbakekrevingFraser.ViserTilVarselbrev(
+						sakType,
+						varselVedlagt,
+						datoVarselEllerVedtak,
+						datoTilsvarBruker
+					)
 				)
-			)
+			}
 
 			showIf(tilbakekreving.skalTilbakekreve) {
-				includePhrase(
-					TilbakekrevingFraser.HovedInnholdSkalTilbakekreve(sakType, tilbakekreving)
-				)
-				includePhrase(TilbakekrevingFraser.Skatt)
+				showIf(doedsbo) {
+					includePhrase(
+						TilbakekrevingFraser.KonklusjonTilbakekrevingDoedsbo(sakType, tilbakekreving, brukerNavn)
+					)
+					includePhrase(TilbakekrevingFraser.TrukketSkatt)
+					includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
+					includePhrase(TilbakekrevingFraser.ReferanseTilVedleggDoedsbo)
+					includePhrase(TilbakekrevingFraser.Skatt)
+				}.orShow {
+					includePhrase(TilbakekrevingFraser.KonklusjonTilbakekreving(sakType, tilbakekreving))
+					includePhrase(TilbakekrevingFraser.TrukketSkatt)
+					includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
+					includePhrase(TilbakekrevingFraser.ReferanseTilVedlegg)
+					includePhrase(TilbakekrevingFraser.Skatt)
+				}
 			}.orShow {
 				includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(sakType, tilbakekreving))
 			}
@@ -124,9 +149,18 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 		}
 
 		includeAttachment(tilbakekrevingVedlegg, tilbakekreving)
+
 		// Nasjonal
-		includeAttachment(klageOgAnkeNasjonal, innhold, bosattUtland.not())
+		includeAttachment(
+			klageOgAnke(bosattUtland = false, tilbakekreving = true),
+			innhold,
+			bosattUtland.not().and(doedsbo.not())
+		)
 		// Bosatt utland
-		includeAttachment(klageOgAnkeUtland, innhold, bosattUtland)
+		includeAttachment(
+			klageOgAnke(bosattUtland = true, tilbakekreving = true),
+			innhold,
+			bosattUtland.and(doedsbo.not())
+		)
 	}
 }

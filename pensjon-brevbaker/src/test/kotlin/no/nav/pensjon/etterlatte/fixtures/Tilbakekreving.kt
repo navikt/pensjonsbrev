@@ -16,15 +16,17 @@ fun createTilbakekrevingFerdigDTO() =
 	TilbakekrevingBrevDTO(
 		innhold = createPlaceholderForRedigerbartInnhold(),
 		sakType = SakType.OMSTILLINGSSTOENAD,
-		bosattUtland = false,varselVedlagt = false,
+		brukerNavn = "navn",
+		doedsbo = false,
+		bosattUtland = false,
+		varselVedlagt = false,
 		datoVarselEllerVedtak = LocalDate.now(),
-		datoTilsvarBruker = null,
+		datoTilsvarBruker = LocalDate.now(),
 		tilbakekreving = TilbakekrevingDTO(
 			fraOgMed = LocalDate.now(),
 			tilOgMed = LocalDate.now(),
 			skalTilbakekreve = true,
 			helTilbakekreving = true,
-			harRenteTillegg = true,
 			perioder = emptyList(),
 			summer = TilbakekrevingBeloeper(
 				feilutbetaling = Kroner(100),
