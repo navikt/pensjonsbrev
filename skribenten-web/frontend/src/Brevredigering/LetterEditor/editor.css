@@ -1,6 +1,6 @@
 .editor {
     margin-top: var(--a-spacing-6);
-    width: 393px;
+    width: 758px;
     caret-color: green;
     [contenteditable] {
 
