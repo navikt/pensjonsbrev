@@ -29,8 +29,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFra
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.forhaandsvarselFeilutbetalingBarnepensjonOpphoer
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import java.time.LocalDate
 
 data class BarnepensjonOpphoerDTO(
@@ -81,10 +80,10 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnkeNasjonal, innhold, bosattUtland.not())
+        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
 
         // Bosatt utland
-        includeAttachment(klageOgAnkeUtland, innhold, bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
 
         includeAttachment(forhaandsvarselFeilutbetalingBarnepensjonOpphoer, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }

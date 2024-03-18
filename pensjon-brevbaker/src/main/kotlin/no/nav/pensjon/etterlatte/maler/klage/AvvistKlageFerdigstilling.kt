@@ -20,7 +20,7 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.sakType
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
 
 data class AvvistKlageFerdigDTO(
@@ -65,6 +65,6 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
             }
         }
         // Vet ikke hva utlandstilknytning er. Går for bosatt utland for nå
-        includeAttachment(klageOgAnkeUtland, innhold)
+        includeAttachment(klageOgAnke(bosattUtland = true), innhold)
     }
 }

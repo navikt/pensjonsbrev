@@ -16,39 +16,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
-@TemplateModelHelpers
-val klageOgAnkeUtland = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon om klage og anke",
-        Nynorsk to "Informasjon om klage og anke",
-        English to "Information on Complaints and Appeals"
-    ),
-    includeSakspart = false,
-) {
-    veiledning()
-    hjelpFraAndre()
-    klagePaaVedtaket()
-    hvordanSendeKlage(true.expr())
-    hvaMaaKlagenInneholde(true.expr())
-    duKanFaaDekketUtgifter()
-}
 
-@TemplateModelHelpers
-val klageOgAnkeNasjonal = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon om klage og anke",
-        Nynorsk to "Informasjon om klage og anke",
-        English to "Information on Complaints and Appeals"
-    ),
-    includeSakspart = false,
-) {
-    veiledning()
-    hjelpFraAndre()
-    klagePaaVedtaket()
-    hvordanSendeKlage(false.expr())
-    hvaMaaKlagenInneholde(false.expr())
-    duKanFaaDekketUtgifter()
-}
 
 fun klageOgAnke(
 	bosattUtland: Boolean,
