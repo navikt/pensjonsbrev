@@ -105,6 +105,10 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: T, second: T): T = constructor(first.value + second.value)
     }
 
+    class IntMultiply<T : IntValue>(val constructor: (Int) -> T) : BinaryOperation<T, T, T>() {
+        override fun apply(first: T, second: T): T = constructor(first.value * second.value)
+    }
+
     class IfNull<T : Any> : BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)) {
         override fun apply(first: T?, second: T): T = first ?: second
     }

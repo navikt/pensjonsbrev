@@ -30,6 +30,12 @@ operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kron
         BinaryOperation.IntPlus(::Kroner),
     )
 
+fun Expression<Kroner>.multiply(other: Expression<Kroner>): Expression<Kroner> =
+    Expression.BinaryInvoke(
+        this,
+        other,
+        BinaryOperation.IntMultiply(::Kroner),
+    )
 
 fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: Expression<T>): Expression<Boolean> =
     Expression.BinaryInvoke(

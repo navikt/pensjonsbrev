@@ -14,12 +14,14 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.multiply
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.InntektendringType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
@@ -66,7 +68,11 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     val aarsinntekt = sisteBeregningsperiode.aarsinntekt
     val fratrekkInnAar = sisteBeregningsperiode.fratrekkInnAar
     val gjenvaerendeMaaneder = sisteBeregningsperiode.relevantMaanederInnAar
-    val restanse = sisteBeregningsperiode.restanse
+	val restanse = ifElse(
+		sisteBeregningsperiode.restanse.greaterThan(0),
+		sisteBeregningsperiode.restanse,
+		sisteBeregningsperiode.restanse.multiply(Kroner(-1).expr())
+	)
     val inntektHarOkt = inntektendringType.equalTo(InntektendringType.MER_INNTEKT)
 
     paragraph {
@@ -220,27 +226,21 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
 
         showIf(restanse.notEqualTo(0)) {
             title2 {
-                text(
-                    Bokmal to "Restanse",
-	                Nynorsk to "Restanse",
-	                English to "Arrears"
+                textExpr(
+                    Bokmal to ifElse(inntektHarOkt, "Trekk", "Tillegg") + " i utbetalingen",
+	                Nynorsk to "".expr(),
+	                English to "".expr()
                 )
             }
             paragraph {
 	            textExpr(
-		            Bokmal to "Siden den forventede inntekten din er ".expr() + ifElse(inntektHarOkt, "auka", "blitt redusert") +
-                            " for inneværende år, har det oppstått en " + ifElse(inntektHarOkt, "feilutbetaling", "etterbetaling") +
-                            ", en restanse. For å minimere etteroppgjøret blir restansen fordelt på de resterende utbetalingsmånedene for inneværende år. Du får derfor " +
-                            restanse.format() + " kroner " + ifElse(inntektHarOkt, "mindre", "mer") +
-                            " enn det som fremgår i tabellen over, under «Utbetaling per måned»",
-		            Nynorsk to "Då den forventa inntekta di for inneverande år har ".expr() + ifElse(inntektHarOkt, "økt", "redusert") +
-                            ", har det oppstått ei " + ifElse(inntektHarOkt, "feilutbetaling", "etterbetaling") + ", ein restanse. " +
-                            "For å minimere etteroppgjeret blir restansen fordelt på dei resterande utbetalingsmånadene for inneverande år. " +
-                            "Du får difor " + restanse.format() + " kroner " + ifElse(inntektHarOkt, "mindre", "meir") + " enn det som står under «Utbetaling per månad» i tabellen over.",
-		            English to "Since your estimated income for the current year has ".expr() + ifElse(inntektHarOkt, "been increased", "been reduced") +
-                            ", " + ifElse(inntektHarOkt, "a payment error", "retroactive payment") + " has occurred. This is called arrears. " +
-                            "To minimize the settlement, the arrears amount will be distributed across the remaining monthly payments for the current year. " +
-                            "You will therefore receive NOK " + restanse.format() + ifElse(inntektHarOkt, "less", "more") + " than the amount specified in the table above, under “Payout per month”."
+                    Bokmal to "Den forventede inntekten din for inneværende år er blitt justert. ".expr() +
+                            "Det blir " + ifElse(inntektHarOkt, "gjort et trekk", "gitt et tillegg") +
+                            " i utbetalingen for resten av året for å redusere etteroppgjøret. " +
+                            "Du får " + restanse.format() + " kroner " + ifElse(inntektHarOkt, "mindre", "mer") +
+                            " enn det som fremgår i tabellen over, under “Utbetaling per måned”.".expr(),
+		            Nynorsk to "".expr(),
+		            English to "".expr()
 	            )
             }
         }
