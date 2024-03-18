@@ -106,11 +106,11 @@ object TilbakekrevingFraser {
 			paragraph {
 				textExpr(
 					Bokmal to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler") + " av beløpet.",
+							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
 					Nynorsk to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler") + " av beløpet.",
+							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
 					English to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler") + " av beløpet.",
+							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
 				)
 				showIf(tilbakekreving.harRenteTillegg) {
 					textExpr(
