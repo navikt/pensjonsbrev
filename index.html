@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.21">
+<meta name="generator" content="Asciidoctor 2.0.22">
 <title>Arkitektur</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -468,6 +468,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
+<li><a href="#_skribenten">Skribenten</a>
+<ul class="sectlevel1">
+<li><a href="#_grunnleggende_scenarioer">Grunnleggende scenarioer</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -807,10 +812,34 @@ Dette gjør det mulig å bytte ut LaTeX med andre representasjoner av det tekstl
 </div>
 </div>
 </div>
+<h1 id="_skribenten" class="sect0">Skribenten</h1>
+<div class="paragraph">
+<p>Skribenten er en web applikasjon hvor saksbehandlere kan bestille, redigere og sende brev. Skribenten har full støtte for redigering av brev fra Brevbaker, samt den gjør det mulig å bestille legacy brev fra Doksys og Exstream. Skribenten består av skribenten-web (React) og skribenten-backend (Kotlin/Ktor). Skribenten-backend er i utgangspunktet ansvarlig for å videresende alle requests på vegne av skribenten-web. Videre har vi mikrotjenesten tjenestebuss-integrasjon som kjører i FSS og er ansvarlig for kommunikasjon med legacy systemer.</p>
+</div>
+<div class="sect1">
+<h2 id="_grunnleggende_scenarioer">Grunnleggende scenarioer</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Web: skribenten-web</p>
+</li>
+<li>
+<p>API: skribenten-backend</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="img/seq-diagram.svg" alt="seq diagram" width="1120" height="3097">
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-07 10:56:00 UTC
+Last updated 2024-03-18 11:26:09 UTC
 </div>
 </div>
 </body>
