@@ -45,5 +45,6 @@ jobs:
           working-directory: skribenten-web/frontend
           install: false
           browser: chrome
+          component: true
           start: npm run cypress
 
