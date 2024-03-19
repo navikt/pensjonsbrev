@@ -39,7 +39,7 @@ describe("<LetterEditor />", () => {
     cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
 
     cy.contains("CP1-3").click();
-    move("{home}", 45);
+    move("{home}", 1);
 
     move("{rightArrow}", 30);
     move("{upArrow}", 1);
