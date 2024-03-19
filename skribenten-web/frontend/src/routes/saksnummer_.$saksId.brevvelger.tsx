@@ -11,13 +11,13 @@ import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
-  loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
-  loader: async ({ context: { queryClient, getSakQueryOptions }, deps: { includeVedtak } }) => {
+  loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
+  loader: async ({ context: { queryClient, getSakQueryOptions }, deps: { vedtaksId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
     const letterTemplates = await queryClient.ensureQueryData({
-      queryKey: getLetterTemplate.queryKey({ sakType: sak.sakType, includeVedtak }),
-      queryFn: () => getLetterTemplate.queryFn(sak.sakType, { includeVedtak }),
+      queryKey: getLetterTemplate.queryKey({ sakType: sak.sakType, vedtaksId }),
+      queryFn: () => getLetterTemplate.queryFn(sak.sakType, { vedtaksId }),
     });
 
     return { letterTemplates };
