@@ -69,6 +69,7 @@ data class TilbakekrevingBeloeper(
 	val nettoTilbakekreving: Kroner,
 	val fradragSkatt: Kroner,
 	val renteTillegg: Kroner,
+	val sumNettoRenter: Kroner
 )
 
 @TemplateModelHelpers

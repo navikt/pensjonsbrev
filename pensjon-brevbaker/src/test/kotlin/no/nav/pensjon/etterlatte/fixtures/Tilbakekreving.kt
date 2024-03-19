@@ -38,6 +38,8 @@ fun createTilbakekrevingFerdigDTO() =
 						nettoTilbakekreving = Kroner(35),
 						fradragSkatt = Kroner(10),
 						renteTillegg = Kroner(5),
+						sumNettoRenter = Kroner(40)
+
 					),
 					resultat = TilbakekrevingResultat.FULL_TILBAKEKREV,
 				),
@@ -49,6 +51,7 @@ fun createTilbakekrevingFerdigDTO() =
 						nettoTilbakekreving = Kroner(35),
 						fradragSkatt = Kroner(10),
 						renteTillegg = Kroner(5),
+						sumNettoRenter = Kroner(40)
 					),
 					resultat = TilbakekrevingResultat.FULL_TILBAKEKREV,
 				)
@@ -59,6 +62,7 @@ fun createTilbakekrevingFerdigDTO() =
 				nettoTilbakekreving = Kroner(70),
 				fradragSkatt = Kroner(20),
 				renteTillegg = Kroner(10),
+				sumNettoRenter = Kroner(80)
 			)
 		)
 	)

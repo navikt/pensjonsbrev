@@ -1,6 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
-
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -25,6 +24,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSele
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.nettoTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.renteTillegg
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.sumNettoRenter
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.fraOgMed
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.helTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
@@ -65,9 +65,9 @@ object TilbakekrevingFraser {
 				}
 				ifNotNull(datoTilsvarBruker) { datoTilsvarBruker ->
 					textExpr(
-						Bokmal to ", og dine kommentarer til dette som vi mottok den".expr() + datoTilsvarBruker.format(),
-						Nynorsk to ", og dine kommentarer til dette som vi mottok den".expr() + datoTilsvarBruker.format(),
-						English to ", og dine kommentarer til dette som vi mottok den".expr() + datoTilsvarBruker.format(),
+						Bokmal to ", og dine kommentarer til dette som vi mottok den ".expr() + datoTilsvarBruker.format(),
+						Nynorsk to ", og dine kommentarer til dette som vi mottok den ".expr() + datoTilsvarBruker.format(),
+						English to ", og dine kommentarer til dette som vi mottok den ".expr() + datoTilsvarBruker.format(),
 					)
 				}
 				text(
@@ -113,7 +113,7 @@ object TilbakekrevingFraser {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
 			val renteTillegg = tilbakekreving.summer.renteTillegg
-			val sumTilbakekreving = renteTillegg.plus(tilbakekreving.summer.nettoTilbakekreving)
+			val sumTilbakekreving = tilbakekreving.summer.sumNettoRenter
 			val fraOgMed = tilbakekreving.fraOgMed
 			val tilOgMed = tilbakekreving.tilOgMed
 
@@ -360,14 +360,14 @@ object TilbakekrevingVedleggFraser {
 			paragraph {
 				table(
 					header = {
-						column(1) {
+						column {
 							text(
 								Bokmal to "Beløp som skal kreves tilbake i hele feilutbetalingsperioden",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column(2) {}
+						column {}
 					}
 				) {
 					row {
@@ -428,7 +428,7 @@ object TilbakekrevingVedleggFraser {
 							)
 						}
 						cell {
-							includePhrase(Felles.KronerText(summer.renteTillegg, FontType.BOLD))
+							includePhrase(Felles.KronerText(summer.sumNettoRenter, FontType.BOLD))
 						}
 					}
 				}
