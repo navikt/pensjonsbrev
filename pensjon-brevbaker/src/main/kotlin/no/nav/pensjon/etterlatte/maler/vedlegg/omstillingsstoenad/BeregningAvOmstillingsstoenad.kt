@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.multiply
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -23,11 +24,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
-import no.nav.pensjon.etterlatte.maler.InntektendringType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.inntektendringType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.virkningsdato
@@ -68,12 +67,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     val aarsinntekt = sisteBeregningsperiode.aarsinntekt
     val fratrekkInnAar = sisteBeregningsperiode.fratrekkInnAar
     val gjenvaerendeMaaneder = sisteBeregningsperiode.relevantMaanederInnAar
-	val restanse = ifElse(
-		sisteBeregningsperiode.restanse.greaterThan(0),
-		sisteBeregningsperiode.restanse,
-		sisteBeregningsperiode.restanse.multiply(Kroner(-1).expr())
-	)
-    val inntektHarOkt = inntektendringType.equalTo(InntektendringType.MER_INNTEKT)
 
     paragraph {
         textExpr(
@@ -224,10 +217,16 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             )
         }
 
-        showIf(restanse.notEqualTo(0)) {
+        showIf(sisteBeregningsperiode.restanse.notEqualTo(0)) {
+            val erRestanseTrekk = sisteBeregningsperiode.restanse.lessThan(0)
+            val restanse = ifElse(
+                erRestanseTrekk,
+                sisteBeregningsperiode.restanse.multiply(Kroner(-1).expr()),
+                sisteBeregningsperiode.restanse
+            )
             title2 {
                 textExpr(
-                    Bokmal to ifElse(inntektHarOkt, "Trekk", "Tillegg") + " i utbetalingen",
+                    Bokmal to ifElse(erRestanseTrekk, "Trekk", "Tillegg") + " i utbetalingen",
 	                Nynorsk to "".expr(),
 	                English to "".expr()
                 )
@@ -235,9 +234,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             paragraph {
 	            textExpr(
                     Bokmal to "Den forventede inntekten din for inneværende år er blitt justert. ".expr() +
-                            "Det blir " + ifElse(inntektHarOkt, "gjort et trekk", "gitt et tillegg") +
+                            "Det blir " + ifElse(erRestanseTrekk, "gjort et trekk", "gitt et tillegg") +
                             " i utbetalingen for resten av året for å redusere etteroppgjøret. " +
-                            "Du får " + restanse.format() + " kroner " + ifElse(inntektHarOkt, "mindre", "mer") +
+                            "Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "mer") +
                             " enn det som fremgår i tabellen over, under “Utbetaling per måned”.".expr(),
 		            Nynorsk to "".expr(),
 		            English to "".expr()

@@ -21,7 +21,6 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.InntektendringType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser

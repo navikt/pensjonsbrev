@@ -78,7 +78,6 @@ fun createOmstillingsstoenadRevurderingDTO() =
                 beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
                 mindreEnnFireFemtedelerAvOpptjeningstiden = true,
             ),
-            inntektendringType = InntektendringType.MER_INNTEKT
         ),
         etterbetaling = OmstillingsstoenadEtterbetaling(
             fraDato = LocalDate.of(2024, 1, 1),
