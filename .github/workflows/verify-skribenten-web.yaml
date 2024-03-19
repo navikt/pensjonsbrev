@@ -38,3 +38,10 @@ jobs:
       - name: Check for typescript errors
         working-directory: skribenten-web/frontend
         run: npm run check-types
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          start: npm run cypress
+
