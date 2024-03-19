@@ -85,8 +85,8 @@ export function fineAdjustCoordinates({ x, y }: Coordinates) {
 
   // The element we clicked is likely a variable, or another not editable element. Now we attempt to find its most adjacent sibling that is editable.
   const editableSiblings = seekedElement.parentElement
-    ? [...seekedElement.parentElement.querySelectorAll(":scope > [contenteditable]")]
-    : undefined;
+    ? [...seekedElement.parentElement.querySelectorAll(":scope [contenteditable]")]
+    : [];
 
   const currentFocusRect = seekedElement.getBoundingClientRect();
 
@@ -94,8 +94,8 @@ export function fineAdjustCoordinates({ x, y }: Coordinates) {
   // Attempt to find editableSiblings that are on the same line. The caveat is that a variable block have different top/bottom that normal editable lines.
   // Therefore, we check if the editable element lies within the height of the seekedElement.
   const rectsOnTheSameLine = editableSiblings
-    ?.map((s) => s.getBoundingClientRect())
-    ?.filter((b) => inRange(b.bottom, currentFocusRect.top, currentFocusRect.bottom));
+    .map((s) => s.getBoundingClientRect())
+    .filter((b) => inRange(b.bottom, currentFocusRect.top, currentFocusRect.bottom));
 
   const closestRect = minBy(rectsOnTheSameLine, (b) => {
     const distanceFromTheLeft = Math.abs(b.left - x);
