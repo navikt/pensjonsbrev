@@ -19,8 +19,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
 data class BarnepensjonAvslagDTO(
     override val innhold: List<Element>,
@@ -59,9 +58,9 @@ object BarnepensjonAvslag : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal 
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnkeNasjonal, innhold, bosattUtland.not())
+        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
 
         // Bosatt utland
-        includeAttachment(klageOgAnkeUtland, innhold, bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
     }
 }

@@ -20,7 +20,6 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
@@ -28,9 +27,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.Omstillingssto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.forhaandsvarselFeilutbetalingBarnepensjonOpphoer
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer
 import java.time.LocalDate
 
@@ -83,10 +80,10 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnkeNasjonal, innhold, bosattUtland.not())
+        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
 
         // Bosatt utland
-        includeAttachment(klageOgAnkeUtland, innhold, bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
 
         includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }
