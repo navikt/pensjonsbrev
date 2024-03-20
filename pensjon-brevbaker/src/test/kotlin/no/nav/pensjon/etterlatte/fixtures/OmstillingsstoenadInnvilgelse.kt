@@ -27,6 +27,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     relevantMaanederInnAar = 12,
                     grunnbeloep = Kroner(118620),
                     utbetaltBeloep = Kroner(10000),
+                    restanse = Kroner(0),
                     ytelseFoerAvkorting = Kroner(20000),
                     trygdetid = 40,
                 ),
@@ -39,6 +40,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     relevantMaanederInnAar = 12,
                     grunnbeloep = Kroner(118620),
                     utbetaltBeloep = Kroner(9000),
+                    restanse = Kroner(0),
                     ytelseFoerAvkorting = Kroner(22000),
                     trygdetid = 40
                 )
@@ -52,6 +54,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 relevantMaanederInnAar = 10,
                 grunnbeloep = Kroner(118620),
                 utbetaltBeloep = Kroner(9000),
+                restanse = Kroner(0),
                 ytelseFoerAvkorting = Kroner(22000),
                 trygdetid = 40
             ),
@@ -78,7 +81,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
                 beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
                 mindreEnnFireFemtedelerAvOpptjeningstiden = false,
-            )
+            ),
         ),
         etterbetaling = OmstillingsstoenadEtterbetaling(
             fraDato = LocalDate.of(2024, 1, 1),
@@ -93,6 +96,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     fratrekkInnAar = Kroner(100000),
                     relevantMaanederInnAar = 12,
                     grunnbeloep = Kroner(118620),
+                    restanse = Kroner(0),
                     utbetaltBeloep = Kroner(9000),
                     trygdetid = 40
                 )

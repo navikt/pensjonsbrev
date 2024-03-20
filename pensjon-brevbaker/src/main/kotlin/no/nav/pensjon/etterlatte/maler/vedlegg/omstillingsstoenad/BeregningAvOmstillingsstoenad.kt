@@ -9,10 +9,14 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -30,6 +34,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.relevantMaanederInnAar
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.restanse
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
@@ -210,6 +215,30 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                         "The amount is multiplied by 45 percent.",
             )
         }
+
+        showIf(sisteBeregningsperiode.restanse.notEqualTo(0)) {
+            val erRestanseTrekk = sisteBeregningsperiode.restanse.lessThan(0)
+            val restanse = sisteBeregningsperiode.restanse.absoluteValue()
+            title2 {
+                textExpr(
+                    Bokmal to ifElse(erRestanseTrekk, "Trekk", "Tillegg") + " i utbetalingen",
+	                Nynorsk to "".expr(),
+	                English to "".expr()
+                )
+            }
+            paragraph {
+	            textExpr(
+                    Bokmal to "Den forventede inntekten din for inneværende år er blitt justert. ".expr() +
+                            "Det blir " + ifElse(erRestanseTrekk, "gjort et trekk", "gitt et tillegg") +
+                            " i utbetalingen for resten av året for å redusere etteroppgjøret. " +
+                            "Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "mer") +
+                            " enn det som fremgår i tabellen over, under “Utbetaling per måned”.".expr(),
+		            Nynorsk to "".expr(),
+		            English to "".expr()
+	            )
+            }
+        }
+
     }.orShow {
         paragraph {
             text(
