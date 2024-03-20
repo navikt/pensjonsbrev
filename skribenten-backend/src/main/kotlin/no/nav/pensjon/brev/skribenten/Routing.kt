@@ -7,7 +7,6 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.routes.brevbakerRoute
-import no.nav.pensjon.brev.skribenten.routes.brevmalerRoute
 import no.nav.pensjon.brev.skribenten.routes.healthRoute
 import no.nav.pensjon.brev.skribenten.routes.kodeverkRoute
 import no.nav.pensjon.brev.skribenten.routes.meRoute
@@ -30,14 +29,13 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
     val navansattService = NavansattService(servicesConfig.getConfig("navansatt"), authService)
     val legacyBrevService = LegacyBrevService(tjenestebussIntegrasjonService, brevmetadataService, safService, penService)
+    val brevmalService = BrevmalService(penService, brevmetadataService)
 
     routing {
         healthRoute()
 
         authenticate(authConfig.name) {
             setupServiceStatus(safService, penService, pensjonPersonDataService, pdlService, krrService, brevbakerService, brevmetadataService, tjenestebussIntegrasjonService, navansattService)
-
-            brevmalerRoute(brevmetadataService)
             brevbakerRoute(brevbakerService)
             kodeverkRoute(penService)
             sakRoute(
@@ -47,6 +45,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 pdlService,
                 pensjonPersonDataService,
                 krrService,
+                brevmalService,
             )
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
             meRoute()
