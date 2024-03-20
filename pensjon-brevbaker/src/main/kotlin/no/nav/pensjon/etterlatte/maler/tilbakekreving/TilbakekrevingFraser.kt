@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -17,6 +18,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.etterlatte.maler.formatMaanedAar
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.bruttoTilbakekreving
@@ -230,22 +232,13 @@ object TilbakekrevingFraser {
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			paragraph {
-				text(
-					Bokmal to "Vedtaket er gjort etter folketrygdloven § 22-15",
-					Nynorsk to "Vedtaket er gjort etter folketrygdloven § 22-15",
-					English to "Vedtaket er gjort etter folketrygdloven § 22-15",
-				)
-				showIf(tilbakekreving.summer.renteTillegg.greaterThan(0)) {
-					text(
-						Bokmal to ", §§ 22-15 og 22-17 a",
-						Nynorsk to ", §§ 22-15 og 22-17 a",
-						English to ", §§ 22-15 og 22-17 a",
-					)
-				}
-				text(
-					Bokmal to ".",
-					Nynorsk to ".",
-					English to ".",
+				textExpr(
+					Bokmal to "Vedtaket er gjort etter folketrygdloven ".expr() +
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17.", "§ 22-15."),
+					Nynorsk to "Vedtaket er gjort etter folketrygdloven ".expr() +
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17.", "§ 22-15."),
+					English to "Vedtaket er gjort etter folketrygdloven ".expr() +
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17.", "§ 22-15."),
 				)
 			}
 		}
@@ -360,14 +353,14 @@ object TilbakekrevingVedleggFraser {
 			paragraph {
 				table(
 					header = {
-						column {
+						column(columnSpan = 2) {
 							text(
 								Bokmal to "Beløp som skal kreves tilbake i hele feilutbetalingsperioden",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column {}
+						column(columnSpan = 0) {}
 					}
 				) {
 					row {
@@ -385,7 +378,7 @@ object TilbakekrevingVedleggFraser {
 					row {
 						cell {
 							text(
-								Bokmal to "- fradrag skatt",
+								Bokmal to "- Fradrag skatt",
 								Nynorsk to "",
 								English to ""
 							)
@@ -443,35 +436,35 @@ object TilbakekrevingVedleggFraser {
 			paragraph {
 				table(
 					header = {
-						column(1) {
+						column {
 							text(
-								Bokmal to "Måned/år",
+								Bokmal to "Måned / år",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column(2) {
+						column {
 							text(
 								Bokmal to "Feilutbetalt beløp",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column(3) {
+						column {
 							text(
 								Bokmal to "Resultat",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column(4) {
+						column {
 							text(
 								Bokmal to "Brutto tilbakekreving",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column(5) {
+						column {
 							text(
 								Bokmal to "Netto tilbakekreving",
 								Nynorsk to "",
@@ -484,9 +477,9 @@ object TilbakekrevingVedleggFraser {
 						row {
 							cell {
 								textExpr(
-									Bokmal to periode.maaned.format(),
-									Nynorsk to periode.maaned.format(),
-									English to periode.maaned.format(),
+									Bokmal to periode.maaned.formatMaanedAar(),
+									Nynorsk to periode.maaned.formatMaanedAar(),
+									English to periode.maaned.formatMaanedAar(),
 								)
 							}
 							cell {

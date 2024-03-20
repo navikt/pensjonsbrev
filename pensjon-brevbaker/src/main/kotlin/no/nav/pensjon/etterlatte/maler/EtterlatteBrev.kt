@@ -102,3 +102,5 @@ enum class FeilutbetalingType {
     FEILUTBETALING_MED_VARSEL,
     INGEN_FEILUTBETALING
 }
+
+data class IntBroek(val teller: Int, val nevner: Int)
