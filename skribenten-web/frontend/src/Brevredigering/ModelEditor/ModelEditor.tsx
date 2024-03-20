@@ -28,7 +28,13 @@ export const ModelEditor = () => {
 
   const renderLetterMutation = useMutation<RenderedLetter, unknown, { id: string; values: unknown }>({
     mutationFn: async ({ id, values }) => {
-      return await renderLetter(id, { letterData: values, editedLetter: undefined });
+      // In React-Hook-Form it is convential, and easiest, to keep empty inputs as an empty string.
+      // However, in the api empty strings are interpreted literally, we want these to be null in the payload.
+      // To deal with any nested/array properties we use this JSON trick
+      const letterDataWithEmptyStringsReplaced = JSON.parse(JSON.stringify(values), (key, value) =>
+        value === "" ? null : value,
+      );
+      return await renderLetter(id, { letterData: letterDataWithEmptyStringsReplaced, editedLetter: undefined });
     },
   });
 
