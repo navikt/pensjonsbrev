@@ -138,6 +138,22 @@ describe("<LetterEditor />", () => {
       move("{downArrow}", 1);
       assertCaret("CP4-1", 68);
     });
+    it("ArrowUp moves caret to start of previous line  even if the caret is before the start of that line", () => {
+      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+
+      cy.contains("CP4-1").click();
+      move("{home}", 1);
+      move("{upArrow}", 2);
+      assertCaret("CP3-3", 0);
+    });
+    it("ArrowDown moves caret to start of next line even if the caret is before the start of that line", () => {
+      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+
+      cy.contains("Tittel over punktliste").click();
+      move("{home}", 1);
+      move("{downArrow}", 1);
+      assertCaret("CP3-1", 0);
+    });
   });
 });
 
