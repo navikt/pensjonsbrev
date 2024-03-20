@@ -2,10 +2,13 @@ import { css } from "@emotion/react";
 import { Button } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
+import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { renderLetter } from "~/api/skribenten-api-endpoints";
+import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { TEST_TEMPLATE } from "~/routes/saksnummer_.$saksId.redigering.$templateId";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
@@ -24,6 +27,8 @@ export const ModelEditor = () => {
     from: "/saksnummer/$saksId/redigering/$templateId",
   });
 
+  const [editorState, setEditorState] = useState<LetterEditorState | undefined>(undefined);
+
   const methods = useForm({ shouldUnregister: true, defaultValues: TEST_DEFAULT_VALUES });
 
   const renderLetterMutation = useMutation<RenderedLetter, unknown, { id: string; values: unknown }>({
@@ -34,7 +39,13 @@ export const ModelEditor = () => {
       const letterDataWithEmptyStringsReplaced = JSON.parse(JSON.stringify(values), (key, value) =>
         value === "" ? null : value,
       );
-      return await renderLetter(id, { letterData: letterDataWithEmptyStringsReplaced, editedLetter: undefined });
+      return await renderLetter(id, {
+        letterData: letterDataWithEmptyStringsReplaced,
+        editedLetter: editorState?.editedLetter,
+      });
+    },
+    onSuccess: (renderedLetter) => {
+      setEditorState(Actions.create(renderedLetter));
     },
   });
 
@@ -60,7 +71,7 @@ export const ModelEditor = () => {
           </Button>
         </form>
       </FormProvider>
-      {renderLetterMutation.data ? <LetterEditor initialState={renderLetterMutation.data} /> : <div />}
+      {editorState ? <LetterEditor editorState={editorState} setEditorState={setEditorState} /> : <div />}
     </>
   );
 };
