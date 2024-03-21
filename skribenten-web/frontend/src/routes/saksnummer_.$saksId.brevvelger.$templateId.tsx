@@ -350,7 +350,7 @@ function BestillOgRedigerButton({
     <VStack gap="4">
       {orderMutation.error && <ApiError error={orderMutation.error} title="Bestilling feilet" />}
       {orderMutation.isSuccess ? (
-        <Alert size="small" variant="success">
+        <Alert size="small" variant="success" data-cy="order-letter-success-message">
           <Heading level="3" size="xsmall">
             Brev bestilt
           </Heading>
@@ -363,6 +363,7 @@ function BestillOgRedigerButton({
           css={css`
             width: fit-content;
           `}
+          data-cy="order-letter"
           icon={<ArrowRightIcon />}
           iconPosition="right"
           loading={orderMutation.isPending}
@@ -383,6 +384,7 @@ function SelectSensitivity() {
       name="isSensitive"
       render={({ field, fieldState }) => (
         <RadioGroup
+          data-cy="is-sensitive"
           legend="Er brevet sensitivt?"
           {...field}
           css={css`
@@ -586,6 +588,7 @@ function SamhandlerAdresse() {
         css={css`
           width: fit-content;
         `}
+        data-cy="change-to-user"
         icon={<PersonIcon />}
         onClick={() =>
           navigate({
@@ -703,6 +706,7 @@ function VelgSamhandlerModal() {
   return (
     <>
       <Button
+        data-cy="toggle-samhandler-button"
         icon={idTSSEkstern ? <PencilIcon /> : <Buildings3Icon />}
         onClick={() => reference.current?.showModal()}
         size="small"
@@ -787,6 +791,7 @@ function VelgSamhandlerModal() {
         <Modal.Footer>
           {selectedIdTSSEkstern && (
             <Button
+              data-cy="bekreft-ny-mottaker"
               onClick={() => {
                 reference.current?.close();
                 navigate({
@@ -916,6 +921,7 @@ function SamhandlerSearchResults({
               </Table.DataCell>
               <Table.DataCell align="right">
                 <Button
+                  data-cy="velg-samhandler"
                   onClick={() => onSelect(samhandler.idTSSEkstern)}
                   size="small"
                   type="button"
