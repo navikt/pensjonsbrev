@@ -24,7 +24,7 @@ describe("template spec", () => {
     cy.contains("Søk etter brevmal"); // TODO: assert something smarter?
   });
 
-  it.only("Bestill Exstream brev", () => {
+  it("Bestill Exstream brev", () => {
     cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", { fixture: "hentSamhandlerAdresse.json" }).as(
       "hentSamhandlerAdresse",
     );
@@ -66,6 +66,40 @@ describe("template spec", () => {
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
+    );
+    cy.getDataCy("order-letter-success-message");
+  });
+
+  it.only("Skriv notat", () => {
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream", (request) => {
+      expect(request.body).contains({
+        brevkode: "PE_IY_03_156",
+        spraak: "NB",
+        isSensitive: true,
+        brevtittel: "GGMU",
+      });
+      request.reply({ fixture: "bestillbrevNotat.json" });
+    }).as("bestill exstream");
+
+    cy.visit("/saksnummer/123456/brevvelger", {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+
+    cy.getDataCy("brevmal-search").click().type("notat");
+    cy.getDataCy("brevmal-button").click();
+
+    cy.getDataCy("brev-title-textfield").click().type("GGMU");
+    cy.getDataCy("order-letter").click();
+
+    cy.getDataCy("is-sensitive").get(".navds-error-message");
+    cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
+
+    cy.getDataCy("order-letter").click();
+    cy.get("@window-open").should(
+      "have.been.calledOnceWithExactly",
+      "mbdok://PE2@brevklient/dokument/453864212?token=1711023327721&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
     );
     cy.getDataCy("order-letter-success-message");
   });

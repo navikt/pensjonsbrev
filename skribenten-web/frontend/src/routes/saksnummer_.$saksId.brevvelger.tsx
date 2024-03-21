@@ -98,6 +98,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         Brevmeny
       </Heading>
       <Search
+        data-cy="brevmal-search"
         hideLabel={false}
         label="Søk etter brevmal"
         onChange={(value) => setSearchTerm(value)}
