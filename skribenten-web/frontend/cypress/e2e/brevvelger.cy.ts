@@ -1,9 +1,10 @@
 describe("template spec", () => {
-  before(() => {
+  beforeEach(() => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/**", { statusCode: 404 }).as("sakNotFound");
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456", { fixture: "sak.json" }).as("sak");
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/navn", { fixture: "navn.txt" }).as("navn");
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/adresse", { fixture: "adresse.json" }).as("adresse");
+    cy.intercept("GET", "/bff/skribenten-backend/kodeverk/avtaleland", { fixture: "avtaleland.json" }).as("avtaleland");
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/foretrukketSpraak", {
       fixture: "foretrukketSpraak.json",
     }).as("foretrukketSpraak");
@@ -39,7 +40,7 @@ describe("template spec", () => {
         isSensitive: false,
         brevtittel: "",
       });
-      request.reply({ fixture: "bestillbrevExstream.json" });
+      request.reply({ fixture: "bestillBrevExstream.json" });
     }).as("bestill exstream");
 
     cy.visit("/saksnummer/123456/brevvelger", {
@@ -70,7 +71,32 @@ describe("template spec", () => {
     cy.getDataCy("order-letter-success-message");
   });
 
-  it.only("Skriv notat", () => {
+  it("Bestill Docsys brev", () => {
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/doksys", (request) => {
+      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "NB" });
+      request.reply({ fixture: "bestillBrevDoksys.json" });
+    }).as("bestill doksys");
+
+    cy.visit("/saksnummer/123456/brevvelger", {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+
+    cy.getDataCy("brevmal-search").click().type("gjenlevende");
+    cy.getDataCy("brevmal-button").click();
+
+    cy.getDataCy("is-sensitive").should("not.exist");
+
+    cy.getDataCy("order-letter").click();
+    cy.get("@window-open").should(
+      "have.been.calledOnceWithExactly",
+      "mfprocstart9:leaseid=c8cfd547-b80f-442b-8e7f-62f96ff52231",
+    );
+    cy.getDataCy("order-letter-success-message");
+  });
+
+  it("Skriv notat", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream", (request) => {
       expect(request.body).contains({
         brevkode: "PE_IY_03_156",
@@ -78,8 +104,8 @@ describe("template spec", () => {
         isSensitive: true,
         brevtittel: "GGMU",
       });
-      request.reply({ fixture: "bestillbrevNotat.json" });
-    }).as("bestill exstream");
+      request.reply({ fixture: "bestillBrevNotat.json" });
+    }).as("bestill notat");
 
     cy.visit("/saksnummer/123456/brevvelger", {
       onBeforeLoad(window) {
