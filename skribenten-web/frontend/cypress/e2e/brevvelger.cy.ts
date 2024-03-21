@@ -1,4 +1,4 @@
-describe("template spec", () => {
+describe("Brevvelger spec", () => {
   beforeEach(() => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/**", { statusCode: 404 }).as("sakNotFound");
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456", { fixture: "sak.json" }).as("sak");
