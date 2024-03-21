@@ -47,7 +47,7 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
             text(
                 Language.Bokmal to "Vi har avvist klagen din",
                 Language.Nynorsk to "Vi har avvist klaga di",
-                Language.English to "TODO"
+                Language.English to "We have rejected your appeal"
             )
         }
 
@@ -56,19 +56,19 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                 textExpr(
                     Language.Bokmal to "Vi viser til klagen din av ".expr() + klageDato.format(),
                     Language.Nynorsk to "Vi viser til klaga di av ".expr() + klageDato.format(),
-                    Language.English to "".expr()
+                    Language.English to "We refer you to your appeal of ".expr() + klageDato.format()
                 )
                 ifNotNull(datoForVedtaketKlagenGjelder) { paaklagdVedtakDato ->
                     textExpr(
                         Language.Bokmal to " på vedtak om ".expr() + sakType.format() + " av " + paaklagdVedtakDato.format(),
                         Language.Nynorsk to " på vedtak om".expr() + sakType.format() + " av " + paaklagdVedtakDato.format(),
-                        Language.English to "".expr()
+                        Language.English to "on our decision concerning".expr() + sakType.format() + " of " + paaklagdVedtakDato.format(),
                     )
                 }
                 text(
                     Language.Bokmal to ". Klagen avvises fordi <den er satt frem for sent/mangler fullmakt/andre grunner>.",
                     Language.Nynorsk to ". Klaga blir avvist fordi <ho har blitt sett fram for seint/det manglar fullmakt/andre grunner>",
-                    Language.English to ""
+                    Language.English to ". The appeal was rejected because <it was submitted late/missing correct authorisation/andre grunner>."
                 )
 
             }
@@ -76,7 +76,7 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                 text(
                     Language.Bokmal to "Rettslig grunnlag",
                     Language.Nynorsk to "Rettsleg grunnlag",
-                    Language.English to ""
+                    Language.English to "Legal basis"
                 )
             }
             paragraph {
@@ -87,14 +87,16 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                     Language.Nynorsk to "Organet som har fatta vedtaket det blir klaga på, skal avvise klaga dersom " +
                             "vilkåra for klagebehandling ikkje er innfridde. Dette går fram av folketrygdlova " +
                             "§ 21-1, jf. forvaltingslova § 33 andre ledd.",
-                    Language.English to ""
+                    Language.English to "The agency that made the decision being appealed will reject an appeal if " +
+                            "the conditions for processing a case are not met. This is based on the legal provisions found " +
+                            "in Section 21-1 of the National Insurance Act; cf. Section 33(2) of the Public Administration Act."
                 )
             }
             title1 {
                 text(
                     Language.Bokmal to "Vurdering og konklusjon",
                     Language.Nynorsk to "Vurdering og konklusjon",
-                    Language.English to ""
+                    Language.English to "Evaluation and conclusion"
                 )
             }
             paragraph {
@@ -108,14 +110,15 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                 text(
                     Language.Bokmal to "Ved for sent framsatt klage:",
                     Language.Nynorsk to "Ved for sent framsatt klage:",
-                    Language.English to ""
+                    Language.English to "Ved for sent framsatt klage:"
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "I vedtaket ble du orientert om klageadgang og klagefrist. Klagen din oversitter klagefristen med <antall dager/måneder> og er framsatt for sent.",
-                    Language.Nynorsk to "I vedtaket blei du orientert om klagerett og -frist. Det er <antall dager/måneder> sidan fristen for å klage gjekk ut.",
-                    Language.English to ""
+                    Language.Nynorsk to "I vedtaket blei du orientert om klagerett og -frist. Det er <antall dager/måneder> sidan fristen for å klage gjekk ut.", // DENNE VIRKER IKKE KORREKT OVERSATT PÅ NYNORSK
+                    Language.English to "The decision letter provides more information about the right to appeal/deadline for appeals. " +
+                            "Your appeal was sent after the deadline for appeals, which was <antall dager/måneder> and was therefore submitted late."
                 )
             }
             paragraph {
@@ -126,7 +129,9 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                     Language.Nynorsk to "Dersom det er særlege grunnar til at du ikkje rakk å klage innan fristen, " +
                             "eller det er særlege grunner til at klaga skal bli prøvd, kan ein unntaksvis sjå vekk frå fristbrotet. " +
                             "Dette går fram av forvaltingslova § 31 første ledd.",
-                    Language.English to ""
+                    Language.English to "If you have any special reasons for not complying with the deadline for " +
+                            "appeal, or if there are special reasons for accepting your appeal, we may make an exception. " +
+                            "The legal grounds for this are stated in Section 31(1) of the Public Administration Act."
                 )
             }
             paragraph {
@@ -139,7 +144,10 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                             "saka når klagefristen har gått ut. Bakgrunnen for dette er at klagefristen i trygdesaker er " +
                             "vesentleg lenger enn ankefristen for sivile saker til domstolane, og dobbelt så lang som " +
                             "klagefristen i andre delar av forvaltinga. Det er dermed lagt opp til at føresegna skal tolkast bokstaveleg.",
-                    Language.English to ""
+                    Language.English to "Legal practice at NAV indicates that making such exceptions requires very " +
+                            "special circumstances. The reason for this is that the deadline for appeal in national insurance " +
+                            "cases is significantly longer than the appeal deadline in civil cases in Norwegian courts and " +
+                            "double the time compared to other state agencies. That is why this legal provision is to be understood and followed literally."
                 )
             }
             paragraph {
@@ -154,28 +162,33 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                             "klaga har blitt sendt inn for seint. Etter ein gjennomgang av saka kan vi heller ikkje sjå " +
                             "at det ligg føre forhold knytt til innhaldet i vedtaket som utgjer særleg grunn til å " +
                             "behandle saka på nytt etter at klagefristen har gått ut.",
-                    Language.English to ""
+                    Language.English to "(Eksempel – brukeren har ikke påberopt seg særlige grunner. Skriv om /føy " +
+                            "til slik at tekst og drøftelse passer din sak) Du har ikke påberopt deg særlige grunner til " + // HER MANGLER DET NOK EN OVERSETTELSE
+                            "at klagen er sendt inn for sent. After a review of the case, we are also unable to see any " +
+                            "circumstances related to the content of the decision that would constitute a special reason " +
+                            "for the case to be processed again, even if the appeal deadline has been exceeded."
                 )
             }
             title2 {
                 text(
                     Language.Bokmal to "Ved manglende fullmakt:",
                     Language.Nynorsk to "Ved manglende fullmakt:",
-                    Language.English to ""
+                    Language.English to "Ved manglende fullmakt:"
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "Det følger av forvaltningsloven § 12 siste ledd at en fullmektig som ikke er advokat må fremlegge skriftlig fullmakt.",
                     Language.Nynorsk to "Det følgjer av forvaltingslova § 12 siste ledd at ein fullmektig som ikkje er advokat, må leggje fram skriftleg fullmakt.",
-                    Language.English to ""
+                    Language.English to "The last sentence of Section 12 of the Public Administration Act states " +
+                            "that an authorised person who is not an attorney/lawyer must submit a written power of attorney."
                 )
             }
             title2 {
                 text(
                     Language.Bokmal to "Ved muntlig klage / manglende underskrift:",
                     Language.Nynorsk to "Ved muntlig klage / manglende underskrift:",
-                    Language.English to ""
+                    Language.English to "Ved muntlig klage / manglende underskrift:"
                 )
             }
             paragraph {
@@ -190,7 +203,11 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                             "tillitstenester § 1 og europaparlaments- og rådsforordning (EU) nr. 910/2014 om elektronisk " +
                             "identifikasjon og tillitstenester for elektroniske transaksjonar i den indre marknaden " +
                             "(elDAS-forordninga) art. 25 nr. 2).",
-                    Language.English to ""
+                    Language.English to "Letters [a] and [b] of Section 32(1) of the the Public Administration Act state " +
+                            "that an appeal must be made in writing and signed, or have a qualified electronic signature " +
+                            "(cf. Section 1 of the Electronic Trust Services Act and the European Parliament and Council " +
+                            "Regulation (EU) No. 910/2014 on electronic identification) and trust services for electronic " +
+                            "transactions in the internal market (elDAS regulation) Art. 25 no. 2)."
                 )
             }
             paragraph {
@@ -201,7 +218,10 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                     Language.Nynorsk to "<dato> sende vi deg eit brev der vi opplyste om manglane ved klaga. " +
                             "Fristen for å rette desse manglane blei sett til <dato>. Vi har ikkje fått tilbakemelding på dette." +
                             "Vilkåra for å behandle klaga er dermed ikkje oppfylte, og klaga blir avist. Jf. forvaltingslova § 33 andre ledd. ",
-                    Language.English to ""
+                    Language.English to "On <dato>, we sent you a letter in which we informed you about the deficiencies in your appeal. " +
+                            "The deadline for correcting these was set on <dato>. We have not received your feedback on this. " +
+                            "The conditions for processing an appeal have therefore NOT been met, and your appeal is " +
+                            "therefore rejected; cf. Section 33(2) of the Public Administration Act."
                 )
             }
         }
