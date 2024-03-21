@@ -6,4 +6,5 @@ fun createBarnepensjonInformasjonDoedsfallDTO() =
     BarnepensjonInformasjonDoedsfallDTO(
         innhold = emptyList(),
         avdoedNavn = "Ola Nordmann",
+        borIutland =  false,
     )

@@ -23,7 +23,9 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.Omstilling
 data class OmstillingstoenadInformasjonDoedsfallDTO(
     override val innhold: List<Element>,
     val avdoedNavn: String,
+    val borIutland: Boolean,
 ) : BrevDTO
+
 
 @TemplateModelHelpers
 object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<OmstillingstoenadInformasjonDoedsfallDTO> {

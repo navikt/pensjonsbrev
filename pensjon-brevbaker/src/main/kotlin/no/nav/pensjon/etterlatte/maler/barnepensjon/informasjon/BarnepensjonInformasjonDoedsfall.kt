@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -16,12 +15,15 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.borIutland
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 data class BarnepensjonInformasjonDoedsfallDTO(
     override val innhold: List<Element>,
     val avdoedNavn: String,
+    val borIutland: Boolean,
 ) : BrevDTO
+
 
 @TemplateModelHelpers
 object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInformasjonDoedsfallDTO> {
@@ -72,20 +74,41 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                     )
                 }
 
-                title2 {
-                    text(
-                        Bokmal to "Hvordan søker du?",
-                        Nynorsk to "Korleis søkjer du?",
-                        English to "How do you apply?",
-                    )
+                showIf(borIutland) {
+                    title2 {
+                        text(
+                            Bokmal to "Hvordan søker du?",
+                            Nynorsk to "Korleis søkjer du?",
+                            English to "How do you apply?",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på nav.no/barnepensjon."+
+                                    "Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker barnepensjon. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.BP}",
+                            Nynorsk to "Du finn informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må verja di søkje om barnepensjon på dine vegner.",
+                            English to "According to our records, you live abroad. You will find information and the application form at nav.no/barnepensjon."+
+                                    "If you live in a country Norway has a social security agreement with, you must contact the social security authority in your country of residence before you apply for children’s pension. See which countries Norway has a social security agreement with here: ${Constants.Utland.BP}",
+                        )
+                    }
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Du finner informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg.",
-                        Nynorsk to "Du finn informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må verja di søkje om barnepensjon på dine vegner.",
-                        English to "You will find information and the application form at nav.no/barnepensjon. If you are under the age of 18, your guardian must apply for a children’s pension on your behalf.",
-                    )
+                showIf(borIutland.not()) {
+                    title2 {
+                        text(
+                            Bokmal to "Hvordan søker du?",
+                            Nynorsk to "Korleis søkjer du?",
+                            English to "How do you apply?",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg.",
+                            Nynorsk to "Du finn informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må verja di søkje om barnepensjon på dine vegner.",
+                            English to "You will find information and the application form at nav.no/barnepensjon. If you are under the age of 18, your guardian must apply for a children’s pension on your behalf.",
+                        )
+                    }
                 }
+
                 paragraph {
                     text(
                         Bokmal to "Dersom du bor i utlandet, må du kontakte trygdemyndigheten i bostedslandet ditt.",
