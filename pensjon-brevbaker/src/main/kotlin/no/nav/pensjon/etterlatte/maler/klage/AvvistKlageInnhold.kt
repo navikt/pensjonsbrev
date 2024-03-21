@@ -116,7 +116,7 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
             paragraph {
                 text(
                     Language.Bokmal to "I vedtaket ble du orientert om klageadgang og klagefrist. Klagen din oversitter klagefristen med <antall dager/måneder> og er framsatt for sent.",
-                    Language.Nynorsk to "I vedtaket blei du orientert om klagerett og -frist. Det er <antall dager/måneder> sidan fristen for å klage gjekk ut.", // DENNE VIRKER IKKE KORREKT OVERSATT PÅ NYNORSK
+                    Language.Nynorsk to "I vedtaket blei du orientert om klagerett og -frist. Klagen din oversit klagefristen med <antal dagar/månader> og er framsett for seint.",
                     Language.English to "The decision letter provides more information about the right to appeal/deadline for appeals. " +
                             "Your appeal was sent after the deadline for appeals, which was <antall dager/måneder> and was therefore submitted late."
                 )
@@ -163,7 +163,7 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                             "at det ligg føre forhold knytt til innhaldet i vedtaket som utgjer særleg grunn til å " +
                             "behandle saka på nytt etter at klagefristen har gått ut.",
                     Language.English to "(Eksempel – brukeren har ikke påberopt seg særlige grunner. Skriv om /føy " +
-                            "til slik at tekst og drøftelse passer din sak) Du har ikke påberopt deg særlige grunner til " + // HER MANGLER DET NOK EN OVERSETTELSE
+                            "til slik at tekst og drøftelse passer din sak) Du har ikke påberopt deg særlige grunner til " + // HER MANGLER DET EN OVERSETTELSE
                             "at klagen er sendt inn for sent. After a review of the case, we are also unable to see any " +
                             "circumstances related to the content of the decision that would constitute a special reason " +
                             "for the case to be processed again, even if the appeal deadline has been exceeded."
