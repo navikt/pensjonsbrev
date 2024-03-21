@@ -272,7 +272,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
 	}
 	paragraph {
 		text(
-			Bokmal to "Du må som hovedregel begynne å betale tilbake når du får fakturaen, selv om du klager på vedtaket. Dette framgår av forvaltningsloven § 42 med tilhørende rundskriv.  ",
+			Bokmal to "Du må som hovedregel begynne å betale tilbake når du får fakturaen, selv om du klager på vedtaket. Dette framgår av forvaltningsloven § 42 med tilhørende rundskriv. ",
 			Nynorsk to "",
 			English to ""
 		)
