@@ -2,13 +2,12 @@ package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -16,11 +15,11 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.formatMaanedAar
-import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
+import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.bruttoTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
@@ -234,11 +233,11 @@ object TilbakekrevingFraser {
 			paragraph {
 				textExpr(
 					Bokmal to "Vedtaket er gjort etter folketrygdloven ".expr() +
-							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17.", "§ 22-15."),
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17 a.", "§ 22-15."),
 					Nynorsk to "Vedtaket er gjort etter folketrygdloven ".expr() +
-							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17.", "§ 22-15."),
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17 a.", "§ 22-15."),
 					English to "Vedtaket er gjort etter folketrygdloven ".expr() +
-							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17.", "§ 22-15."),
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17 a.", "§ 22-15."),
 				)
 			}
 		}
@@ -293,9 +292,32 @@ object TilbakekrevingFraser {
 		}
 	}
 
+	object SkattDoedsbo: OutlinePhrase<LangBokmalNynorskEnglish>() {
+		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+			title2 {
+				text(
+					Bokmal to "Skatt og skatteoppgjør",
+					Nynorsk to "Skatt og skatteoppgjør",
+					English to "Skatt og skatteoppgjør",
+				)
+			}
+			paragraph {
+				text(
+					Bokmal to "Vi gir opplysninger til Skatteetaten om dette vedtaket. " +
+							"De fastsetter det endelige skattebeløpet, og gjør nødvendige korrigeringer i " +
+							"skatteoppgjøret til avdøde.",
+					Nynorsk to "",
+					English to "",
+
+					)
+			}
+		}
+	}
+
 	data class HovedInnholdIngenTilbakekreving(
 		val sakType: Expression<SakType>,
-		val tilbakekreving: Expression<TilbakekrevingDTO>
+		val tilbakekreving: Expression<TilbakekrevingDTO>,
+		val doedsbo: Expression<Boolean>
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
@@ -333,11 +355,19 @@ object TilbakekrevingFraser {
 			}
 
 			paragraph {
-				text(
-					Bokmal to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
-					Nynorsk to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
-					English to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
-				)
+				showIf(doedsbo) {
+					text(
+						Bokmal to "I vedlegget til dette brevet finner du en oversikt over periodene med feilutbetalinger og beløpet som må betales tilbake.",
+						Nynorsk to "I vedlegget til dette brevet finner du en oversikt over periodene med feilutbetalinger og beløpet som må betales tilbake.",
+						English to "I vedlegget til dette brevet finner du en oversikt over periodene med feilutbetalinger og beløpet som må betales tilbake.",
+					)
+				}.orShow {
+					text(
+						Bokmal to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
+						Nynorsk to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
+						English to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
+					)
+				}
 			}
 		}
 	}
