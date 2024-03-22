@@ -163,8 +163,8 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                             "at det ligg føre forhold knytt til innhaldet i vedtaket som utgjer særleg grunn til å " +
                             "behandle saka på nytt etter at klagefristen har gått ut.",
                     Language.English to "(Eksempel – brukeren har ikke påberopt seg særlige grunner. Skriv om /føy " +
-                            "til slik at tekst og drøftelse passer din sak) Du har ikke påberopt deg særlige grunner til " + // HER MANGLER DET EN OVERSETTELSE
-                            "at klagen er sendt inn for sent. After a review of the case, we are also unable to see any " +
+                            "til slik at tekst og drøftelse passer din sak) You have not invoked any particular reasons why " +
+                            "the appeal was submitted too late. After a review of the case, we are also unable to see any " +
                             "circumstances related to the content of the decision that would constitute a special reason " +
                             "for the case to be processed again, even if the appeal deadline has been exceeded."
                 )
