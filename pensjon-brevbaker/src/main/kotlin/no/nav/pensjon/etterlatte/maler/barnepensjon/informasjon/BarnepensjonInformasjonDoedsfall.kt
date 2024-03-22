@@ -22,6 +22,7 @@ data class BarnepensjonInformasjonDoedsfallDTO(
     override val innhold: List<Element>,
     val avdoedNavn: String,
     val borIutland: Boolean,
+    val erOver18aar: Boolean
 ) : BrevDTO
 
 
