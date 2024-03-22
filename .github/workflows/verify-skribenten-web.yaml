@@ -39,13 +39,22 @@ jobs:
         working-directory: skribenten-web/frontend
         run: npm run check-types
 
-      - name: Cypress run
+      - name: Cypress run component tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: skribenten-web/frontend
           install: false
           browser: chrome
           component: true
+          start: npm run cypress
+
+      - name: Cypress run e2e tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: skribenten-web/frontend
+          install: false
+          browser: chrome
+          component: false
           start: npm run cypress
 
       - name: Upload failed Cypress screenshots
