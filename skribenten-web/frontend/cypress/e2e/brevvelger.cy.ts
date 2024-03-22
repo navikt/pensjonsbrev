@@ -25,7 +25,7 @@ describe("Brevvelger spec", () => {
     cy.contains("Søk etter brevmal"); // TODO: assert something smarter?
   });
 
-  it.only("Verify søk etter brevmal", () => {
+  it("Verify søk etter brevmal", () => {
     cy.visit("/saksnummer/123456/brevvelger");
 
     cy.getDataCy("brevmal-search").click();
