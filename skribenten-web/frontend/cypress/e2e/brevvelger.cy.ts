@@ -129,4 +129,46 @@ describe("Brevvelger spec", () => {
     );
     cy.getDataCy("order-letter-success-message");
   });
+
+  it.only("Bestill E-blankett", () => {
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream/eblankett", (request) => {
+      expect(request.body).contains({
+        brevkode: "E001",
+        landkode: "GBR",
+        mottakerText: "Haaland",
+        isSensitive: true,
+      });
+      request.reply({ fixture: "bestillBrevEblankett.json" });
+    }).as("bestill e-blankett");
+
+    cy.visit("/saksnummer/123456/brevvelger", {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+
+    cy.getDataCy("brevmal-search").click().type("E 001");
+    cy.getDataCy("brevmal-button").click();
+
+    cy.getDataCy("order-letter").click();
+
+    cy.getDataCy("is-sensitive").find(".navds-error-message");
+    cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
+    cy.getDataCy("is-sensitive").find(".navds-error-message").should("not.exist");
+
+    cy.get("label").contains("Land").parent().find(".navds-error-message");
+    cy.get("select[name=landkode]").select("Storbritannia");
+    cy.get("label").contains("Land").parent().find(".navds-error-message").should("not.exist");
+
+    cy.getDataCy("mottaker-text-textfield").parent().find(".navds-error-message");
+    cy.getDataCy("mottaker-text-textfield").type("Haaland");
+    cy.getDataCy("mottaker-text-textfield").parent().find(".navds-error-message").should("not.exist");
+
+    cy.getDataCy("order-letter").click();
+    cy.get("@window-open").should(
+      "have.been.calledOnceWithExactly",
+      "mbdok://PE2@brevklient/dokument/453864284?token=1711101230605&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
+    );
+    cy.getDataCy("order-letter-success-message");
+  });
 });

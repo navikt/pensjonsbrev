@@ -327,6 +327,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
             <SelectSensitivity />
             <SelectAvtaleland />
             <TextField
+              data-cy="mottaker-text-textfield"
               {...methods.register("mottakerText")}
               autoComplete="off"
               error={methods.formState.errors.mottakerText?.message}
@@ -351,7 +352,7 @@ function BestillOgRedigerButton({
     <VStack gap="4">
       {orderMutation.error && <ApiError error={orderMutation.error} title="Bestilling feilet" />}
       {orderMutation.isSuccess ? (
-        <Alert size="small" variant="success" data-cy="order-letter-success-message">
+        <Alert data-cy="order-letter-success-message" size="small" variant="success">
           <Heading level="3" size="xsmall">
             Brev bestilt
           </Heading>
