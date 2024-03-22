@@ -30,7 +30,7 @@ jobs:
           install: false
           browser: chrome
           component: false
-          start: npm run cypress
+          start: npm run dev
 
       - name: Cypress run component tests
         uses: cypress-io/github-action@v6
