@@ -133,7 +133,7 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 					includePhrase(TilbakekrevingFraser.TrukketSkatt)
 					includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
 					includePhrase(TilbakekrevingFraser.ReferanseTilVedleggDoedsbo)
-					includePhrase(TilbakekrevingFraser.Skatt)
+					includePhrase(TilbakekrevingFraser.SkattDoedsbo)
 				}.orShow {
 					includePhrase(TilbakekrevingFraser.KonklusjonTilbakekreving(sakType, tilbakekreving))
 					includePhrase(TilbakekrevingFraser.TrukketSkatt)
@@ -142,7 +142,7 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 					includePhrase(TilbakekrevingFraser.Skatt)
 				}
 			}.orShow {
-				includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(sakType, tilbakekreving))
+				includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(sakType, tilbakekreving, doedsbo))
 			}
 
 			konverterElementerTilBrevbakerformat(innhold)
