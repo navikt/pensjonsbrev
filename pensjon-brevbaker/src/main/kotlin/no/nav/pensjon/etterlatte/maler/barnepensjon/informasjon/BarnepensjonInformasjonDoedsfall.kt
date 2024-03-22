@@ -16,7 +16,9 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.avdoedNavn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.borIutland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.erOver18aar
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
 
 data class BarnepensjonInformasjonDoedsfallDTO(
     override val innhold: List<Element>,
@@ -75,25 +77,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                     )
                 }
 
-                showIf(borIutland) {
-                    title2 {
-                        text(
-                            Bokmal to "Hvordan søker du?",
-                            Nynorsk to "Korleis søkjer du?",
-                            English to "How do you apply?",
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på nav.no/barnepensjon."+
-                                    "Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker barnepensjon. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.BP}",
-                            Nynorsk to "Du finn informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må verja di søkje om barnepensjon på dine vegner.",
-                            English to "According to our records, you live abroad. You will find information and the application form at nav.no/barnepensjon."+
-                                    "If you live in a country Norway has a social security agreement with, you must contact the social security authority in your country of residence before you apply for children’s pension. See which countries Norway has a social security agreement with here: ${Constants.Utland.BP}",
-                        )
-                    }
-                }
-                showIf(borIutland.not()) {
+                showIf(borIutland.not().and(erOver18aar.not())) {
                     title2 {
                         text(
                             Bokmal to "Hvordan søker du?",
@@ -106,6 +90,87 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                             Bokmal to "Du finner informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg.",
                             Nynorsk to "Du finn informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må verja di søkje om barnepensjon på dine vegner.",
                             English to "You will find information and the application form at nav.no/barnepensjon. If you are under the age of 18, your guardian must apply for a children’s pension on your behalf.",
+                        )
+                    }
+                }
+
+                showIf(borIutland.and(erOver18aar.not())) {
+                    title2 {
+                        text(
+                            Bokmal to "Hvordan søker du?",
+                            Nynorsk to "Korleis søkjer du?",
+                            English to "How do you apply?",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på $BARNEPENSJON_URL",
+                            Nynorsk to "Etter dei opplysningane vi har, bur du i utlandet. Du kan lese meir på $BARNEPENSJON_URL om korleis du søkjer.",
+                            English to "According to our records, you live abroad. You will find information and the application form at $BARNEPENSJON_URL.",
+                        )
+                    }
+
+                    paragraph {
+                        text(
+                            Bokmal to "Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker barnepensjon. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.BP}.",
+                            Nynorsk to "Dersom du bur i eit land som Noreg har trygdeavtale med, må du kontakte trygdemaktene i dette landet før du søkjer om barnepensjon. På ${Constants.Utland.BP} finn du meir informasjon om kva land Noreg har avtale med.",
+                            English to "If you live in a country Norway has a social security agreement with, you must contact the social security authority in your country of residence before you apply for children’s pension. See which countries Norway has a social security agreement with here: ${Constants.Utland.BP}",
+                        )
+                    }
+
+                    paragraph {
+                        text(
+                            Bokmal to "Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg. Vergen til barnet kan være enten forelderen eller andre personer oppnevnt av Statsforvalteren.",
+                            Nynorsk to "Viss du er under 18 år, må verja di søkje om barnepensjon på dine vegner. Verja til barnet kan vere anten forelderen eller ein person som Statsforvaltaren har utnemnd.",
+                            English to "If you are under the age of 18, your guardian must apply for children’s pension on your behalf.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "",
+                            Nynorsk to "",
+                            English to "A child’s guardian can be a parent or another person appointed by the County Governor.   ",
+                        )
+                    }
+                }
+
+                showIf(borIutland.not().and(erOver18aar)) {
+                    title2 {
+                        text(
+                            Bokmal to "Hvordan søker du?",
+                            Nynorsk to "Korleis søkjer du?",
+                            English to "How do you apply?",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner informasjon og søknad på $BARNEPENSJON_URL",
+                            Nynorsk to "Du finn informasjon og søknad på $BARNEPENSJON_URL",
+                            English to "You will find information and the application form at $$BARNEPENSJON_URL",
+                        )
+                    }
+                }
+
+                showIf(borIutland.and(erOver18aar)) {
+                    title2 {
+                        text(
+                            Bokmal to "Hvordan søker du?",
+                            Nynorsk to "Korleis søkjer du?",
+                            English to "How do you apply?",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på $BARNEPENSJON_URL",
+                            Nynorsk to "Etter dei opplysningane vi har, bur du i utlandet. Du kan lese meir på $BARNEPENSJON_URL om korleis du søkjer.",
+                            English to "According to our records, you live abroad. You will find information and the application form at $BARNEPENSJON_URL.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker barnepensjon. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.BP}.",
+                            Nynorsk to "Dersom du bur i eit land som Noreg har trygdeavtale med, må du kontakte trygdemaktene i dette landet før du søkjer om barnepensjon. På ${Constants.Utland.BP} finn du meir informasjon om kva land Noreg har avtale med.",
+                            English to "If you live in a country Norway has a social security agreement with, you must contact the social security authority in your country of residence before you apply for children’s pension. See which countries Norway has a social security agreement with here: ${Constants.Utland.BP}",
                         )
                     }
                 }
@@ -157,8 +222,8 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
-                        Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Du kan chatte med oss eller skrive til oss på ${Constants.KONTAKT_URL}.",
+                        Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
+                        Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Du kan chatte med oss eller skrive til oss på ${Constants.KONTAKT_URL}.",
                         English to "You can find more information at ${Constants.Engelsk.BARNEPENSJON_URL}. At ${Constants.Engelsk.KONTAKT_URL} you can chat or write to us.",
                     )
                 }
