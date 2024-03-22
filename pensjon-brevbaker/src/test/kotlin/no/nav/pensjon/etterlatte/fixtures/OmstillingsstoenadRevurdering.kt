@@ -24,6 +24,7 @@ fun createOmstillingsstoenadRevurderingDTO() =
                     grunnbeloep = Kroner(118000),
                     utbetaltBeloep = Kroner(5000),
                     ytelseFoerAvkorting = Kroner(22000),
+                    restanse = Kroner(0),
                     trygdetid = 40
                 ),
                 OmstillingsstoenadBeregningsperiode(
@@ -36,6 +37,7 @@ fun createOmstillingsstoenadRevurderingDTO() =
                     grunnbeloep = Kroner(118000),
                     utbetaltBeloep = Kroner(10000),
                     ytelseFoerAvkorting = Kroner(22000),
+                    restanse = Kroner(0),
                     trygdetid = 40
                 )
             ),
@@ -49,6 +51,7 @@ fun createOmstillingsstoenadRevurderingDTO() =
                 grunnbeloep = Kroner(118000),
                 utbetaltBeloep = Kroner(5000),
                 ytelseFoerAvkorting = Kroner(22000),
+                restanse = Kroner(0),
                 trygdetid = 40
             ),
             trygdetid = Trygdetid(
@@ -74,7 +77,7 @@ fun createOmstillingsstoenadRevurderingDTO() =
                 beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
                 beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
                 mindreEnnFireFemtedelerAvOpptjeningstiden = true,
-            )
+            ),
         ),
         etterbetaling = OmstillingsstoenadEtterbetaling(
             fraDato = LocalDate.of(2024, 1, 1),

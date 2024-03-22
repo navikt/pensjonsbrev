@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.dsl.expression.format
-
-data class IntBroek(val teller: Int, val nevner: Int)
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 fun Expression<IntBroek?>.formatBroek(): Expression<String> = this.format(IntBroekFormatter)
 
@@ -16,5 +16,13 @@ object IntBroekFormatter : LocalizedFormatter<IntBroek?>() {
         }
 
         return "${broek.teller}/${broek.nevner}"
+    }
+}
+
+fun Expression<LocalDate>.formatMaanedAar(): Expression<String> = this.format(MaanedAarFormatter)
+
+object MaanedAarFormatter : LocalizedFormatter<LocalDate>() {
+    override fun apply(date: LocalDate, second: Language): String {
+       return date.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
     }
 }

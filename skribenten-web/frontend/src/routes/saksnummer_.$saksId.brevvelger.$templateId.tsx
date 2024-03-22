@@ -501,6 +501,12 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
 
 function Adresse() {
   const { idTSSEkstern } = Route.useSearch();
+  const { templateId } = Route.useParams();
+
+  // Special case to hide mottaker for "Notat"
+  if (templateId === "PE_IY_03_156") {
+    return undefined;
+  }
 
   return idTSSEkstern ? <SamhandlerAdresse /> : <PersonAdresse />;
 }

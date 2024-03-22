@@ -38,3 +38,20 @@ jobs:
       - name: Check for typescript errors
         working-directory: skribenten-web/frontend
         run: npm run check-types
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: skribenten-web/frontend
+          install: false
+          browser: chrome
+          component: true
+          start: npm run cypress
+
+      - name: Upload failed Cypress screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+

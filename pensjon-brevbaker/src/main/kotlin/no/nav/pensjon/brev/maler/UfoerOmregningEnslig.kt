@@ -33,7 +33,6 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.avdo
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.barnetilleggSaerkullsbarnVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.bruker
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.harAvdoedRettigheterFoer2024
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.harBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.inntektFoerUfoerhetVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.institusjonsoppholdVedVirk
@@ -259,25 +258,8 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 }
             }
 
-            showIf(harAvdoedRettigheterFoer2024) {
-                showIf(avdoed.sivilstand.isOneOf(SAMBOER3_2)) {
-                    includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
-                    includePhrase(GjenlevenderettUfoeretrygdSamboer)
-                }
-                showIf(avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
-                    includePhrase(RettTilGjenlevendetilleggOverskrift)
-                    includePhrase(HvemHarRettTilGjenlevendetilleggVilkaar)
-                    includePhrase(HvordanSoekerDuOverskrift)
-                    includePhrase(SoekGjenlevendetilleggFoer2024)
-
-                    showIf(bruker.borIAvtaleLand) {
-                        includePhrase(SoekGjenlevendetilleggAvtaleland)
-                    }
-                }
-            }.orShowIf(
-                avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)
-                        and ufoeretrygdVedVirk.harGradertUfoeretrygd
-            ) {
+            showIf(avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)
+                        and ufoeretrygdVedVirk.harGradertUfoeretrygd) {
                 includePhrase(RettTilUfoeretrygdVedGradertUfoeretrygd)
                 includePhrase(HvemHarRettPaaOmstillingsstoenad)
                 includePhrase(StoerrelseOmstillingsstoenad(ufoeretrygdVedVirk.grunnbeloep))

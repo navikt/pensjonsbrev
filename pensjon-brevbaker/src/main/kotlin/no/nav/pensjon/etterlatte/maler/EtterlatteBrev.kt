@@ -52,6 +52,7 @@ data class OmstillingsstoenadBeregningsperiode(
     val relevantMaanederInnAar: Int,
     val grunnbeloep: Kroner,
     val ytelseFoerAvkorting: Kroner,
+    val restanse: Kroner,
     val utbetaltBeloep: Kroner,
     val trygdetid: Int,
 )
@@ -101,3 +102,5 @@ enum class FeilutbetalingType {
     FEILUTBETALING_MED_VARSEL,
     INGEN_FEILUTBETALING
 }
+
+data class IntBroek(val teller: Int, val nevner: Int)

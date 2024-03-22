@@ -20,6 +20,8 @@ export const Text = ({ content }: TextProperties) => {
             border: 1px solid var(--a-border-default);
             background: var(--a-gray-50);
             padding: 1px 4px;
+            display: inline-block;
+            margin: 0 1px;
             cursor: default;
           `}
         >
