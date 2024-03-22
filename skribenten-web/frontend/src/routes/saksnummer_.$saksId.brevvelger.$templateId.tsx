@@ -642,6 +642,7 @@ function FavoriteButton() {
         css={css`
           width: fit-content;
         `}
+        data-cy="remove-favorite-button"
         icon={<StarFillIcon aria-hidden />}
         onClick={() => toggleFavoritesMutation.mutate(templateId)}
         size="small"
@@ -657,6 +658,7 @@ function FavoriteButton() {
       css={css`
         width: fit-content;
       `}
+      data-cy="add-favorite-button"
       icon={<StarIcon aria-hidden />}
       onClick={() => toggleFavoritesMutation.mutate(templateId)}
       size="small"

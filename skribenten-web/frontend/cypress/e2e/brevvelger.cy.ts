@@ -15,7 +15,7 @@ describe("Brevvelger spec", () => {
 
     cy.viewport(1200, 1400);
   });
-  it("Verify saksnummer search", () => {
+  it("Søk med saksnummer", () => {
     cy.visit("/");
     cy.contains("Saksnummer").click();
     cy.focused().type("123{enter}");
@@ -25,7 +25,7 @@ describe("Brevvelger spec", () => {
     cy.contains("Søk etter brevmal"); // TODO: assert something smarter?
   });
 
-  it("Verify søk etter brevmal", () => {
+  it("Søk etter brevmal", () => {
     cy.visit("/saksnummer/123456/brevvelger");
 
     cy.getDataCy("brevmal-search").click();
@@ -48,6 +48,32 @@ describe("Brevvelger spec", () => {
 
     cy.focused().type("{esc}");
     cy.getDataCy("category-item").should("have.length", 9).and("not.have.class", "navds-accordion__item--open");
+  });
+
+  it("Favoritter", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/me/favourites", []).as("ingen favoritter");
+    cy.visit("/saksnummer/123456/brevvelger");
+    cy.get(".navds-accordion__item").contains("Favoritter").should("not.exist");
+    cy.getDataCy("brevmal-search").click().type("brev fra nav");
+    cy.getDataCy("brevmal-button").click();
+
+    cy.intercept("POST", "/bff/skribenten-backend/me/favourites", (request) => {
+      expect(request.body).to.eq("PE_IY_05_300");
+      request.reply({});
+    }).as("Legg til favoritt");
+    cy.intercept("GET", "/bff/skribenten-backend/me/favourites", ["PE_IY_05_300"]).as("1 favoritt");
+
+    cy.getDataCy("add-favorite-button").click();
+    cy.get(".navds-accordion__item").contains("Favoritter").should("exist").and("have.length", 1);
+
+    cy.intercept("DELETE", "/bff/skribenten-backend/me/favourites", (request) => {
+      expect(request.body).to.eq("PE_IY_05_300");
+      request.reply({});
+    }).as("Fjern favoritt");
+    cy.intercept("GET", "/bff/skribenten-backend/me/favourites", []).as("ingen favoritter");
+    cy.getDataCy("remove-favorite-button").click();
+
+    cy.get(".navds-accordion__item").contains("Favoritter").should("not.exist");
   });
 
   it("Bestill Exstream brev", () => {
