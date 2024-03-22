@@ -6,4 +6,5 @@ fun createOmstillingsstoenadInformasjonDoedsfallDto() =
     OmstillingstoenadInformasjonDoedsfallDTO(
         innhold = emptyList(),
         avdoedNavn = "Ola Nordmann",
+        borIutland = false
     )
