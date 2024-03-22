@@ -120,7 +120,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         size="small"
       >
         {Object.keys(brevmalerGroupedByType).length === 0 && (
-          <Alert size="small" variant="info">
+          <Alert size="small" variant="info" data-cy="ingen-treff-alert">
             Ingen treff
           </Alert>
         )}

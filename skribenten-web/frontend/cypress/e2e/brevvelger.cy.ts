@@ -25,6 +25,31 @@ describe("Brevvelger spec", () => {
     cy.contains("Søk etter brevmal"); // TODO: assert something smarter?
   });
 
+  it.only("Verify søk etter brevmal", () => {
+    cy.visit("/saksnummer/123456/brevvelger");
+
+    cy.getDataCy("brevmal-search").click();
+    cy.focused().type("b");
+    cy.getDataCy("category-item").should("have.length", 7).and("have.class", "navds-accordion__item--open");
+    cy.getDataCy("brevmal-button").should("have.length", 27);
+
+    cy.focused().type("r");
+    cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
+    cy.getDataCy("brevmal-button").should("have.length", 10);
+
+    cy.focused().type("e");
+    cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
+    cy.getDataCy("brevmal-button").should("have.length", 3);
+
+    cy.focused().type("!");
+    cy.getDataCy("category-item").should("have.length", 0);
+    cy.getDataCy("brevmal-button").should("have.length", 0);
+    cy.getDataCy("ingen-treff-alert");
+
+    cy.focused().type("{esc}");
+    cy.getDataCy("category-item").should("have.length", 9).and("not.have.class", "navds-accordion__item--open");
+  });
+
   it("Bestill Exstream brev", () => {
     cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", { fixture: "hentSamhandlerAdresse.json" }).as(
       "hentSamhandlerAdresse",
@@ -130,7 +155,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("order-letter-success-message");
   });
 
-  it.only("Bestill E-blankett", () => {
+  it("Bestill E-blankett", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream/eblankett", (request) => {
       expect(request.body).contains({
         brevkode: "E001",
