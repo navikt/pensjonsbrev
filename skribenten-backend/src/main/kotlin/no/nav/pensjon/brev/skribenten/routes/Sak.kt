@@ -22,10 +22,6 @@ fun Route.sakRoute(
 
         // TODO skal vi beholde denne?
         get {
-            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-            call.respond(sak)
-        }
-        get("/sakContext") {
             val sak: PenService.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             val vedtaksId: String? = call.request.queryParameters["vedtaksId"]
             val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)

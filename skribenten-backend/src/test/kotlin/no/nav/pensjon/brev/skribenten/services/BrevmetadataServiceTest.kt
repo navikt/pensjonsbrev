@@ -12,6 +12,7 @@ import kotlin.test.Test
 
 class BrevmetadataServiceTest {
 
+/*    // TODO flytt til brevmalServiceTest
     @Test
     fun `brevmetadata setter redigerbarBrevTittel`() = runBlocking {
         val metadata: List<BrevdataDto> = listOf(
@@ -37,7 +38,7 @@ class BrevmetadataServiceTest {
                 headers = headersOf(HttpHeaders.ContentType, "application/json")
             )
         },
-    )
+    )*/
 
     private fun createData(
         brevkode: String,

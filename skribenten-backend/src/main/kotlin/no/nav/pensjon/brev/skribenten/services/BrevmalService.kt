@@ -20,11 +20,10 @@ class BrevmalService(
         sakType: PenService.SakType,
         includeEblanketter: Boolean,
     ): List<LetterMetadata> = coroutineScope {
-        val maler = async { brevmetadataService.hentMaler(sakType, includeEblanketter) }
         mapBrevmeny(
             isVedtaksKontekst = false,
             erKravPaaGammeltRegelverk = false,
-            brevmetadata = maler.await(),
+            brevmetadata = brevmetadataService.hentMaler(sakType, includeEblanketter),
             sakType = sakType,
         )
     }
@@ -35,11 +34,11 @@ class BrevmalService(
         includeEblanketter: Boolean,
         vedtaksId: String,
     ): List<LetterMetadata> = coroutineScope {
-        val brevmetadata: Deferred<List<BrevdataDto>> = async { brevmetadataService.hentMaler(sakType, includeEblanketter) }
+        val brevmetadata = async { brevmetadataService.hentMaler(sakType, includeEblanketter) }
         val erKravPaaGammeltRegelverk: Deferred<Boolean> =
             async {
                 if (sakType == PenService.SakType.ALDER) {
-                    penService.erStrukturBeregning(call, vedtaksId)
+                    penService.hentIsKravPaaGammeltRegelverk(call, vedtaksId)
                         .catch { message, httpStatusCode ->
                             logger.error("Feil ved henting av felt \"erKravPaaGammeltRegelverk\" fra vedtak. Status: $httpStatusCode, message: $message")
                             false
