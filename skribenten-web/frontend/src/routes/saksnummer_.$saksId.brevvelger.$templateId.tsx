@@ -69,16 +69,16 @@ import { capitalizeString } from "~/utils/stringUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId")({
   component: SelectedTemplate,
-  loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
+  loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
   validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string } => ({
     idTSSEkstern: search.idTSSEkstern?.toString(),
   }),
-  loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId }, deps: { includeVedtak } }) => {
+  loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId }, deps: { vedtaksId } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
 
     const letterTemplates = await queryClient.ensureQueryData({
-      queryKey: getLetterTemplate.queryKey({ sakType: sak.sakType, includeVedtak }),
-      queryFn: () => getLetterTemplate.queryFn(sak.sakType, { includeVedtak }),
+      queryKey: getLetterTemplate.queryKey({ sakType: sak.sakType, vedtaksId }),
+      queryFn: () => getLetterTemplate.queryFn(sak.sakType, { vedtaksId }),
     });
 
     const letterTemplate = letterTemplates.find((letterMetadata) => letterMetadata.id === templateId);

@@ -49,7 +49,7 @@ export const navnKeys = {
 
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
-  sakTypeSearch: (search: { sakType: string; includeVedtak: boolean }) => [...letterTemplatesKeys.all, search] as const,
+  sakTypeSearch: (search: { sakType: string; vedtaksId?: string }) => [...letterTemplatesKeys.all, search] as const,
 };
 
 export const letterKeys = {
@@ -103,7 +103,7 @@ export const getPreferredLanguage = {
 
 export const getLetterTemplate = {
   queryKey: letterTemplatesKeys.sakTypeSearch,
-  queryFn: async (sakType: string, search: { includeVedtak: boolean }) =>
+  queryFn: async (sakType: string, search: { vedtaksId?: string }) =>
     (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`, { params: search }))
       .data,
 };
