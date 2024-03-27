@@ -39,7 +39,7 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
         letterDataType = EndringUfoeretrygdPaaGrunnAvEndretInntektDto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - ny beregning av uføretrygd på grunn av endring i opptjening (automatisk)",
+            displayTitle = "Vedtak - endring av uføretrygd på grunn av inntekt (automatisk)",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -91,7 +91,8 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
 
         val harEktefelletillegg: Expression<Boolean> = true.expr()
         val harGjenlevendeTillegg: Expression<Boolean> = true.expr()
-        val borIUtlandet: Expression<Boolean> = true.expr()
+        val brukerBorINorge: Expression<Boolean> = true.expr()
+
         title {
             text(
                 //TODO
@@ -102,14 +103,36 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
         outline {
 
             //TBU2249
+            //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = false) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
-                    Bokmal to "Vi har mottatt nye opplysninger om inntekten din til deg eller din ".expr() + bormedSivilstand.ubestemtForm() + ". Inntekten til din " + bormedSivilstand.ubestemtForm() + " har kun betydning for størrelsen på barnetillegget for " + ifElse(felles_harflerebarn, "barna", "barnet") + " som bor med begge sine foreldreditt. Utbetalingen av uføretrygden din og barnetillegget ditt barnetilleggene dine er derfor endret fra " + virkFomDato.format() + ".",
-                    Nynorsk to "Vi har fått nye opplysningar om inntekta di til deg eller ".expr() + bormedSivilstand.bestemtForm() + " din. Inntekta til " + bormedSivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget for " + ifElse(felles_harflerebarn, "barna", "barnet") + " som bur saman med begge foreldra sineditt. Utbetalinga av uføretrygda di og barnetillegget ditt barnetillegga dine er derfor endra frå " + virkFomDato.format() + ".",
+                    Bokmal to "Vi har mottatt nye opplysninger om inntekten din til deg eller din ".expr()
+                            + bormedSivilstand.ubestemtForm() + ". Inntekten til din "
+                            + bormedSivilstand.ubestemtForm() + " har kun betydning for størrelsen på barnetillegget for "
+                            + ifElse(felles_harflerebarn, "barna", "barnet") + " som bor med begge sine foreldreditt. Utbetalingen av uføretrygden din og barnetillegget ditt barnetilleggene dine er derfor endret fra " + virkFomDato.format() + ".",
+
+                    Nynorsk to "Vi har fått nye opplysningar om inntekta di til deg eller ".expr()
+                            + bormedSivilstand.bestemtForm() + " din. Inntekta til "
+                            + bormedSivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget for "
+                            + ifElse(felles_harflerebarn, "barna", "barnet") + " som bur saman med begge foreldra sineditt. Utbetalinga av uføretrygda di og barnetillegget ditt barnetillegga dine er derfor endra frå " + virkFomDato.format() + ".",
                 )
             }
 
             //TBU3403
+            //Integer iYear
+            //iYear = FF_getYear(PE_VedtaksData_VirkningFOM)
+            //
+            //IF(
+            //
+            //PE_VedtaksData_VirkningFOM = FF_getFirstDayOfYear(iYear)
+            //AND
+            //(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT)
+            //
+            //) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Vi vil bruke en inntekt på ".expr() + uforetrygdordinaer_forventetInntekt.format() + " kroner når vi reduserer uføretrygden din for " + virkFomAar.format() + ". Har du ikke meldt inn ny inntekt for " + virkFomAar.format() + ", er inntekten justert opp til dagens verdi.",
@@ -131,6 +154,16 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4016
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
+            //AND
+            //(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB
+            //OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB))
+            //AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget= true
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)
+            //AND FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true
+            //THEN
+            // INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "I reduksjonen av barnetillegget ditt vil vi bruke en inntekt på ".expr() + saerkull_inntektBruktIAvkortning.format() + " kroner.",
@@ -138,6 +171,15 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4001
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
+            //AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB
+            //OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB))
+            //AND (FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+            //)
+            //THEN
+            // INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "I reduksjonen av barnetillegget ditt vil vi bruke en inntekt på ".expr() + felles_inntektBruktIAvkortning.format() + " kroner for " + ifElse(felles_harflerebarn, "barna", "barnet") + " som bor med begge sine foreldre. For " + ifElse(saerkull_harflerebarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene vil vi bruke en inntekt på " + saerkull_inntektBruktIAvkortning.format() + " kroner.",
@@ -145,6 +187,13 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4002
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
+            //AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB
+            //AND  (FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true)
+            //)
+            //THEN
+            // INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Vi vil bruke en inntekt på ".expr() + felles_inntektBruktIAvkortning.format() + " kroner når vi reduserer barnetillegget ditt for " + ifElse(felles_harflerebarn, "barna", "barnet") + " som bor med begge sine foreldre for " + virkFomAar.format() + ". For " + ifElse(saerkull_harflerebarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene vil vi bruke en inntekt på " + saerkull_inntektBruktIAvkortning.format() + " kroner. Har du ikke meldt inn nye inntekter for " + virkFomAar.format() + ", er inntektene justert opp til dagens verdi.",
@@ -152,6 +201,17 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4017
+            //IF (FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true
+            //AND
+            //(
+            //  PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB
+            //  AND
+            //  PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB
+            //)
+            //AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT)
+            //THEN
+            // INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Vi vil bruke en inntekt på ".expr() + saerkull_inntektBruktIAvkortning.format() + " kroner når vi reduserer barnetillegget ditt. Har du ikke meldt inn ny inntekt for " + virkFomAar.format() + ", er inntekten justert opp til dagens verdi.",
@@ -159,6 +219,20 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4013
+            //IF(
+            //(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad
+            //= PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad)
+            //AND
+            //((PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB
+            //<> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)
+            //OR
+            //(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB
+            //<> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB))
+            //AND
+            //FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true
+            //) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + virkningstidspunktMinus1Aar.format() + ", er inntekten justert opp slik at den gjelder for hele " + virkFomAar.format() + ".",
@@ -166,6 +240,31 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4003
+            //IF (
+            //FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true
+            //AND
+            //(
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB > PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB
+            //OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB > PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB
+            //)
+            //AND
+            //(
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB > 0
+            //OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB > 0
+            //)
+            //AND
+            //(
+            //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true
+            //OR
+            //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true
+            //OR
+            //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true
+            //OR
+            //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true
+            //)
+            //)THEN
+            // INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Fordi du ikke har barnetillegg for ".expr() + ifElse(felles_harflerebarn, "barna", "barnet") + " som bor med begge sine foreldre for " + ifElse(saerkull_harflerebarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene hele året er inntektene og fribeløpet justert slik at de kun gjelder for den perioden du mottar barnetillegg.",
@@ -173,6 +272,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4004
+            //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Forventer du og din ".expr() + bormedSivilstand.bestemtForm() + " å tjene noe annet i " + virkFomAar.format() + " er det viktig at du melder inn ny forventet inntekt. Dette kan du gjøre på nav.no.",
@@ -191,11 +293,20 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
 
 
 
-            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(true.expr()))
+            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(ufoeretrygdBeregning_totalNetto.greaterThan(0)))
             includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
             includePhrase(Vedtak.BegrunnelseOverskrift)
 
+
+            // GJELDER 2253,3374,4005, 2258 og 3735
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT) THEN
+            //     INCLUDE
+            //ENDIF
+
             //TBU2253
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Når vi endrer utbetalingen av uføretrygden din, tar vi utgangspunkt i inntekten du har ved siden av uføretrygden. Det er bare den delen av inntekten din som overstiger inntektsgrensen som vil gi en reduksjon av uføretrygden.",
@@ -210,6 +321,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU3374
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense >= PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Når vi endrer utbetalingen av uføretrygden din, tar vi utgangspunkt i inntekten du har ved siden av uføretrygden. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.",
@@ -217,6 +331,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4005
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Siden du har en inntekt på ".expr() + uforetrygdordinaer_forventetInntekt.format() + " kroner trekker vi " + uforetrygdordinaer_avkortningsbeloepPerAar.format() + " kroner fra uføretrygden i for neste år.",
@@ -224,6 +341,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2258
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT = 0) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Du får ikke utbetalt uføretrygd siden inntekten din er høyere enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr()
@@ -235,6 +355,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU3375
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense = PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT = 0) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Det utbetales ikke uføretrygd når inntekten din utgjør mer enn inntektsgrensen, det vil si ".expr()
@@ -245,7 +368,16 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                             + " kroner og du vil derfor ikkje få utbetalt uføretrygd resten av året.",
                 )
             }
+
+            // GJELDER 4006-4012
+            // IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB) THEN
+            //     INCLUDE
+            //ENDIF
+
             //TBU4006
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Inntekten din har også betydning for hva du får utbetalt i barnetillegg. FordiFor ".expr()
@@ -260,6 +392,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4007
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Vi har beregnet barnetillegget på nytt ut fra inntekten din på ".expr() +
@@ -282,6 +417,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4008
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Barnetillegget for ".expr() + ifElse(saerkull_harflerebarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene er beregnet ut fra inntekten din på " + saerkull_inntektBruktIAvkortning.format() + " kroner. Dette er høyerelavere enn fribeløpsgrensen på " + saerkull_fribeloep.format() + " kroner. Dette barnetillegget er derfor ikke lenger også redusert. Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for " + ifElse(saerkull_harflerebarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
@@ -289,6 +427,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4009
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Vi har beregnet barnetillegget på nytt ut fra inntekten din på ".expr()
@@ -301,6 +442,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4010
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Barnetillegget for ".expr() + ifElse(felles_harflerebarn, "barna", "barnet")
@@ -313,6 +457,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4011
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Barnetillegget for ".expr() + ifElse(saerkull_harflerebarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene blir ikke utbetalt fordi inntekten din er høyere enn " + saerkull_inntektstak.format() + " kroner.",
@@ -320,6 +467,21 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4012
+            //IF(
+            //FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = false
+            //AND
+            //(
+            //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true
+            //OR
+            //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true
+            //OR
+            //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true
+            //OR
+            //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true
+            //)
+            //) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Fordi du ikke har barnetillegg for ".expr() + ifElse(felles_harflerebarn, "barna", "barnet") + " som bor med begge sine foreldre for " + ifElse(saerkull_harflerebarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene hele året er inntektene og fribeløpet justert slik at det kun gjelder for den perioden du mottar barnetillegg. Fordi sivilstanden din har endret seg er inntektene og fribeløpet justert slik at de kun gjelder for den framtidige perioden du mottar barnetillegg.",
@@ -327,6 +489,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU1133
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Du kan lese mer om dette i vedlegget «Opplysninger om beregningen».",
@@ -334,6 +499,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2263
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 og 22-12.",
@@ -341,6 +509,18 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2264
+            //IF(
+            //
+            //(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
+            //OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)
+            //
+            //AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false
+            //AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
+            //
+            //) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16 og 22-12 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
@@ -348,6 +528,17 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2265
+            //IF(
+            //
+            //(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
+            //OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)
+            //
+            //AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
+            //
+            //) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16 og 22-12 og overgangsforskriften §8 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
@@ -355,6 +546,17 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2266
+            //IF(
+            //
+            //(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
+            //OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)
+            //
+            //AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false
+            //
+            //) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
@@ -362,6 +564,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2267
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14, 12- 18 og 22-12.",
@@ -369,6 +574,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2268
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 og 22-12 og overgangsforskriften § 8.",
@@ -376,13 +584,28 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4014
+            //IF((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
+            //OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)
+            //AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false
+            //AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT)
+            //THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12 og forskrift om overgangsreglar for barnetillegg i uføretrygda.",
                 )
             }
+
+            // GJELDER 4015-4045
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN
+            //     INCLUDE
+            //ENDIF
+
             //TBU4015
+            //alltid inkludert
             paragraph{
                 text(
                     Bokmal to "Hva får du i uføretrygd framover?",
@@ -390,6 +613,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4044
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Ut fra den årlige inntekten din vil uføretrygden utgjøre ".expr() + nettoAkkumulertPlussRestAar.format() + " kroner. Hittil i år har du fått utbetalt " + uforetrygdordinaer_nettoAkk.format() + " kroner. Du har derfor rett til en utbetaling av uføretrygd på " + uforetrygdordinaer_netto.format() + " kroner per måned for resten av året.",
@@ -397,13 +623,36 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4045
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Selv om uføretrygden din er redusert på grunn av inntekt beholder du likevel uføregraden din på ".expr() + ufoeretrygdBeregning_ufoeregrad.format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din.",
                     Nynorsk to "Sjølv om uføretrygda di er redusert på grunn av inntekt beheld du likevel uføregraden din på ".expr() + ufoeretrygdBeregning_ufoeregrad.format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn inntektsgrensa di.",
                 )
             }
+
+            // Gjelder 4046-4049
+            //IF(
+            //(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB
+            //<>
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB
+            //AND
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB > 0)
+            //OR
+            //(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB
+            //<>
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB
+            //AND
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB > 0)
+            //)
+            //THEN
+            //  INCLUDE
+            //ENDIF
+
             //TBU4046
+            //alltid med
             paragraph{
                 text(
                     Bokmal to "Hva får du i barnetillegg framover?",
@@ -411,6 +660,16 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4047
+            //IF(
+            //(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB
+            //<>
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB)
+            //AND
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB <> 0
+            //)
+            //THEN
+            //  INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Ut fra den samlede inntekten til deg og din ".expr() + bormedSivilstand.ubestemtForm() + " er barnetillegget vurdert på nytt. Barnetillegget er redusert for hele året ut fra den inntekten som overstiger fribeløpet. Den årlige reduksjonen av barnetillegget er " + felles_avkortningsbeloepPerAr.format() + " kroner. Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt tiltrukket fra " + justeringsbeloepPerAarAbsolutt.format() + " kroner i det vi reduserer barnetillegget med for resten av året. Du har derfor rett til en utbetaling av barnetillegg på " + felles_netto.format() + " kroner per måned for resten av året.",
@@ -418,6 +677,16 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4048
+            //IF(
+            //(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB
+            //<>
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)
+            //AND
+            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB <> 0
+            //)
+            //THEN
+            //  INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Ut fra den samlede inntekten din er barnetillegget vurdert på nytt. Barnetillegget er redusert for hele året ut fra den inntekten som overstiger fribeløpet. Den årlige reduksjonen av barnetillegget er ".expr() + saerkull_avkortningsbeloepPerAar.format() + " kroner. Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt tiltrukket fra " + saerkull_justeringsbeloepPerAarAbsolutt.format() + " kroner i det vi reduserer barnetillegget med for resten av året. Du har derfor rett til en utbetaling av barnetillegg på " + saerkull_netto.format() + " kroner per måned for resten av året.",
@@ -425,13 +694,32 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU4049
+            //IF(
+            //(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0
+            //AND
+            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
+            //OR
+            //(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0
+            //AND
+            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)
+            //)
+            //THEN
+            //  INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Du får ikke utbetalt barnetillegget for ".expr() + ifElse(felles_harflerebarn or saerkull_harflerebarn, "barna", "barnet") + " som bor med begge sine foreldreikke bor sammen med begge foreldrene.",
                     Nynorsk to "Du får ikkje utbetalt barnetillegget for ".expr() + ifElse(felles_harflerebarn or saerkull_harflerebarn, "barna", "barnet") + " som bur med begge foreldraikkje bur saman med begge foreldra.",
                 )
             }
+
+            //gjelder 1214,2272,2273,2274,1133
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN
+            //     INCLUDE
+            //ENDIF
+
             //TBU1214
+            //alltid med
             paragraph{
                 text(
                     Bokmal to "For deg som mottar gjenlevendetillegg",
@@ -439,6 +727,7 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2272
+            //alltid med
             paragraph{
                 text(
                     Bokmal to "Du mottar gjenlevendetillegg i uføretrygden din. Tjener du mer enn inntektsgrensen din, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med.",
@@ -446,6 +735,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2273
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Gjenlevendetillegget er redusert ut fra den innmeldte inntekten.",
@@ -453,6 +745,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2274
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Gjenlevendetillegget er økt ut fra den innmeldte inntekten.",
@@ -460,13 +755,18 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU1133 TODO deduplicate
+            //alltid med
             paragraph{
                 text(
                     Bokmal to "Du kan lese mer om dette i vedlegget «Opplysninger om beregningen».",
                     Nynorsk to "Du kan lese meir om dette i vedlegget «Opplysningar om berekninga».",
                 )
             }
+
             //TBU2275
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "For deg som mottar ektefelletillegg",
@@ -474,13 +774,18 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2276
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 text(
                     Bokmal to "Du mottar ektefelletillegg i uføretrygden din. Dette tillegget blir ikke endret som følge av inntektsendringer.",
                     Nynorsk to "Du får ektefelletillegg i uføretrygda di. Dette tillegget blir ikkje endra som følgje av inntektsendringar.",
                 )
             }
+
             //TBU4022
+            //alltid med
             paragraph{
                 text(
                     Bokmal to "Du må melde fra om endringer i inntekt",
@@ -488,6 +793,7 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2278
+            //alltid med
             paragraph{
                 text(
                     Bokmal to "Det er viktig at du melder fra om inntektsendringer slik at uføretrygden og barnetillegget blir så riktig som mulig. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» når du logger deg inn på $NAV_URL.",
@@ -495,6 +801,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2279
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr() + uforetrygdordinaer_inntektstak.format() + " kroner per år. Inntekten er justert opp til dagens verdi.",
@@ -502,6 +811,9 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU3740
+            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak <= PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN
+            //     INCLUDE
+            //ENDIF
             paragraph{
                 textExpr(
                     Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn inntektsgrensen din, det vil si ".expr() + uforetrygdordinaer_inntektsgrense.format() + " kroner per år.",
@@ -509,6 +821,7 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2280
+            //alltid med
             paragraph{
                 text(
                     Bokmal to "Vi vil foreta et etteroppgjør hvis du har fått utbetalt for mye eller for lite uføretrygd og barnetillegg i løpet av året. Dette gjør vi når likningen fra Skatteetaten er klar. Har du fått utbetalt for lite i uføretrygd og barnetillegg, vil vi utbetale dette beløpet til deg. Hvis du har fått utbetalt for mye i uføretrygd og barnetillegg, må du betale dette tilbake.",
@@ -516,6 +829,7 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
                 )
             }
             //TBU2282
+            //alltid med
             paragraph{
                 text(
                     Bokmal to "Inntekter som ikke skal føre til reduksjon av uføretrygden",
@@ -598,7 +912,7 @@ object EndringUfoeretrygdPaaGrunnAvEndretInntekt : AutobrevTemplate<EndringUfoer
             includePhrase(Felles.RettTilInnsynPesys)
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
-            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(borIUtlandet))
+            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorINorge))
             includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
         }
     }
