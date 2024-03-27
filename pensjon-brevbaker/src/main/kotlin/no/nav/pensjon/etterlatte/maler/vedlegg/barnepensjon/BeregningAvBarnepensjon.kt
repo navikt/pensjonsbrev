@@ -26,7 +26,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.bruktAvdoed
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.bruktTrygdetid
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.erForeldreloes
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.innhold
@@ -38,6 +38,7 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeFraGrunnlag
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.mindreEnnFireFemtedelerAvOpptjeningstiden
+import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.navnAvdoed
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.trygdetidsperioder
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
@@ -63,16 +64,21 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
         )
     }
     grunnbeloepetGammeltOgNyttRegelverk(grunnbeloep)
-    trygdetid(
-        trygdetid.beregnetTrygdetidAar,
-        trygdetid.prorataBroek,
-        trygdetid.beregningsMetodeFraGrunnlag,
-        trygdetid.beregningsMetodeAnvendt,
-        trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden,
-    )
-    beregnetBarnepensjonGammeltOgNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder)
-    showIf(trygdetid.trygdetidsperioder.isNotEmpty()) {
-        perioderMedRegistrertTrygdetid(trygdetid.trygdetidsperioder, trygdetid.beregningsMetodeAnvendt)
+    with(bruktTrygdetid) {
+        trygdetid(
+            navnAvdoed,
+            beregnetTrygdetidAar,
+            prorataBroek,
+            beregningsMetodeFraGrunnlag,
+            beregningsMetodeAnvendt,
+            mindreEnnFireFemtedelerAvOpptjeningstiden,
+        )
+        beregnetBarnepensjonGammeltOgNyttRegelverk(beregnetTrygdetidAar, prorataBroek, beregningsMetodeAnvendt, beregningsperioder)
+    }
+    forEach(trygdetid) {
+        showIf(it.trygdetidsperioder.isNotEmpty()) {
+            perioderMedRegistrertTrygdetid(it.navnAvdoed, it.trygdetidsperioder, it.beregningsMetodeAnvendt)
+        }
     }
     meldFraTilNav()
 }
@@ -113,16 +119,21 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
          }
     }
     grunnbeloepetNyttRegelverk()
-    trygdetid(
-        trygdetid.beregnetTrygdetidAar,
-        trygdetid.prorataBroek,
-        trygdetid.beregningsMetodeFraGrunnlag,
-        trygdetid.beregningsMetodeAnvendt,
-        trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden
-    )
-    beregnetBarnepensjonNyttRegelverk(trygdetid.beregnetTrygdetidAar, trygdetid.prorataBroek, trygdetid.beregningsMetodeAnvendt, beregningsperioder)
-    showIf(trygdetid.trygdetidsperioder.isNotEmpty()) {
-        perioderMedRegistrertTrygdetid(trygdetid.trygdetidsperioder, trygdetid.beregningsMetodeAnvendt)
+    with(bruktTrygdetid) {
+        trygdetid(
+            navnAvdoed,
+            beregnetTrygdetidAar,
+            prorataBroek,
+            beregningsMetodeFraGrunnlag,
+            beregningsMetodeAnvendt,
+            mindreEnnFireFemtedelerAvOpptjeningstiden
+        )
+        beregnetBarnepensjonNyttRegelverk(beregnetTrygdetidAar, prorataBroek, beregningsMetodeAnvendt, beregningsperioder)
+    }
+    forEach(trygdetid){
+	    showIf(it.trygdetidsperioder.isNotEmpty()) {
+		    perioderMedRegistrertTrygdetid(it.navnAvdoed, it.trygdetidsperioder, it.beregningsMetodeAnvendt)
+	    }
     }
 }
 
@@ -257,6 +268,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.trygdetid(
+    navnAvdoed: Expression<String>,
     aarTrygdetid: Expression<Int>,
     prorataBroek: Expression<IntBroek?>,
     beregningsMetodeFraGrunnlag: Expression<BeregningsMetode>,
@@ -271,7 +283,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         )
     }
 
-    val bruktAvdoedNavn = bruktAvdoed.ifNull("")
     showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.NASJONAL)) {
         paragraph {
             text(
@@ -305,15 +316,15 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 textExpr(
                     Bokmal to "For å få full pensjon må minst en av foreldrene ha hatt minst 40 års trygdetid. ".expr() +
                             "Trygdetid over 40 år blir ikke tatt med i beregningen. Pensjonen din er beregnet " +
-                            "etter trygdetiden til " + bruktAvdoedNavn + ". Avdødes samlede trygdetid er " +
+                            "etter trygdetiden til " + navnAvdoed + ". Avdødes samlede trygdetid er " +
                             "beregnet til " + aarTrygdetid.format() + " år.",
                     Nynorsk to "For at det skal kunne betalast ut full pensjon, må minst éin av foreldra ".expr() +
                             "ha hatt minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
-                            "Pensjonen din er rekna ut etter trygdetida til " + bruktAvdoedNavn + ". " +
+                            "Pensjonen din er rekna ut etter trygdetida til " + navnAvdoed  + ". " +
                             "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år",
                     English to "To achieve a full pension, at least one of the parents must have accumulated 40 years ".expr() +
                             "of contribution time. Contribution time above 40 years of coverage is not included in the calculation. " +
-                            "Your pension has been calculated based on the contribution time of " + bruktAvdoedNavn + ". " +
+                            "Your pension has been calculated based on the contribution time of " + navnAvdoed + ". " +
                             "The deceased's total contribution time amounts to " + aarTrygdetid.format() + " years.",
                 )
             }
@@ -354,16 +365,16 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 textExpr(
                     Bokmal to "For å få full pensjon må minst en av foreldrene ha hatt minst 40 års trygdetid. ".expr() +
                             "Trygdetid over 40 år blir ikke tatt med i beregningen. Pensjonen din er beregnet etter " +
-                            "trygdetiden til " + bruktAvdoedNavn + ". Avdødes samlede trygdetid er beregnet " +
+                            "trygdetiden til " + navnAvdoed + ". Avdødes samlede trygdetid er beregnet " +
                             "til " + aarTrygdetid.format() + " år.",
                     Nynorsk to "For at det skal kunne betalast ut full pensjon, må minst éin av foreldra ha hatt ".expr() +
                             "minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
-                            "Pensjonen din er rekna ut etter trygdetida til " + bruktAvdoedNavn + ". " +
+                            "Pensjonen din er rekna ut etter trygdetida til " + navnAvdoed + ". " +
                             "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år.",
                     English to "To achieve a full pension, at least one of the parents must have accumulated ".expr() +
                             "40 years of contribution time. Contribution time above 40 years of coverage is not included " +
                             "in the calculation. Your pension has been calculated based on the contribution time " +
-                            "of " + bruktAvdoedNavn + ". The deceased total contribution time amounts to " + aarTrygdetid.format() + " years.",
+                            "of " + navnAvdoed + ". The deceased total contribution time amounts to " + aarTrygdetid.format() + " years.",
                 )
             }
         }
@@ -403,16 +414,16 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 textExpr(
                     Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. ".expr() +
                             "Trygdetid over 40 år blir ikke tatt med i beregningen. Pensjonen din er beregnet etter " +
-                            "trygdetiden til " + bruktAvdoedNavn  + ". Avdødes samlede trygdetid er beregnet " +
+                            "trygdetiden til " + navnAvdoed + ". Avdødes samlede trygdetid er beregnet " +
                             "til " + aarTrygdetid.format() + " år",
                     Nynorsk to "For at det skal kunne betalast ut full pensjon, må minst éin av foreldra ha hatt ".expr() +
                             "minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
-                            "Pensjonen din er rekna ut etter trygdetida til " + bruktAvdoedNavn  + ". " +
+                            "Pensjonen din er rekna ut etter trygdetida til " + navnAvdoed + ". " +
                             "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år.",
                     English to "To achieve a full pension, at least one of the parents must have accumulated ".expr() +
                             "40 years of contribution time. Contribution time above 40 years of coverage is not " +
                             "included in the calculation. Your pension has been calculated based on the contribution " +
-                            "time of " + bruktAvdoedNavn  + ". The deceased total contribution time amounts to " +
+                            "time of " + navnAvdoed + ". The deceased total contribution time amounts to " +
                             aarTrygdetid.format() + " years. ",
                 )
             }
@@ -634,14 +645,15 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.perioderMedRegistrertTrygdetid(
+    navnAvdoed: Expression<String>,
     trygdetidsperioder: Expression<List<Trygdetidsperiode>>,
     beregningsMetodeAnvendt: Expression<BeregningsMetode>
 ) {
     title2 {
-        text(
-            Bokmal to "Perioder med registrert trygdetid",
-            Nynorsk to "Periodar med registrert trygdetid ",
-            English to "Periods of registered contribution time",
+        textExpr(
+            Bokmal to "Perioder med registrert trygdetid for ".expr() + navnAvdoed,
+            Nynorsk to "Periodar med registrert trygdetid for ".expr() + navnAvdoed,
+            English to "Periods of registered contribution time for ".expr() + navnAvdoed,
         )
     }
 
