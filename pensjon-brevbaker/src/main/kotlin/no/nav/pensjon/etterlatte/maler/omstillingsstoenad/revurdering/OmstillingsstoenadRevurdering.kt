@@ -54,7 +54,7 @@ data class OmstillingsstoenadRevurderingDTO(
     val harUtbetaling: Boolean,
     val lavEllerIngenInntekt: Boolean,
     val feilutbetaling: FeilutbetalingType
-): BrevDTO
+    ): BrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {

@@ -637,102 +637,6 @@ object MerInfoBarnetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-data class GjenlevenderettSamboerOverskrift(val avdoedNavn: Expression<String>) :
-    OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        title1 {
-            textExpr(
-                Bokmal to "Rettigheter du kan ha som tidligere samboer med ".expr() + avdoedNavn,
-                Nynorsk to "Rettar du kan ha som tidlegare sambuar med ".expr() + avdoedNavn,
-                English to "Rights you may be entitled to as a former cohabitant with ".expr() + avdoedNavn
-            )
-        }
-}
-
-// GjRettUTSamboer_001
-object GjenlevenderettUfoeretrygdSamboer : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            text(
-                Bokmal to "Samboere som tidligere har vært gift, eller som har eller har hatt felles barn, kan ha rett til gjenlevendetillegg i uføretrygden. " +
-                        "Du finner mer informasjon og søknadsskjema for gjenlevende ektefelle, partner eller samboer på $NAV_URL.",
-                Nynorsk to "Sambuarar som tidlegare har vore gift, eller som har eller har hatt felles barn, kan ha rett til attlevandetillegg i uføretrygda. " +
-                        "Du finn meir informasjon og søknadsskjema for attlevande ektefelle, partnar eller sambuar på $NAV_URL.",
-                English to "Cohabitants who have previously been married, or who have or have had children together, may be entitled to survivor's supplement to disability benefit. " +
-                        "You will find more information and the application form for benefits for surviving spouse, partner or cohabitant at $NAV_URL."
-            )
-        }
-}
-
-// RettTilUTGJTOverskrift_001
-object RettTilGjenlevendetilleggOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        title1 {
-            text(
-                Bokmal to "Du kan ha rett til gjenlevendetillegg i uføretrygden",
-                Nynorsk to "Du kan ha rett til attlevandetillegg i uføretrygda",
-                English to "You might be entitled to a survivor's supplement to disability benefit"
-            )
-        }
-}
-
-// HvemUTGJTVilkar_001
-object HvemHarRettTilGjenlevendetilleggVilkaar : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            text(
-                Bokmal to "For å ha rett til gjenlevendetillegg i uføretrygden, må du som hovedregel:",
-                Nynorsk to "For å ha rett til attlevandetillegg i uføretrygda, må du som hovudregel:",
-                English to "To be entitled to a survivor's supplement to disability benefit, you must as a rule:",
-            )
-            list {
-                item {
-                    text(
-                        Bokmal to "være medlem i folketrygden, og avdøde må ha vært medlem i folketrygden de siste fem årene fram til dødsfallet",
-                        Nynorsk to "vere medlem i folketrygda, og avdøde må ha vore medlem i folketrygda dei siste fem åra fram til dødsfallet",
-                        English to "be a member of the National Insurance Scheme, and the deceased must have been a member of the National Insurance Scheme for the last five years prior to death "
-                    )
-                }
-                item {
-                    text(
-                        Bokmal to "ha vært gift med den avdøde i minst fem år, eller",
-                        Nynorsk to "ha vore gift med den avdøde i minst fem år, eller",
-                        English to "have been married to the deceased for at least five years, or "
-                    )
-                }
-                item {
-                    text(
-                        Bokmal to "ha vært gift eller vært samboer med den avdøde og har eller ha hatt barn med den avdøde, eller",
-                        Nynorsk to "ha vore gift eller vore sambuar med den avdøde og ha eller ha hatt barn med den avdøde, eller",
-                        English to "have been married to or a cohabitant with the deceased, and have/had children together, or "
-                    )
-                }
-                item {
-                    text(
-                        Bokmal to "ha hatt omsorgen for den avdødes barn på dødsfallstidspunktet. " +
-                                "Ekteskapet og omsorgen for barnet etter dødsfallet må til sammen ha vart minst fem år.",
-                        Nynorsk to "ha hatt omsorga for barna til den avdøde på dødsfallstidspunktet. " +
-                                "Ekteskapet og omsorga for barnet etter dødsfallet må til saman ha vart minst fem år.",
-                        English to "have had care of the children of the deceased at the time of the death. " +
-                                "The marriage and care of the child after the death must have lasted for at least five years."
-                    )
-                }
-            }
-
-        }
-        paragraph {
-            text(
-                Bokmal to "Selv om du ikke har rett til ytelsen etter hovedreglene, kan du likevel ha rettigheter etter avdøde. " +
-                        "Du kan lese mer om dette på $NAV_URL.",
-                Nynorsk to "Sjølv om du ikkje har rett til ytinga etter hovudreglane, kan du likevel ha rettar etter avdøde. " +
-                        "Du kan lese meir om dette på $NAV_URL.",
-                English to "Even if you are not entitled to benefits in accordance with the general rules, you may nevertheless have rights as a surviving spouse. " +
-                        "You can read more about this at $NAV_URL."
-            )
-        }
-    }
-}
-
 // HvordanSoekerDuOverskrift_001
 object HvordanSoekerDuOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -852,24 +756,6 @@ object HvemHarRettPaaOmstillingsstoenad : OutlinePhrase<LangBokmalNynorskEnglish
     }
 }
 
-// SoekUTGJT_001
-object SoekGjenlevendetilleggFoer2024 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            text(
-                Bokmal to "Vi oppfordrer deg til å søke om gjenlevendetillegg i uføretrygden så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. " +
-                        "Det er nye regler for gjenlevendeytelser fra 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for hvilke regler som gjelder for deg. " +
-                        "Du finner informasjon og søknadsskjemaet for gjenlevende ektefelle, partner eller samboer på $GJENLEVENDE_SKJEMA_URL.",
-                Nynorsk to "Vi oppmodar deg til å søkje om attlevandetillegg i uføretrygda så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader. " +
-                        "Det er nye reglar for ytingar til attlevande frå 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for kva regler som gjeld for deg. " +
-                        "Du finn informasjon og søknadsskjemaet for attlevande ektefelle, partner eller sambuar på $GJENLEVENDE_SKJEMA_URL.",
-                English to "We encourage you to apply for survivor's supplement to disability benefit as soon as possible because we normally only pay retroactively for three months. " +
-                        "There are new rules for survivor benefits from January 1, 2024. The date when NAV receives your application may have significance for which rules apply to you. " +
-                        "You will find information and the application form for a surviving spouse, partner or cohabitant at $GJENLEVENDE_SKJEMA_URL."
-            )
-        }
-}
-
 data class SoekGjenlevendetilleggEtter2024(val borIAvtaleLand: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -896,17 +782,6 @@ data class SoekGjenlevendetilleggEtter2024(val borIAvtaleLand: Expression<Boolea
             }
         }
     }
-}
-// SoekAvtaleLandUT_001
-object SoekGjenlevendetilleggAvtaleland : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            text(
-                Bokmal to "Dersom du bor i utlandet, må du kontakte trygdemyndigheter i bostedslandet ditt og søke om ytelser etter avdøde.",
-                Nynorsk to "Dersom du bur i utlandet, må du kontakte trygdeorgana i bustadslandet ditt og søkje om ytingar etter avdøde.",
-                English to "If you live outside Norway, you must contact the National Insurance authorities in your country of residence and apply for a pension."
-            )
-        }
 }
 
 // AvdodBoddArbUtlandOverskrift_001

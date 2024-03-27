@@ -20,7 +20,7 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.sakType
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
 
 data class AvvistKlageFerdigDTO(
@@ -46,8 +46,8 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
         title {
             text(
                 Language.Bokmal to "Vi har avvist klagen din",
-                Language.Nynorsk to "Vi har avvist klagen din",
-                Language.English to "Vi har avvist klagen din"
+                Language.Nynorsk to "Vi har avvist klaga di",
+                Language.English to "We have rejected your appeal"
             )
         }
 
@@ -65,6 +65,6 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
             }
         }
         // Vet ikke hva utlandstilknytning er. Går for bosatt utland for nå
-        includeAttachment(klageOgAnkeUtland, innhold)
+        includeAttachment(klageOgAnke(bosattUtland = true), innhold)
     }
 }

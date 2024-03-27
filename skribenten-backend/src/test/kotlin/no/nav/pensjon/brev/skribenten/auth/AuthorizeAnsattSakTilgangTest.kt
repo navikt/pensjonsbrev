@@ -47,6 +47,22 @@ private val sakVikafossen = SakSelection(
     "vikafossen"
 )
 
+private val generellSak0001 = SakSelection(
+    7008,
+    "12345",
+    LocalDate.of(1920, Month.NOVEMBER, 11),
+    PenService.SakType.GENRL,
+    "0001"
+)
+
+private val generellSak0002 = SakSelection(
+    7009,
+    "12345",
+    LocalDate.of(1920, Month.NOVEMBER, 11),
+    PenService.SakType.GENRL,
+    "0002"
+)
+
 class AuthorizeAnsattSakTilgangTest {
     init {
         ADGroups.init(
@@ -76,6 +92,8 @@ class AuthorizeAnsattSakTilgangTest {
     private val penService = mockk<PenService> {
         coEvery { hentSak(any(), "${testSak.saksId}") } returns ServiceResult.Ok(testSak)
         coEvery { hentSak(any(), "${sakVikafossen.saksId}") } returns ServiceResult.Ok(sakVikafossen)
+        coEvery { hentSak(any(), "${generellSak0001.saksId}") } returns ServiceResult.Ok(generellSak0001)
+        coEvery { hentSak(any(), "${generellSak0002.saksId}") } returns ServiceResult.Ok(generellSak0002)
     }
 
     private val server = embeddedServer(Netty, port = 0) {
@@ -275,6 +293,21 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
+    }
+    @Test
+    fun `ansatt uten gruppe for 0001 og sakstype er generell og tilhorer enhet 0001 faar svar`() = runBlocking {
+        every { principalMock.isInGroup(ADGroups.strengtFortroligUtland) } returns false
+        val response = client.get("/sak/${generellSak0001.saksId}")
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(successResponse(generellSak0001.saksId.toString()), response.bodyAsText())
+    }
+
+    @Test
+    fun `ansatt uten gruppe for 0001 og sakstype er generell og tilhorer ikke enhet 0001 faar ikke tilgang`() = runBlocking {
+        every { principalMock.isInGroup(ADGroups.strengtFortroligUtland) } returns false
+        val response = client.get("/sak/${generellSak0002.saksId}")
+        assertEquals(HttpStatusCode.Forbidden, response.status)
+        assertEquals("Mangler enhetstilgang til sak", response.bodyAsText())
     }
 
     private fun successResponse(saksId: String) =

@@ -203,3 +203,4 @@ Dette gjør det mulig å bytte ut LaTeX med andre representasjoner av det tekstl
 
 === Kotlin
 Kotlin er ett moderne kodespråk basert på Java som kjører i JVM. Vi bruker Kotlin ettersom det er god støtte og erfaring med Kotlin i NAV. Vi på teamet har også god erfaring med Kotlin.
+

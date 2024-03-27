@@ -1,6 +1,9 @@
 app-name: "skribenten-backend"
 
 groups:
+  #0000-GA-PENSJON_BRUKERHJELPA
+  - name: "PENSJON_BRUKERHJELPA"
+    id: "9e122ddd-e542-4cc1-a7eb-92c99140fe0e"
   #0000-GA-PENSJON_SAKSBEHANDLER
   - name: "PENSJON_SAKSBEHANDLER"
     id: "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf"

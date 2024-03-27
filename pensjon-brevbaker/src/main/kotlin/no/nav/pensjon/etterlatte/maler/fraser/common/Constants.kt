@@ -4,6 +4,7 @@ object Constants {
     const val NAV_URL = "nav.no"
     const val SAKSBEHANDLINGSTIDER_URL = "$NAV_URL/saksbehandlingstider"
     const val BARNEPENSJON_URL = "$NAV_URL/barnepensjon"
+    const val DIN_PENSJON_URL = "$NAV_URL}/dinpensjon"
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
     const val UTBETALING_URL = "$NAV_URL/utbetalinger"
     const val UTBETALINGSDATOER_URL = "$NAV_URL/utbetalingsdatoer"

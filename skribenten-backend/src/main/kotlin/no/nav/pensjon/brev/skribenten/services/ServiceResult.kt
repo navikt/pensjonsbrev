@@ -27,9 +27,9 @@ sealed class ServiceResult<Result> {
 
 }
 
-suspend inline fun <reified R : Any> PipelineContext<Unit, ApplicationCall>.respondWithResult(
+suspend inline fun <reified R> PipelineContext<Unit, ApplicationCall>.respondWithResult(
     result: ServiceResult<R>,
-    noinline onOk: suspend ApplicationCall.(R) -> Unit = { respond(it) },
+    noinline onOk: suspend ApplicationCall.(R) -> Unit = { if (it != null) respond(it) else respond(HttpStatusCode.NotFound) },
     noinline onError: suspend ApplicationCall.(String) -> Unit = { message ->
         respond(HttpStatusCode.InternalServerError, message)
     }

@@ -19,8 +19,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnkeUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
 
 data class OmstillingstoenadAvslagDTO(
@@ -62,9 +61,9 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnkeNasjonal, innhold, bosattUtland.not())
+        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
 
         // Bosatt utland
-        includeAttachment(klageOgAnkeUtland, innhold, bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
     }
 }

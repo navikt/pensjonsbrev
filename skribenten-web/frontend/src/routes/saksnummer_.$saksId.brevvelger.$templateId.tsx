@@ -221,7 +221,7 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
             {letterTemplate.redigerbarBrevtittel ? (
               <TextField
                 {...methods.register("brevtittel")}
-                autoComplete="off"
+                autoComplete="on"
                 description="Gi brevet en kort og forklarende tittel."
                 error={methods.formState.errors.brevtittel?.message}
                 label="Endre tittel"
@@ -501,6 +501,12 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
 
 function Adresse() {
   const { idTSSEkstern } = Route.useSearch();
+  const { templateId } = Route.useParams();
+
+  // Special case to hide mottaker for "Notat"
+  if (templateId === "PE_IY_03_156") {
+    return undefined;
+  }
 
   return idTSSEkstern ? <SamhandlerAdresse /> : <PersonAdresse />;
 }

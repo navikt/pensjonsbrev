@@ -82,14 +82,24 @@ private suspend fun sjekkEnhetstilgang(
     enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>
 ): AuthAnsattSakTilgangResponse? =
     enheterResult.await().map { enheter ->
-        if (enheter.none { it.id == sak.enhetId }) {
-            logger.warn("Tilgang til sak ${sak.saksId} avvist for $navIdent: mangler tilgang til enhet ${sak.enhetId}")
-            AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
-        } else null // får tilgang
+        when {
+            erGenerellSakMedEnhet0001(sak) -> null // får tilgang
+            !harTilgangTilSakSinEnhet(enheter, sak) -> {
+                logger.warn("Tilgang til sak ${sak.saksId} avvist for $navIdent: mangler tilgang til enhet ${sak.enhetId}")
+                AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
+            }
+            else -> null // får tilgang
+        }
     }.catch { msg, status ->
         logger.error("Kunne ikke henter NAVenheter for ansatt $navIdent: $status - $msg")
         AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
     }
+
+private fun erGenerellSakMedEnhet0001(sak: PenService.SakSelection) =
+    sak.sakType == PenService.SakType.GENRL && sak.enhetId == "0001"
+
+private fun harTilgangTilSakSinEnhet(enheter: List<NAVEnhet>, sak: PenService.SakSelection) =
+    enheter.any { it.id == sak.enhetId }
 
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)
 

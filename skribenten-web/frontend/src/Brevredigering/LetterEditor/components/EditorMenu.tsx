@@ -23,18 +23,21 @@ export const EditorMenu = () => {
       `}
     >
       <SelectTypographyButton
+        dataCy="TITLE1-BUTTON"
         isActive={activeTypography === "TITLE1"}
         onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus.blockIndex, "TITLE1")}
       >
-        Overskift 1
+        Overskrift 1
       </SelectTypographyButton>
       <SelectTypographyButton
+        dataCy="TITLE2-BUTTON"
         isActive={activeTypography === "TITLE2"}
         onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus.blockIndex, "TITLE2")}
       >
         Overskrift 2
       </SelectTypographyButton>
       <SelectTypographyButton
+        dataCy="PARAGRAPH-BUTTON"
         isActive={activeTypography === "PARAGRAPH"}
         onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus.blockIndex, "PARAGRAPH")}
       >
@@ -45,10 +48,12 @@ export const EditorMenu = () => {
 };
 
 function SelectTypographyButton({
+  dataCy,
   isActive,
   children,
   onClick,
 }: {
+  dataCy: string;
   isActive: boolean;
   children: ReactNode;
   onClick: () => void;
@@ -62,6 +67,7 @@ function SelectTypographyButton({
           background-color: var(--a-surface-action-active);
         `
       }
+      data-cy={dataCy}
       disabled={isActive}
       // Use mouseDown instead of onClick to prevent the cursor from losing focus
       onMouseDown={(event) => {

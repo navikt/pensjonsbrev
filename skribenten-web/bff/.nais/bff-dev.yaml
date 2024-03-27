@@ -18,6 +18,7 @@ env:
 groups:
   - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
   - "bda6bd68-77e6-4c00-96b9-7ecf5df7413c" #0000-GA-Pensjon_Utland
+  - "9e122ddd-e542-4cc1-a7eb-92c99140fe0e" #0000-GA-PENSJON_BRUKERHJELPA
 
 outboundApps:
   - application: skribenten-backend

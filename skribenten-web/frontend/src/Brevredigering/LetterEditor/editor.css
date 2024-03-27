@@ -5,7 +5,7 @@
     [contenteditable] {
 
         &:focus-within {
-            outline: 2px dotted red;
+            outline: none;
         }
     }
 }
