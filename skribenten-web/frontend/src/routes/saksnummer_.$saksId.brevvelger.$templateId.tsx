@@ -222,6 +222,7 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
               <TextField
                 {...methods.register("brevtittel")}
                 autoComplete="on"
+                data-cy="brev-title-textfield"
                 description="Gi brevet en kort og forklarende tittel."
                 error={methods.formState.errors.brevtittel?.message}
                 label="Endre tittel"
@@ -326,6 +327,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
             <SelectSensitivity />
             <SelectAvtaleland />
             <TextField
+              data-cy="mottaker-text-textfield"
               {...methods.register("mottakerText")}
               autoComplete="off"
               error={methods.formState.errors.mottakerText?.message}
@@ -350,7 +352,7 @@ function BestillOgRedigerButton({
     <VStack gap="4">
       {orderMutation.error && <ApiError error={orderMutation.error} title="Bestilling feilet" />}
       {orderMutation.isSuccess ? (
-        <Alert size="small" variant="success">
+        <Alert data-cy="order-letter-success-message" size="small" variant="success">
           <Heading level="3" size="xsmall">
             Brev bestilt
           </Heading>
@@ -363,6 +365,7 @@ function BestillOgRedigerButton({
           css={css`
             width: fit-content;
           `}
+          data-cy="order-letter"
           icon={<ArrowRightIcon />}
           iconPosition="right"
           loading={orderMutation.isPending}
@@ -383,6 +386,7 @@ function SelectSensitivity() {
       name="isSensitive"
       render={({ field, fieldState }) => (
         <RadioGroup
+          data-cy="is-sensitive"
           legend="Er brevet sensitivt?"
           {...field}
           css={css`
@@ -586,6 +590,7 @@ function SamhandlerAdresse() {
         css={css`
           width: fit-content;
         `}
+        data-cy="change-to-user"
         icon={<PersonIcon />}
         onClick={() =>
           navigate({
@@ -637,6 +642,7 @@ function FavoriteButton() {
         css={css`
           width: fit-content;
         `}
+        data-cy="remove-favorite-button"
         icon={<StarFillIcon aria-hidden />}
         onClick={() => toggleFavoritesMutation.mutate(templateId)}
         size="small"
@@ -652,6 +658,7 @@ function FavoriteButton() {
       css={css`
         width: fit-content;
       `}
+      data-cy="add-favorite-button"
       icon={<StarIcon aria-hidden />}
       onClick={() => toggleFavoritesMutation.mutate(templateId)}
       size="small"
@@ -703,6 +710,7 @@ function VelgSamhandlerModal() {
   return (
     <>
       <Button
+        data-cy="toggle-samhandler-button"
         icon={idTSSEkstern ? <PencilIcon /> : <Buildings3Icon />}
         onClick={() => reference.current?.showModal()}
         size="small"
@@ -787,6 +795,7 @@ function VelgSamhandlerModal() {
         <Modal.Footer>
           {selectedIdTSSEkstern && (
             <Button
+              data-cy="bekreft-ny-mottaker"
               onClick={() => {
                 reference.current?.close();
                 navigate({
@@ -916,6 +925,7 @@ function SamhandlerSearchResults({
               </Table.DataCell>
               <Table.DataCell align="right">
                 <Button
+                  data-cy="velg-samhandler"
                   onClick={() => onSelect(samhandler.idTSSEkstern)}
                   size="small"
                   type="button"

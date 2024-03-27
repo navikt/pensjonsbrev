@@ -1,0 +1,19 @@
+{
+  "samhandlere": [
+    {
+      "navn": "ADVOKAT 1 AS",
+      "samhandlerType": "ADVO",
+      "offentligId": "00998849713",
+      "idType": "ORG",
+      "idTSSEkstern": "80000781720"
+    },
+    {
+      "navn": "ADVOKAT 1 AS",
+      "samhandlerType": "ADVO",
+      "offentligId": "00998849713",
+      "idType": "ORG",
+      "idTSSEkstern": "80000781721"
+    }
+  ],
+  "failureType": null
+}
