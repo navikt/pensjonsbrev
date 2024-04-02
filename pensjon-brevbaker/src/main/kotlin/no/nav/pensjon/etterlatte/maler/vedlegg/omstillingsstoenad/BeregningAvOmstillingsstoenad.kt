@@ -222,8 +222,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             title2 {
                 textExpr(
                     Bokmal to ifElse(erRestanseTrekk, "Trekk", "Tillegg") + " i utbetalingen",
-	                Nynorsk to "".expr(),
-	                English to "".expr()
+	                Nynorsk to ifElse(erRestanseTrekk, "Trekk", "Tillegg") + " i utbetalinga",
+	                English to ifElse(erRestanseTrekk, "Deduction from", "Addition to") + " payment",
                 )
             }
             paragraph {
@@ -233,8 +233,16 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                             " i utbetalingen for resten av året for å redusere etteroppgjøret. " +
                             "Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "mer") +
                             " enn det som fremgår i tabellen over, under “Utbetaling per måned”.".expr(),
-		            Nynorsk to "".expr(),
-		            English to "".expr()
+		            Nynorsk to "Den forventa inntekta di for inneverande år har blitt justert. ".expr() +
+                            "Det blir " + ifElse(erRestanseTrekk, "gjort eit trekk", "gitt eit tillegg") +
+                            " i utbetalinga for resten av året for å redusere etteroppgjeret. " +
+                            "Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "meir") +
+                            " enn det som står under «Utbetaling per månad» i tabellen over.".expr(),
+		            English to "Your estimated income for the current year has been adjusted. ".expr() +
+                            "Your payment amount has therefore been " + ifElse(erRestanseTrekk, "reduced", "increased") +
+                            " for the remainder of the year to reduce the settlement. " +
+                            "You will receive NOK " + restanse.format() + ifElse(erRestanseTrekk, "less", "more") +
+                            " per month than what is specified in the table above, under “Utbetaling per måned”.".expr()
 	            )
             }
         }
