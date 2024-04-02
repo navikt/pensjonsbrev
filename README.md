@@ -137,3 +137,7 @@ En strategi for overgangen kan se slik ut:
    )
     ```
 3. Ta i bruk den nye versjonen i avsender systemet.
+
+# Kode generert av GitHub Copilot
+
+Dette repoet inneholder forekomster av kode generert av GitHub Copilot.
