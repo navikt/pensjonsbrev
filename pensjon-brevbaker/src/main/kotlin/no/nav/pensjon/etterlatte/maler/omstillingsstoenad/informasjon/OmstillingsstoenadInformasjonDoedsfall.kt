@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -18,12 +17,18 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.fraser.common.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_ANDRE_STOENADER_URL
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_URL
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.Utland.OMS
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.borIutland
 
 data class OmstillingstoenadInformasjonDoedsfallDTO(
     override val innhold: List<Element>,
     val avdoedNavn: String,
+    val borIutland: Boolean,
 ) : BrevDTO
+
 
 @TemplateModelHelpers
 object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<OmstillingstoenadInformasjonDoedsfallDTO> {
@@ -165,21 +170,63 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                         English to "You can read more about the National Insurance basic amount at ${GRUNNBELOEP_URL}.",
                     )
                 }
+                showIf(borIutland.not()) {
+                    title2 {
+                        text(
+                            Bokmal to "Hvordan søker du?",
+                            Nynorsk to "Korleis søkjer du?",
+                            English to "How do you apply",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner informasjon og søknad på $OMS_URL.",
+                            Nynorsk to "Du finn informasjon på $OMS_URL.",
+                            English to "You will find information and the application form at $OMS_URL.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Vi oppfordrer deg til å søke så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder.",
+                            Nynorsk to "Vi oppmodar deg til å søkje så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader.",
+                            English to "We encourage you to apply as soon as possible because we normally only pay retroactively for three months.",
+                        )
+                    }
+                }
 
-                title2 {
-                    text(
-                        Bokmal to "Hvordan søker du?",
-                        Nynorsk to "Korleis søkjer du?",
-                        English to "Other pension schemes",
-                    )
+                showIf(borIutland) {
+                    title2 {
+                        text(
+                            Bokmal to "Hvordan søker du?",
+                            Nynorsk to "Korleis søkjer du?",
+                            English to "How do you apply",
+                        )
+                    }
+
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner informasjon og søknad på $OMS_URL.",
+                            Nynorsk to "Du finn informasjon på $OMS_URL.",
+                            English to "You will find information and the application form at $OMS_URL.",
+                        )
+                    }
+
+                    paragraph {
+                        text(
+                            Bokmal to "Vi har informasjon om at du bor i utlandet.  Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker omstillingsstønad. Du finner informasjon om hvilke land Norge har avtale med på $OMS",
+                            Nynorsk to "Etter dei opplysningane vi har, bur du i utlandet. Dersom du bur i eit land som Noreg har trygdeavtale med, må du kontakte trygdemaktene i dette landet før du søkjer om omstillingsstønad. På $OMS finn du meir informasjon om kva land Noreg har avtale med.",
+                            English to "According to our records, you live abroad. Go to $OMS_URL for more information on how to apply."
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Vi oppfordrer deg til å søke så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder.",
+                            Nynorsk to "Vi oppmodar deg til å søkje så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader.",
+                            English to "We encourage you to apply as soon as possible because we normally only pay retroactively for three months.",
+                        )
+                    }
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Vi oppfordrer deg til å søke så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. Det er nye regler for gjenlevendeytelser fra 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for hvilke regler som gjelder for deg.",
-                        Nynorsk to "Vi oppmodar deg til å søkje så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader. Det er nye reglar for ytingar til attlevande frå 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for kva regler som gjeld for deg.",
-                        English to "If the deceased was a member of a private or public pension scheme and you have questions about this, you can contact the deceased's employer. You can also contact the pension scheme or insurance company.",
-                    )
-                }
+
                 paragraph {
                     text(
                         Bokmal to "Dersom du bor i utlandet, må du kontakte trygdemyndigheten i bostedslandet ditt.",
@@ -203,6 +250,30 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                         Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
                         English to "If the deceased has lived or worked abroad, this may affect the amount of your pension. Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. Therefore, you may also be entitled to a pension from other countries. We can assist you with your application to countries with which Norway has a social security agreement.",
                     )
+                }
+
+                showIf(borIutland.not()) {
+                    title2 {
+                        text(
+                            Bokmal to "Rettigheter hvis avdøde har bodd eller arbeidet i utlandet",
+                            Nynorsk to "Andre stønader til gjenlevende ",
+                            English to "Other benefits you may be entitled to as a surviving spouse ",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
+                            Nynorsk to "Du kan også ha rett til stønad til barnetilsyn, tilleggsstønad og stønad til skolepenger. Forsørger du barn under 18 år, kan du ha rett til utvidet barnetrygd. ",
+                            English to "You may also be entitled to child care benefits, supplemental benefits and an allowance to cover tuition fees. If you provide for children under the age of 18, you may be entitled to extended child benefit. ",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Du kan lese mer om dette på $OMS_ANDRE_STOENADER_URL",
+                            Nynorsk to "Du kan lese meir om dette på $OMS_ANDRE_STOENADER_URL",
+                            English to "",
+                        )
+                    }
                 }
 
                 title2 {
