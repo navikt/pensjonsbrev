@@ -98,6 +98,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         Brevmeny
       </Heading>
       <Search
+        data-cy="brevmal-search"
         hideLabel={false}
         label="Søk etter brevmal"
         onChange={(value) => setSearchTerm(value)}
@@ -119,13 +120,14 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         size="small"
       >
         {Object.keys(brevmalerGroupedByType).length === 0 && (
-          <Alert size="small" variant="info">
+          <Alert data-cy="ingen-treff-alert" size="small" variant="info">
             Ingen treff
           </Alert>
         )}
         {sortedCategoryKeys.map((type) => {
           return (
             <Accordion.Item
+              data-cy="category-item"
               defaultOpen={type === "Favoritter"}
               key={type}
               open={searchTerm.length > 0 ? true : undefined}
@@ -186,6 +188,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
             background-color: var(--a-surface-action-active);
           `,
       )}
+      data-cy="brevmal-button"
       onClick={() =>
         navigate({
           to: "/saksnummer/$saksId/brevvelger/$templateId",

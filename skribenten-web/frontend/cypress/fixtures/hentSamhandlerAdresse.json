@@ -1,0 +1,12 @@
+{
+  "adresse": {
+    "navn": "ADVOKAT 1 AS",
+    "linje1": "Postboks 603 Sentrum",
+    "linje2": null,
+    "linje3": null,
+    "postnr": "4003",
+    "poststed": "STAVANGER",
+    "land": "NOR"
+  },
+  "failureType": null
+}
