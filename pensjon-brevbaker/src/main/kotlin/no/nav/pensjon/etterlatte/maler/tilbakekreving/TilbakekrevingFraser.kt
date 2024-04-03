@@ -113,6 +113,7 @@ object TilbakekrevingFraser {
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
+			val nettoTilbakekreving = tilbakekreving.summer.nettoTilbakekreving
 			val renteTillegg = tilbakekreving.summer.renteTillegg
 			val sumTilbakekreving = tilbakekreving.summer.sumNettoRenter
 			val fraOgMed = tilbakekreving.fraOgMed
@@ -143,7 +144,7 @@ object TilbakekrevingFraser {
 				)
 				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
-						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner etter at " +
+						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
 								"skatten er trukket fra. Du må også betale " + renteTillegg.format() +
 								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() + " kroner.",
 						Nynorsk to " ".expr(),
@@ -168,8 +169,9 @@ object TilbakekrevingFraser {
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
+			val nettoTilbakekreving = tilbakekreving.summer.nettoTilbakekreving
 			val renteTillegg = tilbakekreving.summer.renteTillegg
-			val sumTilbakekreving = renteTillegg.plus(tilbakekreving.summer.nettoTilbakekreving)
+			val sumTilbakekreving = tilbakekreving.summer.sumNettoRenter
 			val fraOgMed = tilbakekreving.fraOgMed
 			val tilOgMed = tilbakekreving.tilOgMed
 
@@ -192,7 +194,7 @@ object TilbakekrevingFraser {
 				)
 				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
-						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner etter at " +
+						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
 								"skatten er trukket fra. Boet må også betale " + renteTillegg.format() +
 								" kroner i renter. Til sammen skal boet betale " + sumTilbakekreving.format() + " kroner.",
 						Nynorsk to "".expr(),
