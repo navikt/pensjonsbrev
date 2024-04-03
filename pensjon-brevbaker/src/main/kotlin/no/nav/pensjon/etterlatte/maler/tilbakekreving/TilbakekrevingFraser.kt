@@ -192,9 +192,9 @@ object TilbakekrevingFraser {
 				)
 				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
-						Bokmal to " Boet må også betale ".expr() + renteTillegg.format() +
-								" kroner i renter. Til sammen skal boet betale " + sumTilbakekreving.format() +
-								" kroner etter at skatten er trukket fra.",
+						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner etter at " +
+								"skatten er trukket fra. Boet må også betale " + renteTillegg.format() +
+								" kroner i renter. Til sammen skal boet betale " + sumTilbakekreving.format() + " kroner.",
 						Nynorsk to "".expr(),
 						English to "".expr()
 					)
