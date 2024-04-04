@@ -29,7 +29,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val tjenestebussIntegrasjonService =
         TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
     val navansattService = NavansattService(servicesConfig.getConfig("navansatt"), authService)
-    val legacyBrevService = LegacyBrevService(tjenestebussIntegrasjonService, brevmetadataService, safService, penService)
+    val legacyBrevService = LegacyBrevService(tjenestebussIntegrasjonService, brevmetadataService, safService, penService, navansattService)
 
     routing {
         healthRoute()
