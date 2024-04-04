@@ -95,7 +95,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                         }
                         item {
                             text(
-                                Bokmal to "Du må ha vært gift eller samboer med den avdøde, og har eller har hatt barn med den avdøde.",
+                                Bokmal to "Du har vært gift eller samboer med den avdøde, og har eller har hatt barn med den avdøde.",
                                 Nynorsk to "Du har vore gift eller sambuar med avdøde, og har eller har hatt barn med avdøde.",
                                 English to "You were married to or living with the deceased, and you have or have had a child/children with the deceased.",
                             )
