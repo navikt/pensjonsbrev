@@ -27,7 +27,8 @@ object BarnepensjonInnvilgelseFraser {
         val sisteBeregningsperiodeDatoFom: Expression<LocalDate>,
         val sisteBeregningsperiodeBeloep: Expression<Kroner>,
         val erEtterbetaling: Expression<Boolean>,
-        val harFlereUtbetalingsperioder: Expression<Boolean>
+        val harFlereUtbetalingsperioder: Expression<Boolean>,
+        val erGjenoppretting: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -38,11 +39,19 @@ object BarnepensjonInnvilgelseFraser {
                 val formatertBeloep = sisteBeregningsperiodeBeloep.format()
                 val avdoedNavn = avdoed.navn
 
-                textExpr(
-                    Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
-                    Language.Nynorsk to "Du er innvilga barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
-                    Language.English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + ". "
-                )
+                showIf(erGjenoppretting) {
+                    textExpr(
+                        Language.Bokmal to "Vi viser til forhåndsvarsel om ny barnepensjon. Du er innvilget barnepensjon på nytt fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
+                        Language.Nynorsk to "Vi viser til førehandsvarselet om ny barnepensjon. Du er innvilga ny barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
+                        Language.English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + ". " // TODO Mangler..
+                    )
+                }.orShow {
+                    textExpr(
+                        Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
+                        Language.Nynorsk to "Du er innvilga barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
+                        Language.English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + ". "
+                    )
+                }
 
                 showIf(harFlereUtbetalingsperioder) {
                     textExpr(

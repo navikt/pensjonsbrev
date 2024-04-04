@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.erEtterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.erGjenoppretting
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.harFlereUtbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeBeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeDatoFom
@@ -28,6 +29,7 @@ data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
     val sisteBeregningsperiodeBeloep: Kroner,
     val erEtterbetaling: Boolean,
     val harFlereUtbetalingsperioder: Boolean,
+    val erGjenoppretting: Boolean
 )
 
 @TemplateModelHelpers
@@ -46,11 +48,19 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
         ),
     ) {
         title {
-            text(
-                Language.Bokmal to "Vi innvilger barnepensjonen din",
-                Language.Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-                Language.English to "We have granted your application for a children's pension",
-            )
+            showIf(erGjenoppretting) {
+                text(
+                    Language.Bokmal to "Du er innvilget barnepensjon på nytt",
+                    Language.Nynorsk to "Du er innvilga barnepensjon på ny",
+                    Language.English to "", // TODO
+                )
+            }.orShow {
+                text(
+					Language.Bokmal to "Vi innvilger barnepensjonen din",
+					Language.Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
+					Language.English to "We have granted your application for a children's pension",
+				)
+            }
         }
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
@@ -62,7 +72,8 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
                     sisteBeregningsperiodeDatoFom,
                     sisteBeregningsperiodeBeloep,
                     erEtterbetaling,
-                    harFlereUtbetalingsperioder
+                    harFlereUtbetalingsperioder,
+                    erGjenoppretting
                 ),
             )
         }
