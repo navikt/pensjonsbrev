@@ -16,6 +16,7 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.fraser.common.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_ANDRE_STOENADER_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_URL
@@ -117,9 +118,9 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du kan lese mer om disse rettighetene på ${Constants.OMS_URL}.",
-                        Nynorsk to "Du kan lese meir om dine rettar på ${Constants.OMS_URL}.",
-                        English to "You can read more about this at ${Constants.OMS_URL}. ",
+                        Bokmal to "Du kan lese mer om disse rettighetene på $OMS_URL.",
+                        Nynorsk to "Du kan lese meir om dine rettar på $OMS_URL.",
+                        English to "You can read more about this at $OMS_URL. ",
                     )
                 }
 
@@ -277,9 +278,9 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du kan finne svar på ${Constants.OMS_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. Du kan også kontakte oss på telefon ${KONTATTELEFON_PENSJON_MED_LANDKODE}, hverdager kl. 09.00-15.00. Hvis du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
-                        Nynorsk to "Du kan finne svar på ${Constants.OMS_URL}. Du kan skrive til eller chatte med oss på ${Constants.KONTAKT_URL}. Du kan også kontakte oss på telefon ${KONTATTELEFON_PENSJON_MED_LANDKODE}, kvardagar 09:00–15:00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer.",
-                        English to "You can find answers to your questions online: ${Constants.OMS_URL}. Feel free to chat with us or write to us here: ${Constants.KONTAKT_URL}. You can also contact us by phone (${KONTATTELEFON_PENSJON_MED_LANDKODE}), weekdays 09:00-15:00. If you provide your national identity number, we can more easily provide you with quick and good help.",
+                        Bokmal to "Du kan finne svar på $OMS_URL. På $KONTAKT_URL kan du chatte eller skrive til oss. Du kan også kontakte oss på telefon ${KONTATTELEFON_PENSJON_MED_LANDKODE}, hverdager kl. 09.00-15.00. Hvis du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
+                        Nynorsk to "Du kan finne svar på $OMS_URL. Du kan skrive til eller chatte med oss på $KONTAKT_URL. Du kan også kontakte oss på telefon ${KONTATTELEFON_PENSJON_MED_LANDKODE}, kvardagar 09:00–15:00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer.",
+                        English to "You can find answers to your questions online: $OMS_URL. Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact us by phone (${KONTATTELEFON_PENSJON_MED_LANDKODE}), weekdays 09:00-15:00. If you provide your national identity number, we can more easily provide you with quick and good help.",
                     )
                 }
             }

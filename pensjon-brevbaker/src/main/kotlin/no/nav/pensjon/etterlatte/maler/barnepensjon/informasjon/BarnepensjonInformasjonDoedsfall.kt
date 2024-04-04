@@ -19,6 +19,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.erOver18aar
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKTTELEFON_PENSJON
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
 
 data class BarnepensjonInformasjonDoedsfallDTO(
     override val innhold: List<Element>,
@@ -88,7 +90,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                         text(
                             Bokmal to "Du finner informasjon og søknad på $BARNEPENSJON_URL.",
                             Nynorsk to "Du finn informasjon og søknad på $BARNEPENSJON_URL.",
-                            English to "You will find information and the application form at $BARNEPENSJON_URL.",
+                            English to "You will find information and the application form at ${Constants.Engelsk.BARNEPENSJON_URL}.",
                         )
                     }
                     paragraph {
@@ -105,7 +107,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                         text(
                             Bokmal to "Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på $BARNEPENSJON_URL",
                             Nynorsk to "Etter dei opplysningane vi har, bur du i utlandet. Du kan lese meir på $BARNEPENSJON_URL om korleis du søkjer.",
-                            English to "According to our records, you live abroad. You will find information and the application form at $BARNEPENSJON_URL.",
+                            English to "According to our records, you live abroad. You will find information and the application form at ${Constants.Engelsk.BARNEPENSJON_URL}.",
                         )
                     }
 
@@ -138,7 +140,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                         text(
                             Bokmal to "Du finner informasjon og søknad på $BARNEPENSJON_URL",
                             Nynorsk to "Du finn informasjon og søknad på $BARNEPENSJON_URL",
-                            English to "You will find information and the application form at $$BARNEPENSJON_URL",
+                            English to "You will find information and the application form at ${Constants.Engelsk.BARNEPENSJON_URL}",
                         )
                     }
                 }
@@ -148,7 +150,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                         text(
                             Bokmal to "Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på $BARNEPENSJON_URL",
                             Nynorsk to "Etter dei opplysningane vi har, bur du i utlandet. Du kan lese meir på $BARNEPENSJON_URL om korleis du søkjer.",
-                            English to "According to our records, you live abroad. Go to $BARNEPENSJON_URL for more information on how to apply.",
+                            English to "According to our records, you live abroad. Go to ${Constants.Engelsk.BARNEPENSJON_URL} for more information on how to apply.",
                         )
                     }
                     paragraph {
@@ -200,35 +202,35 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                 showIf(borIutland.not().and(erOver18aar.not())) {
                     paragraph {
                         text(
-                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON} hverdager kl. 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
-                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
-                            English to "For more information, visit us online: $BARNEPENSJON_URL. If you cannot find the answer to your question, you can call us by phone (${Constants.KONTAKTTELEFON_PENSJON}) weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help.",
+                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON hverdager kl. 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
+                            English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTAKTTELEFON_PENSJON) weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help.",
                         )
                     }
                 }
                 showIf(borIutland.and(erOver18aar.not())) {
                     paragraph {
                         text(
-                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE} hverdager kl. 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
-                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
-                            English to "For more information, visit us online: $BARNEPENSJON_URL. If you cannot find the answer to your question, you can call us by phone (${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}) weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help.",
+                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTATTELEFON_PENSJON_MED_LANDKODE hverdager kl. 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTATTELEFON_PENSJON_MED_LANDKODE, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
+                            English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTATTELEFON_PENSJON_MED_LANDKODE) weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help.",
                         )
                     }
                     showIf(borIutland.not().and(erOver18aar)) {
                         paragraph {
                             text(
-                                Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON} hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
-                                Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                                English to "For more information, visit us online: $BARNEPENSJON_URL. If you cannot find the answer to your question, you can call us by phone (${Constants.KONTAKTTELEFON_PENSJON}) weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
+                                Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                                Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
+                                English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTAKTTELEFON_PENSJON) weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
                             )
                         }
                     }
                     showIf(borIutland.and(erOver18aar)) {
                         paragraph {
                             text(
-                                Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE} hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
-                                Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                                English to "For more information, visit us online: $BARNEPENSJON_URL. If you cannot find the answer to your question, you can call us by phone (${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}) weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
+                                Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTATTELEFON_PENSJON_MED_LANDKODE hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                                Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTATTELEFON_PENSJON_MED_LANDKODE, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
+                                English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTATTELEFON_PENSJON_MED_LANDKODE) weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
                             )
                         }
                     }
