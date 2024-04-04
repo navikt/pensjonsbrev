@@ -55,10 +55,8 @@ class LegacyBrevService(
         if (brevtittel.isNullOrBlank()) {
             return BestillOgRedigerBrevResponse(EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
         }
-        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent)
-        if(navansatt.resultOrNull()?.navn == null) {
-            return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
-        }
+        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent).resultOrNull()
+            ?: return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
 
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
@@ -72,7 +70,7 @@ class LegacyBrevService(
             spraak = request.spraak,
             brevtittel = brevtittel,
             vedtaksId = request.vedtaksId,
-            navn = navansatt.resultOrNull()!!.navn
+            navn = navansatt.navn
         )
         return if (result.failureType != null) {
             BestillOgRedigerBrevResponse(result)
@@ -96,10 +94,8 @@ class LegacyBrevService(
         saksId: Long,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
-        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent)
-        if(navansatt.resultOrNull()?.navn == null) {
-            return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
-        }
+        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent).resultOrNull()
+            ?: return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
 
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
@@ -113,7 +109,7 @@ class LegacyBrevService(
             brevtittel = brevMetadata.dekode,
             landkode = request.landkode,
             mottakerText = request.mottakerText,
-            navn = navansatt.resultOrNull()!!.navn
+            navn = navansatt.navn
         )
         return if (result.failureType != null) {
             BestillOgRedigerBrevResponse(result)
