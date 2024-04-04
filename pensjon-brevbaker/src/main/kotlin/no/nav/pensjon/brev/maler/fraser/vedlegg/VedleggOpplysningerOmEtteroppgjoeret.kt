@@ -1027,6 +1027,8 @@ data class FratrekkTabell(
                     English -> "Income up to the basic amount of the National Insurance Scheme"
                 }
             }
+
+        override fun stableHashCode(): Int = "LocalizedAarsak".hashCode()
     }
 
     object LocalizedFratrekkType :
@@ -1079,6 +1081,7 @@ data class FratrekkTabell(
                 }
             }
 
+        override fun stableHashCode(): Int = "LocalizedFratrekkType".hashCode()
     }
 }
 
@@ -1163,6 +1166,8 @@ data class InntektTabell(
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.NAV -> "NAV"
             }
+
+        override fun stableHashCode(): Int = "LocalizedKilde".hashCode()
     }
 
     object LocalizedInntektType :
@@ -1208,5 +1213,7 @@ data class InntektTabell(
                     English -> "Pensions from abroad"
                 }
             }
+
+        override fun stableHashCode(): Int = "LocalizedInntektType".hashCode()
     }
 }

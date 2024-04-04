@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.containsSubstring
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
@@ -19,7 +21,7 @@ fun <Param : Any> Letter<Param>.assertRenderedLetterDoesNotContainAnyOf(vararg s
 fun <Param : Any> Letter<Param>.assertRenderedLetterContainsAllOf(vararg searchText: String): Letter<Param> {
     val letterString = renderLetterAndAttachments()
     searchText.forEach {
-        Assertions.assertTrue(letterString.contains(it), """Letter should contain "$it"""")
+        assertThat(letterString, containsSubstring(it))
     }
     return this
 }

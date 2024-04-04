@@ -10,7 +10,8 @@ open class ExpressionScope<Argument : Any>(val argument: Argument, val felles: F
         private val parent: ExpressionScope<Argument>
     ): ExpressionScope<Argument>(parent.argument, parent.felles, parent.language) {
         fun lookup(expr: Expression.FromScope.Assigned<Var>): Var =
-            if (expr == this.expr) {
+            // Uses referential equality since nested ForEach over the same collection-expression will be equal.
+            if (expr === this.expr) {
                 value
             } else if (parent is WithAssignment<*, *>) {
                 @Suppress("UNCHECKED_CAST")

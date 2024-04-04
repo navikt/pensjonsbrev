@@ -17,4 +17,6 @@ object IntBroekFormatter : LocalizedFormatter<IntBroek?>() {
 
         return "${broek.teller}/${broek.nevner}"
     }
+
+    override fun stableHashCode(): Int = "IntBroekFormatter".hashCode()
 }

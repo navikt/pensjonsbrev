@@ -101,4 +101,6 @@ object PeriodeFormatter : LocalizedFormatter<Periode>() {
 
         return actualValues.joinToString(separator = ", ") { it }
     }
+
+    override fun stableHashCode(): Int = "PeriodeFormatter".hashCode()
 }
