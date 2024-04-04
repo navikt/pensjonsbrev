@@ -67,7 +67,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
                 text(
                     Bokmal to "Du er innvilget barnepensjon på nytt",
                     Nynorsk to "Du er innvilga barnepensjon på ny",
-                    English to "", // TODO
+                    English to "You have been granted children’s pension again",
                 )
             }.orShow {
                 text(

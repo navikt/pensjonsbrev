@@ -52,7 +52,7 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
                 text(
                     Language.Bokmal to "Du er innvilget barnepensjon på nytt",
                     Language.Nynorsk to "Du er innvilga barnepensjon på ny",
-                    Language.English to "", // TODO
+                    Language.English to "You have been granted children’s pension again",
                 )
             }.orShow {
                 text(
