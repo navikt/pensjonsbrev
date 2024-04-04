@@ -43,7 +43,7 @@ val tilbakekrevingVedlegg = createAttachment(
 			Nynorsk to "Alle beløp er i norske kroner. Eventuelle renter kjem i tillegg (sjå «Rentetillegg» " +
 					"i tabellen over). Brutto tilbakekrevjing er før frådrag for skatt, medan netto tilbakekrevjing " +
 					"er etter frådrag for skatt. ",
-			English to "All amounts in NOK. Any interest accrued will be added, see “Interest” in the table " +
+			English to "All amounts are in NOK. Any interest accrued will be added, see “Interest” in the table " +
 					"above. Gross reimbursement refers to the deduction before tax, whereas net reimbursement " +
 					"refers to the deduction after tax. ",
 		)

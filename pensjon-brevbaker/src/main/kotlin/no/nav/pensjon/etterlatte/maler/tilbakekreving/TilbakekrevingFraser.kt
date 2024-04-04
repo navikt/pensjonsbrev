@@ -311,7 +311,7 @@ object TilbakekrevingFraser {
 					Nynorsk to "Vi gir opplysningar til Skatteetaten om dette vedtaket. Skatteetaten slår " +
 							"fast det endelege skattebeløpet, og gjer nødvendige korrigeringar i skatteoppgjeret ditt.",
 					English to "We will notify the Tax Administration about this decision. They will assess " +
-							"the final tax amount and make the necessary corrections in your tax settlement.  ",
+							"the final tax amount and make the necessary corrections in your tax settlement.",
 					)
 			}
 		}
