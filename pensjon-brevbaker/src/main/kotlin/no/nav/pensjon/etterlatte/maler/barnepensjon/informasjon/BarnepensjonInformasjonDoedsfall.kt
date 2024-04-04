@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -16,11 +15,18 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.borIutland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.erOver18aar
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKTTELEFON_PENSJON
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
 
 data class BarnepensjonInformasjonDoedsfallDTO(
     override val innhold: List<Element>,
     val avdoedNavn: String,
+    val borIutland: Boolean,
+    val erOver18aar: Boolean,
 ) : BrevDTO
 
 @TemplateModelHelpers
@@ -79,19 +85,81 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                         English to "How do you apply?",
                     )
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Du finner informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg.",
-                        Nynorsk to "Du finn informasjon og søknad på nav.no/barnepensjon. Er du under 18 år, må verja di søkje om barnepensjon på dine vegner.",
-                        English to "You will find information and the application form at nav.no/barnepensjon. If you are under the age of 18, your guardian must apply for a children’s pension on your behalf.",
-                    )
+                showIf(borIutland.not().and(erOver18aar.not())) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner informasjon og søknad på $BARNEPENSJON_URL.",
+                            Nynorsk to "Du finn informasjon og søknad på $BARNEPENSJON_URL.",
+                            English to "You will find information and the application form at ${Constants.Engelsk.BARNEPENSJON_URL}.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg. Vergen til barnet kan være enten forelderen eller andre personer oppnevnt av Statsforvalteren.",
+                            Nynorsk to "Er du under 18 år, må verja di søkje om barnepensjon på dine vegner. Verja til barnet kan vere anten forelderen eller ein person som Statsforvaltaren har utnemnd.",
+                            English to "If you are under the age of 18, your guardian must apply for a children’s pension on your behalf. A child’s guardian can be a parent or another person appointed by the County Governor.",
+                        )
+                    }
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Dersom du bor i utlandet, må du kontakte trygdemyndigheten i bostedslandet ditt.",
-                        Nynorsk to "Dersom du bur i utlandet, må du kontakte trygdemyndigheitene i bustadlandet ditt. ",
-                        English to "If you live outside Norway, you must contact the National Insurance authoriti in your country of residence.",
-                    )
+
+                showIf(borIutland.and(erOver18aar.not())) {
+                    paragraph {
+                        text(
+                            Bokmal to "Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på $BARNEPENSJON_URL",
+                            Nynorsk to "Etter dei opplysningane vi har, bur du i utlandet. Du kan lese meir på $BARNEPENSJON_URL om korleis du søkjer.",
+                            English to "According to our records, you live abroad. You will find information and the application form at ${Constants.Engelsk.BARNEPENSJON_URL}.",
+                        )
+                    }
+
+                    paragraph {
+                        text(
+                            Bokmal to "Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker barnepensjon. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.BP}.",
+                            Nynorsk to "Dersom du bur i eit land som Noreg har trygdeavtale med, må du kontakte trygdemaktene i dette landet før du søkjer om barnepensjon. På ${Constants.Utland.BP} finn du meir informasjon om kva land Noreg har avtale med.",
+                            English to "If you live in a country Norway has a social security agreement with, you must contact the social security authority in your country of residence before you apply for children’s pension. See which countries Norway has a social security agreement with here: ${Constants.Utland.BP}",
+                        )
+                    }
+
+                    paragraph {
+                        text(
+                            Bokmal to "Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg. Vergen til barnet kan være enten forelderen eller andre personer oppnevnt av Statsforvalteren.",
+                            Nynorsk to "Viss du er under 18 år, må verja di søkje om barnepensjon på dine vegner. Verja til barnet kan vere anten forelderen eller ein person som Statsforvaltaren har utnemnd.",
+                            English to "If you are under the age of 18, your guardian must apply for children’s pension on your behalf.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "",
+                            Nynorsk to "",
+                            English to "A child’s guardian can be a parent or another person appointed by the County Governor.   ",
+                        )
+                    }
+                }
+
+                showIf(borIutland.not().and(erOver18aar)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner informasjon og søknad på $BARNEPENSJON_URL",
+                            Nynorsk to "Du finn informasjon og søknad på $BARNEPENSJON_URL",
+                            English to "You will find information and the application form at ${Constants.Engelsk.BARNEPENSJON_URL}",
+                        )
+                    }
+                }
+
+                showIf(borIutland.and(erOver18aar)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på $BARNEPENSJON_URL",
+                            Nynorsk to "Etter dei opplysningane vi har, bur du i utlandet. Du kan lese meir på $BARNEPENSJON_URL om korleis du søkjer.",
+                            English to "According to our records, you live abroad. Go to ${Constants.Engelsk.BARNEPENSJON_URL} for more information on how to apply.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker barnepensjon. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.BP}.",
+                            Nynorsk to "Dersom du bur i eit land som Noreg har trygdeavtale med, må du kontakte trygdemaktene i dette landet før du søkjer om barnepensjon. På ${Constants.Utland.BP} finn du meir informasjon om kva land Noreg har avtale med.",
+                            English to "If you live in a country Norway has a social security agreement with, you must contact the social security authority in your country of residence before you apply for children’s pension. See which countries Norway has a social security agreement with here: ${Constants.Utland.BP}.",
+                        )
+                    }
                 }
 
                 title2 {
@@ -103,8 +171,8 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
-                        Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
+                        Bokmal to "Hvis avdøde tidligere har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
+                        Nynorsk to "Dersom avdøde tidlegare har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
                         English to "If the deceased has lived or worked abroad, this may affect the amount of your pension. Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. Therefore, you may also be entitled to a pension from other countries. We can assist you with your application to countries with which Norway has a social security agreement.",
                     )
                 }
@@ -131,19 +199,41 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                         English to "Do you have any questions?",
                     )
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
-                        Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Du kan chatte med oss eller skrive til oss på ${Constants.KONTAKT_URL}.",
-                        English to "You can find more information at ${Constants.Engelsk.BARNEPENSJON_URL}. At ${Constants.Engelsk.KONTAKT_URL} you can chat or write to us.",
-                    )
+                showIf(borIutland.not().and(erOver18aar.not())) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON hverdager kl. 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
+                            English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTAKTTELEFON_PENSJON) weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help.",
+                        )
+                    }
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}, hverdager kl. 09.00 - 15.00.",
-                        Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}, kvardagar kl. 09.00 til 15.00.",
-                        English to "If you do not find the answer at nav.no, you can call us at ${Constants.KONTATTELEFON_PENSJON_MED_LANDKODE}, weekdays from 09:00 to 15:00.",
-                    )
+                showIf(borIutland.and(erOver18aar.not())) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTATTELEFON_PENSJON_MED_LANDKODE hverdager kl. 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTATTELEFON_PENSJON_MED_LANDKODE, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
+                            English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTATTELEFON_PENSJON_MED_LANDKODE) weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help.",
+                        )
+                    }
+                    showIf(borIutland.not().and(erOver18aar)) {
+                        paragraph {
+                            text(
+                                Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                                Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
+                                English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTAKTTELEFON_PENSJON) weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
+                            )
+                        }
+                    }
+                    showIf(borIutland.and(erOver18aar)) {
+                        paragraph {
+                            text(
+                                Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTATTELEFON_PENSJON_MED_LANDKODE hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                                Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTATTELEFON_PENSJON_MED_LANDKODE, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
+                                English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTATTELEFON_PENSJON_MED_LANDKODE) weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
+                            )
+                        }
+                    }
                 }
             }
         }

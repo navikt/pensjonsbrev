@@ -13,17 +13,17 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors
 @TemplateModelHelpers
 val tilbakekrevingVedlegg = createAttachment(
 	title = newText(
-		Bokmal to "Oversikt over feiltutbetalinger",
-		Nynorsk to "Oversikt over feiltutbetalinger",
-		English to "Oversikt over feiltutbetalinger",
+		Bokmal to "Oversikt over feilutbetalinger",
+		Nynorsk to "Oversikt over feilutbetalinger",
+		English to "Oversikt over feilutbetalinger",
 	),
 	includeSakspart = false
 ) {
 	title2 {
 		text(
-			Bokmal to "Oversikt over feiltutbetalinger",
-			Nynorsk to "Oversikt over feiltutbetalinger",
-			English to "Oversikt over feiltutbetalinger",
+			Bokmal to "Oversikt over feilutbetalinger",
+			Nynorsk to "Oversikt over feilutbetalinger",
+			English to "Oversikt over feilutbetalinger",
 		)
 	}
 	includePhrase(TilbakekrevingVedleggFraser.OversiktOverFeilutbetalinger(summer))
@@ -38,7 +38,7 @@ val tilbakekrevingVedlegg = createAttachment(
 	paragraph {
 		text(
 			Bokmal to "Alle beløp er i norske kroner. Eventuelle renter kommer i tillegg, " +
-					"se “Rentetillegg” i tabellen over. Brutto tilbakekreving er før fradrag for skatt, " +
+					"se «Rentetillegg» i tabellen over. Brutto tilbakekreving er før fradrag for skatt, " +
 					"mens netto tilbakekreving er etter fradrag for skatt.",
 			Nynorsk to "",
 			English to "",

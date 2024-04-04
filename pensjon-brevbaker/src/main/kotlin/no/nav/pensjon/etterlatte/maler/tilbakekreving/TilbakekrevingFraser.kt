@@ -4,10 +4,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -15,10 +15,11 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.etterlatte.maler.fraser.common.format
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.etterlatte.maler.formatMaanedAar
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
+import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.bruttoTilbakekreving
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
@@ -112,6 +113,7 @@ object TilbakekrevingFraser {
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
+			val nettoTilbakekreving = tilbakekreving.summer.nettoTilbakekreving
 			val renteTillegg = tilbakekreving.summer.renteTillegg
 			val sumTilbakekreving = tilbakekreving.summer.sumNettoRenter
 			val fraOgMed = tilbakekreving.fraOgMed
@@ -142,15 +144,11 @@ object TilbakekrevingFraser {
 				)
 				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
-						Bokmal to " Du må også betale ".expr() + renteTillegg.format() +
-								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() +
-								" kroner etter at skatten er trukket fra.",
-						Nynorsk to " Du må også betale ".expr() + renteTillegg.format() +
-								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() +
-								" kroner etter at skatten er trukket fra.",
-						English to " Du må også betale ".expr() + renteTillegg.format() +
-								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() +
-								" kroner etter at skatten er trukket fra.",
+						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
+								"skatten er trukket fra. Du må også betale " + renteTillegg.format() +
+								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() + " kroner.",
+						Nynorsk to " ".expr(),
+						English to " ".expr(),
 					)
 				}.orShow {
 					textExpr(
@@ -171,8 +169,9 @@ object TilbakekrevingFraser {
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
+			val nettoTilbakekreving = tilbakekreving.summer.nettoTilbakekreving
 			val renteTillegg = tilbakekreving.summer.renteTillegg
-			val sumTilbakekreving = renteTillegg.plus(tilbakekreving.summer.nettoTilbakekreving)
+			val sumTilbakekreving = tilbakekreving.summer.sumNettoRenter
 			val fraOgMed = tilbakekreving.fraOgMed
 			val tilOgMed = tilbakekreving.tilOgMed
 
@@ -195,9 +194,9 @@ object TilbakekrevingFraser {
 				)
 				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
-						Bokmal to " Boet må også betale ".expr() + renteTillegg.format() +
-								" kroner i renter. Til sammen skal boet betale " + sumTilbakekreving.format() +
-								" kroner etter at skatten er trukket fra.",
+						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
+								"skatten er trukket fra. Boet må også betale " + renteTillegg.format() +
+								" kroner i renter. Til sammen skal boet betale " + sumTilbakekreving.format() + " kroner.",
 						Nynorsk to "".expr(),
 						English to "".expr()
 					)
@@ -230,22 +229,13 @@ object TilbakekrevingFraser {
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			paragraph {
-				text(
-					Bokmal to "Vedtaket er gjort etter folketrygdloven § 22-15",
-					Nynorsk to "Vedtaket er gjort etter folketrygdloven § 22-15",
-					English to "Vedtaket er gjort etter folketrygdloven § 22-15",
-				)
-				showIf(tilbakekreving.summer.renteTillegg.greaterThan(0)) {
-					text(
-						Bokmal to ", §§ 22-15 og 22-17 a",
-						Nynorsk to ", §§ 22-15 og 22-17 a",
-						English to ", §§ 22-15 og 22-17 a",
-					)
-				}
-				text(
-					Bokmal to ".",
-					Nynorsk to ".",
-					English to ".",
+				textExpr(
+					Bokmal to "Vedtaket er gjort etter folketrygdloven ".expr() +
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17 a.", "§ 22-15."),
+					Nynorsk to "Vedtaket er gjort etter folketrygdloven ".expr() +
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17 a.", "§ 22-15."),
+					English to "Vedtaket er gjort etter folketrygdloven ".expr() +
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17 a.", "§ 22-15."),
 				)
 			}
 		}
@@ -300,9 +290,32 @@ object TilbakekrevingFraser {
 		}
 	}
 
+	object SkattDoedsbo: OutlinePhrase<LangBokmalNynorskEnglish>() {
+		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+			title2 {
+				text(
+					Bokmal to "Skatt og skatteoppgjør",
+					Nynorsk to "Skatt og skatteoppgjør",
+					English to "Skatt og skatteoppgjør",
+				)
+			}
+			paragraph {
+				text(
+					Bokmal to "Vi gir opplysninger til Skatteetaten om dette vedtaket. " +
+							"De fastsetter det endelige skattebeløpet, og gjør nødvendige korrigeringer i " +
+							"skatteoppgjøret til avdøde.",
+					Nynorsk to "",
+					English to "",
+
+					)
+			}
+		}
+	}
+
 	data class HovedInnholdIngenTilbakekreving(
 		val sakType: Expression<SakType>,
-		val tilbakekreving: Expression<TilbakekrevingDTO>
+		val tilbakekreving: Expression<TilbakekrevingDTO>,
+		val doedsbo: Expression<Boolean>
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
@@ -340,11 +353,19 @@ object TilbakekrevingFraser {
 			}
 
 			paragraph {
-				text(
-					Bokmal to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
-					Nynorsk to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
-					English to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
-				)
+				showIf(doedsbo) {
+					text(
+						Bokmal to "I vedlegget til dette brevet finner du en oversikt over periodene med feilutbetalinger og beløpet som må betales tilbake.",
+						Nynorsk to "I vedlegget til dette brevet finner du en oversikt over periodene med feilutbetalinger og beløpet som må betales tilbake.",
+						English to "I vedlegget til dette brevet finner du en oversikt over periodene med feilutbetalinger og beløpet som må betales tilbake.",
+					)
+				}.orShow {
+					text(
+						Bokmal to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
+						Nynorsk to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
+						English to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
+					)
+				}
 			}
 		}
 	}
@@ -360,14 +381,14 @@ object TilbakekrevingVedleggFraser {
 			paragraph {
 				table(
 					header = {
-						column {
+						column(columnSpan = 2) {
 							text(
 								Bokmal to "Beløp som skal kreves tilbake i hele feilutbetalingsperioden",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column {}
+						column(columnSpan = 0) {}
 					}
 				) {
 					row {
@@ -385,7 +406,7 @@ object TilbakekrevingVedleggFraser {
 					row {
 						cell {
 							text(
-								Bokmal to "- fradrag skatt",
+								Bokmal to "- Fradrag skatt",
 								Nynorsk to "",
 								English to ""
 							)
@@ -443,35 +464,35 @@ object TilbakekrevingVedleggFraser {
 			paragraph {
 				table(
 					header = {
-						column(1) {
+						column {
 							text(
-								Bokmal to "Måned/år",
+								Bokmal to "Måned / år",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column(2) {
+						column {
 							text(
 								Bokmal to "Feilutbetalt beløp",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column(3) {
+						column {
 							text(
 								Bokmal to "Resultat",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column(4) {
+						column {
 							text(
 								Bokmal to "Brutto tilbakekreving",
 								Nynorsk to "",
 								English to "",
 							)
 						}
-						column(5) {
+						column {
 							text(
 								Bokmal to "Netto tilbakekreving",
 								Nynorsk to "",
@@ -484,9 +505,9 @@ object TilbakekrevingVedleggFraser {
 						row {
 							cell {
 								textExpr(
-									Bokmal to periode.maaned.format(),
-									Nynorsk to periode.maaned.format(),
-									English to periode.maaned.format(),
+									Bokmal to periode.maaned.formatMaanedAar(),
+									Nynorsk to periode.maaned.formatMaanedAar(),
+									English to periode.maaned.formatMaanedAar(),
 								)
 							}
 							cell {
