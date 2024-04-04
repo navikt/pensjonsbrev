@@ -88,7 +88,8 @@ fun createBarnepensjonInnvilgelseDTO() =
         bosattUtland = true,
         brukerUnder18Aar = true,
         kunNyttRegelverk = false,
-        erGjenoppretting = false
+        erGjenoppretting = false,
+        harUtbetaling = true
     )
 
 fun createBarnepensjonInnvilgelseRedigerbartUtfallDTO() = BarnepensjonInnvilgelseRedigerbartUtfallDTO(
