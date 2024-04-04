@@ -16,7 +16,7 @@ enum class TilbakekrevingResultat {
 object TilbakekrevingResultatFormatter : LocalizedFormatter<TilbakekrevingResultat>() {
 	override fun apply(resultat: TilbakekrevingResultat, spraak: Language): String {
 		return when (spraak) {
-			Language.Bokmal, Language.Nynorsk -> when (resultat) {
+			Language.Bokmal -> when (resultat) {
 				TilbakekrevingResultat.FULL_TILBAKEKREV-> "Full tilbakekreving"
 				TilbakekrevingResultat.DELVIS_TILBAKEKREV -> "Delvis tilbakekreving"
 				TilbakekrevingResultat.INGEN_TILBAKEKREV -> "Ingen tilbakekreving"
@@ -24,12 +24,20 @@ object TilbakekrevingResultatFormatter : LocalizedFormatter<TilbakekrevingResult
 				TilbakekrevingResultat.FEILREGISTRERT -> "Feilregistrert"
 			}
 
-			Language.English -> when (resultat) {
-				TilbakekrevingResultat.FULL_TILBAKEKREV-> "Full tilbakekreving"
-				TilbakekrevingResultat.DELVIS_TILBAKEKREV -> "Delvis tilbakekreving"
-				TilbakekrevingResultat.INGEN_TILBAKEKREV -> "Ingen tilbakekreving"
-				TilbakekrevingResultat.FORELDET -> "Foreldet"
+			Language.Nynorsk -> when (resultat) {
+				TilbakekrevingResultat.FULL_TILBAKEKREV-> "Full tilbakekrevjing"
+				TilbakekrevingResultat.DELVIS_TILBAKEKREV -> "Delvis tilbakekrevjing"
+				TilbakekrevingResultat.INGEN_TILBAKEKREV -> "Ingen tilbakekrevjing"
+				TilbakekrevingResultat.FORELDET -> "Forelda"
 				TilbakekrevingResultat.FEILREGISTRERT -> "Feilregistrert"
+			}
+
+			Language.English -> when (resultat) {
+				TilbakekrevingResultat.FULL_TILBAKEKREV-> "Full reimbursement"
+				TilbakekrevingResultat.DELVIS_TILBAKEKREV -> "Partial reimbursement"
+				TilbakekrevingResultat.INGEN_TILBAKEKREV -> "No reimbursement"
+				TilbakekrevingResultat.FORELDET -> "Obsolete"
+				TilbakekrevingResultat.FEILREGISTRERT -> "Incorrectly registered"
 			}
 		}
 	}

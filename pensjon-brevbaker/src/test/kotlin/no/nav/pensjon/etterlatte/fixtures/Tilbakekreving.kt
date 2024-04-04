@@ -18,16 +18,16 @@ fun createTilbakekrevingFerdigDTO() =
 	TilbakekrevingBrevDTO(
 		innhold = createPlaceholderForRedigerbartInnhold(),
 		sakType = SakType.OMSTILLINGSSTOENAD,
-		brukerNavn = "navn",
+		brukerNavn = "Ola Nordmann",
 		doedsbo = false,
 		bosattUtland = false,
 		varselVedlagt = false,
-		datoVarselEllerVedtak = LocalDate.now(),
-		datoTilsvarBruker = LocalDate.now(),
+		datoVarselEllerVedtak = LocalDate.of(2024, 3, 1),
+		datoTilsvarBruker = LocalDate.of(2024, 3, 15),
 		tilbakekreving = TilbakekrevingDTO(
-			fraOgMed = LocalDate.now(),
-			tilOgMed = LocalDate.now(),
-			skalTilbakekreve = true,
+			fraOgMed = LocalDate.of(2024, 1, 1),
+			tilOgMed = LocalDate.of(2024, 2, 28),
+			skalTilbakekreve = false,
 			helTilbakekreving = true,
 			perioder = listOf(
 				TilbakekrevingPeriode(

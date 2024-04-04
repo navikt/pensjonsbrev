@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -49,26 +50,26 @@ object TilbakekrevingFraser {
 					textExpr(
 						Bokmal to "Vi viser til forhåndsvarselet vårt som fulgte vedtak datert ".expr() +
 								datoVarselEllerVedtak.format(),
-						Nynorsk to "Vi viser til forhåndsvarselet vårt som fulgte vedtak datert ".expr() +
+						Nynorsk to "Vi viser til førehandsvarselet som følgde med vedtaket av ".expr() +
 								datoVarselEllerVedtak.format(),
-						English to "Vi viser til forhåndsvarselet vårt som fulgte vedtak datert ".expr() +
+						English to "We refer to the notice attached with the decision dated ".expr() +
 								datoVarselEllerVedtak.format(),
 					)
 				}.orShow {
 					textExpr(
 						Bokmal to "Vi viser til forhåndsvarselet vårt om at vi vurderer om du må betale tilbake ".expr() +
 								sakType.format() + " av " + datoVarselEllerVedtak.format(),
-						Nynorsk to "Vi viser til forhåndsvarselet vårt om at vi vurderer om du må betale tilbake ".expr() +
+						Nynorsk to "Vi viser til førehandsvarselet vårt om at vi vurderer om du må betale tilbake ".expr() +
 								sakType.format() + " av " + datoVarselEllerVedtak.format(),
-						English to "Vi viser til forhåndsvarselet vårt om at vi vurderer om du må betale tilbake ".expr() +
-								sakType.format() + " av " + datoVarselEllerVedtak.format(),
+						English to "We refer to the notice, where we consider claiming reimbursement of ".expr() +
+								sakType.format() + " from " + datoVarselEllerVedtak.format(),
 					)
 				}
 				ifNotNull(datoTilsvarBruker) { datoTilsvarBruker ->
 					textExpr(
 						Bokmal to ", og dine kommentarer til dette som vi mottok den ".expr() + datoTilsvarBruker.format(),
-						Nynorsk to ", og dine kommentarer til dette som vi mottok den ".expr() + datoTilsvarBruker.format(),
-						English to ", og dine kommentarer til dette som vi mottok den ".expr() + datoTilsvarBruker.format(),
+						Nynorsk to ", og kommentarane som vi fekk frå deg på dette ".expr() + datoTilsvarBruker.format(),
+						English to ", and your response, which we received on ".expr() + datoTilsvarBruker.format(),
 					)
 				}
 				text(
@@ -88,14 +89,14 @@ object TilbakekrevingFraser {
 			paragraph {
 				textExpr(
 					Bokmal to "Vi viser til forhåndsvarselet vårt av ".expr() + datoVarselEllerVedtak.format(),
-					Nynorsk to "".expr(),
-					English to "".expr(),
+					Nynorsk to "Vi viser til førehandsvarselet vårt av ".expr() + datoVarselEllerVedtak.format(),
+					English to "We refer to our notice of ".expr() + datoVarselEllerVedtak.format(),
 				)
 				ifNotNull(datoTilsvarBruker) { datoTilsvarBruker ->
 					textExpr(
 						Bokmal to ", og kommentarer til dette som vi mottok den ".expr() + datoTilsvarBruker.format(),
-						Nynorsk to "".expr(),
-						English to "".expr(),
+						Nynorsk to ", og kommentarane som vi fekk på dette ".expr() + datoTilsvarBruker.format(),
+						English to ", and your response, which we received on ".expr() + datoTilsvarBruker.format(),
 					)
 				}
 				text(
@@ -124,12 +125,12 @@ object TilbakekrevingFraser {
 					Bokmal to "Du har fått utbetalt for mye ".expr() + sakType.format() +
 							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
 							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
-					Nynorsk to "Du har fått utbetalt for mye ".expr() + sakType.format() +
-							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
+					Nynorsk to "Du har fått utbetalt for mykje ".expr() + sakType.format() +
+							" frå " + fraOgMed.format() + " til " + tilOgMed.format() +
 							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
-					English to "Du har fått utbetalt for mye ".expr() + sakType.format() +
-							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
+					English to "You received too much in ".expr() + sakType.format() +
+							" from " + fraOgMed.format() + " to " + tilOgMed.format() +
+							". The incorrect amount totals NOK " + feilutbetaling.format() + " including tax.",
 				)
 			}
 
@@ -137,24 +138,31 @@ object TilbakekrevingFraser {
 				textExpr(
 					Bokmal to "Vi har kommet frem til at du skal betale tilbake ".expr() +
 							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
-					Nynorsk to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
-					English to "Vi har kommet frem til at du skal betale tilbake ".expr() +
-							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
+					Nynorsk to "Vi har kome fram til at du skal betale tilbake ".expr() +
+							ifElse(tilbakekreving.helTilbakekreving, "heile", "delar av") + " beløpet.",
+					English to "Reimbursement for ".expr() +
+							ifElse(tilbakekreving.helTilbakekreving, "all", "part") +
+							" of this amount must be paid.",
 				)
 				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
 						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
 								"skatten er trukket fra. Du må også betale " + renteTillegg.format() +
 								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() + " kroner.",
-						Nynorsk to " ".expr(),
-						English to " ".expr(),
+						Nynorsk to " Dette utgjer ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
+								"skatten er trekt frå. I tillegg må du betale " + renteTillegg.format() +
+								" kroner i renter. Til saman skal du betale " + sumTilbakekreving.format() + " kroner.",
+						English to " This is NOK ".expr() + nettoTilbakekreving.format() + " after tax. " +
+								"You must also pay NOK " + renteTillegg.format() + " in interest. In total, " +
+								"you must pay NOK " + sumTilbakekreving.format() + "."
 					)
 				}.orShow {
 					textExpr(
-						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner.",
-						Nynorsk to "".expr(),
-						English to "".expr(),
+						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner etter at " +
+								"skatten er trukket fra.",
+						Nynorsk to " Dette utgjer ".expr() + sumTilbakekreving.format() + " kroner etter at " +
+								"skatten er trekt frå.",
+						English to " This is NOK ".expr() + sumTilbakekreving.format() + " after tax."
 					)
 				}
 			}
@@ -180,8 +188,12 @@ object TilbakekrevingFraser {
 					Bokmal to "Det er utbetalt for mye ".expr() + sakType.format() + " i " +
 							brukerNavn + "s navn fra " + fraOgMed.format() + " til " + tilOgMed.format() +
 							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
-					Nynorsk to "".expr(),
-					English to "".expr()
+					Nynorsk to "Det er utbetalt for mykje ".expr() + sakType.format() + " for " +
+							brukerNavn + " frå " + fraOgMed.format() + " til " + tilOgMed.format() +
+							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
+					English to "The ".expr() + sakType.format() + " amount paid on behalf of " + brukerNavn +
+							" was too high from " + fraOgMed.format() + " to " + tilOgMed.format() + ". The " +
+							"incorrect amount totals NOK " + feilutbetaling.format() + "  including tax.".expr()
 				)
 			}
 
@@ -189,22 +201,31 @@ object TilbakekrevingFraser {
 				textExpr(
 					Bokmal to "Vi har kommet frem til at dødsboet skal betale tilbake ".expr() +
 							ifElse(tilbakekreving.helTilbakekreving, "hele", "deler av") + " beløpet.",
-					Nynorsk to "".expr(),
-					English to "".expr()
+					Nynorsk to "Vi har kome fram til at dødsbuet skal betale tilbake ".expr() +
+							ifElse(tilbakekreving.helTilbakekreving, "heile", "delar av") + " beløpet.",
+					English to "Reimbursement for ".expr() +
+							ifElse(tilbakekreving.helTilbakekreving, "all", "part") +
+							" of this amount must be paid.",
 				)
 				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
 						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
 								"skatten er trukket fra. Boet må også betale " + renteTillegg.format() +
 								" kroner i renter. Til sammen skal boet betale " + sumTilbakekreving.format() + " kroner.",
-						Nynorsk to "".expr(),
-						English to "".expr()
+						Nynorsk to " Dette utgjer ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
+								"skatten er trekt frå. I tillegg må buet betale " + renteTillegg.format() +
+								" kroner i renter. Til saman skal buet betale " + sumTilbakekreving.format() + " kroner.",
+						English to " This is NOK ".expr() + nettoTilbakekreving.format() + " after tax. " +
+								"The estate must also pay NOK " + renteTillegg.format() + " in interest. In total, " +
+								"the estate is liable for NOK " + sumTilbakekreving.format() + "."
 					)
 				}.orShow {
 					textExpr(
-						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner.",
-						Nynorsk to "".expr(),
-						English to "".expr()
+						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner etter at " +
+								"skatten er trukket fra.",
+						Nynorsk to " Dette utgjer ".expr() + sumTilbakekreving.format() + " kroner etter at " +
+								"skatten er trekt frå.",
+						English to " This is NOK ".expr() + sumTilbakekreving.format() + " after tax."
 					)
 				}
 			}
@@ -217,8 +238,8 @@ object TilbakekrevingFraser {
 			paragraph {
 				text(
 					Bokmal to "Beløpet som er trukket i skatt får vi tilbake fra Skatteetaten.",
-					Nynorsk to "Beløpet som er trukket i skatt får vi tilbake fra Skatteetaten.",
-					English to "Beløpet som er trukket i skatt får vi tilbake fra Skatteetaten.",
+					Nynorsk to "Beløpet som er trekt i skatt, får vi tilbake frå Skatteetaten.",
+					English to "The tax withholding will be reimbursed by the Tax Administration.",
 				)
 			}
 		}
@@ -232,10 +253,11 @@ object TilbakekrevingFraser {
 				textExpr(
 					Bokmal to "Vedtaket er gjort etter folketrygdloven ".expr() +
 							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17 a.", "§ 22-15."),
-					Nynorsk to "Vedtaket er gjort etter folketrygdloven ".expr() +
+					Nynorsk to "Vedtaket er gjort etter folketrygdlova ".expr() +
 							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17 a.", "§ 22-15."),
-					English to "Vedtaket er gjort etter folketrygdloven ".expr() +
-							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "§§ 22-15 og og 22-17 a.", "§ 22-15."),
+					English to "This decision is made in accordance with ".expr() +
+							ifElse(tilbakekreving.summer.renteTillegg.greaterThan(0), "Sections 22-15 and 22-17a", "Section 22-15") +
+							" of the National Insurance Act.",
 				)
 			}
 		}
@@ -247,8 +269,11 @@ object TilbakekrevingFraser {
 				text(
 					Bokmal to "I vedleggene til dette brevet finner du en oversikt over periodene med " +
 							"feilutbetalinger og beløpet du må betale tilbake, og en oversikt over rettighetene dine.",
-					Nynorsk to "",
-					English to ""
+					Nynorsk to "I vedlegga til dette brevet finn du ei oversikt over periodane med " +
+							"feilutbetalingar, beløpet du må betale tilbake, og informasjon om klage og anke.",
+					English to "Please see the attachments to this letter for an overview of periods with " +
+							"payment errors and reimbursement amounts, as well as information about " +
+							"complaints and appeals."
 				)
 			}
 		}
@@ -258,10 +283,12 @@ object TilbakekrevingFraser {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			paragraph {
 				text(
-					Bokmal to "I vedlegget til dette brevet finner du en oversikt over periodene med " +
+					Bokmal to "I vedlegget til dette brevet finnes en oversikt over periodene med " +
 							"feilutbetalinger og beløpet du må betale tilbake.",
-					Nynorsk to "",
-					English to ""
+					Nynorsk to "I vedlegget til dette brevet finnes ei oversikt over periodane med " +
+							"feilutbetalingar og beløpet som skal betalast tilbake.",
+					English to "Please see the attachment to this letter for an overview of periods, with " +
+							"information about errors and reimbursement amounts.  "
 				)
 			}
 		}
@@ -272,19 +299,19 @@ object TilbakekrevingFraser {
 			title2 {
 				text(
 					Bokmal to "Skatt og skatteoppgjør",
-					Nynorsk to "Skatt og skatteoppgjør",
-					English to "Skatt og skatteoppgjør",
+					Nynorsk to "Skatt og skatteoppgjer",
+					English to "Tax and tax assessment",
 				)
 			}
 			paragraph {
 				text(
 					Bokmal to "Vi gir opplysninger til Skatteetaten om dette vedtaket. " +
-							"De fastsetter det endelige skattebeløpet, og gjør nødvendige korrigeringer i skatteoppgjøret ditt.",
-					Nynorsk to "Vi gir opplysninger til Skatteetaten om dette vedtaket. " +
-							"De fastsetter det endelige skattebeløpet, og gjør nødvendige korrigeringer i skatteoppgjøret ditt.",
-					English to "Vi gir opplysninger til Skatteetaten om dette vedtaket. " +
-							"De fastsetter det endelige skattebeløpet, og gjør nødvendige korrigeringer i skatteoppgjøret ditt.",
-
+							"De fastsetter det endelige skattebeløpet, og gjør nødvendige korrigeringer i " +
+							"skatteoppgjøret ditt.",
+					Nynorsk to "Vi gir opplysningar til Skatteetaten om dette vedtaket. Skatteetaten slår " +
+							"fast det endelege skattebeløpet, og gjer nødvendige korrigeringar i skatteoppgjeret ditt.",
+					English to "We will notify the Tax Administration about this decision. They will assess " +
+							"the final tax amount and make the necessary corrections in your tax settlement.  ",
 					)
 			}
 		}
@@ -295,8 +322,8 @@ object TilbakekrevingFraser {
 			title2 {
 				text(
 					Bokmal to "Skatt og skatteoppgjør",
-					Nynorsk to "Skatt og skatteoppgjør",
-					English to "Skatt og skatteoppgjør",
+					Nynorsk to "Skatt og skatteoppgjer",
+					English to "Tax and tax assessment",
 				)
 			}
 			paragraph {
@@ -304,9 +331,12 @@ object TilbakekrevingFraser {
 					Bokmal to "Vi gir opplysninger til Skatteetaten om dette vedtaket. " +
 							"De fastsetter det endelige skattebeløpet, og gjør nødvendige korrigeringer i " +
 							"skatteoppgjøret til avdøde.",
-					Nynorsk to "",
-					English to "",
-
+					Nynorsk to "Vi gir opplysningar til Skatteetaten om dette vedtaket. Skatteetaten slår " +
+							"fast det endelege skattebeløpet, og gjer nødvendige korrigeringar i skatteoppgjeret til " +
+							"avdøde.",
+					English to "We will notify the Tax Administration about this decision. They will assess " +
+							"the final tax amount and make the necessary corrections in the deceased’s tax " +
+							"settlement.",
 					)
 			}
 		}
@@ -327,43 +357,39 @@ object TilbakekrevingFraser {
 					Bokmal to "Du har fått utbetalt for mye ".expr() + sakType.format() +
 							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
 							". Dette er " + feilutbetaling.format() + " kroner inkludert skatt.",
-					Nynorsk to "Du har fått utbetalt for mye ".expr() + sakType.format() +
-							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
+					Nynorsk to "Du har fått utbetalt for mykje ".expr() + sakType.format() +
+							" frå " + fraOgMed.format() + " til " + tilOgMed.format() +
 							". Dette er " + feilutbetaling.format() + " kroner inkludert skatt.",
-					English to "Du har fått utbetalt for mye ".expr() + sakType.format() +
-							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Dette er " + feilutbetaling.format() + " kroner inkludert skatt.",
+					English to "DYou received too much in ".expr() + sakType.format() +
+							" from " + fraOgMed.format() + " to " + tilOgMed.format() +
+							". This amounts to NOK " + feilutbetaling.format() + " including tax.",
 				)
 			}
 
 			paragraph {
 				text(
 					Bokmal to "Vi har kommet fram til at du ikke skal betale tilbake beløpet.",
-					Nynorsk to "Vi har kommet fram til at du ikke skal betale tilbake beløpet.",
-					English to "Vi har kommet fram til at du ikke skal betale tilbake beløpet.",
+					Nynorsk to "Vi har kome fram til at du ikkje skal betale tilbake beløpet.",
+					English to "We have decided to not claim reimbursement of the amount.",
 				)
 			}
 
 			paragraph {
 				text(
 					Bokmal to "Vedtaket er gjort etter folketrygdloven § 22-15.",
-					Nynorsk to "Vedtaket er gjort etter folketrygdloven § 22-15.",
-					English to "Vedtaket er gjort etter folketrygdloven § 22-15.",
+					Nynorsk to "Vedtaket er gjort etter folketrygdlova § 22-15.",
+					English to "This decision is made in accordance with Section 22-15 of the " +
+							"National Insurance Act.",
 				)
 			}
 
-			paragraph {
-				showIf(doedsbo) {
-					text(
-						Bokmal to "I vedlegget til dette brevet finner du en oversikt over periodene med feilutbetalinger og beløpet som må betales tilbake.",
-						Nynorsk to "I vedlegget til dette brevet finner du en oversikt over periodene med feilutbetalinger og beløpet som må betales tilbake.",
-						English to "I vedlegget til dette brevet finner du en oversikt over periodene med feilutbetalinger og beløpet som må betales tilbake.",
-					)
-				}.orShow {
+			showIf(doedsbo.not()) {
+				paragraph {
 					text(
 						Bokmal to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
-						Nynorsk to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
-						English to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
+						Nynorsk to "I vedlegget til dette brevet finn du informasjon om klage og anke.",
+						English to "Please see the attachment to this letter for information on how to " +
+								"file a complaint or appeal. ",
 					)
 				}
 			}
@@ -384,8 +410,8 @@ object TilbakekrevingVedleggFraser {
 						column(columnSpan = 2) {
 							text(
 								Bokmal to "Beløp som skal kreves tilbake i hele feilutbetalingsperioden",
-								Nynorsk to "",
-								English to "",
+								Nynorsk to "Beløp som skal krevjast tilbake i heile feilutbetalingsperioden",
+								English to "Reimbursement amount for entire error period",
 							)
 						}
 						column(columnSpan = 0) {}
@@ -395,8 +421,8 @@ object TilbakekrevingVedleggFraser {
 						cell {
 							text(
 								Bokmal to "Brutto tilbakekreving",
-								Nynorsk to "",
-								English to ""
+								Nynorsk to "Brutto tilbakekrevjing",
+								English to "Gross reimbursement"
 							)
 						}
 						cell {
@@ -407,8 +433,8 @@ object TilbakekrevingVedleggFraser {
 						cell {
 							text(
 								Bokmal to "- Fradrag skatt",
-								Nynorsk to "",
-								English to ""
+								Nynorsk to "- Frådrag skatt",
+								English to "- Tax withholdings"
 							)
 						}
 						cell {
@@ -419,8 +445,8 @@ object TilbakekrevingVedleggFraser {
 						cell {
 							text(
 								Bokmal to "= Netto tilbakekreving",
-								Nynorsk to "",
-								English to "",
+								Nynorsk to "= Netto tilbakekrevjing",
+								English to "= Net reimbursement",
 							)
 						}
 						cell {
@@ -431,8 +457,8 @@ object TilbakekrevingVedleggFraser {
 						cell {
 							text(
 								Bokmal to "+ Rentetillegg",
-								Nynorsk to "",
-								English to " "
+								Nynorsk to "+ Rentetillegg",
+								English to "+ Interest"
 							)
 						}
 						cell {
@@ -443,8 +469,8 @@ object TilbakekrevingVedleggFraser {
 						cell {
 							text(
 								Bokmal to "= Sum tilbakekreving",
-								Nynorsk to "",
-								English to "",
+								Nynorsk to "= Sum tilbakekrevjing",
+								English to "= Total reimbursement amount",
 								FontType.BOLD
 							)
 						}
@@ -467,36 +493,36 @@ object TilbakekrevingVedleggFraser {
 						column {
 							text(
 								Bokmal to "Måned / år",
-								Nynorsk to "",
-								English to "",
+								Nynorsk to "Månad / år",
+								English to "Month / year",
 							)
 						}
 						column {
 							text(
 								Bokmal to "Feilutbetalt beløp",
-								Nynorsk to "",
-								English to "",
+								Nynorsk to "Feilutbetalt beløp",
+								English to "Error amount",
 							)
 						}
 						column {
 							text(
 								Bokmal to "Resultat",
-								Nynorsk to "",
-								English to "",
+								Nynorsk to "Resultat",
+								English to "Outcome",
 							)
 						}
 						column {
 							text(
 								Bokmal to "Brutto tilbakekreving",
-								Nynorsk to "",
-								English to "",
+								Nynorsk to "Brutto tilbakekrevjing",
+								English to "Gross reimbursement",
 							)
 						}
 						column {
 							text(
 								Bokmal to "Netto tilbakekreving",
-								Nynorsk to "",
-								English to "",
+								Nynorsk to "Netto tilbakekrevjing",
+								English to "Net reimbursement",
 							)
 						}
 					}
