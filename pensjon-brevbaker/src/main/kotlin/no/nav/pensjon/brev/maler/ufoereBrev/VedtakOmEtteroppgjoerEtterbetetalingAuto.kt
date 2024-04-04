@@ -53,6 +53,38 @@ object VarselOmEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakOmEtterop
 
         }
         outline {
+            // Bruk EtteroppgjoerTolkning.isNyttEtteroppgjor()
+//            TBU3301
+//            IF(PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_TidligereEOIverksatt_New = true
+//                    AND (PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_ResultatForrigeEO_New = 'etterbet'
+//                    OR PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_ResultatForrigeEO_New = 'tilbakekr'
+//                    )
+//                    AND (PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_eoEndringBruker_EndretPGI_New = true
+//                    OR PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_eoEndringEPS_EndretPGI_New = true
+//                    OR PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_eoEndringBruker_EndretPensjonOgAndreYtelser_New = true
+//                    OR PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_eoEndringEPS_EndretPensjonOgAndreYtelser_New = true
+//                    )
+//            ) THEN
+//                    INCLUDE
+//            ENDIF
+
+              // Bruk BarnetilleggGrunnlagTolkning.harBarnetillegg() for "og barnetillegg"
+//            IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggFB = true OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggSB = true) THEN
+//                    INCLUDE
+//            ENDIF
+
+
+            // Bruk EtteroppgjoerTolkning.avviksbeloepUfoeretrygd() for "uføretrygd" i "for lite"
+//            IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN
+//                    INCLUDE
+//            ENDIF
+
+
+            // Bruk  EtteroppgjoerTolkning.avviksbeloepUfoeretrygd() + EtteroppgjoerTolkning.avviksbeloepSaerkullsbarn + EtteroppgjoerTolkning.avviksbeloepFellesbarn()  for "og barnetillegg" i "for lite"
+//            IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0
+//                    AND (PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0)) THEN
+//            INCLUDE
+//            ENDIF
 
             paragraph{
                 val uforetrygdEtteroppgjorPeriodeFomYear = uforetrygdEtteroppgjorPeriodeFomYear.format()
@@ -77,9 +109,26 @@ object VarselOmEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakOmEtterop
                     Nynorsk to "Kvart år når skatteoppgjeret er klart, gjer vi eit etteroppgjer av uføretrygda. Etteroppgjeret kontrollerer om du fekk rett utbetalt i fjor. Då kontrollerer vi om utbetalinga for året er riktig.",
                 )
             }
+
+            // PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT
+            // bruk Etteroppgjoer.avviksbeloepUfoeretrygd() for første og andre setning "for barn"
+
+            // BarnetilleggGrunnlagTolkning.harBarnetillegg() for andre setning
+            // for barn : PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggFB and PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggSB and  PE_UT_EtteroppgjorAvviksbelopTSBogTFBulikNull
+
+            // Bruk kombinasjonen av BarnetilleggFellesbarnTolkning, SaerkullsbarnTolkning og grunnlagTolkning for første "Det er personninngekten din.."
+//            IF((PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggFB = true AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggSB = true)
+//                    OR(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggFB = false AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggSB = true))
+//            AND PE_UT_EtteroppgjorAvviksbelopTSBogTFBulikNull() = true THEN
+//                    INCLUDE
+//            ENDIF
+
+
             paragraph{
                 text(
-                    Bokmal to "Det er din pensjonsgivende inntekt som avgjør hvor mye du skulle ha fått i uføretrygd og gjenlevendetillegg. For barn som ikke bor med begge foreldre er det Det er personinntekten din som har betydning for størrelsen på barnetillegget. For barn som bor sammen med begge foreldre er det Det er personinntekten til deg og annen forelder som har betydning for størrelsen på barnetillegget.",
+                    Bokmal to "Det er din pensjonsgivende inntekt som avgjør hvor mye du skulle ha fått i uføretrygd og gjenlevendetillegg. " +
+                            "For barn som ikke bor med begge foreldre er det Det er personinntekten din som har betydning for størrelsen på barnetillegget. " +
+                            "For barn som bor sammen med begge foreldre er det Det er personinntekten til deg og annen forelder som har betydning for størrelsen på barnetillegget.",
                     Nynorsk to "Det er den pensjonsgivande inntekta som avgjer kor mykje du skulle ha fått i uføretrygd og attlevandetillegg. For barn som ikkje bur saman med begge foreldra sine er det Det er personinntekta di som har noko å seie for storleiken på barnetillegget ditt. For barn som bur saman med begge foreldra sine er det Det er personinntekta di og personinntekta til den andre forelderen som har noko å seie for storleiken på barnetillegget ditt.",
                 )
             }
