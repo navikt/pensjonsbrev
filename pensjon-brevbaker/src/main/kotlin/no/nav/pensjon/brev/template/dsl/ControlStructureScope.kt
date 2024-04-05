@@ -78,7 +78,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
         }
 
     fun <Item : Any> forEach(items: Expression<Collection<Item>>, body: Scope.(item: Expression<Item>) -> Unit) {
-        val nextExpr = Expression.FromScope.Assigned<Item>()
+        val nextExpr = Expression.FromScope.Assigned<Item>(items.stableHashCode())
         addControlStructure(ContentOrControlStructure.ForEach(items, scopeFactory().apply { body(nextExpr) }.elements, nextExpr))
     }
 }

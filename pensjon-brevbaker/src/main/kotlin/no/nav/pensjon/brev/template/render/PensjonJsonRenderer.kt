@@ -46,12 +46,12 @@ object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
     private fun renderOutlineContent(scope: ExpressionScope<*>, element: Element.OutlineContent<*>): Block =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
-            is Element.OutlineContent.Title1 -> Block.Title1(element.hashCode(), true, renderText(scope, element.text))
-            is Element.OutlineContent.Title2 -> Block.Title2(element.hashCode(), true, renderText(scope, element.text))
+            is Element.OutlineContent.Title1 -> Block.Title1(element.stableHashCode(), true, renderText(scope, element.text))
+            is Element.OutlineContent.Title2 -> Block.Title2(element.stableHashCode(), true, renderText(scope, element.text))
         }
 
     private fun renderParagraph(scope: ExpressionScope<*>, paragraph: Element.OutlineContent.Paragraph<*>): Paragraph =
-        Paragraph(paragraph.hashCode(), true, mutableListOf<ParagraphContent>().apply {
+        Paragraph(paragraph.stableHashCode(), true, mutableListOf<ParagraphContent>().apply {
             render(scope, paragraph.paragraph) { pScope, element ->
                 addAll(renderParagraphContent(pScope, element))
             }
@@ -66,7 +66,7 @@ object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
         }
 
     private fun renderItemList(scope: ExpressionScope<*>, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList =
-        ParagraphContent.ItemList(itemList.hashCode(), mutableListOf<ParagraphContent.ItemList.Item>().apply {
+        ParagraphContent.ItemList(itemList.stableHashCode(), mutableListOf<ParagraphContent.ItemList.Item>().apply {
             render(scope, itemList.items) { inner, item ->
                 add(ParagraphContent.ItemList.Item(renderText(inner, item.text)))
             }
@@ -76,7 +76,7 @@ object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
         when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(scope.language).toContent(scope)
             is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toContent(scope)
-            is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(Literal(element.hashCode(), element.text(scope.language)))
+            is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(Literal(element.stableHashCode(), element.text(scope.language)))
             is Element.OutlineContent.ParagraphContent.Text.NewLine -> throw PensjonJsonRendererException("Can't render unsupported element: NewLine")
         }
 
@@ -89,13 +89,13 @@ object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
 
     private fun StringExpression.toContent(scope: ExpressionScope<*>): List<Text> =
         if (this is Expression.Literal) {
-            listOf(Literal(hashCode(), eval(scope)))
+            listOf(Literal(stableHashCode(), eval(scope)))
         } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat) {
             // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
             @Suppress("UNCHECKED_CAST")
             (first as StringExpression).toContent(scope) + (second as StringExpression).toContent(scope)
         } else {
-            listOf(Variable(hashCode(), eval(scope)))
+            listOf(Variable(stableHashCode(), eval(scope)))
         }.mergeLiterals()
 
     private fun List<Text>.mergeLiterals(): List<Text> =

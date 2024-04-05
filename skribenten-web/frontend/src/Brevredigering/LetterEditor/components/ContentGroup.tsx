@@ -238,10 +238,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // This is not documented anywhere I could find and caused a day of frustration, beware
       contentEditable="true"
       onFocus={() => {
-        setEditorState((oldState) => ({
-          ...oldState,
-          focus: literalIndex,
-        }));
+        setEditorState((oldState) =>
+          oldState
+            ? {
+                ...oldState,
+                focus: literalIndex,
+              }
+            : undefined,
+        );
       }}
       onInput={(event) => {
         applyAction(

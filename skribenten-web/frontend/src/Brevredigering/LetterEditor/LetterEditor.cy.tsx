@@ -1,12 +1,21 @@
 import "./editor.css";
 
-import React from "react";
+import React, { useState } from "react";
 
+import Actions from "~/Brevredigering/LetterEditor/actions";
+import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
-import exampleLetter1 from "./example-letter-1.json";
+import exampleLetter1Json from "./example-letter-1.json";
 import { LetterEditor } from "./LetterEditor";
+
+const exampleLetter1 = exampleLetter1Json as RenderedLetter;
+
+function EditorWithState({ initial }: { initial: RenderedLetter }) {
+  const [editorState, setEditorState] = useState<LetterEditorState | undefined>(Actions.create(initial));
+  return <>{editorState && <LetterEditor editorState={editorState} setEditorState={setEditorState} />}</>;
+}
 
 describe("<LetterEditor />", () => {
   beforeEach(() => {
@@ -14,7 +23,7 @@ describe("<LetterEditor />", () => {
   });
   describe("Typography", () => {
     it("Toggling typography changes visually and keeps typography-buttons synchronized", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.get(".TITLE1").contains("Tittel over punktliste").click();
       cy.get('[data-cy="TITLE1-BUTTON"]').should("be.disabled");
@@ -34,7 +43,7 @@ describe("<LetterEditor />", () => {
   });
   describe("Navigation", () => {
     it("ArrowUp works within sibling contenteditables", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP1-3").click();
       move("{leftArrow}", 10);
@@ -42,14 +51,14 @@ describe("<LetterEditor />", () => {
       assertCaret("[CP1-2]", 31);
     });
     it("ArrowDown works within sibling contenteditables", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP1-1").click();
       move("{downArrow}", 1);
       assertCaret("[CP1-2]", 67);
     });
     it("ArrowUp moves to the right of a variable if that is closest", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP1-3").click();
       move("{leftArrow}", 45);
@@ -57,7 +66,7 @@ describe("<LetterEditor />", () => {
       assertCaret("[CP1-2]", 0);
     });
     it("ArrowUp moves to the left of a variable if that is closest", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP1-3").click();
       move("{home}", 1);
@@ -68,21 +77,21 @@ describe("<LetterEditor />", () => {
     });
 
     it("ArrowUp works between paragraphs", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP2-2").click();
       move("{upArrow}", 1);
       assertCaret("[CP2-1]", 17);
     });
     it("ArrowDown works between paragraphs", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP2-1").click();
       move("{downArrow}", 1);
       assertCaret("[CP2-3]", 7);
     });
     it("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP2-1").click();
       move("{leftArrow}", 20);
@@ -90,7 +99,7 @@ describe("<LetterEditor />", () => {
       assertCaret("[CP2-2]", 17);
     });
     it("ArrowDown moves between paragraphs and to the nearest side of a variable [RIGHT]", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP2-1").click();
       move("{leftArrow}", 10);
@@ -98,7 +107,7 @@ describe("<LetterEditor />", () => {
       assertCaret("[CP2-3]", 0);
     });
     it("Can move up an itemlist", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
       // CP3
       cy.contains("CP3-3").click();
       move("{upArrow}", 1);
@@ -111,7 +120,7 @@ describe("<LetterEditor />", () => {
       assertCaret("Tittel over punktliste", 22);
     });
     it("Can move down an itemlist", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
       // CP3
       cy.contains("CP3-1").click();
       move("{home}", 1);
@@ -124,14 +133,14 @@ describe("<LetterEditor />", () => {
       assertCaret("Tittel under punktliste", 5);
     });
     it("ArrowUp at first node moves caret to the beginning", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP1-1").click();
       move("{upArrow}", 1);
       assertCaret("[CP1-1]", 0);
     });
     it("ArrowDown at last node moves caret to the end", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP4-1").click();
       move("{leftArrow}", 10);
@@ -139,7 +148,7 @@ describe("<LetterEditor />", () => {
       assertCaret("CP4-1", 68);
     });
     it("ArrowUp moves caret to start of previous line  even if the caret is before the start of that line", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("CP4-1").click();
       move("{home}", 1);
@@ -147,7 +156,7 @@ describe("<LetterEditor />", () => {
       assertCaret("CP3-3", 0);
     });
     it("ArrowDown moves caret to start of next line even if the caret is before the start of that line", () => {
-      cy.mount(<LetterEditor initialState={exampleLetter1 as RenderedLetter} />);
+      cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.contains("Tittel over punktliste").click();
       move("{home}", 1);

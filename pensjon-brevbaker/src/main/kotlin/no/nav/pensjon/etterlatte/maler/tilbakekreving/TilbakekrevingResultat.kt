@@ -41,6 +41,8 @@ object TilbakekrevingResultatFormatter : LocalizedFormatter<TilbakekrevingResult
 			}
 		}
 	}
+
+	override fun stableHashCode(): Int = "TilbakekrevingResultatFormatter".hashCode()
 }
 
 fun Expression<TilbakekrevingResultat>.format(formatter: LocalizedFormatter<TilbakekrevingResultat> = TilbakekrevingResultatFormatter): StringExpression =
