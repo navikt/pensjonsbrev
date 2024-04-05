@@ -193,7 +193,7 @@ object TilbakekrevingFraser {
 							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
 					English to "The ".expr() + sakType.format() + " amount paid on behalf of " + brukerNavn +
 							" was too high from " + fraOgMed.format() + " to " + tilOgMed.format() + ". The " +
-							"incorrect amount totals NOK " + feilutbetaling.format() + "  including tax.".expr()
+							"incorrect amount totals NOK " + feilutbetaling.format() + "  including tax."
 				)
 			}
 
@@ -360,7 +360,7 @@ object TilbakekrevingFraser {
 					Nynorsk to "Du har fått utbetalt for mykje ".expr() + sakType.format() +
 							" frå " + fraOgMed.format() + " til " + tilOgMed.format() +
 							". Dette er " + feilutbetaling.format() + " kroner inkludert skatt.",
-					English to "DYou received too much in ".expr() + sakType.format() +
+					English to "You received too much in ".expr() + sakType.format() +
 							" from " + fraOgMed.format() + " to " + tilOgMed.format() +
 							". This amounts to NOK " + feilutbetaling.format() + " including tax.",
 				)
