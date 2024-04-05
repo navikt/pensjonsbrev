@@ -194,7 +194,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 showIf(borIutland) {
                     paragraph {
                         text(
-                            Bokmal to "Vi har informasjon om at du bor i utlandet.  Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker omstillingsstønad. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.OMS}.",
+                            Bokmal to "Vi har informasjon om at du bor i utlandet. Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker omstillingsstønad. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.OMS}.",
                             Nynorsk to "Etter dei opplysningane vi har, bur du i utlandet. Dersom du bur i eit land som Noreg har trygdeavtale med, må du kontakte trygdemaktene i dette landet før du søkjer om omstillingsstønad. På ${Constants.Utland.OMS} finn du meir informasjon om kva land Noreg har avtale med.",
                             English to "According to our records, you live abroad. Go to $OMS_URL for more information on how to apply. If you live in a country Norway has a social security agreement with, you must contact the social security authority in your country of residence before you apply for adjustment allowance. See which countries Norway has a social security agreement with here: ${Constants.Utland.OMS}.",
                         )
