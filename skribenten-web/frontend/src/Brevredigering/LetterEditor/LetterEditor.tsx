@@ -6,6 +6,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { createContext, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
+import type { CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
@@ -60,7 +61,7 @@ export const LetterEditor = ({
 
 export const EditorStateContext = createContext<{
   editorState: LetterEditorState;
-  setEditorState: Dispatch<LetterEditorState | undefined>;
+  setEditorState: CallbackReceiver<LetterEditorState | undefined>;
 }>({
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
