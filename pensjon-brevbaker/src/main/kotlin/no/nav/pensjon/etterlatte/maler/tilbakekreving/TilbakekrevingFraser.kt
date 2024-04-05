@@ -288,7 +288,7 @@ object TilbakekrevingFraser {
 					Nynorsk to "I vedlegget til dette brevet finnes ei oversikt over periodane med " +
 							"feilutbetalingar og beløpet som skal betalast tilbake.",
 					English to "Please see the attachment to this letter for an overview of periods, with " +
-							"information about errors and reimbursement amounts.  "
+							"information about errors and reimbursement amounts."
 				)
 			}
 		}
@@ -389,7 +389,7 @@ object TilbakekrevingFraser {
 						Bokmal to "I vedlegget til dette brevet finner du en oversikt over rettighetene dine.",
 						Nynorsk to "I vedlegget til dette brevet finn du informasjon om klage og anke.",
 						English to "Please see the attachment to this letter for information on how to " +
-								"file a complaint or appeal. ",
+								"file a complaint or appeal.",
 					)
 				}
 			}
