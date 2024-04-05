@@ -48,6 +48,7 @@ interface StableHash {
         fun of(boolean: Boolean): StableHash = HashCodeStableHash(boolean)
         fun of(string: String): StableHash = HashCodeStableHash(string)
     }
+
 }
 
 private class HashCodeStableHash(val value: Any) : StableHash {
