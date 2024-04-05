@@ -23,6 +23,7 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.lavEllerIngenInntekt
@@ -37,6 +38,7 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val beregning: OmstillingsstoenadBeregning,
     val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean,
     val lavEllerIngenInntekt: Boolean,
+    val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
 ): BrevDTO
 
@@ -64,11 +66,13 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
         }
 
         outline {
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning))
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling))
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
+            showIf(harUtbetaling) {
+                includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
+            }
             includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad)
             includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, lavEllerIngenInntekt))
             showIf(lavEllerIngenInntekt.not()) {

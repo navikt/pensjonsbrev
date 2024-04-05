@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -21,9 +22,8 @@ object BarnepensjonForeldreloesFraser {
         val virkningstidspunkt: Expression<LocalDate>,
         val sistePeriodeFom: Expression<LocalDate>,
         val sistePeriodeBeloep: Expression<Kroner>,
-        val bareEnPeriode: Expression<Boolean>,
         val flerePerioder: Expression<Boolean>,
-        val ingenUtbetaling: Expression<Boolean>,
+        val harUtbetaling: Expression<Boolean>,
         val vedtattIPesys: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -73,7 +73,7 @@ object BarnepensjonForeldreloesFraser {
                     )
                 }
             }
-            showIf(ingenUtbetaling) {
+            showIf(harUtbetaling.not()) {
                 paragraph {
                     text(
                         Language.Bokmal to "Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du" +
