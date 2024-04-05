@@ -32,8 +32,8 @@ class NavansattService(config: Config, authService: AzureADService): ServiceStat
         return client.get(call, "navansatt/$ansattId/enheter").toServiceResult<List<NAVEnhet>>()
     }
 
-    suspend fun hentGruppetilgang(call: ApplicationCall, ansattId: String): ServiceResult<Gruppetilgang> {
-        return client.get(call, "/navansatt/$ansattId").toServiceResult<Gruppetilgang>()
+    suspend fun hentNavansatt(call: ApplicationCall, ansattId: String): ServiceResult<Navansatt> {
+        return client.get(call, "/navansatt/$ansattId").toServiceResult<Navansatt>()
     }
 
     override val name = "Nav Ansatt"
@@ -50,6 +50,9 @@ data class NAVEnhet(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Gruppetilgang(
-    val groups: List<String>
+data class Navansatt(
+    val groups: List<String>,
+    val navn: String,
+    val fornavn: String,
+    val etternavn: String,
 )
