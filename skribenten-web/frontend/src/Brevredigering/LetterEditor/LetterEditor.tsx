@@ -2,6 +2,7 @@ import "./editor.css";
 
 import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
+import type { Dispatch, SetStateAction } from "react";
 import { createContext, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
@@ -10,7 +11,6 @@ import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
-import type { CallbackReceiver } from "./lib/actions";
 import type { LetterEditorState } from "./model/state";
 
 export const LetterEditor = ({
@@ -18,9 +18,8 @@ export const LetterEditor = ({
   setEditorState,
 }: {
   editorState: LetterEditorState;
-  setEditorState: any;
+  setEditorState: Dispatch<SetStateAction<LetterEditorState | undefined>>;
 }) => {
-  // const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(initialState));
   const blocks = editorState.editedLetter.letter.blocks;
 
   return (
@@ -61,7 +60,7 @@ export const LetterEditor = ({
 
 export const EditorStateContext = createContext<{
   editorState: LetterEditorState;
-  setEditorState: CallbackReceiver<LetterEditorState>;
+  setEditorState: Dispatch<LetterEditorState | undefined>;
 }>({
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
