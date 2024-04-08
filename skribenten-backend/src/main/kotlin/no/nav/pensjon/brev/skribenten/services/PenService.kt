@@ -42,7 +42,20 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         val enhetId: String?,
     )
 
-    enum class SakType { AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG, UFOREP, }
+    enum class SakType {
+        AFP,
+        AFP_PRIVAT,
+        ALDER,
+        BARNEP,
+        FAM_PL,
+        GAM_YRK,
+        GENRL,
+        GJENLEV,
+        GRBL,
+        KRIGSP,
+        OMSORG,
+        UFOREP,
+    }
     data class SakSelection(
         val saksId: Long,
         val foedselsnr: String,

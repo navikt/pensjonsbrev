@@ -12,6 +12,7 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.NAME
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.SAKSID_PARAM
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.sakKey
+import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.saktypeKey
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 import org.slf4j.LoggerFactory
@@ -20,6 +21,8 @@ object AuthorizeAnsattSakTilgang {
     const val NAME = "AuthorizeAnsattSakTilgang"
     const val SAKSID_PARAM = "saksId"
     val sakKey = AttributeKey<PenService.SakSelection>("AuthorizeAnsattSakTilgang:sak")
+    val saktypeKey = AttributeKey<PenService.SakType>("saktype")
+
 }
 
 private val logger = LoggerFactory.getLogger(AuthorizeAnsattSakTilgang::class.java)
@@ -37,10 +40,12 @@ fun AuthorizeAnsattSakTilgang(
             val navIdent = principal.navIdent
 
             val sakDeferred = async { penService.hentSak(call, saksId) }
+
             val enheterDeferred = async { navansattService.hentNavAnsattEnhetListe(call, navIdent) }
 
             val ikkeTilgang = sakDeferred.await().map { sak ->
                 call.attributes.put(sakKey, sak)
+                call.attributes.put(saktypeKey, sak.sakType)  // Benyttes av PdlService for å velge behandlingsnummer
 
                 // Rekkefølgen på disse har betydning. Om sjekkEnhetstilgang kjøres først så vil vi svare med "Mangler enhetstilgang til sak".
                 // - Dette avslører at det finnes en sak for angitt saksId.

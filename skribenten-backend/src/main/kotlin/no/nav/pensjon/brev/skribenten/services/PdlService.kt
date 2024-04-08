@@ -9,8 +9,14 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
+import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.services.PenService.SakType
+import no.nav.pensjon.brev.skribenten.services.PenService.SakType.ALDER
+import no.nav.pensjon.brev.skribenten.services.PenService.SakType.BARNEP
+import no.nav.pensjon.brev.skribenten.services.PenService.SakType.GJENLEV
+import no.nav.pensjon.brev.skribenten.services.PenService.SakType.UFOREP
 import org.slf4j.LoggerFactory
 
 private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
@@ -69,6 +75,16 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
+    enum class Behandlingsnummer(val saktyper: SakType) {
+        B280(ALDER),
+        B359(BARNEP),
+        B222(GJENLEV),
+        B255(UFOREP);
+        companion object {
+            infix fun from(saktyper: SakType): Behandlingsnummer? = entries.firstOrNull { it.saktyper == saktyper }
+        }
+    }
+
     private data class DataWrapperPersonMedNavn(val hentPerson: PersonMedNavn?) {
         data class PersonMedNavn(val navn: List<Navn>? = null) {
             data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String) {
@@ -83,7 +99,7 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
-    enum class Gradering {
+    enum class Behandling {
         FORTROLIG,
         STRENGT_FORTROLIG,
         STRENGT_FORTROLIG_UTLAND,
@@ -119,6 +135,9 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
                     variables = FnrVariables(fnr)
                 )
             )
+            headers {
+                set("Behandlingsnummer", call.attributes[AttributeKey("saktype")]) // Settes av AuthorizeAnsattSakTilgang
+            }
         }.toServiceResult<PDLResponse<DataWrapperPersonMedAdressebeskyttelse>>()
             .handleGraphQLErrors()
             .map {
