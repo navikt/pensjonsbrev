@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getPreferredLanguage, getSak } from "~/api/skribenten-api-endpoints";
+import { getPreferredLanguage, getSakContext } from "~/api/skribenten-api-endpoints";
 
-export function usePreferredLanguage(saksId: string) {
-  const sak = useQuery({
-    queryKey: getSak.queryKey(saksId),
-    queryFn: () => getSak.queryFn(saksId),
+export function usePreferredLanguage(saksId: string, vedtaksId: string | undefined) {
+  const sakContext = useQuery({
+    queryKey: getSakContext.queryKey(saksId, vedtaksId),
+    queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
   }).data;
 
   return useQuery({
-    queryKey: getPreferredLanguage.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getPreferredLanguage.queryFn(sak?.saksId.toString() as string),
-    enabled: !!sak,
+    queryKey: getPreferredLanguage.queryKey(sakContext?.sak?.foedselsnr as string),
+    queryFn: () => getPreferredLanguage.queryFn(sakContext?.sak?.saksId.toString() as string),
+    enabled: !!sakContext?.sak,
   }).data?.spraakKode;
 }

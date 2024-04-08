@@ -56,16 +56,20 @@ class BrevmalService(
 
     private fun mapBrevmeny(
         isVedtaksKontekst: Boolean,
-        brevmetadata: List<BrevdataDto>,
+        brevmetadata: Brevmaler,
         erKravPaaGammeltRegelverk: Boolean,
         sakType: PenService.SakType,
-    ): List<LetterMetadata> =
-        brevmetadata
+    ): List<LetterMetadata> {
+        val relevanteMaler = brevmetadata.maler
             .filter { filterForKontekst(it, isVedtaksKontekst) }
             .filter { it.redigerbart }
             .filter { erRelevantRegelverkstypeForSaktype(sakType, it.brevregeltype, erKravPaaGammeltRegelverk) }
+
+        return relevanteMaler
+            .plus(brevmetadata.eblanketter)
             .filter { !utfiltrerteBrev.contains(it.brevkodeIBrevsystem) }
             .map { it.mapToMetadata() }
+    }
 
     private fun filterForKontekst(brevmetadata: BrevdataDto, isVedtaksKontekst: Boolean): Boolean =
         when (brevmetadata.brevkontekst) {

@@ -35,12 +35,11 @@ class BrevmetadataService(
         }
     }
 
-
-    suspend fun hentMaler(sakType: PenService.SakType, includeEblanketter: Boolean): List<BrevdataDto> =
+    suspend fun hentMaler(sakType: PenService.SakType, includeEblanketter: Boolean): Brevmaler =
         coroutineScope {
             val eblanketterAsync: Deferred<List<BrevdataDto>> = async { if (includeEblanketter) getEblanketter() else emptyList() }
             val malerAsync: Deferred<List<BrevdataDto>> = async { getBrevmalerForSakstype(sakType) }
-            return@coroutineScope eblanketterAsync.await().plus(malerAsync.await())
+            return@coroutineScope Brevmaler(eblanketterAsync.await(),malerAsync.await())
         }
 
     private suspend fun getBrevmalerForSakstype(sakstype: PenService.SakType): List<BrevdataDto> {
@@ -119,5 +118,10 @@ data class BrevdataDto(
     }
 
 }
+
+data class Brevmaler (
+    val eblanketter: List<BrevdataDto>,
+    val maler: List<BrevdataDto>,
+)
 
 

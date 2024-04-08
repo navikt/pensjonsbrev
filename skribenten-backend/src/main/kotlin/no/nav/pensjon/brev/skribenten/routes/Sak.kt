@@ -20,7 +20,6 @@ fun Route.sakRoute(
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang(navansattService, pdlService, penService))
 
-        // TODO skal vi beholde denne?
         get {
             val sak: PenService.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             val vedtaksId: String? = call.request.queryParameters["vedtaksId"]

@@ -7,9 +7,9 @@ import type { AxiosError } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { getSak } from "~/api/skribenten-api-endpoints";
+import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { SakDto } from "~/types/apiTypes";
+import type { SakContextDto } from "~/types/apiTypes";
 
 export const Route = createFileRoute("/saksnummer/")({
   component: SaksnummerPage,
@@ -24,13 +24,13 @@ function SaksnummerPage() {
     },
   });
 
-  const hentSakMutation = useMutation<SakDto, AxiosError<unknown>, { saksnummer: string }>({
-    mutationFn: (values) => getSak.queryFn(values.saksnummer),
-    onSuccess: (sak, values) => {
-      queryClient.setQueryData(getSak.queryKey(values.saksnummer), sak);
+  const hentSakContextMutation = useMutation<SakContextDto, AxiosError<unknown>, { saksnummer: string }>({
+    mutationFn: (values) => getSakContext.queryFn(values.saksnummer, undefined),
+    onSuccess: (sakContext, values) => {
+      queryClient.setQueryData(getSakContext.queryKey(values.saksnummer), sakContext);
       navigate({
         to: "/saksnummer/$saksId/brevvelger",
-        params: { saksId: sak.saksId.toString() },
+        params: { saksId: sakContext.sak.saksId.toString() },
       });
     },
   });
@@ -45,16 +45,16 @@ function SaksnummerPage() {
         margin-top: var(--a-spacing-8);
         width: 340px;
       `}
-      onSubmit={handleSubmit((values) => hentSakMutation.mutate(values))}
+      onSubmit={handleSubmit((values) => hentSakContextMutation.mutate(values))}
     >
       <TextField {...register("saksnummer")} autoComplete="off" label="Saksnummer" />
-      {hentSakMutation.error && (
+      {hentSakContextMutation.error && (
         <ApiError
-          error={hentSakMutation.error}
-          title={hentSakMutation.error?.response?.data?.toString() || "Finner ikke saksnummer"}
+          error={hentSakContextMutation.error}
+          title={hentSakContextMutation.error?.response?.data?.toString() || "Finner ikke saksnummer"}
         />
       )}
-      <Button loading={hentSakMutation.isPending} type="submit">
+      <Button loading={hentSakContextMutation.isPending} type="submit">
         Åpne brevvelger
       </Button>
     </form>
