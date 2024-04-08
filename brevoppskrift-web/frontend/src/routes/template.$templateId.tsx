@@ -94,6 +94,7 @@ function SelectLanguage() {
         width: 200px;
         margin-bottom: var(--a-spacing-8);
       `}
+      data-cy="select-language"
       label="Språk"
       onChange={(event) => navigate({ search: { language: event.target.value }, replace: true })}
       size="medium"

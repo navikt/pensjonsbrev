@@ -33,6 +33,7 @@ object OmstillingsstoenadInnvilgelseFraser {
     data class Vedtak(
         val avdoed: Expression<Avdoed>,
         val omstillingsstoenadBeregning: Expression<OmstillingsstoenadBeregning>,
+        val harUtbetaling: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -52,7 +53,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                 )
             }
 
-            showIf(utbetaltBeloep.greaterThan(0)) {
+            showIf(harUtbetaling) {
                 showIf(harFlerePerioder) {
                     val datoFomSisteBeregningsperiode = omstillingsstoenadBeregning.sisteBeregningsperiode.datoFOM
 

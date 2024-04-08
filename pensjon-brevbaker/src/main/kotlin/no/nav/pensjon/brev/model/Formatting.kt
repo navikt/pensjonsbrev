@@ -51,6 +51,8 @@ object FormatBorMedSivilstandTabell : LocalizedFormatter<BorMedSivilstand>() {
                 English -> "Cohabitation (cf. Section 12-13 of the National Insurance Act)"
             }
         }
+
+    override fun stableHashCode(): Int = "FormatBorMedSivilstandTabell".hashCode()
 }
 
 
@@ -60,6 +62,7 @@ fun Expression<Sivilstand>.bestemtForm() = format(SivilstandEpsBestemt)
 @Deprecated("Bruk bormed sivilstand istedenfor")
 object SivilstandEpsBestemt : LocalizedFormatter<Sivilstand>() {
     override fun apply(first: Sivilstand, second: Language): String = sivilstand(first, second, true)
+    override fun stableHashCode(): Int = "SivilstandEpsBestemt".hashCode()
 }
 
 @Deprecated("bruk bormedSivilstand")
@@ -100,10 +103,12 @@ fun Expression<BorMedSivilstand>.ubestemtForm() = format(formatter = BorMedSivil
 
 object BorMedSivilstandUbestemt : LocalizedFormatter<BorMedSivilstand>() {
     override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, false)
+    override fun stableHashCode(): Int = "BorMedSivilstandUbestemt".hashCode()
 }
 
 object BorMedSivilstandBestemt : LocalizedFormatter<BorMedSivilstand>() {
     override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, true)
+    override fun stableHashCode(): Int = "BorMedSivilstandBestemt".hashCode()
 }
 private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, bestemtForm: Boolean): String =
     when (sivilstand) {

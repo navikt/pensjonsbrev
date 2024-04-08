@@ -92,21 +92,21 @@ object TilbakekrevingFerdig: EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal
 				showIf(doedsbo) {
 					textExpr(
 						Bokmal to "Dødsboet må betale tilbake ".expr() + sakType.format(),
-						Nynorsk to "".expr() + sakType.format(),
-						English to "".expr() + sakType.format()
+						Nynorsk to "Dødsbuet må betale tilbake ".expr() + sakType.format(),
+						English to "The estate must pay reimbursement for ".expr() + sakType.format()
 					)
 				}.orShow {
 					textExpr(
 						Bokmal to "Du må betale tilbake ".expr() + sakType.format(),
 						Nynorsk to "Du må betale tilbake ".expr() + sakType.format(),
-						English to "Du må betale tilbake ".expr() + sakType.format()
+						English to "You must pay reimbursement for ".expr() + sakType.format()
 					)
 				}
 			}.orShow {
 				textExpr(
 					Bokmal to "Du skal ikke betale tilbake ".expr() + sakType.format(),
-					Nynorsk to "Du skal ikke betale tilbake ".expr() + sakType.format(),
-					English to "Du skal ikke betale tilbake ".expr() + sakType.format(),
+					Nynorsk to "Du skal ikkje betale tilbake ".expr() + sakType.format(),
+					English to "No reimbursement for ".expr() + sakType.format() + " will be claimed",
 				)
 			}
 

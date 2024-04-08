@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter
+import no.nav.pensjon.brev.template.StableHash
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -24,7 +25,7 @@ data class OmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO(
 
 enum class Aktivitetsgrad { IKKE_I_AKTIVITET, UNDER_50_PROSENT, OVER_50_PROSENT };
 
-object AktivitetsgradFormatter : LocalizedFormatter<Aktivitetsgrad>() {
+object AktivitetsgradFormatter : LocalizedFormatter<Aktivitetsgrad>(), StableHash by StableHash.of("AktivitetsgradFormatter") {
     override fun apply(aktivitetsgrad: Aktivitetsgrad, spraak: Language): String {
         return aktivitetsgrad.name
     }

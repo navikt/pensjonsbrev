@@ -24,6 +24,8 @@ object SaktypeFormatter : LocalizedFormatter<SakType>() {
             }
         }
     }
+
+    override fun stableHashCode(): Int = "SaktypeFormatter".hashCode()
 }
 
 

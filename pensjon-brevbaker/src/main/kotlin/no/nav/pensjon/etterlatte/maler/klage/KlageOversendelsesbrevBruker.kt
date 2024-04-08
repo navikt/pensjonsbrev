@@ -138,7 +138,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
                 textExpr(
                     Language.Bokmal to "Du kan også kontakte NAV Klageinstans på ".expr() + sakUrl(sakType) + " eller telefon " + ifElse(
                         bosattIUtlandet,
-                        Constants.KONTATTELEFON_PENSJON_MED_LANDKODE,
+                        Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE,
                         Constants.KONTAKTTELEFON_PENSJON
                     ) + ", hverdager 09.00-15.00. Hvis du oppgir fødselsnummer" + ifElse(
                         harVerge,

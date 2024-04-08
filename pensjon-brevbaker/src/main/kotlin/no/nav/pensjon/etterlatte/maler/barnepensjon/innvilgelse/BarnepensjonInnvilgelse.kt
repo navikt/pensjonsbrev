@@ -21,7 +21,9 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.brukerUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.erGjenoppretting
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
@@ -43,6 +45,8 @@ data class BarnepensjonInnvilgelseDTO(
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,
+    val erGjenoppretting: Boolean,
+    val harUtbetaling: Boolean,
 ) : BrevDTO
 
 @TemplateModelHelpers
@@ -61,17 +65,27 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         ),
     ) {
         title {
-            text(
-                Bokmal to "Vi har innvilget søknaden din om barnepensjon",
-                Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-                English to "We have granted your application for a children's pension",
-            )
+            showIf(erGjenoppretting) {
+                text(
+                    Bokmal to "Du er innvilget barnepensjon på nytt",
+                    Nynorsk to "Du er innvilga barnepensjon på ny",
+                    English to "You have been granted children’s pension again",
+                )
+            }.orShow {
+                text(
+                    Bokmal to "Vi har innvilget søknaden din om barnepensjon",
+                    Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
+                    English to "We have granted your application for a children's pension",
+                )
+            }
         }
 
         outline {
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling.notNull()))
+            showIf(harUtbetaling) {
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling.notNull()))
+            }
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))

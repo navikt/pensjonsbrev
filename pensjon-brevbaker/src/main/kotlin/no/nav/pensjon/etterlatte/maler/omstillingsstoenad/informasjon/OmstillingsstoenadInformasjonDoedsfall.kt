@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -17,12 +16,17 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.fraser.common.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTATTELEFON_PENSJON_MED_LANDKODE
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_ANDRE_STOENADER_URL
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_URL
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.borIutland
 
 data class OmstillingstoenadInformasjonDoedsfallDTO(
     override val innhold: List<Element>,
     val avdoedNavn: String,
+    val borIutland: Boolean,
 ) : BrevDTO
 
 @TemplateModelHelpers
@@ -35,12 +39,12 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
             letterDataType = OmstillingstoenadInformasjonDoedsfallDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-            LetterMetadata(
-                displayTitle = "Informasjon om omstillingsstønad",
-                isSensitiv = false,
-                distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-                brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-            ),
+                LetterMetadata(
+                    displayTitle = "Informasjon om omstillingsstønad",
+                    isSensitiv = false,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
         ) {
             title {
                 text(
@@ -55,107 +59,112 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                     textExpr(
                         Bokmal to "Vi skriver til deg fordi vi har fått melding om at ".expr() + avdoedNavn + " er død, og du kan ha rett til omstillingsstønad.".expr(),
                         Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ".expr() + avdoedNavn + " er død, og du kan ha rett til omstillingsstønad. ".expr(),
-                        English to "We are writing to you because we have received notice that ".expr() + avdoedNavn + " has died, and we would like to inform you about children's pension.",
+                        English to "We are writing to you because we have received notice that ".expr() + avdoedNavn + " has died, and you may have rights as a surviving spouse.",
                     )
                 }
 
                 title2 {
                     text(
-                        Bokmal to "Hvem kan ha rett til omstillingsstønad?",
-                        Nynorsk to "Kven kan ha rett til omstillingsstønad?",
-                        English to "Who may be entitled to a adjustment allowance?",
+                        Bokmal to "Hvem kan få omstillingsstønad?",
+                        Nynorsk to "Kven kan få omstillingsstønad?",
+                        English to "Who is entitled to an adjustment allowance?",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Retten til å få omstillingsstønad avhenger av ditt forhold til avdøde.",
+                        Nynorsk to "Det vil avhenge av forholdet ditt til avdøde om du har rett på omstillingsstønad.",
+                        English to "Your right to adjustment allowance will depend on your relationship with the deceased.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Hvis dere var gift, partnere, samboere eller separert da dødsfallet skjedde, kan du få omstillingsstønad hvis noe av dette gjelder:",
+                        Nynorsk to "Viss de var gifte, partnarar, sambuarar eller separerte då dødsfallet skjedde, kan du få omstillingsstønad dersom eit av kriteria under er oppfylt:",
+                        English to "If you were married, registered partners, cohabitants or separated at the time of death, you may qualify for adjustment allowance if any of the following applies to you:",
                     )
                 }
                 paragraph {
                     list {
                         item {
                             text(
-                                Bokmal to "For å ha rett til omstillingsstønad, må du som hovedregel være medlem i folketrygden og under 20 år.",
-                                Nynorsk to "For å ha rett til omstillingsstønad må du som hovudregel vere medlem i folketrygda og under 20 år.",
-                                English to "To be entitled to a adjustment allowance, you must as a rule have been a member of the National Insurance Scheme and under the age of 20.",
-                                )
-                        }
-                        item {
-                            text(
-                                Bokmal to "ha vært gift med den avdøde i minst fem år, eller ",
-                                Nynorsk to "ha vore gift med den avdøde i minst fem år, eller ",
-                                English to "have been married to the deceased for at least five years, or  "
+                                Bokmal to "Ekteskapet varte i minst 5 år.",
+                                Nynorsk to "Ekteskapet varte i minst 5 år.",
+                                English to "You had been married more than 5 years.",
                             )
                         }
                         item {
                             text(
-                                Bokmal to "ha vært gift eller samboer med den avdøde og ha eller ha hatt barn med den avdøde, eller ",
-                                Nynorsk to "ha vore gift eller sambuar med den avdøde og ha eller ha hatt barn med den avdøde, eller ",
-                                English to "have been married to or a cohabitant with the deceased, and have/had children together, or  "
+                                Bokmal to "Du har vært gift eller samboer med den avdøde, og har eller har hatt barn med den avdøde.",
+                                Nynorsk to "Du har vore gift eller sambuar med avdøde, og har eller har hatt barn med avdøde.",
+                                English to "You were married to or living with the deceased, and you have or have had a child/children with the deceased.",
                             )
                         }
                         item {
                             text(
-                                Bokmal to "ha omsorg for barn med minst halvparten av tiden. ",
-                                Nynorsk to "ha omsorg for barn med minst halvparten av full tid.",
-                                English to "have care of children at least half the time.  "
+                                Bokmal to "Ha omsorg for barn under 18 år i minst 50 prosent dersom dere var gift i mindre enn 5 år. Dette gjelder alle barn du har omsorg for, ikke bare felles barn.",
+                                Nynorsk to "Du har omsorg for barn under 18 år i minst 50 prosent dersom de var gifte i mindre enn 5 år. Dette gjeld alle barn du har omsorg for, ikkje berre felles barn.",
+                                English to "You had been married for less than 5 years, but you have custody of a child/children under the age of 18 for more than 50 percent of the time. This includes all children, not just joint children.",
                             )
                         }
                     }
                 }
-
                 paragraph {
                     text(
-                        Bokmal to "Du kan lese mer om disse rettighetene på ${Constants.OMS_URL}",
-                        Nynorsk to "You can read more about this at ${Constants.OMS_URL}",
-                        English to "Du kan lese meir om desse rettane på ${Constants.OMS_URL}. ",
+                        Bokmal to "Du må som hovedregel være medlem i folketrygden, og avdøde må ha vært medlem i folketrygden de siste fem årene fram til dødsfallet. I noen tilfeller kan medlemskap i trygdeordninger i andre EØS-land telle likt som medlemskap i folketrygden.",
+                        Nynorsk to "Du må som hovudregel vere medlem i folketrygda, og avdøde må ha vore medlem i folketrygda dei siste fem åra før sin død. I enkelte tilfelle kan medlemskap i trygdeordningar i andre EØS-land telje likt som medlemskap i folketrygda.",
+                        English to "Normally, you must be a member of the National Insurance Scheme, and the deceased must have been a member of the National Insurance Scheme the last five years before their death. In some cases, social security membership from another EEA country may be considered equal to membership in the National Insurance Scheme.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Du kan lese mer om disse rettighetene på $OMS_URL.",
+                        Nynorsk to "Du kan lese meir om dine rettar på $OMS_URL.",
+                        English to "You can read more about this at $OMS_URL. ",
                     )
                 }
 
                 title2 {
                     text(
                         Bokmal to "Kort om omstillingsstønaden",
-                        Nynorsk to "Kort om omstillingsstønaden ",
+                        Nynorsk to "Kort om omstillingsstønaden",
                         English to "What is an adjustment allowance?",
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Omstillingsstønad er en tidsbegrenset stønad som vanligvis varer i tre år.  Støtten skal sikre inntekt og gi hjelp til selvhjelp i en omstillingsperiode etter dødsfallet. Etter seks måneder må du som hovedregel være i arbeid eller en annen aktivitet slik at du etter hvert kan forsørge deg selv.",
+                        Bokmal to "Omstillingsstønad er en tidsbegrenset stønad som vanligvis varer i tre år. Støtten skal sikre inntekt og gi hjelp til selvhjelp i en omstillingsperiode etter dødsfallet. Etter seks måneder må du som hovedregel være i arbeid eller en annen aktivitet slik at du etter hvert kan forsørge deg selv.",
                         Nynorsk to "Omstillingsstønad er ein tidsavgrensa stønad som vanlegvis varar i tre år. Støtta skal sikre inntekt og gi hjelp til sjølvhjelp i ein omstillingsperiode etter dødsfallet. Etter seks månader må du som hovudregel være i arbeid eller en annan aktivitet slik at du etter kvart kan forsørgje deg sjølv.",
                         English to "The adjustment allowance is a time-limited benefit that normally only lasts three years. The allowance is intended to guarantee an income and to help you help yourself in an adjustment period after the death. After six months, you will normally be expected to have found employment or be participating in another type of activity, so that you can eventually provide for yourself.",
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Hvis du tar nødvendig utdanning eller trenger hjelp til å få jobb, kan du søke om å få pensjonen forlenget med inntil to år.  ",
-                        Nynorsk to "Om du tar naudsynt utdanning eller treng hjelp til å få jobb, kan du søkje om å få pensjonen forlengja med inntil to år.",
-                        English to "The benefit may be extended by up to two years, if you need help finding employment, such as completing an education or work training.",
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Er du født i 1963 eller tidligere og har hatt lav arbeidsinntekt de siste fem årene før dødsfallet, kan du få stønaden til du blir 67 år.",
-                        Nynorsk to "Er du født i 1963 eller tidlegare og har hatt låg arbeidsinntekt dei siste fem åra før dødsfallet, kan du få stønaden til du blir 67 år.",
-                        English to "If you were born in 1963 or earlier and you had a low earned income in the last five years before the death, you may keep the benefit until you turn 67 years old.",
                     )
                 }
 
                 title2 {
                     text(
                         Bokmal to "Hvor mye kan du få?",
-                        Nynorsk to "Hvor mye kan du få?",
+                        Nynorsk to "Kor mykje du kan få?",
                         English to "How much are you entitled to?",
                     )
                 }
-
                 paragraph {
                     text(
-                        Bokmal to "Stønaden er 2,25 ganger grunnbeløpet per år. Hvis den avdøde har bodd utenfor Norge etter fylte 16 år, kan det få betydning for størrelsen.",
-                        Nynorsk to "Stønaden er 2,25 gongar grunnbeløpet per år. Viss den avdøde har budd utanfor Noreg etter fylte 16 år, kan det påverke stønaden.",
+                        Bokmal to "Full omstillingsstønad er 2,25 ganger grunnbeløpet i folketrygden (G).",
+                        Nynorsk to "Full omsstillingsstønad er 2,25 gongar grunnbeløpet per år.",
                         English to "The benefit is 2.25 times the National Insurance basic amount G, depending on the period of national insurance coverage for the person who died.",
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis du har arbeidsinntekt, blir stønaden redusert med 45 prosent av den inntekten som overstiger halve folketrygdens grunnbeløp. Noen ytelser, som for eksempel sykepenger og dagpenger, likestilles med arbeidsinntekt.",
-                        Nynorsk to "Viss du har arbeidsinntekt, blir stønaden redusert med 45 prosent av den inntekta som overstig halve grunnbeløpet i folketrygda. Nokre ytingar, som til dømes sjukepengar og dagpengar, er likestilte med arbeidsinntekt.",
+                        Bokmal to "Stønaden reduseres med 45 prosent av den inntekten din som overstiger halvparten av folketrygdens grunnbeløp. Noen ytelser, som for eksempel sykepenger og dagpenger, likestilles med arbeidsinntekt.",
+                        Nynorsk to "Stønaden blir redusert med 45 prosent av inntekta di som overstig halve grunnbeløpet i folketrygda. Nokre ytingar, som til dømes sjukepengar og dagpengar, er likestilte med arbeidsinntekt.",
                         English to "The adjustment allowance will be reduced on the basis of income that you receive or expect to receive. Some benefits, such as sickness benefits and unemployment benefits are equivalent to earned income. Your pension will be reduced by 45 per cent of your income that exceeds half of the National Insurance basic amount.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Hvis den avdøde har bodd utenfor Norge etter fylte 16 år, kan det også få betydning for størrelsen på stønaden.",
+                        Nynorsk to "Viss den avdøde har budd utanfor Noreg etter fylte 16 år, kan det påverke storleiken på stønaden.",
+                        English to "If the deceased has lived outside of Norway after turning 16, it may also affect the amount of the allowance.",
                     )
                 }
                 paragraph {
@@ -170,25 +179,34 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                     text(
                         Bokmal to "Hvordan søker du?",
                         Nynorsk to "Korleis søkjer du?",
-                        English to "Other pension schemes",
+                        English to "How do you apply",
                     )
+                }
+                showIf(borIutland.not()) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner informasjon og søknad på $OMS_URL.",
+                            Nynorsk to "Du finn informasjon på $OMS_URL.",
+                            English to "You will find information and the application form at $OMS_URL.",
+                        )
+                    }
+                }
+                showIf(borIutland) {
+                    paragraph {
+                        text(
+                            Bokmal to "Vi har informasjon om at du bor i utlandet. Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker omstillingsstønad. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.OMS}.",
+                            Nynorsk to "Etter dei opplysningane vi har, bur du i utlandet. Dersom du bur i eit land som Noreg har trygdeavtale med, må du kontakte trygdemaktene i dette landet før du søkjer om omstillingsstønad. På ${Constants.Utland.OMS} finn du meir informasjon om kva land Noreg har avtale med.",
+                            English to "According to our records, you live abroad. Go to $OMS_URL for more information on how to apply. If you live in a country Norway has a social security agreement with, you must contact the social security authority in your country of residence before you apply for adjustment allowance. See which countries Norway has a social security agreement with here: ${Constants.Utland.OMS}.",
+                        )
+                    }
                 }
                 paragraph {
                     text(
-                        Bokmal to "Vi oppfordrer deg til å søke så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. Det er nye regler for gjenlevendeytelser fra 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for hvilke regler som gjelder for deg.",
-                        Nynorsk to "Vi oppmodar deg til å søkje så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader. Det er nye reglar for ytingar til attlevande frå 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for kva regler som gjeld for deg.",
-                        English to "If the deceased was a member of a private or public pension scheme and you have questions about this, you can contact the deceased's employer. You can also contact the pension scheme or insurance company.",
+                        Bokmal to "Vi oppfordrer deg til å søke så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder.",
+                        Nynorsk to "Vi oppmodar deg til å søkje så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader.",
+                        English to "We encourage you to apply as soon as possible because we normally only pay retroactively for three months.",
                     )
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Dersom du bor i utlandet, må du kontakte trygdemyndigheten i bostedslandet ditt.",
-                        Nynorsk to "Dersom du bur i utlandet, må du kontakte trygdemyndigheitene i bustadlandet ditt.",
-                        English to "If you are receiving tariff-based early retirement pensions (AFP) in the public sector, you should contact us for further guidance.",
-                    )
-                }
-
-
 
                 title2 {
                     text(
@@ -199,25 +217,34 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
-                        Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
-                        English to "If the deceased has lived or worked abroad, this may affect the amount of your pension. Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. Therefore, you may also be entitled to a pension from other countries. We can assist you with your application to countries with which Norway has a social security agreement.",
+                        Bokmal to "Hvis avdøde tidligere har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
+                        Nynorsk to "Dersom avdøde tidlegare har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
+                        English to "If the deceased has lived or worked abroad, this may affect the amount of your adjustment allowance. Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. Therefore, you may also be entitled to a pension from other countries. We can assist you with your application to countries with which Norway has a social security agreement.",
                     )
                 }
 
-                title2 {
-                    text(
-                        Bokmal to "Andre ytelser du kan ha rett til som gjenlevende",
-                        Nynorsk to "Andre ytingar du kan ha rett til som attlevande",
-                        English to "",
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Du kan også ha rett til stønad til barnetilsyn, tilleggsstønad og stønad til skolepenger. Forsørger du barn under 18 år, kan du ha rett til utvidet barnetrygd.",
-                        Nynorsk to "Dersom avdøde hadde ei privat eller offentleg pensjonsordning og du har spørsmål om dette, kan du kontakte arbeidsgivaren til den avdøde. Du kan også ta kontakt med pensjonsordninga eller forsikringsselskapet.",
-                        English to "",
-                    )
+                showIf(borIutland.not()) {
+                    title2 {
+                        text(
+                            Bokmal to "Andre stønader til gjenlevende",
+                            Nynorsk to "Andre ytingar du kan ha rett til som attlevande",
+                            English to "Other benefits you may be entitled to as a surviving spouse",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Du kan også ha rett til stønad til barnetilsyn, tilleggsstønad og stønad til skolepenger. Forsørger du barn under 18 år, kan du ha rett til utvidet barnetrygd.",
+                            Nynorsk to "Du kan også ha rett til stønad til barnetilsyn, tilleggsstønad og stønad til skulepengar. Forsørgjer du barn under 18 år, kan du ha rett til utvida barnetrygd.",
+                            English to "You may also be entitled to child care benefits, supplemental benefits and an allowance to cover tuition fees. If you provide for children under the age of 18, you may be entitled to extended child benefit.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Du kan lese mer om dette på $OMS_ANDRE_STOENADER_URL",
+                            Nynorsk to "Du kan lese meir om dette på $OMS_ANDRE_STOENADER_URL",
+                            English to "",
+                        )
+                    }
                 }
 
                 title2 {
@@ -234,6 +261,13 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                         English to "If the deceased was a member of a private or public pension scheme and you have questions about this, you can contact the deceased's employer. You can also contact the pension scheme or insurance company.",
                     )
                 }
+                paragraph {
+                    text(
+                        Bokmal to "Dersom du selv mottar avtalefestet pensjon fra offentlig sektor, må du kontakte oss for nærmere veiledning.",
+                        Nynorsk to "Dersom du sjølv mottek avtalefesta pensjon frå offentleg sektor, må du kontakte oss for nærare rettleiing.",
+                        English to "If you are receiving tariff-based early retirement pensions (AFP) in the public sector, you should contact us for further guidance.",
+                    )
+                }
 
                 title2 {
                     text(
@@ -244,16 +278,9 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du finner mer informasjon på ${Constants.OMS_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
-                        Nynorsk to "Du finn meir informasjon på ${Constants.OMS_URL}. Du kan chatte med oss eller skrive til oss på ${Constants.KONTAKT_URL}.",
-                        English to "You can find more information at ${Constants.OMS_URL}. At ${Constants.KONTAKT_URL} you can chat or write to us.",
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon ${KONTATTELEFON_PENSJON_MED_LANDKODE}, hverdager kl. 09.00 - 15.00.",
-                        Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon ${KONTATTELEFON_PENSJON_MED_LANDKODE}, kvardagar kl. 09.00 til 15.00.",
-                        English to "If you do not find the answer at nav.no, you can call us at ${KONTATTELEFON_PENSJON_MED_LANDKODE}, weekdays from 09:00 to 15:00.",
+                        Bokmal to "Du kan finne svar på $OMS_URL. På $KONTAKT_URL kan du chatte eller skrive til oss. Du kan også kontakte oss på telefon ${KONTAKTTELEFON_PENSJON_MED_LANDKODE}, hverdager kl. 09.00-15.00. Hvis du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
+                        Nynorsk to "Du kan finne svar på $OMS_URL. Du kan skrive til eller chatte med oss på $KONTAKT_URL. Du kan også kontakte oss på telefon ${KONTAKTTELEFON_PENSJON_MED_LANDKODE}, kvardagar 09:00–15:00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer.",
+                        English to "You can find answers to your questions online: $OMS_URL. Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact us by phone (${KONTAKTTELEFON_PENSJON_MED_LANDKODE}), weekdays 09:00-15:00. If you provide your national identity number, we can more easily provide you with quick and good help.",
                     )
                 }
             }

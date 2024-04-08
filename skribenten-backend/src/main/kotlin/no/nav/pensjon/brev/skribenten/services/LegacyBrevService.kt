@@ -15,6 +15,7 @@ class LegacyBrevService(
     private val brevmetadataService: BrevmetadataService,
     private val safService: SafService,
     private val penService: PenService,
+    private val navansattService: NavansattService,
 ) {
     private val logger = LoggerFactory.getLogger(LegacyBrevService::class.java)
 
@@ -54,6 +55,8 @@ class LegacyBrevService(
         if (brevtittel.isNullOrBlank()) {
             return BestillOgRedigerBrevResponse(EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
         }
+        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent).resultOrNull()
+            ?: return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
 
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
@@ -65,8 +68,9 @@ class LegacyBrevService(
             metadata = brevMetadata,
             saksId = saksId,
             spraak = request.spraak,
-            vedtaksId = request.vedtaksId,
             brevtittel = brevtittel,
+            vedtaksId = request.vedtaksId,
+            navn = navansatt.navn
         )
         return if (result.failureType != null) {
             BestillOgRedigerBrevResponse(result)
@@ -90,6 +94,9 @@ class LegacyBrevService(
         saksId: Long,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
+        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent).resultOrNull()
+            ?: return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
+
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
             call = call,
@@ -99,9 +106,10 @@ class LegacyBrevService(
             metadata = brevMetadata,
             saksId = saksId,
             spraak = SpraakKode.NB,
+            brevtittel = brevMetadata.dekode,
             landkode = request.landkode,
             mottakerText = request.mottakerText,
-            brevtittel = brevMetadata.dekode,
+            navn = navansatt.navn
         )
         return if (result.failureType != null) {
             BestillOgRedigerBrevResponse(result)
@@ -127,6 +135,7 @@ class LegacyBrevService(
         vedtaksId: Long? = null,
         landkode: String? = null,
         mottakerText: String? = null,
+        navn: String,
     ): BestillBrevResponse =
         tjenestebussIntegrasjonService.bestillExstreamBrev(
             brevkode = brevkode,
@@ -136,7 +145,7 @@ class LegacyBrevService(
             idTSSEkstern = idTSSEkstern,
             isSensitive = isSensitive,
             metadata = metadata,
-            name = call.principal().fullName,
+            name = navn,
             navIdent = call.principal().navIdent,
             saksId = saksId,
             spraak = spraak,
@@ -364,6 +373,7 @@ class LegacyBrevService(
         SAF_ERROR,
         SKRIBENTEN_INTERNAL_ERROR,
         ENHETSID_MANGLER,
+        NAVANSATT_MANGLER_NAVN,
     }
 
 }

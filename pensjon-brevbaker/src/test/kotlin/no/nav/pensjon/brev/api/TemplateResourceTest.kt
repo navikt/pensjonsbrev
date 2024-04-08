@@ -6,9 +6,12 @@ import com.natpryce.hamkrest.hasElement
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.maler.*
+import no.nav.pensjon.brev.maler.OmsorgEgenAuto
+import no.nav.pensjon.brev.maler.UngUfoerAuto
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.StableHash
+import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -150,4 +153,17 @@ class TemplateResourceTest {
             }
     }
 
+    @Test
+    fun `all templates can generate stableHashCode`() {
+        templateResource.getAutoBrev().map { templateResource.getAutoBrev(it)!! }
+            .forEach {
+                StableHash.of(it.outline).stableHashCode()
+                StableHash.of(it.attachments).stableHashCode()
+            }
+        templateResource.getRedigerbareBrev().map { templateResource.getRedigerbartBrev(it)!! }
+            .forEach {
+                StableHash.of(it.outline).stableHashCode()
+                StableHash.of(it.attachments).stableHashCode()
+            }
+    }
 }

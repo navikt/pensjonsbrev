@@ -65,7 +65,7 @@ export function bindAction<T, Arguments extends any[]>(
  * @param action the action to bind
  * @param to the receiver to bind it to
  * @param target the target to bind to the action
- * @param args the arguments to bind to the action
+ * @param arguments_ the arguments to bind to the action
  */
 export function bindAction<T, BoundArguments extends any[], RestArguments extends any[]>(
   action: Action<T, [...BoundArguments, ...RestArguments]>,
@@ -108,7 +108,7 @@ export function bindActionWithCallback<T, Arguments extends any[]>(
  * Binds an {@link Action} to a {@link CallbackReceiver}, and the given arguments to the action. The target of the action will be passed from the CallbackReceiver.
  * @param action the action to bind
  * @param to the callback receiver to bind it to
- * @param args the (potentially partial) arguments to bind to the action
+ * @param arguments_ the (potentially partial) arguments to bind to the action
  */
 export function bindActionWithCallback<T, BoundArguments extends any[], RestArguments extends any[]>(
   action: Action<T, [...BoundArguments, ...RestArguments]>,
@@ -142,12 +142,12 @@ export function combine(...receivers: ((...arguments_: any[]) => void)[]): (...a
  *
  * @param action to apply
  * @param to the callbackReceiver the action should be applied to
- * @param args the arguments for the action.
+ * @param arguments_ the arguments for the action.
  */
 export function applyAction<T, Arguments extends any[]>(
   action: Action<T, Arguments>,
-  to: CallbackReceiver<T>,
+  to: CallbackReceiver<T | undefined>,
   ...arguments_: Arguments
 ): void {
-  to((target) => action(target, ...arguments_));
+  to((target) => target && action(target, ...arguments_));
 }

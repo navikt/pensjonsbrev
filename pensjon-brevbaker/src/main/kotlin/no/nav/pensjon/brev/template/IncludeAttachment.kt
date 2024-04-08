@@ -19,10 +19,10 @@ data class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any>(
     val data: Expression<AttachmentData>,
     val template: AttachmentTemplate<Lang, AttachmentData>,
     val predicate: Expression<Boolean> = true.expr(),
-)
+): StableHash by StableHash.of(data, template, predicate)
 
 data class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any>(
     val title: TextElement<Lang>,
     val outline: List<OutlineElement<Lang>>,
     val includeSakspart: Boolean = false,
-): HasModel<AttachmentData>
+): HasModel<AttachmentData>, StableHash by StableHash.of(title, StableHash.of(outline), StableHash.of(includeSakspart))

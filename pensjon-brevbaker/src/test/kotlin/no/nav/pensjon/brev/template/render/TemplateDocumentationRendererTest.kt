@@ -167,6 +167,7 @@ class TemplateDocumentationRendererTest {
 
 private object BooleanFormatter : LocalizedFormatter<Boolean>() {
     override fun apply(first: Boolean, second: Language) = first.toString()
+    override fun stableHashCode(): Int = "BooleanFormatter".hashCode()
 }
 
 // Dette er et util som er greit å ha etterhvert som vi jobberr videre med å forenkle expressions

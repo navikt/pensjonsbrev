@@ -16,7 +16,7 @@ data class LanguageSettings(val settings: Map<String, List<TextElement<BaseLangu
 
 }
 
-sealed class Language {
+sealed class Language : StableHash {
     val name: String = this::class.java.name
 
     override fun toString(): String {
@@ -30,12 +30,12 @@ sealed class Language {
             English -> Locale.UK
         }
 
-    object Bokmal : Language()
-    object Nynorsk : Language()
-    object English : Language()
+    object Bokmal : Language(), StableHash by StableHash.of("Language.Bokmal")
+    object Nynorsk : Language(), StableHash by StableHash.of("Language.Nynorsk")
+    object English : Language(), StableHash by StableHash.of("Language.English")
 }
 
-interface LanguageSupport {
+interface LanguageSupport : StableHash {
     fun supports(language: Language): Boolean
     fun all(): Set<Language>
 
@@ -46,12 +46,15 @@ interface LanguageSupport {
 
 sealed class LanguageCombination {
 
-    data class Single<Lang : Language>(val first: Lang) : LanguageCombination(), LanguageSupport.Single<Lang> {
+    data class Single<Lang : Language>(val first: Lang) : LanguageCombination(), LanguageSupport.Single<Lang>, StableHash by StableHash.of(first) {
         override fun supports(language: Language): Boolean = language == first
         override fun all(): Set<Language> = setOf(first)
     }
 
-    data class Double<Lang1 : Language, Lang2 : Language>(val first: Lang1, val second: Lang2) : LanguageCombination(), LanguageSupport.Double<Lang1, Lang2> {
+    data class Double<Lang1 : Language, Lang2 : Language>(
+        val first: Lang1,
+        val second: Lang2,
+    ) : LanguageCombination(), LanguageSupport.Double<Lang1, Lang2>, StableHash by StableHash.of(first, second) {
         override fun supports(language: Language): Boolean = language == first || language == second
         override fun all(): Set<Language> = setOf(first, second)
     }
@@ -60,7 +63,7 @@ sealed class LanguageCombination {
         val first: Lang1,
         val second: Lang2,
         val third: Lang3
-    ) : LanguageCombination(), LanguageSupport.Triple<Lang1, Lang2, Lang3> {
+    ) : LanguageCombination(), LanguageSupport.Triple<Lang1, Lang2, Lang3>, StableHash by StableHash.of(first, second, third) {
         override fun supports(language: Language): Boolean =
             language == first || language == second || language == third
         override fun all(): Set<Language> = setOf(first, second, third)

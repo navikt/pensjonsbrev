@@ -48,29 +48,29 @@ class OperationsTest {
 
     @Nested
     @DisplayName("Absolute value operators")
-    inner class AbsoluteValue{
-        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+    inner class AbsoluteValue {
+        private val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
 
         @Test
-        fun `absoluteKronerValue returns positive value if negative value`(){
+        fun `absoluteKronerValue returns positive value if negative value`() {
             val expr = Kroner(-123).expr().absoluteValue()
             assertEquals(expr.eval(scope), Kroner(123))
         }
 
         @Test
-        fun `absoluteKronerValue returns positive value if positive value`(){
+        fun `absoluteKronerValue returns positive value if positive value`() {
             val expr = Kroner(123).expr().absoluteValue()
             assertEquals(expr.eval(scope), Kroner(123))
         }
 
         @Test
-        fun `absoluteValue returns positive value if negative value`(){
+        fun `absoluteValue returns positive value if negative value`() {
             val expr = (-123).expr().absoluteValue()
             assertEquals(expr.eval(scope), 123)
         }
 
         @Test
-        fun `absoluteValue returns positive value if positive value`(){
+        fun `absoluteValue returns positive value if positive value`() {
             val expr = Kroner(123).expr().absoluteValue()
             assertEquals(expr.eval(scope), Kroner(123))
         }
