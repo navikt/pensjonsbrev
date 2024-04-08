@@ -99,7 +99,7 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
-    enum class Behandling {
+    enum class Gradering {
         FORTROLIG,
         STRENGT_FORTROLIG,
         STRENGT_FORTROLIG_UTLAND,
