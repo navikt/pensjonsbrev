@@ -48,7 +48,7 @@ fun AuthorizeAnsattSakTilgang(
                 // Rekkefølgen på disse har betydning. Om sjekkEnhetstilgang kjøres først så vil vi svare med "Mangler enhetstilgang til sak".
                 // - Dette avslører at det finnes en sak for angitt saksId.
                 // - Men det avslører ikke at fodselsnummer eksisterer og at det er en adressebeskyttet person.
-                sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr, bestemBehandlingsnummer(sak.sakType)), principal)
+                sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr,  sak.sakType.behandlingsnummer), principal)
                     ?: sjekkEnhetstilgang(navIdent, sak, enheterDeferred)
             }.catch(::AuthAnsattSakTilgangResponse)
 
@@ -58,9 +58,6 @@ fun AuthorizeAnsattSakTilgang(
         }
     }
 }
-
-fun bestemBehandlingsnummer(saktype: SakType): String =
-    saktype.behandlingsnummer?.name ?: throw IllegalArgumentException("Det finnes ikke et behandlingsnummer for sakstypen: ${saktype.name}")
 
 private fun sjekkAdressebeskyttelse(
     adressebeskyttelse: ServiceResult<List<PdlService.Gradering>>,

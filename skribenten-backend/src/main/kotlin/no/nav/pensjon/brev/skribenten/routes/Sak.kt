@@ -4,7 +4,6 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
-import no.nav.pensjon.brev.skribenten.auth.bestemBehandlingsnummer
 import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
@@ -57,7 +56,7 @@ fun Route.sakRoute(
         }
         get("/navn") {
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-            respondWithResult(pdlService.hentNavn(call, sak.foedselsnr, bestemBehandlingsnummer(sak.sakType)))
+            respondWithResult(pdlService.hentNavn(call, sak.foedselsnr, sak.sakType.behandlingsnummer))
         }
 
         get("/adresse") {

@@ -54,7 +54,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         BARNEP(B359),
         FAM_PL(null),
         GAM_YRK(null),
-        GENRL(B255),
+        GENRL(null),
         GJENLEV(B222),
         GRBL(null),
         KRIGSP(null),

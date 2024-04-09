@@ -92,7 +92,7 @@ class AuthorizeAnsattSakTilgangTest {
         coEvery { hentNavAnsattEnhetListe(any(), NAVIdent) } returns ServiceResult.Ok(listOf(testSakEnhet))
     }
     private val pdlService = mockk<PdlService> {
-        coEvery { hentAdressebeskyttelse(any(), testSak.foedselsnr, bestemBehandlingsnummer(ALDER)) } returns ServiceResult.Ok(emptyList())
+        coEvery { hentAdressebeskyttelse(any(), testSak.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
     }
     private val penService = mockk<PenService> {
         coEvery { hentSak(any(), "${testSak.saksId}") } returns ServiceResult.Ok(testSak)
@@ -171,7 +171,7 @@ class AuthorizeAnsattSakTilgangTest {
     @Test
     fun `krever at ansatt har gruppe for FortroligAdresse`() = runBlocking {
         coEvery {
-            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  bestemBehandlingsnummer(ALDER))
+            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.FORTROLIG))
 
         val response = client.get("/sak/${testSak.saksId}")
@@ -181,7 +181,7 @@ class AuthorizeAnsattSakTilgangTest {
     @Test
     fun `krever at ansatt har gruppe for StrengtFortroligAdresse`() = runBlocking {
         coEvery {
-            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  bestemBehandlingsnummer(ALDER))
+            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
 
         val response = client.get("/sak/${testSak.saksId}")
@@ -191,7 +191,7 @@ class AuthorizeAnsattSakTilgangTest {
     @Test
     fun `krever at ansatt har gruppe for StrengtFortroligUtland`() = runBlocking {
         coEvery {
-            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  bestemBehandlingsnummer(ALDER))
+            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG_UTLAND))
 
         val response = client.get("/sak/${testSak.saksId}")
@@ -202,7 +202,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `ansatt med gruppe for FortroligAdresse faar svar`() = runBlocking {
         every { principalMock.isInGroup(ADGroups.fortroligAdresse) } returns true
         coEvery {
-            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  bestemBehandlingsnummer(ALDER))
+            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.FORTROLIG))
 
         val response = client.get("/sak/${testSak.saksId}")
@@ -214,7 +214,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `ansatt med gruppe for StrengtFortroligAdresse faar svar`() = runBlocking {
         every { principalMock.isInGroup(ADGroups.strengtFortroligAdresse) } returns true
         coEvery {
-            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  bestemBehandlingsnummer(ALDER))
+            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
 
         val response = client.get("/sak/${testSak.saksId}")
@@ -226,7 +226,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `ansatt med gruppe for StrengtFortroligUtland faar svar`() = runBlocking {
         every { principalMock.isInGroup(ADGroups.strengtFortroligUtland) } returns true
         coEvery {
-            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  bestemBehandlingsnummer(ALDER))
+            pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG_UTLAND))
 
         val response = client.get("/sak/${testSak.saksId}")
@@ -254,7 +254,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `svarer med internal server error om hentAdressebeskyttelse feiler`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  bestemBehandlingsnummer(ALDER)) } returns ServiceResult.Error("En feil", HttpStatusCode.InternalServerError)
+        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer) } returns ServiceResult.Error("En feil", HttpStatusCode.InternalServerError)
 
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
@@ -270,7 +270,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `svarer med not found for graderte brukere selv om saksbehandler mangler enhet vikafossen`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr, bestemBehandlingsnummer(ALDER)) } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
+        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
@@ -279,7 +279,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `forbidden fra PDL resulterer i not found svar`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr, bestemBehandlingsnummer(ALDER)) } returns ServiceResult.Error(
+        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Error(
             "Ikke tilgang til person",
             HttpStatusCode.Forbidden
         )
@@ -291,7 +291,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `unauthorized fra PDL resulterer i internal server error svar`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr, bestemBehandlingsnummer(ALDER)) } returns ServiceResult.Error(
+        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Error(
             "Ikke autentisert",
             HttpStatusCode.Unauthorized
         )
@@ -301,7 +301,7 @@ class AuthorizeAnsattSakTilgangTest {
     }
     @Test
     fun `ansatt uten gruppe for 0001 og sakstype er generell og tilhorer enhet 0001 faar svar`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr, bestemBehandlingsnummer(GENRL)) } returns ServiceResult.Ok(emptyList())
+        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr, GENRL.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
         every { principalMock.isInGroup(ADGroups.strengtFortroligUtland) } returns false
         val response = client.get("/sak/${generellSak0001.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
@@ -310,22 +310,11 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `ansatt uten gruppe for 0001 og sakstype er generell og tilhorer ikke enhet 0001 faar ikke tilgang`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr, bestemBehandlingsnummer(GENRL)) } returns ServiceResult.Ok(emptyList())
+        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr, GENRL.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
         every { principalMock.isInGroup(ADGroups.strengtFortroligUtland) } returns false
         val response = client.get("/sak/${generellSak0002.saksId}")
         assertEquals(HttpStatusCode.Forbidden, response.status)
         assertEquals("Mangler enhetstilgang til sak", response.bodyAsText())
-    }
-
-    @Test
-    fun `sakstype uten behandlingsnummer feiler`(): Unit = runBlocking {
-        assertNull(KRIGSP.behandlingsnummer)
-        val exception = assertFailsWith<IllegalArgumentException>(
-            block = {
-                bestemBehandlingsnummer(KRIGSP)
-            }
-        )
-        assertEquals(exception.message, "Det finnes ikke et behandlingsnummer for sakstypen: KRIGSP")
     }
 
     private fun successResponse(saksId: String) =

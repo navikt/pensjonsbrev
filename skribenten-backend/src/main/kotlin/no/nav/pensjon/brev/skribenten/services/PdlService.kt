@@ -96,14 +96,16 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun hentNavn(
         call: ApplicationCall,
         fnr: String,
-        behandlingsnummer: String
+        behandlingsnummer: Behandlingsnummer?
     ): ServiceResult<String> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             headers {
                 append("Tema", "PEN")
-                append("Behandlingsnummer", behandlingsnummer)
+                if(behandlingsnummer != null) {
+                    append("Behandlingsnummer", behandlingsnummer.name)
+                }
             }
             setBody(
                 PDLQuery(
@@ -120,7 +122,7 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun hentAdressebeskyttelse(
         call: ApplicationCall,
         fnr: String,
-        behandlingsnummer: String
+        behandlingsnummer: Behandlingsnummer?
     ): ServiceResult<List<Gradering>> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
@@ -132,7 +134,9 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
                 )
             )
             headers {
-                set("Behandlingsnummer", behandlingsnummer)
+                if(behandlingsnummer != null)  {
+                    set("Behandlingsnummer", behandlingsnummer.name)
+                }
             }
         }.toServiceResult<PDLResponse<DataWrapperPersonMedAdressebeskyttelse>>()
             .handleGraphQLErrors()
