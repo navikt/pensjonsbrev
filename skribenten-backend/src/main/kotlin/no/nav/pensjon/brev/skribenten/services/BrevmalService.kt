@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.server.application.*
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.*
@@ -16,26 +15,26 @@ class BrevmalService(
 ) {
     private val logger = LoggerFactory.getLogger(BrevmalService::class.java)
 
-    suspend fun hentBrevmaler(
+    suspend fun hentBrevmalerForSak(
         sakType: PenService.SakType,
         includeEblanketter: Boolean,
     ): List<LetterMetadata> = coroutineScope {
-        mapBrevmeny(
-            isVedtaksKontekst = false,
-            erKravPaaGammeltRegelverk = false,
-            brevmetadata = brevmetadataService.hentMaler(sakType, includeEblanketter),
-            sakType = sakType,
-        )
+        brevmetadataService.hentMaler(sakType, includeEblanketter).maler
+            .filter { filterForKontekst(it, isVedtaksKontekst = false) }
+            .filter { it.redigerbart }
+            .plus(brevmetadataService.hentMaler(sakType, includeEblanketter).eblanketter)
+            .filter { !utfiltrerteBrev.contains(it.brevkodeIBrevsystem) }
+            .map { it.mapToMetadata() }
     }
 
-    suspend fun hentBrevmaler(
+    suspend fun hentBrevmalerForVedtak(
         sakType: PenService.SakType,
         call: ApplicationCall,
         includeEblanketter: Boolean,
         vedtaksId: String,
     ): List<LetterMetadata> = coroutineScope {
-        val brevmetadata = async { brevmetadataService.hentMaler(sakType, includeEblanketter) }
-        val erKravPaaGammeltRegelverk: Deferred<Boolean> =
+        val brevmetadataAsync = async { brevmetadataService.hentMaler(sakType, includeEblanketter) }
+        val erKravPaaGammeltRegelverk =
             async {
                 if (sakType == PenService.SakType.ALDER) {
                     penService.hentIsKravPaaGammeltRegelverk(call, vedtaksId)
@@ -44,31 +43,17 @@ class BrevmalService(
                             false
                         }
                 } else false
-            }
-        return@coroutineScope mapBrevmeny(
-            isVedtaksKontekst = true,
-            brevmetadata = brevmetadata.await(),
-            erKravPaaGammeltRegelverk = erKravPaaGammeltRegelverk.await(),
-            sakType = sakType,
-        )
+            }.await()
 
-    }
-
-    private fun mapBrevmeny(
-        isVedtaksKontekst: Boolean,
-        brevmetadata: Brevmaler,
-        erKravPaaGammeltRegelverk: Boolean,
-        sakType: PenService.SakType,
-    ): List<LetterMetadata> {
-        val relevanteMaler = brevmetadata.maler
-            .filter { filterForKontekst(it, isVedtaksKontekst) }
+        val relevanteMaler = brevmetadataAsync.await().maler
+            .filter { filterForKontekst(it, isVedtaksKontekst = true) }
             .filter { it.redigerbart }
-            .filter { erRelevantRegelverkstypeForSaktype(sakType, it.brevregeltype, erKravPaaGammeltRegelverk) }
+            .filter {  erRelevantRegelverkstypeForSaktype(sakType, it.brevregeltype, erKravPaaGammeltRegelverk) }
+        return@coroutineScope relevanteMaler
+            .plus<BrevdataDto>(brevmetadataAsync.await().eblanketter)
+            .filter<BrevdataDto> { !utfiltrerteBrev.contains(it.brevkodeIBrevsystem) }
+            .map<BrevdataDto, LetterMetadata> { it.mapToMetadata() }
 
-        return relevanteMaler
-            .plus(brevmetadata.eblanketter)
-            .filter { !utfiltrerteBrev.contains(it.brevkodeIBrevsystem) }
-            .map { it.mapToMetadata() }
     }
 
     private fun filterForKontekst(brevmetadata: BrevdataDto, isVedtaksKontekst: Boolean): Boolean =

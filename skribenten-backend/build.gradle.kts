@@ -95,4 +95,6 @@ dependencies {
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
+    testImplementation("org.assertj:assertj-core:3.25.3")
+
 }

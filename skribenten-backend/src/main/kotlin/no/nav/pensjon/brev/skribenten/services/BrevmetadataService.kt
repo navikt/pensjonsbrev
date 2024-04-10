@@ -39,7 +39,7 @@ class BrevmetadataService(
         coroutineScope {
             val eblanketterAsync: Deferred<List<BrevdataDto>> = async { if (includeEblanketter) getEblanketter() else emptyList() }
             val malerAsync: Deferred<List<BrevdataDto>> = async { getBrevmalerForSakstype(sakType) }
-            return@coroutineScope Brevmaler(eblanketterAsync.await(),malerAsync.await())
+            return@coroutineScope Brevmaler(eblanketterAsync.await(), malerAsync.await())
         }
 
     private suspend fun getBrevmalerForSakstype(sakstype: PenService.SakType): List<BrevdataDto> {
@@ -70,6 +70,11 @@ class BrevmetadataService(
     override val name = "Brevmetadata"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
         httpClient.get("/api/internal/isReady").toServiceResult<String>().map { true }
+
+    data class Brevmaler(
+        val eblanketter: List<BrevdataDto>,
+        val maler: List<BrevdataDto>,
+    )
 }
 
 data class BrevdataDto(
@@ -119,9 +124,5 @@ data class BrevdataDto(
 
 }
 
-data class Brevmaler (
-    val eblanketter: List<BrevdataDto>,
-    val maler: List<BrevdataDto>,
-)
 
 
