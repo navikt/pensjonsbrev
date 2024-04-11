@@ -72,7 +72,6 @@ fun createOmstillingsstoenadRevurderingDTO() =
                     )
                 ),
                 beregnetTrygdetidAar = 40,
-                beregnetTrygdetidMaaneder = 480,
                 prorataBroek = null,
                 beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
                 beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,

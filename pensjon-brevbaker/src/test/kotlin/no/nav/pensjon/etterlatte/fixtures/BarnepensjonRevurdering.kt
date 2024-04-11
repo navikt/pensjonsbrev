@@ -4,11 +4,8 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
-import no.nav.pensjon.etterlatte.maler.InnerElement
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
@@ -38,7 +35,6 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
             )
         ),
         beregnetTrygdetidAar = 40,
-        beregnetTrygdetidMaaneder = 480,
         prorataBroek = IntBroek(20, 150),
         beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
         beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
@@ -98,7 +94,6 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
                         )
                     ),
                     beregnetTrygdetidAar = 40,
-                    beregnetTrygdetidMaaneder = 480,
                     prorataBroek = IntBroek(20, 150),
                     beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
                     beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,

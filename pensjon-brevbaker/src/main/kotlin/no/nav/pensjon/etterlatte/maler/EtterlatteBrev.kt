@@ -61,7 +61,6 @@ data class Trygdetid(
     val navnAvdoed: String,
     val trygdetidsperioder: List<Trygdetidsperiode>,
     val beregnetTrygdetidAar: Int,
-    val beregnetTrygdetidMaaneder: Int,
     val prorataBroek: IntBroek?,
     val beregningsMetodeAnvendt: BeregningsMetode,
     val beregningsMetodeFraGrunnlag: BeregningsMetode,
