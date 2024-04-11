@@ -81,6 +81,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
                 beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
                 mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+                navnAvdoed = "Elvis Presley"
             ),
         ),
         etterbetaling = OmstillingsstoenadEtterbetaling(
