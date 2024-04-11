@@ -81,7 +81,7 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                             "For informasjon om hvordan du melder fra om endringer se: http://nav.no/uforetrygd-endring",
                     Nynorsk to "Du må melde frå om endringar som kan påverke søknaden din. Det kan vere endringar som gjeld helse, arbeidssituasjon, inntekt, sivilstatus eller at du flyttar til eit anna land." +
                             "For informasjon om korleis du melder frå om endringar, sjå: http://nav.no/uforetrygd-endring",
-                    English to "ou must notify us of any changes that may impact your application. These changes might relate to your health, employment, income, marital status, or moving abroad." +
+                    English to "You must notify us of any changes that may impact your application. These changes might relate to your health, employment, income, marital status, or moving abroad." +
                             "For information on how to report changes, see: http://nav.no/uforetrygd-endring"
                 )
             }
