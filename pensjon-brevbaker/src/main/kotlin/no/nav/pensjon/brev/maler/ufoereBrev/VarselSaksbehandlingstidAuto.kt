@@ -77,9 +77,12 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             }
             paragraph {
                 text(
-                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang.",
-                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong.",
-                    English to "You must notify us immediately of any changes in your situation."
+                    Bokmal to "Du må melde fra om endringer som kan påvirke søknaden din. Det kan være endringer som gjelder helse, arbeidssituasjon, inntekt, sivilstatus eller at du flytter til et annet land." +
+                            "For informasjon om hvordan du melder fra om endringer se: http://nav.no/uforetrygd-endring",
+                    Nynorsk to "Du må melde frå om endringar som kan påverke søknaden din. Det kan vere endringar som gjeld helse, arbeidssituasjon, inntekt, sivilstatus eller at du flyttar til eit anna land." +
+                            "For informasjon om korleis du melder frå om endringar, sjå: http://nav.no/uforetrygd-endring",
+                    English to "ou must notify us of any changes that may impact your application. These changes might relate to your health, employment, income, marital status, or moving abroad." +
+                            "For information on how to report changes, see: http://nav.no/uforetrygd-endring"
                 )
             }
 
@@ -93,9 +96,9 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
 
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di.",
-                    English to "You are entitled to see your case documents.",
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via http://nav.no for å se dokumenter i saken din.",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via http://nav.no for å sjå dokumenta i saka di.",
+                    English to "You are entitled to see your case documents. You can log in via http://nav.no to view documents related to your case."
                 )
             }
 
