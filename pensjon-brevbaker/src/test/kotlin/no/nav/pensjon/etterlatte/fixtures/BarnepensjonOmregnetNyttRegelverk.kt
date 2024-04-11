@@ -72,7 +72,6 @@ internal fun lagBeregning() = BarnepensjonBeregning(
                 )
             ),
             beregnetTrygdetidAar = 40,
-            beregnetTrygdetidMaaneder = 480,
             prorataBroek = IntBroek(20, 150),
             beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
             beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
@@ -98,7 +97,6 @@ internal fun lagBeregning() = BarnepensjonBeregning(
             )
         ),
         beregnetTrygdetidAar = 40,
-        beregnetTrygdetidMaaneder = 480,
         prorataBroek = IntBroek(20, 150),
         beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
         beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
