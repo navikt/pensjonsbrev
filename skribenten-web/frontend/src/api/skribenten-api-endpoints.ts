@@ -5,7 +5,7 @@
 import type { AxiosResponse } from "axios";
 import axios, { AxiosError } from "axios";
 
-import {
+import type {
   Avtaleland,
   BestillOgRedigerBrevResponse,
   FinnSamhandlerRequestDto,
