@@ -84,30 +84,7 @@ dependencies {
 }
 
 repositories {
-	maven {
-		// Create a token at https://github.com/settings/tokens/new with package.read
-		// Then create a gradle.properties file in $HOME/.gradle with the following:
-		// gpr.user=<your github username>
-		// gpr.token=<the token>
-		url = uri("https://maven.pkg.github.com/navikt/pesys-esb-wsclient")
-		credentials {
-			username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
-			password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
-		}
-		metadataSources {
-			artifact() //Look directly for artifact
-		}
-		content {
-			includeGroup("no.nav.pensjon.pesys-esb-wsclient")
-		}
-	}
-	maven {
-		url = uri("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
-		credentials {
-			username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
-			password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
-		}
-	}
+
 }
 
 sourceSets {
