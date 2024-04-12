@@ -41,6 +41,8 @@ jobs:
       - name: "compile and run tests"
         run: |
           ./gradlew :tjenestebuss-integrasjon:build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
