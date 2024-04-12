@@ -90,7 +90,10 @@ repositories {
 		// gpr.user=<your github username>
 		// gpr.token=<the token>
 		url = uri("https://maven.pkg.github.com/navikt/pesys-esb-wsclient")
-
+		credentials {
+			username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+			password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
+		}
 		metadataSources {
 			artifact() //Look directly for artifact
 		}
@@ -100,6 +103,10 @@ repositories {
 	}
 	maven {
 		url = uri("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+		credentials {
+			username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+			password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
+		}
 	}
 }
 
