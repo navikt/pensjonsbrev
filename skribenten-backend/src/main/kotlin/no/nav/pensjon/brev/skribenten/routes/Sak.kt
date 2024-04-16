@@ -71,7 +71,7 @@ fun Route.sakRoute(
         }
         get("/navn") {
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-            respondWithResult(pdlService.hentNavn(call, sak.foedselsnr))
+            respondWithResult(pdlService.hentNavn(call, sak.foedselsnr, sak.sakType.behandlingsnummer))
         }
 
         get("/adresse") {

@@ -14,12 +14,14 @@ import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.SAKSID_PARA
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.sakKey
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.PenService.SakSelection
+import no.nav.pensjon.brev.skribenten.services.PenService.SakType
 import org.slf4j.LoggerFactory
 
 object AuthorizeAnsattSakTilgang {
     const val NAME = "AuthorizeAnsattSakTilgang"
     const val SAKSID_PARAM = "saksId"
-    val sakKey = AttributeKey<PenService.SakSelection>("AuthorizeAnsattSakTilgang:sak")
+    val sakKey = AttributeKey<SakSelection>("AuthorizeAnsattSakTilgang:sak")
 }
 
 private val logger = LoggerFactory.getLogger(AuthorizeAnsattSakTilgang::class.java)
@@ -37,6 +39,7 @@ fun AuthorizeAnsattSakTilgang(
             val navIdent = principal.navIdent
 
             val sakDeferred = async { penService.hentSak(call, saksId) }
+
             val enheterDeferred = async { navansattService.hentNavAnsattEnhetListe(call, navIdent) }
 
             val ikkeTilgang = sakDeferred.await().map { sak ->
@@ -45,7 +48,7 @@ fun AuthorizeAnsattSakTilgang(
                 // Rekkefølgen på disse har betydning. Om sjekkEnhetstilgang kjøres først så vil vi svare med "Mangler enhetstilgang til sak".
                 // - Dette avslører at det finnes en sak for angitt saksId.
                 // - Men det avslører ikke at fodselsnummer eksisterer og at det er en adressebeskyttet person.
-                sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr), principal)
+                sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr,  sak.sakType.behandlingsnummer), principal)
                     ?: sjekkEnhetstilgang(navIdent, sak, enheterDeferred)
             }.catch(::AuthAnsattSakTilgangResponse)
 
@@ -78,7 +81,7 @@ private fun sjekkAdressebeskyttelse(
 
 private suspend fun sjekkEnhetstilgang(
     navIdent: String,
-    sak: PenService.SakSelection,
+    sak: SakSelection,
     enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>
 ): AuthAnsattSakTilgangResponse? =
     enheterResult.await().map { enheter ->
@@ -95,10 +98,10 @@ private suspend fun sjekkEnhetstilgang(
         AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
     }
 
-private fun erGenerellSakMedEnhet0001(sak: PenService.SakSelection) =
-    sak.sakType == PenService.SakType.GENRL && sak.enhetId == "0001"
+private fun erGenerellSakMedEnhet0001(sak: SakSelection) =
+    sak.sakType == SakType.GENRL && sak.enhetId == "0001"
 
-private fun harTilgangTilSakSinEnhet(enheter: List<NAVEnhet>, sak: PenService.SakSelection) =
+private fun harTilgangTilSakSinEnhet(enheter: List<NAVEnhet>, sak: SakSelection) =
     enheter.any { it.id == sak.enhetId }
 
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)

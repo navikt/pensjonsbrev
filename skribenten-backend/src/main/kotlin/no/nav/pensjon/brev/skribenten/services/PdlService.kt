@@ -31,10 +31,6 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(pdlScope, authService) {
         defaultRequest {
             url(pdlUrl)
-            headers {
-                // TODO vi har to behandlinger, skal vi sende med begge?, Skal vi sende ulik avhengig av tema?
-                set("Behandlingsnummer", "B280")
-            }
         }
         install(ContentNegotiation) {
             jackson()
@@ -69,6 +65,13 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
+    enum class Behandlingsnummer {
+        B222,
+        B255,
+        B280,
+        B359,
+    }
+
     private data class DataWrapperPersonMedNavn(val hentPerson: PersonMedNavn?) {
         data class PersonMedNavn(val navn: List<Navn>? = null) {
             data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String) {
@@ -90,12 +93,19 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         INGEN
     }
 
-    suspend fun hentNavn(call: ApplicationCall, fnr: String): ServiceResult<String> {
+    suspend fun hentNavn(
+        call: ApplicationCall,
+        fnr: String,
+        behandlingsnummer: Behandlingsnummer?
+    ): ServiceResult<String> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             headers {
-                set("Tema", "PEN")
+                append("Tema", "PEN")
+                if(behandlingsnummer != null) {
+                    append("Behandlingsnummer", behandlingsnummer.name)
+                }
             }
             setBody(
                 PDLQuery(
@@ -109,7 +119,11 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
             }
     }
 
-    suspend fun hentAdressebeskyttelse(call: ApplicationCall, fnr: String): ServiceResult<List<Gradering>> {
+    suspend fun hentAdressebeskyttelse(
+        call: ApplicationCall,
+        fnr: String,
+        behandlingsnummer: Behandlingsnummer?
+    ): ServiceResult<List<Gradering>> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -119,6 +133,11 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
                     variables = FnrVariables(fnr)
                 )
             )
+            headers {
+                if(behandlingsnummer != null)  {
+                    set("Behandlingsnummer", behandlingsnummer.name)
+                }
+            }
         }.toServiceResult<PDLResponse<DataWrapperPersonMedAdressebeskyttelse>>()
             .handleGraphQLErrors()
             .map {

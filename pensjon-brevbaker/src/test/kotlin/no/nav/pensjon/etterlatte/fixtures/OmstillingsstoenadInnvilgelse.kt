@@ -76,11 +76,11 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     )
                 ),
                 beregnetTrygdetidAar = 40,
-                beregnetTrygdetidMaaneder = 480,
                 prorataBroek = IntBroek(20, 150),
                 beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
                 beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
                 mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+                navnAvdoed = "Elvis Presley"
             ),
         ),
         etterbetaling = OmstillingsstoenadEtterbetaling(
