@@ -273,6 +273,7 @@ class LegacyBrevService(
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
         val brevtittel: String? = null,
+        val enhetsId: String,
     )
 
     data class BestillEblankettRequest(
@@ -280,6 +281,7 @@ class LegacyBrevService(
         val landkode: String,
         val mottakerText: String,
         val isSensitive: Boolean,
+        val enhetsId: String,
     )
 
     data class BestillBrevResponse(

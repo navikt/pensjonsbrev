@@ -32,7 +32,7 @@ fun Route.sakRoute(
                     call.respond(
                         legacyBrevService.bestillOgRedigerExstreamBrev(
                             call = call,
-                            enhetsId = sak.enhetId,
+                            enhetsId = request.enhetsId,
                             gjelderPid = sak.foedselsnr,
                             request = request,
                             saksId = sak.saksId,
@@ -45,7 +45,7 @@ fun Route.sakRoute(
                     call.respond(
                         legacyBrevService.bestillOgRedigerEblankett(
                             call = call,
-                            enhetsId = sak.enhetId,
+                            enhetsId = request.enhetsId,
                             gjelderPid = sak.foedselsnr,
                             request = request,
                             saksId = sak.saksId,
