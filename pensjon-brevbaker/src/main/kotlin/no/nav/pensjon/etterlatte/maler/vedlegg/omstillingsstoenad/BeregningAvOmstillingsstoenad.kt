@@ -235,7 +235,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                             " enn det som fremgår i tabellen over, under “Utbetaling per måned”.".expr(),
 		            Nynorsk to "Den forventa inntekta di for inneverande år har blitt justert. ".expr() +
                             "Det blir " + ifElse(erRestanseTrekk, "gjort eit trekk", "gitt eit tillegg") +
-                            " i utbetalinga for resten av året. Dette blir gjort for å unngå eller redusere et etteroppgjer." +
+                            " i utbetalinga for resten av året. Dette blir gjort for å unngå eller redusere eit etteroppgjer." +
                             " Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "meir") +
                             " enn det som står under «Utbetaling per månad» i tabellen over.".expr(),
 		            English to "Your estimated income for the current year has been adjusted. ".expr() +
