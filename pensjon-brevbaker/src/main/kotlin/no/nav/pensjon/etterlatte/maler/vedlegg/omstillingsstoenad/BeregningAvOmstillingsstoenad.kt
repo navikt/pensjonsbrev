@@ -230,18 +230,18 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
 	            textExpr(
                     Bokmal to "Den forventede inntekten din for inneværende år er blitt justert. ".expr() +
                             "Det blir " + ifElse(erRestanseTrekk, "gjort et trekk", "gitt et tillegg") +
-                            " i utbetalingen for resten av året for å redusere etteroppgjøret. " +
-                            "Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "mer") +
+                            " i utbetalingen for resten av året. Dette blir gjort for å unngå eller redusere et etteroppgjør." +
+                            " Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "mer") +
                             " enn det som fremgår i tabellen over, under “Utbetaling per måned”.".expr(),
 		            Nynorsk to "Den forventa inntekta di for inneverande år har blitt justert. ".expr() +
                             "Det blir " + ifElse(erRestanseTrekk, "gjort eit trekk", "gitt eit tillegg") +
-                            " i utbetalinga for resten av året for å redusere etteroppgjeret. " +
-                            "Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "meir") +
+                            " i utbetalinga for resten av året. Dette blir gjort for å unngå eller redusere et etteroppgjer." +
+                            " Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "meir") +
                             " enn det som står under «Utbetaling per månad» i tabellen over.".expr(),
 		            English to "Your estimated income for the current year has been adjusted. ".expr() +
                             "Your payment amount has therefore been " + ifElse(erRestanseTrekk, "reduced", "increased") +
-                            " for the remainder of the year to reduce the settlement. " +
-                            "You will receive NOK " + restanse.format() + ifElse(erRestanseTrekk, "less", "more") +
+                            " for the remainder of the year to avoid or reduce a final settlement." +
+                            " You will receive NOK " + restanse.format() + ifElse(erRestanseTrekk, "less", "more") +
                             " per month than what is specified in the table above, under “Utbetaling per måned”.".expr()
 	            )
             }
