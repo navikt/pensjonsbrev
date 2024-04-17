@@ -85,6 +85,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.meldFraOmEndringer()
                     English to "permanent residence in an institution",
                 )
             }
+            item {
+                text(
+                    Bokmal to "du blir innvilget uføretrygd (barnepensjonen skal reduseres etter det du får utbetalt i uføretrygd)",
+                    Nynorsk to "du blir innvilga uføretrygd (barnepensjonen skal reduserast etter det du får utbetalt i uføretrygd)",
+                    English to "you are granted disability benefits (children's pension will be reduced according to what you receive in disability benefits)",
+                )
+            }
         }
         text(
             Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av barnepensjon, " +
