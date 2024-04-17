@@ -40,6 +40,7 @@ import {
   deleteFavoritt,
   finnSamhandler,
   getAvtaleLand,
+  getEnheter,
   getFavoritter,
   getKontaktAdresse,
   getLetterTemplate,
@@ -70,8 +71,9 @@ import { capitalizeString } from "~/utils/stringUtils";
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId")({
   component: SelectedTemplate,
   loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
-  validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string } => ({
+  validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string; enhetsId?: string } => ({
     idTSSEkstern: search.idTSSEkstern?.toString(),
+    enhetsId: search.enhetsId?.toString(),
   }),
   loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId }, deps: { includeVedtak } }) => {
     const sak = await queryClient.ensureQueryData(getSakQueryOptions);
@@ -153,26 +155,30 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 
 const baseOrderLetterValidationSchema = z.object({
   spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
+  enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
 const exstreamOrderLetterValidationSchema = baseOrderLetterValidationSchema.extend({
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
   brevtittel: z.string().optional(),
+  enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
 const exstreamWithTitleOrderLetterValidationSchema = exstreamOrderLetterValidationSchema.extend({
   brevtittel: z.string().min(1, "Du må ha tittel for dette brevet"),
+  enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
 const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),
   mottakerText: z.string().min(1, "Vennligst fyll inn mottaker"),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+  enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
 function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, saksId } = Route.useParams();
-  const { vedtaksId, idTSSEkstern } = Route.useSearch();
+  const { vedtaksId, idTSSEkstern, enhetsId } = Route.useSearch();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
@@ -229,6 +235,7 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
                 size="medium"
               />
             ) : undefined}
+            <SelectEnhet />
             <SelectLanguage letterTemplate={letterTemplate} />
             <SelectSensitivity />
           </VStack>
@@ -277,6 +284,7 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
           })}
         >
           <VStack gap="4">
+            <SelectEnhet />
             <SelectLanguage letterTemplate={letterTemplate} />
           </VStack>
 
@@ -324,6 +332,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
           })}
         >
           <VStack gap="4">
+            <SelectEnhet />
             <SelectSensitivity />
             <SelectAvtaleland />
             <TextField
@@ -433,10 +442,42 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   );
 }
 
+function SelectEnhet() {
+  const enheterQuery = useQuery(getEnheter);
+  const { enhetsId } = Route.useSearch();
+  const [selectedEnhet, setSelectedEnhet] = useState<string | undefined>(undefined);
+  const { register, formState } = useFormContext();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const options = enheterQuery.data ?? [];
+  return (
+    <Select
+      {...register("enhetsId")}
+      defaultValue={selectedEnhet ?? ""}
+      error={formState.errors.enhet?.message?.toString()}
+      label="Enhet"
+      onChangeCapture={(element) => {
+        // TODO state helvete aner ikke. Dette suger. jeg drar hjem.
+        setSelectedEnhet(element.target.value)
+        navigate({
+          search: (s) => ({ ...s, enhetsId: element.target.value }),
+          replace: true,
+        });
+      }}
+      size="medium"
+    >
+      <option value={""}>Velg enhet</option>
+      {options.map((option) => (
+        <option key={option.id} value={option.id}>
+          {option.navn}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
 function SelectAvtaleland() {
   const avtalelandQuery = useQuery(getAvtaleLand);
   const { register, formState } = useFormContext();
-
   const options = avtalelandQuery.data ?? [];
 
   return (

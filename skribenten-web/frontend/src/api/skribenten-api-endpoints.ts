@@ -8,6 +8,7 @@ import axios, { AxiosError } from "axios";
 import type {
   Avtaleland,
   BestillOgRedigerBrevResponse,
+  Enhet,
   FinnSamhandlerRequestDto,
   FinnSamhandlerResponseDto,
   HentSamhandlerAdresseRequestDto,
@@ -63,6 +64,10 @@ export const favoritterKeys = {
 
 export const avtalelandKeys = {
   all: ["AVTALE_LAND"] as const,
+};
+
+export const enheterKeys = {
+  all: ["ENHETER"] as const,
 };
 
 export const adresseKeys = {
@@ -128,6 +133,11 @@ export const getTemplate = {
 export const getAvtaleLand = {
   queryKey: avtalelandKeys.all,
   queryFn: async () => (await axios.get<Avtaleland[]>(`${SKRIBENTEN_API_BASE_PATH}/kodeverk/avtaleland`)).data,
+};
+
+export const getEnheter = {
+  queryKey: enheterKeys.all,
+  queryFn: async () => (await axios.get<Enhet[]>(`${SKRIBENTEN_API_BASE_PATH}/me/enheter`)).data,
 };
 
 export async function renderLetter(letterId: string, request: unknown) {

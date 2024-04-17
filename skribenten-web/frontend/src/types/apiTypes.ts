@@ -59,6 +59,7 @@ export enum SpraakKode {
 export type BaseLetterRequest = {
   brevkode: string;
   spraak: SpraakKode;
+  enhetsId: string;
   vedtaksId?: string;
 };
 
@@ -305,4 +306,9 @@ export type AdresseType =
 export type Avtaleland = {
   navn: string;
   kode: string;
+};
+
+export type Enhet = {
+  id: string;
+  navn: string;
 };

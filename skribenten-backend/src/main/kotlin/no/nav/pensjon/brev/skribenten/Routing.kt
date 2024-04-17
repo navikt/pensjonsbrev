@@ -49,7 +49,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 krrService,
             )
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
-            meRoute()
+            meRoute(navansattService)
         }
     }
 }

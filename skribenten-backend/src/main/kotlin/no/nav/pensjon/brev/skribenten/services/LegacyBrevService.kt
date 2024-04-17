@@ -264,6 +264,7 @@ class LegacyBrevService(
         val brevkode: String,
         val spraak: SpraakKode,
         val vedtaksId: Long? = null,
+        val enhetsId: String,
     )
 
     data class BestillExstreamBrevRequest(
