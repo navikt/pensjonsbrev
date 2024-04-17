@@ -16,6 +16,7 @@ import io.ktor.server.application.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import no.nav.pensjon.brev.skribenten.callId
 import org.slf4j.LoggerFactory
 
 class BrevmetadataService(
@@ -35,15 +36,18 @@ class BrevmetadataService(
         }
     }
 
-    suspend fun hentMaler(sakType: PenService.SakType, includeEblanketter: Boolean): Brevmaler =
+    suspend fun hentMaler(call: ApplicationCall, sakType: PenService.SakType, includeEblanketter: Boolean): Brevmaler =
         coroutineScope {
-            val eblanketterAsync: Deferred<List<BrevdataDto>> = async { if (includeEblanketter) getEblanketter() else emptyList() }
-            val malerAsync: Deferred<List<BrevdataDto>> = async { getBrevmalerForSakstype(sakType) }
+            val eblanketterAsync: Deferred<List<BrevdataDto>> = async { if (includeEblanketter) getEblanketter(call) else emptyList() }
+            val malerAsync: Deferred<List<BrevdataDto>> = async { getBrevmalerForSakstype(call, sakType) }
             return@coroutineScope Brevmaler(eblanketterAsync.await(), malerAsync.await())
         }
 
-    private suspend fun getBrevmalerForSakstype(sakstype: PenService.SakType): List<BrevdataDto> {
+    private suspend fun getBrevmalerForSakstype(call: ApplicationCall, sakstype: PenService.SakType): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
+            headers{
+                callId(call)
+            }
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {
@@ -54,9 +58,12 @@ class BrevmetadataService(
         }
     }
 
-    private suspend fun getEblanketter(): List<BrevdataDto> {
+    private suspend fun getEblanketter(call: ApplicationCall): List<BrevdataDto> {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
             contentType(ContentType.Application.Json)
+            headers{
+                callId(call)
+            }
         }.body<List<BrevdataDto>>()
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
     }
@@ -119,7 +126,19 @@ data class BrevdataDto(
         GN,     //Nytt regelverk med gammel opptjening
         NN,     //Nytt regelverk
         ON,     //Overgangsordning med ny og gammel opptjening
-        OVRIGE  //vrige brev, ikke knyttet til gammelt eller nytt regelverk.
+        OVRIGE;  //vrige brev, ikke knyttet til gammelt eller nytt regelverk.
+
+        fun gjelderGammeltRegelverk() =
+            when (this) {
+                GG, OVRIGE -> true
+                GN, NN, ON -> false
+            }
+
+        fun gjelderNyttRegelverk() =
+            when (this) {
+                GN, OVRIGE -> true
+                GG, NN, ON -> false
+            }
     }
 
 }

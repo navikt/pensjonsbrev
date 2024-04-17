@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.server.application.*
+import io.ktor.server.plugins.callid.*
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.SAK
@@ -20,7 +22,9 @@ import kotlin.test.Test
 const val TEST_VEDTAKS_ID = "1234"
 
 class BrevmalServiceTest {
-
+    private val mockCall = mockk<ApplicationCall> {
+        every { callId } returns "utrolig kul callId"
+    }
     private val penService: PenService = mockk()
     private val brevmetadataService: BrevmetadataService = mockk()
     private val brevmalService = BrevmalService(penService, brevmetadataService)
@@ -65,7 +69,7 @@ class BrevmalServiceTest {
     @Test
     fun `eblanketter vises om forespurt`() {
         coEvery {
-            brevmetadataService.hentMaler(UFOREP, true)
+            brevmetadataService.hentMaler(any(), UFOREP, true)
         }.returns(
             BrevmetadataService.Brevmaler(
                 eblanketter = listOf(testOkBrev),
@@ -74,7 +78,7 @@ class BrevmalServiceTest {
         )
         runBlocking {
             val brevmaler = brevmalService.hentBrevmalerForSak(
-                UFOREP, includeEblanketter = true
+                mockCall, UFOREP, includeEblanketter = true
             )
             assertThat(brevmaler).hasSize(1)
         }
@@ -143,13 +147,13 @@ class BrevmalServiceTest {
         sakType: PenService.SakType,
         isKravPaaGammeltRegelverk: Boolean = true
     ): ListAssert<LetterMetadata> {
-        coEvery { brevmetadataService.hentMaler(any(), any()) }.returns(
+        coEvery { brevmetadataService.hentMaler(any(), any(), any()) }.returns(
             BrevmetadataService.Brevmaler(emptyList(), listOf(brevdataDto))
         )
         coEvery { penService.hentIsKravPaaGammeltRegelverk(any(), TEST_VEDTAKS_ID) }.returns(ServiceResult.Ok(isKravPaaGammeltRegelverk))
 
         return runBlocking {
-            val brevmaler = brevmalService.hentBrevmalerForVedtak(sakType, mockk<ApplicationCall>(), inkluderEblanketter, TEST_VEDTAKS_ID)
+            val brevmaler = brevmalService.hentBrevmalerForVedtak(mockk<ApplicationCall>(), sakType, inkluderEblanketter, TEST_VEDTAKS_ID)
             return@runBlocking assertThat(brevmaler)
         }
     }
@@ -158,11 +162,11 @@ class BrevmalServiceTest {
         assertThatBrevmalerInSakskontekst(listOf(brevdataDto))
 
     private fun assertThatBrevmalerInSakskontekst(brevdataDto: List<BrevdataDto>): ListAssert<LetterMetadata> {
-        coEvery { brevmetadataService.hentMaler(any(), any()) }.returns(
+        coEvery { brevmetadataService.hentMaler(any(), any(), any()) }.returns(
             BrevmetadataService.Brevmaler(emptyList(), brevdataDto)
         )
         return runBlocking {
-            val brevmaler = brevmalService.hentBrevmalerForSak(UFOREP, false)
+            val brevmaler = brevmalService.hentBrevmalerForSak(mockCall, UFOREP, false)
             return@runBlocking assertThat(brevmaler)
         }
     }

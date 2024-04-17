@@ -1,6 +1,5 @@
 val apiModelVersion: String by project
 val exposedVersion: String by project
-val hamkrestVersion: String by project
 val jacksonJsr310Version: String by project
 val javaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
@@ -94,7 +93,6 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:${mockkVersion}")
-    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testImplementation("org.assertj:assertj-core:3.25.3")
 
 }

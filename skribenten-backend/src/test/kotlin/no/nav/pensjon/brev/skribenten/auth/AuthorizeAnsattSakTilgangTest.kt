@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.isNullOrEmptyString
 import com.typesafe.config.ConfigValueFactory
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -27,13 +25,11 @@ import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.PenService.SakSelection
 import no.nav.pensjon.brev.skribenten.services.PenService.SakType.ALDER
 import no.nav.pensjon.brev.skribenten.services.PenService.SakType.GENRL
-import no.nav.pensjon.brev.skribenten.services.PenService.SakType.KRIGSP
+import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
 import java.time.Month
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
 
 private const val NAVIdent = "månedens ansatt"
 private val testSakEnhet = NAVEnhet("en veldig bra enhet", "NAVs beste!")
@@ -274,7 +270,7 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertThat(response.bodyAsText(), isNullOrEmptyString)
+        assertThat(response.bodyAsText()).isNullOrEmpty()
     }
 
     @Test
@@ -286,7 +282,7 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertThat(response.bodyAsText(), isNullOrEmptyString)
+        assertThat(response.bodyAsText()).isNullOrEmpty()
     }
 
     @Test
