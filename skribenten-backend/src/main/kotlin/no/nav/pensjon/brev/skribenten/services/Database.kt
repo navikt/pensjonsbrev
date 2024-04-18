@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.skribenten.services
 import com.typesafe.config.Config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.json.json
 import org.jetbrains.exposed.sql.transactions.transaction
 
 @Suppress("unused")
@@ -17,6 +19,21 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
+val format = Json { prettyPrint = true }
+
+@kotlinx.serialization.Serializable
+data class RedigerbarBrevdata(val json: String)
+
+object Brevredigering : Table() {
+    val id: Column<Int> = integer("id").autoIncrement()
+    val uuid: Column<String> = varchar("uuid", length = 50)
+    val sakid : Column<String> = varchar("sakid", length = 50)
+    val navident: Column<String> = varchar("navident", length = 50)
+    val brevkode: Column<String> = varchar("brevkode", length = 50)
+    val redigerbarBrevdata = json<RedigerbarBrevdata>("brevdata", format)
+    val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
+    override val primaryKey = PrimaryKey(id, name = "PK_Brevredigering_ID")
+}
 
 fun initDatabase(config: Config) {
     // Creates db connection and registers it globally.

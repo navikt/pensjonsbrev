@@ -13,6 +13,7 @@ val mockkVersion: String by project
 plugins {
     application
     kotlin("jvm")
+    kotlin("plugin.serialization") version "1.9.23"
     id("io.ktor.plugin")
 }
 
@@ -71,8 +72,11 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-json:$exposedVersion")
     implementation("org.postgresql:postgresql:42.7.2")
     implementation("com.zaxxer:HikariCP:5.1.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$exposedVersion")
 
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 
