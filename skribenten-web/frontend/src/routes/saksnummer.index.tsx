@@ -27,7 +27,7 @@ function SaksnummerPage() {
   const hentSakContextMutation = useMutation<SakContextDto, AxiosError<unknown>, { saksnummer: string }>({
     mutationFn: (values) => getSakContext.queryFn(values.saksnummer, undefined),
     onSuccess: (sakContext, values) => {
-      queryClient.setQueryData(getSakContext.queryKey(values.saksnummer), sakContext);
+      queryClient.setQueryData(getSakContext.queryKey(values.saksnummer, undefined), sakContext);
       navigate({
         to: "/saksnummer/$saksId/brevvelger",
         params: { saksId: sakContext.sak.saksId.toString() },

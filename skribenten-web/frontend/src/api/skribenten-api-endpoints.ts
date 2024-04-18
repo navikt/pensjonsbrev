@@ -38,7 +38,7 @@ axios.interceptors.response.use(undefined, (error) => {
 
 export const saksnummerKeys = {
   all: ["SAK"] as const,
-  id: (saksId: string, vedtaksId: string = "") => [...saksnummerKeys.all, saksId, vedtaksId] as const,
+  id: (saksId: string, vedtaksId: string | undefined) => [...saksnummerKeys.all, saksId, vedtaksId] as const,
 };
 
 export const navnKeys = {
@@ -83,6 +83,7 @@ export const getSakContext = {
   queryKey: saksnummerKeys.id,
   queryFn: async (saksId: string, vedtaksId: string | undefined) =>
     (await axios.get<SakContextDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}`, { params: { vedtaksId } })).data,
+  staleTime: 5000,
 };
 
 export const getNavn = {

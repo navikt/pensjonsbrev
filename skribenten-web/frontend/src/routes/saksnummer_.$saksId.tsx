@@ -12,16 +12,16 @@ import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$saksId")({
-  beforeLoad: ({ params: { saksId }, search }) => {
-    const vedtaksId = search?.vedtaksId || undefined;
+  beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
     const getSakContextQueryOptions = {
+      ...getSakContext,
       queryKey: getSakContext.queryKey(saksId, vedtaksId),
       queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     };
 
-    return { getSakQueryOptions: getSakContextQueryOptions };
+    return { getSakContextQueryOptions };
   },
-  loader: async ({ context: { queryClient, getSakQueryOptions: getSakContextQueryOptions } }) => {
+  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
 
     // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.

@@ -4,6 +4,7 @@ import { getPreferredLanguage, getSakContext } from "~/api/skribenten-api-endpoi
 
 export function usePreferredLanguage(saksId: string, vedtaksId: string | undefined) {
   const sakContext = useQuery({
+    ...getSakContext,
     queryKey: getSakContext.queryKey(saksId, vedtaksId),
     queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
   }).data;

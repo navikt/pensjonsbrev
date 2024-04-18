@@ -12,8 +12,8 @@ import type { LetterMetadata } from "~/types/apiTypes";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
-  loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
-    const sakContext = await queryClient.ensureQueryData(getSakQueryOptions);
+  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
+    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
     return { letterTemplates: sakContext.brevMetadata };
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,

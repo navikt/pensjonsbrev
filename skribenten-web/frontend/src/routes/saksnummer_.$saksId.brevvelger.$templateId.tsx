@@ -72,10 +72,7 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId
   validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string } => ({
     idTSSEkstern: search.idTSSEkstern?.toString(),
   }),
-  loader: async ({
-    context: { queryClient, getSakQueryOptions: getSakContextQueryOptions },
-    params: { templateId },
-  }) => {
+  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { templateId } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
 
     const letterTemplate = sakContext.brevMetadata.find((letterMetadata) => letterMetadata.id === templateId);
