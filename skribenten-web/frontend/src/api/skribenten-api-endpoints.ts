@@ -15,12 +15,11 @@ import type {
   HentSamhandlerRequestDto,
   HentsamhandlerResponseDto,
   KontaktAdresseResponse,
-  LetterMetadata,
   OrderDoksysLetterRequest,
   OrderEblankettRequest,
   OrderExstreamLetterRequest,
   PreferredLanguage,
-  SakDto,
+  SakContextDto,
 } from "~/types/apiTypes";
 import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
 
@@ -39,17 +38,12 @@ axios.interceptors.response.use(undefined, (error) => {
 
 export const saksnummerKeys = {
   all: ["SAK"] as const,
-  id: (saksId: string) => [...saksnummerKeys.all, saksId] as const,
+  id: (saksId: string, vedtaksId: string | undefined) => [...saksnummerKeys.all, saksId, vedtaksId] as const,
 };
 
 export const navnKeys = {
   all: ["NAVN"] as const,
   saksId: (saksId: string) => [...navnKeys.all, saksId] as const,
-};
-
-export const letterTemplatesKeys = {
-  all: ["LETTER_TEMPLATES"] as const,
-  sakTypeSearch: (search: { sakType: string; includeVedtak: boolean }) => [...letterTemplatesKeys.all, search] as const,
 };
 
 export const letterKeys = {
@@ -85,9 +79,11 @@ export const preferredLanguageKeys = {
   saksId: (saksId: string) => [...preferredLanguageKeys.all, saksId] as const,
 };
 
-export const getSak = {
+export const getSakContext = {
   queryKey: saksnummerKeys.id,
-  queryFn: async (saksId: string) => (await axios.get<SakDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}`)).data,
+  queryFn: async (saksId: string, vedtaksId: string | undefined) =>
+    (await axios.get<SakContextDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}`, { params: { vedtaksId } })).data,
+  staleTime: 5000,
 };
 
 export const getNavn = {
@@ -99,13 +95,6 @@ export const getPreferredLanguage = {
   queryKey: preferredLanguageKeys.saksId,
   queryFn: async (saksId: string) =>
     (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/foretrukketSpraak`)).data,
-};
-
-export const getLetterTemplate = {
-  queryKey: letterTemplatesKeys.sakTypeSearch,
-  queryFn: async (sakType: string, search: { includeVedtak: boolean }) =>
-    (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`, { params: search }))
-      .data,
 };
 
 export const getKontaktAdresse = {

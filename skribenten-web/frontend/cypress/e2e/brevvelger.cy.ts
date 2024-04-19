@@ -9,10 +9,6 @@ describe("Brevvelger spec", () => {
       fixture: "foretrukketSpraak.json",
     }).as("foretrukketSpraak");
 
-    cy.intercept("GET", "/bff/skribenten-backend/lettertemplates/**", { fixture: "letterTemplates.json" }).as(
-      "templates",
-    );
-
     cy.viewport(1200, 1400);
   });
   it("Søk med saksnummer", () => {

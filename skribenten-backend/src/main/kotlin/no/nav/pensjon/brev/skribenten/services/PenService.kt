@@ -148,5 +148,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
             .toServiceResult<String>()
             .map { true }
 
+    suspend fun hentIsKravPaaGammeltRegelverk(call: ApplicationCall, vedtaksId: String): ServiceResult<Boolean> =
+        client.get(call, "brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 }
 
