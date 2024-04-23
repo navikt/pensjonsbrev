@@ -100,7 +100,7 @@ private suspend fun sjekkEnhetstilgang(
             return AuthAnsattSakTilgangResponse("En feil oppstod under henting av PEN sakstilganger for ansatt: $navIdent", httpStatusCode)
         }
 
-    val sakId = penSakTilgangDeferred.await().map { it.sakId }
+    val sakId = penSakTilgangDeferred.await().map { it.saksId }
 
     return when {
         !harTilgangTilSakSinEnhet(navansattEnheter, penSakTilgang) -> {

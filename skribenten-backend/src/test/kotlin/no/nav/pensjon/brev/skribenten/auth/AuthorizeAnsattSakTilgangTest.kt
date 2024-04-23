@@ -99,8 +99,8 @@ class AuthorizeAnsattSakTilgangTest {
         coEvery { hentSak(any(), "${generellSak0001.saksId}") } returns ServiceResult.Ok(generellSak0001)
         coEvery { hentSak(any(), "${generellSak0002.saksId}") } returns ServiceResult.Ok(generellSak0002)
 
-        coEvery { hentSaktilganger(any(), penSakTilgangTestsak.sakId) } returns ServiceResult.Ok(penSakTilgangTestsak)
-        coEvery { hentSaktilganger(any(), penSakTilgangVikafossen.sakId) } returns ServiceResult.Ok(penSakTilgangVikafossen)
+        coEvery { hentSaktilganger(any(), penSakTilgangTestsak.saksId) } returns ServiceResult.Ok(penSakTilgangTestsak)
+        coEvery { hentSaktilganger(any(), penSakTilgangVikafossen.saksId) } returns ServiceResult.Ok(penSakTilgangVikafossen)
     }
 
     private val server = embeddedServer(Netty, port = 0) {
