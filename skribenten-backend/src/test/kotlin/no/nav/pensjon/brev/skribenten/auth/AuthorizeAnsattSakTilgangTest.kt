@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.isNullOrEmptyString
 import com.typesafe.config.ConfigValueFactory
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -277,7 +275,7 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertThat(response.bodyAsText(), isNullOrEmptyString)
+        assertThat(response.bodyAsText()).isNullOrEmpty()
     }
 
     @Test
@@ -289,7 +287,7 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertThat(response.bodyAsText(), isNullOrEmptyString)
+        assertThat(response.bodyAsText()).isNullOrEmpty()
     }
 
     @Test

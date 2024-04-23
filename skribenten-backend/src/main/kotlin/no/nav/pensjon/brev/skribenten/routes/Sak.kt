@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.skribenten.routes
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
+import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
@@ -13,13 +15,26 @@ fun Route.sakRoute(
     pdlService: PdlService,
     pensjonPersonDataService: PensjonPersonDataService,
     krrService: KrrService,
+    brevmalService: BrevmalService,
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang(navansattService, pdlService, penService))
 
         get {
-            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-            call.respond(sak)
+            val sak: PenService.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val vedtaksId: String? = call.request.queryParameters["vedtaksId"]
+            val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
+            val brevmetadata = if (vedtaksId != null) {
+                brevmalService.hentBrevmalerForVedtak(
+                    call = call,
+                    sakType = sak.sakType,
+                    includeEblanketter = hasAccessToEblanketter,
+                    vedtaksId = vedtaksId
+                )
+            } else {
+                brevmalService.hentBrevmalerForSak(call, sak.sakType, hasAccessToEblanketter)
+            }
+            call.respond(SakContext(sak, brevmetadata))
         }
         route("/bestillBrev") {
             post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
@@ -70,3 +85,8 @@ fun Route.sakRoute(
         }
     }
 }
+
+private data class SakContext(
+    val sak: PenService.SakSelection,
+    val brevMetadata: List<LetterMetadata>
+)

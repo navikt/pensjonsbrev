@@ -217,7 +217,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         }
 
         showIf(sisteBeregningsperiode.restanse.notEqualTo(0)) {
-            val erRestanseTrekk = sisteBeregningsperiode.restanse.lessThan(0)
+            val erRestanseTrekk = sisteBeregningsperiode.restanse.greaterThan(0)
             val restanse = sisteBeregningsperiode.restanse.absoluteValue()
             title2 {
                 textExpr(
