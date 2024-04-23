@@ -91,13 +91,13 @@ private suspend fun sjekkEnhetstilgang(
     val navansattEnheter = navansattEnheterDeferred.await().map { it }
         .catch { message, httpStatusCode ->
             logger.error("En feil oppstod ved henting av PenSakTilgang under sjekk av enhetstilgang: $message. Httpstatus: $httpStatusCode")
-            return AuthAnsattSakTilgangResponse("En feil oppstod under sjekk av enhetstilgang", httpStatusCode)
+            return AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", httpStatusCode)
         }
 
     val penSakTilgang = penSakTilgangDeferred.await().map { it.idForEnheterMedTilgang }
         .catch { message, httpStatusCode ->
             logger.error("En feil oppstod ved henting av NAVEnhet under sjekk av enhetstilgang: $message. Httpstatus: $httpStatusCode")
-            return AuthAnsattSakTilgangResponse("En feil oppstod under sjekk av enhetstilgang", httpStatusCode)
+            return AuthAnsattSakTilgangResponse("En feil oppstod under henting av PEN sakstilganger for ansatt: $navIdent", httpStatusCode)
         }
 
     val sakId = penSakTilgangDeferred.await().map { it.sakId }
