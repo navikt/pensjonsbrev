@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.auth
 
+import org.assertj.core.api.Assertions.assertThat
 import com.typesafe.config.ConfigValueFactory
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
