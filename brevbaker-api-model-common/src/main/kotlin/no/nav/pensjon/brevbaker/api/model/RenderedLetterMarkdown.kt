@@ -1,7 +1,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
 @Suppress("unused")
-data class RenderedJsonLetter(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
+data class RenderedLetterMarkdown(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
 
     data class Sakspart(val gjelderNavn: String, val gjelderFoedselsnummer: String, val saksnummer: String, val dokumentDato: String)
     data class Signatur(
@@ -28,7 +28,7 @@ data class RenderedJsonLetter(val title: String, val sakspart: Sakspart, val blo
         }
 
         data class ItemList(override val id: Int, val items: List<Item>) : ParagraphContent(id, Type.ITEM_LIST) {
-            data class Item(val content: List<Text>)
+            data class Item(val id: Int, val content: List<Text>)
         }
 
         sealed class Text(id: Int, type: Type, open val text: String) : ParagraphContent(id, type) {
