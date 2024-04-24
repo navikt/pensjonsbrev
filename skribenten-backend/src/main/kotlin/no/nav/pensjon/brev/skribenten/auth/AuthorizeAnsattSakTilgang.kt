@@ -91,13 +91,22 @@ private suspend fun sjekkEnhetstilgang(
     val navansattEnheter = navansattEnheterDeferred.await().map { it }
         .catch { message, httpStatusCode ->
             logger.error("En feil oppstod ved henting av PenSakTilgang under sjekk av enhetstilgang: $message. Httpstatus: $httpStatusCode")
-            return AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", httpStatusCode)
+            if(httpStatusCode == HttpStatusCode.NotFound) {
+                return AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
+            } else {
+                return AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", httpStatusCode)
+            }
         }
 
     val penSakTilgang = penSakTilgangDeferred.await().map { it.idForEnheterMedTilgang }
         .catch { message, httpStatusCode ->
             logger.error("En feil oppstod ved henting av NAVEnhet under sjekk av enhetstilgang: $message. Httpstatus: $httpStatusCode")
-            return AuthAnsattSakTilgangResponse("En feil oppstod under henting av PEN sakstilganger for ansatt: $navIdent", httpStatusCode)
+            if(httpStatusCode == HttpStatusCode.NotFound) {
+                return AuthAnsattSakTilgangResponse("En feil oppstod under henting av PEN sakstilganger for ansatt: $navIdent", HttpStatusCode.InternalServerError)
+            }
+             else {
+                return AuthAnsattSakTilgangResponse("En feil oppstod under henting av PEN sakstilganger for ansatt: $navIdent", httpStatusCode)
+            }
         }
 
     val sakId = penSakTilgangDeferred.await().map { it.saksId }
@@ -111,17 +120,8 @@ private suspend fun sjekkEnhetstilgang(
     }
 }
 
-fun harTilgangTilSakSinEnhet(navAnsattEnheter: List<NAVEnhet>, penSakEnheter: List<String>): Boolean {
-    var tilgang = false
-    penSakEnheter.forEach { penenhet ->
-        navAnsattEnheter.forEach { navansattEnhet ->
-            if (penenhet == navansattEnhet.id) {
-                tilgang = true
-            }
-        }
-    }
-    return tilgang
-}
+fun harTilgangTilSakSinEnhet(navAnsattEnheter: List<NAVEnhet>, penSakEnheter: List<String>): Boolean =
+    penSakEnheter.any { sakEnhet -> navAnsattEnheter.any { sakEnhet == it.id } }
 
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)
 

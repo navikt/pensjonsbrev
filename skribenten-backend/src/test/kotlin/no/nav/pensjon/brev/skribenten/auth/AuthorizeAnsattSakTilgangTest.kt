@@ -250,7 +250,7 @@ class AuthorizeAnsattSakTilgangTest {
         coEvery { navansattService.hentNavAnsattEnhetListe(any(), any()) } returns ServiceResult.Error("Ansatt finnes ikke", HttpStatusCode.NotFound)
 
         val response = client.get("/sak/${testSak.saksId}")
-        assertEquals(HttpStatusCode.NotFound, response.status)
+        assertEquals(HttpStatusCode.InternalServerError, response.status)
         assertEquals("En feil oppstod ved henting av NAVEnheter for ansatt: $NAVIdent", response.bodyAsText())
     }
 
