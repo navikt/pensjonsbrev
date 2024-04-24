@@ -10,7 +10,6 @@ import {
   StarIcon,
 } from "@navikt/aksel-icons";
 import type { SortState } from "@navikt/ds-react";
-import { Skeleton } from "@navikt/ds-react";
 import {
   Alert,
   BodyShort,
@@ -21,6 +20,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Skeleton,
   Table,
   Tag,
   TextField,
@@ -178,7 +178,7 @@ const eblankettValidationSchema = z.object({
 
 function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, saksId } = Route.useParams();
-  const { vedtaksId, idTSSEkstern, enhetsId } = Route.useSearch();
+  const { vedtaksId, idTSSEkstern } = Route.useSearch();
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
@@ -445,25 +445,27 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
 function SelectEnhet() {
   const enheterQuery = useQuery(getEnheter);
   const { enhetsId } = Route.useSearch();
-  const [selectedEnhet, setSelectedEnhet] = useState<string | undefined>(undefined);
-  const { register, formState } = useFormContext();
+  const { register, setValue, formState } = useFormContext();
   const navigate = useNavigate({ from: Route.fullPath });
   const options = enheterQuery.data ?? [];
+  useEffect(() => {
+    if (enhetsId) {
+      setValue("enhetsId", enhetsId);
+    }
+  }, [enhetsId, setValue]);
   return (
     <Select
       {...register("enhetsId")}
-      defaultValue={selectedEnhet ?? ""}
       error={formState.errors.enhet?.message?.toString()}
       label="Enhet"
       onChangeCapture={(element) => {
-        // TODO state helvete aner ikke. Dette suger. jeg drar hjem.
-        setSelectedEnhet(element.target.value)
         navigate({
-          search: (s) => ({ ...s, enhetsId: element.target.value }),
+          search: (s) => ({ ...s, enhetsId: element.currentTarget.value }),
           replace: true,
         });
       }}
       size="medium"
+      value={enhetsId}
     >
       <option value={""}>Velg enhet</option>
       {options.map((option) => (

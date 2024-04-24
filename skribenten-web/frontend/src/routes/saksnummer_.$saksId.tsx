@@ -43,9 +43,8 @@ export const Route = createFileRoute("/saksnummer/$saksId")({
     return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
   },
   component: SakBreadcrumbsPage,
-  validateSearch: (search: Record<string, unknown>): { vedtaksId?: string; enhetsId?: string } => ({
+  validateSearch: (search: Record<string, unknown>): { vedtaksId?: string } => ({
     vedtaksId: search.vedtaksId?.toString(),
-    enhetsId: search.vedtaksId?.toString(),
   }),
 });
 

@@ -54,8 +54,9 @@ export const Route = createFileRoute("/template/$templateId")({
   },
   validateSearch: (
     search: Record<string, unknown>,
-  ): { language?: string; highlightedDataClass?: string; highlightedDataField?: string } => ({
+  ): { language?: string; highlightedDataClass?: string;enhetsId?: string; highlightedDataField?: string } => ({
     language: search.language?.toString(),
+    enhetsId: search.enhetsId?.toString(),
     highlightedDataClass: search.highlightedDataClass?.toString(),
     highlightedDataField: search.highlightedDataField?.toString(),
   }),
