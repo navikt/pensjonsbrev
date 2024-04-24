@@ -331,7 +331,7 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
             return orderEblankettMutation.mutate(orderLetterRequest);
           })}
         >
-          <VStack gap="4">
+          <VStack gap="8">
             <TextField
               data-cy="mottaker-text-textfield"
               {...methods.register("mottakerText")}
