@@ -226,15 +226,15 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
             <Adresse />
             <SelectEnhet />
             {letterTemplate.redigerbarBrevtittel ? (
-                <TextField
-                    {...methods.register("brevtittel")}
-                    autoComplete="on"
-                    data-cy="brev-title-textfield"
-                    description="Gi brevet en kort og forklarende tittel."
-                    error={methods.formState.errors.brevtittel?.message}
-                    label="Endre tittel"
-                    size="medium"
-                />
+              <TextField
+                {...methods.register("brevtittel")}
+                autoComplete="on"
+                data-cy="brev-title-textfield"
+                description="Gi brevet en kort og forklarende tittel."
+                error={methods.formState.errors.brevtittel?.message}
+                label="Endre tittel"
+                size="medium"
+              />
             ) : undefined}
             <SelectLanguage letterTemplate={letterTemplate} />
             <SelectSensitivity />
@@ -333,12 +333,12 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
         >
           <VStack gap="4">
             <TextField
-                data-cy="mottaker-text-textfield"
-                {...methods.register("mottakerText")}
-                autoComplete="off"
-                error={methods.formState.errors.mottakerText?.message}
-                label="Mottaker"
-                size="medium"
+              data-cy="mottaker-text-textfield"
+              {...methods.register("mottakerText")}
+              autoComplete="off"
+              error={methods.formState.errors.mottakerText?.message}
+              label="Mottaker"
+              size="medium"
             />
             <SelectAvtaleland />
             <SelectEnhet />
