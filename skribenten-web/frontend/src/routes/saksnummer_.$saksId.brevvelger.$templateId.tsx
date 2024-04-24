@@ -224,18 +224,18 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
         >
           <VStack gap="8">
             <Adresse />
-            {letterTemplate.redigerbarBrevtittel ? (
-              <TextField
-                {...methods.register("brevtittel")}
-                autoComplete="on"
-                data-cy="brev-title-textfield"
-                description="Gi brevet en kort og forklarende tittel."
-                error={methods.formState.errors.brevtittel?.message}
-                label="Endre tittel"
-                size="medium"
-              />
-            ) : undefined}
             <SelectEnhet />
+            {letterTemplate.redigerbarBrevtittel ? (
+                <TextField
+                    {...methods.register("brevtittel")}
+                    autoComplete="on"
+                    data-cy="brev-title-textfield"
+                    description="Gi brevet en kort og forklarende tittel."
+                    error={methods.formState.errors.brevtittel?.message}
+                    label="Endre tittel"
+                    size="medium"
+                />
+            ) : undefined}
             <SelectLanguage letterTemplate={letterTemplate} />
             <SelectSensitivity />
           </VStack>
@@ -332,17 +332,17 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
           })}
         >
           <VStack gap="4">
+            <TextField
+                data-cy="mottaker-text-textfield"
+                {...methods.register("mottakerText")}
+                autoComplete="off"
+                error={methods.formState.errors.mottakerText?.message}
+                label="Mottaker"
+                size="medium"
+            />
+            <SelectAvtaleland />
             <SelectEnhet />
             <SelectSensitivity />
-            <SelectAvtaleland />
-            <TextField
-              data-cy="mottaker-text-textfield"
-              {...methods.register("mottakerText")}
-              autoComplete="off"
-              error={methods.formState.errors.mottakerText?.message}
-              label="Mottaker"
-              size="small"
-            />
           </VStack>
           <BestillOgRedigerButton orderMutation={orderEblankettMutation} />
         </form>
@@ -457,7 +457,7 @@ function SelectEnhet() {
     <Select
       {...register("enhetsId")}
       error={formState.errors.enhet?.message?.toString()}
-      label="Enhet"
+      label="Avsenderenhet"
       onChangeCapture={(element) => {
         navigate({
           search: (s) => ({ ...s, enhetsId: element.currentTarget.value }),
@@ -483,7 +483,7 @@ function SelectAvtaleland() {
   const options = avtalelandQuery.data ?? [];
 
   return (
-    <Select {...register("landkode")} error={formState.errors.landkode?.message?.toString()} label="Land" size="small">
+    <Select {...register("landkode")} error={formState.errors.landkode?.message?.toString()} label="Land" size="medium">
       <option value={""}>Velg land</option>
       {options.map((option) => (
         <option key={option.kode} value={option.kode}>
