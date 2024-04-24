@@ -18,7 +18,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
-import no.nav.pensjon.brev.skribenten.services.RenderedJsonLetterModule
+import no.nav.pensjon.brev.skribenten.letter.Edit
 
 
 fun main() {
@@ -65,7 +65,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
     install(ContentNegotiation) {
         jackson {
             registerModule(JavaTimeModule())
-            registerModule(RenderedJsonLetterModule)
+            registerModule(Edit.JacksonModule)
         }
     }
 
