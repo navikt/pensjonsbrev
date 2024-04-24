@@ -21,8 +21,8 @@ function deleteBlock(block: Block, blocks: Block[], deleted: number[]) {
 
 export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = produce(
   (draft, literalIndex, target) => {
-    const editedLetter = draft.editedLetter;
-    const blocks = editedLetter.letter.blocks;
+    const editedLetter = draft.renderedLetter.editedLetter;
+    const blocks = editedLetter.blocks;
     const previousContentSameBlock = blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex - 1];
 
     if ("itemIndex" in literalIndex) {

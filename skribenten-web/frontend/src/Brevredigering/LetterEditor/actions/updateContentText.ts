@@ -1,5 +1,7 @@
+import type { Draft } from "immer";
 import { produce } from "immer";
 
+import type { LiteralValue } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
@@ -9,14 +11,16 @@ import type { LiteralIndex } from "./model";
 
 export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
   (draft, literalIndex, text) => {
-    const content = draft.editedLetter.letter.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
+    const content =
+      draft.renderedLetter.editedLetter.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
+
     if (content.type === LITERAL) {
-      content.text = cleanseText(text);
+      updateLiteralText(content, text);
     } else if (content.type === ITEM_LIST) {
       if ("itemIndex" in literalIndex) {
         const itemContent = content.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
         if (itemContent.type === LITERAL) {
-          itemContent.text = cleanseText(text);
+          updateLiteralText(itemContent, text);
         } else {
           // eslint-disable-next-line no-console
           console.warn("Cannot update text of:", itemContent.type);
@@ -31,3 +35,10 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
     }
   },
 );
+
+function updateLiteralText(literal: Draft<LiteralValue>, text: string) {
+  literal.editedText = cleanseText(text);
+  if (literal.editedText === literal.text) {
+    delete literal.editedText;
+  }
+}

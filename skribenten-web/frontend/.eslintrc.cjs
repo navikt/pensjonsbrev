@@ -44,6 +44,7 @@ module.exports = {
     "import/prefer-default-export": "off",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
+    "testing-library/render-result-naming-convention": "off",
     "@tanstack/query/exhaustive-deps": "off",
     "@typescript-eslint/consistent-type-imports": ["warn"],
     "@typescript-eslint/switch-exhaustiveness-check": "error",

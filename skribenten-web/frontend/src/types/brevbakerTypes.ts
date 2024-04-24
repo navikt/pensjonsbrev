@@ -52,13 +52,6 @@ export type ScalarKind = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE";
 
 export type LanguageCode = "BOKMAL" | "NYNORSK" | "ENGLISH";
 
-export type RenderedLetter = {
-  readonly title: string;
-  readonly sakspart: Sakspart;
-  readonly blocks: AnyBlock[];
-  readonly signatur: Signatur;
-};
-
 export type Sakspart = {
   readonly gjelderNavn: string;
   readonly gjelderFoedselsnummer: string;
@@ -90,6 +83,7 @@ export type LiteralValue = {
   readonly id: number;
   readonly type: typeof LITERAL;
   readonly text: string;
+  readonly editedText?: string;
 };
 export const VARIABLE = "VARIABLE";
 export type VariableValue = {
@@ -106,7 +100,8 @@ export type ItemList = {
   readonly items: Item[];
 };
 export type Item = {
-  content: TextContent[];
+  readonly id: number;
+  readonly content: TextContent[];
 };
 
 export type TextContent = LiteralValue | VariableValue;
@@ -133,6 +128,18 @@ export type Title2Block = Block & {
 };
 
 export interface EditedLetter {
-  readonly letter: RenderedLetter;
+  readonly blocks: AnyBlock[];
   readonly deletedBlocks: number[];
+}
+
+export interface RenderLetterRequest {
+  letterData: unknown;
+  editedLetter?: EditedLetter;
+}
+
+export interface RenderLetterResponse {
+  readonly editedLetter: EditedLetter;
+  readonly title: string;
+  readonly sakspart: Sakspart;
+  readonly signatur: Signatur;
 }

@@ -15,9 +15,9 @@ function getId(id: number, isNew: boolean): number {
 
 export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = produce(
   (draft, literalIndex, offset) => {
-    const letter = draft.editedLetter.letter;
-    const block = letter.blocks[literalIndex.blockIndex];
-    const previousBlock = letter.blocks[literalIndex.blockIndex - 1];
+    const editedLetter = draft.renderedLetter.editedLetter;
+    const block = editedLetter.blocks[literalIndex.blockIndex];
+    const previousBlock = editedLetter.blocks[literalIndex.blockIndex - 1];
     const content = block.content[literalIndex.contentIndex];
 
     if (content.type === LITERAL) {
@@ -35,7 +35,7 @@ export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
             ...block.content.slice(literalIndex.contentIndex + 1).map((c) => ({ ...c, id: getId(c.id, isNew) })),
           ],
         };
-        letter.blocks.splice(literalIndex.blockIndex + 1, 0, nextBlock);
+        editedLetter.blocks.splice(literalIndex.blockIndex + 1, 0, nextBlock);
         draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: literalIndex.blockIndex + 1 };
         // Update existing
         content.text = cleanseText(content.text.slice(0, Math.max(0, offset)));

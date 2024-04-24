@@ -22,7 +22,7 @@ import type {
   PreferredLanguage,
   SakDto,
 } from "~/types/apiTypes";
-import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
+import type { RedigerbarTemplateDescription, RenderLetterRequest, RenderLetterResponse } from "~/types/brevbakerTypes";
 
 const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
 
@@ -130,8 +130,8 @@ export const getAvtaleLand = {
   queryFn: async () => (await axios.get<Avtaleland[]>(`${SKRIBENTEN_API_BASE_PATH}/kodeverk/avtaleland`)).data,
 };
 
-export async function renderLetter(letterId: string, request: unknown) {
-  return (await axios.post<RenderedLetter>(`${SKRIBENTEN_API_BASE_PATH}/letter/${letterId}`, request)).data;
+export async function renderLetter(letterId: string, request: RenderLetterRequest) {
+  return (await axios.post<RenderLetterResponse>(`${SKRIBENTEN_API_BASE_PATH}/letter/${letterId}`, request)).data;
 }
 
 export async function addFavoritt(id: string) {

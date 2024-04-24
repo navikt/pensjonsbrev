@@ -1,9 +1,5 @@
-package no.nav.pensjon.brev.skribenten
+package no.nav.pensjon.brev.skribenten.letter
 
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.letter.UpdateEditedLetterException
-import no.nav.pensjon.brev.skribenten.letter.toEdit
-import no.nav.pensjon.brev.skribenten.letter.updatedEditedLetter
 import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown
 import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.*
 import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.Block.Paragraph

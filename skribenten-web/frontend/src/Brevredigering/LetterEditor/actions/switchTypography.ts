@@ -10,7 +10,7 @@ export const switchTypography: Action<
   LetterEditorState,
   [blockIndex: number, typography: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2]
 > = produce((draft, blockIndex, typography) => {
-  const block = draft.editedLetter.letter.blocks[blockIndex];
+  const block = draft.renderedLetter.editedLetter.blocks[blockIndex];
   switch (typography) {
     case PARAGRAPH: {
       block.type = typography;
