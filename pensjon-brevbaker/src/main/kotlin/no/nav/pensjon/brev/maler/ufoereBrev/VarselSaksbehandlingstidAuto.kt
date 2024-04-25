@@ -79,12 +79,16 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             }
             paragraph {
                 text(
-                    Bokmal to "Du må melde fra om endringer som kan påvirke søknaden din. Det kan være endringer som gjelder helse, arbeidssituasjon, inntekt, sivilstatus eller at du flytter til et annet land. \n" +
-                            "For informasjon om hvordan du melder fra om endringer se: $UFOERETRYGD_ENDRING_URL",
-                    Nynorsk to "Du må melde frå om endringar som kan påverke søknaden din. Det kan vere endringar som gjeld helse, arbeidssituasjon, inntekt, sivilstatus eller at du flyttar til eit anna land. \n" +
-                            "For informasjon om korleis du melder frå om endringar, sjå: $UFOERETRYGD_ENDRING_URL",
-                    English to "You must notify us of any changes that may impact your application. These changes might relate to your health, employment, income, marital status, or moving abroad. \n" +
-                            "For information on how to report changes, see: $UFOERETRYGD_ENDRING_URL"
+                    Bokmal to "Du må melde fra om endringer som kan påvirke søknaden din. Det kan være endringer som gjelder helse, arbeidssituasjon, inntekt, sivilstatus eller at du flytter til et annet land.",
+                    Nynorsk to "Du må melde frå om endringar som kan påverke søknaden din. Det kan vere endringar som gjeld helse, arbeidssituasjon, inntekt, sivilstatus eller at du flyttar til eit anna land.",
+                    English to "You must notify us of any changes that may impact your application. These changes might relate to your health, employment, income, marital status, or moving abroad."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "For informasjon om hvordan du melder fra om endringer se: $UFOERETRYGD_ENDRING_URL",
+                    Nynorsk to "For informasjon om korleis du melder frå om endringar, sjå: $UFOERETRYGD_ENDRING_URL",
+                    English to "For information on how to report changes, see: $UFOERETRYGD_ENDRING_URL"
                 )
             }
 
