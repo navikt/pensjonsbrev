@@ -451,7 +451,7 @@ function SelectEnhet() {
   return (
     <Select
       {...register("enhetsId")}
-      error={formState.errors.enhet?.message?.toString()}
+      error={formState.errors.enhetsId?.message?.toString()}
       label="Avsenderenhet"
       onChangeCapture={(element) => {
         navigate({
