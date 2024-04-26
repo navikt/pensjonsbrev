@@ -22,12 +22,13 @@ class LegacyBrevService(
     suspend fun bestillOgRedigerDoksysBrev(
         call: ApplicationCall,
         request: BestillDoksysBrevRequest,
-        enhetsId: String,
         saksId: Long,
     ): BestillOgRedigerBrevResponse =
         coroutineScope {
             val brevMetadata = async { brevmetadataService.getMal(request.brevkode) }
-            val result = bestillDoksysBrev(call, request, enhetsId, saksId)
+            manglerTilgangTilEnhet(call, request.enhetsId)?.also { error: BestillOgRedigerBrevResponse -> return@coroutineScope error }
+
+            val result = bestillDoksysBrev(call, request, request.enhetsId, saksId)
             return@coroutineScope if (result.failureType != null) {
                 BestillOgRedigerBrevResponse(result)
             } else if (result.journalpostId == null) {
@@ -42,26 +43,41 @@ class LegacyBrevService(
             }
         }
 
-    suspend fun bestillOgRedigerExstreamBrev(
+    private suspend fun LegacyBrevService.manglerTilgangTilEnhet(
         call: ApplicationCall,
         enhetsId: String,
+    ): BestillOgRedigerBrevResponse? {
+        val harTilgangTilEnhet: Boolean = harTilgangTilValgtEnhet(call, enhetsId)
+            .catch { message, status ->
+                logger.error("Feil ved henting av enhet-tilganger: $message, status-code: $status")
+                return BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+            }
+        return if (harTilgangTilEnhet) null else BestillOgRedigerBrevResponse(ENHET_UNAUTHORIZED)
+    }
+
+    private suspend fun harTilgangTilValgtEnhet(call: ApplicationCall, enhetsId: String): ServiceResult<Boolean> =
+        navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent).map { it.any { enhet -> enhet.id == enhetsId } }
+
+    suspend fun bestillOgRedigerExstreamBrev(
+        call: ApplicationCall,
         gjelderPid: String,
         request: BestillExstreamBrevRequest,
         saksId: Long,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
+        manglerTilgangTilEnhet(call, request.enhetsId)?.also { error: BestillOgRedigerBrevResponse -> return error }
 
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
         if (brevtittel.isNullOrBlank()) {
             return BestillOgRedigerBrevResponse(EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
         }
-        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent).resultOrNull()
+        val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent).resultOrNull()
             ?: return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
 
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
             call = call,
-            enhetsId = enhetsId,
+            enhetsId = request.enhetsId,
             gjelderPid = gjelderPid,
             idTSSEkstern = request.idTSSEkstern,
             isSensitive = request.isSensitive,
@@ -88,19 +104,20 @@ class LegacyBrevService(
 
     suspend fun bestillOgRedigerEblankett(
         call: ApplicationCall,
-        enhetsId: String,
         gjelderPid: String,
         request: BestillEblankettRequest,
         saksId: Long,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
-        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent).resultOrNull()
+        val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent).resultOrNull()
             ?: return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
+
+        manglerTilgangTilEnhet(call, request.enhetsId)?.also { error: BestillOgRedigerBrevResponse -> return error }
 
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
             call = call,
-            enhetsId = enhetsId,
+            enhetsId = request.enhetsId,
             gjelderPid = gjelderPid,
             isSensitive = request.isSensitive,
             metadata = brevMetadata,
@@ -376,6 +393,7 @@ class LegacyBrevService(
         SAF_ERROR,
         SKRIBENTEN_INTERNAL_ERROR,
         ENHETSID_MANGLER,
+        ENHET_UNAUTHORIZED,
         NAVANSATT_MANGLER_NAVN,
     }
 
