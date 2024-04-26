@@ -87,6 +87,7 @@ describe("Brevvelger spec", () => {
         spraak: "NN",
         isSensitive: false,
         brevtittel: "",
+        enhetsId: "4405",
       });
       request.reply({ fixture: "bestillBrevExstream.json" });
     }).as("bestill exstream");
@@ -122,7 +123,7 @@ describe("Brevvelger spec", () => {
 
   it("Bestill Doksys brev", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/doksys", (request) => {
-      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "NB" });
+      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "NB", enhetsId: "4405" });
       request.reply({ fixture: "bestillBrevDoksys.json" });
     }).as("bestill doksys");
 
@@ -153,6 +154,7 @@ describe("Brevvelger spec", () => {
         spraak: "NB",
         isSensitive: true,
         brevtittel: "GGMU",
+        enhetsId: "4405",
       });
       request.reply({ fixture: "bestillBrevNotat.json" });
     }).as("bestill notat");
@@ -188,6 +190,7 @@ describe("Brevvelger spec", () => {
         landkode: "GBR",
         mottakerText: "Haaland",
         isSensitive: true,
+        enhetsId: "4405",
       });
       request.reply({ fixture: "bestillBrevEblankett.json" });
     }).as("bestill e-blankett");
