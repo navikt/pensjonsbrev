@@ -43,7 +43,6 @@ import {
   getEnheter,
   getFavoritter,
   getKontaktAdresse,
-  getLetterTemplate,
   getNavn,
   hentSamhandlerAdresse,
   orderDoksysLetter,
@@ -70,26 +69,21 @@ import { capitalizeString } from "~/utils/stringUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId")({
   component: SelectedTemplate,
-  loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
+  loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId: vedtaksId }),
   validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string; enhetsId?: string } => ({
     idTSSEkstern: search.idTSSEkstern?.toString(),
     enhetsId: search.enhetsId?.toString(),
   }),
-  loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId }, deps: { includeVedtak } }) => {
-    const sak = await queryClient.ensureQueryData(getSakQueryOptions);
+  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { templateId } }) => {
+    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
 
-    const letterTemplates = await queryClient.ensureQueryData({
-      queryKey: getLetterTemplate.queryKey({ sakType: sak.sakType, includeVedtak }),
-      queryFn: () => getLetterTemplate.queryFn(sak.sakType, { includeVedtak }),
-    });
-
-    const letterTemplate = letterTemplates.find((letterMetadata) => letterMetadata.id === templateId);
+    const letterTemplate = sakContext.brevMetadata.find((letterMetadata) => letterMetadata.id === templateId);
 
     if (!letterTemplate) {
       throw notFound();
     }
 
-    return { letterTemplate, sak };
+    return { letterTemplate, sak: sakContext.sak };
   },
   notFoundComponent: () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
@@ -421,8 +415,9 @@ function SelectSensitivity() {
 
 function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { saksId } = Route.useParams();
+  const { vedtaksId } = Route.useSearch();
   const { register, setValue } = useFormContext();
-  const preferredLanguage = usePreferredLanguage(saksId);
+  const preferredLanguage = usePreferredLanguage(saksId, vedtaksId);
 
   // Update selected language if preferredLanguage was not loaded before form initialization.
   useEffect(() => {

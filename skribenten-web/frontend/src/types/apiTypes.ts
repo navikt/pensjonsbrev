@@ -5,6 +5,11 @@ export type SakDto = {
   readonly sakType: SakType;
 };
 
+export type SakContextDto = {
+  readonly sak: SakDto;
+  readonly brevMetadata: LetterMetadata[];
+};
+
 export type SakType =
   | "AFP"
   | "AFP_PRIVAT"

@@ -6,36 +6,37 @@ import { Outlet } from "@tanstack/react-router";
 import React from "react";
 
 import { getFavoritter, getKontaktAdresse, getNavn, getPreferredLanguage } from "~/api/skribenten-api-endpoints";
-import { getSak } from "~/api/skribenten-api-endpoints";
+import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 
 export const Route = createFileRoute("/saksnummer/$saksId")({
-  beforeLoad: ({ params: { saksId } }) => {
-    const getSakQueryOptions = {
-      queryKey: getSak.queryKey(saksId),
-      queryFn: () => getSak.queryFn(saksId),
+  beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
+    const getSakContextQueryOptions = {
+      ...getSakContext,
+      queryKey: getSakContext.queryKey(saksId, vedtaksId),
+      queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     };
 
-    return { getSakQueryOptions };
+    return { getSakContextQueryOptions };
   },
-  loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
-    const sak = await queryClient.ensureQueryData(getSakQueryOptions);
+  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
+    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
 
     // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.
     queryClient.prefetchQuery({
-      queryKey: getKontaktAdresse.queryKey(sak.saksId.toString()),
-      queryFn: () => getKontaktAdresse.queryFn(sak.saksId.toString()),
+      queryKey: getKontaktAdresse.queryKey(sakContext.sak.saksId.toString()),
+      queryFn: () => getKontaktAdresse.queryFn(sakContext.sak.saksId.toString()),
     });
 
     queryClient.prefetchQuery(getFavoritter);
     queryClient.prefetchQuery({
-      queryKey: getPreferredLanguage.queryKey(sak.saksId.toString()),
-      queryFn: () => getPreferredLanguage.queryFn(sak.saksId.toString()),
+      queryKey: getPreferredLanguage.queryKey(sakContext.sak.saksId.toString()),
+      queryFn: () => getPreferredLanguage.queryFn(sakContext.sak.saksId.toString()),
     });
 
-    return sak;
+    return sakContext;
   },
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -50,11 +51,11 @@ export const Route = createFileRoute("/saksnummer/$saksId")({
 });
 
 function SakBreadcrumbsPage() {
-  const sak = Route.useLoaderData();
+  const sakContext = Route.useLoaderData();
 
   return (
     <>
-      <SakInfoBreadcrumbs sak={sak} />
+      <SakInfoBreadcrumbs sak={sakContext?.sak} />
       <Outlet />
     </>
   );
