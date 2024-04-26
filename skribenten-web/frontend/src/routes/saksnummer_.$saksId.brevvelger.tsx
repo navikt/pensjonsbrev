@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { Accordion, Alert, Button, Heading, Search, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
@@ -155,9 +155,11 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
 }
 
 function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
-  const { templateId } = useParams();
-  const currentSearch = useSearch(); // Get current search parameters
-  const navigate = useNavigate();
+  const { templateId } = useParams({ from: "/saksnummer/$saksId/brevvelger/$templateId" });
+  const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger/$templateId" });
+
+  // Ideally we would use the Link component as it gives native <a/> features.
+  // However, when we render as many links as we do it slows down drastically. Try again when Tanstack Router has developed further
 
   return (
     <Button
@@ -185,8 +187,8 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
       onClick={() =>
         navigate({
           to: "/saksnummer/$saksId/brevvelger/$templateId",
-          search: currentSearch, // Pass along current search parameters
           params: { templateId: letterMetadata.id },
+          search: (s) => s,
         })
       }
       size="medium"
