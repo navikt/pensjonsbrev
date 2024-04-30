@@ -5,6 +5,7 @@ describe("Brevvelger spec", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/navn", { fixture: "navn.txt" }).as("navn");
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/adresse", { fixture: "adresse.json" }).as("adresse");
     cy.intercept("GET", "/bff/skribenten-backend/kodeverk/avtaleland", { fixture: "avtaleland.json" }).as("avtaleland");
+    cy.intercept("GET", "/bff/skribenten-backend/me/enheter", { fixture: "enheter.json" }).as("enheter");
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/foretrukketSpraak", {
       fixture: "foretrukketSpraak.json",
     }).as("foretrukketSpraak");
@@ -86,6 +87,7 @@ describe("Brevvelger spec", () => {
         spraak: "NN",
         isSensitive: false,
         brevtittel: "",
+        enhetsId: "4405",
       });
       request.reply({ fixture: "bestillBrevExstream.json" });
     }).as("bestill exstream");
@@ -107,6 +109,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("change-to-user");
 
     cy.get("select[name=spraak]").select("Nynorsk");
+    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
 
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
@@ -118,9 +121,9 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("order-letter-success-message");
   });
 
-  it("Bestill Docsys brev", () => {
+  it("Bestill Doksys brev", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/doksys", (request) => {
-      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "NB" });
+      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "NB", enhetsId: "4405" });
       request.reply({ fixture: "bestillBrevDoksys.json" });
     }).as("bestill doksys");
 
@@ -135,6 +138,7 @@ describe("Brevvelger spec", () => {
 
     cy.getDataCy("is-sensitive").should("not.exist");
 
+    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
     cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
@@ -150,6 +154,7 @@ describe("Brevvelger spec", () => {
         spraak: "NB",
         isSensitive: true,
         brevtittel: "GGMU",
+        enhetsId: "4405",
       });
       request.reply({ fixture: "bestillBrevNotat.json" });
     }).as("bestill notat");
@@ -164,6 +169,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-button").click();
 
     cy.getDataCy("brev-title-textfield").click().type("GGMU");
+    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
     cy.getDataCy("order-letter").click();
 
     cy.getDataCy("is-sensitive").get(".navds-error-message");
@@ -184,6 +190,7 @@ describe("Brevvelger spec", () => {
         landkode: "GBR",
         mottakerText: "Haaland",
         isSensitive: true,
+        enhetsId: "4405",
       });
       request.reply({ fixture: "bestillBrevEblankett.json" });
     }).as("bestill e-blankett");
@@ -198,6 +205,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-button").click();
 
     cy.getDataCy("order-letter").click();
+    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
 
     cy.getDataCy("is-sensitive").find(".navds-error-message");
     cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });

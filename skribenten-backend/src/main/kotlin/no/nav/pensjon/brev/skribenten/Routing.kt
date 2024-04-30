@@ -50,7 +50,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 brevmalService
             )
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
-            meRoute()
+            meRoute(navansattService)
         }
     }
 }
