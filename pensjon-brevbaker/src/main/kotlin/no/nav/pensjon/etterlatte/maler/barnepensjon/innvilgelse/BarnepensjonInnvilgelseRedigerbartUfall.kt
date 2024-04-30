@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -15,6 +16,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.erGjenoppretting
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.harFlereUtbetalingsperioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeBeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeDatoFom
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.virkningsdato
@@ -29,7 +31,8 @@ data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
     val sisteBeregningsperiodeBeloep: Kroner,
     val erEtterbetaling: Boolean,
     val harFlereUtbetalingsperioder: Boolean,
-    val erGjenoppretting: Boolean
+    val erGjenoppretting: Boolean,
+    val harUtbetaling: Boolean
 )
 
 @TemplateModelHelpers
@@ -73,7 +76,8 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
                     sisteBeregningsperiodeBeloep,
                     erEtterbetaling,
                     harFlereUtbetalingsperioder,
-                    erGjenoppretting
+                    erGjenoppretting,
+                    harUtbetaling,
                 ),
             )
         }
