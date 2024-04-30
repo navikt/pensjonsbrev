@@ -15,8 +15,6 @@ import no.nav.pensjon.brev.skribenten.services.BrevdataDto.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-private const val ENHET_WITH_ACCESS = "1111"
-private const val ENHET_WITHOUT_ACCESS = "9999"
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
 private const val EXPECTED_DOKSYS_URL = "http://beste-doksys-brev"
 
@@ -119,10 +117,6 @@ class LegacyBrevServiceTest {
     }
     private val navansattService = mockk<NavansattService> {
         coEvery {
-            hentNavAnsattEnhetListe(any(), any())
-        } returns ServiceResult.Ok(listOf(NAVEnhet(ENHET_WITH_ACCESS, "NAV Ozzzlo")))
-
-        coEvery {
             hentNavansatt(any(), any())
         } returns ServiceResult.Ok(Navansatt(emptyList(), "verdens", "beste", "saksbehandler"))
     }
@@ -139,10 +133,17 @@ class LegacyBrevServiceTest {
     fun `feiler ved manglende tilgang`() {
         runBlocking {
             val bestillBrevResult = legacyBrevService.bestillOgRedigerExstreamBrev(
-                mockCall, "9999",
-                LegacyBrevService.BestillExstreamBrevRequest(
-                    "exstream", SpraakKode.NB, false, null, null, null, enhetsId = ENHET_WITHOUT_ACCESS
-                ), 3333L
+                call = mockCall, gjelderPid = "9999",
+                request = LegacyBrevService.BestillExstreamBrevRequest(
+                    brevkode = "exstream",
+                    spraak = SpraakKode.NB,
+                    isSensitive = false,
+                    vedtaksId = null,
+                    idTSSEkstern = null,
+                    brevtittel = null,
+                    enhetsId = "9999"
+                ), saksId = 3333L,
+                enhetsTilganger = listOf(NAVEnhet("1111", "NAV Ozzzlo"))
             )
             assertThat(bestillBrevResult.failureType).isEqualTo(LegacyBrevService.FailureType.ENHET_UNAUTHORIZED)
         }
@@ -152,10 +153,16 @@ class LegacyBrevServiceTest {
     fun `kan bestille exstream brev med riktig tilgang`() {
         runBlocking {
             val bestillBrevResult = legacyBrevService.bestillOgRedigerExstreamBrev(
-                mockCall, "9999",
-                LegacyBrevService.BestillExstreamBrevRequest(
-                    "exstream", SpraakKode.NB, false, null, null, null, enhetsId = ENHET_WITH_ACCESS
-                ), 3333L
+                call = mockCall, gjelderPid = "9999",
+                request = LegacyBrevService.BestillExstreamBrevRequest(
+                    brevkode = "exstream",
+                    spraak = SpraakKode.NB,
+                    isSensitive = false,
+                    vedtaksId = null,
+                    idTSSEkstern = null,
+                    brevtittel = null,
+                    enhetsId = "1111"
+                ), saksId = 3333L, enhetsTilganger = listOf(NAVEnhet("1111", "NAV Ozzzlo"))
             )
             assertThat(bestillBrevResult.failureType).isNull()
             assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_EXSTREAM_URL)
@@ -168,8 +175,11 @@ class LegacyBrevServiceTest {
             val bestillBrevResult = legacyBrevService.bestillOgRedigerDoksysBrev(
                 mockCall,
                 LegacyBrevService.BestillDoksysBrevRequest(
-                    "doksys", SpraakKode.NB, null, ENHET_WITH_ACCESS
-                ), 3333L
+                    brevkode = "doksys",
+                    spraak = SpraakKode.NB,
+                    vedtaksId = null,
+                    enhetsId = "1111"
+                ), 3333L, enhetsTilganger = listOf(NAVEnhet("1111", "NAV Ozzzlo"))
             )
             assertThat(bestillBrevResult.failureType).isNull()
             assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_DOKSYS_URL)

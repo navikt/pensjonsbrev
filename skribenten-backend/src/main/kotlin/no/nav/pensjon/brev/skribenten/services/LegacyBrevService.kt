@@ -23,10 +23,11 @@ class LegacyBrevService(
         call: ApplicationCall,
         request: BestillDoksysBrevRequest,
         saksId: Long,
+        enhetsTilganger: List<NAVEnhet>,
     ): BestillOgRedigerBrevResponse =
         coroutineScope {
             val brevMetadata = async { brevmetadataService.getMal(request.brevkode) }
-            manglerTilgangTilEnhet(call, request.enhetsId)?.also { error: BestillOgRedigerBrevResponse -> return@coroutineScope error }
+            manglerTilgangTilEnhet(request.enhetsId, enhetsTilganger)?.also { error: BestillOgRedigerBrevResponse -> return@coroutineScope error }
 
             val result = bestillDoksysBrev(call, request, request.enhetsId, saksId)
             return@coroutineScope if (result.failureType != null) {
@@ -43,29 +44,22 @@ class LegacyBrevService(
             }
         }
 
-    private suspend fun LegacyBrevService.manglerTilgangTilEnhet(
-        call: ApplicationCall,
-        enhetsId: String,
-    ): BestillOgRedigerBrevResponse? {
-        val harTilgangTilEnhet: Boolean = harTilgangTilValgtEnhet(call, enhetsId)
-            .catch { message, status ->
-                logger.error("Feil ved henting av enhet-tilganger: $message, status-code: $status")
-                return BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
-            }
-        return if (harTilgangTilEnhet) null else BestillOgRedigerBrevResponse(ENHET_UNAUTHORIZED)
-    }
-
-    private suspend fun harTilgangTilValgtEnhet(call: ApplicationCall, enhetsId: String): ServiceResult<Boolean> =
-        navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent).map { it.any { enhet -> enhet.id == enhetsId } }
+    private fun manglerTilgangTilEnhet(enhetsId: String, enhetsTilganger: List<NAVEnhet>): BestillOgRedigerBrevResponse? =
+        if (enhetsTilganger.any { enhet -> enhet.id == enhetsId }) {
+            null
+        } else {
+            BestillOgRedigerBrevResponse(ENHET_UNAUTHORIZED)
+        }
 
     suspend fun bestillOgRedigerExstreamBrev(
         call: ApplicationCall,
         gjelderPid: String,
         request: BestillExstreamBrevRequest,
         saksId: Long,
+        enhetsTilganger: List<NAVEnhet>,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
-        manglerTilgangTilEnhet(call, request.enhetsId)?.also { error: BestillOgRedigerBrevResponse -> return error }
+        manglerTilgangTilEnhet(request.enhetsId, enhetsTilganger)?.also { error: BestillOgRedigerBrevResponse -> return error }
 
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
         if (brevtittel.isNullOrBlank()) {
@@ -107,12 +101,13 @@ class LegacyBrevService(
         gjelderPid: String,
         request: BestillEblankettRequest,
         saksId: Long,
+        enhetsTilganger: List<NAVEnhet>,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
         val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent).resultOrNull()
             ?: return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
 
-        manglerTilgangTilEnhet(call, request.enhetsId)?.also { error: BestillOgRedigerBrevResponse -> return error }
+        manglerTilgangTilEnhet(request.enhetsId, enhetsTilganger)?.also { error: BestillOgRedigerBrevResponse -> return error }
 
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
