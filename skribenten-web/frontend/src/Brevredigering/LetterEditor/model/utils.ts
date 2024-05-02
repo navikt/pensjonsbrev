@@ -23,9 +23,11 @@ export function getMergeIds(sourceId: number, target: MergeTarget): [number, num
 
 export function isEmptyContent(content: Content) {
   switch (content.type) {
-    case VARIABLE:
-    case LITERAL: {
+    case VARIABLE: {
       return content.text.trim().length === 0;
+    }
+    case LITERAL: {
+      return (content.editedText ?? content.text).trim().length === 0;
     }
     case ITEM_LIST: {
       return content.items.length === 1 && isEmptyItem(content.items[0]);

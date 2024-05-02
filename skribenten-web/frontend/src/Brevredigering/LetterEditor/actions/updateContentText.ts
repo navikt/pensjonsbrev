@@ -36,9 +36,9 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
   },
 );
 
-function updateLiteralText(literal: Draft<LiteralValue>, text: string) {
+export function updateLiteralText(literal: Draft<LiteralValue>, text: string) {
   literal.editedText = cleanseText(text);
   if (literal.editedText === literal.text) {
-    delete literal.editedText;
+    literal.editedText = null;
   }
 }

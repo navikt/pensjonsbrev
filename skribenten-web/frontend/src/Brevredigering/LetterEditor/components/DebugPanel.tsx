@@ -86,7 +86,7 @@ function findEdits(blocks: AnyBlock[]): LiteralIndex[] {
 }
 
 function findEditsBlock(block: AnyBlock): LiteralIndex[] {
-  return block.content.flatMap(findEditsContent).map((ind) => ({ ...ind, blockIndex: block.id }));
+  return block.content.flatMap(findEditsContent).map((ind) => ({ ...ind, blockIndex: block.id ?? -1 }));
 }
 
 function findEditsContent(content: Content): { contentIndex: number; itemIndex?: number; itemContentIndex?: number }[] {
@@ -98,7 +98,7 @@ function findEditsContent(content: Content): { contentIndex: number; itemIndex?:
       return content.items.flatMap(findEditsItem).map((ind) => ({ ...ind, contentIndex: content.id }));
     }
     case "LITERAL": {
-      return content.editedText ? [{ contentIndex: content.id }] : [];
+      return content.editedText ? [{ contentIndex: content.id ?? -1 }] : [];
     }
   }
 }
@@ -106,5 +106,5 @@ function findEditsContent(content: Content): { contentIndex: number; itemIndex?:
 function findEditsItem(item: Item): { itemIndex: number; itemContentIndex: number }[] {
   return item.content
     .flatMap(findEditsContent)
-    .map((ind) => ({ itemIndex: item.id, itemContentIndex: ind.contentIndex }));
+    .map((ind) => ({ itemIndex: item.id ?? -1, itemContentIndex: ind.contentIndex }));
 }

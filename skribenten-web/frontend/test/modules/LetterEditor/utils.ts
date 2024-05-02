@@ -5,6 +5,7 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import type {
   AnyBlock,
   Content,
+  Identifiable,
   Item,
   ItemList,
   LiteralValue,
@@ -53,11 +54,12 @@ export function title(...content: TextContent[]): Title1Block {
   };
 }
 
-export function literal(text: string): LiteralValue {
+export function literal(text: string, editedText: string | null = null): LiteralValue {
   return {
     id: randomInt(1000),
     type: LITERAL,
     text,
+    editedText,
   };
 }
 
@@ -79,6 +81,10 @@ export function itemList(...items: Item[]): ItemList {
 
 export function item(...content: TextContent[]): Item {
   return { id: randomInt(1000), content };
+}
+
+export function asNew<T extends Identifiable>(c: T): T {
+  return { ...c, id: null };
 }
 
 export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex> & { blockIndex: number }): T {

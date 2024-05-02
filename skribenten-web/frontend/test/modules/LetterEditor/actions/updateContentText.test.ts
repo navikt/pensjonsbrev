@@ -23,4 +23,10 @@ describe("updateContentText", () => {
     const result = Actions.updateContentText(state, contentIndex, "Hallo&nbsp;hvordan går det");
     expect(select<LiteralValue>(result, contentIndex).editedText).toEqual("Hallo hvordan går det");
   });
+
+  test("changing back to original text sets editedText to null", () => {
+    const editedState = letter(paragraph(literal("heisann", "hello")));
+    const result = Actions.updateContentText(editedState, { blockIndex: 0, contentIndex: 0 }, "heisann");
+    expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).editedText).toBeNull();
+  });
 });

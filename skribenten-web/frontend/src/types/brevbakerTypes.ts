@@ -75,15 +75,14 @@ export type ParagraphBlock = Block & {
 };
 
 export type Identifiable = {
-  readonly id: number;
+  readonly id: number | null;
 };
 
 export const LITERAL = "LITERAL";
-export type LiteralValue = {
-  readonly id: number;
+export type LiteralValue = Identifiable & {
   readonly type: typeof LITERAL;
   readonly text: string;
-  readonly editedText?: string;
+  readonly editedText: string | null;
 };
 export const VARIABLE = "VARIABLE";
 export type VariableValue = {
@@ -99,8 +98,7 @@ export type ItemList = {
   readonly type: typeof ITEM_LIST;
   readonly items: Item[];
 };
-export type Item = {
-  readonly id: number;
+export type Item = Identifiable & {
   readonly content: TextContent[];
 };
 
