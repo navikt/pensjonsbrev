@@ -1,6 +1,6 @@
 import { produce } from "immer";
 
-import type { Block } from "~/types/brevbakerTypes";
+import type { Identifiable } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
@@ -13,9 +13,13 @@ export enum MergeTarget {
   NEXT = "NEXT",
 }
 
-function deleteBlock(block: Block, blocks: Block[], deleted: number[]) {
-  if (block.id != -1 && !deleted.includes(block.id) && !blocks.map((b) => b.id).includes(block.id)) {
-    deleted.push(block.id);
+function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[], deleted: number[]) {
+  if (
+    toDelete.id !== null &&
+    !deleted.includes(toDelete.id) &&
+    !verifyNotPresent.map((b) => b.id).includes(toDelete.id)
+  ) {
+    deleted.push(toDelete.id);
   }
 }
 
@@ -42,6 +46,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
               itemContentIndex: 0,
             };
             itemList.items.splice(firstId, 1);
+            deleteElement(first, itemList.items, itemList.deletedItems);
           } else if (isEmptyItem(second)) {
             draft.focus = {
               blockIndex: literalIndex.blockIndex,
@@ -51,6 +56,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
               itemIndex: firstId,
             };
             itemList.items.splice(secondId, 1);
+            deleteElement(second, itemList.items, itemList.deletedItems);
           } else {
             draft.focus = {
               blockIndex: literalIndex.blockIndex,
@@ -61,6 +67,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
             };
             first.content = mergeContentArrays(first.content, second.content);
             itemList.items.splice(secondId, 1);
+            deleteElement(second, itemList.items, itemList.deletedItems);
           }
         }
       } else {
@@ -109,11 +116,11 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
       if (first != null && second != null) {
         if (isEmptyBlock(first)) {
           blocks.splice(firstId, 1);
-          deleteBlock(first, blocks, editedLetter.deletedBlocks);
+          deleteElement(first, blocks, editedLetter.deletedBlocks);
           draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: firstId };
         } else if (isEmptyBlock(second)) {
           blocks.splice(secondId, 1);
-          deleteBlock(second, blocks, editedLetter.deletedBlocks);
+          deleteElement(second, blocks, editedLetter.deletedBlocks);
           draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: literalIndex.blockIndex - 1 };
         } else {
           const lastContentOfFirst = first.content.at(-1);
@@ -128,7 +135,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
 
           first.content = mergeContentArrays(first.content, second.content);
           blocks.splice(secondId, 1);
-          deleteBlock(second, blocks, editedLetter.deletedBlocks);
+          deleteElement(second, blocks, editedLetter.deletedBlocks);
         }
       }
     }

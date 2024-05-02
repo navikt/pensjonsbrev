@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
-import type { AnyBlock, Item, ItemList, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
+import type { AnyBlock, Item, ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
 
@@ -48,7 +48,9 @@ describe("LetterEditorActions.merge", () => {
 
         // assertions
         expect(select<ParagraphBlock>(result, mergeId).content).toHaveLength(3);
-        expect(select<TextContent>(result, { ...mergeId, contentIndex: 1 }).text).toEqual("lit1lit2");
+        const resultLiteral = select<LiteralValue>(result, { ...mergeId, contentIndex: 1 });
+        expect(resultLiteral.text).toEqual("lit1");
+        expect(resultLiteral.editedText).toEqual("lit1lit2");
       });
 
       test("id of specified block is kept if the next is empty", () => {
@@ -92,10 +94,13 @@ describe("LetterEditorActions.merge", () => {
         const state = letter(paragraph(variable("p1")), paragraph(literal("p2")));
 
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
-        expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toEqual([
+        const resultBlock = select<ParagraphBlock>(result, { blockIndex: 0 });
+
+        expect(resultBlock.content).toEqual([
           ...select<ParagraphBlock>(state, { blockIndex: 0 }).content,
           ...select<ParagraphBlock>(state, { blockIndex: 1 }).content,
         ]);
+        expect(resultBlock.id).toStrictEqual(select<ParagraphBlock>(state, { blockIndex: 0 }).id);
       });
 
       test("adjoining literal content in merging blocks are joined", () => {
@@ -108,7 +113,9 @@ describe("LetterEditorActions.merge", () => {
 
         // assertions
         expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(3);
-        expect(select<TextContent>(result, { blockIndex: 0, contentIndex: 1 }).text).toEqual("lit1lit2");
+        const resultLiteral = select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 });
+        expect(resultLiteral.text).toEqual("lit1");
+        expect(resultLiteral.editedText).toEqual("lit1lit2");
       });
 
       test("id of specified block is kept if the previous is empty", () => {
@@ -175,8 +182,10 @@ describe("LetterEditorActions.merge", () => {
             blockIndex: mergeId.blockIndex,
             contentIndex: mergeId.contentIndex - 1,
           });
+          const mergedLiteral = itemList.items[0].content[0] as LiteralValue;
           expect(itemList.items).toHaveLength(1);
-          expect(itemList.items[0].content[0].text).toEqual("Det blir content 1");
+          expect(mergedLiteral.text).toEqual("Det blir ");
+          expect(mergedLiteral.editedText).toEqual("Det blir content 1");
           expect(itemList.items[0].content[1]).toBe(
             select(withContentAfterList, { ...mergeId, contentIndex: mergeId.contentIndex + 1 }),
           );
@@ -243,7 +252,9 @@ describe("LetterEditorActions.merge", () => {
 
         test("the adjoining literals are merged and the rest of the content is concatenated", () => {
           expect(select<Item>(result, mergeId).content).toHaveLength(3);
-          expect(select<TextContent>(result, { ...mergeId, itemContentIndex: 1 }).text).toEqual("lit1lit2");
+          const mergedLiteral = select<LiteralValue>(result, { ...mergeId, itemContentIndex: 1 });
+          expect(mergedLiteral.text).toEqual("lit1");
+          expect(mergedLiteral.editedText).toEqual("lit1lit2");
         });
 
         test("focus is stolen to center of the merged literals", () => {
@@ -339,7 +350,9 @@ describe("LetterEditorActions.merge", () => {
 
         const mergedId = { ...mergeId, itemIndex: mergeId.itemIndex - 1 };
         expect(select<Item>(result, mergedId).content).toHaveLength(3);
-        expect(select<TextContent>(result, { ...mergedId, itemContentIndex: 1 }).text).toEqual("lit1lit2");
+        const mergedLiteral = select<LiteralValue>(result, { ...mergedId, itemContentIndex: 1 });
+        expect(mergedLiteral.text).toEqual("lit1");
+        expect(mergedLiteral.editedText).toEqual("lit1lit2");
       });
 
       describe("the previous item is empty", () => {

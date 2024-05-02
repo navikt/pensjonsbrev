@@ -97,6 +97,7 @@ export type ItemList = {
   readonly id: number;
   readonly type: typeof ITEM_LIST;
   readonly items: Item[];
+  readonly deletedItems: number[];
 };
 export type Item = Identifiable & {
   readonly content: TextContent[];

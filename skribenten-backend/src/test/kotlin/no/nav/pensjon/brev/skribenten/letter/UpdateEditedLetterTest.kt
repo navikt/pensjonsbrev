@@ -12,6 +12,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
+import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList as E_ItemList
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList.Item as E_Item
@@ -541,6 +542,138 @@ class UpdateRenderedLetterTest {
         )
 
         assertEquals(next.toEdit(), edited.updatedEditedLetter(next))
+    }
+
+    @Test
+    fun `content edited to empty string is kept after render`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    Literal(11, "lit1"),
+                    Variable(12, "var1"),
+                    Literal(13, "rediger til tom streng"),
+                ),
+            ),
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(
+                    E_Literal(11, "lit1"),
+                    E_Variable(12, "var1"),
+                    E_Literal(13, "rediger til tom streng", ""),
+                ),
+            ),
+        )
+
+        assertEquals(edited, edited.updatedEditedLetter(next))
+    }
+
+    @Test
+    fun `deleted blocks are not included in updated letter`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    Literal(11, "lit1"),
+                ),
+            ),
+            Paragraph(
+                2, true,
+                listOf(
+                    Literal(21, "lit2"),
+                ),
+            ),
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(
+                    E_Literal(11, "lit1"),
+                ),
+            ),
+            deleted = setOf(2),
+        )
+
+        assertEquals(edited, edited.updatedEditedLetter(next))
+    }
+
+    @Test
+    fun `deleted content are not included in updated letter`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    Literal(11, "1lit1"),
+                    Literal(12, "1lit2"),
+                ),
+            ),
+            Title1(
+                2, true, listOf(
+                    Literal(21, "2lit1"),
+                    Literal(22, "2lit2"),
+                )
+            ),
+            Block.Title2(
+                3, true, listOf(
+                    Literal(31, "3lit1"),
+                    Literal(32, "3lit2"),
+                )
+            ),
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true, listOf(
+                    E_Literal(11, "1lit1"),
+                ),
+                deletedContent = setOf(12)
+            ),
+            E_Title1(
+                2, true, listOf(
+                    E_Literal(21, "2lit1"),
+                ),
+                deletedContent = setOf(22)
+            ),
+            E_Title2(
+                3, true, listOf(
+                    E_Literal(31, "3lit1"),
+                ),
+                deletedContent = setOf(32)
+            ),
+        )
+
+        assertEquals(edited, edited.updatedEditedLetter(next))
+    }
+
+    @Test
+    fun `deleted items are not included in updated letter`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    ItemList(
+                        11, listOf(
+                            Item(111, listOf(Literal(1111, "item 1"))),
+                            Item(112, listOf(Literal(1121, "item 2"))),
+                        )
+                    ),
+                ),
+            ),
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true, listOf(
+                    E_ItemList(
+                        11, listOf(
+                            E_Item(112, listOf(E_Literal(1121, "item 2"))),
+                        ),
+                        setOf(111),
+                    ),
+                ),
+            ),
+        )
+        assertEquals(edited, edited.updatedEditedLetter(next))
     }
 
     private fun letter(vararg blocks: Block) =

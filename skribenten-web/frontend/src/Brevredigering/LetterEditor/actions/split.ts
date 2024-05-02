@@ -26,7 +26,7 @@ export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
 
         const nextBlock: ParagraphBlock = {
           type: PARAGRAPH,
-          id: null, //getId(block.id, isNew),
+          id: null,
           editable: true,
           content: nextContent,
         };

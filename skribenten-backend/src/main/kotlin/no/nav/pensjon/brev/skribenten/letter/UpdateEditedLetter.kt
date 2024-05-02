@@ -5,14 +5,11 @@ import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown
 class UpdateEditedLetterException(message: String) : RuntimeException(message)
 
 fun Edit.Letter.updatedEditedLetter(renderedLetter: RenderedLetterMarkdown): Edit.Letter =
-    Edit.Letter(
-        blocks = mergeList(blocks, renderedLetter.blocks.toEdit(), ::mergeBlock),
-        deletedBlocks = emptySet()
-    )
+    copy(blocks = mergeList(blocks, renderedLetter.blocks.toEdit(), ::mergeBlock, deletedBlocks))
 
-private fun <E : Edit.Identifiable> mergeList(edited: List<E>, rendered: List<E>, merge: (E, E) -> E): List<E> =
+private fun <E : Edit.Identifiable> mergeList(edited: List<E>, rendered: List<E>, merge: (E, E) -> E, deleted: Set<Int>): List<E> =
     buildList {
-        val remainingRendered = rendered.toMutableList()
+        val remainingRendered = rendered.filter { it.id != null && !deleted.contains(it.id) }.toMutableList()
 
         edited.forEach { currentEdited ->
             if (currentEdited.isNew()) {
@@ -50,17 +47,17 @@ private fun <E : Edit.Identifiable> mergeList(edited: List<E>, rendered: List<E>
 
 private fun mergeBlock(edited: Edit.Block, rendered: Edit.Block): Edit.Block {
     return when (edited) {
-        is Edit.Block.Paragraph -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeParagraphContent))
+        is Edit.Block.Paragraph -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeParagraphContent, edited.deletedContent))
 
         is Edit.Block.Title1 -> when (rendered) {
-            is Edit.Block.Title1 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent))
-            is Edit.Block.Title2 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent))
+            is Edit.Block.Title1 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, edited.deletedContent))
+            is Edit.Block.Title2 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, edited.deletedContent))
             is Edit.Block.Paragraph -> throw UpdateEditedLetterException("Cannot merge a title1 block with a paragraph block: $edited - $rendered")
         }
 
         is Edit.Block.Title2 -> when (rendered) {
-            is Edit.Block.Title1 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent))
-            is Edit.Block.Title2 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent))
+            is Edit.Block.Title1 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, edited.deletedContent))
+            is Edit.Block.Title2 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, edited.deletedContent))
             is Edit.Block.Paragraph -> throw UpdateEditedLetterException("Cannot merge a title2 block with a paragraph block: $edited - $rendered")
         }
     }
@@ -80,7 +77,7 @@ private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.
     when (edited) {
         is Edit.ParagraphContent.ItemList ->
             if (rendered is Edit.ParagraphContent.ItemList) {
-                edited.copy(items = mergeList(edited.items, rendered.items, ::mergeItems))
+                edited.copy(items = mergeList(edited.items, rendered.items, ::mergeItems, edited.deletedItems))
             } else {
                 throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
             }
@@ -94,5 +91,5 @@ private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.
     }
 
 private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
-    edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent))
+    edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, emptySet()))
 

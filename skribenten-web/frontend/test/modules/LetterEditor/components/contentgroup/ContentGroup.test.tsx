@@ -13,8 +13,8 @@ import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
 import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 
 const content: LiteralValue[] = [
-  { type: LITERAL, id: 1, text: "Heisann" },
-  { type: LITERAL, id: 2, text: "Velkommen" },
+  { type: LITERAL, id: 1, text: "Heisann", editedText: null },
+  { type: LITERAL, id: 2, text: "Velkommen", editedText: null },
 ];
 
 const block: ParagraphBlock = {

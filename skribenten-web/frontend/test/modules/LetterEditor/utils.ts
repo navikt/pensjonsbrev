@@ -76,6 +76,7 @@ export function itemList(...items: Item[]): ItemList {
     id: randomInt(1000),
     type: ITEM_LIST,
     items,
+    deletedItems: [],
   };
 }
 

@@ -31,12 +31,13 @@ object Edit {
 
         abstract val editable: Boolean
         abstract val content: List<ParagraphContent>
+        abstract val deletedContent: Set<Int>
 
-        override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() }
+        override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() } || deletedContent.isNotEmpty()
 
-        data class Title1(override val id: Int?, override val editable: Boolean, override val content: List<ParagraphContent.Text>) : Block(Type.TITLE1)
-        data class Title2(override val id: Int?, override val editable: Boolean, override val content: List<ParagraphContent.Text>) : Block(Type.TITLE2)
-        data class Paragraph(override val id: Int?, override val editable: Boolean, override val content: List<ParagraphContent>) : Block(Type.PARAGRAPH)
+        data class Title1(override val id: Int?, override val editable: Boolean, override val content: List<ParagraphContent.Text>, override val deletedContent: Set<Int> = emptySet()) : Block(Type.TITLE1)
+        data class Title2(override val id: Int?, override val editable: Boolean, override val content: List<ParagraphContent.Text>, override val deletedContent: Set<Int> = emptySet()) : Block(Type.TITLE2)
+        data class Paragraph(override val id: Int?, override val editable: Boolean, override val content: List<ParagraphContent>, override val deletedContent: Set<Int> = emptySet()) : Block(Type.PARAGRAPH)
     }
 
     sealed class ParagraphContent(val type: Type) : Identifiable {
@@ -44,19 +45,19 @@ object Edit {
             ITEM_LIST, LITERAL, VARIABLE,
         }
 
-        data class ItemList(override val id: Int?, val items: List<Item>) : ParagraphContent(Type.ITEM_LIST) {
+        data class ItemList(override val id: Int?, val items: List<Item>, val deletedItems: Set<Int> = emptySet()) : ParagraphContent(Type.ITEM_LIST) {
             data class Item(override val id: Int?, val content: List<Text>) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() }
             }
 
-            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() }
+            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() } || deletedItems.isNotEmpty()
         }
 
         sealed class Text(type: Type) : ParagraphContent(type) {
             abstract val text: String
 
             data class Literal(override val id: Int?, override val text: String, val editedText: String? = null) : Text(Type.LITERAL) {
-                override fun isEdited(): Boolean = isNew() || !editedText.isNullOrEmpty()
+                override fun isEdited(): Boolean = isNew() || editedText != null
             }
 
             data class Variable(override val id: Int?, override val text: String) : Text(Type.VARIABLE) {
@@ -120,7 +121,7 @@ fun List<Block>.toEdit(): List<Edit.Block> =
 
 fun Block.toEdit(): Edit.Block =
     when (this) {
-        is Block.Paragraph -> Edit.Block.Paragraph(id, editable, content.map { it.toEdit() })
+        is Block.Paragraph -> Edit.Block.Paragraph(id, editable, content.map { it.toEdit() }, emptySet())
         is Block.Title1 -> Edit.Block.Title1(id, editable, content.map { it.toEdit() })
         is Block.Title2 -> Edit.Block.Title2(id, editable, content.map { it.toEdit() })
     }
