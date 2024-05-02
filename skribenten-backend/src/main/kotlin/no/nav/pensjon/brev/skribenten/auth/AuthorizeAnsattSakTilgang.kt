@@ -11,15 +11,23 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.NAME
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.SAKSID_PARAM
+import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.enheterKey
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.sakKey
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.NAVEnhet
+import no.nav.pensjon.brev.skribenten.services.NavansattService
+import no.nav.pensjon.brev.skribenten.services.PdlService
+import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.services.PenService.PenSakTilgang
+import no.nav.pensjon.brev.skribenten.services.PenService.SakSelection
+import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.slf4j.LoggerFactory
 
 object AuthorizeAnsattSakTilgang {
     const val NAME = "AuthorizeAnsattSakTilgang"
     const val SAKSID_PARAM = "saksId"
-    val sakKey = AttributeKey<PenService.SakSelection>("AuthorizeAnsattSakTilgang:sak")
+    val sakKey = AttributeKey<SakSelection>("AuthorizeAnsattSakTilgang:sak")
+    val enheterKey = AttributeKey<List<NAVEnhet>>("AuthorizeAnsattSakTilgang:enheter")
 }
 
 private val logger = LoggerFactory.getLogger(AuthorizeAnsattSakTilgang::class.java)
@@ -37,7 +45,8 @@ fun AuthorizeAnsattSakTilgang(
             val navIdent = principal.navIdent
 
             val sakDeferred = async { penService.hentSak(call, saksId) }
-            val enheterDeferred = async { navansattService.hentNavAnsattEnhetListe(call, navIdent) }
+            val sakTilgangerDeferred = async { penService.hentSaktilganger(call, saksId) }
+            val navansattEnheterDeferred = async { navansattService.hentNavAnsattEnhetListe(call, navIdent) }
 
             val ikkeTilgang = sakDeferred.await().map { sak ->
                 call.attributes.put(sakKey, sak)
@@ -45,12 +54,20 @@ fun AuthorizeAnsattSakTilgang(
                 // Rekkefølgen på disse har betydning. Om sjekkEnhetstilgang kjøres først så vil vi svare med "Mangler enhetstilgang til sak".
                 // - Dette avslører at det finnes en sak for angitt saksId.
                 // - Men det avslører ikke at fodselsnummer eksisterer og at det er en adressebeskyttet person.
-                sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr), principal)
-                    ?: sjekkEnhetstilgang(navIdent, sak, enheterDeferred)
+                sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr, sak.sakType.behandlingsnummer), principal)
+                    ?: sjekkEnhetstilgang(navIdent, sakTilgangerDeferred, navansattEnheterDeferred)
+
             }.catch(::AuthAnsattSakTilgangResponse)
 
             if (ikkeTilgang != null) {
                 call.respond(ikkeTilgang.status, ikkeTilgang.melding)
+            }
+
+            navansattEnheterDeferred.await().map {
+                call.attributes.put(enheterKey, it)
+            }.catch{ message, status ->
+                logger.error("Feil ved henting av enheter. Status: $status, message: $message")
+                call.respond<String>(HttpStatusCode.InternalServerError, "Feil ved henting av enheter")
             }
         }
     }
@@ -78,28 +95,43 @@ private fun sjekkAdressebeskyttelse(
 
 private suspend fun sjekkEnhetstilgang(
     navIdent: String,
-    sak: PenService.SakSelection,
-    enheterResult: Deferred<ServiceResult<List<NAVEnhet>>>
-): AuthAnsattSakTilgangResponse? =
-    enheterResult.await().map { enheter ->
-        when {
-            erGenerellSakMedEnhet0001(sak) -> null // får tilgang
-            !harTilgangTilSakSinEnhet(enheter, sak) -> {
-                logger.warn("Tilgang til sak ${sak.saksId} avvist for $navIdent: mangler tilgang til enhet ${sak.enhetId}")
-                AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
+    penSakTilgangDeferred: Deferred<ServiceResult<PenSakTilgang>>,
+    navansattEnheterDeferred: Deferred<ServiceResult<List<NAVEnhet>>>,
+): AuthAnsattSakTilgangResponse? {
+    val navansattEnheter = navansattEnheterDeferred.await().map { it }
+        .catch { message, httpStatusCode ->
+            logger.error("En feil oppstod ved henting av PenSakTilgang under sjekk av enhetstilgang: $message. Httpstatus: $httpStatusCode")
+            if(httpStatusCode == HttpStatusCode.NotFound) {
+                return AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
+            } else {
+                return AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", httpStatusCode)
             }
-            else -> null // får tilgang
         }
-    }.catch { msg, status ->
-        logger.error("Kunne ikke henter NAVenheter for ansatt $navIdent: $status - $msg")
-        AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
+
+    val penSakTilgang = penSakTilgangDeferred.await().map { it.idForEnheterMedTilgang }
+        .catch { message, httpStatusCode ->
+            logger.error("En feil oppstod ved henting av NAVEnhet under sjekk av enhetstilgang: $message. Httpstatus: $httpStatusCode")
+            if(httpStatusCode == HttpStatusCode.NotFound) {
+                return AuthAnsattSakTilgangResponse("En feil oppstod under henting av PEN sakstilganger for ansatt: $navIdent", HttpStatusCode.InternalServerError)
+            }
+             else {
+                return AuthAnsattSakTilgangResponse("En feil oppstod under henting av PEN sakstilganger for ansatt: $navIdent", httpStatusCode)
+            }
+        }
+
+    val sakId = penSakTilgangDeferred.await().map { it.saksId }
+
+    return when {
+        !harTilgangTilSakSinEnhet(navansattEnheter, penSakTilgang) -> {
+            logger.warn("Tilgang til sak: $sakId avvist for $navIdent: mangler tilgang til en av følgende: enheter $penSakTilgang")
+            AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
+        }
+        else -> null // får tilgang
     }
+}
 
-private fun erGenerellSakMedEnhet0001(sak: PenService.SakSelection) =
-    sak.sakType == PenService.SakType.GENRL && sak.enhetId == "0001"
-
-private fun harTilgangTilSakSinEnhet(enheter: List<NAVEnhet>, sak: PenService.SakSelection) =
-    enheter.any { it.id == sak.enhetId }
+fun harTilgangTilSakSinEnhet(navAnsattEnheter: List<NAVEnhet>, penSakEnheter: List<String>): Boolean =
+    penSakEnheter.any { sakEnhet -> navAnsattEnheter.any { sakEnhet == it.id } }
 
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)
 

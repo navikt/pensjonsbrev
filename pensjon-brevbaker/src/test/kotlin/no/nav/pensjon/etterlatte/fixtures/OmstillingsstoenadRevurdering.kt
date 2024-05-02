@@ -72,11 +72,11 @@ fun createOmstillingsstoenadRevurderingDTO() =
                     )
                 ),
                 beregnetTrygdetidAar = 40,
-                beregnetTrygdetidMaaneder = 480,
                 prorataBroek = null,
                 beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
                 beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
                 mindreEnnFireFemtedelerAvOpptjeningstiden = true,
+                navnAvdoed = "Elvis Presley"
             ),
         ),
         etterbetaling = OmstillingsstoenadEtterbetaling(

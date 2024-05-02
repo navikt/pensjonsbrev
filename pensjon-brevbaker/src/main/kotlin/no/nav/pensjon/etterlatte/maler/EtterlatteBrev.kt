@@ -22,9 +22,9 @@ data class BarnepensjonBeregning(
     val grunnbeloep: Kroner,
     val beregningsperioder: List<BarnepensjonBeregningsperiode>,
     val sisteBeregningsperiode: BarnepensjonBeregningsperiode,
-    val trygdetid: Trygdetid,
+    val bruktTrygdetid: Trygdetid, // Fra og med siste åpne periode
+    val trygdetid: List<Trygdetid>,
     val erForeldreloes: Boolean = false,
-    val bruktAvdoed: String? = null // Foreldreløs
 ) : BrevDTO
 
 data class BarnepensjonBeregningsperiode(
@@ -58,9 +58,9 @@ data class OmstillingsstoenadBeregningsperiode(
 )
 
 data class Trygdetid(
+    val navnAvdoed: String,
     val trygdetidsperioder: List<Trygdetidsperiode>,
     val beregnetTrygdetidAar: Int,
-    val beregnetTrygdetidMaaneder: Int,
     val prorataBroek: IntBroek?,
     val beregningsMetodeAnvendt: BeregningsMetode,
     val beregningsMetodeFraGrunnlag: BeregningsMetode,

@@ -15,8 +15,32 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonFore
 import java.time.LocalDate
 import java.time.Month
 
-fun createBarnepensjonForeldreloesDTO() =
-    BarnepensjonForeldreloesDTO(
+fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
+    val bruktTrygdetid = Trygdetid(
+        trygdetidsperioder = listOf(
+            Trygdetidsperiode(
+                datoFOM = LocalDate.of(2004, 1, 1),
+                datoTOM = LocalDate.of(2024, 1, 1),
+                land = "NOR",
+                opptjeningsperiode = Periode(20, 0, 0),
+                type = TrygdetidType.FAKTISK
+            ),
+            Trygdetidsperiode(
+                datoFOM = LocalDate.of(2024, 1, 1),
+                datoTOM = LocalDate.of(2044, 1, 1),
+                land = "NOR",
+                opptjeningsperiode = Periode(20, 0, 0),
+                type = TrygdetidType.FREMTIDIG
+            )
+        ),
+        beregnetTrygdetidAar = 40,
+        prorataBroek = IntBroek(20, 150),
+        beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
+        beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
+        mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+        navnAvdoed = "Elvis Presley"
+    )
+    return BarnepensjonForeldreloesDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = BarnepensjonBeregning(
             innhold = createPlaceholderForRedigerbartInnhold(),
@@ -39,32 +63,36 @@ fun createBarnepensjonForeldreloesDTO() =
                 antallBarn = 2,
                 utbetaltBeloep = Kroner(6234)
             ),
-            trygdetid = Trygdetid(
-                trygdetidsperioder = listOf(
-                    Trygdetidsperiode(
-                        datoFOM = LocalDate.of(2004, 1, 1),
-                        datoTOM = LocalDate.of(2024, 1, 1),
-                        land = "NOR",
-                        opptjeningsperiode = Periode(20, 0, 0),
-                        type = TrygdetidType.FAKTISK
+            trygdetid = listOf(
+                Trygdetid(
+                    trygdetidsperioder = listOf(
+                        Trygdetidsperiode(
+                            datoFOM = LocalDate.of(2014, 1, 1),
+                            datoTOM = LocalDate.of(2024, 1, 1),
+                            land = "NOR",
+                            opptjeningsperiode = Periode(10, 0, 0),
+                            type = TrygdetidType.FAKTISK
+                        ),
+                        Trygdetidsperiode(
+                            datoFOM = LocalDate.of(2024, 1, 1),
+                            datoTOM = LocalDate.of(2044, 1, 1),
+                            land = "NOR",
+                            opptjeningsperiode = Periode(20, 0, 0),
+                            type = TrygdetidType.FREMTIDIG
+                        )
                     ),
-                    Trygdetidsperiode(
-                        datoFOM = LocalDate.of(2024, 1, 1),
-                        datoTOM = LocalDate.of(2044, 1, 1),
-                        land = "NOR",
-                        opptjeningsperiode = Periode(20, 0, 0),
-                        type = TrygdetidType.FREMTIDIG
-                    )
+                    beregnetTrygdetidAar = 40,
+                    prorataBroek = IntBroek(20, 150),
+                    beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
+                    beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
+                    mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+                    navnAvdoed = "Hubba Bubba"
                 ),
-                beregnetTrygdetidAar = 40,
-                beregnetTrygdetidMaaneder = 480,
-                prorataBroek = IntBroek(20, 150),
-                beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
-                beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-                mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+                bruktTrygdetid
             ),
             erForeldreloes = true,
-            bruktAvdoed = "Hubba Bubba"),
+            bruktTrygdetid = bruktTrygdetid
+        ),
         etterbetaling = BarnepensjonEtterbetaling(
             fraDato = LocalDate.of(2020, Month.JANUARY, 1),
             tilDato = LocalDate.of(2023, Month.JULY, 31),
@@ -92,6 +120,7 @@ fun createBarnepensjonForeldreloesDTO() =
         harUtbetaling = true,
         vedtattIPesys = true
     )
+}
 
 fun createBarnepensjonForeldreloesRedigerbarDTO() = BarnepensjonForeldreloesRedigerbarDTO(
     erEtterbetaling = true,

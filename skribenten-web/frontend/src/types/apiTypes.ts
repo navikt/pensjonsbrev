@@ -5,6 +5,11 @@ export type SakDto = {
   readonly sakType: SakType;
 };
 
+export type SakContextDto = {
+  readonly sak: SakDto;
+  readonly brevMetadata: LetterMetadata[];
+};
+
 export type SakType =
   | "AFP"
   | "AFP_PRIVAT"
@@ -59,6 +64,7 @@ export enum SpraakKode {
 export type BaseLetterRequest = {
   brevkode: string;
   spraak: SpraakKode;
+  enhetsId: string;
   vedtaksId?: string;
 };
 
@@ -103,6 +109,7 @@ export const FAILURE_TYPES = [
   "FERDIGSTILLING_TIMEOUT",
   "SAF_ERROR",
   "SKRIBENTEN_INTERNAL_ERROR",
+  "ENHET_UNAUTHORIZED",
   "ENHETSID_MANGLER",
   "NAVANSATT_ENHETER_ERROR",
 ] as const;
@@ -305,4 +312,9 @@ export type AdresseType =
 export type Avtaleland = {
   navn: string;
   kode: string;
+};
+
+export type Enhet = {
+  id: string;
+  navn: string;
 };

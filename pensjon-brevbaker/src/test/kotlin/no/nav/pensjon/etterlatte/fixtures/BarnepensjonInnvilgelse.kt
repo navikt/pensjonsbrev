@@ -16,8 +16,32 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import java.time.LocalDate
 import java.time.Month
 
-fun createBarnepensjonInnvilgelseDTO() =
-    BarnepensjonInnvilgelseDTO(
+fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
+    val bruktTrygdetid = Trygdetid(
+        trygdetidsperioder = listOf(
+            Trygdetidsperiode(
+                datoFOM = LocalDate.of(2004, 1, 1),
+                datoTOM = LocalDate.of(2024, 1, 1),
+                land = "NOR",
+                opptjeningsperiode = Periode(20, 0, 0),
+                type = TrygdetidType.FAKTISK
+            ),
+            Trygdetidsperiode(
+                datoFOM = LocalDate.of(2024, 1, 1),
+                datoTOM = LocalDate.of(2044, 1, 1),
+                land = "NOR",
+                opptjeningsperiode = Periode(20, 0, 0),
+                type = TrygdetidType.FREMTIDIG
+            )
+        ),
+        beregnetTrygdetidAar = 40,
+        prorataBroek = IntBroek(20, 150),
+        beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
+        beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
+        mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+        navnAvdoed = "Elvis Presley"
+    )
+    return BarnepensjonInnvilgelseDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = BarnepensjonBeregning(
             innhold = listOf(),
@@ -40,30 +64,8 @@ fun createBarnepensjonInnvilgelseDTO() =
                 antallBarn = 2,
                 utbetaltBeloep = Kroner(6234)
             ),
-            trygdetid = Trygdetid(
-                trygdetidsperioder = listOf(
-                    Trygdetidsperiode(
-                        datoFOM = LocalDate.of(2004, 1, 1),
-                        datoTOM = LocalDate.of(2024, 1, 1),
-                        land = "NOR",
-                        opptjeningsperiode = Periode(20, 0, 0),
-                        type = TrygdetidType.FAKTISK
-                    ),
-                    Trygdetidsperiode(
-                        datoFOM = LocalDate.of(2024, 1, 1),
-                        datoTOM = LocalDate.of(2044, 1, 1),
-                        land = "NOR",
-                        opptjeningsperiode = Periode(20, 0, 0),
-                        type = TrygdetidType.FREMTIDIG
-                    )
-                ),
-                beregnetTrygdetidAar = 40,
-                beregnetTrygdetidMaaneder = 480,
-                prorataBroek = IntBroek(20, 150),
-                beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
-                beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-                mindreEnnFireFemtedelerAvOpptjeningstiden = false,
-            )
+            trygdetid = listOf(bruktTrygdetid),
+            bruktTrygdetid = bruktTrygdetid
         ),
         etterbetaling = BarnepensjonEtterbetaling(
             fraDato = LocalDate.of(2020, Month.JANUARY, 1),
@@ -91,6 +93,7 @@ fun createBarnepensjonInnvilgelseDTO() =
         erGjenoppretting = false,
         harUtbetaling = true
     )
+}
 
 fun createBarnepensjonInnvilgelseRedigerbartUtfallDTO() = BarnepensjonInnvilgelseRedigerbartUtfallDTO(
     virkningsdato = LocalDate.of(2020, Month.JANUARY, 1),
@@ -102,5 +105,6 @@ fun createBarnepensjonInnvilgelseRedigerbartUtfallDTO() = BarnepensjonInnvilgels
     sisteBeregningsperiodeBeloep = Kroner(1000),
     erEtterbetaling = true,
     harFlereUtbetalingsperioder = false,
-    erGjenoppretting = false
+    erGjenoppretting = false,
+    harUtbetaling = true
 )

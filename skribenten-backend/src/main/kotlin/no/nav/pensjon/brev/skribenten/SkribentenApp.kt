@@ -42,7 +42,6 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
             !ignorePaths.contains(it.request.path())
         }
     }
-
     install(CallId) {
         header("X-Request-ID")
         generate()

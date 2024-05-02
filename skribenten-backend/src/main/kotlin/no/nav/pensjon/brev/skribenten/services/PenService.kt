@@ -13,6 +13,11 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillDoksysBrevRequest
+import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer
+import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer.B222
+import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer.B255
+import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer.B280
+import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer.B359
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
@@ -42,7 +47,20 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         val enhetId: String?,
     )
 
-    enum class SakType { AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG, UFOREP, }
+    enum class SakType(val behandlingsnummer: Behandlingsnummer?) {
+        AFP(null),
+        AFP_PRIVAT(null),
+        ALDER(B280),
+        BARNEP(B359),
+        FAM_PL(null),
+        GAM_YRK(null),
+        GENRL(null),
+        GJENLEV(B222),
+        GRBL(null),
+        KRIGSP(null),
+        OMSORG(null),
+        UFOREP(B255);
+    }
     data class SakSelection(
         val saksId: Long,
         val foedselsnr: String,
@@ -121,8 +139,16 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
+    data class PenSakTilgang(
+        val saksId: String,
+        val idForEnheterMedTilgang: List<String>,
+    )
+
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>> =
         client.get(call, "brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
+
+    suspend fun hentSaktilganger(call: ApplicationCall, saksId: String): ServiceResult<PenSakTilgang> =
+        client.get(call, "/pen/springapi/sak/gyldigetilganger?saksid=${saksId}").toServiceResult(::handlePenErrorResponse)
 
     override val name = "PEN"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
@@ -130,5 +156,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
             .toServiceResult<String>()
             .map { true }
 
+    suspend fun hentIsKravPaaGammeltRegelverk(call: ApplicationCall, vedtaksId: String): ServiceResult<Boolean> =
+        client.get(call, "brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 }
 

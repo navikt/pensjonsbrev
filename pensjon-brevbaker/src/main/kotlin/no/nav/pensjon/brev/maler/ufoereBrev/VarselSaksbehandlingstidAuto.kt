@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.dagensDatoMinus2Dager
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.utvidetBehandlingstid
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_ENDRING_URL
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -77,9 +79,16 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             }
             paragraph {
                 text(
-                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang.",
-                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong.",
-                    English to "You must notify us immediately of any changes in your situation."
+                    Bokmal to "Du må melde fra om endringer som kan påvirke søknaden din. Det kan være endringer som gjelder helse, arbeidssituasjon, inntekt, sivilstatus eller at du flytter til et annet land.",
+                    Nynorsk to "Du må melde frå om endringar som kan påverke søknaden din. Det kan vere endringar som gjeld helse, arbeidssituasjon, inntekt, sivilstatus eller at du flyttar til eit anna land.",
+                    English to "You must notify us of any changes that may impact your application. These changes might relate to your health, employment, income, marital status, or moving abroad."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "For informasjon om hvordan du melder fra om endringer se: $UFOERETRYGD_ENDRING_URL",
+                    Nynorsk to "For informasjon om korleis du melder frå om endringar, sjå: $UFOERETRYGD_ENDRING_URL",
+                    English to "For information on how to report changes, see: $UFOERETRYGD_ENDRING_URL"
                 )
             }
 
@@ -93,9 +102,9 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
 
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di.",
-                    English to "You are entitled to see your case documents.",
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din.",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenta i saka di.",
+                    English to "You are entitled to see your case documents. You can log in via $NAV_URL to view documents related to your case."
                 )
             }
 

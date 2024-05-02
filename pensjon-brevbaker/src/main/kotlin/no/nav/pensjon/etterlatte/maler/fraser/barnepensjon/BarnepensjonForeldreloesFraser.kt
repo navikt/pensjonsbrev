@@ -49,31 +49,32 @@ object BarnepensjonForeldreloesFraser {
                     )
                 }
             }
-            showIf(flerePerioder) {
-                paragraph {
-                    textExpr(
-                        Language.Bokmal to "Du får ".expr() + formatertBeloep +
-                                " kroner hver måned før skatt fra " + formatertFom +
-                                ". Se beløp for tidligere perioder og hvordan vi har beregnet pensjonen i vedlegg “Beregning av barnepensjon”.",
-                        Language.Nynorsk to "Du får ".expr() + formatertBeloep +
-                                " kroner per månad før skatt frå " + formatertFom +
-                                ". I vedlegget «Utrekning av barnepensjon» kan du sjå beløp for tidlegare periodar og korleis vi har rekna ut pensjonen.",
-                        Language.English to "You will receive NOK ".expr() + formatertBeloep +
-                                " each month before tax, starting on " + formatertFom +
-                                ". You can see amounts for previous periods and how we calculated your pension in the attachment" +
-                                        " Calculation of Children’s Pension.".expr(),
-                    )
+            showIf(harUtbetaling) {
+                showIf(flerePerioder) {
+                    paragraph {
+                        textExpr(
+                            Language.Bokmal to "Du får ".expr() + formatertBeloep +
+                                    " kroner hver måned før skatt fra " + formatertFom +
+                                    ". Se beløp for tidligere perioder og hvordan vi har beregnet pensjonen i vedlegg “Beregning av barnepensjon”.",
+                            Language.Nynorsk to "Du får ".expr() + formatertBeloep +
+                                    " kroner per månad før skatt frå " + formatertFom +
+                                    ". I vedlegget «Utrekning av barnepensjon» kan du sjå beløp for tidlegare periodar og korleis vi har rekna ut pensjonen.",
+                            Language.English to "You will receive NOK ".expr() + formatertBeloep +
+                                    " each month before tax, starting on " + formatertFom +
+                                    ". You can see amounts for previous periods and how we calculated your pension in the attachment" +
+                                    " Calculation of Children’s Pension.".expr(),
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        textExpr(
+                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
+                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
+                            Language.English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax.".expr(),
+                        )
+                    }
                 }
             }.orShow {
-                paragraph {
-                    textExpr(
-                        Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
-                        Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
-                        Language.English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax.".expr(),
-                    )
-                }
-            }
-            showIf(harUtbetaling.not()) {
                 paragraph {
                     text(
                         Language.Bokmal to "Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du" +
