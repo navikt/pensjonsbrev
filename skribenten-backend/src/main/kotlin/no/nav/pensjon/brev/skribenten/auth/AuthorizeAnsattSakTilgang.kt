@@ -63,7 +63,7 @@ fun AuthorizeAnsattSakTilgang(
                 call.respond(ikkeTilgang.status, ikkeTilgang.melding)
             }
 
-            enheterDeferred.await().map {
+            navansattEnheterDeferred.await().map {
                 call.attributes.put(enheterKey, it)
             }.catch{ message, status ->
                 logger.error("Feil ved henting av enheter. Status: $status, message: $message")
