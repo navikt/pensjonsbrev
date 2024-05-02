@@ -105,5 +105,6 @@ fun createBarnepensjonInnvilgelseRedigerbartUtfallDTO() = BarnepensjonInnvilgels
     sisteBeregningsperiodeBeloep = Kroner(1000),
     erEtterbetaling = true,
     harFlereUtbetalingsperioder = false,
-    erGjenoppretting = false
+    erGjenoppretting = false,
+    harUtbetaling = true
 )

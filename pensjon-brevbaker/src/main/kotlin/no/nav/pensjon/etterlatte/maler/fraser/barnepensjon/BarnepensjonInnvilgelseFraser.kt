@@ -28,7 +28,8 @@ object BarnepensjonInnvilgelseFraser {
         val sisteBeregningsperiodeBeloep: Expression<Kroner>,
         val erEtterbetaling: Expression<Boolean>,
         val harFlereUtbetalingsperioder: Expression<Boolean>,
-        val erGjenoppretting: Expression<Boolean>
+        val erGjenoppretting: Expression<Boolean>,
+        val harUtbetaling: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -53,32 +54,36 @@ object BarnepensjonInnvilgelseFraser {
                     )
                 }
 
-                showIf(harFlereUtbetalingsperioder) {
-                    textExpr(
-                        Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
-                        Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ". Sjå utbetalingsbeløp for tidlegare periodar i vedlegget om etterbetaling.",
-                        Language.English to "You will receive ".expr() + formatertBeloep + " kroner each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + ". See the payment amount for previous periods in the Back Payment Attachment."
-                    )
+                showIf(harUtbetaling) {
+                    showIf(harFlereUtbetalingsperioder) {
+                        textExpr(
+                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
+                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ". Sjå utbetalingsbeløp for tidlegare periodar i vedlegget om etterbetaling.",
+                            Language.English to "You will receive ".expr() + formatertBeloep + " kroner each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + ". See the payment amount for previous periods in the Back Payment Attachment."
+                        )
+                    }.orShow {
+                        textExpr(
+                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.",
+                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt.",
+                            Language.English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax."
+                        )
+                    }
                 }.orShow {
-                    textExpr(
-                        Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.",
-                        Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt.",
-                        Language.English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax."
+                    text(
+                        Language.Bokmal to "Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du" +
+                                " mottar i uføretrygd fra NAV.",
+                        Language.Nynorsk to "Du får ikkje utbetalt barnepensjon, då denne har blitt redusert med" +
+                                " utgangspunkt i uføretrygda du får frå NAV.",
+                        Language.English to "You will not receive payments from the children’s pension because they" +
+                                " have been reduced according to what you already receive in disability benefits from NAV.",
                     )
                 }
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Barnepensjonen utbetales til og med den kalendermåneden du fyller 20 år.",
-                    Language.Nynorsk to "Barnepensjonen blir utbetalt fram til og med kalendermånaden du fyller 20 år.",
-                    Language.English to "The children’s pension is paid up to and including the calendar month in which you turn 20.",
-                )
-            }
-            paragraph {
-                text(
-                    Language.Bokmal to "Barnepensjon gis på bakgrunn av at du er medlem i folketrygden og at avdøde i de siste fem årene før dødsfallet var medlem i folketrygden eller fikk pensjon fra folketrygden.",
-                    Language.Nynorsk to "Barnepensjon blir gitt på bakgrunn av at du er medlem i folketrygda, og at avdøde var medlem i eller fekk pensjon frå folketrygda dei siste fem åra før sin død.",
-                    Language.English to "You are eligible for a children's pension because you are a member of the Norwegian National Insurance Scheme, and the deceased has been a member of the National Insurance Scheme in the five years prior to the death or he/she has been receiving a pension from the Scheme.",
+                    Language.Bokmal to "Barnepensjon gis på bakgrunn av at du er under 20 år, medlem i folketrygden og at avdøde i de siste fem årene før dødsfallet var medlem i folketrygden eller fikk pensjon fra folketrygden.",
+                    Language.Nynorsk to "Barnepensjon blir gitt på bakgrunn av at du er under 20 år, medlem i folketrygda, og at avdøde var medlem i eller fekk pensjon frå folketrygda dei siste fem åra før sin død.",
+                    Language.English to "You are eligible for a children's pension because you are under 20 years old, a member of the Norwegian National Insurance Scheme, and the deceased has been a member of the National Insurance Scheme in the five years prior to the death or he/she has been receiving a pension from the Scheme.",
                 )
             }
             paragraph {
