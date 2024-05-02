@@ -49,7 +49,7 @@ env:
     value: "pensjon-skribenten.intern.nav.no"
 
   - name: PEN_URL
-    value: "https://pensjon-pen.prod-fss-pub.nais.io/pen/api/"
+    value: "https://pensjon-pen.prod-fss-pub.nais.io"
   - name: PEN_SCOPE
     value: "api://prod-fss.pensjondeployer.pensjon-pen/.default"
 

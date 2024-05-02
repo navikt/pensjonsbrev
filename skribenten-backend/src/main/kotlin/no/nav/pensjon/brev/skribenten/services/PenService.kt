@@ -78,7 +78,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         }
 
     private suspend fun fetchSak(call: ApplicationCall, saksId: String): ServiceResult<SakResponseDto> =
-        client.get(call, "brev/skribenten/sak/$saksId").toServiceResult(::handlePenErrorResponse)
+        client.get(call, "/pen/api/brev/skribenten/sak/$saksId").toServiceResult(::handlePenErrorResponse)
 
     suspend fun hentSak(call: ApplicationCall, saksId: String): ServiceResult<SakSelection> =
         when (val sak = fetchSak(call, saksId)) {
@@ -113,7 +113,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         enhetsId: String,
         saksId: Long
     ): ServiceResult<BestillDoksysBrevResponse> =
-        client.post(call, "brev/skribenten/doksys/sak/$saksId") {
+        client.post(call, "/pen/api/brev/skribenten/doksys/sak/$saksId") {
             setBody(
                 BestilDoksysBrevRequest(
                     saksId = saksId,
@@ -140,7 +140,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     }
 
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>> =
-        client.get(call, "brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
+        client.get(call, "/pen/api/brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
 
     override val name = "PEN"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
@@ -149,6 +149,6 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
             .map { true }
 
     suspend fun hentIsKravPaaGammeltRegelverk(call: ApplicationCall, vedtaksId: String): ServiceResult<Boolean> =
-        client.get(call, "brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
+        client.get(call, "/pen/api/brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 }
 
