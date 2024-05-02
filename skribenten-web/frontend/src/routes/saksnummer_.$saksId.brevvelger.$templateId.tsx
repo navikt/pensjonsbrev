@@ -10,7 +10,6 @@ import {
   StarIcon,
 } from "@navikt/aksel-icons";
 import type { SortState } from "@navikt/ds-react";
-import { Skeleton } from "@navikt/ds-react";
 import {
   Alert,
   BodyShort,
@@ -21,6 +20,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Skeleton,
   Table,
   Tag,
   TextField,
@@ -40,6 +40,7 @@ import {
   deleteFavoritt,
   finnSamhandler,
   getAvtaleLand,
+  getEnheter,
   getFavoritter,
   getKontaktAdresse,
   getNavn,
@@ -69,8 +70,9 @@ import { capitalizeString } from "~/utils/stringUtils";
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId")({
   component: SelectedTemplate,
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId: vedtaksId }),
-  validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string } => ({
+  validateSearch: (search: Record<string, unknown>): { idTSSEkstern?: string; enhetsId?: string } => ({
     idTSSEkstern: search.idTSSEkstern?.toString(),
+    enhetsId: search.enhetsId?.toString(),
   }),
   loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { templateId } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
@@ -147,21 +149,25 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
 
 const baseOrderLetterValidationSchema = z.object({
   spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
+  enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
 const exstreamOrderLetterValidationSchema = baseOrderLetterValidationSchema.extend({
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
   brevtittel: z.string().optional(),
+  enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
 const exstreamWithTitleOrderLetterValidationSchema = exstreamOrderLetterValidationSchema.extend({
   brevtittel: z.string().min(1, "Du må ha tittel for dette brevet"),
+  enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
 const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),
   mottakerText: z.string().min(1, "Vennligst fyll inn mottaker"),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+  enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
 function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
@@ -212,6 +218,7 @@ function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata
         >
           <VStack gap="8">
             <Adresse />
+            <SelectEnhet />
             {letterTemplate.redigerbarBrevtittel ? (
               <TextField
                 {...methods.register("brevtittel")}
@@ -271,6 +278,7 @@ function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }
           })}
         >
           <VStack gap="4">
+            <SelectEnhet />
             <SelectLanguage letterTemplate={letterTemplate} />
           </VStack>
 
@@ -317,17 +325,18 @@ function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
             return orderEblankettMutation.mutate(orderLetterRequest);
           })}
         >
-          <VStack gap="4">
-            <SelectSensitivity />
-            <SelectAvtaleland />
+          <VStack gap="8">
             <TextField
               data-cy="mottaker-text-textfield"
               {...methods.register("mottakerText")}
               autoComplete="off"
               error={methods.formState.errors.mottakerText?.message}
               label="Mottaker"
-              size="small"
+              size="medium"
             />
+            <SelectAvtaleland />
+            <SelectEnhet />
+            <SelectSensitivity />
           </VStack>
           <BestillOgRedigerButton orderMutation={orderEblankettMutation} />
         </form>
@@ -428,14 +437,48 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   );
 }
 
+function SelectEnhet() {
+  const enheterQuery = useQuery(getEnheter);
+  const { enhetsId } = Route.useSearch();
+  const { register, setValue, formState } = useFormContext();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const options = enheterQuery.data ?? [];
+  useEffect(() => {
+    if (enhetsId) {
+      setValue("enhetsId", enhetsId);
+    }
+  }, [enhetsId, setValue]);
+  return (
+    <Select
+      {...register("enhetsId")}
+      error={formState.errors.enhetsId?.message?.toString()}
+      label="Avsenderenhet"
+      onChangeCapture={(element) => {
+        navigate({
+          search: (s) => ({ ...s, enhetsId: element.currentTarget.value }),
+          replace: true,
+        });
+      }}
+      size="medium"
+      value={enhetsId}
+    >
+      <option value={""}>Velg enhet</option>
+      {options.map((option) => (
+        <option key={option.id} value={option.id}>
+          {option.navn}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
 function SelectAvtaleland() {
   const avtalelandQuery = useQuery(getAvtaleLand);
   const { register, formState } = useFormContext();
-
   const options = avtalelandQuery.data ?? [];
 
   return (
-    <Select {...register("landkode")} error={formState.errors.landkode?.message?.toString()} label="Land" size="small">
+    <Select {...register("landkode")} error={formState.errors.landkode?.message?.toString()} label="Land" size="medium">
       <option value={""}>Velg land</option>
       {options.map((option) => (
         <option key={option.kode} value={option.kode}>

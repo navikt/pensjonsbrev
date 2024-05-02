@@ -135,14 +135,17 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             textExpr(
                 Bokmal to "".expr() + "Stønad per år før reduksjon av inntekt er beregnet til 2,25 ganger " +
                         "grunnbeløpet i folketrygden (G) ganget med " + trygdetid.beregnetTrygdetidAar.format() + "/40 " +
-                        "trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
+                        "trygdetid. Beløpet fordeles på 12 utbetalinger i året. " +
+                        "Beløpet er avrundet ned til nærmeste tusen.",
                 Nynorsk to "".expr() + "Stønad per år før reduksjon av inntekt er rekna ut til 2,25 gongar " +
                         "grunnbeløpet i folketrygda (G) gonga med " + trygdetid.beregnetTrygdetidAar.format() + "/40 " +
-                        "trygdetid. Beløpet blir fordelt på 12 utbetalingar i året.",
+                        "trygdetid. Beløpet blir fordelt på 12 utbetalingar i året." +
+                        "Beløpet er avrunda ned til næraste tusen. ",
                 English to "".expr() + "Allowance per year before reduction of income are calculated " +
                         "based on 2.25 × national insurance basic amount (G) × " +
                         trygdetid.beregnetTrygdetidAar.format() + "/40 years of contribution time. This amount " +
-                        "is distributed in 12 payments a year.",
+                        "is distributed in 12 payments a year. " +
+                        "The amount is rounded down to the nearest thousand.",
             )
         }
     }.orShowIf(trygdetid.beregningsMetodeAnvendt.equalTo(BeregningsMetode.PRORATA)) {
@@ -230,19 +233,19 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
 	            textExpr(
                     Bokmal to "Den forventede inntekten din for inneværende år er blitt justert. ".expr() +
                             "Det blir " + ifElse(erRestanseTrekk, "gjort et trekk", "gitt et tillegg") +
-                            " i utbetalingen for resten av året. Dette blir gjort for å unngå eller redusere et etteroppgjør." +
-                            " Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "mer") +
-                            " enn det som fremgår i tabellen over, under “Utbetaling per måned”.".expr(),
+                            " i utbetalingen for resten av året. Dette blir gjort for å unngå eller redusere et etteroppgjør. " +
+                            ifElse(erRestanseTrekk, "Trekket", "Tillegget") + " er på " + restanse.format() +
+                            " kroner per måned. Dette er medregnet i “Utbetaling per måned”, som fremgår i tabellen over.",
 		            Nynorsk to "Den forventa inntekta di for inneverande år har blitt justert. ".expr() +
                             "Det blir " + ifElse(erRestanseTrekk, "gjort eit trekk", "gitt eit tillegg") +
-                            " i utbetalinga for resten av året. Dette blir gjort for å unngå eller redusere eit etteroppgjer." +
-                            " Du får " + restanse.format() + " kroner " + ifElse(erRestanseTrekk, "mindre", "meir") +
-                            " enn det som står under «Utbetaling per månad» i tabellen over.".expr(),
+                            " i utbetalinga for resten av året. Dette blir gjort for å unngå eller redusere eit etteroppgjer. " +
+                            ifElse(erRestanseTrekk, "Trekket", "Tillegget") + " er på " + restanse.format() +
+                            " kroner per månad. Dette er medrekna i “Utbetaling per månad”, som kjem fram i tabellen over.",
 		            English to "Your estimated income for the current year has been adjusted. ".expr() +
                             "Your payment amount has therefore been " + ifElse(erRestanseTrekk, "reduced", "increased") +
-                            " for the remainder of the year to avoid or reduce a final settlement." +
-                            " You will receive NOK " + restanse.format() + ifElse(erRestanseTrekk, "less", "more") +
-                            " per month than what is specified in the table above, under “Utbetaling per måned”.".expr()
+                            " for the remainder of the year to avoid or reduce a final settlement. " +
+                            ifElse(erRestanseTrekk, "The deduction", "Addition") + " is NOK " + restanse.format() +
+                            " per month. This is included in \"Payout per month\", which appears in the table above."
 	            )
             }
         }

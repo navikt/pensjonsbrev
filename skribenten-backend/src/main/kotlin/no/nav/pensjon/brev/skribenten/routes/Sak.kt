@@ -39,31 +39,34 @@ fun Route.sakRoute(
         route("/bestillBrev") {
             post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-                call.respond(legacyBrevService.bestillOgRedigerDoksysBrev(call, request, enhetsId = sak.enhetId, sak.saksId))
+                val enhetsTilganger = call.attributes[AuthorizeAnsattSakTilgang.enheterKey]
+                call.respond(legacyBrevService.bestillOgRedigerDoksysBrev(call, request, sak.saksId, enhetsTilganger))
             }
             route("/exstream") {
                 post<LegacyBrevService.BestillExstreamBrevRequest> { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+                    val enhetsTilganger = call.attributes[AuthorizeAnsattSakTilgang.enheterKey]
                     call.respond(
                         legacyBrevService.bestillOgRedigerExstreamBrev(
                             call = call,
-                            enhetsId = sak.enhetId,
                             gjelderPid = sak.foedselsnr,
                             request = request,
                             saksId = sak.saksId,
+                            enhetsTilganger = enhetsTilganger,
                         )
                     )
                 }
 
                 post<LegacyBrevService.BestillEblankettRequest>("/eblankett") { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+                    val enhetsTilganger = call.attributes[AuthorizeAnsattSakTilgang.enheterKey]
                     call.respond(
                         legacyBrevService.bestillOgRedigerEblankett(
                             call = call,
-                            enhetsId = sak.enhetId,
                             gjelderPid = sak.foedselsnr,
                             request = request,
                             saksId = sak.saksId,
+                            enhetsTilganger = enhetsTilganger,
                         )
                     )
                 }

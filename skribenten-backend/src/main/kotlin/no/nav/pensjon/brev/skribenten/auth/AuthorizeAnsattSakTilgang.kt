@@ -11,6 +11,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.NAME
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.SAKSID_PARAM
+import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.enheterKey
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.sakKey
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.NAVEnhet
@@ -26,6 +27,7 @@ object AuthorizeAnsattSakTilgang {
     const val NAME = "AuthorizeAnsattSakTilgang"
     const val SAKSID_PARAM = "saksId"
     val sakKey = AttributeKey<SakSelection>("AuthorizeAnsattSakTilgang:sak")
+    val enheterKey = AttributeKey<List<NAVEnhet>>("AuthorizeAnsattSakTilgang:enheter")
 }
 
 private val logger = LoggerFactory.getLogger(AuthorizeAnsattSakTilgang::class.java)
@@ -54,10 +56,18 @@ fun AuthorizeAnsattSakTilgang(
                 // - Men det avslører ikke at fodselsnummer eksisterer og at det er en adressebeskyttet person.
                 sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr, sak.sakType.behandlingsnummer), principal)
                     ?: sjekkEnhetstilgang(navIdent, sakTilgangerDeferred, navansattEnheterDeferred)
+
             }.catch(::AuthAnsattSakTilgangResponse)
 
             if (ikkeTilgang != null) {
                 call.respond(ikkeTilgang.status, ikkeTilgang.melding)
+            }
+
+            enheterDeferred.await().map {
+                call.attributes.put(enheterKey, it)
+            }.catch{ message, status ->
+                logger.error("Feil ved henting av enheter. Status: $status, message: $message")
+                call.respond<String>(HttpStatusCode.InternalServerError, "Feil ved henting av enheter")
             }
         }
     }
