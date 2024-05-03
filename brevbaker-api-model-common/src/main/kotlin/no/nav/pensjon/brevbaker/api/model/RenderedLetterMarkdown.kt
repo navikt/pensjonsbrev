@@ -24,7 +24,7 @@ data class RenderedLetterMarkdown(val title: String, val sakspart: Sakspart, val
 
     sealed class ParagraphContent(open val id: Int, open val type: Type) {
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE,
+            ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE
         }
 
         data class ItemList(override val id: Int, val items: List<Item>) : ParagraphContent(id, Type.ITEM_LIST) {
@@ -32,8 +32,29 @@ data class RenderedLetterMarkdown(val title: String, val sakspart: Sakspart, val
         }
 
         sealed class Text(id: Int, type: Type, open val text: String) : ParagraphContent(id, type) {
-            data class Literal(override val id: Int, override val text: String) : Text(id, Type.LITERAL, text)
-            data class Variable(override val id: Int, override val text: String) : Text(id, Type.VARIABLE, text)
+            abstract val fontType: FontType
+            enum class FontType { PLAIN, BOLD, ITALIC }
+            data class Literal(override val id: Int, override val text: String, override val fontType: FontType) : Text(id, Type.LITERAL, text)
+            data class Variable(override val id: Int, override val text: String, override val fontType: FontType) : Text(id, Type.VARIABLE, text)
+        }
+
+        data class Table(override val id: Int, val rows: List<Row>, val header: Header) : ParagraphContent(id, Type.TABLE) {
+            data class Row(val id: Int, val cells: List<Cell>)
+            data class Cell(val id: Int, val text: List<Text>)
+            data class Header(val id: Int, val colSpec: List<ColumnSpec>)
+            data class ColumnSpec(val id: Int, val headerContent: Cell, val alignment: ColumnAlignment, val span: Int)
+            enum class ColumnAlignment { LEFT, RIGHT }
+        }
+
+        sealed class Form(id: Int, type: Type) : ParagraphContent(id, type) {
+            data class Text(override val id: Int, val prompt: List<ParagraphContent.Text>, val size: Size, val vspace: Boolean) : Form(id, Type.FORM_TEXT) {
+                enum class Size { NONE, SHORT, LONG }
+            }
+
+            data class MultipleChoice(override val id: Int, val prompt: List<ParagraphContent.Text>, val choices: List<Choice>, val vspace: Boolean) :
+                Form(id, Type.FORM_CHOICE) {
+                data class Choice(val id: Int, val text: List<ParagraphContent.Text>)
+            }
         }
     }
 }

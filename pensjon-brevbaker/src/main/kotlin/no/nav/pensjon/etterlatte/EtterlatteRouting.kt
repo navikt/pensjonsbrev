@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
-import no.nav.pensjon.brev.template.render.PensjonJsonRenderer
+import no.nav.pensjon.brev.template.render.LetterMarkdownRenderer
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -47,7 +47,7 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         val letterRequest = call.receive<EtterlatteBrevRequest>()
         val letter = letterResource.create(letterRequest)
 
-        call.respond(PensjonJsonRenderer.render(letter))
+        call.respond(LetterMarkdownRenderer.render(letter))
     }
 }
 

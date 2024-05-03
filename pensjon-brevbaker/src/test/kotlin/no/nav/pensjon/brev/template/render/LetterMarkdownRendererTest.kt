@@ -11,10 +11,10 @@ import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.Block
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class PensjonJsonRendererTest {
+class LetterMarkdownRendererTest {
 
     private inline fun <reified LetterData : Any> renderTemplate(data: LetterData, noinline template: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
-        PensjonJsonRenderer.render(Letter(outlineTestTemplate(template), data, Bokmal, felles)).also {
+        LetterMarkdownRenderer.render(Letter(outlineTestTemplate(template), data, Bokmal, felles)).also {
             jacksonObjectMapper().writeValue(System.out, it.blocks)
         }
 
@@ -93,5 +93,7 @@ class PensjonJsonRendererTest {
         when(this) {
             is RenderedLetterMarkdown.ParagraphContent.ItemList -> items.flatMap { item -> item.content.map { it.text } }
             is RenderedLetterMarkdown.ParagraphContent.Text -> listOf(text)
+            is RenderedLetterMarkdown.ParagraphContent.Form -> TODO()
+            is RenderedLetterMarkdown.ParagraphContent.Table -> TODO()
         }
 }
