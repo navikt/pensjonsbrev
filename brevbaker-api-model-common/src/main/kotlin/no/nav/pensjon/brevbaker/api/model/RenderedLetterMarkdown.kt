@@ -34,8 +34,8 @@ data class RenderedLetterMarkdown(val title: String, val sakspart: Sakspart, val
         sealed class Text(id: Int, type: Type, open val text: String) : ParagraphContent(id, type) {
             abstract val fontType: FontType
             enum class FontType { PLAIN, BOLD, ITALIC }
-            data class Literal(override val id: Int, override val text: String, override val fontType: FontType) : Text(id, Type.LITERAL, text)
-            data class Variable(override val id: Int, override val text: String, override val fontType: FontType) : Text(id, Type.VARIABLE, text)
+            data class Literal(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.LITERAL, text)
+            data class Variable(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.VARIABLE, text)
         }
 
         data class Table(override val id: Int, val rows: List<Row>, val header: Header) : ParagraphContent(id, Type.TABLE) {
