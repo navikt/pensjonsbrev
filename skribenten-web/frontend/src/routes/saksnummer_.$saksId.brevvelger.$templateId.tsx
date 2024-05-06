@@ -460,7 +460,7 @@ function SelectEnhet() {
         });
       }}
       size="medium"
-      value={enhetsId}
+      value={enhetsId.toString()}
     >
       <option value={""}>Velg enhet</option>
       {options.map((option) => (
