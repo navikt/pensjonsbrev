@@ -443,11 +443,10 @@ function SelectEnhet() {
   const { register, setValue, formState } = useFormContext();
   const navigate = useNavigate({ from: Route.fullPath });
   const options = enheterQuery.data ?? [];
-  useEffect(() => {
-    if (enhetsId) {
-      setValue("enhetsId", enhetsId);
-    }
-  }, [enhetsId, setValue]);
+
+  if (enhetsId) {
+    setValue("enhetsId", enhetsId);
+  }
   return (
     <Select
       {...register("enhetsId")}
@@ -460,7 +459,7 @@ function SelectEnhet() {
         });
       }}
       size="medium"
-      value={enhetsId.toString()}
+      value={enhetsId}
     >
       <option value={""}>Velg enhet</option>
       {options.map((option) => (
