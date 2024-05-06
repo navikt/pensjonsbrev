@@ -99,6 +99,7 @@ object RenderedLetterMarkdownModule : SimpleModule() {
                     RenderedLetterMarkdown.ParagraphContent.Type.TABLE -> RenderedLetterMarkdown.ParagraphContent.Table::class.java
                     RenderedLetterMarkdown.ParagraphContent.Type.FORM_TEXT -> RenderedLetterMarkdown.ParagraphContent.Form.Text::class.java
                     RenderedLetterMarkdown.ParagraphContent.Type.FORM_CHOICE -> RenderedLetterMarkdown.ParagraphContent.Form.MultipleChoice::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.NEW_LINE -> RenderedLetterMarkdown.ParagraphContent.Text.NewLine::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }
@@ -111,6 +112,7 @@ object RenderedLetterMarkdownModule : SimpleModule() {
                 val clazz = when (val contentType = RenderedLetterMarkdown.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                     RenderedLetterMarkdown.ParagraphContent.Type.LITERAL -> RenderedLetterMarkdown.ParagraphContent.Text.Literal::class.java
                     RenderedLetterMarkdown.ParagraphContent.Type.VARIABLE -> RenderedLetterMarkdown.ParagraphContent.Text.Variable::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.NEW_LINE -> RenderedLetterMarkdown.ParagraphContent.Text.NewLine::class.java
                     RenderedLetterMarkdown.ParagraphContent.Type.TABLE,
                     RenderedLetterMarkdown.ParagraphContent.Type.FORM_TEXT,
                     RenderedLetterMarkdown.ParagraphContent.Type.FORM_CHOICE,

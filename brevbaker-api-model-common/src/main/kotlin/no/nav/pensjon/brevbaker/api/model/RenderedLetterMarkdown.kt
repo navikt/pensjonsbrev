@@ -24,18 +24,23 @@ data class RenderedLetterMarkdown(val title: String, val sakspart: Sakspart, val
 
     sealed class ParagraphContent(open val id: Int, open val type: Type) {
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE
+            ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
         }
 
         data class ItemList(override val id: Int, val items: List<Item>) : ParagraphContent(id, Type.ITEM_LIST) {
             data class Item(val id: Int, val content: List<Text>)
         }
 
-        sealed class Text(id: Int, type: Type, open val text: String) : ParagraphContent(id, type) {
+        sealed class Text(id: Int, type: Type) : ParagraphContent(id, type) {
+            abstract val text: String
             abstract val fontType: FontType
             enum class FontType { PLAIN, BOLD, ITALIC }
-            data class Literal(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.LITERAL, text)
-            data class Variable(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.VARIABLE, text)
+            data class Literal(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.LITERAL)
+            data class Variable(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.VARIABLE)
+            data class NewLine(override val id: Int) : Text(id, Type.NEW_LINE) {
+                override val fontType = FontType.PLAIN
+                override val text: String = ""
+            }
         }
 
         data class Table(override val id: Int, val rows: List<Row>, val header: Header) : ParagraphContent(id, Type.TABLE) {

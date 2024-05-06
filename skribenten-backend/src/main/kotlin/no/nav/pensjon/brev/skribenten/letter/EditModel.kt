@@ -158,6 +158,7 @@ fun ParagraphContent.Text.toEdit(): Edit.ParagraphContent.Text =
     when (this) {
         is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id, text, null)
         is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id, text)
+        is ParagraphContent.Text.NewLine -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
     }
 
 fun ParagraphContent.ItemList.Item.toEdit(): Edit.ParagraphContent.ItemList.Item =
