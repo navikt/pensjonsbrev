@@ -22,6 +22,14 @@ class AdhocTest {
         }
     }
 
+    @Test
+    fun `testAdhocUfoeretrygdEtterbatalingAvDagpenger pdf`() {
+        testAdhocPdf(
+            AdhocUfoeretrygdEtterbetalingDagpenger.template,
+            pdfName = "UT_ADHOC_UFOERETRYGD_ETTERBETALING_DAGPENGER",
+            Bokmal
+        )
+    }
 
     @Test
     fun `testAdhocUfoeretrygdKombiDagpenger pdf`() {
