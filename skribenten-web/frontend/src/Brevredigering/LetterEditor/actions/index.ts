@@ -3,7 +3,6 @@ import { merge } from "./merge";
 import { split } from "./split";
 import { switchTypography } from "./switchTypography";
 import { updateContentText } from "./updateContentText";
-import { updateLetter } from "./updateLetter";
 
 const Actions = {
   create,
@@ -11,6 +10,5 @@ const Actions = {
   split,
   switchTypography,
   updateContentText,
-  updateLetter,
 };
 export default Actions;

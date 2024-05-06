@@ -9,7 +9,7 @@ import { applyAction } from "../lib/actions";
 
 export const EditorMenu = () => {
   const { editorState, setEditorState } = useEditor();
-  const activeTypography = editorState.editedLetter.letter.blocks[editorState.focus.blockIndex].type;
+  const activeTypography = editorState.renderedLetter.editedLetter.blocks[editorState.focus.blockIndex].type;
 
   return (
     <div

@@ -30,7 +30,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
-                registerModule(RenderedJsonLetterModule)
+                registerModule(RenderedLetterMarkdownModule)
             }
         }
     }
@@ -38,7 +38,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
     suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
         client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult()
 
-    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: BrevbakerBrevdata): ServiceResult<RenderedJsonLetter> =
+    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: BrevbakerBrevdata): ServiceResult<RenderedLetterMarkdown> =
         client.post(call, "/letter/redigerbar") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -66,49 +66,49 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
 
 }
 
-object RenderedJsonLetterModule : SimpleModule() {
-    private fun readResolve(): Any = RenderedJsonLetterModule
+object RenderedLetterMarkdownModule : SimpleModule() {
+    private fun readResolve(): Any = RenderedLetterMarkdownModule
 
     init {
-        addDeserializer(RenderedJsonLetter.Block::class.java, blockDeserializer())
-        addDeserializer(RenderedJsonLetter.ParagraphContent::class.java, paragraphContentDeserializer())
-        addDeserializer(RenderedJsonLetter.ParagraphContent.Text::class.java, textContentDeserializer())
+        addDeserializer(RenderedLetterMarkdown.Block::class.java, blockDeserializer())
+        addDeserializer(RenderedLetterMarkdown.ParagraphContent::class.java, paragraphContentDeserializer())
+        addDeserializer(RenderedLetterMarkdown.ParagraphContent.Text::class.java, textContentDeserializer())
     }
 
     private fun blockDeserializer() =
-        object : StdDeserializer<RenderedJsonLetter.Block>(RenderedJsonLetter.Block::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedJsonLetter.Block {
+        object : StdDeserializer<RenderedLetterMarkdown.Block>(RenderedLetterMarkdown.Block::class.java) {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedLetterMarkdown.Block {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (RenderedJsonLetter.Block.Type.valueOf(node.get("type").textValue())) {
-                    RenderedJsonLetter.Block.Type.TITLE1 -> RenderedJsonLetter.Block.Title1::class.java
-                    RenderedJsonLetter.Block.Type.TITLE2 -> RenderedJsonLetter.Block.Title2::class.java
-                    RenderedJsonLetter.Block.Type.PARAGRAPH -> RenderedJsonLetter.Block.Paragraph::class.java
+                val type = when (RenderedLetterMarkdown.Block.Type.valueOf(node.get("type").textValue())) {
+                    RenderedLetterMarkdown.Block.Type.TITLE1 -> RenderedLetterMarkdown.Block.Title1::class.java
+                    RenderedLetterMarkdown.Block.Type.TITLE2 -> RenderedLetterMarkdown.Block.Title2::class.java
+                    RenderedLetterMarkdown.Block.Type.PARAGRAPH -> RenderedLetterMarkdown.Block.Paragraph::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }
         }
 
     private fun paragraphContentDeserializer() =
-        object : StdDeserializer<RenderedJsonLetter.ParagraphContent>(RenderedJsonLetter.ParagraphContent::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedJsonLetter.ParagraphContent {
+        object : StdDeserializer<RenderedLetterMarkdown.ParagraphContent>(RenderedLetterMarkdown.ParagraphContent::class.java) {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedLetterMarkdown.ParagraphContent {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (RenderedJsonLetter.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    RenderedJsonLetter.ParagraphContent.Type.ITEM_LIST -> RenderedJsonLetter.ParagraphContent.ItemList::class.java
-                    RenderedJsonLetter.ParagraphContent.Type.LITERAL -> RenderedJsonLetter.ParagraphContent.Text.Literal::class.java
-                    RenderedJsonLetter.ParagraphContent.Type.VARIABLE -> RenderedJsonLetter.ParagraphContent.Text.Variable::class.java
+                val type = when (RenderedLetterMarkdown.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                    RenderedLetterMarkdown.ParagraphContent.Type.ITEM_LIST -> RenderedLetterMarkdown.ParagraphContent.ItemList::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.LITERAL -> RenderedLetterMarkdown.ParagraphContent.Text.Literal::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.VARIABLE -> RenderedLetterMarkdown.ParagraphContent.Text.Variable::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }
         }
 
     private fun textContentDeserializer() =
-        object : StdDeserializer<RenderedJsonLetter.ParagraphContent.Text>(RenderedJsonLetter.ParagraphContent.Text::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedJsonLetter.ParagraphContent.Text {
+        object : StdDeserializer<RenderedLetterMarkdown.ParagraphContent.Text>(RenderedLetterMarkdown.ParagraphContent.Text::class.java) {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedLetterMarkdown.ParagraphContent.Text {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (RenderedJsonLetter.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    RenderedJsonLetter.ParagraphContent.Type.LITERAL -> RenderedJsonLetter.ParagraphContent.Text.Literal::class.java
-                    RenderedJsonLetter.ParagraphContent.Type.VARIABLE -> RenderedJsonLetter.ParagraphContent.Text.Variable::class.java
-                    RenderedJsonLetter.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("ITEM_LIST is not allowed in a text-only block.")
+                val type = when (RenderedLetterMarkdown.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                    RenderedLetterMarkdown.ParagraphContent.Type.LITERAL -> RenderedLetterMarkdown.ParagraphContent.Text.Literal::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.VARIABLE -> RenderedLetterMarkdown.ParagraphContent.Text.Variable::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("ITEM_LIST is not allowed in a text-only block.")
                 }
                 return p.codec.treeToValue(node, type)
             }

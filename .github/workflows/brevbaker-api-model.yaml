@@ -15,7 +15,7 @@ jobs:
       pensjonsbrev: ${{ steps.changes.outputs.pensjonsbrev }}
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
@@ -31,7 +31,7 @@ jobs:
     needs: [ changes ]
     if: ${{ needs.changes.outputs.common == 'true' }}
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - uses: "gradle/wrapper-validation-action@v1"
       - uses: "actions/cache@v3"
         with:
@@ -60,7 +60,7 @@ jobs:
       needs.changes.outputs.pensjonsbrev == 'true' &&
       (needs.release-common.result == 'success' || needs.release-common.result == 'skipped') }}
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - uses: "gradle/wrapper-validation-action@v1"
       - uses: "actions/cache@v3"
         with:

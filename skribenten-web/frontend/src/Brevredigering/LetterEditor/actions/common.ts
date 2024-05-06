@@ -1,4 +1,4 @@
-import type { Content, RenderedLetter } from "~/types/brevbakerTypes";
+import type { Content, RenderLetterResponse } from "~/types/brevbakerTypes";
 import { ITEM_LIST, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { LetterEditorState } from "../model/state";
@@ -11,12 +11,9 @@ export function isEditableContent(content: Content | undefined | null): boolean 
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
 }
 
-export function create(letter: RenderedLetter): LetterEditorState {
+export function create(renderedLetter: RenderLetterResponse): LetterEditorState {
   return {
-    editedLetter: {
-      letter,
-      deletedBlocks: [],
-    },
+    renderedLetter,
     focus: { blockIndex: 0, contentIndex: 0 },
   };
 }

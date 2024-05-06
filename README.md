@@ -47,7 +47,7 @@ docker-compose up -d --build
    (cd skribenten-web/frontend && npm i)
    (cd brevoppskrift-web/bff && npm i && npm run build)
    (cd brevoppskrift-web/frontend && npm i)
-   ./gradlew build
+   ./gradlew build -x test
 
    ```
 5. Kjør alle backend-tjenester

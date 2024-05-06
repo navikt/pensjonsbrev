@@ -1,21 +1,21 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.*
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.Block.Paragraph
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.ParagraphContent.Text
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.ParagraphContent.Text.*
+import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown
+import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.*
+import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.Block.Paragraph
+import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.ParagraphContent.Text
+import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.ParagraphContent.Text.*
 import java.time.format.FormatStyle
 import java.util.*
 
 class PensjonJsonRendererException(msg: String) : Exception(msg)
 
-object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
+object PensjonJsonRenderer : LetterRenderer<RenderedLetterMarkdown>() {
     private val languageSettings = pensjonHTMLSettings
 
-    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): RenderedJsonLetter =
-        RenderedJsonLetter(
+    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): RenderedLetterMarkdown =
+        RenderedLetterMarkdown(
             title = renderText(scope, template.title).joinToString { it.text },
             sakspart = Sakspart(
                 gjelderNavn = scope.felles.bruker.fulltNavn(),
@@ -37,7 +37,7 @@ object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
         )
 
     private fun renderOutline(scope: ExpressionScope<*>, outline: List<OutlineElement<*>>): List<Block> =
-        mutableListOf<Block>().apply {
+        buildList {
             render(scope, outline) { outlineScope, element ->
                 add(renderOutlineContent(outlineScope, element))
             }
@@ -51,7 +51,7 @@ object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
         }
 
     private fun renderParagraph(scope: ExpressionScope<*>, paragraph: Element.OutlineContent.Paragraph<*>): Paragraph =
-        Paragraph(paragraph.stableHashCode(), true, mutableListOf<ParagraphContent>().apply {
+        Paragraph(paragraph.stableHashCode(), true, buildList {
             render(scope, paragraph.paragraph) { pScope, element ->
                 addAll(renderParagraphContent(pScope, element))
             }
@@ -68,7 +68,7 @@ object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
     private fun renderItemList(scope: ExpressionScope<*>, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList =
         ParagraphContent.ItemList(itemList.stableHashCode(), mutableListOf<ParagraphContent.ItemList.Item>().apply {
             render(scope, itemList.items) { inner, item ->
-                add(ParagraphContent.ItemList.Item(renderText(inner, item.text)))
+                add(ParagraphContent.ItemList.Item(item.stableHashCode(), renderText(inner, item.text)))
             }
         })
 
