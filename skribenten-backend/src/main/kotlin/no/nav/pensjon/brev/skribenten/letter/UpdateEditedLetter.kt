@@ -4,40 +4,69 @@ import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown
 
 class UpdateEditedLetterException(message: String) : RuntimeException(message)
 
+/**
+ * Update a letter edited in Skribenten (originally rendered by brevbaker) with a fresh
+ * rendering from brevbaker. In the new rendering from brevbaker we may receive elements (blocks/content)
+ * that wasn't present in previous renders, e.g. if Saksbehandler has modified the template options or
+ * if Sak-data has changed in pesys. Or elements (blocks/content) present in previous renders may no longer be
+ * present.
+ */
 fun Edit.Letter.updatedEditedLetter(renderedLetter: RenderedLetterMarkdown): Edit.Letter =
     copy(blocks = mergeList(blocks, renderedLetter.blocks.toEdit(), ::mergeBlock, deletedBlocks))
 
+/**
+ * Merges a list of [edited] elements with a list of freshly [rendered] elements.
+ * For each edited element we attempt to find a corresponding rendered element, and if we find it they are merged using the provided [merge]-function.
+ * Both lists may contain elements not present in the other, and we try to zip the lists together based on elements present in both. The edited-list
+ * may contain new elements, e.g. a new paragraph not present in the template or elements no longer present in the fresh render. While the rendered-list
+ * may contain elements that weren't included in the previous render.
+ *
+ * Example 1: No edits other than new elements.
+ * ```
+ *    edited:   [A, C, New1, E, New2]
+ *    rendered: [A, B, D, E]
+ *    result:   [A, New1, D, E, New2]
+ * ```
+ *
+ * Example 2: Edited elements marked with ', e.g. A'.
+ * ```
+ *    edited    [A, B', D]
+ *    rendered: [A, B, C, D]
+ *    result:   [A, B', C, D]
+ * ```
+ */
 private fun <E : Edit.Identifiable> mergeList(edited: List<E>, rendered: List<E>, merge: (E, E) -> E, deleted: Set<Int>): List<E> =
     buildList {
+        // A queue of unprocessed rendered elements
         val remainingRendered = rendered.filter { it.id != null && !deleted.contains(it.id) }.toMutableList()
 
+        // We zip-merge the two lists with edited as basis, then we pick matching elements of remainingRendered.
         edited.forEach { currentEdited ->
+            // If the currentEdited element is new, i.e. was added manually by Saksbehandler.
             if (currentEdited.isNew()) {
                 add(currentEdited)
-            } else if (currentEdited.isEdited()) {
+            } else {
                 val renderedIndex = remainingRendered.indexOfFirst { it.id == currentEdited.id }
 
-                if (renderedIndex < 0) {
-                    // TODO dette elementet er ikke lenger med i rendring, vurdere om vi skal annotere det på et vis eller noe.
-                    add(currentEdited)
-                } else {
+                if (renderedIndex >= 0) {
+                    // The currentEdited element is present in the fresh render.
+
+                    // We add any fresh elements from the fresh render that precedes currentEdited in the fresh render.
                     for (ind in 0 until renderedIndex) {
                         add(remainingRendered.removeFirst())
                     }
 
-                    val currentRendered = remainingRendered.removeFirst()
-                    add(merge(currentEdited, currentRendered))
-                }
-            } else {
-                val renderedIndex = remainingRendered.indexOfFirst { it.id == currentEdited.id }
-
-                // if currentEdited element exists in the new rendering we keep it and add any potential fresh rendered items in between,
-                // otherwise we ignore it.
-                if (renderedIndex >= 0) {
-                    // det er kommet noen nye content elementer før gjeldende i edited, vi legger de til.
-                    for (ind in 0..renderedIndex) {
+                    // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one.
+                    if (currentEdited.isEdited()) {
+                        add(merge(currentEdited, remainingRendered.removeFirst()))
+                    } else {
                         add(remainingRendered.removeFirst())
                     }
+                } else if (currentEdited.isEdited()) {
+                    // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
+                    // We include it so that no potentially important text is lost.
+                    // TODO dette elementet er ikke lenger med i rendring, vurdere om vi skal annotere det på et vis eller noe (slik at det kan vises til saksbehandler).
+                    add(currentEdited)
                 }
             }
         }

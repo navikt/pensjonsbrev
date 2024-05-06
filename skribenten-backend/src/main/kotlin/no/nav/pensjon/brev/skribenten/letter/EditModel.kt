@@ -42,7 +42,7 @@ object Edit {
 
     sealed class ParagraphContent(val type: Type) : Identifiable {
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE, TABLE
+            ITEM_LIST, LITERAL, VARIABLE, TABLE,
         }
 
         data class ItemList(override val id: Int?, val items: List<Item>, val deletedItems: Set<Int> = emptySet()) : ParagraphContent(Type.ITEM_LIST) {

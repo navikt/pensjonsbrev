@@ -676,6 +676,41 @@ class UpdateRenderedLetterTest {
         assertEquals(edited, edited.updatedEditedLetter(next))
     }
 
+    @Test
+    fun `multiple new rendered items are included`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    Literal(11, "første"),
+                    Literal(12, "andre"),
+                    Literal(13, "tredje"),
+                    Literal(14, "fjerde"),
+                )
+            )
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(
+                    E_Literal(14, "fjerde", "fjerdeEdited"),
+                )
+            )
+        )
+        val expected = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(
+                    E_Literal(11, "første"),
+                    E_Literal(12, "andre"),
+                    E_Literal(13, "tredje"),
+                    E_Literal(14, "fjerde", "fjerdeEdited"),
+                )
+            )
+        )
+        assertEquals(expected, edited.updatedEditedLetter(next))
+    }
+
     private fun letter(vararg blocks: Block) =
         RenderedLetterMarkdown(
             title = "En tittel",
