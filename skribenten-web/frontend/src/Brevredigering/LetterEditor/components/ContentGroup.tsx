@@ -17,7 +17,7 @@ import {
   getCursorOffset,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { LiteralValue, RenderedLetter } from "~/types/brevbakerTypes";
+import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 /**
@@ -26,7 +26,7 @@ import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
  */
 const Y_COORD_SAFETY_MARGIN = 10;
 
-function getContent(letter: RenderedLetter, literalIndex: LiteralIndex) {
+function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
   const content = letter.blocks[literalIndex.blockIndex].content;
   const contentValue = content[literalIndex.contentIndex];
   if ("itemIndex" in literalIndex && contentValue.type === ITEM_LIST) {
@@ -37,8 +37,8 @@ function getContent(letter: RenderedLetter, literalIndex: LiteralIndex) {
 
 export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const { editorState } = useEditor();
-  const block = editorState.editedLetter.letter.blocks[literalIndex.blockIndex];
-  const contents = getContent(editorState.editedLetter.letter, literalIndex);
+  const block = editorState.renderedLetter.editedLetter.blocks[literalIndex.blockIndex];
+  const contents = getContent(editorState.renderedLetter.editedLetter, literalIndex);
 
   if (!block.editable) {
     return (
@@ -111,7 +111,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
-  const text = content.text || "​";
+  const text = (content.editedText ?? content.text) || "​";
   useEffect(() => {
     if (contentEditableReference.current !== null && contentEditableReference.current.textContent !== text) {
       contentEditableReference.current.textContent = text;
@@ -147,9 +147,9 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleDelete = (event: React.KeyboardEvent<HTMLSpanElement>) => {
-    const cursorIsAtEnd = getCursorOffset() >= content.text.length;
+    const cursorIsAtEnd = getCursorOffset() >= text.length;
     const cursorIsInLastContent =
-      getContent(editorState.editedLetter.letter, literalIndex).length - 1 === literalIndex.contentIndex;
+      getContent(editorState.renderedLetter.editedLetter, literalIndex).length - 1 === literalIndex.contentIndex;
     if (cursorIsAtEnd && cursorIsInLastContent) {
       event.preventDefault();
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.NEXT);
@@ -179,7 +179,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
-    const cursorIsAtEnd = getCursorOffset() >= content.text.length;
+    const cursorIsAtEnd = getCursorOffset() >= text.length;
     if (!cursorIsAtEnd) return;
 
     const nextSpanIndex = thisSpanIndex + 1;

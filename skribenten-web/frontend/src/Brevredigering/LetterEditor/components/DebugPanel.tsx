@@ -2,8 +2,10 @@ import { css } from "@emotion/react";
 import { HStack } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 
+import type { LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import type { AnyBlock, Content, Item } from "~/types/brevbakerTypes";
 
 export function DebugPanel() {
   const { editorState } = useEditor();
@@ -60,6 +62,49 @@ export function DebugPanel() {
         <b>X: {caretRect?.x}</b>
         <b>Y: {caretRect?.y}</b>
       </HStack>
+      <HStack gap={"4"}>
+        Edited:
+        <ul>
+          {findEdits(editorState.renderedLetter.editedLetter.blocks).map((litIndex, index) => (
+            <li key={index}>
+              {Object.entries(litIndex).map(([key, value]) => (
+                <div key={key}>
+                  <b>{key}: </b>
+                  <span>{value}</span>
+                </div>
+              ))}
+            </li>
+          ))}
+        </ul>
+      </HStack>
     </div>
   );
+}
+
+function findEdits(blocks: AnyBlock[]): LiteralIndex[] {
+  return blocks.flatMap(findEditsBlock);
+}
+
+function findEditsBlock(block: AnyBlock): LiteralIndex[] {
+  return block.content.flatMap(findEditsContent).map((ind) => ({ ...ind, blockIndex: block.id ?? -1 }));
+}
+
+function findEditsContent(content: Content): { contentIndex: number; itemIndex?: number; itemContentIndex?: number }[] {
+  switch (content.type) {
+    case "VARIABLE": {
+      return [];
+    }
+    case "ITEM_LIST": {
+      return content.items.flatMap(findEditsItem).map((ind) => ({ ...ind, contentIndex: content.id }));
+    }
+    case "LITERAL": {
+      return content.editedText ? [{ contentIndex: content.id ?? -1 }] : [];
+    }
+  }
+}
+
+function findEditsItem(item: Item): { itemIndex: number; itemContentIndex: number }[] {
+  return item.content
+    .flatMap(findEditsContent)
+    .map((ind) => ({ itemIndex: item.id ?? -1, itemContentIndex: ind.contentIndex }));
 }

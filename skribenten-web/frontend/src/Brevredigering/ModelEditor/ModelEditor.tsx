@@ -10,7 +10,7 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { TEST_TEMPLATE } from "~/routes/saksnummer_.$saksId.redigering.$templateId";
-import type { RenderedLetter } from "~/types/brevbakerTypes";
+import type { RenderLetterResponse } from "~/types/brevbakerTypes";
 
 import { ObjectEditor } from "./components/ObjectEditor";
 
@@ -31,7 +31,7 @@ export const ModelEditor = () => {
 
   const methods = useForm({ shouldUnregister: true, defaultValues: TEST_DEFAULT_VALUES });
 
-  const renderLetterMutation = useMutation<RenderedLetter, unknown, { id: string; values: unknown }>({
+  const renderLetterMutation = useMutation<RenderLetterResponse, unknown, { id: string; values: unknown }>({
     mutationFn: async ({ id, values }) => {
       // In React-Hook-Form it is convential, and easiest, to keep empty inputs as an empty string.
       // However, in the api empty strings are interpreted literally, we want these to be null in the payload.
@@ -41,7 +41,7 @@ export const ModelEditor = () => {
       );
       return await renderLetter(id, {
         letterData: letterDataWithEmptyStringsReplaced,
-        editedLetter: editorState?.editedLetter,
+        editedLetter: editorState?.renderedLetter?.editedLetter,
       });
     },
     onSuccess: (renderedLetter) => {

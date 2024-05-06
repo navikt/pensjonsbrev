@@ -23,9 +23,11 @@ export function getMergeIds(sourceId: number, target: MergeTarget): [number, num
 
 export function isEmptyContent(content: Content) {
   switch (content.type) {
-    case VARIABLE:
-    case LITERAL: {
+    case VARIABLE: {
       return content.text.trim().length === 0;
+    }
+    case LITERAL: {
+      return (content.editedText ?? content.text).trim().length === 0;
     }
     case ITEM_LIST: {
       return content.items.length === 1 && isEmptyItem(content.items[0]);
@@ -45,7 +47,9 @@ export function mergeContentArrays(first: Content[], second: Content[]) {
 
     if (lastContentOfFirst.type === LITERAL && firstContentOfSecond.type === LITERAL) {
       // merge adjoining literals
-      lastContentOfFirst.text += firstContentOfSecond.text;
+      lastContentOfFirst.editedText =
+        (lastContentOfFirst.editedText ?? lastContentOfFirst.text) +
+        (firstContentOfSecond.editedText ?? firstContentOfSecond.text);
       draft.splice(first.length, 0, ...second.slice(1));
     } else {
       draft.splice(first.length, 0, ...second);

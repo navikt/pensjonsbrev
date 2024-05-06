@@ -13,8 +13,8 @@ import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
 import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 
 const content: LiteralValue[] = [
-  { type: LITERAL, id: 1, text: "Heisann" },
-  { type: LITERAL, id: 2, text: "Velkommen" },
+  { type: LITERAL, id: 1, text: "Heisann", editedText: null },
+  { type: LITERAL, id: 2, text: "Velkommen", editedText: null },
 ];
 
 const block: ParagraphBlock = {
@@ -66,7 +66,7 @@ function setupComplex() {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider value={{ editorState: complexEditorState, setEditorState }}>
-        {complexEditorState.editedLetter.letter.blocks.map((block, blockIndex) => (
+        {complexEditorState.renderedLetter.editedLetter.blocks.map((block, blockIndex) => (
           <div className={block.type} key={blockIndex}>
             <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
           </div>
@@ -124,8 +124,8 @@ describe("deleteHandler", () => {
     await user.click(screen.getByText(content[1].text));
     await user.keyboard("{ArrowLeft}{ArrowLeft}{Delete}");
 
-    expect(setEditorState.mock.lastCall?.[0](editorState)?.editedLetter.letter.blocks).toHaveLength(
-      editorState.editedLetter.letter.blocks.length,
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.renderedLetter.editedLetter.blocks).toHaveLength(
+      editorState.renderedLetter.editedLetter.blocks.length,
     );
   });
   test("delete not at end of block, but after last character, does not trigger merge", async () => {
@@ -151,8 +151,8 @@ describe("backspaceHandler", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}{ArrowLeft}{ArrowLeft}{Backspace}");
 
-    expect(setEditorState.mock.lastCall?.[0](editorState)?.editedLetter.letter.blocks).toHaveLength(
-      editorState.editedLetter.letter.blocks.length,
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.renderedLetter.editedLetter.blocks).toHaveLength(
+      editorState.renderedLetter.editedLetter.blocks.length,
     );
   });
   test("backspace not at beginning of block, but before first character of a TextContent, does not trigger merge", async () => {
