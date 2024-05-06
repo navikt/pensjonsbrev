@@ -7,14 +7,16 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.updatedEditedLetter
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
+import no.nav.pensjon.brev.skribenten.letter.updatedEditedLetter
+import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.*
 import org.slf4j.LoggerFactory
 
 
-data class RenderLetterRequest(val letterData: GenericBrevdata, val editedLetter: EditedJsonLetter?)
-data class EditedJsonLetter(val letter: RenderedJsonLetter, val deletedBlocks: Set<Int>)
+data class RenderLetterRequest(val letterData: GenericBrevdata, val editedLetter: Edit.Letter?)
+data class RenderLetterResponse(val editedLetter: Edit.Letter, val title: String, val sakspart: Sakspart, val signatur: Signatur)
 class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
 
 // TODO: Flytt til topp-rute /brevbaker
@@ -35,7 +37,14 @@ fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
         brevbakerService.renderLetter(call, brevkode, request.letterData)
             .map { rendered ->
-                call.respond(request.editedLetter?.let { updatedEditedLetter(it, rendered) } ?: rendered)
+                call.respond(
+                    RenderLetterResponse(
+                        request.editedLetter?.updatedEditedLetter(rendered) ?: rendered.toEdit(),
+                        rendered.title,
+                        rendered.sakspart,
+                        rendered.signatur,
+                    )
+                )
             }.catch { message, status ->
                 logger.error("Feil ved rendring av brevbaker brev Brevkode: $brevkode Melding: $message Status: $status")
                 call.respond(HttpStatusCode.InternalServerError, "Feil ved rendring av brevbaker brev.")

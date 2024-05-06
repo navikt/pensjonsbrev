@@ -22,7 +22,7 @@ import type {
   PreferredLanguage,
   SakContextDto,
 } from "~/types/apiTypes";
-import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
+import type { RedigerbarTemplateDescription, RenderLetterRequest, RenderLetterResponse } from "~/types/brevbakerTypes";
 
 const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
 
@@ -129,8 +129,8 @@ export const getEnheter = {
   queryFn: async () => (await axios.get<Enhet[]>(`${SKRIBENTEN_API_BASE_PATH}/me/enheter`)).data,
 };
 
-export async function renderLetter(letterId: string, request: unknown) {
-  return (await axios.post<RenderedLetter>(`${SKRIBENTEN_API_BASE_PATH}/letter/${letterId}`, request)).data;
+export async function renderLetter(letterId: string, request: RenderLetterRequest) {
+  return (await axios.post<RenderLetterResponse>(`${SKRIBENTEN_API_BASE_PATH}/letter/${letterId}`, request)).data;
 }
 
 export async function addFavoritt(id: string) {

@@ -6,8 +6,8 @@ import no.nav.pensjon.brev.Fixtures.felles
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
-import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.Block
+import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown
+import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.Block
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -32,8 +32,8 @@ class PensjonJsonRendererTest {
         val p2 = result.blocks[2]
         if (p2 is Block.Paragraph) {
             val text = p2.content.first()
-            assertThat(text, isA<RenderedJsonLetter.ParagraphContent.Text.Literal>())
-            if (text is RenderedJsonLetter.ParagraphContent.Text.Literal) {
+            assertThat(text, isA<RenderedLetterMarkdown.ParagraphContent.Text.Literal>())
+            if (text is RenderedLetterMarkdown.ParagraphContent.Text.Literal) {
                 assertEquals("hei paragraph2", text.text)
             }
         }
@@ -89,9 +89,9 @@ class PensjonJsonRendererTest {
             is Block.Title2 -> content.map { it.text }
         }
 
-    private fun RenderedJsonLetter.ParagraphContent.textInOrder(): List<String> =
+    private fun RenderedLetterMarkdown.ParagraphContent.textInOrder(): List<String> =
         when(this) {
-            is RenderedJsonLetter.ParagraphContent.ItemList -> items.flatMap { item -> item.content.map { it.text } }
-            is RenderedJsonLetter.ParagraphContent.Text -> listOf(text)
+            is RenderedLetterMarkdown.ParagraphContent.ItemList -> items.flatMap { item -> item.content.map { it.text } }
+            is RenderedLetterMarkdown.ParagraphContent.Text -> listOf(text)
         }
 }
