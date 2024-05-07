@@ -27,11 +27,12 @@ data class RedigerbarBrevdata(val json: String)
 object Brevredigering : Table() {
     val id: Column<Int> = integer("id").autoIncrement()
     val uuid: Column<String> = varchar("uuid", length = 50)
-    val sakid : Column<String> = varchar("sakid", length = 50)
+    val saksid : Column<String> = varchar("saksid", length = 50)
     val navident: Column<String> = varchar("navident", length = 50)
     val brevkode: Column<String> = varchar("brevkode", length = 50)
     val redigerbarBrevdata = json<RedigerbarBrevdata>("brevdata", format)
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
+    val redigeresAvNavident: Column<String?> = varchar("brevkode", length = 50).nullable()
     override val primaryKey = PrimaryKey(id, name = "PK_Brevredigering_ID")
 }
 

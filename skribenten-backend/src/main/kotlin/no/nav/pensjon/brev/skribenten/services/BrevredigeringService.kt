@@ -1,24 +1,24 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.skribenten.services.Brevredigering.redigerbarBrevdata
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
-
 class BrevredigeringService {
-    fun hentBrevredigering(navident: String, sakid: String, brevkode: String): List<BrevredigeringDto> =
+    fun hentBrevredigering(navident: String, saksid: String, brevkode: String): List<BrevredigeringDto> =
         transaction {
             Brevredigering.select {
                 Brevredigering.navident eq navident
-                Brevredigering.sakid eq sakid
+                Brevredigering.saksid eq saksid
                 Brevredigering.brevkode eq brevkode
             }.map { 
                 BrevredigeringDto(
-                it[Brevredigering.sakid], 
+                it[Brevredigering.saksid], 
                 it[Brevredigering.navident], 
                 it[Brevredigering.brevkode],
-                RedigerbarBrevdataDto(it[Brevredigering.redigerbarBrevdata].json))
+                RedigerbarBrevdataDto(it[redigerbarBrevdata].json))
             }
         }
     fun hentBrevredigering(navident: String): List<String> =
@@ -27,19 +27,21 @@ class BrevredigeringService {
         }
 
     fun lagreBrevredigering(
-        sakid: String,
+        saksid: String,
         navident: String,
         brevkode: String,
+        redigeresAvNavident: String?,
         redigerbarBrevdata: RedigerbarBrevdata
     ) {
         transaction {
             Brevredigering.insert {
                 it[uuid] = UUID.randomUUID().toString()
-                it[this.sakid] = sakid
+                it[this.saksid] = saksid
                 it[this.navident] = navident
                 it[this.brevkode] = brevkode
                 it[this.redigerbarBrevdata] = redigerbarBrevdata
                 it[laastForRedigering] = false
+                it[this.redigeresAvNavident] = redigeresAvNavident
 
             }
         }
@@ -47,7 +49,7 @@ class BrevredigeringService {
 
     fun slettBrevredigering(
         uuid: String,
-        sakid: String,
+        saksid: String,
         navident: String,
         brevkode: String,
         redigerbarBrevdata: RedigerbarBrevdata
@@ -55,7 +57,7 @@ class BrevredigeringService {
         transaction {
             Brevredigering.deleteWhere {
                 this.uuid eq uuid
-                this.sakid eq sakid
+                this.saksid eq saksid
                 this.navident eq navident
                 this.brevkode eq brevkode
                 this.redigerbarBrevdata eq redigerbarBrevdata
@@ -65,7 +67,7 @@ class BrevredigeringService {
 }
 
 data class BrevredigeringDto(
-    val sakid: String,
+    val saksid: String,
     val navident: String,
     val brevkode: String,
     val redigerbarBrevdata: RedigerbarBrevdataDto
