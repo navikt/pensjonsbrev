@@ -95,7 +95,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                     }
                     paragraph {
                         text(
-                            Bokmal to "Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg. Vergen til barnet kan være enten forelderen eller andre personer oppnevnt av Statsforvalteren.",
+                            Bokmal to "Er du under 18 år, må vergen din søke om barnepensjon for deg. Vergen til barnet kan være enten forelderen eller andre personer oppnevnt av Statsforvalteren.",
                             Nynorsk to "Er du under 18 år, må verja di søkje om barnepensjon på dine vegner. Verja til barnet kan vere anten forelderen eller ein person som Statsforvaltaren har utnemnd.",
                             English to "If you are under the age of 18, your guardian must apply for a children’s pension on your behalf. A child’s guardian can be a parent or another person appointed by the County Governor.",
                         )
