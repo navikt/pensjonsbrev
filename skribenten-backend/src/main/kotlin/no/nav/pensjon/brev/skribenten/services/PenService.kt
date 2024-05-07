@@ -139,16 +139,8 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
-    data class PenSakTilgang(
-        val saksId: String,
-        val idForEnheterMedTilgang: List<String>,
-    )
-
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>> =
         client.get(call, "brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
-
-    suspend fun hentSaktilganger(call: ApplicationCall, saksId: String): ServiceResult<PenSakTilgang> =
-        client.get(call, "/pen/springapi/sak/gyldigetilganger?saksid=${saksId}").toServiceResult(::handlePenErrorResponse)
 
     override val name = "PEN"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
