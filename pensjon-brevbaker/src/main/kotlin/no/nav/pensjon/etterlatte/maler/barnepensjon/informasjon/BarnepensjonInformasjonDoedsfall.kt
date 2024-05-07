@@ -95,7 +95,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                     }
                     paragraph {
                         text(
-                            Bokmal to "Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg. Vergen til barnet kan være enten forelderen eller andre personer oppnevnt av Statsforvalteren.",
+                            Bokmal to "Er du under 18 år, må vergen din søke om barnepensjon for deg. Vergen til barnet kan være enten forelderen eller andre personer oppnevnt av Statsforvalteren.",
                             Nynorsk to "Er du under 18 år, må verja di søkje om barnepensjon på dine vegner. Verja til barnet kan vere anten forelderen eller ein person som Statsforvaltaren har utnemnd.",
                             English to "If you are under the age of 18, your guardian must apply for a children’s pension on your behalf. A child’s guardian can be a parent or another person appointed by the County Governor.",
                         )
@@ -216,23 +216,23 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                             English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTAKTTELEFON_PENSJON_MED_LANDKODE) weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help.",
                         )
                     }
-                    showIf(borIutland.not().and(erOver18aar)) {
-                        paragraph {
-                            text(
-                                Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
-                                Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                                English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTAKTTELEFON_PENSJON) weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
-                            )
-                        }
+                }
+                showIf(borIutland.not().and(erOver18aar)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
+                            English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone $KONTAKTTELEFON_PENSJON weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
+                        )
                     }
-                    showIf(borIutland.and(erOver18aar)) {
-                        paragraph {
-                            text(
-                                Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON_MED_LANDKODE hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
-                                Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON_MED_LANDKODE, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                                English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTAKTTELEFON_PENSJON_MED_LANDKODE) weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
-                            )
-                        }
+                }
+                showIf(borIutland.and(erOver18aar)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON_MED_LANDKODE hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON_MED_LANDKODE, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
+                            English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ($KONTAKTTELEFON_PENSJON_MED_LANDKODE) weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help.",
+                        )
                     }
                 }
             }
