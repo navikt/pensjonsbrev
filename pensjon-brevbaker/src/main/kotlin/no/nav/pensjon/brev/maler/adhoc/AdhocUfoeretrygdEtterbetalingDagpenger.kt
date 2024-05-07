@@ -4,12 +4,14 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+
 
 
 object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyBrevdata> {
@@ -27,7 +29,7 @@ object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyBrevdata> 
     ) {
         title {
             text(
-                Bokmal to "Ny informasjon om etterbetaling av dagpenger",
+                Bokmal to "Ny informasjon om etterbetaling av dagpenger"
             )
         }
         outline {
@@ -35,17 +37,17 @@ object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyBrevdata> 
                 text(
                     Bokmal to "Du har tidligere fått et brev fra oss med informasjon om hvordan etterbetaling av dagpenger påvirker din uføretrygd. "
                             + "I brevet fikk du informasjon om at etterbetaling av dagpenger er pensjonsgivende inntekt som kan føre til reduksjon av uføretrygden, "
-                            + "dersom den overstiger inntektsgrensen.",
+                            + "dersom den overstiger inntektsgrensen."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Etter at vi sendte brevet, har reglene endret seg til fordel for deg. Det er Arbeids- og inkluderingsdepartementet som har bestemt de nye reglene.",
+                    Bokmal to "Etter at vi sendte brevet, har reglene endret seg til fordel for deg. Det er Arbeids- og inkluderingsdepartementet som har bestemt de nye reglene."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Regelendringen gjør at etterbetaling av trygdeytelser ikke lenger skal medføre reduksjon i uføretrygden.",
+                    Bokmal to "Regelendringen gjør at etterbetaling av trygdeytelser ikke lenger skal medføre reduksjon i uføretrygden."
                 )
             }
             paragraph {
@@ -55,36 +57,43 @@ object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyBrevdata> 
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du mottar barnetillegg i uføretrygden din, fører etterbetalingen av dagpenger heller ikke til reduksjon av barnetillegget fremover.",
+                    Bokmal to "Hvis du mottar barnetillegg i uføretrygden din, fører etterbetalingen av dagpenger heller ikke til reduksjon av barnetillegget fremover."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Etterbetalingen av dagpenger kan likevel medføre reduksjon av barnetillegg for felles barn hvis det er den andre forelderen får utbetalt barnetillegget.",
+                    Bokmal to "Etterbetalingen av dagpenger "
+                )
+                text(
+                    Bokmal to "kan",
+                            FontType.ITALIC
+                )
+                text(
+                    Bokmal to " likevel medføre reduksjon av barnetillegg for felles barn hvis det er den andre forelderen får utbetalt barnetillegget."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis din uføretrygd eller barnetillegg allerede blitt redusert som følge av etterbetalingen av dagpenger, vil dette bli rettet opp i etteroppgjøret for 2024.",
+                    Bokmal to "Hvis din uføretrygd eller barnetillegg allerede har blitt redusert som følge av etterbetalingen av dagpenger, vil dette bli rettet opp i etteroppgjøret for 2024."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Har du annen pensjonsgivende inntekt må denne legges inn i inntektsplanleggeren på Dine side på nav.no på vanlig måte.",
+                    Bokmal to "Har du annen pensjonsgivende inntekt må denne legges inn i inntektsplanleggeren på Dine side på nav.no på vanlig måte."
                 )
             }
             title1 {
                 text(
-                    Bokmal to "Har du spørsmål?",
+                    Bokmal to "Har du spørsmål?"
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
+                    Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
                 )
                 text(
                     Bokmal to "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
-                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
                 )
             }
         }
