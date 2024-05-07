@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
-import no.nav.pensjon.brev.template.render.PensjonJsonRenderer
+import no.nav.pensjon.brev.template.render.LetterMarkdownRenderer
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
@@ -90,7 +90,7 @@ class TemplateResourceTest {
             fixtures,
             spraak,
             Fixtures.felles,
-        ).let { PensjonJsonRenderer.render(it) }
+        ).let { LetterMarkdownRenderer.render(it) }
             .also { json ->
                 Paths.get("build/test_json")
                     .also { Files.createDirectories(it) }

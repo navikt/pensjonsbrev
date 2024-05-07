@@ -117,6 +117,8 @@ private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.
             } else {
                 throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
             }
+
+        is Edit.ParagraphContent.Table -> TODO("Tables are not yet supported by Skribenten")
     }
 
 private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =

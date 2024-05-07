@@ -96,6 +96,10 @@ object RenderedLetterMarkdownModule : SimpleModule() {
                     RenderedLetterMarkdown.ParagraphContent.Type.ITEM_LIST -> RenderedLetterMarkdown.ParagraphContent.ItemList::class.java
                     RenderedLetterMarkdown.ParagraphContent.Type.LITERAL -> RenderedLetterMarkdown.ParagraphContent.Text.Literal::class.java
                     RenderedLetterMarkdown.ParagraphContent.Type.VARIABLE -> RenderedLetterMarkdown.ParagraphContent.Text.Variable::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.TABLE -> RenderedLetterMarkdown.ParagraphContent.Table::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.FORM_TEXT -> RenderedLetterMarkdown.ParagraphContent.Form.Text::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.FORM_CHOICE -> RenderedLetterMarkdown.ParagraphContent.Form.MultipleChoice::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.NEW_LINE -> RenderedLetterMarkdown.ParagraphContent.Text.NewLine::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }
@@ -105,12 +109,16 @@ object RenderedLetterMarkdownModule : SimpleModule() {
         object : StdDeserializer<RenderedLetterMarkdown.ParagraphContent.Text>(RenderedLetterMarkdown.ParagraphContent.Text::class.java) {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedLetterMarkdown.ParagraphContent.Text {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (RenderedLetterMarkdown.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                val clazz = when (val contentType = RenderedLetterMarkdown.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                     RenderedLetterMarkdown.ParagraphContent.Type.LITERAL -> RenderedLetterMarkdown.ParagraphContent.Text.Literal::class.java
                     RenderedLetterMarkdown.ParagraphContent.Type.VARIABLE -> RenderedLetterMarkdown.ParagraphContent.Text.Variable::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("ITEM_LIST is not allowed in a text-only block.")
+                    RenderedLetterMarkdown.ParagraphContent.Type.NEW_LINE -> RenderedLetterMarkdown.ParagraphContent.Text.NewLine::class.java
+                    RenderedLetterMarkdown.ParagraphContent.Type.TABLE,
+                    RenderedLetterMarkdown.ParagraphContent.Type.FORM_TEXT,
+                    RenderedLetterMarkdown.ParagraphContent.Type.FORM_CHOICE,
+                    RenderedLetterMarkdown.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("$contentType is not allowed in a text-only block.")
                 }
-                return p.codec.treeToValue(node, type)
+                return p.codec.treeToValue(node, clazz)
             }
         }
 }

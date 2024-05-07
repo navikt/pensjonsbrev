@@ -42,7 +42,7 @@ object Edit {
 
     sealed class ParagraphContent(val type: Type) : Identifiable {
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE,
+            ITEM_LIST, LITERAL, VARIABLE, TABLE,
         }
 
         data class ItemList(override val id: Int?, val items: List<Item>, val deletedItems: Set<Int> = emptySet()) : ParagraphContent(Type.ITEM_LIST) {
@@ -51,6 +51,24 @@ object Edit {
             }
 
             override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() } || deletedItems.isNotEmpty()
+        }
+
+        data class Table(override val id: Int?, val rows: List<Row>, val header: Header) : ParagraphContent(Type.TABLE) {
+            data class Row(override val id: Int?, val cells: List<Cell>) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() }
+            }
+            data class Cell(override val id: Int?, val text: List<Text>) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() }
+            }
+            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() }
+            }
+            data class ColumnSpec(override val id: Int?, val headerContent: Cell, val alignment: ColumnAlignment, val span: Int): Identifiable {
+                override fun isEdited(): Boolean = isNew() || headerContent.isEdited()
+            }
+            enum class ColumnAlignment { LEFT, RIGHT }
+
+            override fun isEdited(): Boolean = isNew() || rows.any { it.isEdited() } || header.isEdited()
         }
 
         sealed class Text(type: Type) : ParagraphContent(type) {
@@ -94,6 +112,7 @@ object Edit {
                     ParagraphContent.Type.ITEM_LIST -> ParagraphContent.ItemList::class.java
                     ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
                     ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
+                    ParagraphContent.Type.TABLE -> ParagraphContent.Table::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }
@@ -106,6 +125,7 @@ object Edit {
                     ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
                     ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
                     ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("ITEM_LIST is not allowed in a text-only block.")
+                    ParagraphContent.Type.TABLE -> throw BrevbakerServiceException("TABLE is not allowed in a text-only block.")
                 }
                 return p.codec.treeToValue(node, type)
             }
@@ -130,13 +150,37 @@ fun ParagraphContent.toEdit(): Edit.ParagraphContent =
     when (this) {
         is ParagraphContent.ItemList -> Edit.ParagraphContent.ItemList(id, items.map { it.toEdit() })
         is ParagraphContent.Text -> toEdit()
+        is ParagraphContent.Form -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
+        is ParagraphContent.Table -> toEdit()
     }
 
 fun ParagraphContent.Text.toEdit(): Edit.ParagraphContent.Text =
     when (this) {
         is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id, text, null)
         is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id, text)
+        is ParagraphContent.Text.NewLine -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
     }
 
 fun ParagraphContent.ItemList.Item.toEdit(): Edit.ParagraphContent.ItemList.Item =
     Edit.ParagraphContent.ItemList.Item(id, content.map { it.toEdit() })
+
+fun ParagraphContent.Table.toEdit(): Edit.ParagraphContent.Table =
+        Edit.ParagraphContent.Table(id, rows.map { it.toEdit() }, header.toEdit())
+
+fun ParagraphContent.Table.Row.toEdit(): Edit.ParagraphContent.Table.Row =
+    Edit.ParagraphContent.Table.Row(id, cells.map { it.toEdit() })
+
+fun ParagraphContent.Table.Cell.toEdit(): Edit.ParagraphContent.Table.Cell =
+    Edit.ParagraphContent.Table.Cell(id, text.map { it.toEdit() })
+
+fun ParagraphContent.Table.Header.toEdit(): Edit.ParagraphContent.Table.Header =
+    Edit.ParagraphContent.Table.Header(id, colSpec.map { it.toEdit() })
+
+fun ParagraphContent.Table.ColumnSpec.toEdit(): Edit.ParagraphContent.Table.ColumnSpec =
+    Edit.ParagraphContent.Table.ColumnSpec(id, headerContent.toEdit(), alignment.toEdit(), span)
+
+fun ParagraphContent.Table.ColumnAlignment.toEdit(): Edit.ParagraphContent.Table.ColumnAlignment =
+    when (this) {
+        ParagraphContent.Table.ColumnAlignment.LEFT -> Edit.ParagraphContent.Table.ColumnAlignment.LEFT
+        ParagraphContent.Table.ColumnAlignment.RIGHT -> Edit.ParagraphContent.Table.ColumnAlignment.RIGHT
+    }

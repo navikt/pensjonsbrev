@@ -121,7 +121,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
                 post("/redigerbar") {
                     val letterRequest = call.receive<RedigerbartbrevRequest>()
 
-                    call.respond(PensjonJsonRenderer.render(letterResource.create(letterRequest)))
+                    call.respond(LetterMarkdownRenderer.render(letterResource.create(letterRequest)))
                 }
 
             }
