@@ -119,18 +119,22 @@ object TilbakekrevingFraser {
 			val sumTilbakekreving = tilbakekreving.summer.sumNettoRenter
 			val fraOgMed = tilbakekreving.fraOgMed
 			val tilOgMed = tilbakekreving.tilOgMed
+			val harFradragSkatt = tilbakekreving.summer.fradragSkatt.greaterThan(0)
 
 			paragraph {
 				textExpr(
 					Bokmal to "Du har fått utbetalt for mye ".expr() + sakType.format() +
 							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
+							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner" +
+							ifElse(harFradragSkatt, " inkludert skatt.", "."),
 					Nynorsk to "Du har fått utbetalt for mykje ".expr() + sakType.format() +
 							" frå " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
+							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner" +
+							ifElse(harFradragSkatt, " inkludert skatt.", "."),
 					English to "You received too much in ".expr() + sakType.format() +
 							" from " + fraOgMed.format() + " to " + tilOgMed.format() +
-							". The incorrect amount totals NOK " + feilutbetaling.format() + " including tax.",
+							". The incorrect amount totals NOK " + feilutbetaling.format() +
+							ifElse(harFradragSkatt, " including tax.", "."),
 				)
 			}
 
@@ -146,23 +150,27 @@ object TilbakekrevingFraser {
 				)
 				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
-						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
-								"skatten er trukket fra. Du må også betale " + renteTillegg.format() +
+						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner" +
+								ifElse(harFradragSkatt, " etter at skatten er trukket fra.", ".") +
+								" Du må også betale " + renteTillegg.format() +
 								" kroner i renter. Til sammen skal du betale " + sumTilbakekreving.format() + " kroner.",
-						Nynorsk to " Dette utgjer ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
-								"skatten er trekt frå. I tillegg må du betale " + renteTillegg.format() +
+						Nynorsk to " Dette utgjer ".expr() + nettoTilbakekreving.format() + " kroner" +
+								ifElse(harFradragSkatt, " etter at skatten er trekt frå.", ".") +
+								" I tillegg må du betale " + renteTillegg.format() +
 								" kroner i renter. Til saman skal du betale " + sumTilbakekreving.format() + " kroner.",
-						English to " This is NOK ".expr() + nettoTilbakekreving.format() + " after tax. " +
-								"You must also pay NOK " + renteTillegg.format() + " in interest. In total, " +
-								"you must pay NOK " + sumTilbakekreving.format() + "."
+						English to " This is NOK ".expr() + nettoTilbakekreving.format() +
+								ifElse(harFradragSkatt, " after tax.", ".") +
+								" You must also pay NOK " + renteTillegg.format() + " in interest. In total," +
+								" you must pay NOK " + sumTilbakekreving.format() + "."
 					)
 				}.orShow {
 					textExpr(
-						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner etter at " +
-								"skatten er trukket fra.",
-						Nynorsk to " Dette utgjer ".expr() + sumTilbakekreving.format() + " kroner etter at " +
-								"skatten er trekt frå.",
-						English to " This is NOK ".expr() + sumTilbakekreving.format() + " after tax."
+						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner" +
+								ifElse(harFradragSkatt, " etter at skatten er trukket fra.", "."),
+						Nynorsk to " Dette utgjer ".expr() + sumTilbakekreving.format() + " kroner" +
+								ifElse(harFradragSkatt, " etter at skatten er trekt frå.", "."),
+						English to " This is NOK ".expr() + sumTilbakekreving.format() +
+								ifElse(harFradragSkatt, " after tax.", ".")
 					)
 				}
 			}
@@ -182,18 +190,22 @@ object TilbakekrevingFraser {
 			val sumTilbakekreving = tilbakekreving.summer.sumNettoRenter
 			val fraOgMed = tilbakekreving.fraOgMed
 			val tilOgMed = tilbakekreving.tilOgMed
+			val harFradragSkatt = tilbakekreving.summer.fradragSkatt.greaterThan(0)
 
 			paragraph {
 				textExpr(
 					Bokmal to "Det er utbetalt for mye ".expr() + sakType.format() + " i " +
 							brukerNavn + "s navn fra " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
+							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner"+
+							ifElse(harFradragSkatt, " inkludert skatt.", "."),
 					Nynorsk to "Det er utbetalt for mykje ".expr() + sakType.format() + " for " +
 							brukerNavn + " frå " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner inkludert skatt.",
+							". Det feilutbetalte beløpet er " + feilutbetaling.format() + " kroner" +
+							ifElse(harFradragSkatt, " inkludert skatt.", "."),
 					English to "The ".expr() + sakType.format() + " amount paid on behalf of " + brukerNavn +
-							" was too high from " + fraOgMed.format() + " to " + tilOgMed.format() + ". The " +
-							"incorrect amount totals NOK " + feilutbetaling.format() + "  including tax."
+							" was too high from " + fraOgMed.format() + " to " + tilOgMed.format() +
+							". The incorrect amount totals NOK " + feilutbetaling.format() +
+							ifElse(harFradragSkatt, " including tax.", "."),
 				)
 			}
 
@@ -209,23 +221,27 @@ object TilbakekrevingFraser {
 				)
 				showIf(renteTillegg.greaterThan(0)) {
 					textExpr(
-						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
-								"skatten er trukket fra. Boet må også betale " + renteTillegg.format() +
+						Bokmal to " Det blir ".expr() + nettoTilbakekreving.format() + " kroner" +
+								ifElse(harFradragSkatt," etter at skatten er trukket fra.", ".") +
+								" Boet må også betale " + renteTillegg.format() +
 								" kroner i renter. Til sammen skal boet betale " + sumTilbakekreving.format() + " kroner.",
-						Nynorsk to " Dette utgjer ".expr() + nettoTilbakekreving.format() + " kroner etter at " +
-								"skatten er trekt frå. I tillegg må buet betale " + renteTillegg.format() +
+						Nynorsk to " Dette utgjer ".expr() + nettoTilbakekreving.format() + " kroner" +
+								ifElse(harFradragSkatt, " etter at skatten er trekt frå.", ".") +
+								" I tillegg må buet betale " + renteTillegg.format() +
 								" kroner i renter. Til saman skal buet betale " + sumTilbakekreving.format() + " kroner.",
-						English to " This is NOK ".expr() + nettoTilbakekreving.format() + " after tax. " +
-								"The estate must also pay NOK " + renteTillegg.format() + " in interest. In total, " +
-								"the estate is liable for NOK " + sumTilbakekreving.format() + "."
+						English to " This is NOK ".expr() + nettoTilbakekreving.format() +
+								ifElse(harFradragSkatt, " after tax.", ".") +
+								" The estate must also pay NOK " + renteTillegg.format() + " in interest. In total," +
+								" the estate is liable for NOK " + sumTilbakekreving.format() + "."
 					)
 				}.orShow {
 					textExpr(
-						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner etter at " +
-								"skatten er trukket fra.",
-						Nynorsk to " Dette utgjer ".expr() + sumTilbakekreving.format() + " kroner etter at " +
-								"skatten er trekt frå.",
-						English to " This is NOK ".expr() + sumTilbakekreving.format() + " after tax."
+						Bokmal to " Det blir ".expr() + sumTilbakekreving.format() + " kroner" +
+								ifElse(harFradragSkatt, " etter at skatten er trukket fra.", "."),
+						Nynorsk to " Dette utgjer ".expr() + sumTilbakekreving.format() + " kroner" +
+								ifElse(harFradragSkatt, " etter at skatten er trekt frå.", "."),
+						English to " This is NOK ".expr() + sumTilbakekreving.format() +
+								ifElse(harFradragSkatt, " after tax.", ".")
 					)
 				}
 			}
@@ -351,18 +367,22 @@ object TilbakekrevingFraser {
 			val feilutbetaling = tilbakekreving.summer.feilutbetaling
 			val fraOgMed = tilbakekreving.fraOgMed
 			val tilOgMed = tilbakekreving.tilOgMed
+			val harFradragSkatt = tilbakekreving.summer.fradragSkatt.greaterThan(0)
 
 			paragraph {
 				textExpr(
 					Bokmal to "Du har fått utbetalt for mye ".expr() + sakType.format() +
 							" fra " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Dette er " + feilutbetaling.format() + " kroner inkludert skatt.",
+							". Dette er " + feilutbetaling.format() + " kroner" +
+							ifElse(harFradragSkatt, " inkludert skatt.", "."),
 					Nynorsk to "Du har fått utbetalt for mykje ".expr() + sakType.format() +
 							" frå " + fraOgMed.format() + " til " + tilOgMed.format() +
-							". Dette er " + feilutbetaling.format() + " kroner inkludert skatt.",
+							". Dette er " + feilutbetaling.format() + " kroner" +
+							ifElse(harFradragSkatt, " inkludert skatt.", "."),
 					English to "You received too much in ".expr() + sakType.format() +
 							" from " + fraOgMed.format() + " to " + tilOgMed.format() +
-							". This amounts to NOK " + feilutbetaling.format() + " including tax.",
+							". This amounts to NOK " + feilutbetaling.format() +
+							ifElse(harFradragSkatt, " including tax.", "."),
 				)
 			}
 
