@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.maler.example.*
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Test
 
-class PensjonHTMLRendererTest {
+class HTMLDocumentRendererTest {
     @Test
     fun renderDesignReference() {
         Letter(

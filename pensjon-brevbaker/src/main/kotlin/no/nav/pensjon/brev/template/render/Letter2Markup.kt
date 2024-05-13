@@ -1,22 +1,30 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.*
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.Block.Paragraph
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.ParagraphContent.Text
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.ParagraphContent.Text.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.*
 import java.time.format.FormatStyle
 import java.util.*
 
 class LetterMarkdownRendererException(msg: String) : Exception(msg)
 
-object LetterMarkdownRenderer : LetterRenderer<RenderedLetterMarkdown>() {
-    private val languageSettings = pensjonHTMLSettings
+data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
-    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): RenderedLetterMarkdown =
-        RenderedLetterMarkdown(
-            title = renderText(scope, template.title).joinToString { it.text },
+object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
+    private val languageSettings = pensjonLatexSettings
+
+    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkup =
+        LetterWithAttachmentsMarkup(
+            letterMarkup = renderLetterOnly(scope, template),
+            attachments = renderAttachmentsOnly(scope, template)
+        )
+
+    fun renderLetterOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterMarkup =
+        LetterMarkup(
+            title = renderText(scope, template.title).joinToString(separator = "") { it.text },
             sakspart = Sakspart(
                 gjelderNavn = scope.felles.bruker.fulltNavn(),
                 gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
@@ -27,14 +35,27 @@ object LetterMarkdownRenderer : LetterRenderer<RenderedLetterMarkdown>() {
             // TODO: Attesterende saksbehandler må kunne være null for informasjonsskriv som ikke attesteres
             signatur = scope.felles.signerendeSaksbehandlere.let { sign ->
                 Signatur(
-                    hilsenTekst = renderText(scope, languageSettings.settings[LanguageSetting.Closing.greeting]!!).joinToString { it.text },
-                    saksbehandlerRolleTekst = renderText(scope, languageSettings.settings[LanguageSetting.Closing.saksbehandler]!!).joinToString { it.text },
+                    hilsenTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.greeting),
+                    saksbehandlerRolleTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.saksbehandler),
                     saksbehandlerNavn = sign?.saksbehandler ?: "",
                     attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler ?: "",
                     navAvsenderEnhet = scope.felles.avsenderEnhet.navn,
                 )
             }
         )
+
+    fun renderAttachmentsOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>) = buildList {
+        render(scope, template.attachments) { scope, _, attachment ->
+            add(
+                Attachment(
+                    renderText(scope, listOf(attachment.title)),
+                    renderOutline(scope, attachment.outline),
+                    attachment.includeSakspart,
+                )
+            )
+        }
+    }
+
 
     private fun renderOutline(scope: ExpressionScope<*>, outline: List<OutlineElement<*>>): List<Block> =
         buildList {
@@ -60,8 +81,8 @@ object LetterMarkdownRenderer : LetterRenderer<RenderedLetterMarkdown>() {
     private fun renderParagraphContent(scope: ExpressionScope<*>, element: Element.OutlineContent.ParagraphContent<*>): List<ParagraphContent> =
         when (element) {
             is Element.OutlineContent.ParagraphContent.Text -> renderTextContent(scope, element)
-            is Element.OutlineContent.ParagraphContent.ItemList -> listOf(renderItemList(scope, element))
-            is Element.OutlineContent.ParagraphContent.Table -> listOf(renderTable(scope, element))
+            is Element.OutlineContent.ParagraphContent.ItemList -> listOfNotNull(renderItemList(scope, element))
+            is Element.OutlineContent.ParagraphContent.Table -> listOfNotNull(renderTable(scope, element))
             is Element.OutlineContent.ParagraphContent.Form -> listOf(renderForm(scope, element))
         }
 
@@ -86,12 +107,14 @@ object LetterMarkdownRenderer : LetterRenderer<RenderedLetterMarkdown>() {
             )
         }
 
-    private fun renderTable(scope: ExpressionScope<*>, table: Element.OutlineContent.ParagraphContent.Table<*>): ParagraphContent.Table =
-        ParagraphContent.Table(
-            id = table.stableHashCode(),
-            rows = renderRows(scope, table.rows),
-            header = renderHeader(scope, table.header),
-        )
+    private fun renderTable(scope: ExpressionScope<*>, table: Element.OutlineContent.ParagraphContent.Table<*>): ParagraphContent.Table? =
+        renderRows(scope, table.rows).takeIf { it.isNotEmpty() }?.let { rows ->
+            ParagraphContent.Table(
+                id = table.stableHashCode(),
+                rows = renderRows(scope, table.rows),
+                header = renderHeader(scope, table.header),
+            )
+        }
 
     private fun renderHeader(scope: ExpressionScope<*>, header: Element.OutlineContent.ParagraphContent.Table.Header<*>): ParagraphContent.Table.Header =
         ParagraphContent.Table.Header(header.stableHashCode(), header.colSpec.map { columnSpec ->
@@ -116,12 +139,14 @@ object LetterMarkdownRenderer : LetterRenderer<RenderedLetterMarkdown>() {
     private fun renderCell(scope: ExpressionScope<*>, cell: Element.OutlineContent.ParagraphContent.Table.Cell<*>): ParagraphContent.Table.Cell =
         ParagraphContent.Table.Cell(cell.stableHashCode(), renderText(scope, cell.text))
 
-    private fun renderItemList(scope: ExpressionScope<*>, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList =
-        ParagraphContent.ItemList(itemList.stableHashCode(), buildList {
+    private fun renderItemList(scope: ExpressionScope<*>, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList? =
+        buildList {
             render(scope, itemList.items) { inner, item ->
                 add(ParagraphContent.ItemList.Item(item.stableHashCode(), renderText(inner, item.text)))
             }
-        })
+        }.takeIf { it.isNotEmpty() }?.let { items ->
+            ParagraphContent.ItemList(itemList.stableHashCode(), items)
+        }
 
     private fun renderTextContent(scope: ExpressionScope<*>, element: Element.OutlineContent.ParagraphContent.Text<*>): List<Text> {
         val fontType = renderFontType(element.fontType)
@@ -129,7 +154,7 @@ object LetterMarkdownRenderer : LetterRenderer<RenderedLetterMarkdown>() {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(scope.language).toContent(scope, fontType)
             is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toContent(scope, fontType)
             is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(Literal(element.stableHashCode(), element.text(scope.language), fontType))
-            is Element.OutlineContent.ParagraphContent.Text.NewLine -> throw LetterMarkdownRendererException("Can't render unsupported element: NewLine")
+            is Element.OutlineContent.ParagraphContent.Text.NewLine -> listOf(NewLine(element.stableHashCode()))
         }
     }
 

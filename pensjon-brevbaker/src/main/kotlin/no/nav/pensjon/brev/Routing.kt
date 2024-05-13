@@ -10,12 +10,18 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.micrometer.core.instrument.Tag
-import no.nav.pensjon.brev.api.*
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.LetterResource
+import no.nav.pensjon.brev.api.description
+import no.nav.pensjon.brev.api.model.AutobrevRequest
+import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.RedigerbartbrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.TemplateModelSpecification
-import no.nav.pensjon.brev.template.render.*
+import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
+import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateDescription
 import no.nav.pensjon.etterlatte.etterlatteRouting
@@ -106,7 +112,11 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
                     call.application.log.info("Received /letter/autobrev request")
 
                     val letter = letterResource.create(letterRequest)
-                    val latexLetter = PensjonLatexRenderer.render(letter)
+
+                    val latexLetter = Letter2Markup.render(letter).let {
+                        LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter.language, letter.felles, letter.template.letterMetadata.brevtype)
+                    }
+
                     call.application.log.info("Latex compiled: sending to pdf-bygger")
                     val pdfBase64 = latexCompilerService.producePDF(latexLetter, call.callId)
 
@@ -121,7 +131,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
                 post("/redigerbar") {
                     val letterRequest = call.receive<RedigerbartbrevRequest>()
 
-                    call.respond(LetterMarkdownRenderer.render(letterResource.create(letterRequest)))
+                    call.respond(Letter2Markup.render(letterResource.create(letterRequest)))
                 }
 
             }

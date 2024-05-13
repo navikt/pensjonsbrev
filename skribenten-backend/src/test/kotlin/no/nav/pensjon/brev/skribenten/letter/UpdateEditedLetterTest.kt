@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.skribenten.letter
 
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.*
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.Block.Paragraph
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.Block.Title1
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.ParagraphContent.ItemList
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.ParagraphContent.ItemList.Item
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.ParagraphContent.Text.Literal
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.ParagraphContent.Text.Variable
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList.Item
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -712,7 +712,7 @@ class UpdateRenderedLetterTest {
     }
 
     private fun letter(vararg blocks: Block) =
-        RenderedLetterMarkdown(
+        LetterMarkup(
             title = "En tittel",
             sakspart = Sakspart("Test Testeson", "1234568910", "1234", "20.12.2022"),
             blocks = blocks.toList(),

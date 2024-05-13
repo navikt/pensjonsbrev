@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.text
 
 object LanguageSetting {
     object Sakspart {
@@ -23,7 +23,7 @@ object LanguageSetting {
 
 val pensjonLatexSettings = languageSettings {
     setting(LanguageSetting.Sakspart.navn) {
-        text(
+        Literal.create(
             Bokmal to "Navn:",
             Nynorsk to "Namn:",
             English to "Name:",
@@ -31,7 +31,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Sakspart.vergenavn) {
-        text(
+        Literal.create(
             Bokmal to "Verge:",
             Nynorsk to "Verje:",
             English to "Guardian:",
@@ -39,7 +39,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Sakspart.gjelderNavn) {
-        text(
+        Literal.create(
             Bokmal to "Saken gjelder:",
             Nynorsk to "Saka gjeld:",
             English to "Case regarding:",
@@ -47,7 +47,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Sakspart.saksnummer) {
-        text(
+        Literal.create(
             Bokmal to "Saksnummer:",
             Nynorsk to "Saksnummer:",
             English to "Case number:",
@@ -55,7 +55,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Sakspart.foedselsnummer) {
-        text(
+        Literal.create(
             Bokmal to "Fødselsnummer:",
             Nynorsk to "Fødselsnummer:",
             English to "National identity number:",
@@ -63,7 +63,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting("sidesaksnummerprefix") {
-        text(
+        Literal.create(
             Bokmal to "saksnummer: ",
             Nynorsk to "saksnummer: ",
             English to "case number: ",
@@ -71,7 +71,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting("sideprefix") {
-        text(
+        Literal.create(
             Bokmal to "side",
             Nynorsk to "side",
             English to "page",
@@ -79,7 +79,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting("sideinfix") {
-        text(
+        Literal.create(
             Bokmal to "av",
             Nynorsk to "av",
             English to "of",
@@ -87,7 +87,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Closing.greeting) {
-        text(
+        Literal.create(
             Bokmal to "Med vennlig hilsen",
             Nynorsk to "Med vennleg helsing",
             English to "Yours sincerely",
@@ -95,42 +95,42 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Closing.saksbehandler) {
-        text(
+        Literal.create(
             Bokmal to "Saksbehandler",
             Nynorsk to "Saksbehandlar",
             English to "Caseworker",
         )
     }
     setting(LanguageSetting.Closing.automatiskInformasjonsbrev) {
-        text(
+        Literal.create(
             Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
             Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
             English to "This letter has been processed automatically and is therefore not signed by an assessor.",
         )
     }
     setting(LanguageSetting.Closing.automatiskVedtaksbrev) {
-        text(
+        Literal.create(
             Bokmal to "Saken har blitt automatisk saksbehandlet. Vedtaksbrevet er derfor ikke underskrevet av saksbehandler.",
             Nynorsk to "Saken har blitt automatisk saksbehandla. Vedtaksbrevet er derfor ikkje underskriven av saksbehandlar.",
             English to "Your case has been processed automatically. The decision letter has therefore not been signed by an assessor.",
         )
     }
     setting("closingvedleggprefix") {
-        text(
+        Literal.create(
             Bokmal to "Vedlegg:",
             Nynorsk to "Vedlegg:",
             English to "Attachments:",
         )
     }
     setting("tablenextpagecontinuation") {
-        text(
+        Literal.create(
             Bokmal to "Tabellen fortsetter på neste side",
             Nynorsk to "Tabellen fortsett på neste side",
             English to "Continued on next page",
         )
     }
     setting("tablecontinuedfrompreviouspage") {
-        text(
+        Literal.create(
             Bokmal to "Fortsettelse fra forrige side",
             Nynorsk to "Fortsetjing frå førre side",
             English to "Continuation from previous page",

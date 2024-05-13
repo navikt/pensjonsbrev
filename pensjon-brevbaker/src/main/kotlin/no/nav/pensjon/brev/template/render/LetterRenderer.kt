@@ -1,6 +1,13 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+
+interface DocumentRenderer<R : Any> {
+    fun render(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>, language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype): R
+}
 
 abstract class LetterRenderer<R : Any> {
 
@@ -24,12 +31,12 @@ abstract class LetterRenderer<R : Any> {
         }
     }
 
-    protected open fun <C : Element<*>> render(scope: ExpressionScope<*>, elements: Collection<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*>, element: C) -> Unit) {
+    protected fun <C : Element<*>> render(scope: ExpressionScope<*>, elements: Collection<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*>, element: C) -> Unit) {
         elements.forEach { controlStructure(scope, it, renderBlock) }
     }
 
     @JvmName("renderAttachments")
-    protected fun render(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) {
+    fun render(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) {
         attachments.filter { it.predicate.eval(scope) }
             .mapIndexed { index, attachment -> renderAttachment(attachment.toScope(scope), index, attachment.template) }
     }

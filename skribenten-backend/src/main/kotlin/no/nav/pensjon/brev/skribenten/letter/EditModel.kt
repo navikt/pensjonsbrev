@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.pensjon.brev.skribenten.services.BrevbakerServiceException
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.Block
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.ParagraphContent
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 
 object Edit {
     data class Letter(val blocks: List<Block>, val deletedBlocks: Set<Int>)
@@ -133,7 +133,7 @@ object Edit {
     }
 }
 
-fun RenderedLetterMarkdown.toEdit(): Edit.Letter =
+fun LetterMarkup.toEdit(): Edit.Letter =
     Edit.Letter(blocks.toEdit(), emptySet())
 
 fun List<Block>.toEdit(): List<Edit.Block> =

@@ -19,7 +19,7 @@ private object AltTexts {
     )
 }
 
-object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
+object HTMLDocumentRenderer : LetterRenderer<HTMLDocument>() {
 
     private val languageSettings = pensjonHTMLSettings
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
@@ -40,8 +40,8 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         }
         """.trimIndent()
 
-    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): RenderedHtmlLetter =
-        RenderedHtmlLetter().apply {
+    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): HTMLDocument =
+        HTMLDocument().apply {
             newFile("index.html") {
                 appendLine("<!DOCTYPE html>").appendHTML().html {
                     lang = scope.language.locale().toLanguageTag()
@@ -89,7 +89,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
-                renderText(
+                renderTextContentWithoutStyle(
                     scope,
                     languageSettings.settings[LanguageSetting.Closing.greeting]!!
                 )
@@ -103,17 +103,17 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
                     signerende.attesterendeSaksbehandler?.takeIf { brevtype == VEDTAKSBREV }?.let {
                         div(classes("closing-saksbehandler")) {
                             div { text(it) }
-                            div { renderText(scope, saksbehandlerTekst) }
+                            div { renderTextContentWithoutStyle(scope, saksbehandlerTekst) }
                         }
                     }
                     div(classes("closing-saksbehandler")) {
                         div { text(signerende.saksbehandler) }
-                        div { renderText(scope, saksbehandlerTekst) }
+                        div { renderTextContentWithoutStyle(scope, saksbehandlerTekst) }
                     }
                 }
             } else {
                 div(classes("closing-automatisk")) {
-                    renderText(
+                    renderTextContentWithoutStyle(
                         scope,
                         languageSettings.settings[if (brevtype == VEDTAKSBREV) automatiskVedtaksbrev else automatiskInformasjonsbrev]!!
                     )
@@ -337,7 +337,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
                     LanguageSetting.Sakspart.saksnummer to scope.felles.saksnummer,
                 )
             }.forEach {
-                div(classes("sakspart-tittel")) { renderText(scope, languageSettings.settings[it.first]!!) }
+                div(classes("sakspart-tittel")) { renderTextContentWithoutStyle(scope, languageSettings.settings[it.first]!!) }
                 div(classes("sakspart-verdi")) { text(it.second) }
             }
         }

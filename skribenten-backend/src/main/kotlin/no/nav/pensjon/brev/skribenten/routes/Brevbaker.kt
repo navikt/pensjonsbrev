@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import no.nav.pensjon.brev.skribenten.letter.updatedEditedLetter
-import no.nav.pensjon.brevbaker.api.model.RenderedLetterMarkdown.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import org.slf4j.LoggerFactory
 
 

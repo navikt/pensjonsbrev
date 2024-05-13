@@ -38,7 +38,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
     suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
         client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult()
 
-    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: BrevbakerBrevdata): ServiceResult<RenderedLetterMarkdown> =
+    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: BrevbakerBrevdata): ServiceResult<LetterMarkup> =
         client.post(call, "/letter/redigerbar") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -70,53 +70,53 @@ object RenderedLetterMarkdownModule : SimpleModule() {
     private fun readResolve(): Any = RenderedLetterMarkdownModule
 
     init {
-        addDeserializer(RenderedLetterMarkdown.Block::class.java, blockDeserializer())
-        addDeserializer(RenderedLetterMarkdown.ParagraphContent::class.java, paragraphContentDeserializer())
-        addDeserializer(RenderedLetterMarkdown.ParagraphContent.Text::class.java, textContentDeserializer())
+        addDeserializer(LetterMarkup.Block::class.java, blockDeserializer())
+        addDeserializer(LetterMarkup.ParagraphContent::class.java, paragraphContentDeserializer())
+        addDeserializer(LetterMarkup.ParagraphContent.Text::class.java, textContentDeserializer())
     }
 
     private fun blockDeserializer() =
-        object : StdDeserializer<RenderedLetterMarkdown.Block>(RenderedLetterMarkdown.Block::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedLetterMarkdown.Block {
+        object : StdDeserializer<LetterMarkup.Block>(LetterMarkup.Block::class.java) {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.Block {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (RenderedLetterMarkdown.Block.Type.valueOf(node.get("type").textValue())) {
-                    RenderedLetterMarkdown.Block.Type.TITLE1 -> RenderedLetterMarkdown.Block.Title1::class.java
-                    RenderedLetterMarkdown.Block.Type.TITLE2 -> RenderedLetterMarkdown.Block.Title2::class.java
-                    RenderedLetterMarkdown.Block.Type.PARAGRAPH -> RenderedLetterMarkdown.Block.Paragraph::class.java
+                val type = when (LetterMarkup.Block.Type.valueOf(node.get("type").textValue())) {
+                    LetterMarkup.Block.Type.TITLE1 -> LetterMarkup.Block.Title1::class.java
+                    LetterMarkup.Block.Type.TITLE2 -> LetterMarkup.Block.Title2::class.java
+                    LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkup.Block.Paragraph::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }
         }
 
     private fun paragraphContentDeserializer() =
-        object : StdDeserializer<RenderedLetterMarkdown.ParagraphContent>(RenderedLetterMarkdown.ParagraphContent::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedLetterMarkdown.ParagraphContent {
+        object : StdDeserializer<LetterMarkup.ParagraphContent>(LetterMarkup.ParagraphContent::class.java) {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.ParagraphContent {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (RenderedLetterMarkdown.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    RenderedLetterMarkdown.ParagraphContent.Type.ITEM_LIST -> RenderedLetterMarkdown.ParagraphContent.ItemList::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.LITERAL -> RenderedLetterMarkdown.ParagraphContent.Text.Literal::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.VARIABLE -> RenderedLetterMarkdown.ParagraphContent.Text.Variable::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.TABLE -> RenderedLetterMarkdown.ParagraphContent.Table::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.FORM_TEXT -> RenderedLetterMarkdown.ParagraphContent.Form.Text::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.FORM_CHOICE -> RenderedLetterMarkdown.ParagraphContent.Form.MultipleChoice::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.NEW_LINE -> RenderedLetterMarkdown.ParagraphContent.Text.NewLine::class.java
+                val type = when (LetterMarkup.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                    LetterMarkup.ParagraphContent.Type.ITEM_LIST -> LetterMarkup.ParagraphContent.ItemList::class.java
+                    LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
+                    LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
+                    LetterMarkup.ParagraphContent.Type.TABLE -> LetterMarkup.ParagraphContent.Table::class.java
+                    LetterMarkup.ParagraphContent.Type.FORM_TEXT -> LetterMarkup.ParagraphContent.Form.Text::class.java
+                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> LetterMarkup.ParagraphContent.Form.MultipleChoice::class.java
+                    LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }
         }
 
     private fun textContentDeserializer() =
-        object : StdDeserializer<RenderedLetterMarkdown.ParagraphContent.Text>(RenderedLetterMarkdown.ParagraphContent.Text::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): RenderedLetterMarkdown.ParagraphContent.Text {
+        object : StdDeserializer<LetterMarkup.ParagraphContent.Text>(LetterMarkup.ParagraphContent.Text::class.java) {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.ParagraphContent.Text {
                 val node = p.codec.readTree<JsonNode>(p)
-                val clazz = when (val contentType = RenderedLetterMarkdown.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    RenderedLetterMarkdown.ParagraphContent.Type.LITERAL -> RenderedLetterMarkdown.ParagraphContent.Text.Literal::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.VARIABLE -> RenderedLetterMarkdown.ParagraphContent.Text.Variable::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.NEW_LINE -> RenderedLetterMarkdown.ParagraphContent.Text.NewLine::class.java
-                    RenderedLetterMarkdown.ParagraphContent.Type.TABLE,
-                    RenderedLetterMarkdown.ParagraphContent.Type.FORM_TEXT,
-                    RenderedLetterMarkdown.ParagraphContent.Type.FORM_CHOICE,
-                    RenderedLetterMarkdown.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("$contentType is not allowed in a text-only block.")
+                val clazz = when (val contentType = LetterMarkup.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                    LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
+                    LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
+                    LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
+                    LetterMarkup.ParagraphContent.Type.TABLE,
+                    LetterMarkup.ParagraphContent.Type.FORM_TEXT,
+                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE,
+                    LetterMarkup.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("$contentType is not allowed in a text-only block.")
                 }
                 return p.codec.treeToValue(node, clazz)
             }
