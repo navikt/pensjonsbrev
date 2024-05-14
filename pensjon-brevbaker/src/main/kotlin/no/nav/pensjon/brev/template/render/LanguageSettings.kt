@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.Literal
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.languageSettings
 
