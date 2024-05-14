@@ -65,9 +65,6 @@ private val generellSak0002 = SakSelection(
     "0002"
 )
 
-private val penSakTilgangTestsak = PenService.PenSakTilgang(testSak.saksId.toString(), listOf(testSak.enhetId))
-private val penSakTilgangVikafossen = PenService.PenSakTilgang(sakVikafossen.saksId.toString(), listOf(sakVikafossen.enhetId))
-
 
 class AuthorizeAnsattSakTilgangTest {
     init {
@@ -100,9 +97,6 @@ class AuthorizeAnsattSakTilgangTest {
         coEvery { hentSak(any(), "${sakVikafossen.saksId}") } returns ServiceResult.Ok(sakVikafossen)
         coEvery { hentSak(any(), "${generellSak0001.saksId}") } returns ServiceResult.Ok(generellSak0001)
         coEvery { hentSak(any(), "${generellSak0002.saksId}") } returns ServiceResult.Ok(generellSak0002)
-
-        coEvery { hentSaktilganger(any(), penSakTilgangTestsak.saksId) } returns ServiceResult.Ok(penSakTilgangTestsak)
-        coEvery { hentSaktilganger(any(), penSakTilgangVikafossen.saksId) } returns ServiceResult.Ok(penSakTilgangVikafossen)
     }
 
     private val server = embeddedServer(Netty, port = 0) {
@@ -160,16 +154,6 @@ class AuthorizeAnsattSakTilgangTest {
     fun `krever saksId path param`() = runBlocking {
         val response = client.get("/sak/noSak/123")
         assertEquals(HttpStatusCode.BadRequest, response.status)
-    }
-
-    @Test
-    fun `krever at ansatt har tilgang til sakens enhet`() = runBlocking {
-        coEvery {
-            navansattService.hentNavAnsattEnhetListe(any(), NAVIdent)
-        } returns ServiceResult.Ok(listOf(NAVEnhet("annen enhet", "annen enhet")))
-
-        val response = client.get("/sak/${testSak.saksId}")
-        assertEquals(HttpStatusCode.Forbidden, response.status)
     }
 
     @Test
@@ -253,7 +237,7 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
-        assertEquals("En feil oppstod ved henting av NAVEnheter for ansatt: $NAVIdent", response.bodyAsText())
+        assertEquals("Feil ved henting av enheter", response.bodyAsText())
     }
 
     @Test
