@@ -6,7 +6,6 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.NAME
@@ -18,7 +17,6 @@ import no.nav.pensjon.brev.skribenten.services.NAVEnhet
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
-import no.nav.pensjon.brev.skribenten.services.PenService.PenSakTilgang
 import no.nav.pensjon.brev.skribenten.services.PenService.SakSelection
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.slf4j.LoggerFactory
@@ -45,7 +43,6 @@ fun AuthorizeAnsattSakTilgang(
             val navIdent = principal.navIdent
 
             val sakDeferred = async { penService.hentSak(call, saksId) }
-            val sakTilgangerDeferred = async { penService.hentSaktilganger(call, saksId) }
             val navansattEnheterDeferred = async { navansattService.hentNavAnsattEnhetListe(call, navIdent) }
 
             val ikkeTilgang = sakDeferred.await().map { sak ->
@@ -55,8 +52,6 @@ fun AuthorizeAnsattSakTilgang(
                 // - Dette avslører at det finnes en sak for angitt saksId.
                 // - Men det avslører ikke at fodselsnummer eksisterer og at det er en adressebeskyttet person.
                 sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr, sak.sakType.behandlingsnummer), principal)
-                    ?: sjekkEnhetstilgang(navIdent, sakTilgangerDeferred, navansattEnheterDeferred)
-
             }.catch(::AuthAnsattSakTilgangResponse)
 
             if (ikkeTilgang != null) {
@@ -92,43 +87,6 @@ private fun sjekkAdressebeskyttelse(
             }
         }
     }
-
-private suspend fun sjekkEnhetstilgang(
-    navIdent: String,
-    penSakTilgangDeferred: Deferred<ServiceResult<PenSakTilgang>>,
-    navansattEnheterDeferred: Deferred<ServiceResult<List<NAVEnhet>>>,
-): AuthAnsattSakTilgangResponse? {
-    val navansattEnheter = navansattEnheterDeferred.await().map { it }
-        .catch { message, httpStatusCode ->
-            logger.error("En feil oppstod ved henting av PenSakTilgang under sjekk av enhetstilgang: $message. Httpstatus: $httpStatusCode")
-            if(httpStatusCode == HttpStatusCode.NotFound) {
-                return AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", HttpStatusCode.InternalServerError)
-            } else {
-                return AuthAnsattSakTilgangResponse("En feil oppstod ved henting av NAVEnheter for ansatt: $navIdent", httpStatusCode)
-            }
-        }
-
-    val penSakTilgang = penSakTilgangDeferred.await().map { it.idForEnheterMedTilgang }
-        .catch { message, httpStatusCode ->
-            logger.error("En feil oppstod ved henting av NAVEnhet under sjekk av enhetstilgang: $message. Httpstatus: $httpStatusCode")
-            if(httpStatusCode == HttpStatusCode.NotFound) {
-                return AuthAnsattSakTilgangResponse("En feil oppstod under henting av PEN sakstilganger for ansatt: $navIdent", HttpStatusCode.InternalServerError)
-            }
-             else {
-                return AuthAnsattSakTilgangResponse("En feil oppstod under henting av PEN sakstilganger for ansatt: $navIdent", httpStatusCode)
-            }
-        }
-
-    val sakId = penSakTilgangDeferred.await().map { it.saksId }
-
-    return when {
-        !harTilgangTilSakSinEnhet(navansattEnheter, penSakTilgang) -> {
-            logger.warn("Tilgang til sak: $sakId avvist for $navIdent: mangler tilgang til en av følgende: enheter $penSakTilgang")
-            AuthAnsattSakTilgangResponse("Mangler enhetstilgang til sak", HttpStatusCode.Forbidden)
-        }
-        else -> null // får tilgang
-    }
-}
 
 fun harTilgangTilSakSinEnhet(navAnsattEnheter: List<NAVEnhet>, penSakEnheter: List<String>): Boolean =
     penSakEnheter.any { sakEnhet -> navAnsattEnheter.any { sakEnhet == it.id } }
