@@ -31,7 +31,7 @@ jobs:
             pensjonsbrev:
               - 'pensjon-brevbaker-api-model/**'
   "release-common":
-    name: "build"
+    name: "brevbaker-api-model-common"
     runs-on: "ubuntu-latest"
     permissions:
       packages: write
@@ -57,7 +57,7 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
   "release-pensjon":
-    name: "build"
+    name: "pensjon-brevbaker-api-model"
     runs-on: "ubuntu-latest"
     permissions:
       packages: write
