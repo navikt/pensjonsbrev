@@ -1,5 +1,12 @@
 name: "Build and release pensjon-brevbaker-api-model"
 on:
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "pensjon-brevbaker-api-model/**"
+      - "brevbaker-api-model-common/**"
+      - ".github/workflows/brevbaker-api-model.yaml"
   push:
     branches:
       - "main"
@@ -14,7 +21,7 @@ jobs:
       common: ${{ steps.changes.outputs.common }}
       pensjonsbrev: ${{ steps.changes.outputs.pensjonsbrev }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: changes
         with:
@@ -29,7 +36,6 @@ jobs:
     permissions:
       packages: write
     needs: [ changes ]
-    if: ${{ needs.changes.outputs.common == 'true' }}
     steps:
       - uses: "actions/checkout@v4"
       - uses: "gradle/actions/wrapper-validation@v3"
@@ -45,6 +51,7 @@ jobs:
       - name: "compile and run tests"
         run: "./gradlew :brevbaker-api-model-common:build"
       - name: "Release maven artifact"
+        if: ${{ needs.changes.outputs.common == 'true' }}
         run: "./gradlew :brevbaker-api-model-common:publish"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
@@ -55,10 +62,7 @@ jobs:
     permissions:
       packages: write
     needs: [ release-common, changes ]
-    if: |
-      ${{ always() &&
-      needs.changes.outputs.pensjonsbrev == 'true' &&
-      (needs.release-common.result == 'success' || needs.release-common.result == 'skipped') }}
+    if: ${{ always() && (needs.release-common.result == 'success' || needs.release-common.result == 'skipped') }}
     steps:
       - uses: "actions/checkout@v4"
       - uses: "gradle/actions/wrapper-validation@v3"
@@ -76,6 +80,7 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven artifact"
+        if:  ${{ needs.changes.outputs.pensjonsbrev == 'true' }}
         run: "./gradlew :pensjon-brevbaker-api-model:publish"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
