@@ -51,7 +51,7 @@ jobs:
       - name: "compile and run tests"
         run: "./gradlew :brevbaker-api-model-common:build"
       - name: "Release maven artifact"
-        if: ${{ needs.changes.outputs.common == 'true' }}
+        if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.common == 'true' }}
         run: "./gradlew :brevbaker-api-model-common:publish"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
@@ -80,7 +80,7 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven artifact"
-        if:  ${{ needs.changes.outputs.pensjonsbrev == 'true' }}
+        if:  ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.pensjonsbrev == 'true' }}
         run: "./gradlew :pensjon-brevbaker-api-model:publish"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
