@@ -4,26 +4,27 @@ import no.nav.pensjon.brev.skribenten.services.Brevredigering.redigerbarBrevdata
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDateTime
 import java.util.UUID
 
 class BrevredigeringService {
-    fun hentBrevredigering(navident: String, saksid: String, brevkode: String): List<BrevredigeringDto> =
+    fun hentBrevredigering(opprettetAvNavident: String, saksid: String, brevkode: String): List<BrevredigeringDto> =
         transaction {
             Brevredigering.select {
-                Brevredigering.navident eq navident
+                Brevredigering.opprettetAvNavident eq opprettetAvNavident
                 Brevredigering.saksid eq saksid
                 Brevredigering.brevkode eq brevkode
             }.map { 
                 BrevredigeringDto(
                 it[Brevredigering.saksid], 
-                it[Brevredigering.navident], 
+                it[Brevredigering.opprettetAvNavident],
                 it[Brevredigering.brevkode],
                 RedigerbarBrevdataDto(it[redigerbarBrevdata].json))
             }
         }
     fun hentBrevredigering(navident: String): List<String> =
         transaction {
-            Brevredigering.select { Brevredigering.navident eq navident }.map { row -> row[Brevredigering.brevkode] }
+            Brevredigering.select { Brevredigering.opprettetAvNavident eq navident }.map { row -> row[Brevredigering.brevkode] }
         }
 
     fun lagreBrevredigering(
@@ -35,13 +36,15 @@ class BrevredigeringService {
     ) {
         transaction {
             Brevredigering.insert {
-                it[uuid] = UUID.randomUUID().toString()
+                it[eksternId] = UUID.randomUUID().toString()
                 it[this.saksid] = saksid
-                it[this.navident] = navident
+                it[this.opprettetAvNavident] = navident
                 it[this.brevkode] = brevkode
                 it[this.redigerbarBrevdata] = redigerbarBrevdata
                 it[laastForRedigering] = false
                 it[this.redigeresAvNavident] = redigeresAvNavident
+                it[this.opprettet] = LocalDateTime.now().toString()
+                it[this.sistredigert] = LocalDateTime.now().toString()
 
             }
         }
@@ -56,9 +59,9 @@ class BrevredigeringService {
     ) {
         transaction {
             Brevredigering.deleteWhere {
-                this.uuid eq uuid
+                this.eksternId eq uuid
                 this.saksid eq saksid
-                this.navident eq navident
+                this.opprettetAvNavident eq navident
                 this.brevkode eq brevkode
                 this.redigerbarBrevdata eq redigerbarBrevdata
             }
