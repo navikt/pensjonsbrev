@@ -6,14 +6,13 @@ import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.objectMapper
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
-import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
@@ -58,8 +57,7 @@ class TemplateResourceTest {
             fixtures,
             spraak,
             Fixtures.felles,
-        ).let { HTMLDocumentRenderer.render(it) }
-            .also { writeTestHTML(filnavn(etterlatteBrevKode, spraak), it) }
+        ).renderTestHtml(filnavn(etterlatteBrevKode, spraak))
     }
 
     private fun filnavn(etterlatteBrevKode: EtterlatteBrevKode, spraak: Language) =

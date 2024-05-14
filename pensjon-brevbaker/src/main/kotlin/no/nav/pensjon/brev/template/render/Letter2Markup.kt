@@ -9,8 +9,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.*
 import java.time.format.FormatStyle
 import java.util.*
 
-class LetterMarkdownRendererException(msg: String) : Exception(msg)
-
 data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
 object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {

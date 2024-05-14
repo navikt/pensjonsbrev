@@ -83,6 +83,9 @@ fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: Str
 }
 
 fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
-    writeTestHTML(htmlFileName, HTMLDocumentRenderer.render(this))
+    Letter2Markup.render(this)
+        .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, language, felles, template.letterMetadata.brevtype) }
+        .also { writeTestHTML(htmlFileName, it) }
+
     return this
 }

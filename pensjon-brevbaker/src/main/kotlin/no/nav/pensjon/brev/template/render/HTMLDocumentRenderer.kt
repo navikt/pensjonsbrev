@@ -2,24 +2,20 @@ package no.nav.pensjon.brev.template.render
 
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskInformasjonsbrev
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskVedtaksbrev
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import java.time.format.FormatStyle
 import java.util.*
 
-
-private object AltTexts {
-    val logo = Element.OutlineContent.ParagraphContent.Text.Literal.create(
-        Language.Bokmal to "NAV logo",
-        Language.Nynorsk to "NAV logo",
-        Language.English to "NAV logo",
-    )
-}
-
-object HTMLDocumentRenderer : LetterRenderer<HTMLDocument>() {
+object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     private val languageSettings = pensjonHTMLSettings
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
@@ -40,15 +36,15 @@ object HTMLDocumentRenderer : LetterRenderer<HTMLDocument>() {
         }
         """.trimIndent()
 
-    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): HTMLDocument =
+    override fun render(letter: LetterMarkup, attachments: List<Attachment>, language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype): HTMLDocument =
         HTMLDocument().apply {
             newFile("index.html") {
                 appendLine("<!DOCTYPE html>").appendHTML().html {
-                    lang = scope.language.locale().toLanguageTag()
+                    lang = language.locale().toLanguageTag()
                     head {
                         meta(charset = Charsets.UTF_8.name())
                         meta(name = "viewport", content = "width=device-width")
-                        title { renderTextWithoutStyle(scope, template.title) }
+                        title { text(letter.title) }
                         style { unsafe { fontBinary.forEach { raw(it) } } }
                         style { unsafe { raw(css) } }
                     }
@@ -58,21 +54,21 @@ object HTMLDocumentRenderer : LetterRenderer<HTMLDocument>() {
                                 img(
                                     classes = classes("logo"),
                                     src = navLogoImg,
-                                    alt = AltTexts.logo.text(scope.language)
+                                    alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo)
                                 )
                                 div(classes("brevhode")) {
-                                    renderSakspart(scope)
-                                    brevdato(scope)
+                                    renderSakspart(language, felles)
+                                    brevdato(language, felles)
                                 }
-                                h1(classes("tittel")) { renderText(scope, template.title) }
+                                h1(classes("tittel")) { text(letter.title) }
                                 div(classes("brevkropp")) {
-                                    renderOutline(scope, template.outline)
-                                    renderClosing(scope, template.letterMetadata.brevtype)
+                                    letter.blocks.forEach { renderBlock(it) }
+                                    renderClosing(language, felles, brevtype)
                                 }
                             }
-                            render(scope, template.attachments) { attachmentScope, _, attachment ->
+                            attachments.forEach {
                                 hr(classes("vedlegg"))
-                                renderAttachment(attachmentScope, attachment)
+                                renderAttachment(it, language, felles)
                             }
                         }
                     }
@@ -80,207 +76,165 @@ object HTMLDocumentRenderer : LetterRenderer<HTMLDocument>() {
             }
         }
 
-    private fun FlowContent.brevdato(scope: ExpressionScope<*>): Unit =
+    private fun FlowContent.brevdato(language: Language, felles: Felles): Unit =
         div(classes("brevdato")) {
-            text(scope.felles.dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)))
+            text(felles.dokumentDato.format(dateFormatter(language, FormatStyle.SHORT)))
         }
 
-    private fun FlowContent.renderClosing(scope: ExpressionScope<*>, brevtype: LetterMetadata.Brevtype) {
+    private fun FlowContent.renderClosing(language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype) {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
-                renderTextContentWithoutStyle(
-                    scope,
-                    languageSettings.settings[LanguageSetting.Closing.greeting]!!
-                )
+                text(languageSettings.getSetting(language, LanguageSetting.Closing.greeting))
             }
-            div(classes("closing-enhet")) { text(scope.felles.avsenderEnhet.navn) }
+            div(classes("closing-enhet")) { text(felles.avsenderEnhet.navn) }
 
-            val signerende = scope.felles.signerendeSaksbehandlere
+            val signerende = felles.signerendeSaksbehandlere
             if (signerende != null) {
                 div(classes("closing-manuell")) {
-                    val saksbehandlerTekst = languageSettings.settings[LanguageSetting.Closing.saksbehandler]!!
+                    val saksbehandlerTekst = languageSettings.getSetting(language, LanguageSetting.Closing.saksbehandler)
                     signerende.attesterendeSaksbehandler?.takeIf { brevtype == VEDTAKSBREV }?.let {
                         div(classes("closing-saksbehandler")) {
                             div { text(it) }
-                            div { renderTextContentWithoutStyle(scope, saksbehandlerTekst) }
+                            div { text(saksbehandlerTekst) }
                         }
                     }
                     div(classes("closing-saksbehandler")) {
                         div { text(signerende.saksbehandler) }
-                        div { renderTextContentWithoutStyle(scope, saksbehandlerTekst) }
+                        div { text(saksbehandlerTekst) }
                     }
                 }
             } else {
                 div(classes("closing-automatisk")) {
-                    renderTextContentWithoutStyle(
-                        scope,
-                        languageSettings.settings[if (brevtype == VEDTAKSBREV) automatiskVedtaksbrev else automatiskInformasjonsbrev]!!
-                    )
+                    if (brevtype == VEDTAKSBREV) {
+                        text(languageSettings.getSetting(language, automatiskVedtaksbrev))
+                    } else {
+                        text(languageSettings.getSetting(language, automatiskInformasjonsbrev))
+                    }
                 }
             }
         }
     }
 
-    private fun FlowContent.renderAttachment(scope: ExpressionScope<*>, template: AttachmentTemplate<*, *>): Unit =
+    private fun FlowContent.renderAttachment(attachment: Attachment, language: Language, felles: Felles): Unit =
         div(classes("vedlegg")) {
-            img(classes = classes("logo"), src = navLogoImg, alt = AltTexts.logo.text(scope.language))
-            h1(classes("tittel")) { renderText(scope, listOf(template.title)) }
-            if (template.includeSakspart) {
-                renderSakspart(scope)
+            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo))
+            h1(classes("tittel")) { renderText(attachment.title) }
+            if (attachment.includeSakspart) {
+                renderSakspart(language, felles)
             }
             div(classes("brevkropp")) {
-                renderOutline(scope, template.outline)
+                attachment.blocks.forEach { renderBlock(it) }
             }
         }
 
-    private fun FlowContent.renderOutline(scope: ExpressionScope<*>, outline: List<OutlineElement<*>>): Unit =
-        render(scope, outline) { outlineScope, element ->
-            renderOutlineContent(outlineScope, element)
+    private fun FlowContent.renderBlock(block: Block): Unit =
+        when (block) {
+            is Block.Paragraph -> renderParagraph(block)
+            is Block.Title1 -> h2(classes("title1")) { renderText(block.content) }
+            is Block.Title2 -> h3(classes("title2")) { renderText(block.content) }
         }
 
-    private fun FlowContent.renderOutlineContent(
-        scope: ExpressionScope<*>,
-        element: Element.OutlineContent<*>
-    ): Unit =
-        when (element) {
-            is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
-            is Element.OutlineContent.Title1 -> h2(classes("title1")) { renderText(scope, element.text) }
-            is Element.OutlineContent.Title2 -> h3(classes("title2")) { renderText(scope, element.text) }
-        }
-
-    private fun FlowContent.renderParagraph(
-        scope: ExpressionScope<*>,
-        paragraph: Element.OutlineContent.Paragraph<*>
-    ) {
+    private fun FlowContent.renderParagraph(paragraph: Block.Paragraph) {
         div(classes("paragraph")) {
-            render(scope, paragraph.paragraph) { pScope, element ->
-                renderParagraphContent(pScope, element)
-            }
+            paragraph.content.forEach { renderParagraphContent(it) }
         }
     }
 
-    private fun FlowContent.renderParagraphContent(
-        scope: ExpressionScope<*>,
-        element: Element.OutlineContent.ParagraphContent<*>
-    ) {
+    private fun FlowContent.renderParagraphContent(element: ParagraphContent) {
         when (element) {
-            is Element.OutlineContent.ParagraphContent.Form -> renderForm(scope, element)
-            is Element.OutlineContent.ParagraphContent.Text -> renderTextContent(scope, element)
-            is Element.OutlineContent.ParagraphContent.ItemList -> renderList(scope, element)
-            is Element.OutlineContent.ParagraphContent.Table -> renderTable(scope, element)
+            is ParagraphContent.Form -> renderForm(element)
+            is ParagraphContent.Text -> renderTextContent(element)
+            is ParagraphContent.ItemList -> renderList(element)
+            is ParagraphContent.Table -> renderTable(element)
         }
     }
 
-    private fun FlowOrPhrasingContent.renderText(scope: ExpressionScope<*>, elements: List<TextElement<*>>) {
-        render(scope, elements) { inner, text -> renderTextContent(inner, text) }
+    private fun FlowOrPhrasingContent.renderText(elements: List<ParagraphContent.Text>) {
+        elements.forEach { renderTextContent(it) }
     }
 
-    private fun FlowOrPhrasingContent.renderTextContent(
-        scope: ExpressionScope<*>,
-        element: Element.OutlineContent.ParagraphContent.Text<*>
-    ) {
+    private fun FlowOrPhrasingContent.renderTextContent(element: ParagraphContent.Text) {
         when (element.fontType) {
-            Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN -> renderTextContentWithoutStyle(scope, element)
-            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD -> span(classes("text-bold")) {
-                renderTextContentWithoutStyle(
-                    scope,
-                    element
-                )
+            FontType.PLAIN -> renderTextContentWithoutStyle(element)
+            FontType.BOLD -> span(classes("text-bold")) {
+                renderTextContentWithoutStyle(element)
             }
-
-            Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC -> span(classes("text-italic")) {
-                renderTextContentWithoutStyle(
-                    scope,
-                    element
-                )
+            FontType.ITALIC -> span(classes("text-italic")) {
+                renderTextContentWithoutStyle(element)
             }
         }
     }
 
-    private fun Tag.renderTextWithoutStyle(scope: ExpressionScope<*>, elements: List<TextElement<*>>) {
-        render(scope, elements) { inner, text -> renderTextContentWithoutStyle(inner, text) }
+    private fun Tag.renderTextWithoutStyle(elements: List<ParagraphContent.Text>) {
+        elements.forEach { renderTextContentWithoutStyle(it) }
     }
 
-    private fun Tag.renderTextContentWithoutStyle(
-        scope: ExpressionScope<*>,
-        element: Element.OutlineContent.ParagraphContent.Text<*>
-    ): Unit =
+    private fun Tag.renderTextContentWithoutStyle(element: ParagraphContent.Text) {
         when (element) {
-            is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> text(
-                element.expr(scope.language).eval(scope)
-            )
-
-            is Element.OutlineContent.ParagraphContent.Text.Expression -> text(element.expression.eval(scope))
-            is Element.OutlineContent.ParagraphContent.Text.Literal -> text(element.text(scope.language))
-            is Element.OutlineContent.ParagraphContent.Text.NewLine -> br
+            is ParagraphContent.Text.Variable -> text(element.text)
+            is ParagraphContent.Text.Literal -> text(element.text)
+            is ParagraphContent.Text.NewLine -> br
         }
+    }
 
-    private fun FlowContent.renderForm(
-        scope: ExpressionScope<*>,
-        element: Element.OutlineContent.ParagraphContent.Form<*>
-    ): Unit =
+    private fun FlowContent.renderForm(element: ParagraphContent.Form) {
         when (element) {
-            is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> {
+            is ParagraphContent.Form.MultipleChoice -> {
                 div(classes("form-choice")) {
-                    div { renderText(scope, listOf(element.prompt)) }
+                    div { renderText(element.prompt) }
                     element.choices.forEach {
                         div {
                             div(classes("form-choice-checkbox"))
-                            div { renderTextContent(scope, it) }
+                            div { renderText(it.text) }
                         }
                     }
                 }
             }
 
-            is Element.OutlineContent.ParagraphContent.Form.Text -> {
+            is ParagraphContent.Form.Text -> {
                 div(classes("form-text")) {
-                    div { renderText(scope, listOf(element.prompt)) }
+                    div { renderText(element.prompt) }
                     val size = when (element.size) {
-                        Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> "none"
-                        Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> "short"
-                        Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> "long"
+                        ParagraphContent.Form.Text.Size.NONE -> "none"
+                        ParagraphContent.Form.Text.Size.SHORT -> "short"
+                        ParagraphContent.Form.Text.Size.LONG -> "long"
                     }
                     div(classes("form-line-$size")) { }
                 }
             }
         }
+    }
 
-    private fun FlowContent.renderList(
-        scope: ExpressionScope<*>,
-        element: Element.OutlineContent.ParagraphContent.ItemList<*>
-    ) {
+    private fun FlowContent.renderList(element: ParagraphContent.ItemList) {
         ul {
-            render(scope, element.items) { listScope, content ->
-                li { renderText(listScope, content.text) }
+            element.items.forEach {
+                li { renderText(it.content) }
             }
         }
     }
 
-    private fun FlowContent.renderTable(
-        scope: ExpressionScope<*>,
-        element: Element.OutlineContent.ParagraphContent.Table<*>
-    ) {
+    private fun FlowContent.renderTable(table: ParagraphContent.Table) {
         // Small screen
         ul(classes("table")) {
-            render(scope, element.rows) { rowScope, row ->
+            table.rows.forEach { row ->
                 li {
                     div {
                         row.cells.forEachIndexed { index, cell ->
-                            val spec = element.header.colSpec[index]
+                            val spec = table.header.colSpec[index]
                             val textClasses = if (index == 0) classes("text-bold") else null
 
                             if (spec.headerContent.text.isEmpty()) {
-                                div { span(textClasses) { renderTextWithoutStyle(scope, cell.text) } }
+                                div { span(textClasses) { renderTextWithoutStyle(cell.text) } }
                                 div { }
                             } else {
                                 div {
                                     span(textClasses) {
-                                        renderTextWithoutStyle(scope, spec.headerContent.text)
+                                        renderTextWithoutStyle(spec.headerContent.text)
                                         text(":")
                                     }
                                 }
-                                div { span(textClasses) { renderTextWithoutStyle(rowScope, cell.text) } }
+                                div { span(textClasses) { renderTextWithoutStyle(cell.text) } }
                             }
                         }
                     }
@@ -291,22 +245,22 @@ object HTMLDocumentRenderer : LetterRenderer<HTMLDocument>() {
         table(classes("table")) {
             thead {
                 tr {
-                    element.header.colSpec.forEach {
+                    table.header.colSpec.forEach {
                         th(classes = classes(alignmentClass(it.alignment))) {
-                            colSpan = it.columnSpan.toString()
-                            renderText(scope, it.headerContent.text)
+                            colSpan = it.span.toString()
+                            renderText(it.headerContent.text)
                         }
                     }
                 }
             }
             tbody {
-                render(scope, element.rows) { rowScope, row ->
+                table.rows.forEach { row ->
                     tr {
                         row.cells.forEachIndexed { index, cell ->
-                            val spec = element.header.colSpec[index]
+                            val spec = table.header.colSpec[index]
                             td(classes = classes(alignmentClass(spec.alignment))) {
-                                colSpan = spec.columnSpan.toString()
-                                renderText(rowScope, cell.text)
+                                colSpan = spec.span.toString()
+                                renderText(cell.text)
                             }
                         }
                     }
@@ -318,27 +272,33 @@ object HTMLDocumentRenderer : LetterRenderer<HTMLDocument>() {
     private fun classes(vararg classes: String?): String =
         classes.filterNotNull().joinToString(" ") { "pensjonsbrev-$it" }
 
-    private fun alignmentClass(alignment: Element.OutlineContent.ParagraphContent.Table.ColumnAlignment): String =
+    private fun alignmentClass(alignment: ParagraphContent.Table.ColumnAlignment): String =
         when (alignment) {
-            Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT -> "text-left"
-            Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT -> "text-right"
+            ParagraphContent.Table.ColumnAlignment.LEFT -> "text-left"
+            ParagraphContent.Table.ColumnAlignment.RIGHT -> "text-right"
         }
 
-    private fun FlowContent.renderSakspart(scope: ExpressionScope<*>) =
+    private fun FlowContent.renderSakspart(language: Language, felles: Felles) =
         div(classes("sakspart")) {
-            with(scope.felles.bruker) {
+            with(felles.bruker) {
                 val navnPrefix =
-                    if (scope.felles.vergeNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
+                    if (felles.vergeNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
 
                 listOfNotNull(
-                    scope.felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
+                    felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
                     navnPrefix to fulltNavn(),
                     LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
-                    LanguageSetting.Sakspart.saksnummer to scope.felles.saksnummer,
+                    LanguageSetting.Sakspart.saksnummer to felles.saksnummer,
                 )
             }.forEach {
-                div(classes("sakspart-tittel")) { renderTextContentWithoutStyle(scope, languageSettings.settings[it.first]!!) }
+                div(classes("sakspart-tittel")) { text(languageSettings.getSetting(language, it.first)) }
                 div(classes("sakspart-verdi")) { text(it.second) }
             }
         }
+
+    private fun getResource(fileName: String): ByteArray =
+        this::class.java.getResourceAsStream("/$fileName")
+            ?.use { it.readAllBytes() }
+            ?: throw IllegalStateException("""Could not find resource /$fileName""")
+
 }

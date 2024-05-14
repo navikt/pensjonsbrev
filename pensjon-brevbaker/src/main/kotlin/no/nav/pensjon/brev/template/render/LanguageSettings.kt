@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.Literal
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.languageSettings
 
@@ -18,6 +19,10 @@ object LanguageSetting {
         const val greeting = "closinggreeting"
         const val saksbehandler = "closingsaksbehandlersuffix"
         const val automatiskInformasjonsbrev = "closingautomatisktextinfobrev"
+    }
+
+    object HTML {
+        const val altTextLogo = "altTextLogo"
     }
 }
 
@@ -138,4 +143,12 @@ val pensjonLatexSettings = languageSettings {
     }
 }
 
-val pensjonHTMLSettings = pensjonLatexSettings
+val pensjonHTMLSettings = languageSettings(pensjonLatexSettings) {
+    setting(LanguageSetting.HTML.altTextLogo) {
+        Literal.create(
+            Bokmal to "NAV logo",
+            Nynorsk to "NAV logo",
+            English to "NAV logo",
+        )
+    }
+}

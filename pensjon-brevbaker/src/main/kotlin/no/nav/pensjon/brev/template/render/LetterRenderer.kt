@@ -1,13 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-
-interface DocumentRenderer<R : Any> {
-    fun render(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>, language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype): R
-}
 
 abstract class LetterRenderer<R : Any> {
 
@@ -48,11 +41,6 @@ abstract class LetterRenderer<R : Any> {
         }
         return hasContent
     }
-
-    protected fun getResource(fileName: String): ByteArray =
-        this::class.java.getResourceAsStream("/$fileName")
-            ?.use { it.readAllBytes() }
-            ?: throw IllegalStateException("""Could not find resource /$fileName""")
 
     protected abstract fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): R
 

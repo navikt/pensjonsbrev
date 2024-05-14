@@ -23,7 +23,7 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
 
         val letter = letterResource.create(letterRequest)
         val pdfBase64 = Letter2Markup.render(letter)
-            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter.language, letter.felles, letter.template.letterMetadata.brevtype) }
+            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
             .let { latexCompilerService.producePDF(it, call.callId) }
 
         call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
@@ -38,7 +38,8 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
     post("/html") {
         val letterRequest = call.receive<EtterlatteBrevRequest>()
         val letter = letterResource.create(letterRequest)
-        val html = HTMLDocumentRenderer.render(letter)
+        val html = Letter2Markup.render(letter)
+            .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
 
         // egen response eller noe sånnt. Html brev går veldig fort å rendre.
         call.respond(HTMLResponse(html.base64EncodedFiles(), letter.template.letterMetadata))

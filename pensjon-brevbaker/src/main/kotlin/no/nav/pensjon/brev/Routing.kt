@@ -113,9 +113,8 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
 
                     val letter = letterResource.create(letterRequest)
 
-                    val latexLetter = Letter2Markup.render(letter).let {
-                        LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter.language, letter.felles, letter.template.letterMetadata.brevtype)
-                    }
+                    val latexLetter = Letter2Markup.render(letter)
+                        .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
 
                     call.application.log.info("Latex compiled: sending to pdf-bygger")
                     val pdfBase64 = latexCompilerService.producePDF(latexLetter, call.callId)
