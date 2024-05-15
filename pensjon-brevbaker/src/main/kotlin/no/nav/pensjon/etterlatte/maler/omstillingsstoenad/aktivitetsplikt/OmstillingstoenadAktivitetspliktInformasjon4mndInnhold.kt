@@ -1,15 +1,13 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt
 
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.LocalizedFormatter
-import no.nav.pensjon.brev.template.StableHash
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -115,7 +113,7 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 )
             }
 
-            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.UNDER_50_PROSENT)) {
+            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.UNDER_50_PROSENT) or aktivitetsgrad.equalTo(Aktivitetsgrad.IKKE_I_AKTIVITET)) {
                 paragraph {
                     text(
                         Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, må du melde deg som reell arbeidssøker hos NAV. Dette innebærer at du sender meldekort, er aktiv med å søke jobber, samt deltar på de kurs som NAV tilbyr.",
