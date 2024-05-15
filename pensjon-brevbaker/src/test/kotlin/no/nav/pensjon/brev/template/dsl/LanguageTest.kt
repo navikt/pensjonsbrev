@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.Literal
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -17,19 +18,17 @@ class LanguageTest {
 
         val expected = LanguageSettings(
             mapOf(
-                name to listOf(
-                    newText(
+                name to Literal.create(
                         Language.Bokmal to "123",
                         Language.Nynorsk to "234",
                         Language.English to "345",
-                    )
                 )
             )
         )
 
         val actual = languageSettings {
             setting(name) {
-                text(
+                Literal.create(
                     Language.Bokmal to "123",
                     Language.Nynorsk to "234",
                     Language.English to "345",
@@ -44,12 +43,12 @@ class LanguageTest {
     fun `languageSettings_setting adds element to name`() {
         val name = "greeting"
 
-        val element = newText(
+        val element = Literal.create(
             Language.Bokmal to "123",
             Language.Nynorsk to "234",
             Language.English to "345",
         )
-        val expected = LanguageSettings(mapOf(name to listOf(element)))
+        val expected = LanguageSettings(mapOf(name to element))
 
         val actual = languageSettings {
             setting(name, element)

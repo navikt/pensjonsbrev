@@ -1,9 +1,14 @@
 package no.nav.pensjon.brev.template.dsl
 
+import com.natpryce.hamkrest.assertion.assertThat
+import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Conditional
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.hasBlocks
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -183,5 +188,81 @@ class TemplateTableTest {
             )
         )
         assertEquals(expected, doc)
+    }
+
+    @Test
+    fun `table is not rendered when all the rows are filtered out`() {
+        val doc = outlineTestTemplate<Unit> {
+            title1 { text(Bokmal to "THIS TEXT SHOULD RENDER") }
+            paragraph {
+                table(
+                    header = {
+                        column {
+                            text(
+                                Bokmal to "This text should not render1",
+                            )
+                        }
+                    }
+                ) {
+                    showIf(false.expr()) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "This text should not render2",
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        val actual = Letter2Markup.render(Letter(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup
+        assertThat(
+            actual,
+            hasBlocks {
+                title1 { literal("THIS TEXT SHOULD RENDER") }
+                paragraph {  }
+            }
+        )
+    }
+
+    @Test
+    fun `all table elements are rendered`() {
+        val doc = outlineTestTemplate<Unit> {
+            paragraph {
+                table(
+                    header = {
+                        column {
+                            text(
+                                Bokmal to "This text should render 1",
+                            )
+                        }
+                    }
+                ) {
+                    showIf(true.expr()) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "This text should render 2",
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        assertThat(
+            Letter2Markup.render(Letter(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup,
+            hasBlocks {
+                paragraph {
+                    table {
+                        header { column { literal("This text should render 1") } }
+                        row { cell { literal("This text should render 2") } }
+                    }
+                }
+            }
+        )
     }
 }

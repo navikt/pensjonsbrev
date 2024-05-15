@@ -1,12 +1,18 @@
 package no.nav.pensjon.brev.template.dsl
 
+import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brev.Fixtures.felles
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.ForEachViewTestSelectors.ListArgumentSelectors.liste
 import no.nav.pensjon.brev.template.dsl.ForEachViewTestSelectors.ListArgumentSelectors.listeSelector
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.hasBlocks
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -17,15 +23,30 @@ class ForEachViewTest {
         val listen = listOf("hei", "ha det bra", "og", "goodbye")
         val actual = outlineTestTemplate<Unit> {
             val myList = listen.expr()
+            val str = 5.expr().format()
 
             paragraph {
                 forEach(myList) { x ->
                     eval(x)
                 }
             }
+            
+            repeat(3) {
+                title1 { eval(str) }
+            }
         }
 
-        Letter(actual, Unit, Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*listen.toTypedArray())
+        assertThat(
+            Letter2Markup.render(Letter(actual, Unit, Language.Bokmal, felles)).letterMarkup,
+            hasBlocks {
+                paragraph {
+                    listen.forEach { variable(it) }
+                }
+                repeat(3) {
+                    title1 { variable("5") }
+                }
+            },
+        )
     }
 
     @Test
@@ -42,8 +63,19 @@ class ForEachViewTest {
                 }
             }
         }
-        val allWords = listen.flatten()
-        Letter(actual, Unit, Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*allWords.toTypedArray())
+
+        assertThat(
+            Letter2Markup.render(Letter(actual, Unit, Language.Bokmal, felles)).letterMarkup,
+            hasBlocks {
+                paragraph {
+                    listen.forEach { nestedList ->
+                        nestedList.forEach { str ->
+                            variable(str)
+                        }
+                    }
+                }
+            }
+        )
     }
 
     data class Argument(val value: String)
@@ -68,8 +100,18 @@ class ForEachViewTest {
             }
         }
 
-        Letter(actual, Argument("Tja:"), Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*listen.map { "Tja:$it" }
-            .toTypedArray())
+        val render = Letter2Markup.render(Letter(actual, Argument("Tja:"), Language.Bokmal, felles))
+        assertThat(
+            render.letterMarkup,
+            hasBlocks {
+                paragraph {
+                    listen.forEach { str ->
+                        variable("Tja:")
+                        variable(str)
+                    }
+                }
+            }
+        )
     }
 
     @Test
@@ -87,10 +129,25 @@ class ForEachViewTest {
         }
         val expected = "1,1;1,2;2,1;2,2;"
 
-        Letter(template, Unit, Language.Bokmal, felles).assertRenderedLetterContainsAllOf(expected)
+        assertThat(
+            Letter2Markup.render(Letter(template, Unit, Language.Bokmal, felles)).letterMarkup,
+            hasBlocks {
+                paragraph {
+                    list.forEach { outer ->
+                        list.forEach { inner ->
+                            variable(outer)
+                            literal(",")
+                            variable(inner)
+                            literal(";")
+                        }
+                    }
+                }
+            }
+        )
     }
 
     data class ListArgument(val liste: List<String>)
+
     @TemplateModelHelpers
     object Helpers : HasModel<ListArgument>
 

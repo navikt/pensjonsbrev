@@ -24,12 +24,12 @@ abstract class LetterRenderer<R : Any> {
         }
     }
 
-    protected open fun <C : Element<*>> render(scope: ExpressionScope<*>, elements: Collection<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*>, element: C) -> Unit) {
+    protected fun <C : Element<*>> render(scope: ExpressionScope<*>, elements: Collection<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*>, element: C) -> Unit) {
         elements.forEach { controlStructure(scope, it, renderBlock) }
     }
 
     @JvmName("renderAttachments")
-    protected fun render(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) {
+    fun render(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) {
         attachments.filter { it.predicate.eval(scope) }
             .mapIndexed { index, attachment -> renderAttachment(attachment.toScope(scope), index, attachment.template) }
     }
@@ -41,11 +41,6 @@ abstract class LetterRenderer<R : Any> {
         }
         return hasContent
     }
-
-    protected fun getResource(fileName: String): ByteArray =
-        this::class.java.getResourceAsStream("/$fileName")
-            ?.use { it.readAllBytes() }
-            ?: throw IllegalStateException("""Could not find resource /$fileName""")
 
     protected abstract fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): R
 

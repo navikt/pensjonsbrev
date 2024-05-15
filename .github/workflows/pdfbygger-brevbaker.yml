@@ -126,7 +126,7 @@ jobs:
         with:
           filters: |
             latex:
-              - 'containerFiles/latex/**'
+              - 'pdf-bygger/containerFiles/latex/**'
 
   runIntegrationTests:
     name: "Integration tests"

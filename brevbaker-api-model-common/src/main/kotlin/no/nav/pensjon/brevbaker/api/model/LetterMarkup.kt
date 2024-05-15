@@ -1,7 +1,13 @@
 package no.nav.pensjon.brevbaker.api.model
 
 @Suppress("unused")
-data class RenderedLetterMarkdown(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
+data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
+
+    data class Attachment(
+        val title: List<ParagraphContent.Text>,
+        val blocks: List<Block>,
+        val includeSakspart: Boolean,
+    )
 
     data class Sakspart(val gjelderNavn: String, val gjelderFoedselsnummer: String, val saksnummer: String, val dokumentDato: String)
     data class Signatur(

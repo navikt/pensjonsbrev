@@ -1,8 +1,13 @@
 package no.nav.pensjon.brev.template.dsl
 
+import com.natpryce.hamkrest.assertion.assertThat
+import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.hasBlocks
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -81,7 +86,6 @@ class TemplateListTest {
             }
         }
 
-        @Suppress("INFERRED_TYPE_VARIABLE_INTO_POSSIBLE_EMPTY_INTERSECTION")
         val expected = outlineTestLetter(
             Content(
                     Element.OutlineContent.Paragraph(
@@ -107,6 +111,28 @@ class TemplateListTest {
         )
 
         Assertions.assertEquals(doc, expected)
+    }
+
+    @Test
+    fun `list is not rendered when items are filtered out`() {
+        val doc = outlineTestTemplate<Unit> {
+            title1 { text(Bokmal to "this text should render") }
+            paragraph {
+                list {
+                    showIf(false.expr()) {
+                        item { text(Bokmal to "This text should not render") }
+                    }
+                }
+            }
+        }
+
+        assertThat(
+            Letter2Markup.render(Letter(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup,
+            hasBlocks {
+                title1 { literal("this text should render") }
+                paragraph { }
+            }
+        )
     }
 
 }

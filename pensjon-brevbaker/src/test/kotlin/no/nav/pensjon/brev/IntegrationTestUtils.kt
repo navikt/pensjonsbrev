@@ -14,11 +14,12 @@ import no.nav.pensjon.brev.api.model.AutobrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.RenderedHtmlLetter
+import no.nav.pensjon.brev.template.render.HTMLDocument
 import java.nio.file.Path
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
-import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
+import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
+import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
+import no.nav.pensjon.brev.template.render.Letter2Markup
 import java.util.*
 import kotlin.io.path.Path
 
@@ -61,15 +62,17 @@ fun writeTestPDF(pdfFileName: String, pdf: String, path: Path = Path.of("build",
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
+private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(pdfFileName: String): Letter<ParameterType> {
-    PensjonLatexRenderer.render(this)
-//        .also { it.files.forEach { f -> f.writeTo(Path("build/latex_test/$pdfFileName").also { d ->  d.toFile().mkdirs() }) } }
-        .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0).producePDF(it, "test").base64PDF } }
+    Letter2Markup.render(this)
+        .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, language, felles, template.letterMetadata.brevtype) }
+        .let { runBlocking { laTeXCompilerService.producePDF(it, "test").base64PDF } }
         .also { writeTestPDF(pdfFileName, it) }
     return this
 }
 
-fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter, buildSubDir: String = "test_html") {
+fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: String = "test_html") {
     val dir = Path("build/$buildSubDir/$letterName")
     dir.toFile().mkdirs()
     htmlLetter.files.forEach { it.writeTo(dir) }
@@ -80,6 +83,9 @@ fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter, buildSubDi
 }
 
 fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
-    writeTestHTML(htmlFileName, PensjonHTMLRenderer.render(this))
+    Letter2Markup.render(this)
+        .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, language, felles, template.letterMetadata.brevtype) }
+        .also { writeTestHTML(htmlFileName, it) }
+
     return this
 }
