@@ -25,6 +25,7 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigstilling
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnhold
 import no.nav.pensjon.etterlatte.maler.klage.BlankettKlageinstans
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelsesbrevBruker
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingstoenadAktivitetspliktInformasjon4mndInnhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslagRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadAktivitetspliktVarselInnhold
@@ -77,6 +78,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OmstillingsstoenadVarselRedigerbartUtfall,
         OmstillingsstoenadInformasjonDoedsfall,
         OmstillingsstoenadAktivitetspliktVarselInnhold,
+        OmstillingstoenadAktivitetspliktInformasjon4mndInnhold,
         // Tilbakekreving
         TilbakekrevingInnhold,
         TilbakekrevingFerdig,
