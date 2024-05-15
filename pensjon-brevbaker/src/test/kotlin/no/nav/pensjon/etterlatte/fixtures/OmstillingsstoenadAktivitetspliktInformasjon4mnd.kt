@@ -6,5 +6,6 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.Omstil
 
 fun createOmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO() =
     OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO(
-        aktivitetsgrad = Aktivitetsgrad.IKKE_I_AKTIVITET
+        aktivitetsgrad = Aktivitetsgrad.UNDER_50_PROSENT,
+        utbetaling = false
     )
