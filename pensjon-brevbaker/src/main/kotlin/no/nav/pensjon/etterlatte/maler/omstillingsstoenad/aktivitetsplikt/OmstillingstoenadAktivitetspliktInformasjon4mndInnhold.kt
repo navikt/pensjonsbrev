@@ -6,17 +6,23 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.aktivitetsgrad
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.nasjonalEllerUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.redusertEtterInntekt
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.utbetaling
 
@@ -122,12 +128,42 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 )
             }
 
-            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.UNDER_50_PROSENT) or aktivitetsgrad.equalTo(Aktivitetsgrad.IKKE_I_AKTIVITET)) {
+            showIf(aktivitetsgrad.isOneOf(Aktivitetsgrad.UNDER_50_PROSENT, Aktivitetsgrad.IKKE_I_AKTIVITET) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)) {
                 paragraph {
                     text(
-                        Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, må du melde deg som reell arbeidssøker hos NAV. Dette innebærer at du sender meldekort, er aktiv med å søke jobber, samt deltar på de kurs som NAV tilbyr.",
-                        Nynorsk to "For å kunne få omstillingsstønad vidare må du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?».  Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du melde deg som reell arbeidssøkjar hos NAV. Dette inneber at du sender meldekort, er aktiv med å søkje jobbar, og deltek på kursa som NAV tilbyr.",
-                        English to "To receive an adjustment allowance in the future, you must increase your level of activity. See “How do I comply with the activity obligation?”.  If you do not undertake any of the other activities mentioned, you must register as a genuine job seeker with NAV. This means that you must send in the Employment Status Form, actively be looking for work, and participate in the courses offered by NAV.",
+                        Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  " +
+                                "Hvis du ikke gjør noen av de andre aktivitetene som er nevnt, må du dokumentere at du er arbeidssøker " +
+                                "via din lokale arbeidsformidling, eller på annen måte sannsynliggjøre at du er arbeidssøker.",
+                        Nynorsk to "TODO",
+                        English to "TODO",
+                    )
+                }
+
+                paragraph {
+                    text(
+                        Bokmal to "Er det en grunn til at du ikke kan være reell arbeidssøker eller annet som oppfyller " +
+                                "aktivitetsplikten på minst 50 prosent, må du sende oss dokumentasjon på dette snarest mulig og " +
+                                "senest innen <DATO 5 MND. ETTER DØDSFALL>. Se “Unntak for aktivitetsplikten” under.",
+                        Nynorsk to "TODO",
+                        English to "TODO",
+                    )
+                }
+
+            }
+
+            showIf(aktivitetsgrad.isOneOf(Aktivitetsgrad.UNDER_50_PROSENT, Aktivitetsgrad.IKKE_I_AKTIVITET) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.NASJONAL)) {
+                paragraph {
+                    text(
+                        Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”. " +
+                                "Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, må du melde deg som reell arbeidssøker hos NAV. " +
+                                "Dette innebærer at du sender meldekort, er aktiv med å søke jobber, samt deltar på de kurs som NAV tilbyr.",
+                        Nynorsk to "For å kunne få omstillingsstønad vidare må du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?». " +
+                                "Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du melde deg som reell arbeidssøkjar hos NAV. " +
+                                "Dette inneber at du sender meldekort, er aktiv med å søkje jobbar, og deltek på kursa som NAV tilbyr.",
+                        English to "To receive an adjustment allowance in the future, you must increase your level of activity. " +
+                                "See “How do I comply with the activity obligation?”.  If you do not undertake any of the other activities mentioned, " +
+                                "you must register as a genuine job seeker with NAV. This means that you must send in the Employment Status Form, " +
+                                "actively be looking for work, and participate in the courses offered by NAV.",
                     )
                 }
 
@@ -141,9 +177,15 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
 
                 paragraph {
                     text(
-                        Bokmal to "Er det en grunn til at du ikke kan være reell arbeidssøker eller gjøre annet som oppfyller aktivitetsplikten på minst 50 prosent, må du sende oss dokumentasjon på dette snarest mulig og senest innen <DATO 5 MND. ETTER DØDSFALL>. Se “Unntak for aktivitetsplikten” under.",
-                        Nynorsk to "Viss det er ein grunn til at du ikkje kan vere reell arbeidssøkjar eller gjere anna som oppfyller aktivitetsplikta på minst 50 prosent, må du sende oss dokumentasjon på dette snarast mogleg og seinast innan <DATO 5 MND. ETTER DØDSFALL>. Sjå «Unntak frå aktivitetsplikta» under.",
-                        English to "If there is any reason why you are unable to be a genuine job seeker or do something else that fulfils the activity obligation of at least 50 percent, you must send us documentation of this as soon as possible and no later than <DATO 5 MND. ETTER DØDSFALL>. See “Exemption from the activity obligation” below.",
+                        Bokmal to "Er det en grunn til at du ikke kan være reell arbeidssøker eller gjøre annet som " +
+                                "oppfyller aktivitetsplikten på minst 50 prosent, må du sende oss dokumentasjon på dette " +
+                                "snarest mulig og senest innen <DATO 5 MND. ETTER DØDSFALL>. Se “Unntak for aktivitetsplikten” under.",
+                        Nynorsk to "Viss det er ein grunn til at du ikkje kan vere reell arbeidssøkjar eller gjere anna " +
+                                "som oppfyller aktivitetsplikta på minst 50 prosent, må du sende oss dokumentasjon på dette " +
+                                "snarast mogleg og seinast innan <DATO 5 MND. ETTER DØDSFALL>. Sjå «Unntak frå aktivitetsplikta» under.",
+                        English to "If there is any reason why you are unable to be a genuine job seeker or do something " +
+                                "else that fulfils the activity obligation of at least 50 percent, you must send us documentation " +
+                                "of this as soon as possible and no later than <DATO 5 MND. ETTER DØDSFALL>. See “Exemption from the activity obligation” below.",
                     )
                 }
             }
@@ -216,9 +258,15 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
             } orShow {
                 paragraph {
                     text(
-                        Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 59 310 kroner. Grunnbeløpet blir justert hvert år fra 1. mai.",
-                        Nynorsk to "For at du få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 59 310 kroner. Grunnbeløpet blir justert kvart år frå 1. mai.",
-                        English to "To receive the correct amount, you are obligated to inform us about any changes to your anticipated annual income that exceeds one half of the basic amount. This is currently NOK 59 310. The basic amount is adjusted on 1 May each year.",
+                        Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis " +
+                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 59 310 kroner. " +
+                                "Grunnbeløpet blir justert hvert år fra 1. mai.",
+                        Nynorsk to "For at du få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei " +
+                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 59 310 kroner. " +
+                                "Grunnbeløpet blir justert kvart år frå 1. mai.",
+                        English to "To receive the correct amount, you are obligated to inform us about any changes to " +
+                                "your anticipated annual income that exceeds one half of the basic amount. This is currently " +
+                                "NOK 59 310. The basic amount is adjusted on 1 May each year.",
                     )
                 }
             }
@@ -297,10 +345,10 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                         )
                     }
                     item {
-                        text(
-                            Bokmal to "være reell arbeidssøker",
-                            Nynorsk to "vere reell arbeidssøkjar",
-                            English to "being a genuine job seeker",
+                        textExpr(
+                            Bokmal to "være reell arbeidssøker".expr() + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)," i bostedslandet ditt", ""),
+                            Nynorsk to "vere reell arbeidssøkjar".expr(),
+                            English to "being a genuine job seeker".expr(),
                         )
                     }
                     item {
@@ -602,6 +650,16 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                             English to "send a letter to ${Constants.POSTADRESSE}",
                         )
                     }
+                }
+            }
+
+            showIf(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)){
+                paragraph {
+                    text(
+                        Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside ${Constants.NAV_URL}, må du sende dokumentasjonen i posten.",
+                        Nynorsk to "TODO",
+                        English to "TODO",
+                    )
                 }
             }
 
