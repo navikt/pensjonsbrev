@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
+import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brev.Fixtures.felles
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
@@ -8,6 +9,8 @@ import no.nav.pensjon.brev.template.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.dsl.NullBrevDtoSelectors.test2
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.hasBlocks
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
@@ -15,6 +18,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 data class NullBrevDto(val test1: String?, val test2: String?)
+
 @Suppress("unused")
 @TemplateModelHelpers
 object Helpers : HasModel<NullBrevDto>
@@ -42,7 +46,7 @@ class IfNotNullTest {
                     textExpr(
                         Bokmal to "hei: ".expr() + ting
                     )
-                }.orIfNotNull(test2){ ting ->
+                }.orIfNotNull(test2) { ting ->
                     textExpr(
                         Bokmal to "tall: ".expr() + ting
                     )
@@ -97,39 +101,71 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull renders successfully for non-null value`() {
-        Letter(template, NullBrevDto("Ole", null), Bokmal, felles)
-            .assertRenderedLetterContainsAllOf("alltid med", "hei: Ole")
+        assertThat(
+            Letter2Markup.render(Letter(template, NullBrevDto("Ole", null), Bokmal, felles)).letterMarkup,
+            hasBlocks {
+                paragraph {
+                    literal("alltid med")
+                    literal("hei: ")
+                    variable("Ole")
+                }
+            }
+        )
     }
 
     @Test
     fun `ifNotNull renders successfully but without null-block`() {
-        Letter(template, NullBrevDto(null, null), Bokmal, felles)
-            .assertRenderedLetterContainsAllOf("alltid med")
-            .assertRenderedLetterDoesNotContainAnyOf("hei: Ole")
+        assertThat(
+            Letter2Markup.render(Letter(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup,
+            hasBlocks {
+                paragraph {
+                    literal("alltid med")
+                }
+            }
+        )
     }
 
     @Nested
     @DisplayName("orIfNotNull")
-    inner class AbsoluteValue{
+    inner class AbsoluteValue {
         @Test
-        fun `renders when preceding condition is not met and orShowIf condition is met`(){
-            Letter(template, NullBrevDto(null, "138513"), Bokmal, felles)
-                .assertRenderedLetterContainsAllOf("alltid med", "tall: 138513")
-                .assertRenderedLetterDoesNotContainAnyOf("hei: Ole")
+        fun `renders when preceding condition is not met and orShowIf condition is met`() {
+            assertThat(
+                Letter2Markup.render(Letter(template, NullBrevDto(null, "138513"), Bokmal, felles)).letterMarkup,
+                hasBlocks {
+                    paragraph {
+                        literal("alltid med")
+                        literal("tall: ")
+                        variable("138513")
+                    }
+                }
+            )
         }
 
         @Test
-        fun `does not render when preceding condition met`(){
-            Letter(template, NullBrevDto("Ole", "138513"), Bokmal, felles)
-                .assertRenderedLetterContainsAllOf("alltid med", "hei: Ole")
-                .assertRenderedLetterDoesNotContainAnyOf("tall: 138513")
+        fun `does not render when preceding condition met`() {
+            assertThat(
+                Letter2Markup.render(Letter(template, NullBrevDto("Ole", "138513"), Bokmal, felles)).letterMarkup,
+                hasBlocks {
+                    paragraph {
+                        literal("alltid med")
+                        literal("hei: ")
+                        variable("Ole")
+                    }
+                }
+            )
         }
 
         @Test
-        fun `does not render when preceding condition is not met and orShowIf condition is not met`(){
-            Letter(template, NullBrevDto(null, null), Bokmal, felles)
-                .assertRenderedLetterContainsAllOf("alltid med")
-                .assertRenderedLetterDoesNotContainAnyOf("138513", "hei: Ole")
+        fun `does not render when preceding condition is not met and orShowIf condition is not met`() {
+            assertThat(
+                Letter2Markup.render(Letter(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup,
+                hasBlocks {
+                    paragraph {
+                        literal("alltid med")
+                    }
+                }
+            )
         }
     }
 

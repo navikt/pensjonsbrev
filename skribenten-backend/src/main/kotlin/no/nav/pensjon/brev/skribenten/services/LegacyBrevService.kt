@@ -22,12 +22,14 @@ class LegacyBrevService(
     suspend fun bestillOgRedigerDoksysBrev(
         call: ApplicationCall,
         request: BestillDoksysBrevRequest,
-        enhetsId: String,
         saksId: Long,
+        enhetsTilganger: List<NAVEnhet>,
     ): BestillOgRedigerBrevResponse =
         coroutineScope {
             val brevMetadata = async { brevmetadataService.getMal(request.brevkode) }
-            val result = bestillDoksysBrev(call, request, enhetsId, saksId)
+            manglerTilgangTilEnhet(request.enhetsId, enhetsTilganger)?.also { error: BestillOgRedigerBrevResponse -> return@coroutineScope error }
+
+            val result = bestillDoksysBrev(call, request, request.enhetsId, saksId)
             return@coroutineScope if (result.failureType != null) {
                 BestillOgRedigerBrevResponse(result)
             } else if (result.journalpostId == null) {
@@ -42,26 +44,34 @@ class LegacyBrevService(
             }
         }
 
+    private fun manglerTilgangTilEnhet(enhetsId: String, enhetsTilganger: List<NAVEnhet>): BestillOgRedigerBrevResponse? =
+        if (enhetsTilganger.any { enhet -> enhet.id == enhetsId }) {
+            null
+        } else {
+            BestillOgRedigerBrevResponse(ENHET_UNAUTHORIZED)
+        }
+
     suspend fun bestillOgRedigerExstreamBrev(
         call: ApplicationCall,
-        enhetsId: String,
         gjelderPid: String,
         request: BestillExstreamBrevRequest,
         saksId: Long,
+        enhetsTilganger: List<NAVEnhet>,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
+        manglerTilgangTilEnhet(request.enhetsId, enhetsTilganger)?.also { error: BestillOgRedigerBrevResponse -> return error }
 
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
         if (brevtittel.isNullOrBlank()) {
             return BestillOgRedigerBrevResponse(EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
         }
-        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent).resultOrNull()
+        val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent).resultOrNull()
             ?: return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
 
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
             call = call,
-            enhetsId = enhetsId,
+            enhetsId = request.enhetsId,
             gjelderPid = gjelderPid,
             idTSSEkstern = request.idTSSEkstern,
             isSensitive = request.isSensitive,
@@ -88,19 +98,21 @@ class LegacyBrevService(
 
     suspend fun bestillOgRedigerEblankett(
         call: ApplicationCall,
-        enhetsId: String,
         gjelderPid: String,
         request: BestillEblankettRequest,
         saksId: Long,
+        enhetsTilganger: List<NAVEnhet>,
     ): BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
-        val navansatt = navansattService.hentNavansatt(call , call.principal().navIdent).resultOrNull()
+        val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent).resultOrNull()
             ?: return BestillOgRedigerBrevResponse(NAVANSATT_MANGLER_NAVN)
+
+        manglerTilgangTilEnhet(request.enhetsId, enhetsTilganger)?.also { error: BestillOgRedigerBrevResponse -> return error }
 
         val result = bestillExstreamBrev(
             brevkode = request.brevkode,
             call = call,
-            enhetsId = enhetsId,
+            enhetsId = request.enhetsId,
             gjelderPid = gjelderPid,
             isSensitive = request.isSensitive,
             metadata = brevMetadata,
@@ -264,6 +276,7 @@ class LegacyBrevService(
         val brevkode: String,
         val spraak: SpraakKode,
         val vedtaksId: Long? = null,
+        val enhetsId: String,
     )
 
     data class BestillExstreamBrevRequest(
@@ -273,6 +286,7 @@ class LegacyBrevService(
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
         val brevtittel: String? = null,
+        val enhetsId: String,
     )
 
     data class BestillEblankettRequest(
@@ -280,6 +294,7 @@ class LegacyBrevService(
         val landkode: String,
         val mottakerText: String,
         val isSensitive: Boolean,
+        val enhetsId: String,
     )
 
     data class BestillBrevResponse(
@@ -373,6 +388,7 @@ class LegacyBrevService(
         SAF_ERROR,
         SKRIBENTEN_INTERNAL_ERROR,
         ENHETSID_MANGLER,
+        ENHET_UNAUTHORIZED,
         NAVANSATT_MANGLER_NAVN,
     }
 

@@ -2,10 +2,13 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 object Constants {
     const val NAV_URL = "nav.no"
+    const val ARBEID_URL = "$NAV_URL/arbeid"
     const val SAKSBEHANDLINGSTIDER_URL = "$NAV_URL/saksbehandlingstider"
     const val BARNEPENSJON_URL = "$NAV_URL/barnepensjon"
-    const val DIN_PENSJON_URL = "$NAV_URL}/dinpensjon"
+    const val DIN_PENSJON_URL = "$NAV_URL/dinpensjon"
+    const val FINN_JOBBENE_URL = "$NAV_URL/finn-jobbene"
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
+    const val HELSE_URL = "$NAV_URL/helse"
     const val UTBETALING_URL = "$NAV_URL/utbetalinger"
     const val UTBETALINGSDATOER_URL = "$NAV_URL/utbetalingsdatoer"
     const val SKRIVTILOSS_URL = "$NAV_URL/skrivtiloss"
@@ -15,6 +18,7 @@ object Constants {
     const val KLAGE_URL = "$NAV_URL/klage"
     const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelopet"
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
+    const val ETTERSENDE_OMS_URL = "$NAV_URL/ettersende#omstillingsstonad"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
     const val SKATTETREKK_ETTERBETALING_URL = "$NAV_URL/skattetrekk#etterbetaling"
     const val SKATTETREKK_KILDESKATT_URL = "$NAV_URL/skattetrekk#kildeskatt"

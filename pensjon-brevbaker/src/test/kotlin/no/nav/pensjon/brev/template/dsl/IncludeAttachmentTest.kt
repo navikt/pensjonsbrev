@@ -2,13 +2,20 @@ package no.nav.pensjon.brev.template.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.has
+import com.natpryce.hamkrest.isEmpty
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.IncludeAttachmentTestSelectors.NullDataSelectors.test
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import org.junit.jupiter.api.*
+import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.LetterWithAttachmentsMarkup
+import no.nav.pensjon.brev.template.render.hasAttachments
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 class IncludeAttachmentTest {
     @Test
@@ -99,14 +106,25 @@ class IncludeAttachmentTest {
         }
         @Test
         fun `attachment is not included when using includeAttachmentIfNotNull and attachmentData is null`(){
-            Letter(testTemplate, NullData(null), Nynorsk, Fixtures.felles)
-                .assertRenderedLetterDoesNotContainAnyOf("Test vedlegg")
+            assertThat(
+                Letter2Markup.render(Letter(testTemplate, NullData(null), Nynorsk, Fixtures.felles)),
+                has(LetterWithAttachmentsMarkup::attachments, isEmpty)
+            )
         }
 
         @Test
         fun `attachment is included when using includeAttachmentIfNotNull and attachmentData is not null`(){
-            Letter(testTemplate, NullData("testtekst"), Nynorsk, Fixtures.felles)
-                .assertRenderedLetterContainsAllOf("Test vedlegg")
+            assertThat(
+                Letter2Markup.render(Letter(testTemplate, NullData("testtekst"), Nynorsk, Fixtures.felles)),
+                hasAttachments {
+                    attachment {
+                        title { literal("Test vedlegg") }
+                        blocks {
+                            paragraph { literal("test") }
+                        }
+                    }
+                }
+            )
         }
     }
 

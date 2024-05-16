@@ -6,8 +6,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.FavouritesService
+import no.nav.pensjon.brev.skribenten.services.NavansattService
+import no.nav.pensjon.brev.skribenten.services.respondWithResult
 
-fun Route.meRoute() {
+fun Route.meRoute(navansattService: NavansattService) {
 
     val favouritesService = FavouritesService()
 
@@ -20,6 +22,9 @@ fun Route.meRoute() {
         }
         get("/favourites") {
             call.respond(favouritesService.getFavourites(principal().navIdent))
+        }
+        get("/enheter") {
+            respondWithResult(navansattService.hentNavAnsattEnhetListe(call, principal().navIdent))
         }
     }
 }

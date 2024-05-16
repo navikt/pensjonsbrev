@@ -33,14 +33,14 @@ jobs:
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
-      - uses: "actions/checkout@v3"
-      - uses: "gradle/wrapper-validation-action@v1"
-      - uses: "actions/cache@v3"
+      - uses: "actions/checkout@v4"
+      - uses: "gradle/actions/wrapper-validation@v3"
+      - uses: "actions/cache@v4"
         with:
           "path": "~/.gradle/caches"
           "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
           "restore-keys": "${{ runner.os }}-gradle-"
-      - uses: "actions/setup-java@v3"
+      - uses: "actions/setup-java@v4"
         with:
           "distribution": "temurin"
           "java-version": "17"
@@ -81,14 +81,14 @@ jobs:
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
-      - uses: "actions/checkout@v3"
-      - uses: "gradle/wrapper-validation-action@v1"
-      - uses: "actions/cache@v3"
+      - uses: "actions/checkout@v4"
+      - uses: "gradle/actions/wrapper-validation@v3"
+      - uses: "actions/cache@v4"
         with:
           "path": "~/.gradle/caches"
           "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
           "restore-keys": "${{ runner.os }}-gradle-"
-      - uses: "actions/setup-java@v3"
+      - uses: "actions/setup-java@v4"
         with:
           "distribution": "temurin"
           "java-version": "17"
@@ -120,13 +120,13 @@ jobs:
     outputs:
       latex: ${{ steps.changes.outputs.latex }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
             latex:
-              - 'containerFiles/latex/**'
+              - 'pdf-bygger/containerFiles/latex/**'
 
   runIntegrationTests:
     name: "Integration tests"
@@ -161,13 +161,13 @@ jobs:
       pull-requests: write
       packages: write
     steps:
-      - uses: "actions/checkout@v3"
-      - uses: "actions/cache@v3"
+      - uses: "actions/checkout@v4"
+      - uses: "actions/cache@v4"
         with:
           "path": "~/.gradle/caches"
           "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
           "restore-keys": "${{ runner.os }}-gradle-"
-      - uses: "actions/setup-java@v3"
+      - uses: "actions/setup-java@v4"
         with:
           "distribution": "temurin"
           "java-version": "17"
@@ -185,32 +185,31 @@ jobs:
           fail_if_no_tests: true
           fail_on_test_failures: true
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
-## TODO: Kommentert ut fordi ImageMagick-action har mistet støtte for PDF, venter på PR https://github.com/jruipinto/ImageMagick-action/pull/2
-#      - name: Convert visual-test pdfs
-#        uses: jruipinto/ImageMagick-action@v1
-#        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
-#        with:
-#          command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
-#      - uses: actions/setup-node@v3
-#        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
-#        with:
-#          node-version: '14'
-#      - run: npm install --save-dev @percy/cli
-#        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
-#      - name: Publish visual-tests to percy
-#        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
-#        run: |
-#          npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
-#          cat percy.log
-#          cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g' > percy-build-url
-#        env:
-#          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-#      - name: Comment percy review link
-#        uses: peter-evans/create-or-update-comment@v3
-#        if: ${{ needs.changes.outputs.latex == 'true' && github.event_name == 'pull_request' }}
-#        with:
-#          issue-number: ${{ github.event.number }}
-#          body-path: percy-build-url
+      - name: Convert visual-test pdfs
+        uses: routsi/ImageMagick-action@v1.1.1
+        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        with:
+          command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
+      - uses: actions/setup-node@v4
+        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        with:
+          node-version: '20'
+      - run: npm install --save-dev @percy/cli
+        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+      - name: Publish visual-tests to percy
+        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        run: |
+          npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
+          cat percy.log
+          cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g' > percy-build-url
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      - name: Comment percy review link
+        uses: peter-evans/create-or-update-comment@v4
+        if: ${{ needs.changes.outputs.latex == 'true' && github.event_name == 'pull_request' }}
+        with:
+          issue-number: ${{ github.event.number }}
+          body-path: percy-build-url
 
   "deployBrevbakerToDev":
     name: "Deploy brevbaker to dev"
@@ -221,7 +220,7 @@ jobs:
     needs: ["runIntegrationTests", "build-brevbaker"]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - name: "Deploy to DEV"
         uses: "nais/deploy/actions/deploy@v2"
         env:
@@ -240,7 +239,7 @@ jobs:
     needs: ["runIntegrationTests", "build-pdfbygger"]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - name: "Deploy to DEV"
         uses: "nais/deploy/actions/deploy@v2"
         env:
@@ -259,7 +258,7 @@ jobs:
     needs: ["runIntegrationTests", "build-brevbaker"]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - name: "Deploy to production"
         uses: "nais/deploy/actions/deploy@v2"
         env:
@@ -278,7 +277,7 @@ jobs:
     needs: ["runIntegrationTests", "build-pdfbygger"]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
       - name: "Deploy to production"
         uses: "nais/deploy/actions/deploy@v2"
         env:

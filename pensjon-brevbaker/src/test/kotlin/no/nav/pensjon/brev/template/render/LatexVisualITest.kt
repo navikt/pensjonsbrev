@@ -28,8 +28,10 @@ class LatexVisualITest {
             }
             outline { outlineInit() }
         }
-        Letter(template, Unit, Bokmal, Fixtures.fellesAuto)
-            .let { PensjonLatexRenderer.render(it) }
+        val letter = Letter(template, Unit, Bokmal, Fixtures.fellesAuto)
+
+        Letter2Markup.render(letter)
+            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter.language, letter.felles, letter.template.letterMetadata.brevtype) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF(testName, it, Path.of("build/test_visual/pdf")) }
     }

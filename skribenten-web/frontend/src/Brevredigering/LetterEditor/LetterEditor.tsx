@@ -21,7 +21,8 @@ export const LetterEditor = ({
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState | undefined>>;
 }) => {
-  const blocks = editorState.editedLetter.letter.blocks;
+  const letter = editorState.renderedLetter;
+  const blocks = letter.editedLetter.blocks;
 
   return (
     <div
@@ -34,7 +35,7 @@ export const LetterEditor = ({
       <EditorStateContext.Provider value={{ editorState, setEditorState }}>
         <EditorMenu />
         <div className="editor">
-          <SakspartView sakspart={editorState.editedLetter.letter.sakspart} />
+          <SakspartView sakspart={letter.sakspart} />
           <Heading
             css={css`
               margin: var(--a-spacing-8) 0;
@@ -42,7 +43,7 @@ export const LetterEditor = ({
             level="1"
             size="large"
           >
-            {editorState.editedLetter.letter.title}
+            {letter.title}
           </Heading>
           <div>
             {blocks.map((block, blockIndex) => (
@@ -51,7 +52,7 @@ export const LetterEditor = ({
               </div>
             ))}
           </div>
-          <SignaturView signatur={editorState.editedLetter.letter.signatur} />
+          <SignaturView signatur={letter.signatur} />
         </div>
         <DebugPanel />
       </EditorStateContext.Provider>

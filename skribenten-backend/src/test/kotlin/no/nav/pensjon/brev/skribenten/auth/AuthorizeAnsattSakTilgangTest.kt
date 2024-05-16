@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.isNullOrEmptyString
+import org.assertj.core.api.Assertions.assertThat
 import com.typesafe.config.ConfigValueFactory
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -26,14 +25,12 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.PenService.SakSelection
 import no.nav.pensjon.brev.skribenten.services.PenService.SakType.ALDER
-import no.nav.pensjon.brev.skribenten.services.PenService.SakType.GENRL
-import no.nav.pensjon.brev.skribenten.services.PenService.SakType.KRIGSP
 import java.time.LocalDate
 import java.time.Month
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 private const val NAVIdent = "månedens ansatt"
 private val testSakEnhet = NAVEnhet("en veldig bra enhet", "NAVs beste!")
@@ -67,6 +64,7 @@ private val generellSak0002 = SakSelection(
     PenService.SakType.GENRL,
     "0002"
 )
+
 
 class AuthorizeAnsattSakTilgangTest {
     init {
@@ -159,16 +157,6 @@ class AuthorizeAnsattSakTilgangTest {
     }
 
     @Test
-    fun `krever at ansatt har tilgang til sakens enhet`() = runBlocking {
-        coEvery {
-            navansattService.hentNavAnsattEnhetListe(any(), NAVIdent)
-        } returns ServiceResult.Ok(listOf(NAVEnhet("annen enhet", "annen enhet")))
-
-        val response = client.get("/sak/${testSak.saksId}")
-        assertEquals(HttpStatusCode.Forbidden, response.status)
-    }
-
-    @Test
     fun `krever at ansatt har gruppe for FortroligAdresse`() = runBlocking {
         coEvery {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
@@ -249,7 +237,7 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
-        assertEquals("En feil oppstod ved henting av NAVEnheter for ansatt: $NAVIdent", response.bodyAsText())
+        assertEquals("Feil ved henting av enheter", response.bodyAsText())
     }
 
     @Test
@@ -274,7 +262,7 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertThat(response.bodyAsText(), isNullOrEmptyString)
+        assertThat(response.bodyAsText()).isNullOrEmpty()
     }
 
     @Test
@@ -286,7 +274,7 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertThat(response.bodyAsText(), isNullOrEmptyString)
+        assertThat(response.bodyAsText()).isNullOrEmpty()
     }
 
     @Test
@@ -299,22 +287,19 @@ class AuthorizeAnsattSakTilgangTest {
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
     }
+
     @Test
-    fun `ansatt uten gruppe for 0001 og sakstype er generell og tilhorer enhet 0001 faar svar`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr, GENRL.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
-        every { principalMock.isInGroup(ADGroups.strengtFortroligUtland) } returns false
-        val response = client.get("/sak/${generellSak0001.saksId}")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(generellSak0001.saksId.toString()), response.bodyAsText())
+    fun `should return true if one of the penSakEnheter ids matches one of the navAnsattEnheter ids`() {
+        val navAnsattEnheter = listOf(NAVEnhet("1", "Enhet1"), NAVEnhet("2", "Enhet2"))
+        val penSakEnheter = listOf("2", "3")
+        assertTrue(harTilgangTilSakSinEnhet(navAnsattEnheter, penSakEnheter))
     }
 
     @Test
-    fun `ansatt uten gruppe for 0001 og sakstype er generell og tilhorer ikke enhet 0001 faar ikke tilgang`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr, GENRL.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
-        every { principalMock.isInGroup(ADGroups.strengtFortroligUtland) } returns false
-        val response = client.get("/sak/${generellSak0002.saksId}")
-        assertEquals(HttpStatusCode.Forbidden, response.status)
-        assertEquals("Mangler enhetstilgang til sak", response.bodyAsText())
+    fun `should return false if none of the penSakEnheter ids matches navAnsattEnheter ids`() {
+        val navAnsattEnheter = listOf(NAVEnhet("1", "Enhet1"), NAVEnhet("2", "Enhet2"))
+        val penSakEnheter = listOf("3", "4")
+        assertFalse(harTilgangTilSakSinEnhet(navAnsattEnheter, penSakEnheter))
     }
 
     private fun successResponse(saksId: String) =

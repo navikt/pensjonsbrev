@@ -9,9 +9,9 @@ import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
-import no.nav.pensjon.brev.template.render.PensjonJsonRenderer
-import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
+import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
+import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
+import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 private val letterResource = LetterResource()
@@ -22,7 +22,8 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         val letterRequest = call.receive<EtterlatteBrevRequest>()
 
         val letter = letterResource.create(letterRequest)
-        val pdfBase64 = PensjonLatexRenderer.render(letter)
+        val pdfBase64 = Letter2Markup.render(letter)
+            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
             .let { latexCompilerService.producePDF(it, call.callId) }
 
         call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
@@ -37,7 +38,8 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
     post("/html") {
         val letterRequest = call.receive<EtterlatteBrevRequest>()
         val letter = letterResource.create(letterRequest)
-        val html = PensjonHTMLRenderer.render(letter)
+        val html = Letter2Markup.render(letter)
+            .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
 
         // egen response eller noe sånnt. Html brev går veldig fort å rendre.
         call.respond(HTMLResponse(html.base64EncodedFiles(), letter.template.letterMetadata))
@@ -47,7 +49,7 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         val letterRequest = call.receive<EtterlatteBrevRequest>()
         val letter = letterResource.create(letterRequest)
 
-        call.respond(PensjonJsonRenderer.render(letter))
+        call.respond(Letter2Markup.render(letter).letterMarkup)
     }
 }
 

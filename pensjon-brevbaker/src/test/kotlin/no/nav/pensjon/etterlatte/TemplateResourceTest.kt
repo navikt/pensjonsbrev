@@ -6,14 +6,13 @@ import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.objectMapper
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
-import no.nav.pensjon.brev.template.render.PensjonJsonRenderer
-import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
-import no.nav.pensjon.brev.writeTestHTML
+import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
+import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
@@ -37,12 +36,10 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        Letter(
-            template,
-            fixtures,
-            spraak,
-            Fixtures.felles,
-        ).let { PensjonLatexRenderer.render(it) }
+        val letter = Letter(template, fixtures, spraak, Fixtures.felles, )
+
+        Letter2Markup.render(letter)
+            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter.language, letter.felles, letter.template.letterMetadata.brevtype) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF(filnavn(etterlatteBrevKode, spraak), it) }
     }
@@ -60,8 +57,7 @@ class TemplateResourceTest {
             fixtures,
             spraak,
             Fixtures.felles,
-        ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML(filnavn(etterlatteBrevKode, spraak), it) }
+        ).renderTestHtml(filnavn(etterlatteBrevKode, spraak))
     }
 
     private fun filnavn(etterlatteBrevKode: EtterlatteBrevKode, spraak: Language) =
@@ -90,7 +86,7 @@ class TemplateResourceTest {
             fixtures,
             spraak,
             Fixtures.felles,
-        ).let { PensjonJsonRenderer.render(it) }
+        ).let { Letter2Markup.render(it) }
             .also { json ->
                 Paths.get("build/test_json")
                     .also { Files.createDirectories(it) }

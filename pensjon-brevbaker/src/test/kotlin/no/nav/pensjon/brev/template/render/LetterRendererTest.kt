@@ -15,15 +15,15 @@ class LetterRendererTest {
 
     val letter = Letter(LetterExample.template, Fixtures.create<LetterExampleDto>(), Bokmal, felles)
 
-    class MockRenderer : LetterRenderer<RenderedHtmlLetter>() {
+    class MockRenderer : LetterRenderer<HTMLDocument>() {
         var letterScope: ExpressionScope<*>? = null
         var template: LetterTemplate<*, *>? = null
 
-        override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): RenderedHtmlLetter {
+        override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): HTMLDocument {
             letterScope = scope
             this.template = template
 
-            return RenderedHtmlLetter()
+            return HTMLDocument()
         }
 
         @JvmName("publicRenderOutlineContent")

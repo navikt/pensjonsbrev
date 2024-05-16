@@ -4,43 +4,43 @@ import no.nav.pensjon.brev.latex.LatexAppendable
 import java.nio.file.Path
 import java.util.*
 
-interface RenderedLetter {
+interface Document {
     fun base64EncodedFiles(): Map<String, String>
-    val files: List<RenderedFile>
+    val files: List<DocumentFile>
 }
 
 private val base64Encoder: Base64.Encoder = Base64.getEncoder()
 
-class RenderedLatexLetter : RenderedLetter {
-    private val _files: MutableList<RenderedFile> = mutableListOf()
-    override val files: List<RenderedFile>
+class LatexDocument : Document {
+    private val _files: MutableList<DocumentFile> = mutableListOf()
+    override val files: List<DocumentFile>
         get() = _files
 
     override fun base64EncodedFiles(): Map<String, String> {
         return _files.associate {
             when (it) {
-                is RenderedFile.Binary -> it.fileName to base64Encoder.encodeToString(it.content)
-                is RenderedFile.PlainText -> it.fileName to base64Encoder.encodeToString(it.content.toByteArray(Charsets.UTF_8))
+                is DocumentFile.Binary -> it.fileName to base64Encoder.encodeToString(it.content)
+                is DocumentFile.PlainText -> it.fileName to base64Encoder.encodeToString(it.content.toByteArray(Charsets.UTF_8))
             }
         }
     }
 
     private fun newPlainTextFile(fileName: String, writeToFile: Appendable.() -> Unit) =
-        _files.add(RenderedFile.PlainText(fileName, writeToFile))
+        _files.add(DocumentFile.PlainText(fileName, writeToFile))
 
     fun newLatexFile(fileName: String, writeToFile: LatexAppendable.() -> Unit) =
         newPlainTextFile(fileName) {
             LatexAppendable(this).apply(writeToFile)
         }
 
-    fun addFiles(newFiles: List<RenderedFile>) {
+    fun addFiles(newFiles: List<DocumentFile>) {
         _files.addAll(newFiles)
     }
 }
 
-class RenderedHtmlLetter : RenderedLetter {
-    private val _files: MutableList<RenderedFile.PlainText> = mutableListOf()
-    override val files: List<RenderedFile>
+class HTMLDocument : Document {
+    private val _files: MutableList<DocumentFile.PlainText> = mutableListOf()
+    override val files: List<DocumentFile>
         get() = _files
 
     override fun base64EncodedFiles(): Map<String, String> {
@@ -48,25 +48,25 @@ class RenderedHtmlLetter : RenderedLetter {
     }
 
     fun newFile(filename: String, writeToFile: Appendable.() -> Unit) {
-        _files.add(RenderedFile.PlainText(filename, writeToFile))
+        _files.add(DocumentFile.PlainText(filename, writeToFile))
     }
 
-    fun addFile(file: RenderedFile.PlainText) {
+    fun addFile(file: DocumentFile.PlainText) {
         _files.add(file)
     }
 }
 
-sealed class RenderedFile {
+sealed class DocumentFile {
     abstract val fileName: String
     abstract fun writeTo(path: Path)
 
-    class Binary(override val fileName: String, val content: ByteArray) : RenderedFile() {
+    class Binary(override val fileName: String, val content: ByteArray) : DocumentFile() {
         override fun writeTo(path: Path) {
             path.resolve(fileName).toFile().writeBytes(content)
         }
     }
 
-    class PlainText(override val fileName: String, val content: String) : RenderedFile() {
+    class PlainText(override val fileName: String, val content: String) : DocumentFile() {
         constructor(fileName: String, contentWriter: Appendable.() -> Unit) :
                 this(fileName, String(StringBuilder().apply(contentWriter)))
 

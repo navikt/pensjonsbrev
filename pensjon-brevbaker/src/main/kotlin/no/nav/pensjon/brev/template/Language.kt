@@ -9,11 +9,15 @@ typealias LangEnglish = LanguageSupport.Single<Language.English>
 typealias LangBokmalNynorsk = LanguageSupport.Double<Language.Bokmal, Language.Nynorsk>
 typealias LangBokmalNynorskEnglish = LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
 
-data class LanguageSettings(val settings: Map<String, List<TextElement<BaseLanguages>>>) {
+data class LanguageSettings(val settings: Map<String, Element.OutlineContent.ParagraphContent.Text.Literal<BaseLanguages>>) {
+    class MissingLanguageSettingException(msg: String) : Exception(msg)
 
-    fun writeLanguageSettings(writeSetting: (name: String, value: List<TextElement<BaseLanguages>>) -> Unit): Unit =
-        settings.entries.forEach { writeSetting(it.key, it.value) }
+    fun writeLanguageSettings(language: Language, writeSetting: (name: String, value: String) -> Unit): Unit =
+        settings.keys.forEach { name -> writeSetting(name, getSetting(language, name)) }
 
+    fun getSetting(language: Language, setting: String): String =
+        settings[setting]?.text(language)
+            ?: throw MissingLanguageSettingException(setting)
 }
 
 sealed class Language : StableHash {

@@ -5,6 +5,7 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import type {
   AnyBlock,
   Content,
+  Identifiable,
   Item,
   ItemList,
   LiteralValue,
@@ -17,18 +18,18 @@ import { ITEM_LIST, LITERAL, PARAGRAPH, TITLE1, VARIABLE } from "~/types/brevbak
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
-    editedLetter: {
-      deletedBlocks: [],
-      letter: {
-        title: "tittel",
-        sakspart: { gjelderNavn: "navn", gjelderFoedselsnummer: "123", saksnummer: "456", dokumentDato: "2022-01-01" },
-        signatur: {
-          hilsenTekst: "Mvh",
-          navAvsenderEnhet: "enhet",
-          saksbehandlerRolleTekst: "Saksbehandler",
-          saksbehandlerNavn: "navn",
-        },
+    renderedLetter: {
+      editedLetter: {
         blocks: blocks,
+        deletedBlocks: [],
+      },
+      title: "tittel",
+      sakspart: { gjelderNavn: "navn", gjelderFoedselsnummer: "123", saksnummer: "456", dokumentDato: "2022-01-01" },
+      signatur: {
+        hilsenTekst: "Mvh",
+        navAvsenderEnhet: "enhet",
+        saksbehandlerRolleTekst: "Saksbehandler",
+        saksbehandlerNavn: "navn",
       },
     },
     focus: { blockIndex: 0, contentIndex: 0 },
@@ -53,11 +54,12 @@ export function title(...content: TextContent[]): Title1Block {
   };
 }
 
-export function literal(text: string): LiteralValue {
+export function literal(text: string, editedText: string | null = null): LiteralValue {
   return {
     id: randomInt(1000),
     type: LITERAL,
     text,
+    editedText,
   };
 }
 
@@ -74,15 +76,20 @@ export function itemList(...items: Item[]): ItemList {
     id: randomInt(1000),
     type: ITEM_LIST,
     items,
+    deletedItems: [],
   };
 }
 
 export function item(...content: TextContent[]): Item {
-  return { content };
+  return { id: randomInt(1000), content };
+}
+
+export function asNew<T extends Identifiable>(c: T): T {
+  return { ...c, id: null };
 }
 
 export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex> & { blockIndex: number }): T {
-  const block = from.editedLetter.letter.blocks[id.blockIndex];
+  const block = from.renderedLetter.editedLetter.blocks[id.blockIndex];
 
   if (id.contentIndex == null) {
     return block as T;
