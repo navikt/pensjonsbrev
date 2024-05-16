@@ -78,7 +78,8 @@ class LetterModelSpecificationFactory(val from: KClass<*>) {
     }
 
     private fun createObjectTypeSpecification(type: KClass<*>): ObjectTypeSpecification =
-        type.primaryConstructor!!.parameters.associate { it.name!! to it.type.toFieldType() }
+        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType() }
+            ?: emptyMap()
 
     private fun KType.toFieldType(): FieldType {
         val theClassifier = classifier
@@ -102,6 +103,11 @@ class LetterModelSpecificationFactory(val from: KClass<*>) {
 
                 "java.time.LocalDate" ->
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE)
+
+                "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata" -> {
+                    toProcess.add(theClassifier)
+                    FieldType.Object(isMarkedNullable, qname)
+                }
 
                 else -> {
                     if (theClassifier.isData || theClassifier.isValue) {

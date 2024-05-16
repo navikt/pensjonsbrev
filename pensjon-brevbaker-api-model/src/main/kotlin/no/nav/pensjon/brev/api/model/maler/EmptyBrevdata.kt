@@ -2,4 +2,4 @@
 
 package no.nav.pensjon.brev.api.model.maler
 
-object EmptyBrevdata : BrevbakerBrevdata
+data object EmptyBrevdata : BrevbakerBrevdata
