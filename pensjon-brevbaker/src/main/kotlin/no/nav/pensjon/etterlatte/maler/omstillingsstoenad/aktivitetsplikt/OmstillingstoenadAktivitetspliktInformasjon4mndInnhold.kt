@@ -70,18 +70,18 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                         English to "LEGG TIL HVIS STØNADEN ER REDUSERT FOR INNTEKT: Your adjustment allowance is reduced based on your income from employment of NOK <FORVENTET INNTEKT TOTALT, AVRUNDET> per year. ",
                     )
                     text(
-                        Bokmal to "LEGG TIL HVIS STØNADEN ER IKKE REDUSERT FOR INNTEKT: Omstillingsstønaden din er i dag ikke redusert etter arbeidsinntekt eller annen inntekt som er likestilt med arbeidsinntekt.",
-                        Nynorsk to "LEGG TIL HVIS STØNADEN ER IKKE REDUSERT FOR INNTEKT: Omstillingsstønaden din er i dag ikkje redusert ut frå arbeidsinntekt eller anna inntekt som er likestilt med arbeidsinntekt.",
-                        English to "LEGG TIL HVIS STØNADEN ER IKKE REDUSERT FOR INNTEKT: Your current adjustment allowance is not reduced based on income from employment or other income that is equivalent to income from employment.",
+                        Bokmal to "LEGG TIL HVIS STØNADEN IKKE ER REDUSERT FOR INNTEKT: Omstillingsstønaden din er i dag ikke redusert etter arbeidsinntekt eller annen inntekt som er likestilt med arbeidsinntekt.",
+                        Nynorsk to "LEGG TIL HVIS STØNADEN IKKE ER REDUSERT FOR INNTEKT: Omstillingsstønaden din er i dag ikkje redusert ut frå arbeidsinntekt eller anna inntekt som er likestilt med arbeidsinntekt.",
+                        English to "LEGG TIL HVIS STØNADEN IKKE ER REDUSERT FOR INNTEKT: Your current adjustment allowance is not reduced based on income from employment or other income that is equivalent to income from employment.",
                     )
                 }
             } orShow {
                 paragraph {
                     text(
                         Bokmal to "Du er innvilget omstillingsstønad. Denne er i dag redusert etter en forventet " +
-                                "inntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET>. Du får derfor ikke utbetalt omstillingsstønad.",
+                                "inntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET> kroner. Du får derfor ikke utbetalt omstillingsstønad.",
                         Nynorsk to "Du er innvilga omstillingsstønad. Denne har i dag blitt redusert ut frå ei " +
-                                "forventa inntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET>. Du får difor ikkje utbetalt omstillingsstønad.",
+                                "forventa inntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET> kroner. Du får difor ikkje utbetalt omstillingsstønad.",
                         English to "You are granted adjustment allowance. Your adjustment allowance is reduced based " +
                                 "on your income from employment of NOK <FORVENTET INNTEKT TOTALT, AVRUNDET> per year. " +
                                 "You will therefore not receive any adjustment allowance.",
@@ -148,7 +148,7 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 }
             }
 
-            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT) and not(utbetaling)) {
+            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT) or not(utbetaling)) {
                 paragraph {
                     text(
                         Bokmal to "Hvis situasjonen din er endret, må du gi oss informasjon om din nye situasjon " +
