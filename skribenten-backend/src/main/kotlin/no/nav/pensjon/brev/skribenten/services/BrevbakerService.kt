@@ -30,7 +30,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
-                registerModule(RenderedLetterMarkdownModule)
+                registerModule(LetterMarkupModule)
             }
         }
     }
@@ -66,8 +66,8 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
 
 }
 
-object RenderedLetterMarkdownModule : SimpleModule() {
-    private fun readResolve(): Any = RenderedLetterMarkdownModule
+object LetterMarkupModule : SimpleModule() {
+    private fun readResolve(): Any = LetterMarkupModule
 
     init {
         addDeserializer(LetterMarkup.Block::class.java, blockDeserializer())

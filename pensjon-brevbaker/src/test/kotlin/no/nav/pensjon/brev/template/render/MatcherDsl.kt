@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.ListIndexMatcher
 import no.nav.pensjon.brev.isA
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 
@@ -70,41 +71,45 @@ class BlocksAssert(private val matchSize: Boolean) {
 
 @LetterMarkupMatcherDsl
 class ContentAssert {
-    private val contentMatchers = mutableListOf<Matcher<LetterMarkup.ParagraphContent>>()
+    private val contentMatchers = mutableListOf<Matcher<ParagraphContent>>()
 
-    fun variable(that: TextAssert<LetterMarkup.ParagraphContent.Text.Variable>.() -> Unit) {
-        contentMatchers.add(isA(LetterMarkup.ParagraphContent::type, "VARIABLE", TextAssert<LetterMarkup.ParagraphContent.Text.Variable>().apply(that).build()))
+    fun variable(that: TextAssert<ParagraphContent.Text.Variable>.() -> Unit) {
+        contentMatchers.add(isA(ParagraphContent::type, "VARIABLE", TextAssert<ParagraphContent.Text.Variable>().apply(that).build()))
     }
 
     fun variable(str: String) {
         contentMatchers.add(
-            isA(LetterMarkup.ParagraphContent::type, "VARIABLE", TextAssert<LetterMarkup.ParagraphContent.Text.Variable>().apply { text(str) }.build())
+            isA(ParagraphContent::type, "VARIABLE", TextAssert<ParagraphContent.Text.Variable>().apply { text(str) }.build())
         )
     }
 
-    fun literal(that: TextAssert<LetterMarkup.ParagraphContent.Text.Literal>.() -> Unit) {
+    fun literal(that: TextAssert<ParagraphContent.Text.Literal>.() -> Unit) {
         contentMatchers.add(
-            isA(LetterMarkup.ParagraphContent::type, "LITERAL", TextAssert<LetterMarkup.ParagraphContent.Text.Literal>().apply(that).build())
+            isA(ParagraphContent::type, "LITERAL", TextAssert<ParagraphContent.Text.Literal>().apply(that).build())
         )
     }
 
     fun literal(str: String) {
         contentMatchers.add(
-            isA(LetterMarkup.ParagraphContent::type, "LITERAL", TextAssert<LetterMarkup.ParagraphContent.Text.Literal>().apply { text(str) }.build())
+            isA(ParagraphContent::type, "LITERAL", TextAssert<ParagraphContent.Text.Literal>().apply { text(str) }.build())
         )
+    }
+
+    fun newLine() {
+        contentMatchers.add(isA(ParagraphContent::type, "NEW_LINE"))
     }
 
     fun table(that: TableAssert.() -> Unit) {
         contentMatchers.add(
-            isA(LetterMarkup.ParagraphContent::type, "TABLE", TableAssert().apply(that).build())
+            isA(ParagraphContent::type, "TABLE", TableAssert().apply(that).build())
         )
     }
 
     fun list(that: ListAssert.() -> Unit) {
-        contentMatchers.add(isA(LetterMarkup.ParagraphContent::type, "ITEM_LIST", ListAssert().apply(that).build()))
+        contentMatchers.add(isA(ParagraphContent::type, "ITEM_LIST", ListAssert().apply(that).build()))
     }
 
-    fun build(): Matcher<List<LetterMarkup.ParagraphContent>> =
+    fun build(): Matcher<List<ParagraphContent>> =
         ListIndexMatcher.forList(contentMatchers) and hasSize(equalTo(contentMatchers.size))
 }
 
@@ -155,7 +160,7 @@ class TableAssert {
 }
 
 @LetterMarkupMatcherDsl
-class TextAssert<T : LetterMarkup.ParagraphContent.Text> {
+class TextAssert<T : ParagraphContent.Text> {
     private val textMatchers = mutableListOf<Matcher<String>>()
 
     fun text(str: String) {
@@ -163,5 +168,5 @@ class TextAssert<T : LetterMarkup.ParagraphContent.Text> {
     }
 
     fun build(): Matcher<T> =
-        has(LetterMarkup.ParagraphContent.Text::text, allOf(textMatchers))
+        has(ParagraphContent.Text::text, allOf(textMatchers))
 }

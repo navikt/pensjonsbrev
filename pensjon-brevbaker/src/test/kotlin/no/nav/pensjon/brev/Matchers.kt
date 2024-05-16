@@ -1,15 +1,12 @@
 package no.nav.pensjon.brev
 
-import com.natpryce.hamkrest.MatchResult
-import com.natpryce.hamkrest.Matcher
-import com.natpryce.hamkrest.allOf
-import com.natpryce.hamkrest.describe
+import com.natpryce.hamkrest.*
 
 /**
  * An isA matcher with overrides for actual and expected type names.
  * Useful when type names are long, makes for a more readable test failure text.
  */
-inline fun <R : Any, reified T : R> isA(crossinline actualType: R.() -> Any, expectedType: String, downcastMatcher: Matcher<T>) =
+inline fun <R : Any, reified T : R> isA(crossinline actualType: R.() -> Any, expectedType: String, downcastMatcher: Matcher<T> = anything) =
     object : Matcher<R> {
         override fun invoke(actual: R) =
             if (actual is T) {

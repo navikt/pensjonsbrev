@@ -25,7 +25,7 @@ class LetterResource(val templateResource: TemplateResource = TemplateResource()
         return create(template, letterRequest.language.toLanguage(), letterRequest.letterData, letterRequest.felles)
     }
 
-    private fun create(template: LetterTemplate<*, out BrevbakerBrevdata>, language: Language, letterData: Any, felles: Felles): Letter<BrevbakerBrevdata> {
+    private fun create(template: LetterTemplate<*, out BrevbakerBrevdata>, language: Language, letterData: BrevbakerBrevdata, felles: Felles): Letter<BrevbakerBrevdata> {
         if (!template.language.supports(language)) {
             throw BadRequestException("Template '${template.name}' doesn't support language: $language")
         }
