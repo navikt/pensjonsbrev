@@ -20,15 +20,17 @@ class SamhandlerService(clientFactory: SamhandlerClientFactory) : TjenestebussSe
                     this.identKode = "TSS_EKSTERN_ID"
                 }
             )?.let {
+                if(it.postadresse == null) return HentSamhandlerAdresseResponseDto(NOT_FOUND)
+
                 HentSamhandlerAdresseResponseDto(
                     SamhandlerPostadresse(
                         navn = it.navn.trim(),
-                        linje1 = it.postadresse.adresselinje1?.trim(),
-                        linje2 = it.postadresse.adresselinje2?.trim(),
-                        linje3 = it.postadresse.adresselinje3?.trim(),
-                        postnr = it.postadresse.postnr?.trim(),
-                        poststed = it.postadresse.poststed?.trim(),
-                        land = it.postadresse.land.kode?.trim(),
+                        linje1 = it.postadresse?.adresselinje1?.trim(),
+                        linje2 = it.postadresse?.adresselinje2?.trim(),
+                        linje3 = it.postadresse?.adresselinje3?.trim(),
+                        postnr = it.postadresse?.postnr?.trim(),
+                        poststed = it.postadresse?.poststed?.trim(),
+                        land = it.postadresse?.land?.kode?.trim(),
                     )
                 )
             } ?: HentSamhandlerAdresseResponseDto(NOT_FOUND)
