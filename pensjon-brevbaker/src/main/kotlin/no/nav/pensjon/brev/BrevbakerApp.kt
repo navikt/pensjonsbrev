@@ -27,7 +27,7 @@ fun requireEnv(key: String) =
     System.getenv(key) ?: throw IllegalStateException("The environment variable $key is missing.")
 
 @Suppress("unused") // Referenced in application.conf
-fun Application.module() {
+fun Application.brevbakerModule() {
 
     environment.monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")

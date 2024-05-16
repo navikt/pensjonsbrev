@@ -130,7 +130,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
                 post("/redigerbar") {
                     val letterRequest = call.receive<RedigerbartbrevRequest>()
 
-                    call.respond(Letter2Markup.render(letterResource.create(letterRequest)))
+                    call.respond(Letter2Markup.render(letterResource.create(letterRequest)).letterMarkup)
                 }
 
             }
