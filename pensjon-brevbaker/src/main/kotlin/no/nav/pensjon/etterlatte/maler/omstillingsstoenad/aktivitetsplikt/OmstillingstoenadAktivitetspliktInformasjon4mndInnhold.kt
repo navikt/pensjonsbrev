@@ -59,13 +59,11 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                         Nynorsk to "Du har omstillingsstønad.",
                         English to "TODO",
                     )
-                    newline()
                     text(
                         Bokmal to "Legg til hvis stønaden er redusert for inntekt: Omstillingsstønaden din er redusert etter en arbeidsinntekt på <Forventet inntekt totalt, avrundet> kroner per år.",
                         Nynorsk to "Legg til hvis stønaden er redusert for inntekt: Omstillingsstønaden din har blitt redusert ut frå ei arbeidsinntekt på <Forventet inntekt totalt, avrundet> kroner per år.",
                         English to "TODO",
                     )
-                    newline()
                     text(
                         Bokmal to "Legg til hvis stønaden ikke er redusert for inntekt: Omstillingsstønaden din er i dag ikke redusert etter arbeidsinntekt eller annen inntekt som er likestilt med arbeidsinntekt.",
                         Nynorsk to "Legg til hvis stønaden ikke er redusert for inntekt: Omstillingsstønaden din er i dag ikkje redusert ut frå arbeidsinntekt eller anna inntekt som er likestilt med arbeidsinntekt.",
@@ -197,7 +195,8 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     Nynorsk to "HVIS STØNADEN ER REDUSERT ETTER INNTEKT",
                     English to "HVIS STØNADEN ER REDUSERT ETTER INNTEKT",
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis inntekten din endrer seg.",
                     Nynorsk to "For at du skal få rett utbetaling, er det viktig at du gir oss beskjed viss inntekta di endrar seg.",
@@ -212,7 +211,9 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     Nynorsk to "HVIS STØNADEN IKKE ER REDUSERT ETTER INNTEKT",
                     English to "HVIS STØNADEN IKKE ER REDUSERT ETTER INNTEKT",
                 )
-                newline()
+            }
+
+            paragraph {
                 text(
                     Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 59 310 kroner. Grunnbeløpet blir justert hvert år fra 1. mai.",
                     Nynorsk to "For at du få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 59 310 kroner. Grunnbeløpet blir justert kvart år frå 1. mai.",
