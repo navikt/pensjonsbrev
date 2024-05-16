@@ -1,9 +1,20 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.typesafe.config.Config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.serialization.json.Json
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -20,6 +31,12 @@ object Favourites : Table() {
 }
 
 val format = Json { prettyPrint = true }
+val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
+    registerModule(JavaTimeModule())
+    registerModule(RenderedLetterMarkdownModule)
+    registerModule(BrevbakerBrevdataModule)
+}
+
 
 @kotlinx.serialization.Serializable
 data class RedigerbarBrevdata(val json: String)
@@ -29,7 +46,8 @@ object Brevredigering : Table() {
     val eksternId: Column<String> = varchar("eksternId", length = 50)
     val saksid : Column<String> = varchar("saksid", length = 50)
     val brevkode: Column<String> = varchar("brevkode", length = 50)
-    val redigerbarBrevdata = json<RedigerbarBrevdata>("brevdata", format)
+    val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", objectMapper::writeValueAsString, objectMapper::readValue)
+    val redigertBrev = json<LetterMarkup>("redigertBrev", format)
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val redigeresAvNavident: Column<String?> = varchar("brevkode", length = 50).nullable()
     val opprettetAvNavident: Column<String> = varchar("opprettetAvNavident", length = 50)
@@ -63,3 +81,18 @@ private fun createJdbcUrl(config: Config): String =
         val dbName = getString("name")
         return "jdbc:postgresql://$url:$port/$dbName"
     }
+
+
+
+private object BrevbakerBrevdataModule : SimpleModule() {
+
+    private class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
+
+    init {
+        addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
+    }
+
+    private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): BrevbakerBrevdata = ctxt.readValue(parser, GenericBrevdata::class.java)
+    }
+}

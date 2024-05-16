@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.skribenten.services.Brevredigering.redigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.skribenten.services.Brevredigering.saksbehandlerValg
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -19,7 +20,7 @@ class BrevredigeringService {
                 it[Brevredigering.saksid], 
                 it[Brevredigering.opprettetAvNavident],
                 it[Brevredigering.brevkode],
-                RedigerbarBrevdataDto(it[redigerbarBrevdata].json))
+                it[saksbehandlerValg])
             }
         }
     fun hentBrevredigering(navident: String): List<String> =
@@ -32,7 +33,7 @@ class BrevredigeringService {
         navident: String,
         brevkode: String,
         redigeresAvNavident: String?,
-        redigerbarBrevdata: RedigerbarBrevdata
+        saksbehandlerValg: BrevbakerBrevdata
     ) {
         transaction {
             Brevredigering.insert {
@@ -40,7 +41,7 @@ class BrevredigeringService {
                 it[this.saksid] = saksid
                 it[this.opprettetAvNavident] = navident
                 it[this.brevkode] = brevkode
-                it[this.redigerbarBrevdata] = redigerbarBrevdata
+                it[this.saksbehandlerValg] = saksbehandlerValg
                 it[laastForRedigering] = false
                 it[this.redigeresAvNavident] = redigeresAvNavident
                 it[this.opprettet] = LocalDateTime.now().toString()
@@ -55,7 +56,7 @@ class BrevredigeringService {
         saksid: String,
         navident: String,
         brevkode: String,
-        redigerbarBrevdata: RedigerbarBrevdata
+        saksbehandlerValg: BrevbakerBrevdata
     ) {
         transaction {
             Brevredigering.deleteWhere {
@@ -63,7 +64,7 @@ class BrevredigeringService {
                 this.saksid eq saksid
                 this.opprettetAvNavident eq navident
                 this.brevkode eq brevkode
-                this.redigerbarBrevdata eq redigerbarBrevdata
+                this.saksbehandlerValg eq saksbehandlerValg
             }
         }
     }
@@ -73,7 +74,6 @@ data class BrevredigeringDto(
     val saksid: String,
     val navident: String,
     val brevkode: String,
-    val redigerbarBrevdata: RedigerbarBrevdataDto
+    val saksbehandlerValg: BrevbakerBrevdata
 )
 
-data class RedigerbarBrevdataDto(val json: String)

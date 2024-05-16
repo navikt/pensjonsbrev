@@ -72,6 +72,9 @@ fun Route.sakRoute(
                 }
             }
         }
+        route("/brevdata/{brevkode}") {
+
+        }
         get("/navn") {
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             respondWithResult(pdlService.hentNavn(call, sak.foedselsnr, sak.sakType.behandlingsnummer))
