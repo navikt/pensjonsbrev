@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -244,9 +245,13 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                 )
             }
         }
-        includeAttachment(dineRettigheterOgMulighetTilAaKlage, DineRettigheterOgMulighetTilAaKlageDto(
-            saktype = Sakstype.ALDER,
-            brukerUnder18Ar = false,
+        includeAttachment(
+            template = dineRettigheterOgMulighetTilAaKlage,
+            attachmentData = DineRettigheterOgMulighetTilAaKlageDto(
+                saktype = Sakstype.ALDER,
+                brukerUnder18Ar = false,
+            ).expr(),
+            predicate = true.expr()
         )
     }
 }
