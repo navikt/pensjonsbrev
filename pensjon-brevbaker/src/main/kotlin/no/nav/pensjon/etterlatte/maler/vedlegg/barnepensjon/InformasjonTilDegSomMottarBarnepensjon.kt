@@ -25,8 +25,8 @@ val informasjonTilDegSomMottarBarnepensjonNasjonal = createAttachment(
 ) {
     informasjon()
     postadresse(utland = false.expr())
-    endringAvKontonummerNasjonal()
     skattetrekkPaaBarnepensjonNasjonal()
+    endringAvKontonummerNasjonal()
 }
 
 @TemplateModelHelpers
@@ -40,9 +40,9 @@ val informasjonTilDegSomMottarBarnepensjonUtland = createAttachment(
 ) {
     informasjon()
     postadresse(utland = true.expr())
+    skattetrekkPaaBarnepensjonUtland()
     endringAvKontonummerUtland()
     utbetalingAvBarnepensjonUtland()
-    skattetrekkPaaBarnepensjonUtland()
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.informasjon() {
@@ -130,9 +130,23 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Du må kontakte Skatteetaten for å avklare om du bør endre skattekortet eller sende inn frivillig skattetrekk til NAV.",
-            Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at du har gitt beskjed om det. Kontakt Skatteetaten for å avklare om du bør endre skattekortet eller sende inn frivillig skattetrekk til NAV.",
-            English to "Children’s pension is taxable; however, we do not deduct tax if you do not notify us to do so. You must contact the Tax Administration to clarify whether you need to change your tax card or submit voluntary tax deductions to NAV.",
+            Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Du kan legge til et frivillig skattetrekk som en prosentandel av pensjonen eller som et fast beløp. Dette sikrer at skatten blir riktig og gir mindre risiko for restskatt. Har du spørsmål om størrelsen på skattetrekk på barnepensjonen må du ta kontakt med Skatteetaten.",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    paragraph {
+        text(
+            Bokmal to "Har du allerede registrert frivillig skattetrekk, må du selv sjekke om dette skattetrekket overføres ved årsskiftet.",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    paragraph {
+        text(
+            Bokmal to "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK}.",
+            Nynorsk to "",
+            English to "",
         )
     }
 }

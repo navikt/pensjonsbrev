@@ -2,9 +2,9 @@ package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
-import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
+import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
@@ -130,5 +130,6 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
 fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderingRedigerbartUtfallDTO(
     erEtterbetaling = true,
     harUtbetaling = false,
-    feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
+    feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
+    brukerUnder18Aar = true
 )

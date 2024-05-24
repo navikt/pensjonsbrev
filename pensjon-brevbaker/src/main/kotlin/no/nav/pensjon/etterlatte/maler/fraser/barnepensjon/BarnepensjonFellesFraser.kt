@@ -2,7 +2,6 @@ package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -166,6 +165,7 @@ object BarnepensjonFellesFraser {
 
     data class UtbetalingAvBarnepensjon(
         val etterbetaling: Expression<Boolean>,
+        val brukerUnder18Aar: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -182,6 +182,25 @@ object BarnepensjonFellesFraser {
                     English to "The pension is paid by the 20th of each month. You can find payout dates online: ${Constants.Engelsk.UTBETALINGSDATOER_URL}.",
                 )
             }
+
+            showIf(brukerUnder18Aar) {
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig. Du kan lese mer om skattetrekk i vedlegget “Informasjon til deg som handler på vegne av barnet”.",
+                        Nynorsk to "",
+                        English to "",
+                        )
+                }
+            } orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig. Du kan lese mer om skattetrekk i vedlegget “Informasjon til deg som mottar barnepensjon”.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+            }
+
             showIf(etterbetaling) {
                 paragraph {
                     text(
