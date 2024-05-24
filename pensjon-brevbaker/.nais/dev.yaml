@@ -19,6 +19,18 @@ preAuthorized:
   - name: penbatch
     namespace: pensjon-batch
     cluster: dev-fss
+  - name: penbatch-q0
+    namespace: pensjon-batch
+    cluster: dev-fss
+  - name: penbatch-q1
+    namespace: pensjon-batch
+    cluster: dev-fss
+  - name: penbatch-q2
+    namespace: pensjon-batch
+    cluster: dev-fss
+  - name: penbatch-q5
+    namespace: pensjon-batch
+    cluster: dev-fss
   - name: pensjon-pen-q5
     namespace: pensjon-q5
     cluster: dev-fss
