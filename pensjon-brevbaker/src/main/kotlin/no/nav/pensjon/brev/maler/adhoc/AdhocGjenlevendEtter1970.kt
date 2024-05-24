@@ -29,8 +29,8 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
         title {
             text(
                 Bokmal to "Gjenlevendepensjonen din opphører fra 1. januar 2027",
-                Nynorsk to "Attlevandepensjonen din blir stansa  frå 1. januar 2027",
-                English to "Your survivor's pension will cease from 1 January 2024"
+                Nynorsk to "Attlevandepensjonen din blir stansa frå 1. januar 2027",
+                English to "Your survivor's pension will cease from 1 January 2027"
             )
         }
         outline {
