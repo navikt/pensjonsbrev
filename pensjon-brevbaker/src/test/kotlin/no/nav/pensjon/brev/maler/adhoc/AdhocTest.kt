@@ -23,6 +23,15 @@ class AdhocTest {
     }
 
     @Test
+    fun `testAdhocGjenlevendEtter1970 pdf`() {
+        testAdhocPdf(
+            AdhocGjenlevendEtter1970.template,
+            pdfName = "PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970",
+            Bokmal, Nynorsk, English
+        )
+    }
+
+    @Test
     fun `testAdhocUfoeretrygdEtterbatalingDagpenger pdf`() {
         testAdhocPdf(
             AdhocUfoeretrygdEtterbetalingDagpenger.template,
