@@ -1,6 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -25,8 +24,8 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment(
 ) {
     informasjon()
     postadresse(utland = false.expr())
-    endringAvKontonummerNasjonal()
     skattetrekkPaaBarnepensjonNasjonal()
+    endringAvKontonummerNasjonal()
 }
 
 @TemplateModelHelpers
@@ -40,9 +39,9 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment(
 ) {
     informasjon()
     postadresse(utland = true.expr())
+    skattetrekkPaaBarnepensjonUtland()
     endringAvKontonummerUtland()
     utbetalingUtland()
-    skattetrekkPaaBarnepensjonUtland()
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.informasjon() {
@@ -161,9 +160,23 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Du må kontakte Skatteetaten for å avklare om du bør endre skattekortet eller sende inn frivillig skattetrekk til NAV.",
-            Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at du har gitt beskjed om det. Kontakt Skatteetaten for å avklare om du bør endre skattekortet eller sende inn frivillig skattetrekk til NAV.",
-            English to "Children’s pension is taxable; however, we do not deduct tax if you do not notify us to do so. You must contact the Tax Administration to clarify whether you need to change your tax card or submit voluntary tax deductions to NAV.",
+            Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Du kan legge til et frivillig skattetrekk som en prosentandel av pensjonen eller som et fast beløp. Dette sikrer at skatten blir riktig og gir mindre risiko for restskatt. Har du spørsmål om størrelsen på skattetrekk på barnepensjonen må du ta kontakt med Skatteetaten.",
+            Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt av beløpet utan at det er avtalt. Du kan leggje til eit frivillig skattetrekk anten som prosentdel av pensjonen eller som fast beløp. Dette sikrar at skatten blir rett, og gir mindre risiko for restskatt. Ta kontakt med Skatteetaten dersom du har spørsmål om kor stort skattetrekket vil vere.",
+            English to "A children’s pension is taxable, but we do not deduct tax from the amount unless we have agreed with you to do so. You can add a voluntary tax deduction as a percentage of your pension or as a fixed amount. This ensures that your tax payment is correct, and it minimises the risk of back taxes. If you have questions about the amount of tax deduction on your children's pension, you must contact the Norwegian Tax Administration.",
+        )
+    }
+    paragraph {
+        text(
+            Bokmal to "Har du allerede registrert frivillig skattetrekk, må du selv sjekke om dette skattetrekket overføres ved årsskiftet.",
+            Nynorsk to "Har du allereie registrert frivillig skattetrekk, må du sjølv sjekke om dette skattetrekket blir overført ved årsskiftet.",
+            English to "If you have registered a voluntary tax deduction, you must check that this tax deduction is carried forward to the next year.",
+        )
+    }
+    paragraph {
+        text(
+            Bokmal to "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK}.",
+            Nynorsk to "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK}.",
+            English to "Read more about tax deductions at ${Constants.BP_SKATTETREKK}.",
         )
     }
 }
