@@ -77,7 +77,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                     Bokmal to "Du kan søke om å få pensjonen din forlenget med opptil to år. "
                             + "For å få utvidet stønadsperioden må du være under nødvendig utdanning eller ha behov for hjelp til å få jobb fra 1. januar 2027.",
                     Nynorsk to "Du kan søkje om å få pensjonen din forlenga med inntil to år. "
-                            + "For å få utvida stønadsperioden må du vere under naudsynt utdanning eller ha behov for hjelp til å få jobb frå 1. januar 2027.",
+                            + "For å få utvida stønadsperioden må du vere under nødvendig utdanning eller ha behov for hjelp til å få jobb frå 1. januar 2027.",
                     English to "You can apply to have your pension extended by up to two years. "
                             + "You can qualify for an extended benefit period, if you are still undertaking a necessary education or require help to find employment as of 1 January 2027."
                 )
@@ -164,7 +164,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                     item {
                         text(
                             Bokmal to "blir samboer eller flytter fra samboer",
-                            Nynorsk to "blir sambuer eller flytter fra sambuer",
+                            Nynorsk to "blir sambuar eller flytter frå sambuar",
                             English to "you either become a cohabitant or you move away from your cohabitant"
                         )
                     }
