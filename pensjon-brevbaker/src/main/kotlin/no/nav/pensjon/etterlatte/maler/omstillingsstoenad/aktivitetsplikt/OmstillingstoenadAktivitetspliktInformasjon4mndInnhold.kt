@@ -134,8 +134,12 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                         Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  " +
                                 "Hvis du ikke gjør noen av de andre aktivitetene som er nevnt, må du dokumentere at du er arbeidssøker " +
                                 "via din lokale arbeidsformidling, eller på annen måte sannsynliggjøre at du er arbeidssøker.",
-                        Nynorsk to "TODO",
-                        English to "TODO",
+                        Nynorsk to "For å kunne få omstillingsstønad vidare må du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?». " +
+                                "Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du dokumentere via den lokale " +
+                                "arbeidsformidlinga at du er arbeidssøkjar, eller på anna vis sannsynleggjere at du er arbeidssøkjar.",
+                        English to "To receive an adjustment allowance in the future, you must increase your level of activity. " +
+                                "See “How do I comply with the activity obligation?”.  If you are not doing any of the other activities mentioned, " +
+                                "you must document your status as a job seeker through your local job centre, or otherwise document that you are a job seeker.",
                     )
                 }
 
@@ -144,8 +148,13 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                         Bokmal to "Er det en grunn til at du ikke kan være reell arbeidssøker eller annet som oppfyller " +
                                 "aktivitetsplikten på minst 50 prosent, må du sende oss dokumentasjon på dette snarest mulig og " +
                                 "senest innen <DATO 5 MND. ETTER DØDSFALL>. Se “Unntak for aktivitetsplikten” under.",
-                        Nynorsk to "TODO",
-                        English to "TODO",
+                        Nynorsk to "Viss det er ein grunn til at du ikkje kan vere reell arbeidssøkjar eller gjere " +
+                                "anna som oppfyller aktivitetsplikta på minst 50 prosent, må du sende oss dokumentasjon på " +
+                                "dette snarast mogleg og seinast innan <DATO 5 MND. ETTER DØDSFALL>. Sjå «Unntak frå aktivitetsplikta» under.",
+                        English to "If there is any reason why you are unable to be a genuine job seeker or do something else " +
+                                "that fulfils the activity obligation of at least 50 percent, you must send us documentation of this " +
+                                "as soon as possible and no later than <DATO 5 MND. ETTER DØDSFALL>. " +
+                                "See “Exemption from the activity obligation” below.",
                     )
                 }
 
@@ -347,8 +356,8 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     item {
                         textExpr(
                             Bokmal to "være reell arbeidssøker".expr() + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)," i bostedslandet ditt", ""),
-                            Nynorsk to "vere reell arbeidssøkjar".expr(),
-                            English to "being a genuine job seeker".expr(),
+                            Nynorsk to "vere reell arbeidssøkjar".expr() + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)," i landet der du er busett", ""),
+                            English to "being a genuine job seeker".expr() + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)," in your country of residence", ""),
                         )
                     }
                     item {
@@ -657,8 +666,8 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 paragraph {
                     text(
                         Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside ${Constants.NAV_URL}, må du sende dokumentasjonen i posten.",
-                        Nynorsk to "TODO",
-                        English to "TODO",
+                        Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår ${Constants.NAV_URL}, må du sende dokumentasjon per post.",
+                        English to "Please send documentation by conventional mail if you do not use BankID or another log in option.",
                     )
                 }
             }
