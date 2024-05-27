@@ -30,7 +30,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
             text(
                 Bokmal to "Gjenlevendepensjonen din opphører fra 1. januar 2027",
                 Nynorsk to "Attlevandepensjonen din blir stansa frå 1. januar 2027",
-                English to "Your survivor's pension will cease from 1 January 2027"
+                English to "Your survivor's pension terminates 1 January 2027"
             )
         }
         outline {
@@ -48,14 +48,14 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                     Nynorsk to "Tidlegare har vi informert deg om at attlevandepensjonen din frå folketrygda blir tidsavgrensa. "
                             + "Det betyr at du framleis får attlevandepensjon i tre år rekna frå 1. januar 2024.",
                     English to "As we have previously informed you, your survivor’s pension through the National Insurance Act will be time limited. "
-                            + "That mean you will still receive the pension for three more years as of 1 January 2024."
+                            + "This means you will still receive the pension for three more years as of 1 January 2024."
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Retten din til gjenlevendepensjon vil opphøre fra og med 1. januar 2027. Siste mulige utbetaling blir i desember 2026.",
                     Nynorsk to "Retten din til attlevandepensjon blir stansa frå og med 1. januar 2027. Siste moglege utbetaling blir i desember 2026.",
-                    English to "Your entitlement to survivor’s pension will cease from 1 January 2027. The last possible payment will be in December 2026."
+                    English to "Your entitlement to survivor’s pension terminates 1 January 2027. The last payment will be in December 2026."
                 )
             }
             paragraph {
@@ -79,7 +79,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                     Nynorsk to "Du kan søkje om å få pensjonen din forlenga med inntil to år. "
                             + "For å få utvida stønadsperioden må du vere under naudsynt utdanning eller ha behov for hjelp til å få jobb frå 1. januar 2027.",
                     English to "You can apply to have your pension extended by up to two years. "
-                            + "You can qualify for an extended benefit period, if you are still undertaking a necessary education or require help to find a job as of 1 January 2027."
+                            + "You can qualify for an extended benefit period, if you are still undertaking a necessary education or require help to find employment as of 1 January 2027."
                 )
             }
             title1 {
@@ -95,8 +95,8 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                             + "Du kan finne jobbsøkertips og lenke til ledige jobber på nav.no/arbeid.",
                     Nynorsk to "NAV tilbyr ulike tenester og støtteordningar for deg som treng hjelp til å få jobb. "
                             + "Du kan finne jobbsøkjartips og lenkje til ledige jobbar på nav.no/arbeid.",
-                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help finding a job. "
-                            + "You can find job search tips and a hyperlink to open jobs online: nav.no/arbeid."
+                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help finding employment. "
+                            + "You can find job search tips and a hyperlink to job vacancies online: nav.no/arbeid."
                 )
             }
             paragraph {
@@ -158,14 +158,14 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                         text(
                             Bokmal to "planlegger å flytte til et annet land",
                             Nynorsk to "planar om å flytte til eit anna land",
-                            English to "move to another country"
+                            English to "you move to another country"
                         )
                     }
                     item {
                         text(
                             Bokmal to "blir samboer eller flytter fra samboer",
                             Nynorsk to "blir sambuer eller flytter fra sambuer",
-                            English to "becomes a cohabitant or moves away from a cohabitant"
+                            English to "you either become a cohabitant or you move away from your cohabitant"
                         )
                     }
                     item {
