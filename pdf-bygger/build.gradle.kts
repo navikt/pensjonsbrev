@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val javaTarget: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
@@ -15,13 +17,13 @@ plugins {
 group="no.nav.pensjon.brev"
 version="0.0.1-SNAPSHOT"
 
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(javaTarget))
+    }
+}
+
 tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = javaTarget
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = javaTarget
-    }
     compileJava {
         targetCompatibility = javaTarget
     }

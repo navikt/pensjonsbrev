@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val apiModelJavaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
 
@@ -43,15 +45,14 @@ publishing {
     }
 }
 
-tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = apiModelJavaTarget
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
     }
+}
+tasks {
     compileJava {
         targetCompatibility = apiModelJavaTarget
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = apiModelJavaTarget
     }
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
