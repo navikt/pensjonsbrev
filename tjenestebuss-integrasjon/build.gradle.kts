@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin.SHADOW_JAR_TASK_NAME
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
@@ -36,7 +37,7 @@ ktor {
 	}
 }
 
-val cxfVersion = "3.6.2"
+val cxfVersion = "3.6.3"
 val esbVersion = "2023.11.01-10.31-1bc8315f412e"
 val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
@@ -118,23 +119,9 @@ sourceSets {
 	}
 }
 
-tasks {
-	compileKotlin {
-		kotlinOptions{
-			jvmTarget = javaTarget
-			freeCompilerArgs += "-Xjsr305=strict"
-		}
-	}
-	compileTestKotlin {
-		kotlinOptions{
-			jvmTarget = javaTarget
-			freeCompilerArgs += "-Xjsr305=strict"
-		}
-	}
-	compileJava {
-		targetCompatibility = javaTarget
-	}
-	compileTestJava {
-		targetCompatibility = javaTarget
+kotlin {
+	compilerOptions {
+		jvmTarget.set(JvmTarget.valueOf(javaTarget))
+		freeCompilerArgs.add("-Xjsr305=strict")
 	}
 }

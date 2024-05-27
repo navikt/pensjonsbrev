@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
@@ -39,11 +41,8 @@ publishing {
     }
 }
 
-tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = apiModelJavaTarget
-    }
-    compileJava {
-        targetCompatibility = apiModelJavaTarget
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.valueOf(apiModelJavaTarget))
     }
 }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val javaTarget: String by System.getProperties()
 val logbackVersion: String by project
 val ktorVersion: String by System.getProperties()
@@ -32,20 +34,13 @@ repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
 }
 
-tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = javaTarget
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.valueOf(javaTarget))
     }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = javaTarget
-    }
-    compileJava {
-        targetCompatibility = javaTarget
-    }
-    compileTestJava {
-        targetCompatibility = javaTarget
-    }
+}
 
+tasks {
     test {
         useJUnitPlatform {
             excludeTags = setOf("integration-test", "manual-test")
@@ -64,7 +59,6 @@ tasks {
             includeTags = setOf("manual-test")
         }
     }
-
 }
 
 kotlin {

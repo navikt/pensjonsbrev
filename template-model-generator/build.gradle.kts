@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+
 val javaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
 val kspVersion: String by System.getProperties()
@@ -11,21 +14,22 @@ plugins {
 group = "no.nav.pensjon.brev"
 version = "0.0.1-SNAPSHOT"
 
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.valueOf(javaTarget))
+    }
+}
+tasks.named("compileTestKotlin", KotlinCompilationTask::class.java) {
+    compilerOptions {
+        // Denne kreves for å kunne kompilere kotlin i unit tester.
+        freeCompilerArgs.add("-opt-in=org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi")
+    }
+}
+
 tasks {
     test {
         useJUnitPlatform()
-    }
-    compileKotlin {
-        kotlinOptions.jvmTarget = javaTarget
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = javaTarget
-    }
-    compileJava {
-        targetCompatibility = javaTarget
-    }
-    compileTestJava {
-        targetCompatibility = javaTarget
     }
 }
 
@@ -34,7 +38,7 @@ dependencies {
     implementation("com.google.devtools.ksp:symbol-processing-api:$kotlinVersion-$kspVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
-    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.5.0")
+    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
 }
