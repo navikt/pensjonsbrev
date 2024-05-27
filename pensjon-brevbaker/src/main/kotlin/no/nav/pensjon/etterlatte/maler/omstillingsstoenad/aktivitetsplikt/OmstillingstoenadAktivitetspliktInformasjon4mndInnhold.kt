@@ -667,7 +667,7 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     text(
                         Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside ${Constants.NAV_URL}, må du sende dokumentasjonen i posten.",
                         Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår ${Constants.NAV_URL}, må du sende dokumentasjon per post.",
-                        English to "Please send documentation by conventional mail if you do not use BankID or another log in option.",
+                        English to "Please send documentation as normal post if you do not use BankID or another login option.",
                     )
                 }
             }
