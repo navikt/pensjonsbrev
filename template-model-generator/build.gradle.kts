@@ -17,9 +17,19 @@ version = "0.0.1-SNAPSHOT"
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.valueOf(javaTarget))
+        jvmTarget.set(JvmTarget.fromTarget(javaTarget))
     }
 }
+
+tasks {
+    compileJava {
+        targetCompatibility = javaTarget
+    }
+    compileTestJava {
+        targetCompatibility = javaTarget
+    }
+}
+
 tasks.named("compileTestKotlin", KotlinCompilationTask::class.java) {
     compilerOptions {
         // Denne kreves for å kunne kompilere kotlin i unit tester.

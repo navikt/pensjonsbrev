@@ -47,6 +47,14 @@ publishing {
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.valueOf(apiModelJavaTarget))
+        jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
+    }
+}
+tasks {
+    compileJava {
+        targetCompatibility = apiModelJavaTarget
+    }
+    compileTestJava {
+        targetCompatibility = apiModelJavaTarget
     }
 }

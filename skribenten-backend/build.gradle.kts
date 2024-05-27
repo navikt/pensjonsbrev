@@ -31,7 +31,16 @@ ktor {
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.valueOf(javaTarget))
+        jvmTarget.set(JvmTarget.fromTarget(javaTarget))
+    }
+}
+
+tasks {
+    compileJava {
+        targetCompatibility = javaTarget
+    }
+    compileTestJava {
+        targetCompatibility = javaTarget
     }
 }
 

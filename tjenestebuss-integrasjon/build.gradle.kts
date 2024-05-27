@@ -121,7 +121,16 @@ sourceSets {
 
 kotlin {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.valueOf(javaTarget))
+		jvmTarget.set(JvmTarget.fromTarget(javaTarget))
 		freeCompilerArgs.add("-Xjsr305=strict")
+	}
+}
+
+tasks {
+	compileJava {
+		targetCompatibility = javaTarget
+	}
+	compileTestJava {
+		targetCompatibility = javaTarget
 	}
 }
