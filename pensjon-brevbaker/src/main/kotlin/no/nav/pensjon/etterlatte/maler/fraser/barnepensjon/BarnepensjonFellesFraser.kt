@@ -187,16 +187,16 @@ object BarnepensjonFellesFraser {
                 paragraph {
                     text(
                         Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig. Du kan lese mer om skattetrekk i vedlegget “Informasjon til deg som handler på vegne av barnet”.",
-                        Nynorsk to "",
-                        English to "",
+                        Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig. Du kan lese meir om skattetrekk i vedlegget “Informasjon til deg som handlar på vegne av barnet”.",
+                        English to "Child pension is taxable, but not subject to withholding tax. You can read more about tax deductions in the attachment “Information for those acting on behalf of the child”.",
                         )
                 }
             } orShow {
                 paragraph {
                     text(
                         Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig. Du kan lese mer om skattetrekk i vedlegget “Informasjon til deg som mottar barnepensjon”.",
-                        Nynorsk to "",
-                        English to "",
+                        Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig. Du kan lese meir om skattetrekk i vedlegget “Informasjon til deg som får barnepensjon”.",
+                        English to "Child pension is taxable, but not subject to withholding tax. You can read more about tax deductions in the attachment “Information to recipients of children’s pensions”.",
                     )
                 }
             }
