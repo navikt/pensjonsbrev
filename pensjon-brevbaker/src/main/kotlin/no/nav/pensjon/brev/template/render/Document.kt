@@ -40,7 +40,7 @@ class LatexDocument : Document {
 
 class HTMLDocument : Document {
     private val _files: MutableList<DocumentFile.PlainText> = mutableListOf()
-    override val files: List<DocumentFile>
+    override val files: List<DocumentFile.PlainText>
         get() = _files
 
     override fun base64EncodedFiles(): Map<String, String> {

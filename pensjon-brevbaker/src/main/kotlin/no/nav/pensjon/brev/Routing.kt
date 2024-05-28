@@ -10,13 +10,11 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.micrometer.core.instrument.Tag
-import no.nav.pensjon.brev.api.LetterResource
-import no.nav.pensjon.brev.api.description
+import no.nav.pensjon.brev.api.*
 import no.nav.pensjon.brev.api.model.AutobrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.RedigerbartbrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.TemplateModelSpecification
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
