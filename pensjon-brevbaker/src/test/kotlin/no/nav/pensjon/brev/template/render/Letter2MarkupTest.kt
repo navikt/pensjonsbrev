@@ -139,4 +139,26 @@ class Letter2MarkupTest {
         )
     }
 
+    @Test
+    fun `template newLine renders as declared`() {
+        val result = renderTemplate(EmptyBrevdata) {
+            paragraph {
+                text(Bokmal to "hei")
+                newline()
+                text(Bokmal to "ha det bra")
+            }
+        }
+
+        assertThat(
+            result.letterMarkup,
+            hasBlocks {
+                paragraph {
+                    literal("hei")
+                    newLine()
+                    literal("ha det bra")
+                }
+            }
+        )
+    }
+
 }
