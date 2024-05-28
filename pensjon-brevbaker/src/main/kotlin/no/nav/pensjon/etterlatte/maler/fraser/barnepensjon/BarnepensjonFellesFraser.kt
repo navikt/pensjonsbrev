@@ -2,7 +2,6 @@ package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -166,6 +165,7 @@ object BarnepensjonFellesFraser {
 
     data class UtbetalingAvBarnepensjon(
         val etterbetaling: Expression<Boolean>,
+        val brukerUnder18Aar: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -182,6 +182,25 @@ object BarnepensjonFellesFraser {
                     English to "The pension is paid by the 20th of each month. You can find payout dates online: ${Constants.Engelsk.UTBETALINGSDATOER_URL}.",
                 )
             }
+
+            showIf(brukerUnder18Aar) {
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig. Du kan lese mer om skattetrekk i vedlegget “Informasjon til deg som handler på vegne av barnet”.",
+                        Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig. Du kan lese meir om skattetrekk i vedlegget “Informasjon til deg som handlar på vegne av barnet”.",
+                        English to "Child pension is taxable, but not subject to withholding tax. You can read more about tax deductions in the attachment “Information for those acting on behalf of the child”.",
+                        )
+                }
+            } orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig. Du kan lese mer om skattetrekk i vedlegget “Informasjon til deg som mottar barnepensjon”.",
+                        Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig. Du kan lese meir om skattetrekk i vedlegget “Informasjon til deg som får barnepensjon”.",
+                        English to "Child pension is taxable, but not subject to withholding tax. You can read more about tax deductions in the attachment “Information to recipients of children’s pensions”.",
+                    )
+                }
+            }
+
             showIf(etterbetaling) {
                 paragraph {
                     text(

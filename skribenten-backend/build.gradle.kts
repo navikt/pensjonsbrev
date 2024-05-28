@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val apiModelVersion: String by project
 val exposedVersion: String by project
 val jacksonJsr310Version: String by project
@@ -27,13 +29,13 @@ ktor {
     }
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(javaTarget))
+    }
+}
+
 tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = javaTarget
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = javaTarget
-    }
     compileJava {
         targetCompatibility = javaTarget
     }
