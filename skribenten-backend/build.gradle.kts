@@ -2,6 +2,7 @@ val apiModelVersion: String by project
 val exposedVersion: String by project
 val jacksonJsr310Version: String by project
 val javaTarget: String by System.getProperties()
+val jupiterVersion: String by project
 val kotlinVersion: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
@@ -12,7 +13,6 @@ val mockkVersion: String by project
 plugins {
     application
     kotlin("jvm")
-    kotlin("plugin.serialization") version "1.9.23"
     id("io.ktor.plugin")
 }
 
@@ -40,6 +40,9 @@ tasks {
     }
     compileTestJava {
         targetCompatibility = javaTarget
+    }
+    test {
+        useJUnitPlatform()
     }
 }
 
@@ -91,6 +94,8 @@ dependencies {
     implementation("io.ktor:ktor-server-caching-headers-jvm:$ktorVersion")
 
     // Test
+    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
