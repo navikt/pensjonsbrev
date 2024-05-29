@@ -35,12 +35,13 @@ data class OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO(
 
 enum class Aktivitetsgrad { IKKE_I_AKTIVITET, UNDER_50_PROSENT, OVER_50_PROSENT };
 
-enum class NasjonalEllerUtland { NASJONAL, UTLAND};
+enum class NasjonalEllerUtland { NASJONAL, UTLAND };
 
 @TemplateModelHelpers
 object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
     EtterlatteTemplate<OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_AKTIVITETSPLIKT_INFORMASJON_4MND_INNHOLD
+    override val kode: EtterlatteBrevKode =
+        EtterlatteBrevKode.OMSTILLINGSSTOENAD_AKTIVITETSPLIKT_INFORMASJON_4MND_INNHOLD
 
     override val template = createTemplate(
         name = kode.name,
@@ -63,23 +64,31 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
         }
 
         outline {
-            showIf(utbetaling){
+            showIf(utbetaling) {
                 paragraph {
                     text(
-                        Bokmal to "Du har omstillingsstønad. ",
-                        Nynorsk to "Du har omstillingsstønad. ",
-                        English to "You are receiving an adjustment allowance. ",
+                        Bokmal to "Du har omstillingsstønad. Du får utbetalt <beløp> kroner per måned før skatt.",
+                        Nynorsk to "Du har omstillingsstønad. Du får utbetalt <beløp> kroner i stønad kvar månad før skatt.",
+                        English to "You are receiving an adjustment allowance. You will receive NOK <amount> each month before tax.",
                     )
-                    text(
-                        Bokmal to "LEGG TIL HVIS STØNADEN ER REDUSERT FOR INNTEKT: Omstillingsstønaden din er redusert etter en arbeidsinntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET> kroner per år. ",
-                        Nynorsk to "LEGG TIL HVIS STØNADEN ER REDUSERT FOR INNTEKT: Omstillingsstønaden din har blitt redusert ut frå ei arbeidsinntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET> kroner per år. ",
-                        English to "LEGG TIL HVIS STØNADEN ER REDUSERT FOR INNTEKT: Your adjustment allowance is reduced based on your income from employment of NOK <FORVENTET INNTEKT TOTALT, AVRUNDET> per year. ",
-                    )
-                    text(
-                        Bokmal to "LEGG TIL HVIS STØNADEN IKKE ER REDUSERT FOR INNTEKT: Omstillingsstønaden din er i dag ikke redusert etter arbeidsinntekt eller annen inntekt som er likestilt med arbeidsinntekt.",
-                        Nynorsk to "LEGG TIL HVIS STØNADEN IKKE ER REDUSERT FOR INNTEKT: Omstillingsstønaden din er i dag ikkje redusert ut frå arbeidsinntekt eller anna inntekt som er likestilt med arbeidsinntekt.",
-                        English to "LEGG TIL HVIS STØNADEN IKKE ER REDUSERT FOR INNTEKT: Your current adjustment allowance is not reduced based on income from employment or other income that is equivalent to income from employment.",
-                    )
+                }
+
+                showIf(redusertEtterInntekt) {
+                    paragraph {
+                        text(
+                            Bokmal to "Omstillingsstønaden din er redusert etter en forventet arbeidsinntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET> kroner i år. LEGG TIL ETTER KRONER HVIS INNVILGET FRA FEBRUAR-AUGUST: fra <måned> og ut året.",
+                            Nynorsk to "Omstillingsstønaden din har blitt redusert ut frå ei forventa arbeidsinntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET> kroner i år. LEGG TIL ETTER KRONER HVIS INNVILGET FRA FEBRUAR-AUGUST: frå <månad> og ut året.",
+                            English to "Your adjustment allowance is reduced based on your income from employment of NOK <FORVENTET INNTEKT TOTALT, AVRUNDET> this year. LEGG TIL ETTER BELØP HVIS INNVILGET FRA FEBRUAR-AUGUST: from <måned> until the end of this year.",
+                        )
+                    }
+                } orShow {
+                    paragraph {
+                        text(
+                            Bokmal to "Omstillingsstønaden din er i dag ikke redusert etter arbeidsinntekt eller annen inntekt som er likestilt med arbeidsinntekt.",
+                            Nynorsk to "Omstillingsstønaden din er i dag ikkje redusert ut frå arbeidsinntekt eller anna inntekt som er likestilt med arbeidsinntekt.",
+                            English to "Your current adjustment allowance is not reduced based on income from employment or other income that is equivalent to income from employment.",
+                        )
+                    }
                 }
             } orShow {
                 paragraph {
@@ -128,7 +137,12 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 )
             }
 
-            showIf(aktivitetsgrad.isOneOf(Aktivitetsgrad.UNDER_50_PROSENT, Aktivitetsgrad.IKKE_I_AKTIVITET) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)) {
+            showIf(
+                aktivitetsgrad.isOneOf(
+                    Aktivitetsgrad.UNDER_50_PROSENT,
+                    Aktivitetsgrad.IKKE_I_AKTIVITET
+                ) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)
+            ) {
                 paragraph {
                     text(
                         Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  " +
@@ -160,7 +174,12 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
 
             }
 
-            showIf(aktivitetsgrad.isOneOf(Aktivitetsgrad.UNDER_50_PROSENT, Aktivitetsgrad.IKKE_I_AKTIVITET) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.NASJONAL)) {
+            showIf(
+                aktivitetsgrad.isOneOf(
+                    Aktivitetsgrad.UNDER_50_PROSENT,
+                    Aktivitetsgrad.IKKE_I_AKTIVITET
+                ) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.NASJONAL)
+            ) {
                 paragraph {
                     text(
                         Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”. " +
@@ -256,7 +275,7 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 )
             }
 
-            showIf(redusertEtterInntekt){
+            showIf(redusertEtterInntekt) {
                 paragraph {
                     text(
                         Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis inntekten din endrer seg.",
@@ -355,9 +374,21 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     }
                     item {
                         textExpr(
-                            Bokmal to "være reell arbeidssøker".expr() + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)," i bostedslandet ditt", ""),
-                            Nynorsk to "vere reell arbeidssøkjar".expr() + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)," i landet der du er busett", ""),
-                            English to "being a genuine job seeker".expr() + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)," in your country of residence", ""),
+                            Bokmal to "være reell arbeidssøker".expr() + ifElse(
+                                nasjonalEllerUtland.equalTo(
+                                    NasjonalEllerUtland.UTLAND
+                                ), " i bostedslandet ditt", ""
+                            ),
+                            Nynorsk to "vere reell arbeidssøkjar".expr() + ifElse(
+                                nasjonalEllerUtland.equalTo(
+                                    NasjonalEllerUtland.UTLAND
+                                ), " i landet der du er busett", ""
+                            ),
+                            English to "being a genuine job seeker".expr() + ifElse(
+                                nasjonalEllerUtland.equalTo(
+                                    NasjonalEllerUtland.UTLAND
+                                ), " in your country of residence", ""
+                            ),
                         )
                     }
                     item {
@@ -662,7 +693,7 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 }
             }
 
-            showIf(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)){
+            showIf(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)) {
                 paragraph {
                     text(
                         Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside ${Constants.NAV_URL}, må du sende dokumentasjonen i posten.",
