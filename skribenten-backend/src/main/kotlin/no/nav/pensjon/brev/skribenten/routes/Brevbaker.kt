@@ -26,8 +26,8 @@ fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
     get("/template/{brevkode}") {
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
         brevbakerService.getTemplate(call, brevkode)
-            .map { call.respondText(it, ContentType.Application.Json) }
-            .catch { message, status ->
+            .onOk { call.respondText(it, ContentType.Application.Json) }
+            .onError { message, status ->
                 logger.error("Feil ved henting av brevkode: Status:$status Melding: $message ")
                 call.respond(status, message)
             }
@@ -36,7 +36,7 @@ fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
     post<RenderLetterRequest>("/letter/{brevkode}") { request ->
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
         brevbakerService.renderLetter(call, brevkode, request.letterData)
-            .map { rendered ->
+            .onOk { rendered ->
                 call.respond(
                     RenderLetterResponse(
                         request.editedLetter?.updatedEditedLetter(rendered) ?: rendered.toEdit(),
@@ -45,7 +45,7 @@ fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
                         rendered.signatur,
                     )
                 )
-            }.catch { message, status ->
+            }.onError { message, status ->
                 logger.error("Feil ved rendring av brevbaker brev Brevkode: $brevkode Melding: $message Status: $status")
                 call.respond(HttpStatusCode.InternalServerError, "Feil ved rendring av brevbaker brev.")
             }
