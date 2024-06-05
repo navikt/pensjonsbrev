@@ -10,8 +10,10 @@ data class AutobrevRequest(val kode: Brevkode.AutoBrev, val letterData: Brevbake
 @Deprecated("Replace with BestillRedigertBrevRequest")
 data class RedigerbartbrevRequest(val kode: Brevkode.Redigerbar, val letterData: BrevbakerBrevdata, val felles: Felles, val language: LanguageCode)
 
+@Suppress("unused")
 data class BestillBrevRequest<T : Enum<T>>(val kode: T, val letterData: BrevbakerBrevdata, val felles: Felles, val language: LanguageCode)
 
+@Suppress("unused")
 data class BestillRedigertBrevRequest<T : Enum<T>>(
     val kode: T,
     val letterData: BrevbakerBrevdata,
