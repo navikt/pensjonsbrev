@@ -1,2 +1,9 @@
 rootProject.name = "pensjonsbrev"
-include("pensjon-brevbaker", "pdf-bygger", "brevbaker-api-model-common", "pensjon-brevbaker-api-model", "template-model-generator", "skribenten-backend", "tjenestebuss-integrasjon")
+
+include("brevbaker-api-model-common")
+include("pdf-bygger")
+include("pensjon-brevbaker")
+include("pensjon-brevbaker-api-model")
+include("skribenten-backend")
+include("template-model-generator")
+include("tjenestebuss-integrasjon")

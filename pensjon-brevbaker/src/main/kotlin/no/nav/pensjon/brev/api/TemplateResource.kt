@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
@@ -12,7 +13,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
-val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
+val prodAutobrevTemplates: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
     AdhocAlderspensjonFraFolketrygden,
     AdhocGjenlevendEtter1970,
     AdhocUfoeretrygdEtterbetalingDagpenger,
@@ -28,7 +29,7 @@ val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
     VarselSaksbehandlingstidAuto,
 )
 
-val prodRedigerbareTemplates: Set<RedigerbarTemplate<*>> = setOf(
+val prodRedigerbareTemplates: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
     InformasjonOmSaksbehandlingstid
 )
 
@@ -45,7 +46,7 @@ class TemplateResource(
     fun getAutoBrev(): Set<Brevkode.AutoBrev> =
         autoBrevMap.keys
 
-    fun getAutoBrev(kode: Brevkode.AutoBrev): LetterTemplate<*, out BrevbakerBrevdata>? =
+    fun getAutoBrev(kode: Brevkode.AutoBrev): LetterTemplate<*, BrevbakerBrevdata>? =
         autoBrevMap[kode]?.template
 
     fun getRedigerbareBrev(): Set<Brevkode.Redigerbar> =
@@ -54,6 +55,6 @@ class TemplateResource(
     fun getRedigerbareBrevMedMetadata(): Map<Brevkode.Redigerbar, LetterMetadata> =
         redigerbareBrevMap.mapValues { (_, v) -> v.template.letterMetadata }
 
-    fun getRedigerbartBrev(kode: Brevkode.Redigerbar): LetterTemplate<*, out BrevbakerBrevdata>? =
+    fun getRedigerbartBrev(kode: Brevkode.Redigerbar): LetterTemplate<*, BrevbakerBrevdata>? =
         redigerbareBrevMap[kode]?.template
 }

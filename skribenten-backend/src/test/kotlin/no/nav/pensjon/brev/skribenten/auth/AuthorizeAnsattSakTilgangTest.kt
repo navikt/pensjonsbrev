@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import org.assertj.core.api.Assertions.assertThat
 import com.typesafe.config.ConfigValueFactory
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -22,9 +21,13 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.NAVEnhet
+import no.nav.pensjon.brev.skribenten.services.PdlService
+import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PenService.SakSelection
 import no.nav.pensjon.brev.skribenten.services.PenService.SakType.ALDER
+import no.nav.pensjon.brev.skribenten.services.ServiceResult
+import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
 import java.time.Month
 import kotlin.test.Test
@@ -33,7 +36,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 private const val NAVIdent = "månedens ansatt"
-private val testSakEnhet = NAVEnhet("en veldig bra enhet", "NAVs beste!")
 private val testSak = SakSelection(
     1337,
     "12345",
@@ -86,9 +88,6 @@ class AuthorizeAnsattSakTilgangTest {
         every { navIdent } returns NAVIdent
         every { isInGroup(any()) } returns false
     }
-    private val navansattService = mockk<NavansattService> {
-        coEvery { hentNavAnsattEnhetListe(any(), NAVIdent) } returns ServiceResult.Ok(listOf(testSakEnhet))
-    }
     private val pdlService = mockk<PdlService> {
         coEvery { hentAdressebeskyttelse(any(), testSak.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
     }
@@ -115,7 +114,7 @@ class AuthorizeAnsattSakTilgangTest {
         routing {
             authenticate("my domain") {
                 route("/sak") {
-                    install(AuthorizeAnsattSakTilgang(navansattService, pdlService, penService))
+                    install(AuthorizeAnsattSakTilgang(pdlService, penService))
 
                     get("/noSak/{noSak}") { call.respond("ingen sak") }
                     get("/sakFromPlugin/{saksId}") {
@@ -229,15 +228,6 @@ class AuthorizeAnsattSakTilgangTest {
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
         assertEquals("Sak finnes ikke", response.bodyAsText())
-    }
-
-    @Test
-    fun `svarer med internal server error om hentNavAnsattEnhetListe feiler`() = runBlocking {
-        coEvery { navansattService.hentNavAnsattEnhetListe(any(), any()) } returns ServiceResult.Error("Ansatt finnes ikke", HttpStatusCode.NotFound)
-
-        val response = client.get("/sak/${testSak.saksId}")
-        assertEquals(HttpStatusCode.InternalServerError, response.status)
-        assertEquals("Feil ved henting av enheter", response.bodyAsText())
     }
 
     @Test

@@ -1,88 +1,146 @@
 package no.nav.pensjon.brev.api
 
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.containsSubstring
 import io.ktor.http.*
-import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.config.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.routing.*
-import io.ktor.server.testing.*
+import io.ktor.server.plugins.callid.*
+import io.mockk.*
+import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.brevbakerConfig
+import no.nav.pensjon.brev.latex.PDFCompilationOutput
+import no.nav.pensjon.brev.maler.OpphoerBarnetilleggAuto
+import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
+import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.render.DocumentFile
+import no.nav.pensjon.brev.template.render.LatexDocument
+import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.util.*
 
-@Tag(TestTags.INTEGRATION_TEST)
 class TemplateResourceV2Test {
-
-    @Test
-    fun isAlive() = testBrevbakerApp {
-        val response = client.get("/isAlive")
-        
-        assertEquals(HttpStatusCode.OK, response.status)
+    private val pdfInnhold = "generert pdf"
+    private val base64PDF = Base64.getEncoder().encodeToString(pdfInnhold.toByteArray())
+    private val latexMock = mockk<LaTeXCompilerService> {
+        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(base64PDF)
     }
+    private val autobrev = TemplateResourceV2("autobrev", prodAutobrevTemplates, latexMock)
+    private val redigerbar = TemplateResourceV2("autobrev", prodRedigerbareTemplates, latexMock)
 
-    @Test
-    fun `render pdf responds according to content-type`() = testBrevbakerApp {
-        val response = it.post("/v2/templates/autobrev/OMSORG_EGEN_AUTO/letter/html") {
-            accept(ContentType.Application.Json)
-            setBody(BestillBrevRequest(
-                letterData = Fixtures.create<OmsorgEgenAutoDto>(),
-                felles = Fixtures.fellesAuto,
-                language = LanguageCode.BOKMAL,
-            ))
-        }
-        val message = response.bodyAsText()
-        println(message)
-        assertEquals(response.body<LetterResponse.V2>().contentType, ContentType.Text.Html.withCharset(Charsets.UTF_8).toString())
-    }
-
-    private fun testBrevbakerApp(block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit): Unit = testApplication {
-        environment {
-            config = MapApplicationConfig(
-                "brevbaker.pdfByggerUrl" to "http://localhost:8081",
+    private val validAutobrevRequest = BestillBrevRequest(
+        Brevkode.AutoBrev.UT_OPPHOER_BT_AUTO,
+        Fixtures.create<OpphoerBarnetilleggAutoDto>(),
+        Fixtures.fellesAuto,
+        LanguageCode.BOKMAL
+    )
+    private val validRedigertBrevRequest = BestillRedigertBrevRequest(
+        Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+        Fixtures.create<InformasjonOmSaksbehandlingstidDto>(),
+        Fixtures.felles,
+        LanguageCode.BOKMAL,
+        LetterMarkup(
+            "redigert markup",
+            LetterMarkup.Sakspart(
+                "gjelder bruker",
+                "123abc",
+                "001",
+                "en dato"
+            ),
+            emptyList(),
+            LetterMarkup.Signatur(
+                "hilsen oss",
+                "en rolle",
+                "Saksbehandlersen",
+                null,
+                "Akersgata"
             )
-        }
+        )
+    )
 
-        application {
-            install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
-                jackson { brevbakerConfig() }
-            }
-            routing {
-                val latexCompilerService = LaTeXCompilerService(
-                    pdfByggerUrl = "http://localhost:8081",
-                    maxRetries = 30,
-                )
-
-                templateRoutes(TemplateResourceV2("autobrev", prodAutobrevTemplates, latexCompilerService))
-            }
-        }
-
-        val client = createClient {
-            install(ContentNegotiation) {
-                jackson {
-                    brevbakerConfig()
-                }
-            }
-            defaultRequest {
-                contentType(ContentType.Application.Json)
-            }
-        }
-
-        block(client)
+    private val callMock = mockk<ApplicationCall> {
+        every { callId } returns "abdef"
     }
+
+    @Test
+    fun `can renderPDF with valid letterData`(): Unit = runBlocking {
+        val result = autobrev.renderPDF(callMock, validAutobrevRequest)
+        assertEquals(
+            LetterResponse.V2(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), OpphoerBarnetilleggAuto.template.letterMetadata),
+            result
+        )
+    }
+
+    @Test
+    fun `can renderHTML with valid letterData`() {
+        val result = autobrev.renderHTML(validAutobrevRequest)
+        assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), result.contentType)
+        assertEquals(OpphoerBarnetilleggAuto.template.letterMetadata, result.letterMetadata)
+    }
+
+    @Test
+    fun `fails renderPDF with invalid letterData`(): Unit = runBlocking {
+        assertThrows<ParseLetterDataException> {
+            autobrev.renderPDF(callMock, validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+        }
+    }
+
+    @Test
+    fun `fails renderHTML with invalid letterData`() {
+        assertThrows<ParseLetterDataException> {
+            autobrev.renderHTML(validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+        }
+    }
+
+    @Test
+    fun `renderHTML redigertBrev uses letterMarkup from argument and includes attachments`() {
+        val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
+        val anAttachmentTitle = Letter2Markup.renderAttachmentsOnly(
+            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
+            InformasjonOmSaksbehandlingstid.template
+        ).firstOrNull()?.title?.joinToString { it.text }
+
+        assertThat(result, containsSubstring(validRedigertBrevRequest.letterMarkup.title))
+
+        // TODO: Vi har ingen redigerbare maler med vedlegg, if kan fjernes når vi har en mal med vedlegg.
+        if (anAttachmentTitle != null) {
+            assertThat(result, containsSubstring(anAttachmentTitle))
+        }
+    }
+
+    @Test
+    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
+        val anAttachment = Letter2Markup.renderAttachmentsOnly(
+            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
+            InformasjonOmSaksbehandlingstid.template
+        ).firstOrNull()
+
+        val capturedLatex = slot<LatexDocument>()
+        redigerbar.renderPDF(callMock, validRedigertBrevRequest)
+        coVerify { latexMock.producePDF(capture(capturedLatex), any()) }
+
+        val letterLatexContent = capturedLatex.captured.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "letter.tex" }.content
+        assertThat(
+            letterLatexContent,
+            containsSubstring(validRedigertBrevRequest.letterMarkup.title)
+        )
+
+        // TODO: Vi har ingen redigerbare maler med vedlegg, if kan fjernes når vi har en mal med vedlegg.
+        if (anAttachment != null) {
+            assertThat(letterLatexContent, containsSubstring(anAttachment.title.joinToString { it.text }))
+        }
+    }
+
 }

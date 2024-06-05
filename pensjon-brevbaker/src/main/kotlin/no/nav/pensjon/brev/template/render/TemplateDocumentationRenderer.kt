@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.template.render
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.BinaryOperation.Documentation
 import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
@@ -292,7 +294,7 @@ data class TemplateDocumentation(
     val title: List<ContentOrControlStructure<Element.ParagraphContent.Text>>,
     val outline: List<ContentOrControlStructure<Element.OutlineContent>>,
     val attachments: List<Attachment>,
-    val templateModelSpecification: TemplateModelSpecification
+    val templateModelSpecification: TemplateModelSpecification,
 ) {
     data class Attachment(
         val title: List<ContentOrControlStructure<Element.ParagraphContent.Text>>,
@@ -301,51 +303,73 @@ data class TemplateDocumentation(
         val attachmentData: Expression,
     )
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "controlStructureType", include = JsonTypeInfo.As.PROPERTY)
+    @JsonSubTypes(
+        JsonSubTypes.Type(ContentOrControlStructure.Conditional::class, name = "CONDITIONAL"),
+        JsonSubTypes.Type(ContentOrControlStructure.Content::class, name = "CONTENT"),
+        JsonSubTypes.Type(ContentOrControlStructure.ForEach::class, name = "FOR_EACH"),
+    )
     @JsonPropertyOrder("controlStructureType")
-    sealed class ContentOrControlStructure<E : Element>(val controlStructureType: Type) {
-        enum class Type { CONTENT, CONDITIONAL, FOR_EACH }
-        data class Content<E : Element>(val content: E) : ContentOrControlStructure<E>(Type.CONTENT)
+    sealed class ContentOrControlStructure<E : Element> {
+        data class Content<E : Element>(val content: E) : ContentOrControlStructure<E>()
         data class Conditional<E : Element>(
             val predicate: Expression,
             val showIf: List<ContentOrControlStructure<E>>,
             val elseIf: List<ElseIf<E>>,
             val showElse: List<ContentOrControlStructure<E>>,
-        ) : ContentOrControlStructure<E>(Type.CONDITIONAL) {
+        ) : ContentOrControlStructure<E>() {
             data class ElseIf<E : Element>(val predicate: Expression, val showIf: List<ContentOrControlStructure<E>>)
         }
 
         data class ForEach<E : Element>(
             val items: Expression,
             val body: List<ContentOrControlStructure<E>>
-        ) : ContentOrControlStructure<E>(Type.FOR_EACH)
+        ) : ContentOrControlStructure<E>()
     }
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "elementType", include = JsonTypeInfo.As.PROPERTY)
+    @JsonSubTypes(
+        JsonSubTypes.Type(Element.OutlineContent.Title1::class, name = "TITLE1"),
+        JsonSubTypes.Type(Element.OutlineContent.Title2::class, name = "TITLE2"),
+        JsonSubTypes.Type(Element.OutlineContent.Paragraph::class, name = "PARAGRAPH"),
+        JsonSubTypes.Type(Element.ParagraphContent.Text.Literal::class, name = "PARAGRAPH_TEXT_LITERAL"),
+        JsonSubTypes.Type(Element.ParagraphContent.Text.Expression::class, name = "PARAGRAPH_TEXT_EXPRESSION"),
+        JsonSubTypes.Type(Element.ParagraphContent.ItemList::class, name = "PARAGRAPH_ITEMLIST"),
+        JsonSubTypes.Type(Element.ParagraphContent.ItemList.Item::class, name = "PARAGRAPH_ITEMLIST_ITEM"),
+        JsonSubTypes.Type(Element.ParagraphContent.Table::class, name = "PARAGRAPH_TABLE"),
+        JsonSubTypes.Type(Element.ParagraphContent.Table.Row::class, name = "PARAGRAPH_TABLE_ROW"),
+    )
     @JsonPropertyOrder("elementType")
-    sealed class Element(val elementType: Type) {
-        enum class Type { TITLE1, TITLE2, PARAGRAPH, PARAGRAPH_TEXT_LITERAL, PARAGRAPH_TEXT_EXPRESSION, PARAGRAPH_ITEMLIST, PARAGRAPH_ITEMLIST_ITEM, PARAGRAPH_TABLE, PARAGRAPH_TABLE_ROW }
-        sealed class OutlineContent(elementType: Type) : Element(elementType) {
-            data class Title1(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent(Type.TITLE1)
-            data class Title2(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent(Type.TITLE2)
-            data class Paragraph(val paragraph: List<ContentOrControlStructure<ParagraphContent>>) : OutlineContent(Type.PARAGRAPH)
+    sealed class Element {
+        sealed class OutlineContent : Element() {
+            data class Title1(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+            data class Title2(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+            data class Paragraph(val paragraph: List<ContentOrControlStructure<ParagraphContent>>) : OutlineContent()
         }
 
-        sealed class ParagraphContent(elementType: Type) : Element(elementType) {
-            sealed class Text(elementType: Type) : ParagraphContent(elementType) {
-                data class Literal(val text: String) : Text(Type.PARAGRAPH_TEXT_LITERAL)
-                data class Expression(val expression: TemplateDocumentation.Expression) : Text(Type.PARAGRAPH_TEXT_EXPRESSION)
+        sealed class ParagraphContent : Element() {
+            sealed class Text : ParagraphContent() {
+                data class Literal(val text: String) : Text()
+                data class Expression(val expression: TemplateDocumentation.Expression) : Text()
             }
 
-            data class ItemList(val items: List<ContentOrControlStructure<Item>>) : ParagraphContent(Type.PARAGRAPH_ITEMLIST) {
-                data class Item(val text: List<ContentOrControlStructure<Text>>) : Element(Type.PARAGRAPH_ITEMLIST_ITEM)
+            data class ItemList(val items: List<ContentOrControlStructure<Item>>) : ParagraphContent() {
+                data class Item(val text: List<ContentOrControlStructure<Text>>) : Element()
             }
 
-            data class Table(val header: Row, val rows: List<ContentOrControlStructure<Row>>) : ParagraphContent(Type.PARAGRAPH_TABLE) {
-                data class Row(val cells: List<Cell>) : Element(Type.PARAGRAPH_TABLE_ROW)
+            data class Table(val header: Row, val rows: List<ContentOrControlStructure<Row>>) : ParagraphContent() {
+                data class Row(val cells: List<Cell>) : Element()
                 data class Cell(val text: List<ContentOrControlStructure<Text>>)
             }
         }
     }
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+    @JsonSubTypes(
+        JsonSubTypes.Type(Expression.Literal::class, name = "LITERAL"),
+        JsonSubTypes.Type(Expression.LetterData::class, name = "LETTER_DATA"),
+        JsonSubTypes.Type(Expression.Invoke::class, name = "INVOKE"),
+    )
     sealed class Expression {
         data class Literal(val value: String) : Expression()
         data class LetterData(val scopeName: String) : Expression()

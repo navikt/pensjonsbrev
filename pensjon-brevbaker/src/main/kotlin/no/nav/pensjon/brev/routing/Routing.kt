@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev
+package no.nav.pensjon.brev.routing
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -10,6 +10,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.micrometer.core.instrument.Tag
+import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.*
 import no.nav.pensjon.brev.api.model.AutobrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -33,6 +34,21 @@ data class RedigerbarTemplateDescription(
 
 fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService) =
     routing {
+        route("/v2") {
+            val autobrev = TemplateResourceV2("autobrev", prodAutobrevTemplates, latexCompilerService)
+            val redigerbareBrev = TemplateResourceV2("redigerbar", prodRedigerbareTemplates, latexCompilerService)
+
+            route("/templates") {
+                templateRoutes(autobrev)
+                templateRoutes(redigerbareBrev)
+            }
+            authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
+                route("/letter") {
+                    letterRoutes(autobrev, redigerbareBrev)
+                }
+            }
+        }
+
         route("/templates") {
 
             route("/autobrev") {
@@ -148,5 +164,4 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
         get("/isReady") {
             call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
         }
-
     }

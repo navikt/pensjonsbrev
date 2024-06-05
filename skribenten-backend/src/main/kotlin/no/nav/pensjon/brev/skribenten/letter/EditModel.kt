@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
-import no.nav.pensjon.brev.skribenten.services.BrevbakerServiceException
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
@@ -85,6 +84,8 @@ object Edit {
     }
 
     object JacksonModule : SimpleModule() {
+        class DeserializationException(msg: String) : Exception(msg)
+
         private fun readResolve(): Any = JacksonModule
 
         init {
@@ -124,8 +125,8 @@ object Edit {
                 val type = when (ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                     ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
                     ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
-                    ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("ITEM_LIST is not allowed in a text-only block.")
-                    ParagraphContent.Type.TABLE -> throw BrevbakerServiceException("TABLE is not allowed in a text-only block.")
+                    ParagraphContent.Type.ITEM_LIST -> throw DeserializationException("ITEM_LIST is not allowed in a text-only block.")
+                    ParagraphContent.Type.TABLE -> throw DeserializationException("TABLE is not allowed in a text-only block.")
                 }
                 return p.codec.treeToValue(node, type)
             }
