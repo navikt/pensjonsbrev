@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.core.JacksonException
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.callloging.*
@@ -15,19 +15,19 @@ import io.ktor.server.response.*
 import io.ktor.util.date.*
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
+import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexCompileException
 import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
+import no.nav.pensjon.brev.routing.brevbakerRouting
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-fun requireEnv(key: String) =
-    System.getenv(key) ?: throw IllegalStateException("The environment variable $key is missing.")
-
 @Suppress("unused") // Referenced in application.conf
 fun Application.brevbakerModule() {
+    val brevbakerConfig = environment.config.config("brevbaker")
 
     environment.monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")
@@ -87,9 +87,11 @@ fun Application.brevbakerModule() {
         jackson {
             brevbakerConfig()
         }
+        register(ContentType.Text.Html, LetterResponseFileConverter)
+        register(ContentType.Application.Pdf, LetterResponseFileConverter)
     }
 
-    val jwtConfigs = listOf(JwtConfig.requireAzureADConfig())
+    val jwtConfigs = listOf(JwtConfig.requireAzureADConfig(brevbakerConfig.config("azureAD")))
     install(Authentication) {
         jwtConfigs.forEach {
             brevbakerJwt(it)
@@ -97,8 +99,8 @@ fun Application.brevbakerModule() {
     }
 
     val latexCompilerService = LaTeXCompilerService(
-        pdfByggerUrl = environment.config.property("brevbaker.pdfByggerUrl").getString(),
-        maxRetries = environment.config.propertyOrNull("brevbaker.pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
+        pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
+        maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
     configureMetrics()

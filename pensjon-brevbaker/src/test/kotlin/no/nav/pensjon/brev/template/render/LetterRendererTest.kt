@@ -23,7 +23,7 @@ class LetterRendererTest {
             letterScope = scope
             this.template = template
 
-            return HTMLDocument()
+            return HTMLDocument {}
         }
 
         @JvmName("publicRenderOutlineContent")

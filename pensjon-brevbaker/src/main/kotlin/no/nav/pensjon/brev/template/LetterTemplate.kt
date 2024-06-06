@@ -4,10 +4,10 @@ import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.reflect.KClass
 
-data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
+data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
     val name: String,
     val title: List<TextElement<Lang>>,
-    val letterDataType: KClass<LetterData>,
+    val letterDataType: KClass<out LetterData>,
     val language: Lang,
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),

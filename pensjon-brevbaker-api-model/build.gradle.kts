@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brev"
-version = "75"
+version = "76"
 
 java {
     withSourcesJar()
@@ -50,6 +50,7 @@ kotlin {
         jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
     }
 }
+
 tasks {
     compileJava {
         targetCompatibility = apiModelJavaTarget

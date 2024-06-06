@@ -5,8 +5,14 @@ import java.nio.file.Path
 import java.util.*
 
 interface Document {
-    fun base64EncodedFiles(): Map<String, String>
     val files: List<DocumentFile>
+    fun base64EncodedFiles(): Map<String, String> =
+        files.associate {
+            when (it) {
+                is DocumentFile.Binary -> it.fileName to base64Encoder.encodeToString(it.content)
+                is DocumentFile.PlainText -> it.fileName to base64Encoder.encodeToString(it.content.toByteArray(Charsets.UTF_8))
+            }
+        }
 }
 
 private val base64Encoder: Base64.Encoder = Base64.getEncoder()
@@ -15,15 +21,6 @@ class LatexDocument : Document {
     private val _files: MutableList<DocumentFile> = mutableListOf()
     override val files: List<DocumentFile>
         get() = _files
-
-    override fun base64EncodedFiles(): Map<String, String> {
-        return _files.associate {
-            when (it) {
-                is DocumentFile.Binary -> it.fileName to base64Encoder.encodeToString(it.content)
-                is DocumentFile.PlainText -> it.fileName to base64Encoder.encodeToString(it.content.toByteArray(Charsets.UTF_8))
-            }
-        }
-    }
 
     private fun newPlainTextFile(fileName: String, writeToFile: Appendable.() -> Unit) =
         _files.add(DocumentFile.PlainText(fileName, writeToFile))
@@ -38,14 +35,12 @@ class LatexDocument : Document {
     }
 }
 
-class HTMLDocument : Document {
-    private val _files: MutableList<DocumentFile.PlainText> = mutableListOf()
+class HTMLDocument(indexHTMLBuilder: Appendable.() -> Unit) : Document {
+    private val _files: MutableList<DocumentFile> = mutableListOf()
     override val files: List<DocumentFile>
         get() = _files
 
-    override fun base64EncodedFiles(): Map<String, String> {
-        return _files.associate { it.fileName to base64Encoder.encodeToString(it.content.toByteArray(Charsets.UTF_8)) }
-    }
+    val indexHTML: DocumentFile.PlainText = DocumentFile.PlainText("index.html", indexHTMLBuilder).also { _files.add(it) }
 
     fun newFile(filename: String, writeToFile: Appendable.() -> Unit) {
         _files.add(DocumentFile.PlainText(filename, writeToFile))

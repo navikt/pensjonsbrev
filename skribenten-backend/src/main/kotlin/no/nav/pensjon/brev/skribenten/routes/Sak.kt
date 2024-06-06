@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.routes
 
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -18,7 +19,7 @@ fun Route.sakRoute(
     brevmalService: BrevmalService,
 ) {
     route("/sak/{saksId}") {
-        install(AuthorizeAnsattSakTilgang(navansattService, pdlService, penService))
+        install(AuthorizeAnsattSakTilgang(pdlService, penService))
 
         get {
             val sak: PenService.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
@@ -39,36 +40,44 @@ fun Route.sakRoute(
         route("/bestillBrev") {
             post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-                val enhetsTilganger = call.attributes[AuthorizeAnsattSakTilgang.enheterKey]
-                call.respond(legacyBrevService.bestillOgRedigerDoksysBrev(call, request, sak.saksId, enhetsTilganger))
+                navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent)
+                    .onError { msg, _ -> call.respond<String>(HttpStatusCode.InternalServerError, "Feil ved henting av enheter: $msg") }
+                    .map { enhetsTilganger -> legacyBrevService.bestillOgRedigerDoksysBrev(call, request, sak.saksId, enhetsTilganger) }
+                    .onOk { call.respond(it) }
+
             }
             route("/exstream") {
                 post<LegacyBrevService.BestillExstreamBrevRequest> { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-                    val enhetsTilganger = call.attributes[AuthorizeAnsattSakTilgang.enheterKey]
-                    call.respond(
-                        legacyBrevService.bestillOgRedigerExstreamBrev(
-                            call = call,
-                            gjelderPid = sak.foedselsnr,
-                            request = request,
-                            saksId = sak.saksId,
-                            enhetsTilganger = enhetsTilganger,
-                        )
-                    )
+
+                    navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent)
+                        .onError { msg, _ -> call.respond<String>(HttpStatusCode.InternalServerError, "Feil ved henting av enheter: $msg") }
+                        .map { enhetsTilganger ->
+                            legacyBrevService.bestillOgRedigerExstreamBrev(
+                                call = call,
+                                gjelderPid = sak.foedselsnr,
+                                request = request,
+                                saksId = sak.saksId,
+                                enhetsTilganger = enhetsTilganger,
+                            )
+                        }.onOk { call.respond(it) }
                 }
 
                 post<LegacyBrevService.BestillEblankettRequest>("/eblankett") { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-                    val enhetsTilganger = call.attributes[AuthorizeAnsattSakTilgang.enheterKey]
-                    call.respond(
-                        legacyBrevService.bestillOgRedigerEblankett(
-                            call = call,
-                            gjelderPid = sak.foedselsnr,
-                            request = request,
-                            saksId = sak.saksId,
-                            enhetsTilganger = enhetsTilganger,
-                        )
-                    )
+
+                    navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent)
+                        .onError { msg, _ -> call.respond<String>(HttpStatusCode.InternalServerError, "Feil ved henting av enheter: $msg") }
+                        .map { enhetsTilganger ->
+                            legacyBrevService.bestillOgRedigerEblankett(
+                                call = call,
+                                gjelderPid = sak.foedselsnr,
+                                request = request,
+                                saksId = sak.saksId,
+                                enhetsTilganger = enhetsTilganger,
+                            )
+                        }.onOk { call.respond(it) }
+
                 }
             }
         }
