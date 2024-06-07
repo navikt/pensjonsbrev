@@ -240,7 +240,7 @@ components:
   schemas:
     BestillBrevRequest:
       type: object
-      description: `no.nav.pensjon.brev.api.model.BestillBrevRequest`
+      description: Se `no.nav.pensjon.brev.api.model.BestillBrevRequest`
       required:
         - kode
         - letterData
@@ -260,7 +260,7 @@ components:
           $ref: "#/components/schemas/LanguageCode"
     BestillRedigertBrevRequest:
       type: object
-      description: `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`
+      description: Se `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`
       required:
         - kode
         - letterData
@@ -295,7 +295,7 @@ components:
           $ref: "#/components/schemas/LetterMetadata"
     TemplateDescription:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.TemplateDescription`
+      description: Se `no.nav.pensjon.brevbaker.api.model.TemplateDescription`
       required:
         - name
         - letterDataClass
@@ -314,11 +314,11 @@ components:
           $ref: "#/components/schemas/LetterMetadata"
     LanguageCode:
       type: string
-      description: `no.nav.pensjon.brevbaker.api.model.LanguageCode`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LanguageCode`
       enum: [ "BOKMAL", "NYNORSK", "ENGLISH" ]
     LetterMetadata:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMetadata`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMetadata`
       required:
         - displayTitle
         - isSensitiv
@@ -335,15 +335,15 @@ components:
           $ref: "#/components/schemas/Brevtype"
     Distribusjonstype:
       type: string
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype`
       enum: [ "VEDTAK", "VIKTIG", "ANNET" ]
     Brevtype:
       type: string
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype`
       enum: [ "VEDTAKSBREV", "INFORMASJONSBREV" ]
     TemplateModelSpecification:
       type: object
-      description: `no.nav.pensjon.brev.template.TemplateModelSpecification`
+      description: Se `no.nav.pensjon.brev.template.TemplateModelSpecification`
       required:
         - types
       properties:
@@ -359,7 +359,7 @@ components:
       additionalProperties:
         $ref: "#/components/schemas/FieldType"
     FieldType:
-      description: `no.nav.pensjon.brev.template.FieldType`
+      description: Se `no.nav.pensjon.brev.template.FieldType`
       oneOf:
         - $ref: "#/components/schemas/FieldType_Scalar"
         - $ref: "#/components/schemas/FieldType_Enum"
@@ -367,7 +367,7 @@ components:
         - $ref: "#/components/schemas/FieldType_Object"
     FieldType_Scalar:
       type: object
-      description: `no.nav.pensjon.brev.template.FieldType.Scalar`
+      description: Se `no.nav.pensjon.brev.template.FieldType.Scalar`
       required:
         - type
         - nullable
@@ -382,11 +382,11 @@ components:
           $ref: "#/components/schemas/FieldType_ScalarKind"
     FieldType_ScalarKind:
       type: string
-      description: `no.nav.pensjon.brev.template.FieldType.Scalar.Kind`
+      description: Se `no.nav.pensjon.brev.template.FieldType.Scalar.Kind`
       enum: [ "NUMBER", "DOUBLE", "STRING", "BOOLEAN", "DATE" ]
     FieldType_Enum:
       type: object
-      description: `no.nav.pensjon.brev.template.FieldType.Enum`
+      description: Se `no.nav.pensjon.brev.template.FieldType.Enum`
       required:
         - nullable
         - values
@@ -399,7 +399,7 @@ components:
             type: string
     FieldType_Array:
       type: object
-      description: `no.nav.pensjon.brev.template.FieldType.Array`
+      description: Se `no.nav.pensjon.brev.template.FieldType.Array`
       required:
         - nullable
         - items
@@ -410,7 +410,7 @@ components:
           $ref: "#/components/schemas/FieldType"
     FieldType_Object:
       type: object
-      description: `no.nav.pensjon.brev.template.FieldType.Object`
+      description: Se `no.nav.pensjon.brev.template.FieldType.Object`
       required:
         - nullable
         - typeName
@@ -422,7 +422,7 @@ components:
 
     LetterMarkup:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup`
       required:
         - title
         - sakspart
@@ -443,7 +443,7 @@ components:
 
     LetterMarkup_Sakspart:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Sakspart`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Sakspart`
       readOnly: true
       required:
         - gjelderNavn
@@ -462,7 +462,7 @@ components:
 
     LetterMarkup_Signatur:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Signatur`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Signatur`
       readOnly: true
       required:
         - hilsenTekst
@@ -486,7 +486,7 @@ components:
       format: int32
 
     LetterMarkup_Block:
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block`
       oneOf:
         - $ref: "#/components/schemas/LetterMarkup_Title"
         - $ref: "#/components/schemas/LetterMarkup_Paragraph"
@@ -503,7 +503,7 @@ components:
           type: boolean
 
     LetterMarkup_Title:
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1` og `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title2`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1` og `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title2`
       allOf:
         - $ref: "#/components/schemas/LetterMarkup_BlockBase"
         - type: object
@@ -522,7 +522,7 @@ components:
                   - $ref: "#/components/schemas/LetterMarkup_NewLine"
 
     LetterMarkup_Paragraph:
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph`
       allOf:
         - $ref: "#/components/schemas/LetterMarkup_BlockBase"
         - type: object
@@ -546,7 +546,7 @@ components:
 
     LetterMarkup_Text:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal` og `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal` og `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable`
       required:
         - id
         - type
@@ -566,7 +566,7 @@ components:
 
     LetterMarkup_NewLine:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.NewLine`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.NewLine`
       required:
         - id
         - type
@@ -579,7 +579,7 @@ components:
 
     LetterMarkup_ItemList:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList`
       required:
         - id
         - type
@@ -597,7 +597,7 @@ components:
 
     LetterMarkup_Item:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList.Item`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList.Item`
       required:
         - id
         - content
@@ -613,7 +613,7 @@ components:
 
     LetterMarkup_Table:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table`
       required:
         - id
         - type
@@ -634,7 +634,7 @@ components:
 
     LetterMarkup_Row:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Row`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Row`
       required:
         - id
         - cells
@@ -648,7 +648,7 @@ components:
 
     LetterMarkup_Cell:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Cell`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Cell`
       required:
         - id
         - text
@@ -664,7 +664,7 @@ components:
 
     LetterMarkup_Header:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Header`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Header`
       required:
         - id
         - colspec
@@ -678,7 +678,7 @@ components:
 
     LetterMarkup_ColumnSpec:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnSpec`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnSpec`
       required:
         - id
         - headerContent
@@ -698,7 +698,7 @@ components:
 
     LetterMarkup_FormText:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text`
       required:
         - id
         - type
@@ -725,7 +725,7 @@ components:
 
     LetterMarkup_FormChoice:
       type: object
-      description: `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice`
       required:
         - id
         - type
