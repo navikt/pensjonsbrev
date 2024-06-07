@@ -99,6 +99,8 @@ paths:
   /v2/letter/autobrev/pdf:
     post:
       summary: Bestill brev i PDF format
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
@@ -115,6 +117,8 @@ paths:
   /v2/letter/autobrev/html:
     post:
       summary: Bestill brev i HTML format
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
@@ -131,6 +135,8 @@ paths:
   /v2/letter/redigerbar/markup:
     post:
       summary: Bestill brev i redigerbart LetterMarkup format
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
@@ -151,6 +157,8 @@ paths:
   /v2/letter/redigerbar/pdf:
     post:
       summary: Bestill brev i PDF format
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`.
@@ -167,6 +175,8 @@ paths:
   /v2/letter/redigerbar/html:
     post:
       summary: Bestill brev i HTML format
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`.
@@ -181,6 +191,10 @@ paths:
           description: Malen eksisterer ikke
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
   responses:
     LetterResponse_PDF:
       description: Ferdig produsert brev i PDF format. Se data klasse `no.nav.pensjon.brev.api.model.LetterResponse.V2`.
