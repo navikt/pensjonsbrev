@@ -95,6 +95,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-openapi:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
