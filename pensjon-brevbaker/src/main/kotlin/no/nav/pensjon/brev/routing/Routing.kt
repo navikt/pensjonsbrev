@@ -5,7 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.callid.*
-import io.ktor.server.plugins.openapi.*
+import io.ktor.server.plugins.swagger.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -50,7 +50,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
             }
         }
 
-        openAPI(path = "openapi", swaggerFile = "openapi/documentation.yaml")
+        swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
 
         route("/templates") {
 
