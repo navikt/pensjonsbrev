@@ -7,10 +7,11 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.letter.updatedEditedLetter
+import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import org.slf4j.LoggerFactory
 
@@ -35,11 +36,11 @@ fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
 
     post<RenderLetterRequest>("/letter/{brevkode}") { request ->
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
-        brevbakerService.renderLetter(call, brevkode, request.letterData)
+        brevbakerService.renderLetter(call, brevkode, GeneriskRedigerbarBrevdata(EmptyBrevdata, request.letterData))
             .map { rendered ->
                 call.respond(
                     RenderLetterResponse(
-                        request.editedLetter?.updatedEditedLetter(rendered) ?: rendered.toEdit(),
+                        request.editedLetter?.updateEditedLetter(rendered) ?: rendered.toEdit(),
                         rendered.title,
                         rendered.sakspart,
                         rendered.signatur,
