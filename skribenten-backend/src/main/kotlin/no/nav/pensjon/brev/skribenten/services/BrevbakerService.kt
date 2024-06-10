@@ -38,21 +38,14 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
     suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
         client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult()
 
-    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: RedigerbarBrevdata<*, *>): ServiceResult<LetterMarkup> =
-        client.post(call, "/letter/redigerbar") {
+    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: RedigerbarBrevdata<*,*>, felles: Felles): ServiceResult<LetterMarkup> =
+        client.post(call, "/v2/letter/redigerbar/markup") {
             contentType(ContentType.Application.Json)
             setBody(
-                RedigerbartbrevRequest(
+                BestillBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
-                    felles = Felles(
-                        dokumentDato = LocalDate.now(),
-                        saksnummer = "1234",
-                        avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
-                        bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
-                        vergeNavn = null,
-                        signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
-                    ),
+                    felles = felles,
                     language = LanguageCode.BOKMAL,
                 )
             )

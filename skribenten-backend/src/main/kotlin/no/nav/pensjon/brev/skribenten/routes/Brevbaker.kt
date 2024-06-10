@@ -7,12 +7,21 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
+import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.letter.updatedEditedLetter
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
+import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Sakspart
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Signatur
+import no.nav.pensjon.brevbaker.api.model.NAVEnhet
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import org.slf4j.LoggerFactory
+import java.time.LocalDate
 
 
 data class RenderLetterRequest(val letterData: GenericBrevdata, val editedLetter: Edit.Letter?)
@@ -35,11 +44,21 @@ fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
 
     post<RenderLetterRequest>("/letter/{brevkode}") { request ->
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
-        brevbakerService.renderLetter(call, brevkode, request.letterData)
+
+        brevbakerService.renderLetter(
+            call, brevkode, GeneriskRedigerbarBrevdata(EmptyBrevdata, request.letterData), Felles(
+                dokumentDato = LocalDate.now(),
+                saksnummer = "1234",
+                avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
+                bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
+                vergeNavn = null,
+                signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
+            )
+        )
             .onOk { rendered ->
                 call.respond(
                     RenderLetterResponse(
-                        request.editedLetter?.updatedEditedLetter(rendered) ?: rendered.toEdit(),
+                        request.editedLetter?.updateEditedLetter(rendered) ?: rendered.toEdit(),
                         rendered.title,
                         rendered.sakspart,
                         rendered.signatur,

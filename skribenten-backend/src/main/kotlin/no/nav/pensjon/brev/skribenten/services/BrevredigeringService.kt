@@ -14,8 +14,15 @@ import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.routes.OppprettBrevResponse
+import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.NAVEnhet
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class BrevredigeringService(private val brevbakerService: BrevbakerService) {
@@ -36,9 +43,10 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
             call = call,
             brevkode = brevkode,
             brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData,
+                pesysData = pesysData.brevdata,
                 saksbehandlerValg = saksbehandlerValg
-            )
+            ),
+            felles = pesysData.felles
         ).map { letter ->
             transaction {
                 Brevredigering.new {
@@ -75,9 +83,10 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
                 call = call,
                 brevkode = brevkode,
                 brevdata = GeneriskRedigerbarBrevdata(
-                    pesysData = pesysData,
+                    pesysData = pesysData.brevdata,
                     saksbehandlerValg = saksbehandlerValg,
-                )
+                ),
+                felles = pesysData.felles
             ).map { redigertBrev.updateEditedLetter(it) }
                 .map { brev ->
                     transaction {
@@ -107,7 +116,14 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
     }
 
     //TODO implementer felter
-    private fun hentPesysData(brevkode: Brevkode.Redigerbar, saksId: Long): BrevbakerBrevdata = EmptyBrevdata
+    private fun hentPesysData(brevkode: Brevkode.Redigerbar, saksId: Long): PesysBrevdata = PesysBrevdata(Felles(
+        dokumentDato = LocalDate.now(),
+        saksnummer = "1234",
+        avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
+        bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
+        vergeNavn = null,
+        signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
+    ), EmptyBrevdata)
 
     fun hentBrev(brevId: Long, mapper: Brevredigering.() -> OppprettBrevResponse): OppprettBrevResponse? {
         return try {
@@ -133,5 +149,7 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
             throw e
         }
     }
+
+    data class PesysBrevdata(val felles: Felles, val brevdata: BrevbakerBrevdata)
 
 }

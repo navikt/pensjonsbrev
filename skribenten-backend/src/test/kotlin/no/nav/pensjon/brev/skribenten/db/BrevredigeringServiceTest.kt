@@ -59,7 +59,7 @@ class BrevredigeringServiceTest {
     private val letter = letter(Paragraph(1, true, listOf(Literal(1, "red pill"))))
 
     private val brevbakerMock = mockk<BrevbakerService> {
-        coEvery { renderLetter(any(), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any()) } returns ServiceResult.Ok(letter)
+        coEvery { renderLetter(any(), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any(), any()) } returns ServiceResult.Ok(letter)
     }
     private val callMock = mockk<ApplicationCall> {
         every { principal() } returns mockk<UserPrincipal> {
@@ -124,7 +124,8 @@ class BrevredigeringServiceTest {
             brevbakerMock.renderLetter(
                 any(),
                 eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
-                eq(GeneriskRedigerbarBrevdata(EmptyBrevdata, nyeValg))
+                eq(GeneriskRedigerbarBrevdata(EmptyBrevdata, nyeValg)),
+                any()
             )
         } returns ServiceResult.Ok(freshRender)
 
@@ -157,7 +158,8 @@ class BrevredigeringServiceTest {
             brevbakerMock.renderLetter(
                 any(),
                 eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
-                eq(GeneriskRedigerbarBrevdata(EmptyBrevdata, saksbehandlerValg))
+                eq(GeneriskRedigerbarBrevdata(EmptyBrevdata, saksbehandlerValg)),
+                any()
             )
         } coAnswers {
             delay(10.minutes)
