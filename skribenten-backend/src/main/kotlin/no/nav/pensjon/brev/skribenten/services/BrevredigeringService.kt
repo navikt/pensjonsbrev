@@ -24,6 +24,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import kotlin.time.DurationUnit
 
 class BrevredigeringService(private val brevbakerService: BrevbakerService) {
 
@@ -56,8 +58,8 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
                     this.saksbehandlerValg = saksbehandlerValg
                     laastForRedigering = false
                     redigeresAvNavIdent = null
-                    opprettet = LocalDateTime.now()
-                    sistredigert = LocalDateTime.now()
+                    opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+                    sistredigert = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
                     redigertBrev = letter.toEdit()
                     sistRedigertAvNavIdent = call.principal().navIdent
                 }.mapper()
@@ -92,7 +94,7 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
                     transaction {
                         Brevredigering.findByIdAndUpdate(brevId) {
                             it.redigertBrev = brev
-                            it.sistredigert = LocalDateTime.now()
+                            it.sistredigert = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
                             it.saksbehandlerValg = saksbehandlerValg
                             it.sistRedigertAvNavIdent = call.principal().navIdent
                         }?.mapper()
