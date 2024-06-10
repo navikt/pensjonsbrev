@@ -36,40 +36,44 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         }
         """.trimIndent()
 
-    override fun render(letter: LetterMarkup, attachments: List<Attachment>, language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype): HTMLDocument =
-        HTMLDocument().apply {
-            newFile("index.html") {
-                appendLine("<!DOCTYPE html>").appendHTML().html {
-                    lang = language.locale().toLanguageTag()
-                    head {
-                        meta(charset = Charsets.UTF_8.name())
-                        meta(name = "viewport", content = "width=device-width")
-                        title { text(letter.title) }
-                        style { unsafe { fontBinary.forEach { raw(it) } } }
-                        style { unsafe { raw(css) } }
-                    }
-                    body {
-                        div(classes("rot")) {
-                            div(classes("brev")) {
-                                img(
-                                    classes = classes("logo"),
-                                    src = navLogoImg,
-                                    alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo)
-                                )
-                                div(classes("brevhode")) {
-                                    renderSakspart(language, felles)
-                                    brevdato(language, felles)
-                                }
-                                h1(classes("tittel")) { text(letter.title) }
-                                div(classes("brevkropp")) {
-                                    letter.blocks.forEach { renderBlock(it) }
-                                    renderClosing(language, felles, brevtype)
-                                }
+    override fun render(
+        letter: LetterMarkup,
+        attachments: List<Attachment>,
+        language: Language,
+        felles: Felles,
+        brevtype: LetterMetadata.Brevtype
+    ): HTMLDocument =
+        HTMLDocument {
+            appendLine("<!DOCTYPE html>").appendHTML().html {
+                lang = language.locale().toLanguageTag()
+                head {
+                    meta(charset = Charsets.UTF_8.name())
+                    meta(name = "viewport", content = "width=device-width")
+                    title { text(letter.title) }
+                    style { unsafe { fontBinary.forEach { raw(it) } } }
+                    style { unsafe { raw(css) } }
+                }
+                body {
+                    div(classes("rot")) {
+                        div(classes("brev")) {
+                            img(
+                                classes = classes("logo"),
+                                src = navLogoImg,
+                                alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo)
+                            )
+                            div(classes("brevhode")) {
+                                renderSakspart(language, felles)
+                                brevdato(language, felles)
                             }
-                            attachments.forEach {
-                                hr(classes("vedlegg"))
-                                renderAttachment(it, language, felles)
+                            h1(classes("tittel")) { text(letter.title) }
+                            div(classes("brevkropp")) {
+                                letter.blocks.forEach { renderBlock(it) }
+                                renderClosing(language, felles, brevtype)
                             }
+                        }
+                        attachments.forEach {
+                            hr(classes("vedlegg"))
+                            renderAttachment(it, language, felles)
                         }
                     }
                 }

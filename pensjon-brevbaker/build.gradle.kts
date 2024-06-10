@@ -9,6 +9,7 @@ val logstashVersion: String by project
 val micrometerVersion: String by project
 val apiModelVersion: String by project
 val jacksonJsr310Version: String by project
+val mockkVersion: String by project
 
 plugins {
     application
@@ -95,10 +96,11 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-server-swagger:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.9.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
 
     implementation(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
@@ -116,5 +118,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation("io.mockk:mockk:${mockkVersion}")
 }
 

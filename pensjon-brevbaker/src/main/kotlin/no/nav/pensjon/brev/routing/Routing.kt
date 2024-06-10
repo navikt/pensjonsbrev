@@ -1,22 +1,22 @@
-package no.nav.pensjon.brev
+package no.nav.pensjon.brev.routing
 
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.callid.*
+import io.ktor.server.plugins.swagger.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.micrometer.core.instrument.Tag
-import no.nav.pensjon.brev.api.LetterResource
-import no.nav.pensjon.brev.api.description
+import no.nav.pensjon.brev.Metrics
+import no.nav.pensjon.brev.api.*
 import no.nav.pensjon.brev.api.model.AutobrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.RedigerbartbrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.TemplateModelSpecification
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
@@ -35,6 +35,23 @@ data class RedigerbarTemplateDescription(
 
 fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService) =
     routing {
+        route("/v2") {
+            val autobrev = TemplateResourceV2("autobrev", prodAutobrevTemplates, latexCompilerService)
+            val redigerbareBrev = TemplateResourceV2("redigerbar", prodRedigerbareTemplates, latexCompilerService)
+
+            route("/templates") {
+                templateRoutes(autobrev)
+                templateRoutes(redigerbareBrev)
+            }
+            authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
+                route("/letter") {
+                    letterRoutes(autobrev, redigerbareBrev)
+                }
+            }
+        }
+
+        swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
+
         route("/templates") {
 
             route("/autobrev") {
@@ -150,5 +167,4 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
         get("/isReady") {
             call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
         }
-
     }

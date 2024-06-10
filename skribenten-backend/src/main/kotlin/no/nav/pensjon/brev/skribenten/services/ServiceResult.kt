@@ -22,6 +22,16 @@ sealed class ServiceResult<Result> {
         is Error -> func(error, statusCode)
     }
 
+    inline fun onOk(func: (Result) -> Unit): ServiceResult<Result> {
+        if (this is Ok) func(result)
+        return this
+    }
+
+    inline fun onError(func: (error: String, statusCode: HttpStatusCode) -> Unit): ServiceResult<Result> {
+        if (this is Error) func(error, statusCode)
+        return this
+    }
+
     fun resultOrNull(): Result? =
         if (this is Ok) result else null
 
@@ -53,6 +63,10 @@ suspend inline fun <reified R> HttpResponse.toServiceResult(noinline errorHandle
 
 suspend inline fun <reified R> AuthorizedHttpClientResult.toServiceResult(noinline errorHandler: (suspend (HttpResponse) -> ServiceResult<R>)? = null): ServiceResult<R> =
     when (this) {
-        is AuthorizedHttpClientResult.Error -> ServiceResult.Error("Feil ved token-utveksling correlation_id: ${error.correlation_id} Description:${error.error_description}", HttpStatusCode.Unauthorized)
+        is AuthorizedHttpClientResult.Error -> ServiceResult.Error(
+            "Feil ved token-utveksling correlation_id: ${error.correlation_id} Description:${error.error_description}",
+            HttpStatusCode.Unauthorized
+        )
+
         is AuthorizedHttpClientResult.Response -> errorHandler?.let { response.toServiceResult(it) } ?: response.toServiceResult()
     }

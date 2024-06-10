@@ -7,11 +7,10 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.letter.updatedEditedLetter
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import org.slf4j.LoggerFactory
 
@@ -27,8 +26,8 @@ fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
     get("/template/{brevkode}") {
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
         brevbakerService.getTemplate(call, brevkode)
-            .map { call.respondText(it, ContentType.Application.Json) }
-            .catch { message, status ->
+            .onOk { call.respondText(it, ContentType.Application.Json) }
+            .onError { message, status ->
                 logger.error("Feil ved henting av brevkode: Status:$status Melding: $message ")
                 call.respond(status, message)
             }
@@ -36,17 +35,17 @@ fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
 
     post<RenderLetterRequest>("/letter/{brevkode}") { request ->
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
-        brevbakerService.renderLetter(call, brevkode, GeneriskRedigerbarBrevdata(EmptyBrevdata, request.letterData))
-            .map { rendered ->
+        brevbakerService.renderLetter(call, brevkode, request.letterData)
+            .onOk { rendered ->
                 call.respond(
                     RenderLetterResponse(
-                        request.editedLetter?.updateEditedLetter(rendered) ?: rendered.toEdit(),
+                        request.editedLetter?.updatedEditedLetter(rendered) ?: rendered.toEdit(),
                         rendered.title,
                         rendered.sakspart,
                         rendered.signatur,
                     )
                 )
-            }.catch { message, status ->
+            }.onError { message, status ->
                 logger.error("Feil ved rendring av brevbaker brev Brevkode: $brevkode Melding: $message Status: $status")
                 call.respond(HttpStatusCode.InternalServerError, "Feil ved rendring av brevbaker brev.")
             }

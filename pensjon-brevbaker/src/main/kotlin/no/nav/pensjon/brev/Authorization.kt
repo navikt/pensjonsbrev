@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.config.*
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -16,15 +17,15 @@ data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, 
 
         private const val jwtAzureAdName = "AZURE_AD"
 
-        fun requireAzureADConfig() =
+        fun requireAzureADConfig(azureAdConfig: ApplicationConfig) =
             JwtConfig(
                 name = jwtAzureAdName,
-                issuer = requireEnv("AZURE_OPENID_CONFIG_ISSUER"),
-                jwksUrl = requireEnv("AZURE_OPENID_CONFIG_JWKS_URI"),
-                audience = listOf(requireEnv("AZURE_APP_CLIENT_ID")),
+                issuer = azureAdConfig.property("issuer").getString(),
+                jwksUrl = azureAdConfig.property("jwksUrl").getString(),
+                audience = listOf(azureAdConfig.property("clientId").getString()),
                 preAuthorizedApps = getPreAuthorizedApps(),
                 requireAzureAdClaims = true,
-            ).also { logger.info("AzureAD: $it") }
+            )
 
         private fun getPreAuthorizedApps(): List<PreAuthorizedApp>? =
             System.getenv("AZURE_APP_PRE_AUTHORIZED_APPS")?.let {
