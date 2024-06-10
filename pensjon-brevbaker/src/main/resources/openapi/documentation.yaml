@@ -16,7 +16,7 @@ servers:
   - url: 'https://pensjon-brevbaker.intern.dev.nav.no'
   - url: 'https://pensjon-brevbaker.intern.nav.no'
 paths:
-  /v2/templates/redigerbar/:
+  /v2/templates/redigerbar:
     get:
       summary: Hent alle tilgjengelige brevkoder
       description: Brevkodene vil være gyldige verdier av enum `no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbar`.
@@ -56,7 +56,7 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
-  /v2/templates/autobrev/:
+  /v2/templates/autobrev:
     get:
       summary: Hent alle tilgjengelige brevkoder
       description: Brevkodene vil være gyldige verdier av enum `no.nav.pensjon.brev.api.model.maler.Brevkode.Autobrev`
