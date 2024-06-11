@@ -26,7 +26,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.lavEllerIngenInntekt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etterbetalingOmstillingsstoenad
@@ -37,7 +37,8 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val avdoed: Avdoed,
     val beregning: OmstillingsstoenadBeregning,
     val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean,
-    val lavEllerIngenInntekt: Boolean,
+    val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut
+    val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
     val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
 ): BrevDTO
@@ -74,8 +75,8 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
                 includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
             }
             includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad)
-            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, lavEllerIngenInntekt))
-            showIf(lavEllerIngenInntekt.not()) {
+            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, omsRettUtenTidsbegrensning))
+            showIf(omsRettUtenTidsbegrensning.not()) {
                 includePhrase(OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(innvilgetMindreEnnFireMndEtterDoedsfall))
             }
             includePhrase(OmstillingsstoenadFellesFraser.Inntektsendring)

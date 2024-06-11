@@ -35,7 +35,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harFlereUtbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.lavEllerIngenInntekt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering
@@ -52,7 +52,8 @@ data class OmstillingsstoenadRevurderingDTO(
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
     val harFlereUtbetalingsperioder: Boolean,
     val harUtbetaling: Boolean,
-    val lavEllerIngenInntekt: Boolean,
+    val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut
+    val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
     val feilutbetaling: FeilutbetalingType
     ): BrevDTO
 
@@ -118,8 +119,8 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, lavEllerIngenInntekt))
-            showIf(lavEllerIngenInntekt.not()) {
+            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, omsRettUtenTidsbegrensning))
+            showIf(omsRettUtenTidsbegrensning.not()) {
                 includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt)
             }
             includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
