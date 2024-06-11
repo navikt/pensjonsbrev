@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class FavouritesRepository {
     fun getFavourites(userId: String): List<String> =
         transaction {
-            Favourites.select { Favourites.userId eq userId }.map { row -> row[Favourites.letterCode] }
+            Favourites.selectAll().where { Favourites.userId eq userId }.map { row -> row[Favourites.letterCode] }
         }
 
 

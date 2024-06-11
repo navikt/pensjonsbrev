@@ -34,7 +34,7 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
-val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
+private val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(Edit.JacksonModule)
     registerModule(BrevbakerBrevdataModule)

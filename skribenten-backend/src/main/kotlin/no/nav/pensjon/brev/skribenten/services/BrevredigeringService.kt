@@ -12,8 +12,8 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.principal
+import no.nav.pensjon.brev.skribenten.routes.BrevResponse
 import no.nav.pensjon.brev.skribenten.routes.GeneriskRedigerbarBrevdata
-import no.nav.pensjon.brev.skribenten.routes.OppprettBrevResponse
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import kotlin.time.DurationUnit
 
 class BrevredigeringService(private val brevbakerService: BrevbakerService) {
 
@@ -118,37 +117,29 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
     }
 
     //TODO implementer felter
-    private fun hentPesysData(brevkode: Brevkode.Redigerbar, saksId: Long): PesysBrevdata = PesysBrevdata(Felles(
-        dokumentDato = LocalDate.now(),
-        saksnummer = "1234",
-        avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
-        bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
-        vergeNavn = null,
-        signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
-    ), EmptyBrevdata)
+    private fun hentPesysData(brevkode: Brevkode.Redigerbar, saksId: Long): PesysBrevdata = PesysBrevdata(
+        Felles(
+            dokumentDato = LocalDate.now(),
+            saksnummer = "1234",
+            avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
+            bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
+            vergeNavn = null,
+            signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
+        ), EmptyBrevdata
+    )
 
-    fun hentBrev(brevId: Long, mapper: Brevredigering.() -> OppprettBrevResponse): OppprettBrevResponse? {
-        return try {
-            transaction {
-                Brevredigering.findById(brevId)?.mapper() ?: throw IllegalStateException("Feil ved henting av brev med brevId: $brevId")
-            }
-        } catch (e: Exception) {
-            logger.error("Feil ved henting av brev med brevId: $brevId", e)
-            throw e
+    fun hentBrev(brevId: Long, mapper: Brevredigering.() -> BrevResponse): BrevResponse? {
+        return transaction {
+            Brevredigering.findById(brevId)?.mapper()
         }
     }
 
     fun hentSaksbehandlersBrev(
         navIdent: String,
-        mapper: Brevredigering.() -> OppprettBrevResponse
-    ): List<OppprettBrevResponse?>? {
-        return try {
-            transaction {
-                Brevredigering.find { BrevredigeringTable.opprettetAvNavIdent eq navIdent }.map(mapper)
-            }
-        } catch (e: Exception) {
-            logger.error("Feil ved henting av brev med brevId: $navIdent", e)
-            throw e
+        mapper: Brevredigering.() -> BrevResponse
+    ): List<BrevResponse?> {
+        return transaction {
+            Brevredigering.find { BrevredigeringTable.opprettetAvNavIdent eq navIdent }.map(mapper)
         }
     }
 

@@ -21,7 +21,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val sak: PenService.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
             brevredigeringService.opprettBrev(call, sak, request.brevkode, request.saksbehandlerValg) {
-                OppprettBrevResponse(
+                BrevResponse(
                     id = id.value,
                     redigertBrev = redigertBrev,
                     sistredigert = sistredigert,
@@ -29,7 +29,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
                     saksbehandlerValg = saksbehandlerValg,
                 )
             }.map { brev ->
-                call.respond(HttpStatusCode.OK, brev)
+                call.respond(HttpStatusCode.Created, brev)
             }.catch { message, statusCode ->
                 call.application.log.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
                 call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
@@ -39,7 +39,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
         post<OppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
             brevredigeringService.oppdaterBrev(call, brevId, request.brevkode, request.saksbehandlerValg, request.redigertBrev) {
-                OppprettBrevResponse(
+                BrevResponse(
                     id = brevId,
                     redigertBrev = redigertBrev,
                     sistredigert = sistredigert,
@@ -47,7 +47,9 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
                     saksbehandlerValg = saksbehandlerValg
                 )
             }.map { brev ->
-                call.respond(HttpStatusCode.OK, brev!!)
+                if(brev == null) {
+                    call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
+                } else call.respond(HttpStatusCode.OK, brev)
             }.catch { message, statusCode ->
                 call.application.log.error("$statusCode - Feil ved oppdatering av brev ${request.brevkode}: $message")
                 call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
@@ -86,8 +88,8 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
     }
 
 
-private val mapper: Brevredigering.() -> OppprettBrevResponse = {
-    OppprettBrevResponse(
+private val mapper: Brevredigering.() -> BrevResponse = {
+    BrevResponse(
         id = id.value,
         redigertBrev = redigertBrev,
         sistredigert = sistredigert,
@@ -114,7 +116,7 @@ data class OppdaterBrevRequest(
     val redigertBrev: Edit.Letter,
 )
 
-data class OppprettBrevResponse(
+data class BrevResponse(
     val id: Long,
     val redigertBrev: Edit.Letter,
     val sistredigert: LocalDateTime,

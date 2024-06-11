@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.GeneriskRedigerbarBrevdata
-import no.nav.pensjon.brev.skribenten.routes.OppprettBrevResponse
+import no.nav.pensjon.brev.skribenten.routes.BrevResponse
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.PenService
@@ -81,9 +81,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `non existing brevredingering returns null`() {
-        assertThrows<IllegalStateException> {
-            service.hentBrev(99, mapper)
-        }
+        assertNull(service.hentBrev(99, mapper))
     }
 
     @Test
@@ -183,12 +181,12 @@ class BrevredigeringServiceTest {
 
         assertEquals(result, service.hentBrev(result.id, mapper))
         service.slettBrev(result.id)
-        assertThrows<IllegalStateException>{ (service.hentBrev(result.id, mapper)) }
+        assertNull(service.hentBrev(result.id, mapper))
     }
 
 
-    private val mapper: Brevredigering.() -> OppprettBrevResponse = {
-        OppprettBrevResponse(
+    private val mapper: Brevredigering.() -> BrevResponse = {
+        BrevResponse(
             id = id.value,
             redigertBrev = redigertBrev,
             sistredigert = sistredigert,
