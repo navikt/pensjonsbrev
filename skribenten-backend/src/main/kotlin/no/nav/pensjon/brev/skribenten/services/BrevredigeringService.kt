@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.routes.BrevResponse
 import no.nav.pensjon.brev.skribenten.routes.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
@@ -21,14 +20,11 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 class BrevredigeringService(private val brevbakerService: BrevbakerService) {
-
-    private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)
 
     suspend fun <T : Any> opprettBrev(
         call: ApplicationCall,
@@ -128,16 +124,13 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
         ), EmptyBrevdata
     )
 
-    fun hentBrev(brevId: Long, mapper: Brevredigering.() -> BrevResponse): BrevResponse? {
+    fun <T : Any> hentBrev(brevId: Long, mapper: Brevredigering.() -> T): T? {
         return transaction {
             Brevredigering.findById(brevId)?.mapper()
         }
     }
 
-    fun hentSaksbehandlersBrev(
-        navIdent: String,
-        mapper: Brevredigering.() -> BrevResponse
-    ): List<BrevResponse?> {
+    fun <T : Any> hentSaksbehandlersBrev(navIdent: String, mapper: Brevredigering.() -> T): List<T?> {
         return transaction {
             Brevredigering.find { BrevredigeringTable.opprettetAvNavIdent eq navIdent }.map(mapper)
         }
