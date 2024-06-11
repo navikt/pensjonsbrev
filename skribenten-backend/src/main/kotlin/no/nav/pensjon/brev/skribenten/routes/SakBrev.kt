@@ -47,7 +47,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
                     saksbehandlerValg = saksbehandlerValg
                 )
             }.map { brev ->
-                if(brev == null) {
+                if (brev == null) {
                     call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
                 } else call.respond(HttpStatusCode.OK, brev)
             }.catch { message, statusCode ->
@@ -58,10 +58,14 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
         delete("/{brevId}") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            brevredigeringService.slettBrev(brevId).map {
-                call.respond(HttpStatusCode.OK)
-            }.catch { message, httpStatusCode ->
-                call.application.log.error("$httpStatusCode - Feil ved sletting av brev med id: $brevId, $message")
+
+            try {
+                brevredigeringService.slettBrev(brevId).map {
+                    call.respond(HttpStatusCode.OK)
+                }
+            } catch (exeption: Exception) {
+                call.application.log.error("Feil ved sletting av brev med id: $brevId, $exeption")
+                call.respond(HttpStatusCode.InternalServerError, "Feil ved sletting av brev med id: $brevId")
             }
         }
 
@@ -82,7 +86,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             if (response != null) {
                 call.respond(HttpStatusCode.OK, response)
             } else {
-                call.respond(HttpStatusCode.NotFound,  "Feil ved henting av saksbehandlers brev for $navident")
+                call.respond(HttpStatusCode.NotFound, "Feil ved henting av saksbehandlers brev for $navident")
             }
         }
     }
