@@ -15,9 +15,13 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.mapBrev
-import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.BrevbakerService
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
+import no.nav.pensjon.brev.skribenten.services.GeneriskRedigerbarBrevdata
+import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
@@ -64,11 +68,11 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerMock
     )
 
-    private val sak = PenService.SakSelection(
+    private val sak = Pen.SakSelection(
         1234L,
         "12345678910",
         LocalDate.now().minusYears(42),
-        PenService.SakType.ALDER,
+        Pen.SakType.ALDER,
         "rabbit"
     )
 

@@ -9,14 +9,14 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
-import no.nav.pensjon.brev.skribenten.services.PenService
 
 fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
     route("/brev") {
         post<Api.OpprettBrevRequest> { request ->
-            val sak: PenService.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
             brevredigeringService.opprettBrev(call, sak, request.brevkode, request.saksbehandlerValg, ::mapBrev)
                 .onOk { brev ->

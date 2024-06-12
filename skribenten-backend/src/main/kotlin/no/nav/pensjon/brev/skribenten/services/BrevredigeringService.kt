@@ -12,13 +12,10 @@ import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -34,7 +31,7 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
 
     suspend fun <T : Any> opprettBrev(
         call: ApplicationCall,
-        sak: PenService.SakSelection,
+        sak: Pen.SakSelection,
         brevkode: Brevkode.Redigerbar,
         saksbehandlerValg: BrevbakerBrevdata,
         mapper: Brevredigering.() -> T,
