@@ -19,6 +19,7 @@ fun Route.sakRoute(
     pensjonPersonDataService: PensjonPersonDataService,
     krrService: KrrService,
     brevmalService: BrevmalService,
+    brevredigeringService: BrevredigeringService
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang(pdlService, penService))
@@ -97,5 +98,6 @@ fun Route.sakRoute(
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             call.respond(krrService.getPreferredLocale(call, sak.foedselsnr))
         }
+        sakBrev(brevredigeringService)
     }
 }

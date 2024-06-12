@@ -11,7 +11,7 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  * if Sak-data has changed in pesys. Or elements (blocks/content) present in previous renders may no longer be
  * present.
  */
-fun Edit.Letter.updatedEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
+fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
     copy(blocks = mergeList(blocks, renderedLetter.blocks.toEdit(), ::mergeBlock, deletedBlocks))
 
 /**
