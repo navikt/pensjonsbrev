@@ -177,7 +177,7 @@ object OmstillingsstoenadFellesFraser {
 
     data class HvorLengerKanDuFaaOmstillingsstoenad(
         val beregning: Expression<OmstillingsstoenadBeregning>,
-        val lavEllerIngenInntekt: Expression<Boolean>
+        val omsRettUtenTidsbegrensning: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -187,7 +187,7 @@ object OmstillingsstoenadFellesFraser {
                     English to "How long can you receive adjustment allowance?",
                 )
             }
-            showIf(lavEllerIngenInntekt) {
+            showIf(omsRettUtenTidsbegrensning) {
                 paragraph {
                     text(
                         Bokmal to "Du kommer inn under unntaksreglene for varighet av stønaden, fordi du har hatt " +

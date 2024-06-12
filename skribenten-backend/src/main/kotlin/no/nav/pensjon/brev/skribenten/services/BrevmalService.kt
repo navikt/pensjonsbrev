@@ -3,10 +3,11 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.server.application.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevregeltypeCode
-import no.nav.pensjon.brev.skribenten.services.PenService.SakType.*
 import org.slf4j.LoggerFactory
 
 class BrevmalService(
@@ -17,7 +18,7 @@ class BrevmalService(
 
     suspend fun hentBrevmalerForSak(
         call: ApplicationCall,
-        sakType: PenService.SakType,
+        sakType: Pen.SakType,
         includeEblanketter: Boolean,
     ): List<LetterMetadata> = coroutineScope {
         val brevmetadata = brevmetadataService.hentMaler(call, sakType, includeEblanketter)
@@ -27,13 +28,13 @@ class BrevmalService(
 
     suspend fun hentBrevmalerForVedtak(
         call: ApplicationCall,
-        sakType: PenService.SakType,
+        sakType: Pen.SakType,
         includeEblanketter: Boolean,
         vedtaksId: String,
     ): List<LetterMetadata> = coroutineScope {
         val brevmetadataAsync = async { brevmetadataService.hentMaler(call, sakType, includeEblanketter) }
         val erKravPaaGammeltRegelverk =
-            if (sakType == PenService.SakType.ALDER) {
+            if (sakType == ALDER) {
                 penService.hentIsKravPaaGammeltRegelverk(call, vedtaksId)
                     .catch { message, httpStatusCode ->
                         logger.error("Feil ved henting av felt \"erKravPaaGammeltRegelverk\" fra vedtak. Status: $httpStatusCode, message: $message")
@@ -72,19 +73,19 @@ class BrevmalService(
         }
 
     private fun erRelevantRegelverkstypeForSaktype(
-        sakstype: PenService.SakType,
+        sakstype: Pen.SakType,
         brevregeltype: BrevregeltypeCode?,
         erKravPaaGammeltRegelverk: Boolean,
     ): Boolean =
         if (brevregeltype != null) {
             when (sakstype) {
-                PenService.SakType.ALDER -> if (erKravPaaGammeltRegelverk) {
+                ALDER -> if (erKravPaaGammeltRegelverk) {
                     brevregeltype.gjelderGammeltRegelverk()
                 } else {
                     brevregeltype.gjelderNyttRegelverk()
                 }
 
-                PenService.SakType.UFOREP -> brevregeltype.gjelderGammeltRegelverk()
+                UFOREP -> brevregeltype.gjelderGammeltRegelverk()
                 BARNEP, AFP, AFP_PRIVAT, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG -> true
             }
         } else {

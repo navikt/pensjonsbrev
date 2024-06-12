@@ -6,6 +6,9 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.UFOREP
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.SAK
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.VEDTAK
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentType.N
@@ -13,8 +16,6 @@ import no.nav.pensjon.brev.skribenten.services.Brevkoder.FRITEKSTBREV_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0101_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0102_KODE
-import no.nav.pensjon.brev.skribenten.services.PenService.SakType.ALDER
-import no.nav.pensjon.brev.skribenten.services.PenService.SakType.UFOREP
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
 import kotlin.test.Test
@@ -144,7 +145,7 @@ class BrevmalServiceTest {
     private fun assertThatBrevmalerInVedtaksKontekst(
         brevdataDto: BrevdataDto,
         inkluderEblanketter: Boolean = false,
-        sakType: PenService.SakType,
+        sakType: Pen.SakType,
         isKravPaaGammeltRegelverk: Boolean = true
     ): ListAssert<LetterMetadata> {
         coEvery { brevmetadataService.hentMaler(any(), any(), any()) }.returns(

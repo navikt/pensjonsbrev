@@ -12,12 +12,8 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.services.LegacyBrevService.BestillDoksysBrevRequest
-import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer
-import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer.B222
-import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer.B255
-import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer.B280
-import no.nav.pensjon.brev.skribenten.services.PdlService.Behandlingsnummer.B359
+import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Pen
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
@@ -39,36 +35,6 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
-    data class SakResponseDto(
-        val saksId: Long,
-        val foedselsnr: String,
-        val foedselsdato: LocalDate,
-        val sakType: SakType,
-        val enhetId: String?,
-    )
-
-    enum class SakType(val behandlingsnummer: Behandlingsnummer?) {
-        AFP(null),
-        AFP_PRIVAT(null),
-        ALDER(B280),
-        BARNEP(B359),
-        FAM_PL(null),
-        GAM_YRK(null),
-        GENRL(null),
-        GJENLEV(B222),
-        GRBL(null),
-        KRIGSP(null),
-        OMSORG(null),
-        UFOREP(B255);
-    }
-    data class SakSelection(
-        val saksId: Long,
-        val foedselsnr: String,
-        val foedselsdato: LocalDate,
-        val sakType: SakType,
-        val enhetId: String,
-    )
-
     private suspend fun <R> handlePenErrorResponse(response: HttpResponse): ServiceResult<R> =
         if (response.status == HttpStatusCode.InternalServerError) {
             logger.error("En feil oppstod ved henting av sak fra Pesys: ${response.bodyAsText()}")
@@ -80,7 +46,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     private suspend fun fetchSak(call: ApplicationCall, saksId: String): ServiceResult<SakResponseDto> =
         client.get(call, "brev/skribenten/sak/$saksId").toServiceResult(::handlePenErrorResponse)
 
-    suspend fun hentSak(call: ApplicationCall, saksId: String): ServiceResult<SakSelection> =
+    suspend fun hentSak(call: ApplicationCall, saksId: String): ServiceResult<Pen.SakSelection> =
         when (val sak = fetchSak(call, saksId)) {
             is ServiceResult.Error -> ServiceResult.Error(sak.error, sak.statusCode)
             is ServiceResult.Ok ->
@@ -88,7 +54,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
                     ServiceResult.Error("Sak er ikke tilordnet enhet", HttpStatusCode.BadRequest)
                 } else {
                     ServiceResult.Ok(
-                        SakSelection(
+                        Pen.SakSelection(
                             saksId = sak.result.saksId,
                             foedselsnr = sak.result.foedselsnr,
                             foedselsdato = sak.result.foedselsdato,
@@ -99,23 +65,15 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
                 }
         }
 
-    data class BestilDoksysBrevRequest(
-        val saksId: Long,
-        val brevkode: String,
-        val journalfoerendeEnhet: String?,
-        val sprakKode: SpraakKode?,
-        val vedtaksId: Long?,
-    )
-
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
-        request: BestillDoksysBrevRequest,
+        request: Api.BestillDoksysBrevRequest,
         enhetsId: String,
         saksId: Long
-    ): ServiceResult<BestillDoksysBrevResponse> =
+    ): ServiceResult<Pen.BestillDoksysBrevResponse> =
         client.post(call, "brev/skribenten/doksys/sak/$saksId") {
             setBody(
-                BestilDoksysBrevRequest(
+                BestillDoksysBrevRequest(
                     saksId = saksId,
                     brevkode = request.brevkode,
                     journalfoerendeEnhet = enhetsId,
@@ -126,20 +84,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
             contentType(ContentType.Application.Json)
         }.toServiceResult(::handlePenErrorResponse)
 
-    data class Avtaleland(val navn: String, val kode: String)
-
-    data class BestillDoksysBrevResponse(val journalpostId: String?, val failure: FailureType? = null) {
-        enum class FailureType {
-            ADDRESS_NOT_FOUND,
-            UNAUTHORIZED,
-            PERSON_NOT_FOUND,
-            UNEXPECTED_DOKSYS_ERROR,
-            INTERNAL_SERVICE_CALL_FAILIURE,
-            TPS_CALL_FAILIURE,
-        }
-    }
-
-    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>> =
+    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Pen.Avtaleland>> =
         client.get(call, "brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
 
     override val name = "PEN"
@@ -150,5 +95,22 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
 
     suspend fun hentIsKravPaaGammeltRegelverk(call: ApplicationCall, vedtaksId: String): ServiceResult<Boolean> =
         client.get(call, "brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
+
+
+    private data class BestillDoksysBrevRequest(
+        val saksId: Long,
+        val brevkode: String,
+        val journalfoerendeEnhet: String?,
+        val sprakKode: SpraakKode?,
+        val vedtaksId: Long?,
+    )
+
+    private data class SakResponseDto(
+        val saksId: Long,
+        val foedselsnr: String,
+        val foedselsdato: LocalDate,
+        val sakType: Pen.SakType,
+        val enhetId: String?,
+    )
 }
 

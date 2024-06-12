@@ -6,6 +6,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
+import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 
@@ -23,7 +25,7 @@ fun Route.sakRoute(
         install(AuthorizeAnsattSakTilgang(pdlService, penService))
 
         get {
-            val sak: PenService.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             val vedtaksId: String? = call.request.queryParameters["vedtaksId"]
             val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
             val brevmetadata = if (vedtaksId != null) {
@@ -36,10 +38,10 @@ fun Route.sakRoute(
             } else {
                 brevmalService.hentBrevmalerForSak(call, sak.sakType, hasAccessToEblanketter)
             }
-            call.respond(SakContext(sak, brevmetadata))
+            call.respond(Api.SakContext(sak, brevmetadata))
         }
         route("/bestillBrev") {
-            post<LegacyBrevService.BestillDoksysBrevRequest>("/doksys") { request ->
+            post<Api.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
                 navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent)
                     .onError { msg, _ -> call.respond<String>(HttpStatusCode.InternalServerError, "Feil ved henting av enheter: $msg") }
@@ -48,7 +50,7 @@ fun Route.sakRoute(
 
             }
             route("/exstream") {
-                post<LegacyBrevService.BestillExstreamBrevRequest> { request ->
+                post<Api.BestillExstreamBrevRequest> { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
                     navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent)
@@ -64,7 +66,7 @@ fun Route.sakRoute(
                         }.onOk { call.respond(it) }
                 }
 
-                post<LegacyBrevService.BestillEblankettRequest>("/eblankett") { request ->
+                post<Api.BestillEblankettRequest>("/eblankett") { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
                     navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent)
@@ -99,8 +101,3 @@ fun Route.sakRoute(
         sakBrev(brevredigeringService)
     }
 }
-
-private data class SakContext(
-    val sak: PenService.SakSelection,
-    val brevMetadata: List<LetterMetadata>
-)

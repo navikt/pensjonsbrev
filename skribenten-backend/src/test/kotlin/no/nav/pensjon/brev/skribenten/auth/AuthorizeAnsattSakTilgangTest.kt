@@ -21,12 +21,11 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.skribenten.services.NAVEnhet
-import no.nav.pensjon.brev.skribenten.services.PdlService
-import no.nav.pensjon.brev.skribenten.services.PenService
-import no.nav.pensjon.brev.skribenten.services.PenService.SakSelection
-import no.nav.pensjon.brev.skribenten.services.PenService.SakType.ALDER
-import no.nav.pensjon.brev.skribenten.services.ServiceResult
+import no.nav.pensjon.brev.skribenten.model.Pdl
+import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
+import no.nav.pensjon.brev.skribenten.services.*
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
 import java.time.Month
@@ -36,14 +35,14 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 private const val NAVIdent = "månedens ansatt"
-private val testSak = SakSelection(
+private val testSak = Pen.SakSelection(
     1337,
     "12345",
     LocalDate.of(1990, 1, 1),
     ALDER,
     "en veldig bra enhet"
 )
-private val sakVikafossen = SakSelection(
+private val sakVikafossen = Pen.SakSelection(
     7007,
     "007",
     LocalDate.of(1920, Month.NOVEMBER, 11),
@@ -51,19 +50,19 @@ private val sakVikafossen = SakSelection(
     "vikafossen"
 )
 
-private val generellSak0001 = SakSelection(
+private val generellSak0001 = Pen.SakSelection(
     7008,
     "12345",
     LocalDate.of(1920, Month.NOVEMBER, 11),
-    PenService.SakType.GENRL,
+    GENRL,
     "0001"
 )
 
-private val generellSak0002 = SakSelection(
+private val generellSak0002 = Pen.SakSelection(
     7009,
     "12345",
     LocalDate.of(1920, Month.NOVEMBER, 11),
-    PenService.SakType.GENRL,
+    GENRL,
     "0002"
 )
 
@@ -159,7 +158,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `krever at ansatt har gruppe for FortroligAdresse`() = runBlocking {
         coEvery {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
-        } returns ServiceResult.Ok(listOf(PdlService.Gradering.FORTROLIG))
+        } returns ServiceResult.Ok(listOf(Pdl.Gradering.FORTROLIG))
 
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
@@ -169,7 +168,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `krever at ansatt har gruppe for StrengtFortroligAdresse`() = runBlocking {
         coEvery {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
-        } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
+        } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG))
 
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
@@ -179,7 +178,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `krever at ansatt har gruppe for StrengtFortroligUtland`() = runBlocking {
         coEvery {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
-        } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG_UTLAND))
+        } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND))
 
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
@@ -190,7 +189,7 @@ class AuthorizeAnsattSakTilgangTest {
         every { principalMock.isInGroup(ADGroups.fortroligAdresse) } returns true
         coEvery {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
-        } returns ServiceResult.Ok(listOf(PdlService.Gradering.FORTROLIG))
+        } returns ServiceResult.Ok(listOf(Pdl.Gradering.FORTROLIG))
 
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
@@ -202,7 +201,7 @@ class AuthorizeAnsattSakTilgangTest {
         every { principalMock.isInGroup(ADGroups.strengtFortroligAdresse) } returns true
         coEvery {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
-        } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
+        } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG))
 
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
@@ -214,7 +213,7 @@ class AuthorizeAnsattSakTilgangTest {
         every { principalMock.isInGroup(ADGroups.strengtFortroligUtland) } returns true
         coEvery {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
-        } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG_UTLAND))
+        } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND))
 
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
@@ -248,7 +247,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `svarer med not found for graderte brukere selv om saksbehandler mangler enhet vikafossen`() = runBlocking {
-        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Ok(listOf(PdlService.Gradering.STRENGT_FORTROLIG))
+        coEvery { pdlService.hentAdressebeskyttelse(any(), sakVikafossen.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG))
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
