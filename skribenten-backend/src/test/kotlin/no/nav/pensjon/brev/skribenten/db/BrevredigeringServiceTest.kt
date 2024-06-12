@@ -16,26 +16,19 @@ import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.routes.GeneriskRedigerbarBrevdata
-import no.nav.pensjon.brev.skribenten.routes.BrevResponse
-import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
-import no.nav.pensjon.brev.skribenten.services.PenService
-import no.nav.pensjon.brev.skribenten.services.ServiceResult
+import no.nav.pensjon.brev.skribenten.routes.mapBrev
+import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.testcontainers.containers.PostgreSQLContainer
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -81,17 +74,17 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `non existing brevredingering returns null`() {
-        assertNull(service.hentBrev(99, mapper))
+        assertNull(service.hentBrev(99, ::mapBrev))
     }
 
     @Test
     fun `can create and fetch brevredigering`() = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val result =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, mapper).resultOrNull()!!
+            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, ::mapBrev).resultOrNull()!!
 
-        assertEquals(result, service.hentBrev(result.id, mapper))
-        assertEquals(result.brevkode, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)
+        assertEquals(result, service.hentBrev(result.info.id, ::mapBrev))
+        assertEquals(result.info.brevkode, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)
         assertEquals(result.redigertBrev, letter.toEdit())
     }
 
@@ -99,14 +92,14 @@ class BrevredigeringServiceTest {
     fun `can update brevredigering`() = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val original =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, mapper).resultOrNull()!!
+            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, ::mapBrev).resultOrNull()!!
 
         val nyeValg = GeneriskBrevData().apply { put("valg2", true) }
         val oppdatert =
-            service.oppdaterBrev(callMock, original.id, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, nyeValg, letter.toEdit(), mapper)
+            service.oppdaterBrev(callMock, original.info.id, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, nyeValg, letter.toEdit(), ::mapBrev)
                 .resultOrNull()!!
 
-        assertEquals(oppdatert, service.hentBrev(original.id, mapper))
+        assertEquals(oppdatert, service.hentBrev(original.info.id, ::mapBrev))
         assertNotEquals(original.saksbehandlerValg, oppdatert.saksbehandlerValg)
     }
 
@@ -114,7 +107,7 @@ class BrevredigeringServiceTest {
     fun `updates redigertBrev with fresh rendering from brevbaker`() = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val original =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, mapper).resultOrNull()!!
+            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, ::mapBrev).resultOrNull()!!
 
         val nyeValg = GeneriskBrevData().apply { put("valg2", true) }
         val freshRender = letter.copy(blocks = letter.blocks + Paragraph(2, true, listOf(Variable(21, "ny paragraph"))))
@@ -128,7 +121,7 @@ class BrevredigeringServiceTest {
         } returns ServiceResult.Ok(freshRender)
 
         val oppdatert =
-            service.oppdaterBrev(callMock, original.id, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, nyeValg, letter.toEdit(), mapper)
+            service.oppdaterBrev(callMock, original.info.id, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, nyeValg, letter.toEdit(), ::mapBrev)
                 .resultOrNull()!!
 
         assertNotEquals(original.redigertBrev, oppdatert.redigertBrev)
@@ -139,7 +132,7 @@ class BrevredigeringServiceTest {
     fun `cannot update non-existing brevredigering`() = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val oppdatert =
-            service.oppdaterBrev(callMock, 1099, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, letter.toEdit(), mapper)
+            service.oppdaterBrev(callMock, 1099, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, letter.toEdit(), ::mapBrev)
                 .resultOrNull()
 
         assertNull(oppdatert)
@@ -166,7 +159,7 @@ class BrevredigeringServiceTest {
 
 
         val result = withTimeout(10.seconds) {
-            service.oppdaterBrev(callMock, 2098, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, letter.toEdit(), mapper)
+            service.oppdaterBrev(callMock, 2098, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, letter.toEdit(), ::mapBrev)
         }
 
         assertThat(result).isInstanceOf(ServiceResult.Error::class.java)
@@ -177,21 +170,17 @@ class BrevredigeringServiceTest {
     fun `can delete brevredigering`(): Unit = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val result =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, mapper).resultOrNull()!!
+            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, ::mapBrev).resultOrNull()!!
 
-        assertEquals(result, service.hentBrev(result.id, mapper))
-        service.slettBrev(result.id)
-        assertNull(service.hentBrev(result.id, mapper))
+        assertEquals(result, service.hentBrev(result.info.id, ::mapBrev))
+        assertTrue(service.slettBrev(result.info.id))
+        assertNull(service.hentBrev(result.info.id, ::mapBrev))
     }
 
-
-    private val mapper: Brevredigering.() -> BrevResponse = {
-        BrevResponse(
-            id = id.value,
-            redigertBrev = redigertBrev,
-            sistredigert = sistredigert,
-            brevkode = Brevkode.Redigerbar.valueOf(brevkode),
-            saksbehandlerValg = saksbehandlerValg,
-        )
+    @Test
+    fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
+        assertNull(service.hentBrev(1337, ::mapBrev))
+        assertFalse(service.slettBrev(1337))
     }
+
 }

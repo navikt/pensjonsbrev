@@ -6,13 +6,13 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.routes.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
@@ -24,6 +24,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
+data class GeneriskRedigerbarBrevdata(
+    override val pesysData: BrevbakerBrevdata,
+    override val saksbehandlerValg: BrevbakerBrevdata
+) : RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
+
+
 class BrevredigeringService(private val brevbakerService: BrevbakerService) {
 
     suspend fun <T : Any> opprettBrev(
@@ -33,7 +39,6 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
         saksbehandlerValg: BrevbakerBrevdata,
         mapper: Brevredigering.() -> T,
     ): ServiceResult<T> {
-        //TODO hent pesys data
         val pesysData = hentPesysData(brevkode = brevkode, saksId = sak.saksId)
 
         return brevbakerService.renderLetter(
@@ -61,7 +66,6 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
             }
         }
     }
-
 
     suspend fun <T : Any> oppdaterBrev(
         call: ApplicationCall,
@@ -100,28 +104,34 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
         }
     }
 
-    fun slettBrev(id: Long): ServiceResult<*> {
+    /**
+     * Slett brev med id.
+     * @return `true` om brevet ble slettet, false om brevet ikke eksisterer,
+     */
+    fun slettBrev(id: Long): Boolean {
         return transaction {
             val brev = Brevredigering.findById(id)
             if (brev != null) {
                 brev.delete()
-                return@transaction ServiceResult.Ok("Brev med id: $id slettet")
+                true
             } else {
-                return@transaction ServiceResult.Error("Kunne ikke finnne brev med id: $id", HttpStatusCode.NotFound)
+                false
             }
         }
     }
 
-    //TODO implementer felter
     private fun hentPesysData(brevkode: Brevkode.Redigerbar, saksId: Long): PesysBrevdata = PesysBrevdata(
-        Felles(
+        //TODO faktisk hent pesys data
+
+        felles = Felles(
             dokumentDato = LocalDate.now(),
-            saksnummer = "1234",
+            saksnummer = saksId.toString(),
             avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
             bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
             vergeNavn = null,
             signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
-        ), EmptyBrevdata
+        ),
+        brevdata = EmptyBrevdata,
     )
 
     fun <T : Any> hentBrev(brevId: Long, mapper: Brevredigering.() -> T): T? {
@@ -137,5 +147,4 @@ class BrevredigeringService(private val brevbakerService: BrevbakerService) {
     }
 
     data class PesysBrevdata(val felles: Felles, val brevdata: BrevbakerBrevdata)
-
 }

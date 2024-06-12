@@ -5,140 +5,86 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
-import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.PenService
-import java.time.LocalDateTime
 
 fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
     route("/brev") {
-        post<OpprettBrevRequest> { request ->
+        post<Api.OpprettBrevRequest> { request ->
             val sak: PenService.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.opprettBrev(call, sak, request.brevkode, request.saksbehandlerValg) {
-                BrevResponse(
-                    id = id.value,
-                    redigertBrev = redigertBrev,
-                    sistredigert = sistredigert,
-                    brevkode = Brevkode.Redigerbar.valueOf(brevkode),
-                    saksbehandlerValg = saksbehandlerValg,
-                )
-            }.map { brev ->
-                call.respond(HttpStatusCode.Created, brev)
-            }.catch { message, statusCode ->
-                call.application.log.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
-                call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
-            }
+            brevredigeringService.opprettBrev(call, sak, request.brevkode, request.saksbehandlerValg, ::mapBrev)
+                .onOk { brev ->
+                    call.respond(HttpStatusCode.Created, brev)
+                }.onError { message, statusCode ->
+                    call.application.log.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
+                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
+                }
         }
 
-        post<OppdaterBrevRequest>("/{brevId}") { request ->
+        post<Api.OppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            brevredigeringService.oppdaterBrev(call, brevId, request.brevkode, request.saksbehandlerValg, request.redigertBrev) {
-                BrevResponse(
-                    id = brevId,
-                    redigertBrev = redigertBrev,
-                    sistredigert = sistredigert,
-                    brevkode = request.brevkode,
-                    saksbehandlerValg = saksbehandlerValg
-                )
-            }.map { brev ->
-                if (brev == null) {
-                    call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
-                } else call.respond(HttpStatusCode.OK, brev)
-            }.catch { message, statusCode ->
-                call.application.log.error("$statusCode - Feil ved oppdatering av brev ${request.brevkode}: $message")
-                call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
-            }
+            brevredigeringService.oppdaterBrev(call, brevId, request.brevkode, request.saksbehandlerValg, request.redigertBrev, ::mapBrev)
+                .onOk { brev ->
+                    if (brev == null) {
+                        call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
+                    } else call.respond(HttpStatusCode.OK, brev)
+                }.onError { message, statusCode ->
+                    call.application.log.error("$statusCode - Feil ved oppdatering av brev ${request.brevkode}: $message")
+                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
+                }
         }
 
         delete("/{brevId}") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
 
-            try {
-                brevredigeringService.slettBrev(brevId).map {
-                    call.respond(HttpStatusCode.OK)
-                }
-            } catch (exeption: Exception) {
-                call.application.log.error("Feil ved sletting av brev med id: $brevId, $exeption")
-                call.respond(HttpStatusCode.InternalServerError, "Feil ved sletting av brev med id: $brevId")
+            if (brevredigeringService.slettBrev(brevId)) {
+                call.respond(HttpStatusCode.NoContent)
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Brev med id $brevId ikke funnet")
             }
         }
 
         get("/{brevId}") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val response = brevredigeringService.hentBrev(brevId, mapper)
+            val brev = brevredigeringService.hentBrev(brevId, ::mapBrev)
 
-            if (response != null) {
-                call.respond(HttpStatusCode.OK, response)
+            if (brev != null) {
+                call.respond(HttpStatusCode.OK, brev)
             } else {
                 call.respond(HttpStatusCode.NotFound, "Brev not found")
             }
         }
 
-        get("/{navident}") {
-            val navident = call.parameters.getOrFail<String>("navident")
-            val response = brevredigeringService.hentSaksbehandlersBrev(navident, mapper)
-            if (response != null) {
-                call.respond(HttpStatusCode.OK, response)
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Feil ved henting av saksbehandlers brev for $navident")
-            }
+        get {
+            call.respond(
+                HttpStatusCode.OK,
+                brevredigeringService.hentSaksbehandlersBrev(call.principal().navIdent, ::mapBrevInfo)
+            )
         }
     }
 
-
-private val mapper: Brevredigering.() -> BrevResponse = {
-    BrevResponse(
-        id = id.value,
+internal fun mapBrev(brev: Brevredigering): Api.BrevResponse = with(brev) {
+    Api.BrevResponse(
+        info = mapBrevInfo(this),
         redigertBrev = redigertBrev,
-        sistredigert = sistredigert,
-        brevkode = Brevkode.Redigerbar.valueOf(brevkode),
         saksbehandlerValg = saksbehandlerValg,
     )
 }
 
-// TODO: Skriv tester FFS
-
-
-data class GeneriskRedigerbarBrevdata(override val pesysData: BrevbakerBrevdata, override val saksbehandlerValg: BrevbakerBrevdata) :
-    RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
-
-
-data class OpprettBrevRequest(
-    val brevkode: Brevkode.Redigerbar,
-    val saksbehandlerValg: BrevbakerBrevdata,
-)
-
-data class OppdaterBrevRequest(
-    val brevkode: Brevkode.Redigerbar,
-    val saksbehandlerValg: BrevbakerBrevdata,
-    val redigertBrev: Edit.Letter,
-)
-
-data class BrevResponse(
-    val id: Long,
-    val redigertBrev: Edit.Letter,
-    val sistredigert: LocalDateTime,
-    val brevkode: Brevkode.Redigerbar,
-    val saksbehandlerValg: BrevbakerBrevdata,
-)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+private fun mapBrevInfo(brev: Brevredigering): Api.BrevInfo = with(brev) {
+    Api.BrevInfo(
+        id = id.value,
+        opprettetAv = opprettetAvNavIdent,
+        opprettet = opprettet,
+        sistredigertAv = sistRedigertAvNavIdent,
+        sistredigert = sistredigert,
+        brevkode = Brevkode.Redigerbar.valueOf(brevkode),
+        redigeresAv = redigeresAvNavIdent,
+    )
+}
