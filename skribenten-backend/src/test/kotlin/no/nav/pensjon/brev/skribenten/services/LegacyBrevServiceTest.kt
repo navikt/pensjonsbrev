@@ -7,6 +7,8 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExstreamBrevResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
@@ -113,7 +115,7 @@ class LegacyBrevServiceTest {
     private val penService = mockk<PenService> {
         coEvery {
             bestillDoksysBrev(any(), any(), any(), any())
-        } returns ServiceResult.Ok(PenService.BestillDoksysBrevResponse(EXPECTED_DOKSYS_URL, null))
+        } returns ServiceResult.Ok(Pen.BestillDoksysBrevResponse(EXPECTED_DOKSYS_URL, null))
     }
     private val navansattService = mockk<NavansattService> {
         coEvery {
@@ -134,7 +136,7 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = legacyBrevService.bestillOgRedigerExstreamBrev(
                 call = mockCall, gjelderPid = "9999",
-                request = LegacyBrevService.BestillExstreamBrevRequest(
+                request = Api.BestillExstreamBrevRequest(
                     brevkode = "exstream",
                     spraak = SpraakKode.NB,
                     isSensitive = false,
@@ -145,7 +147,7 @@ class LegacyBrevServiceTest {
                 ), saksId = 3333L,
                 enhetsTilganger = listOf(NAVEnhet("1111", "NAV Ozzzlo"))
             )
-            assertThat(bestillBrevResult.failureType).isEqualTo(LegacyBrevService.FailureType.ENHET_UNAUTHORIZED)
+            assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
         }
     }
 
@@ -154,7 +156,7 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = legacyBrevService.bestillOgRedigerExstreamBrev(
                 call = mockCall, gjelderPid = "9999",
-                request = LegacyBrevService.BestillExstreamBrevRequest(
+                request = Api.BestillExstreamBrevRequest(
                     brevkode = "exstream",
                     spraak = SpraakKode.NB,
                     isSensitive = false,
@@ -174,7 +176,7 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = legacyBrevService.bestillOgRedigerDoksysBrev(
                 mockCall,
-                LegacyBrevService.BestillDoksysBrevRequest(
+                Api.BestillDoksysBrevRequest(
                     brevkode = "doksys",
                     spraak = SpraakKode.NB,
                     vedtaksId = null,

@@ -17,6 +17,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.callId
+import no.nav.pensjon.brev.skribenten.model.Pen
 import org.slf4j.LoggerFactory
 
 class BrevmetadataService(
@@ -36,16 +37,16 @@ class BrevmetadataService(
         }
     }
 
-    suspend fun hentMaler(call: ApplicationCall, sakType: PenService.SakType, includeEblanketter: Boolean): Brevmaler =
+    suspend fun hentMaler(call: ApplicationCall, sakType: Pen.SakType, includeEblanketter: Boolean): Brevmaler =
         coroutineScope {
             val eblanketterAsync: Deferred<List<BrevdataDto>> = async { if (includeEblanketter) getEblanketter(call) else emptyList() }
             val malerAsync: Deferred<List<BrevdataDto>> = async { getBrevmalerForSakstype(call, sakType) }
             return@coroutineScope Brevmaler(eblanketterAsync.await(), malerAsync.await())
         }
 
-    private suspend fun getBrevmalerForSakstype(call: ApplicationCall, sakstype: PenService.SakType): List<BrevdataDto> {
+    private suspend fun getBrevmalerForSakstype(call: ApplicationCall, sakstype: Pen.SakType): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
-            headers{
+            headers {
                 callId(call)
             }
             contentType(ContentType.Application.Json)

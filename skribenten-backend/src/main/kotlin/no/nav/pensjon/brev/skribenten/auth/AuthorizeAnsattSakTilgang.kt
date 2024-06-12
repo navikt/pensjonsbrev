@@ -10,15 +10,16 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.NAME
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.SAKSID_PARAM
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.sakKey
+import no.nav.pensjon.brev.skribenten.model.Pdl
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.services.PenService.SakSelection
 import org.slf4j.LoggerFactory
 
 object AuthorizeAnsattSakTilgang {
     const val NAME = "AuthorizeAnsattSakTilgang"
     const val SAKSID_PARAM = "saksId"
-    val sakKey = AttributeKey<SakSelection>("AuthorizeAnsattSakTilgang:sak")
+    val sakKey = AttributeKey<Pen.SakSelection>("AuthorizeAnsattSakTilgang:sak")
 }
 
 private val logger = LoggerFactory.getLogger(AuthorizeAnsattSakTilgang::class.java)
@@ -46,7 +47,7 @@ fun AuthorizeAnsattSakTilgang(
 }
 
 private fun sjekkAdressebeskyttelse(
-    adressebeskyttelse: ServiceResult<List<PdlService.Gradering>>,
+    adressebeskyttelse: ServiceResult<List<Pdl.Gradering>>,
     principal: UserPrincipal
 ): AuthAnsattSakTilgangResponse? =
     adressebeskyttelse.map { gradering ->
@@ -70,10 +71,10 @@ fun harTilgangTilSakSinEnhet(navAnsattEnheter: List<NAVEnhet>, penSakEnheter: Li
 
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)
 
-private fun PdlService.Gradering?.toADGruppe(): ADGroup? =
+private fun Pdl.Gradering?.toADGruppe(): ADGroup? =
     when (this) {
-        PdlService.Gradering.FORTROLIG -> ADGroups.fortroligAdresse
-        PdlService.Gradering.STRENGT_FORTROLIG -> ADGroups.strengtFortroligAdresse
-        PdlService.Gradering.STRENGT_FORTROLIG_UTLAND -> ADGroups.strengtFortroligUtland
-        PdlService.Gradering.INGEN, null -> null
+        Pdl.Gradering.FORTROLIG -> ADGroups.fortroligAdresse
+        Pdl.Gradering.STRENGT_FORTROLIG -> ADGroups.strengtFortroligAdresse
+        Pdl.Gradering.STRENGT_FORTROLIG_UTLAND -> ADGroups.strengtFortroligUtland
+        Pdl.Gradering.INGEN, null -> null
     }

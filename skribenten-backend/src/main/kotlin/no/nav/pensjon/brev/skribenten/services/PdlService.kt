@@ -11,6 +11,7 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.model.Pdl
 import org.slf4j.LoggerFactory
 
 private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
@@ -65,13 +66,6 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
-    enum class Behandlingsnummer {
-        B222,
-        B255,
-        B280,
-        B359,
-    }
-
     private data class DataWrapperPersonMedNavn(val hentPerson: PersonMedNavn?) {
         data class PersonMedNavn(val navn: List<Navn>? = null) {
             data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String) {
@@ -82,21 +76,14 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
 
     private data class DataWrapperPersonMedAdressebeskyttelse(val hentPerson: PersonMedAdressebeskyttelse?) {
         data class PersonMedAdressebeskyttelse(val adressebeskyttelse: List<Adressebeskyttelse>) {
-            data class Adressebeskyttelse(val gradering: Gradering)
+            data class Adressebeskyttelse(val gradering: Pdl.Gradering)
         }
-    }
-
-    enum class Gradering {
-        FORTROLIG,
-        STRENGT_FORTROLIG,
-        STRENGT_FORTROLIG_UTLAND,
-        INGEN
     }
 
     suspend fun hentNavn(
         call: ApplicationCall,
         fnr: String,
-        behandlingsnummer: Behandlingsnummer?
+        behandlingsnummer: Pdl.Behandlingsnummer?
     ): ServiceResult<String> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
@@ -122,8 +109,8 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun hentAdressebeskyttelse(
         call: ApplicationCall,
         fnr: String,
-        behandlingsnummer: Behandlingsnummer?
-    ): ServiceResult<List<Gradering>> {
+        behandlingsnummer: Pdl.Behandlingsnummer?
+    ): ServiceResult<List<Pdl.Gradering>> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
