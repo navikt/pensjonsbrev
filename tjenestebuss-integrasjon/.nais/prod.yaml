@@ -7,12 +7,6 @@ env:
     value: "https://tjenestebuss.adeo.no/"
   - name: STS_URL
     value: "https://security-token-service.nais.adeo.no"
-  - name: DOKPROD_URL
-    value: "https://dokprod.nais.adeo.no/"
-  - name: BREVKLIENT_ROOTURL
-    value: "https://wasapp.adeo.no/brevweb/StartBrevKlient.jsp"
-  - name: BREVKLIENT_CHROMEROOTURL
-    value: "https://wasapp.adeo.no//brevweb/"
   - name: SAMHANDLERSERVICE_URL
     value: "https://wasapp.adeo.no/"
 

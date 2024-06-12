@@ -57,8 +57,6 @@ dependencies {
 
 	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:$esbVersion")
 	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:$esbVersion")
-	implementation("no.nav.pensjon.pesys-esb-wsclient:pen-arkiv-esb-wsclient-legacy:$esbVersion")
-	implementation("no.nav.tjenestespesifikasjoner:dokumentproduksjon-v3-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
 	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
 
 	implementation("javax.xml.ws:jaxws-api:2.3.1")

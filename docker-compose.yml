@@ -91,9 +91,6 @@ services:
     environment:
       - TJENESTEBUSS_URL=https://tjenestebuss-q2.adeo.no/
       - STS_URL=https://security-token-service.dev.adeo.no
-      - DOKPROD_URL=https://dokprod-q2.dev.intern.nav.no/
-      - BREVKLIENT_ROOTURL=https://wasapp-q2.adeo.no/brevweb/StartBrevKlient.jsp
-      - BREVKLIENT_CHROMEROOTURL=https://wasapp-q2.adeo.no/brevweb/
       - SAMHANDLERSERVICE_URL=https://wasapp-q2.adeo.no/
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
 

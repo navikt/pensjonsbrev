@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
+import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -37,8 +38,8 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
 
     private suspend fun <R> handlePenErrorResponse(response: HttpResponse): ServiceResult<R> =
         if (response.status == HttpStatusCode.InternalServerError) {
-            logger.error("En feil oppstod ved henting av sak fra Pesys: ${response.bodyAsText()}")
-            ServiceResult.Error("Ukjent feil oppstod ved henting av sak fra Pesys", HttpStatusCode.InternalServerError)
+            logger.error("En feil oppstod i kall til PEN: ${response.bodyAsText()}")
+            ServiceResult.Error("Ukjent feil oppstod i kall til PEN", HttpStatusCode.InternalServerError)
         } else {
             ServiceResult.Error(response.bodyAsText(), response.status)
         }
@@ -83,6 +84,27 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
             )
             contentType(ContentType.Application.Json)
         }.toServiceResult(::handlePenErrorResponse)
+
+    suspend fun bestillExstreamBrev(
+        call: ApplicationCall,
+        bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
+    ): ServiceResult<Pen.BestillExstreamBrevResponse> =
+        client.post(call, "brev/pjoark030/bestillbrev") {
+            setBody(bestillExstreamBrevRequest)
+            contentType(ContentType.Application.Json)
+        }.toServiceResult {
+            it.body<Pen.BestillExstreamBrevResponse.Error>().let { error ->
+                ServiceResult.Error("${error.type}: ${error.message}", HttpStatusCode.InternalServerError)
+            }
+        }
+
+    suspend fun redigerDoksysBrev(call: ApplicationCall, journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse> =
+        client.post(call, "saksbehandling/dokument/metaforce/$journalpostId/$dokumentId")
+            .toServiceResult(::handlePenErrorResponse)
+
+    suspend fun redigerExstreamBrev(call: ApplicationCall, journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse> =
+        client.post(call, "saksbehandling/dokument/exstream/$journalpostId")
+            .toServiceResult(::handlePenErrorResponse)
 
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Pen.Avtaleland>> =
         client.get(call, "brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)

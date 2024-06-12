@@ -10,15 +10,15 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExstreamBrevResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerExstreamDokumentResponseDto
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
 private const val EXPECTED_DOKSYS_URL = "http://beste-doksys-brev"
+
+private const val journalpostId = "1234"
+private const val dokumentId = "5678"
 
 class LegacyBrevServiceTest {
 
@@ -33,19 +33,6 @@ class LegacyBrevServiceTest {
     }
 
 
-    private val tjenestebussIntegrasjonService = mockk<TjenestebussIntegrasjonService> {
-        coEvery {
-            bestillExstreamBrev(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
-        } returns ServiceResult.Ok(BestillExstreamBrevResponseDto("1234", null))
-
-        coEvery {
-            redigerDoksysBrev(any(), any(), any())
-        } returns ServiceResult.Ok(RedigerDoksysDokumentResponseDto(EXPECTED_DOKSYS_URL, null))
-
-        coEvery {
-            redigerExstreamBrev(any(), any())
-        } returns ServiceResult.Ok(RedigerExstreamDokumentResponseDto(EXPECTED_EXSTREAM_URL, null))
-    }
     private val exstreamBrevMetadata = BrevdataDto(
         redigerbart = true,
         dekode = "exstream",
@@ -104,8 +91,8 @@ class LegacyBrevServiceTest {
             SafService.HentDokumenterResponse(
                 SafService.HentDokumenterResponse.Journalposter(
                     SafService.HentDokumenterResponse.Journalpost(
-                        "1234", listOf(
-                            SafService.HentDokumenterResponse.Dokument("1234")
+                        journalpostId, listOf(
+                            SafService.HentDokumenterResponse.Dokument(dokumentId)
                         )
                     )
                 ), null
@@ -115,7 +102,16 @@ class LegacyBrevServiceTest {
     private val penService = mockk<PenService> {
         coEvery {
             bestillDoksysBrev(any(), any(), any(), any())
-        } returns ServiceResult.Ok(Pen.BestillDoksysBrevResponse(EXPECTED_DOKSYS_URL, null))
+        } returns ServiceResult.Ok(Pen.BestillDoksysBrevResponse(journalpostId, null))
+        coEvery {
+            bestillExstreamBrev(any(), any())
+        } returns ServiceResult.Ok(Pen.BestillExstreamBrevResponse(journalpostId))
+        coEvery {
+            redigerDoksysBrev(any(), eq(journalpostId), eq(dokumentId))
+        } returns ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL))
+        coEvery {
+            redigerExstreamBrev(any(), eq(journalpostId))
+        } returns ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL))
     }
     private val navansattService = mockk<NavansattService> {
         coEvery {
@@ -123,8 +119,7 @@ class LegacyBrevServiceTest {
         } returns ServiceResult.Ok(Navansatt(emptyList(), "verdens", "beste", "saksbehandler"))
     }
 
-    val legacyBrevService = LegacyBrevService(
-        tjenestebussIntegrasjonService = tjenestebussIntegrasjonService,
+    private val legacyBrevService = LegacyBrevService(
         brevmetadataService = brevmetadataService,
         safService = safService,
         penService = penService,

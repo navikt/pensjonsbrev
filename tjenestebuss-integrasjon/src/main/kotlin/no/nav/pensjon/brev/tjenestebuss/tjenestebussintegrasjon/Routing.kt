@@ -17,13 +17,6 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.Metrics.configureMetrics
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzureADConfig
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivClientFactory
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExstreamRequestDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentProduksjonClientFactory
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.exstreambrev.PsakDokbrevClientFactory
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.exstreambrev.RedigerExstreamBrevService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.PsakSamhandlerClientFactory
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.PsakSamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerClientFactory
@@ -87,11 +80,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val psakSamhandlerTjenestebussService =
             PsakSamhandlerTjenestebussService(PsakSamhandlerClientFactory(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler))
         val samhandlerService = SamhandlerService(SamhandlerClientFactory(servicesConfig.getConfig("samhandlerService")))
-        val arkivTjenestebussService =
-            ArkivTjenestebussService(ArkivClientFactory(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler))
-        val dokumentProduksjonService =
-            DokumentproduksjonService(DokumentProduksjonClientFactory(servicesConfig.getConfig("dokprod"), stsSercuritySOAPHandler))
-        val redigerExstreamBrevService = RedigerExstreamBrevService(servicesConfig, PsakDokbrevClientFactory(servicesConfig, stsSercuritySOAPHandler))
 
 
         get("/isAlive") {
@@ -106,9 +94,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             stsService,
             psakSamhandlerTjenestebussService,
             samhandlerService,
-            arkivTjenestebussService,
-            dokumentProduksjonService,
-            redigerExstreamBrevService
         )
 
         authenticate(azureADConfig.name) {
@@ -127,18 +112,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 val requestDto = call.receive<FinnSamhandlerRequestDto>()
                 call.respond(withCallId(psakSamhandlerTjenestebussService) { finnSamhandler(requestDto) })
             }
-            post("/bestillExstreamBrev") {
-                val requestDto = call.receive<BestillBrevExstreamRequestDto>()
-                call.respond(withCallId(arkivTjenestebussService) { bestillBrev(requestDto) })
-            }
-            post("/redigerExstreamBrev") {
-                val requestDto = call.receive<RedigerExstreamDokumentRequestDto>()
-                call.respond(withCallId(redigerExstreamBrevService) { hentExstreamBrevUrl(requestDto) })
-            }
-            post("/redigerDoksysBrev") {
-                val requestDto = call.receive<RedigerDoksysDokumentRequestDto>()
-                call.respond(withCallId(dokumentProduksjonService) { redigerDokument(requestDto) })
-            }
         }
     }
 }
@@ -155,13 +128,4 @@ data class HentSamhandlerAdresseRequestDto(
 data class FinnSamhandlerRequestDto(
     val navn: String,
     val samhandlerType: SamhandlerTypeCode,
-)
-
-data class RedigerDoksysDokumentRequestDto(
-    val journalpostId: String,
-    val dokumentId: String,
-)
-
-data class RedigerExstreamDokumentRequestDto(
-    val journalpostId: String,
 )
