@@ -4,6 +4,7 @@ val apiModelVersion: String by project
 val exposedVersion: String by project
 val jacksonJsr310Version: String by project
 val javaTarget: String by System.getProperties()
+val jupiterVersion: String by project
 val kotlinVersion: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
@@ -42,6 +43,9 @@ tasks {
     compileTestJava {
         targetCompatibility = javaTarget
     }
+    test {
+        useJUnitPlatform()
+    }
 }
 
 sourceSets {
@@ -72,6 +76,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-json:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
     implementation("org.postgresql:postgresql:42.7.2")
     implementation("com.zaxxer:HikariCP:5.1.0")
 
@@ -91,10 +97,13 @@ dependencies {
     implementation("io.ktor:ktor-server-caching-headers-jvm:$ktorVersion")
 
     // Test
+    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("org.testcontainers:postgresql:1.19.8")
 
 }

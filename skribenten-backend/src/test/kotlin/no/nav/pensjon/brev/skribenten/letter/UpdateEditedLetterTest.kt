@@ -33,7 +33,7 @@ class UpdateRenderedLetterTest {
             )
         )
         val edited = rendered.toEdit()
-        assertEquals(edited, edited.updatedEditedLetter(rendered))
+        assertEquals(edited, edited.updateEditedLetter(rendered))
     }
 
     @Test
@@ -57,7 +57,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(edited, edited.updatedEditedLetter(next))
+        assertEquals(edited, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -81,7 +81,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(rendered.toEdit(), edited.updatedEditedLetter(rendered))
+        assertEquals(rendered.toEdit(), edited.updateEditedLetter(rendered))
     }
 
     @Test
@@ -112,7 +112,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(expected, edited.updatedEditedLetter(rendered))
+        assertEquals(expected, edited.updateEditedLetter(rendered))
     }
 
     @Test
@@ -148,7 +148,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(expected, edited.updatedEditedLetter(next))
+        assertEquals(expected, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -181,7 +181,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(expected, edited.updatedEditedLetter(next))
+        assertEquals(expected, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -205,7 +205,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertFailsWith<UpdateEditedLetterException> { edited.updatedEditedLetter(next) }
+        assertFailsWith<UpdateEditedLetterException> { edited.updateEditedLetter(next) }
     }
 
     @Test
@@ -230,7 +230,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(edited, edited.updatedEditedLetter(next))
+        assertEquals(edited, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -267,7 +267,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(expected, edited.updatedEditedLetter(next))
+        assertEquals(expected, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -290,7 +290,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        assertFailsWith<UpdateEditedLetterException> { edited.updatedEditedLetter(next) }
+        assertFailsWith<UpdateEditedLetterException> { edited.updateEditedLetter(next) }
     }
 
     @Test
@@ -324,7 +324,7 @@ class UpdateRenderedLetterTest {
             ),
         )
 
-        assertEquals(edited, edited.updatedEditedLetter(next))
+        assertEquals(edited, edited.updateEditedLetter(next))
     }
 
 
@@ -378,7 +378,7 @@ class UpdateRenderedLetterTest {
             ),
         )
 
-        assertEquals(expected, edited.updatedEditedLetter(next))
+        assertEquals(expected, edited.updateEditedLetter(next))
     }
 
 
@@ -433,7 +433,7 @@ class UpdateRenderedLetterTest {
             ),
         )
 
-        assertEquals(edited, edited.updatedEditedLetter(next))
+        assertEquals(edited, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -501,7 +501,7 @@ class UpdateRenderedLetterTest {
             ),
         )
 
-        assertEquals(expected, edited.updatedEditedLetter(next))
+        assertEquals(expected, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -541,7 +541,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(next.toEdit(), edited.updatedEditedLetter(next))
+        assertEquals(next.toEdit(), edited.updateEditedLetter(next))
     }
 
     @Test
@@ -567,7 +567,7 @@ class UpdateRenderedLetterTest {
             ),
         )
 
-        assertEquals(edited, edited.updatedEditedLetter(next))
+        assertEquals(edited, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -596,7 +596,7 @@ class UpdateRenderedLetterTest {
             deleted = setOf(2),
         )
 
-        assertEquals(edited, edited.updatedEditedLetter(next))
+        assertEquals(edited, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -643,7 +643,7 @@ class UpdateRenderedLetterTest {
             ),
         )
 
-        assertEquals(edited, edited.updatedEditedLetter(next))
+        assertEquals(edited, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -673,7 +673,7 @@ class UpdateRenderedLetterTest {
                 ),
             ),
         )
-        assertEquals(edited, edited.updatedEditedLetter(next))
+        assertEquals(edited, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -708,21 +708,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        assertEquals(expected, edited.updatedEditedLetter(next))
+        assertEquals(expected, edited.updateEditedLetter(next))
     }
-
-    private fun letter(vararg blocks: Block) =
-        LetterMarkup(
-            title = "En tittel",
-            sakspart = Sakspart("Test Testeson", "1234568910", "1234", "20.12.2022"),
-            blocks = blocks.toList(),
-            signatur = Signatur("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "NAV Familie- og pensjonsytelser Porsgrunn")
-        )
-
-    private fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet()): Edit.Letter =
-        Edit.Letter(
-            blocks.toList().toList(),
-            deleted
-        )
 
 }
