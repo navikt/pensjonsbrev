@@ -26,6 +26,5 @@ inboundRules:
 externalHosts:
   - tjenestebuss.adeo.no
   - security-token-service.nais.adeo.no
-  - dokprod.nais.adeo.no
   - login.microsoftonline.com
   - wasapp.adeo.no
