@@ -80,7 +80,7 @@ fun initDatabase(jdbcUrl: String, username: String, password: String) {
             this.jdbcUrl = jdbcUrl
             this.username = username
             this.password = password
-            maximumPoolSize = 4
+            maximumPoolSize = 2
             validate()
         }),
     )
