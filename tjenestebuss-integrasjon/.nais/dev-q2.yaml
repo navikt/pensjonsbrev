@@ -7,12 +7,6 @@ env:
     value: "https://tjenestebuss-q2.adeo.no/"
   - name: STS_URL
     value: "https://security-token-service.dev.adeo.no"
-  - name: DOKPROD_URL
-    value: "https://dokprod-q2.dev.intern.nav.no/"
-  - name: BREVKLIENT_ROOTURL
-    value: "https://wasapp-q2.adeo.no/brevweb/StartBrevKlient.jsp"
-  - name: BREVKLIENT_CHROMEROOTURL
-    value: "https://wasapp-q2.adeo.no/brevweb/"
   - name: SAMHANDLERSERVICE_URL
     value: "https://wasapp-q2.adeo.no/"
 
@@ -35,6 +29,5 @@ inboundRules:
 externalHosts:
   - tjenestebuss-q2.adeo.no
   - security-token-service.dev.adeo.no
-  - dokprod-q2.dev.intern.nav.no
   - login.microsoftonline.com
   - wasapp.adeo.no
