@@ -99,11 +99,11 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         }
 
     suspend fun redigerDoksysBrev(call: ApplicationCall, journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse> =
-        client.post(call, "brev/dokument/metaforce/$journalpostId/$dokumentId")
+        client.get(call, "brev/dokument/metaforce/$journalpostId/$dokumentId")
             .toServiceResult(::handlePenErrorResponse)
 
     suspend fun redigerExstreamBrev(call: ApplicationCall, journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse> =
-        client.post(call, "brev/dokument/exstream/$journalpostId")
+        client.get(call, "brev/dokument/exstream/$journalpostId")
             .toServiceResult(::handlePenErrorResponse)
 
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Pen.Avtaleland>> =
