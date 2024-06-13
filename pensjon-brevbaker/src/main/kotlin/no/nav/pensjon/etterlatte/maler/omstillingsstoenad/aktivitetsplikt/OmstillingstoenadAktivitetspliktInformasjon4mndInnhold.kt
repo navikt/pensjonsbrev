@@ -287,14 +287,14 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 paragraph {
                     text(
                         Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis " +
-                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 59 310 kroner. " +
+                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
                                 "Grunnbeløpet blir justert hvert år fra 1. mai.",
                         Nynorsk to "For at du få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei " +
-                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 59 310 kroner. " +
+                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
                                 "Grunnbeløpet blir justert kvart år frå 1. mai.",
                         English to "To receive the correct amount, you are obligated to inform us about any changes to " +
                                 "your anticipated annual income that exceeds one half of the basic amount. This is currently " +
-                                "NOK 59 310. The basic amount is adjusted on 1 May each year.",
+                                "NOK 62 014. The basic amount is adjusted on 1 May each year.",
                     )
                 }
             }
