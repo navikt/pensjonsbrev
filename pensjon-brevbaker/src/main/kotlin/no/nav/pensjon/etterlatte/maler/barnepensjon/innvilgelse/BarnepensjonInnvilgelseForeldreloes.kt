@@ -15,10 +15,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.sisteBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
@@ -26,14 +22,13 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.brukerUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.erGjenoppretting
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.etterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.flerePerioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.vedtattIPesys
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForeldreloesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterBosattUtland
@@ -50,8 +45,8 @@ data class BarnepensjonForeldreloesDTO(
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,
-    val flerePerioder: Boolean,
     val harUtbetaling: Boolean,
+    val erGjenoppretting: Boolean,
     val vedtattIPesys: Boolean
 ) : BrevDTO
 
@@ -78,6 +73,12 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
                     Language.Nynorsk to "Barnepensjonen er endra frå 1. januar 2024",
                     Language.English to "Your children’s pension has been changed as of 1 January 2024",
                 )
+            }.orShowIf(erGjenoppretting) {
+                text(
+                    Language.Bokmal to "Du er innvilget barnepensjon på nytt",
+                    Language.Nynorsk to "Du er innvilga barnepensjon på ny",
+                    Language.English to "You have been granted children’s pension again",
+                )
             }.orShow {
                 text(
                     Bokmal to "Vi har innvilget søknaden din om barnepensjon",
@@ -88,17 +89,6 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
         }
 
         outline {
-
-            includePhrase(
-                BarnepensjonForeldreloesFraser.Vedtak(
-                    virkningstidspunkt = beregning.virkningsdato,
-                    sistePeriodeBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep,
-                    sistePeriodeFom = beregning.sisteBeregningsperiode.datoFOM,
-                    flerePerioder = flerePerioder,
-                    harUtbetaling = harUtbetaling,
-                    vedtattIPesys = vedtattIPesys
-                )
-            )
 
             konverterElementerTilBrevbakerformat(innhold)
 
