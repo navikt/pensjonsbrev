@@ -27,7 +27,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     relevantMaanederInnAar = 12,
                     grunnbeloep = Kroner(118620),
                     utbetaltBeloep = Kroner(10000),
-                    restanse = Kroner(0),
+                    restanse = Kroner(300),
                     ytelseFoerAvkorting = Kroner(20000),
                     trygdetid = 40,
                 ),
@@ -40,7 +40,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     relevantMaanederInnAar = 12,
                     grunnbeloep = Kroner(118620),
                     utbetaltBeloep = Kroner(9000),
-                    restanse = Kroner(0),
+                    restanse = Kroner(300),
                     ytelseFoerAvkorting = Kroner(22000),
                     trygdetid = 40
                 )
@@ -54,7 +54,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 relevantMaanederInnAar = 10,
                 grunnbeloep = Kroner(118620),
                 utbetaltBeloep = Kroner(9000),
-                restanse = Kroner(0),
+                restanse = Kroner(300),
                 ytelseFoerAvkorting = Kroner(22000),
                 trygdetid = 40
             ),
@@ -96,7 +96,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     fratrekkInnAar = Kroner(100000),
                     relevantMaanederInnAar = 12,
                     grunnbeloep = Kroner(118620),
-                    restanse = Kroner(0),
+                    restanse = Kroner(300),
                     utbetaltBeloep = Kroner(9000),
                     trygdetid = 40
                 )

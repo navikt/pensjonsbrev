@@ -25,6 +25,7 @@ object BarnepensjonForeldreloesFraser {
         val flerePerioder: Expression<Boolean>,
         val harUtbetaling: Expression<Boolean>,
         val vedtattIPesys: Expression<Boolean>,
+        val erGjenoppretting: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val formatertVirkningsdato = virkningstidspunkt.format()
@@ -37,6 +38,15 @@ object BarnepensjonForeldreloesFraser {
                         Language.Bokmal to "Vi viser til at du er innvilget barnepensjon. Stortinget har vedtatt nye regler for barnepensjon. Pensjonen din er derfor endret fra 1. januar 2024.",
                         Language.Nynorsk to "Vi viser til at du er innvilga barnepensjon. Stortinget har vedteke nye reglar for barnepensjon. Pensjonen din er difor endra frå og med 1. januar 2024.",
                         Language.English to "You are currently receiving a children’s pension. The Norwegian Parliament (Stortinget) has adopted new rules regarding children's pensions. Your pension has therefore been changed from 1 January 2024.",
+                    )
+                }.orShowIf(erGjenoppretting) {
+                    textExpr(
+                        Language.Bokmal to "Vi viser til forhåndsvarsel om ny barnepensjon. Du er innvilget barnepensjon på nytt fra ".expr() +
+                                formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.",
+                        Language.Nynorsk to "Vi viser til førehandsvarselet om ny barnepensjon. Du er innvilga ny barnepensjon frå og med ".expr() +
+                                formatertVirkningsdato + " fordi begge foreldra dine er registrert død.",
+                        Language.English to "We refer to the advance notice about a new children’s pension scheme. You have been granted a children's pension again from ".expr() +
+                                formatertVirkningsdato + " both your parents are registered as deceased."
                     )
                 }.orShow {
                     textExpr(
