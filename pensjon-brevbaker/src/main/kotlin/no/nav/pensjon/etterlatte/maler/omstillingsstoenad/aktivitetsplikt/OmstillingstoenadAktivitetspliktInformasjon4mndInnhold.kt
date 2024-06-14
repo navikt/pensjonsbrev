@@ -161,13 +161,13 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     text(
                         Bokmal to "Er det en grunn til at du ikke kan være reell arbeidssøker eller annet som oppfyller " +
                                 "aktivitetsplikten på minst 50 prosent, må du sende oss dokumentasjon på dette snarest mulig og " +
-                                "senest innen <DATO 5 MND. ETTER DØDSFALL>. Se “Unntak for aktivitetsplikten” under.",
+                                "senest innen 14 dager fra du mottar dette brevet. Se “Unntak for aktivitetsplikten” under.",
                         Nynorsk to "Viss det er ein grunn til at du ikkje kan vere reell arbeidssøkjar eller gjere " +
                                 "anna som oppfyller aktivitetsplikta på minst 50 prosent, må du sende oss dokumentasjon på " +
-                                "dette snarast mogleg og seinast innan <DATO 5 MND. ETTER DØDSFALL>. Sjå «Unntak frå aktivitetsplikta» under.",
+                                "dette snarast mogleg og seinast innan 14 dagar frå du får dette brevet. Sjå «Unntak frå aktivitetsplikta» under.",
                         English to "If there is any reason why you are unable to be a genuine job seeker or do something else " +
                                 "that fulfils the activity obligation of at least 50 percent, you must send us documentation of this " +
-                                "as soon as possible and no later than <DATO 5 MND. ETTER DØDSFALL>. " +
+                                "as soon as possible and no later than 14 days after you have received this letter. " +
                                 "See “Exemption from the activity obligation” below.",
                     )
                 }
@@ -207,13 +207,13 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     text(
                         Bokmal to "Er det en grunn til at du ikke kan være reell arbeidssøker eller gjøre annet som " +
                                 "oppfyller aktivitetsplikten på minst 50 prosent, må du sende oss dokumentasjon på dette " +
-                                "snarest mulig og senest innen <DATO 5 MND. ETTER DØDSFALL>. Se “Unntak for aktivitetsplikten” under.",
+                                "snarest mulig og senest innen 14 dager fra du mottar dette brevet. Se “Unntak for aktivitetsplikten” under.",
                         Nynorsk to "Viss det er ein grunn til at du ikkje kan vere reell arbeidssøkjar eller gjere anna " +
                                 "som oppfyller aktivitetsplikta på minst 50 prosent, må du sende oss dokumentasjon på dette " +
-                                "snarast mogleg og seinast innan <DATO 5 MND. ETTER DØDSFALL>. Sjå «Unntak frå aktivitetsplikta» under.",
+                                "snarast mogleg og seinast innan 14 dagar frå du får dette brevet. Sjå «Unntak frå aktivitetsplikta» under.",
                         English to "If there is any reason why you are unable to be a genuine job seeker or do something " +
                                 "else that fulfils the activity obligation of at least 50 percent, you must send us documentation " +
-                                "of this as soon as possible and no later than <DATO 5 MND. ETTER DØDSFALL>. See “Exemption from the activity obligation” below.",
+                                "of this as soon as possible and no later than 14 days after you have received this letter. See “Exemption from the activity obligation” below.",
                     )
                 }
             }
@@ -222,14 +222,14 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 paragraph {
                     text(
                         Bokmal to "Hvis situasjonen din er endret, må du gi oss informasjon om din nye situasjon " +
-                                "snarest mulig og senest innen <DATO 5 MND. ETTER DØDSFALL>. Les mer om hvordan du kan " +
+                                "snarest mulig og senest innen 14 dager fra du mottar dette brevet. Les mer om hvordan du kan " +
                                 "fylle aktivitetsplikten og om unntak fra aktivitetsplikten lenger ned i brevet.",
                         Nynorsk to "Dersom situasjonen din har endra seg, må du gi oss informasjon om den nye " +
-                                "situasjonen snarast mogleg og seinast innan <DATO 5 MND. ETTER DØDSFALL>. Lenger ned " +
+                                "situasjonen snarast mogleg og seinast innan 14 dagar frå du får dette brevet. Lenger ned " +
                                 "i brevet kan du lese meir om korleis du kan oppfylle aktivitetsplikta, og kva som er " +
                                 "unntaka frå aktivitetsplikta.",
                         English to "If your situation has changed, you must provide us with information about your " +
-                                "new situation as soon as possible and at the latest by <DATO 5 MND. ETTER DØDSFALL>. " +
+                                "new situation as soon as possible and at the latest by 14 days after you have received this letter. " +
                                 "Read more about how you can comply with the activity obligation and exemption from " +
                                 "the activity obligation farther down in this letter.",
                     )
