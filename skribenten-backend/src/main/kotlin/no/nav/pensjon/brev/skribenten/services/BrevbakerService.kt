@@ -35,6 +35,15 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
         }
     }
 
+    /**
+     * Get model specification for a template.
+     *
+     * Returns a string because Skribenten-backend doesn't really care about the content.
+     */
+    suspend fun getModelSpecification(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
+        client.get(call, "/v2/templates/redigerbar/${brevkode.name}/modelSpecification").toServiceResult()
+
+    @Deprecated("Bruker gammelt endepunkt i brevbaker")
     suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
         client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult()
 

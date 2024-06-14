@@ -29,10 +29,20 @@ data class RenderLetterRequest(val letterData: GenericBrevdata, val editedLetter
 data class RenderLetterResponse(val editedLetter: Edit.Letter, val title: String, val sakspart: Sakspart, val signatur: Signatur)
 class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
 
-// TODO: Flytt til topp-rute /brevbaker
 fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
     val logger = LoggerFactory.getLogger("brevbakerRoute")
 
+    get("/brevmal/{brevkode}/modelSpecification") {
+        val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
+        brevbakerService.getModelSpecification(call, brevkode)
+            .onOk { call.respondText(it, ContentType.Application.Json) }
+            .onError { message, status ->
+                logger.error("Feil ved henting av modelSpecification for ${brevkode.name}: Status:$status Melding: $message ")
+                call.respond(status, message)
+            }
+    }
+
+    // TODO: endepunktene under her er deprecated
     get("/template/{brevkode}") {
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
         brevbakerService.getTemplate(call, brevkode)
