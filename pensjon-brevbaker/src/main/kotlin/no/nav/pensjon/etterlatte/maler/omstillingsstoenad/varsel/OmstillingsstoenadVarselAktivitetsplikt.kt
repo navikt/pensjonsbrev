@@ -61,7 +61,7 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                         item {
                             text(
                                 Bokmal to "sende en melding på ${Constants.SKRIVTILOSS_URL} (her får du ikke lagt ved dokumentasjon)",
-                                Nynorsk to "Send ei melding på ${Constants.SKRIVTILOSS_URL} (her får du ikkje lagt ved dokumentasjon).",
+                                Nynorsk to "send ei melding på ${Constants.SKRIVTILOSS_URL} (her får du ikkje lagt ved dokumentasjon).",
                                 English to
                                     "sending a message through ${Constants.Engelsk.SKRIVTILOSS_URL} (you cannot attach any documentationhere)",
                             )
@@ -80,7 +80,7 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                         item {
                             text(
                                 Bokmal to "sende brev til NAV skanning ${Constants.POSTADRESSE}",
-                                Nynorsk to "Send brev til ${Constants.POSTADRESSE}",
+                                Nynorsk to "send brev til ${Constants.POSTADRESSE}",
                                 English to "send a letter to ${Constants.POSTADRESSE}",
                             )
                         }
