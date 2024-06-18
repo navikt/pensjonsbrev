@@ -11,7 +11,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
 
 data class OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO(
-    override val innhold: List<Element>,
+    override val innhold: List<Element> = emptyList(),
 ) : BrevDTO
 
 @TemplateModelHelpers
