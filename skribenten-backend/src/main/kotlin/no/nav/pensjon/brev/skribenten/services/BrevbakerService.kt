@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brevbaker.api.model.*
-import java.time.*
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
