@@ -37,6 +37,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.Omstillingssto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurdering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarsel
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetsplikt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdig
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnhold
@@ -76,6 +78,8 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall,
         OmstillingsstoenadVarsel,
         OmstillingsstoenadVarselRedigerbartUtfall,
+        OmstillingsstoenadVarselAktivitetsplikt,
+        OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall,
         OmstillingsstoenadInformasjonDoedsfall,
         OmstillingsstoenadAktivitetspliktVarselInnhold,
         OmstillingstoenadAktivitetspliktInformasjon4mndInnhold,
