@@ -1,17 +1,3 @@
-import type { LetterMetadata } from "./apiTypes";
-
-export type RedigerbarTemplateDescription = {
-  readonly description: TemplateDescription;
-  readonly modelSpecification: LetterModelSpecification;
-};
-
-export type TemplateDescription = {
-  readonly name: string;
-  readonly letterDataClass: string;
-  readonly languages: LanguageCode[];
-  readonly metadata: LetterMetadata;
-};
-
 export type LetterModelSpecification = {
   readonly types: ObjectTypeSpecifications;
   readonly letterModelTypeName: string;
@@ -127,18 +113,9 @@ export type Title2Block = Block & {
 };
 
 export interface EditedLetter {
-  readonly blocks: AnyBlock[];
-  readonly deletedBlocks: number[];
-}
-
-export interface RenderLetterRequest {
-  letterData: unknown;
-  editedLetter?: EditedLetter;
-}
-
-export interface RenderLetterResponse {
-  readonly editedLetter: EditedLetter;
   readonly title: string;
   readonly sakspart: Sakspart;
+  readonly blocks: AnyBlock[];
   readonly signatur: Signatur;
+  readonly deletedBlocks: number[];
 }

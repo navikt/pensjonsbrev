@@ -65,7 +65,7 @@ export function DebugPanel() {
       <HStack gap={"4"}>
         Edited:
         <ul>
-          {findEdits(editorState.renderedLetter.editedLetter.blocks).map((litIndex, index) => (
+          {findEdits(editorState.redigertBrev.blocks).map((litIndex, index) => (
             <li key={index}>
               {Object.entries(litIndex).map(([key, value]) => (
                 <div key={key}>

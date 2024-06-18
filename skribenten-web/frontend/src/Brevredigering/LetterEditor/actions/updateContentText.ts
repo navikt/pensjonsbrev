@@ -11,8 +11,7 @@ import type { LiteralIndex } from "./model";
 
 export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
   (draft, literalIndex, text) => {
-    const content =
-      draft.renderedLetter.editedLetter.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
+    const content = draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
 
     if (content.type === LITERAL) {
       updateLiteralText(content, text);

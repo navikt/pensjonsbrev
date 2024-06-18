@@ -19,10 +19,10 @@ export const LetterEditor = ({
   setEditorState,
 }: {
   editorState: LetterEditorState;
-  setEditorState: Dispatch<SetStateAction<LetterEditorState | undefined>>;
+  setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
 }) => {
-  const letter = editorState.renderedLetter;
-  const blocks = letter.editedLetter.blocks;
+  const letter = editorState.redigertBrev;
+  const blocks = letter.blocks;
 
   return (
     <div
@@ -62,7 +62,7 @@ export const LetterEditor = ({
 
 export const EditorStateContext = createContext<{
   editorState: LetterEditorState;
-  setEditorState: CallbackReceiver<LetterEditorState | undefined>;
+  setEditorState: CallbackReceiver<LetterEditorState>;
 }>({
   editorState: {} as LetterEditorState,
   setEditorState: () => {},

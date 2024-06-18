@@ -37,8 +37,8 @@ function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
 
 export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const { editorState } = useEditor();
-  const block = editorState.renderedLetter.editedLetter.blocks[literalIndex.blockIndex];
-  const contents = getContent(editorState.renderedLetter.editedLetter, literalIndex);
+  const block = editorState.redigertBrev.blocks[literalIndex.blockIndex];
+  const contents = getContent(editorState.redigertBrev, literalIndex);
 
   if (!block.editable) {
     return (
@@ -149,7 +149,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const handleDelete = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     const cursorIsAtEnd = getCursorOffset() >= text.length;
     const cursorIsInLastContent =
-      getContent(editorState.renderedLetter.editedLetter, literalIndex).length - 1 === literalIndex.contentIndex;
+      getContent(editorState.redigertBrev, literalIndex).length - 1 === literalIndex.contentIndex;
     if (cursorIsAtEnd && cursorIsInLastContent) {
       event.preventDefault();
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.NEXT);
@@ -238,14 +238,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // This is not documented anywhere I could find and caused a day of frustration, beware
       contentEditable="true"
       onFocus={() => {
-        setEditorState((oldState) =>
-          oldState
-            ? {
-                ...oldState,
-                focus: literalIndex,
-              }
-            : undefined,
-        );
+        setEditorState((oldState) => ({
+          ...oldState,
+          focus: literalIndex,
+        }));
       }}
       onInput={(event) => {
         applyAction(

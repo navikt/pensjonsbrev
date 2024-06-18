@@ -25,7 +25,7 @@ function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[],
 
 export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = produce(
   (draft, literalIndex, target) => {
-    const editedLetter = draft.renderedLetter.editedLetter;
+    const editedLetter = draft.redigertBrev;
     const blocks = editedLetter.blocks;
     const previousContentSameBlock = blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex - 1];
 

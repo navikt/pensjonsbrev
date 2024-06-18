@@ -1,19 +1,21 @@
 import { css } from "@emotion/react";
 import { Switch } from "@navikt/ds-react";
 import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
+import { useModelSpecification } from "~/api/brev-queries";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import { useObjectTypeSpecification } from "~/Brevredigering/ModelEditor/components/useObjectTypeSpecification";
-import type { FieldType, TObject } from "~/types/brevbakerTypes";
+import { getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
+import type { FieldType } from "~/types/brevbakerTypes";
 
-const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType }) => {
+const FieldEditor = ({ brevkode, field, fieldType }: { brevkode: string; field: string; fieldType: FieldType }) => {
   switch (fieldType.type) {
     case "object": {
       return fieldType.nullable ? (
-        <ToggleableObjectEditor field={field} fieldType={fieldType} />
+        <ToggleableObjectEditor brevkode={brevkode} parentFieldName={field} typeName={fieldType.typeName} />
       ) : (
-        <ObjectEditor parentFieldName={field} typeName={fieldType.typeName} />
+        <ObjectEditor brevkode={brevkode} parentFieldName={field} typeName={fieldType.typeName} />
       );
     }
     case "scalar": {
@@ -28,26 +30,48 @@ const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType
   }
 };
 
-export const ObjectEditor = ({ typeName, parentFieldName }: { typeName: string; parentFieldName?: string }) => {
-  const objectTypeSpecification = useObjectTypeSpecification(typeName);
+export type ObjectEditorProperties = {
+  brevkode: string;
+  typeName: string;
+  parentFieldName?: string;
+};
+
+export const ObjectEditor = ({ brevkode, typeName, parentFieldName }: ObjectEditorProperties) => {
+  const objectTypeSpecification = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
   return (
     <>
       {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
         const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
-        return <FieldEditor field={fieldName} fieldType={fieldType} key={field} />;
+        return <FieldEditor brevkode={brevkode} field={fieldName} fieldType={fieldType} key={field} />;
       })}
     </>
   );
 };
 
-function ToggleableObjectEditor({ field, fieldType }: { field: string; fieldType: TObject }) {
-  const [open, setOpen] = useState(false);
+function ToggleableObjectEditor({
+  brevkode,
+  parentFieldName,
+  typeName,
+}: ObjectEditorProperties & { parentFieldName: string }) {
+  const {
+    formState: { defaultValues },
+    unregister,
+  } = useFormContext();
+  const defaultValue = getFieldDefaultValue(defaultValues, parentFieldName);
+  const [open, setOpen] = useState(defaultValue !== null && defaultValue !== undefined);
+
+  const handleToggle = () => {
+    if (open) {
+      unregister(parentFieldName, { keepDefaultValue: true });
+    }
+    setOpen(!open);
+  };
 
   return (
     <>
-      <Switch checked={open} onChange={() => setOpen(!open)}>
-        {field}
+      <Switch checked={open} onChange={handleToggle}>
+        {parentFieldName}
       </Switch>
       {open && (
         <div
@@ -59,7 +83,7 @@ function ToggleableObjectEditor({ field, fieldType }: { field: string; fieldType
             }
           `}
         >
-          <ObjectEditor parentFieldName={field} typeName={fieldType.typeName} />
+          <ObjectEditor brevkode={brevkode} parentFieldName={parentFieldName} typeName={typeName} />
         </div>
       )}
     </>

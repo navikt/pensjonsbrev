@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.*
 import io.ktor.http.*
+import io.ktor.serialization.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -54,6 +56,14 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
         }
         exception<UnauthorizedException> { call, cause ->
             call.respond(HttpStatusCode.Unauthorized, cause.msg)
+        }
+        exception<BadRequestException> { call, cause ->
+            if (cause.cause is JsonConvertException) {
+                call.application.log.info(cause.message, cause)
+                call.respond(HttpStatusCode.BadRequest, cause.cause?.message ?: "Failed to deserialize json body: unknown reason")
+            } else {
+                call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
+            }
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)

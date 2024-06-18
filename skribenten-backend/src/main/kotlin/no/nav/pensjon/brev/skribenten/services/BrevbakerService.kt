@@ -43,10 +43,6 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
     suspend fun getModelSpecification(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
         client.get(call, "/v2/templates/redigerbar/${brevkode.name}/modelSpecification").toServiceResult()
 
-    @Deprecated("Bruker gammelt endepunkt i brevbaker")
-    suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
-        client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult()
-
     suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: RedigerbarBrevdata<*,*>, felles: Felles): ServiceResult<LetterMarkup> =
         client.post(call, "/v2/letter/redigerbar/markup") {
             contentType(ContentType.Application.Json)

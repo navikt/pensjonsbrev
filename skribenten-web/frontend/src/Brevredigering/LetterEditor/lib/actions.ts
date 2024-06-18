@@ -146,7 +146,7 @@ export function combine(...receivers: ((...arguments_: any[]) => void)[]): (...a
  */
 export function applyAction<T, Arguments extends any[]>(
   action: Action<T, Arguments>,
-  to: CallbackReceiver<T | undefined>,
+  to: CallbackReceiver<T>,
   ...arguments_: Arguments
 ): void {
   to((target) => target && action(target, ...arguments_));

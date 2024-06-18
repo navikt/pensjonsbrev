@@ -24,7 +24,7 @@ const block: ParagraphBlock = {
   content,
 };
 const editorState = letter(block, block, block);
-const setEditorState = vi.fn<[(l: LetterEditorState | undefined) => LetterEditorState | undefined]>();
+const setEditorState = vi.fn<[(l: LetterEditorState) => LetterEditorState]>();
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -66,7 +66,7 @@ function setupComplex() {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider value={{ editorState: complexEditorState, setEditorState }}>
-        {complexEditorState.renderedLetter.editedLetter.blocks.map((block, blockIndex) => (
+        {complexEditorState.redigertBrev.blocks.map((block, blockIndex) => (
           <div className={block.type} key={blockIndex}>
             <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
           </div>
@@ -124,8 +124,8 @@ describe("deleteHandler", () => {
     await user.click(screen.getByText(content[1].text));
     await user.keyboard("{ArrowLeft}{ArrowLeft}{Delete}");
 
-    expect(setEditorState.mock.lastCall?.[0](editorState)?.renderedLetter.editedLetter.blocks).toHaveLength(
-      editorState.renderedLetter.editedLetter.blocks.length,
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.redigertBrev.blocks).toHaveLength(
+      editorState.redigertBrev.blocks.length,
     );
   });
   test("delete not at end of block, but after last character, does not trigger merge", async () => {
@@ -151,8 +151,8 @@ describe("backspaceHandler", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}{ArrowLeft}{ArrowLeft}{Backspace}");
 
-    expect(setEditorState.mock.lastCall?.[0](editorState)?.renderedLetter.editedLetter.blocks).toHaveLength(
-      editorState.renderedLetter.editedLetter.blocks.length,
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.redigertBrev.blocks).toHaveLength(
+      editorState.redigertBrev.blocks.length,
     );
   });
   test("backspace not at beginning of block, but before first character of a TextContent, does not trigger merge", async () => {
