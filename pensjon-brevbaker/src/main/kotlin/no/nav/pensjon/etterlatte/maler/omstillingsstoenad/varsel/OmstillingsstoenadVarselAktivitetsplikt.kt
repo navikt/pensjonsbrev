@@ -79,7 +79,7 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                         }
                         item {
                             text(
-                                Bokmal to "sende brev til NAV skanning ${Constants.POSTADRESSE}",
+                                Bokmal to "sende brev til ${Constants.POSTADRESSE}",
                                 Nynorsk to "send brev til ${Constants.POSTADRESSE}",
                                 English to "send a letter to ${Constants.POSTADRESSE}",
                             )

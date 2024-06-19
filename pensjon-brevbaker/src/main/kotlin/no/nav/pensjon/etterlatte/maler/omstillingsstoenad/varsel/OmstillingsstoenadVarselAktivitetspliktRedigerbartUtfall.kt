@@ -115,15 +115,15 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
                     text(
                         Bokmal to
                                 "Hvis du ikke dokumenterer minst 50 prosent aktivitet eller grunn til unntak fra aktivitet " +
-                                "som nevnt i informasjonsbrevet innen <dato, seks mnd. etter dødsfallet>, vil utbetaling av " +
+                                "som nevnt i informasjonsbrevet innen <3 uker fra brevets dato>, vil utbetaling av " +
                                 "omstillingsstønad stanse fra <dato>.",
                         Nynorsk to
                                 "Viss du ikkje dokumenterer minst 50 prosent aktivitet eller grunn til unntak frå aktivitet " +
-                                "som nemnt i informasjonsbrevet, innan <dato, seks mnd. etter dødsfallet>, vil utbetalinga " +
+                                "som nemnt i informasjonsbrevet, innan <3 uker fra brevets dato>, vil utbetalinga " +
                                 "av omstillingsstønad stanse frå <dato>.",
                         English to "If you do not submit documentation of participating in an activity equivalent to " +
                                 "50 percent of full time, or reasons for being exempt from the activity requirement as mentioned " +
-                                "in the information letter, by <dato, seks mnd. etter dødsfallet>, the adjustment allowance " +
+                                "in the information letter, by <3 uker fra brevets dato>, the adjustment allowance " +
                                 "payments will be terminated from <dato>."
                     )
                 }
