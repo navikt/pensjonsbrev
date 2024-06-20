@@ -21,6 +21,7 @@ const block: ParagraphBlock = {
   id: 1,
   editable: true,
   type: PARAGRAPH,
+  deletedContent: [],
   content,
 };
 const editorState = letter(block, block, block);

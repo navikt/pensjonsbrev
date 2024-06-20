@@ -2,13 +2,13 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import type { Content, Item, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
+import type { Content, Item, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
-import { isEmptyBlock, isEmptyItem } from "../model/utils";
-import { cleanseText } from "./common";
+import { isEmptyBlock, isEmptyContent, isEmptyItem } from "../model/utils";
+import { cleanseText, text } from "./common";
 import type { LiteralIndex } from "./model";
 
 export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = produce(
@@ -19,18 +19,43 @@ export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
     const content = block.content[literalIndex.contentIndex];
 
     if (content.type === LITERAL) {
-      // TODO: if split happens in the last content of a block and it results in an empty content, should it be removed?
-      if (!isEmptyBlock(block) && (previousBlock == null || offset > 0 || !isEmptyBlock(previousBlock))) {
-        // Create next block
-        const nextContent = splitContentArrayAtLiteral(block.content, literalIndex.contentIndex, offset);
+      const isAtStartOfBlock = literalIndex.contentIndex === 0 && offset === 0;
+      const previousBlockIsNotEmpty = previousBlock && !isEmptyBlock(previousBlock);
+      const isAtFirstBlock = literalIndex.blockIndex === 0;
 
-        const nextBlock: ParagraphBlock = {
-          type: PARAGRAPH,
-          id: null,
-          editable: true,
-          content: nextContent,
-        };
-        editedLetter.blocks.splice(literalIndex.blockIndex + 1, 0, nextBlock);
+      if (!isEmptyBlock(block) && (!isAtStartOfBlock || previousBlockIsNotEmpty || isAtFirstBlock)) {
+        if (isAtStartOfBlock) {
+          // Since we're at the very beginning of a block, it makes sense that we create a new block and push `block`
+          // one position.
+          const newBlock: ParagraphBlock = {
+            type: PARAGRAPH,
+            id: null,
+            editable: true,
+            deletedContent: [],
+            content: [{ type: LITERAL, id: null, text: "", editedText: "" }],
+          };
+          editedLetter.blocks.splice(literalIndex.blockIndex, 0, newBlock);
+        } else {
+          // We're splitting a block somewhere inside it, so we modify `block` and move content after cursor to a new block.
+
+          // Update content in `block` and get the content for the new (next) block
+          const nextContent = splitContentArrayAtLiteral(block.content, literalIndex.contentIndex, offset);
+
+          // mark content moved to new block as deleted in original
+          for (const c of nextContent) {
+            if (c.id !== null) block.deletedContent.push(c.id);
+          }
+
+          const nextBlock: ParagraphBlock = {
+            type: PARAGRAPH,
+            id: null,
+            editable: true,
+            deletedContent: [],
+            content: nextContent,
+          };
+          editedLetter.blocks.splice(literalIndex.blockIndex + 1, 0, nextBlock);
+        }
+
         draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: literalIndex.blockIndex + 1 };
       }
     } else if (content.type === ITEM_LIST) {
@@ -64,7 +89,7 @@ export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
             nextItem &&
             isEmptyItem(nextItem) &&
             literalIndex.itemContentIndex + 1 >= item.content.length &&
-            offset >= (itemContent.editedText ?? itemContent.text).length
+            offset >= text(itemContent).length
           ) {
             // next item is empty; prevent multiple consecutive empty items
             return;
@@ -73,17 +98,25 @@ export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
             return;
           }
 
-          // Update content of current item, and build content of new item
-          const nextContent = splitContentArrayAtLiteral(item.content, literalIndex.itemContentIndex, offset);
+          if (literalIndex.itemContentIndex === 0 && offset === 0) {
+            // We're at the very beginning of an item, so it makes sense to insert a new item before it istead of splitting
+            const newItem: Item = {
+              id: null,
+              content: [{ type: LITERAL, id: null, text: "", editedText: "" }],
+            };
+            content.items.splice(literalIndex.itemIndex, 0, newItem);
+          } else {
+            // Update content of current item, and build content of new item
+            const nextContent = splitContentArrayAtLiteral(item.content, literalIndex.itemContentIndex, offset);
 
-          const newItem: Item = {
-            id: null,
-            // content: [{ ...itemContent, text: secondText }, ...item.content.slice(literalIndex.itemContentIndex + 1)],
-            content: nextContent,
-          };
+            const newItem: Item = {
+              id: null,
+              content: nextContent,
+            };
 
-          // insert new item after specified item
-          content.items.splice(literalIndex.itemIndex + 1, 0, newItem);
+            // insert new item after specified item
+            content.items.splice(literalIndex.itemIndex + 1, 0, newItem);
+          }
 
           // Update focus
           draft.focus = {
@@ -112,23 +145,36 @@ function splitContentArrayAtLiteral<T extends Content | TextContent>(
 ): Draft<T>[] {
   const content = contentArray[atIndex];
   if (content.type === LITERAL) {
-    const text = content.editedText ?? content.text;
-    const nextText = cleanseText(text.slice(Math.max(0, offset)));
-    const tailContent = [
-      {
-        ...content,
-        id: offset > 0 ? null : content.id,
-        text: "",
-        editedText: nextText,
-      },
-      ...contentArray.slice(atIndex + 1),
-    ];
+    const origText = text(content as LiteralValue);
+    const nextText = cleanseText(origText.slice(Math.max(0, offset)));
+    const contentAfterSplit = contentArray.slice(atIndex + 1);
+
+    // Prevent that if we split at the end of a content we get an empty content as first element in the new block
+    const nextContent =
+      nextText.length === 0 && contentAfterSplit.length > 0 && contentAfterSplit[0].type !== VARIABLE
+        ? contentAfterSplit
+        : [
+            {
+              ...content,
+              id: offset > 0 ? null : content.id,
+              text: "",
+              editedText: nextText,
+            },
+            ...contentArray.slice(atIndex + 1),
+          ];
 
     // Update existing
-    updateLiteralText(content, cleanseText(text.slice(0, Math.max(0, offset))));
+    updateLiteralText(content, cleanseText(origText.slice(0, Math.max(0, offset))));
     contentArray.splice(atIndex + 1, contentArray.length - atIndex + 1);
 
-    return tailContent;
+    // prevent dangling empty content at end of contentArray after itemList.
+    const lastContent = contentArray.at(-1);
+    const secondToLastContent = contentArray.at(-2);
+    if (lastContent?.type === LITERAL && isEmptyContent(lastContent) && secondToLastContent?.type === ITEM_LIST) {
+      contentArray.pop();
+    }
+
+    return nextContent;
   } else {
     throw "Cannot split content array at non LiteralValue: " + content.type;
   }

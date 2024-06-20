@@ -1,10 +1,12 @@
 import { produce } from "immer";
 
-import type { Identifiable } from "~/types/brevbakerTypes";
+import { text } from "~/Brevredigering/LetterEditor/actions/common";
+import type { AnyBlock, Identifiable } from "~/types/brevbakerTypes";
+import { VARIABLE } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
+import type { Focus, LetterEditorState } from "../model/state";
 import { getMergeIds, isEmptyBlock, isEmptyItem, isTextContent, mergeContentArrays } from "../model/utils";
 import type { LiteralIndex } from "./model";
 
@@ -21,6 +23,10 @@ function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[],
   ) {
     deleted.push(toDelete.id);
   }
+}
+function updateDeleted(deleted: number[], present: Identifiable[]): number[] {
+  const presentIds = new Set(present.map((e) => e.id));
+  return deleted.filter((d) => !presentIds.has(d));
 }
 
 export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = produce(
@@ -51,7 +57,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
             draft.focus = {
               blockIndex: literalIndex.blockIndex,
               contentIndex: literalIndex.contentIndex,
-              cursorPosition: first.content.at(-1)?.text.length ?? 0,
+              cursorPosition: text(first.content.at(-1))?.length ?? 0,
               itemContentIndex: first.content.length - 1,
               itemIndex: firstId,
             };
@@ -61,7 +67,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
             draft.focus = {
               blockIndex: literalIndex.blockIndex,
               contentIndex: literalIndex.contentIndex,
-              cursorPosition: first.content.at(-1)?.text.length ?? 0,
+              cursorPosition: text(first.content.at(-1))?.length ?? 0,
               itemContentIndex: first.content.length - 1,
               itemIndex: firstId,
             };
@@ -75,6 +81,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
         console.warn("Got itemIndex, but block.content is not an itemList");
       }
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {
+      // This is when merging inside a block with an itemList
       // The previous content of the block is an itemList, so we want to merge with the last item
       const content = blocks[literalIndex.blockIndex].content;
       const lastItemId = previousContentSameBlock.items.length - 1;
@@ -86,7 +93,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
           ? {
               blockIndex: literalIndex.blockIndex,
               contentIndex: literalIndex.contentIndex - 1,
-              cursorPosition: lastContentOfLastItem.text.length,
+              cursorPosition: text(lastContentOfLastItem).length,
               itemIndex: lastItemId,
               itemContentIndex: lastItem.content.length - 1,
             }
@@ -121,12 +128,15 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
         } else if (isEmptyBlock(second)) {
           blocks.splice(secondId, 1);
           deleteElement(second, blocks, editedLetter.deletedBlocks);
-          draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: literalIndex.blockIndex - 1 };
+          if (first.content.at(-1)?.type === VARIABLE) {
+            first.content.push({ type: LITERAL, id: null, text: "", editedText: "" });
+          }
+          draft.focus = focusEndOfBlock(firstId, first);
         } else {
           const lastContentOfFirst = first.content.at(-1);
 
           const nextContentIndexFocus = first.content.length - (lastContentOfFirst?.type === LITERAL ? 1 : 0);
-          const nextStartOffset = lastContentOfFirst?.type === LITERAL ? lastContentOfFirst.text.length : 0;
+          const nextStartOffset = lastContentOfFirst?.type === LITERAL ? text(lastContentOfFirst).length : 0;
           draft.focus = {
             contentIndex: nextContentIndexFocus,
             cursorPosition: nextStartOffset,
@@ -136,8 +146,18 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
           first.content = mergeContentArrays(first.content, second.content);
           blocks.splice(secondId, 1);
           deleteElement(second, blocks, editedLetter.deletedBlocks);
+          first.deletedContent = updateDeleted(first.deletedContent, first.content);
         }
       }
     }
   },
 );
+
+function focusEndOfBlock(blockId: number, block: AnyBlock): Focus {
+  const lastContent = block.content.at(-1);
+  return {
+    blockIndex: blockId,
+    contentIndex: block.content.length - 1,
+    cursorPosition: lastContent?.type === LITERAL ? text(lastContent).length : 0,
+  };
+}
