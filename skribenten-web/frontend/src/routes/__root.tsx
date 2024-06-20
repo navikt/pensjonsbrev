@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import { Outlet, rootRouteWithContext } from "@tanstack/react-router";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import React from "react";
 
 import { AppHeader } from "~/components/AppHeader";
@@ -16,7 +16,7 @@ const TanStackRouterDevtools =
         })),
       );
 
-export const Route = rootRouteWithContext<{
+export const Route = createRootRouteWithContext<{
   queryClient: typeof queryClient;
 }>()({
   component: () => (
