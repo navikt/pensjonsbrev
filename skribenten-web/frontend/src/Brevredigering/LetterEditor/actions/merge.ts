@@ -25,7 +25,7 @@ function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[],
   }
 }
 function updateDeleted(deleted: number[], present: Identifiable[]): number[] {
-  const presentIds = new Set(present.map((e) => e.id));
+  const presentIds = new Set(present.map((element) => element.id));
   return deleted.filter((d) => !presentIds.has(d));
 }
 
