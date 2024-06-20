@@ -120,11 +120,6 @@ class BrevredigeringService(
         when (val response = penService.hentPesysBrevdata(call, saksId, brevkode)) {
             is ServiceResult.Ok -> {
                 response.result.data ?: throw BrevbakerServiceException("Brevdata fra PEN var tom. error: ${response.result.error}")
-
-                BrevdataResponse.Data(
-                    felles = response.result.data.felles,
-                    brevdata = response.result.data.brevdata,
-                )
             }
 
             is ServiceResult.Error -> {
