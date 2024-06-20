@@ -141,3 +141,16 @@ En strategi for overgangen kan se slik ut:
 # Kode generert av GitHub Copilot
 
 Dette repoet inneholder forekomster av kode generert av GitHub Copilot.
+
+
+## Troubleshooting
+
+#### Error når jeg prøver å koble meg til kubernetes cluster
+```
+ERROR: Cannot connect to kubernetes cluster dev-gcp:  getting credentials
+Have you remembered to connect naisdevice? (see https://doc.nais.io/basics/access/)
+```
+- Hvis du har tidligere fulgt setupen, kan du prøve å verifiser at du er autensitert i gcloud, og potensielt oppdatere credentials ved å kjøre `gcloud auth login --update-adc`, så kan du prøve igjen
+
+#### Får ikke kjørt jq etter å ha lastet den ned
+- Prøv `brew install jq`
