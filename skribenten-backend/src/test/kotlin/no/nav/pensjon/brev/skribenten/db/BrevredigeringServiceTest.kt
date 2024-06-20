@@ -121,9 +121,9 @@ class BrevredigeringServiceTest {
                                 ),
                                 bruker = Bruker(
                                     foedselsnummer = Foedselsnummer("12345678910"),
-                                    fornavn = "Ole",
+                                    fornavn = "Navn",
                                     mellomnavn = null,
-                                    etternavn = "Paus"
+                                    etternavn = "Navnesen"
                                 ),
                                 vergeNavn = null,
                                 signerendeSaksbehandlere = null,
