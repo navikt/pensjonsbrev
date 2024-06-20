@@ -11,10 +11,13 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brevbaker.api.model.Felles
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
@@ -118,6 +121,8 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun hentIsKravPaaGammeltRegelverk(call: ApplicationCall, vedtaksId: String): ServiceResult<Boolean> =
         client.get(call, "brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 
+    suspend fun hentPesysBrevdata(call: ApplicationCall, saksId: Long, brevkode: Brevkode.Redigerbar): ServiceResult<BrevdataResponse> =
+        client.get(call, "/sak/$saksId/brevdata/${brevkode.name}").toServiceResult<BrevdataResponse>(::handlePenErrorResponse)
 
     private data class BestillDoksysBrevRequest(
         val saksId: Long,
@@ -134,5 +139,9 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         val sakType: Pen.SakType,
         val enhetId: String?,
     )
+}
+
+data class BrevdataResponse(val data: Data?, val error: String? = null) {
+    data class Data(val felles: Felles, val brevdata: BrevbakerBrevdata)
 }
 
