@@ -24,9 +24,14 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
+import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import no.nav.pensjon.brevbaker.api.model.NAVEnhet
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -105,7 +110,25 @@ class BrevredigeringServiceTest {
         coEvery { penService.hentPesysBrevdata(any(), any(), any()) } returns
                 ServiceResult.Ok(
                     BrevdataResponse(
-                        data = null,
+                        data = BrevdataResponse.Data(
+                            felles = Felles(
+                                dokumentDato = LocalDate.now(),
+                                saksnummer = "123",
+                                avsenderEnhet = NAVEnhet(
+                                    nettside = "nav.no",
+                                    navn = "en fantastisk enhet",
+                                    telefonnummer = Telefonnummer("12345678")
+                                ),
+                                bruker = Bruker(
+                                    foedselsnummer = Foedselsnummer("12345678910"),
+                                    fornavn = "Ole",
+                                    mellomnavn = null,
+                                    etternavn = "Paus"
+                                ),
+                                vergeNavn = null,
+                                signerendeSaksbehandlere = null,
+                            ), brevdata = EmptyBrevdata
+                        ),
                         error = null
                     )
                 )

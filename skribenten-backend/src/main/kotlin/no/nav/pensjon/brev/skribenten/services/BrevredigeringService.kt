@@ -14,14 +14,7 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.NAVEnhet
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -128,15 +121,11 @@ class BrevredigeringService(
         coroutineScope {
             when (val response = penService.hentPesysBrevdata(call, saksId, brevkode.name)) {
                 is ServiceResult.Ok -> {
+                    if (response.result.data == null) {
+                        throw BrevbakerServiceException("Brevdata fra PEN var tom")
+                    }
                     BrevdataResponse.Data(
-                        felles = Felles(
-                            dokumentDato = LocalDate.now(),
-                            saksnummer = saksId.toString(),
-                            avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
-                            bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
-                            vergeNavn = null,
-                            signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
-                        ),
+                        felles = response.result.data.felles,
                         brevdata = EmptyBrevdata,
                     )
                 }
