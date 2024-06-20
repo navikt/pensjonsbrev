@@ -28,8 +28,8 @@ docker-compose up -d --build
    * vault
    * gcloud cli
    * kjørende docker/colima
-   * naisdevice med standard dev-miljø tilganger og [tjenestebuss-q2](https://console.nav.cloud.nais.io/team/tjenestebuss-q2-naisdevice) gruppe-tilgang
-   * Legg til `155.55.2.73	tjenestebuss-q2.adeo.no` i /etc/hosts
+   * naisdevice med standard dev-miljø tilganger og [tjenestebuss-q2](https://console.nav.cloud.nais.io/team/tjenestebuss-q2-naisdevice) gruppe-tilgang (optional - tilgangen trengs kun dersom du har behov for å kjøre hele backend i docker compose. Lokalt frontend kan kjøres mot q2)
+     * Legg til `155.55.2.73	tjenestebuss-q2.adeo.no` i /etc/hosts
 2. Hent alle secrets:
    ```bash
    (cd skribenten-backend && ./fetch-secrets.sh)
@@ -141,3 +141,16 @@ En strategi for overgangen kan se slik ut:
 # Kode generert av GitHub Copilot
 
 Dette repoet inneholder forekomster av kode generert av GitHub Copilot.
+
+
+## Troubleshooting
+
+#### Error når jeg prøver å koble meg til kubernetes cluster
+```
+ERROR: Cannot connect to kubernetes cluster dev-gcp:  getting credentials
+Have you remembered to connect naisdevice? (see https://doc.nais.io/basics/access/)
+```
+- Hvis du har tidligere fulgt setupen, kan du prøve å verifiser at du er autensitert i gcloud, og potensielt oppdatere credentials ved å kjøre `gcloud auth login --update-adc`, så kan du prøve igjen
+
+#### Får ikke kjørt jq etter å ha lastet den ned
+- Prøv `brew install jq`
