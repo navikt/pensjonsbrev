@@ -5,7 +5,6 @@ import io.ktor.server.application.*
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
@@ -118,23 +117,21 @@ class BrevredigeringService(
     }
 
     private suspend fun hentPesysData(call: ApplicationCall, brevkode: Brevkode.Redigerbar, saksId: Long): BrevdataResponse.Data =
-        coroutineScope {
-            when (val response = penService.hentPesysBrevdata(call, saksId, brevkode.name)) {
-                is ServiceResult.Ok -> {
-                    if (response.result.data == null) {
-                        throw BrevbakerServiceException("Brevdata fra PEN var tom")
-                    }
-                    BrevdataResponse.Data(
-                        felles = response.result.data.felles,
-                        brevdata = EmptyBrevdata,
-                    )
-                }
+        when (val response = penService.hentPesysBrevdata(call, saksId, brevkode)) {
+            is ServiceResult.Ok -> {
+                response.result.data ?: throw BrevbakerServiceException("Brevdata fra PEN var tom. error: ${response.result.error}")
 
-                is ServiceResult.Error -> {
-                    throw BrevbakerServiceException(response.error)
-                }
+                BrevdataResponse.Data(
+                    felles = response.result.data.felles,
+                    brevdata = response.result.data.brevdata,
+                )
+            }
+
+            is ServiceResult.Error -> {
+                throw BrevbakerServiceException(response.error)
             }
         }
+
 
     fun <T : Any> hentBrev(brevId: Long, mapper: Brevredigering.() -> T): T? {
         return transaction {

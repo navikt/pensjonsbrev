@@ -107,7 +107,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `can update brevredigering`() = runBlocking {
-        coEvery { penService.hentPesysBrevdata(any(), any(), any()) } returns
+        coEvery { penService.hentPesysBrevdata(any(), eq(sak.saksId), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)) } returns
                 ServiceResult.Ok(
                     BrevdataResponse(
                         data = BrevdataResponse.Data(
