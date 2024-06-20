@@ -7,11 +7,10 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 
 object Edit {
-    data class Letter(val blocks: List<Block>, val deletedBlocks: Set<Int>)
+    data class Letter(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur, val deletedBlocks: Set<Int>)
 
     interface Identifiable {
         val id: Int?
@@ -135,7 +134,7 @@ object Edit {
 }
 
 fun LetterMarkup.toEdit(): Edit.Letter =
-    Edit.Letter(blocks.toEdit(), emptySet())
+    Edit.Letter(title, sakspart, blocks.toEdit(), signatur, emptySet())
 
 fun List<Block>.toEdit(): List<Edit.Block> =
     map { it.toEdit() }

@@ -15,8 +15,9 @@ import { Route as IndexImport } from './routes/index'
 import { Route as SaksnummerIndexImport } from './routes/saksnummer.index'
 import { Route as SaksnummerSaksIdImport } from './routes/saksnummer_.$saksId'
 import { Route as SaksnummerSaksIdBrevvelgerImport } from './routes/saksnummer_.$saksId.brevvelger'
-import { Route as SaksnummerSaksIdRedigeringTemplateIdImport } from './routes/saksnummer_.$saksId.redigering.$templateId'
+import { Route as SaksnummerSaksIdBrevIndexImport } from './routes/saksnummer_.$saksId.brev.index'
 import { Route as SaksnummerSaksIdBrevvelgerTemplateIdImport } from './routes/saksnummer_.$saksId.brevvelger.$templateId'
+import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_.$saksId.brev.$brevId'
 
 // Create/Update Routes
 
@@ -42,17 +43,23 @@ const SaksnummerSaksIdBrevvelgerRoute = SaksnummerSaksIdBrevvelgerImport.update(
   } as any,
 )
 
-const SaksnummerSaksIdRedigeringTemplateIdRoute =
-  SaksnummerSaksIdRedigeringTemplateIdImport.update({
-    path: '/redigering/$templateId',
-    getParentRoute: () => SaksnummerSaksIdRoute,
-  } as any)
+const SaksnummerSaksIdBrevIndexRoute = SaksnummerSaksIdBrevIndexImport.update({
+  path: '/brev/',
+  getParentRoute: () => SaksnummerSaksIdRoute,
+} as any)
 
 const SaksnummerSaksIdBrevvelgerTemplateIdRoute =
   SaksnummerSaksIdBrevvelgerTemplateIdImport.update({
     path: '/$templateId',
     getParentRoute: () => SaksnummerSaksIdBrevvelgerRoute,
   } as any)
+
+const SaksnummerSaksIdBrevBrevIdRoute = SaksnummerSaksIdBrevBrevIdImport.update(
+  {
+    path: '/brev/$brevId',
+    getParentRoute: () => SaksnummerSaksIdRoute,
+  } as any,
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -74,12 +81,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerImport
       parentRoute: typeof SaksnummerSaksIdImport
     }
+    '/saksnummer/$saksId/brev/$brevId': {
+      preLoaderRoute: typeof SaksnummerSaksIdBrevBrevIdImport
+      parentRoute: typeof SaksnummerSaksIdImport
+    }
     '/saksnummer/$saksId/brevvelger/$templateId': {
       preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerTemplateIdImport
       parentRoute: typeof SaksnummerSaksIdBrevvelgerImport
     }
-    '/saksnummer/$saksId/redigering/$templateId': {
-      preLoaderRoute: typeof SaksnummerSaksIdRedigeringTemplateIdImport
+    '/saksnummer/$saksId/brev/': {
+      preLoaderRoute: typeof SaksnummerSaksIdBrevIndexImport
       parentRoute: typeof SaksnummerSaksIdImport
     }
   }
@@ -93,7 +104,8 @@ export const routeTree = rootRoute.addChildren([
     SaksnummerSaksIdBrevvelgerRoute.addChildren([
       SaksnummerSaksIdBrevvelgerTemplateIdRoute,
     ]),
-    SaksnummerSaksIdRedigeringTemplateIdRoute,
+    SaksnummerSaksIdBrevBrevIdRoute,
+    SaksnummerSaksIdBrevIndexRoute,
   ]),
   SaksnummerIndexRoute,
 ])

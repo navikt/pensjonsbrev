@@ -18,19 +18,17 @@ import { ITEM_LIST, LITERAL, PARAGRAPH, TITLE1, VARIABLE } from "~/types/brevbak
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
-    renderedLetter: {
-      editedLetter: {
-        blocks: blocks,
-        deletedBlocks: [],
-      },
+    redigertBrev: {
       title: "tittel",
       sakspart: { gjelderNavn: "navn", gjelderFoedselsnummer: "123", saksnummer: "456", dokumentDato: "2022-01-01" },
+      blocks: blocks,
       signatur: {
         hilsenTekst: "Mvh",
         navAvsenderEnhet: "enhet",
         saksbehandlerRolleTekst: "Saksbehandler",
         saksbehandlerNavn: "navn",
       },
+      deletedBlocks: [],
     },
     focus: { blockIndex: 0, contentIndex: 0 },
   };
@@ -89,7 +87,7 @@ export function asNew<T extends Identifiable>(c: T): T {
 }
 
 export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex> & { blockIndex: number }): T {
-  const block = from.renderedLetter.editedLetter.blocks[id.blockIndex];
+  const block = from.redigertBrev.blocks[id.blockIndex];
 
   if (id.contentIndex == null) {
     return block as T;

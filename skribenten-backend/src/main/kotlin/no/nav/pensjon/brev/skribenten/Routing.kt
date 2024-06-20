@@ -7,7 +7,7 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.db.initDatabase
-import no.nav.pensjon.brev.skribenten.routes.brevbakerRoute
+import no.nav.pensjon.brev.skribenten.routes.brevmal
 import no.nav.pensjon.brev.skribenten.routes.healthRoute
 import no.nav.pensjon.brev.skribenten.routes.kodeverkRoute
 import no.nav.pensjon.brev.skribenten.routes.meRoute
@@ -40,7 +40,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         authenticate(authConfig.name) {
             setupServiceStatus(safService, penService, pensjonPersonDataService, pdlService, krrService, brevbakerService, brevmetadataService, tjenestebussIntegrasjonService, navansattService)
 
-            brevbakerRoute(brevbakerService)
+            brevmal(brevbakerService)
             kodeverkRoute(penService)
             sakRoute(
                 penService,

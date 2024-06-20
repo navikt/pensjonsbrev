@@ -453,7 +453,7 @@ function SelectEnhet() {
       error={formState.errors.enhetsId?.message?.toString()}
       label="Avsenderenhet"
       onChangeCapture={(element) => {
-        navigate({
+        return navigate({
           search: (s) => ({ ...s, enhetsId: element.currentTarget.value }),
           replace: true,
         });

@@ -13,7 +13,7 @@ import type { LiteralIndex } from "./model";
 
 export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = produce(
   (draft, literalIndex, offset) => {
-    const editedLetter = draft.renderedLetter.editedLetter;
+    const editedLetter = draft.redigertBrev;
     const block = editedLetter.blocks[literalIndex.blockIndex];
     const previousBlock = editedLetter.blocks[literalIndex.blockIndex - 1];
     const content = block.content[literalIndex.contentIndex];

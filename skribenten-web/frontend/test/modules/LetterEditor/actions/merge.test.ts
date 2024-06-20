@@ -13,9 +13,7 @@ describe("LetterEditorActions.merge", () => {
         const state = letter(paragraph(literal("p1")), paragraph(literal("p2")));
         const result = Actions.merge(state, { blockIndex: 0, contentIndex: 0 }, MergeTarget.NEXT);
 
-        expect(result.renderedLetter.editedLetter.blocks).toHaveLength(
-          state.renderedLetter.editedLetter.blocks.length - 1,
-        );
+        expect(result.redigertBrev.blocks).toHaveLength(state.redigertBrev.blocks.length - 1);
       });
 
       test("merge is ignored if the specified block is the last", () => {
@@ -78,9 +76,7 @@ describe("LetterEditorActions.merge", () => {
       test("the specified blocks are merged and the number of blocks reduced", () => {
         const state = letter(paragraph(literal("p1")), paragraph(variable("p2")));
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
-        expect(result.renderedLetter.editedLetter.blocks).toHaveLength(
-          state.renderedLetter.editedLetter.blocks.length - 1,
-        );
+        expect(result.redigertBrev.blocks).toHaveLength(state.redigertBrev.blocks.length - 1);
       });
 
       test("merge is ignored if the specified block is the first", () => {
@@ -169,11 +165,9 @@ describe("LetterEditorActions.merge", () => {
         const result = Actions.merge(withContentAfterList, mergeId, MergeTarget.PREVIOUS);
 
         test("does not merge with previous block", () => {
-          expect(result.renderedLetter.editedLetter.blocks).toHaveLength(
-            withContentAfterList.renderedLetter.editedLetter.blocks.length,
-          );
-          expect(result.renderedLetter.editedLetter.blocks[mergeId.blockIndex - 1]).toBe(
-            withContentAfterList.renderedLetter.editedLetter.blocks[mergeId.blockIndex - 1],
+          expect(result.redigertBrev.blocks).toHaveLength(withContentAfterList.redigertBrev.blocks.length);
+          expect(result.redigertBrev.blocks[mergeId.blockIndex - 1]).toBe(
+            withContentAfterList.redigertBrev.blocks[mergeId.blockIndex - 1],
           );
         });
 

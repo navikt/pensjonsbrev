@@ -5,16 +5,16 @@ import React, { useState } from "react";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { RenderLetterResponse } from "~/types/brevbakerTypes";
+import type { EditedLetter } from "~/types/brevbakerTypes";
 
 import exampleLetter1Json from "./example-letter-1.json";
 import { LetterEditor } from "./LetterEditor";
 
-const exampleLetter1 = exampleLetter1Json as RenderLetterResponse;
+const exampleLetter1 = exampleLetter1Json as EditedLetter;
 
-function EditorWithState({ initial }: { initial: RenderLetterResponse }) {
-  const [editorState, setEditorState] = useState<LetterEditorState | undefined>(Actions.create(initial));
-  return <>{editorState && <LetterEditor editorState={editorState} setEditorState={setEditorState} />}</>;
+function EditorWithState({ initial }: { initial: EditedLetter }) {
+  const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(initial));
+  return <LetterEditor editorState={editorState} setEditorState={setEditorState} />;
 }
 
 describe("<LetterEditor />", () => {

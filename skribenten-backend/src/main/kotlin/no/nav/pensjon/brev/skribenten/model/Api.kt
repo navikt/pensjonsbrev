@@ -8,14 +8,16 @@ import no.nav.pensjon.brev.skribenten.services.LetterMetadata
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 
 object Api {
+    class GeneriskBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
+
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbar,
-        val saksbehandlerValg: BrevbakerBrevdata,
+        val saksbehandlerValg: GeneriskBrevdata,
     )
 
     data class OppdaterBrevRequest(
         val brevkode: Brevkode.Redigerbar,
-        val saksbehandlerValg: BrevbakerBrevdata,
+        val saksbehandlerValg: GeneriskBrevdata,
         val redigertBrev: Edit.Letter,
     )
 

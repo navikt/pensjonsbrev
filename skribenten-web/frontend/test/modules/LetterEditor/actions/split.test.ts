@@ -12,7 +12,7 @@ describe("LetterEditorActions.split", () => {
       const state = letter(paragraph(variable("var1"), literal("lit1"), variable("var2")));
       const splitId = { blockIndex: 0, contentIndex: 1 };
       const result = Actions.split(state, splitId, 2);
-      const resultBlocks = result.renderedLetter.editedLetter.blocks;
+      const resultBlocks = result.redigertBrev.blocks;
 
       expect(resultBlocks).toHaveLength(2);
 
@@ -35,7 +35,7 @@ describe("LetterEditorActions.split", () => {
       const state = letter(paragraph(literal("lit1")));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, 2);
 
-      expect(result.renderedLetter.editedLetter.blocks).not.toBe(state.renderedLetter.editedLetter.blocks);
+      expect(result.redigertBrev.blocks).not.toBe(state.redigertBrev.blocks);
     });
 
     test("when the offset is at the end of the current content, the new block will have one content element with an empty string", () => {
@@ -44,9 +44,9 @@ describe("LetterEditorActions.split", () => {
       const offset = select<TextContent>(state, splitId).text.length;
 
       const result = Actions.split(state, splitId, offset);
-      const resultBlocks = result.renderedLetter.editedLetter.blocks;
+      const resultBlocks = result.redigertBrev.blocks;
 
-      expect(resultBlocks.length).toBe(state.renderedLetter.editedLetter.blocks.length + 1);
+      expect(resultBlocks.length).toBe(state.redigertBrev.blocks.length + 1);
       expect(resultBlocks[splitId.blockIndex + 1].content.length).toBe(1);
       expect(select<TextContent>(result, { blockIndex: splitId.blockIndex + 1, contentIndex: 0 }).text).toBe("");
 
@@ -71,7 +71,7 @@ describe("LetterEditorActions.split", () => {
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 1 }, 0);
 
       const resultContent = select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 });
-      expect(result.renderedLetter.editedLetter.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks).toHaveLength(2);
       expect(resultContent.id).toStrictEqual(origContent.id);
       expect(resultContent.text).toStrictEqual(origContent.text);
       expect(resultContent.editedText).toStrictEqual("");
@@ -81,7 +81,7 @@ describe("LetterEditorActions.split", () => {
       const state = letter(paragraph(variable("var1"), variable("var2"), literal("lit1")));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 2 }, 4);
 
-      expect(result.renderedLetter.editedLetter.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks).toHaveLength(2);
       const newContent = select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 });
       expect(select<ParagraphBlock>(result, { blockIndex: 1 }).id).toBeNull();
       expect(newContent.id).toBeNull();
@@ -92,7 +92,7 @@ describe("LetterEditorActions.split", () => {
       const state = letter(paragraph(variable("var1"), variable("var2"), literal("lit1")));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 2 }, 2);
 
-      expect(result.renderedLetter.editedLetter.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks).toHaveLength(2);
       expect(select<ParagraphBlock>(result, { blockIndex: 1 }).id).toBeNull();
       expect(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }).id).toBeNull();
     });
@@ -101,7 +101,7 @@ describe("LetterEditorActions.split", () => {
       const state = letter(paragraph(variable("var1"), variable("var2"), literal("lit1")));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 2 }, 0);
 
-      expect(result.renderedLetter.editedLetter.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks).toHaveLength(2);
       const newContent = select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 });
       expect(select<ParagraphBlock>(result, { blockIndex: 1 }).id).toBeNull();
       expect(newContent.id).toEqual(select<TextContent>(state, { blockIndex: 0, contentIndex: 2 }).id);

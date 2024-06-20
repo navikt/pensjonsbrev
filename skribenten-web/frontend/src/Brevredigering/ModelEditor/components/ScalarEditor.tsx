@@ -1,10 +1,10 @@
 import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react";
 import { Controller, get, useFormContext } from "react-hook-form";
 
-import { convertFieldToReadableLabel } from "~/Brevredigering/ModelEditor/components/utils";
+import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
 import type { TScalar } from "~/types/brevbakerTypes";
-import { formatDateWithoutTimezone } from "~/utils/dateUtils";
+import { formatDateWithoutTimezone, parseDate } from "~/utils/dateUtils";
 
 export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: TScalar }) => {
   const {
@@ -55,10 +55,14 @@ function ControlledDatePicker({ field }: { field: string }) {
 }
 function DatePickerEditor({ field, onChange }: { field: string; onChange: (newDate: string) => void }) {
   const {
-    formState: { errors },
+    formState: { errors, defaultValues },
   } = useFormContext();
+  // For some reason form defaultValues does not work with datepicker, and we have to pick it ourselves
+  const defaultValue = getFieldDefaultValue(defaultValues, field);
 
   const datepicker = useDatepicker({
+    inputFormat: "yyyy-MM-dd",
+    defaultSelected: defaultValue ? parseDate(defaultValue) : undefined,
     onDateChange: (date) => {
       onChange(date ? formatDateWithoutTimezone(date) : "");
     },
