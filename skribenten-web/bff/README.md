@@ -44,3 +44,12 @@ docker-compose up -d --build frontend
    1. Etter redirect vil du få en feilmelding, det er forventet.
 3. Gå så til `localhost:8080/vite-on`. Frontenden skal nå være tilgjengelig med API-kall og hele pakka.
 
+### Valg av miljø som kjøres mot
+Frontend kan targete lokalt, eller mot q2. 
+
+#### For targeting lokalt
+Se i [se i root readme](../../README.md) for oppstart av applikasjonen lokalt. 
+
+#### For targeting Q2
+Gå til https://pensjon-skribenten-web-q2.intern.dev.nav.no/vite-on
+
