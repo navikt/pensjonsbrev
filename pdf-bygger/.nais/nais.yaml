@@ -36,8 +36,8 @@ spec:
       runtime: java
   resources:
     requests:
-      cpu: "2"
-      memory: "2048Mi"
+      cpu: "100m"
+      memory: "512Mi"
     limits:
       memory: "8192Mi"
   accessPolicy:
