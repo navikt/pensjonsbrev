@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.mapBrev
@@ -127,7 +128,7 @@ class BrevredigeringServiceTest {
                                 ),
                                 vergeNavn = null,
                                 signerendeSaksbehandlere = null,
-                            ), brevdata = EmptyBrevdata
+                            ), brevdata = Api.GeneriskBrevdata()
                         ),
                         error = null
                     )
@@ -165,7 +166,7 @@ class BrevredigeringServiceTest {
             brevbakerMock.renderLetter(
                 any(),
                 eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
-                eq(GeneriskRedigerbarBrevdata(EmptyBrevdata, nyeValg)),
+                eq(GeneriskRedigerbarBrevdata(Api.GeneriskBrevdata(), nyeValg)),
                 any()
             )
         } returns ServiceResult.Ok(freshRender)
