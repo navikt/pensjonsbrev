@@ -31,7 +31,7 @@ export default function BrevmalForDoksys({ letterTemplate }: { letterTemplate: L
 
   const { reset } = orderLetterMutation;
   useEffect(() => {
-    //reset();
+    reset();
   }, [templateId, reset]);
 
   const methods = useForm<z.infer<typeof baseOrderLetterValidationSchema>>({
