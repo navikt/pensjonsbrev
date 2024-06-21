@@ -16,8 +16,8 @@ import { Route as SaksnummerIndexImport } from './routes/saksnummer.index'
 import { Route as SaksnummerSaksIdImport } from './routes/saksnummer_/$saksId/route'
 import { Route as SaksnummerSaksIdBrevvelgerImport } from './routes/saksnummer_/$saksId/brevvelger/route'
 import { Route as SaksnummerSaksIdBrevIndexImport } from './routes/saksnummer_/$saksId/brev.index'
-import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_/$saksId/brev.$brevId'
 import { Route as SaksnummerSaksIdBrevvelgerTemplateIdImport } from './routes/saksnummer_/$saksId/brevvelger/$templateId/route'
+import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_/$saksId/brev.$brevId'
 
 // Create/Update Routes
 
@@ -36,7 +36,8 @@ const SaksnummerSaksIdRoute = SaksnummerSaksIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const SaksnummerSaksIdBrevvelgerRoute = SaksnummerSaksIdBrevvelgerImport.update({
+const SaksnummerSaksIdBrevvelgerRoute = SaksnummerSaksIdBrevvelgerImport.update(
+  {
     path: '/brevvelger',
     getParentRoute: () => SaksnummerSaksIdRoute,
   } as any)
@@ -59,7 +60,6 @@ const SaksnummerSaksIdBrevBrevIdRoute = SaksnummerSaksIdBrevBrevIdImport.update(
   } as any,
 )
 
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -80,13 +80,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerImport
       parentRoute: typeof SaksnummerSaksIdImport
     }
-    '/saksnummer/$saksId/brevvelger/$templateId': {
-      preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerTemplateIdImport
-      parentRoute: typeof SaksnummerSaksIdBrevvelgerImport
-    }
     '/saksnummer/$saksId/brev/$brevId': {
       preLoaderRoute: typeof SaksnummerSaksIdBrevBrevIdImport
       parentRoute: typeof SaksnummerSaksIdImport
+    }
+    '/saksnummer/$saksId/brevvelger/$templateId': {
+      preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerTemplateIdImport
+      parentRoute: typeof SaksnummerSaksIdBrevvelgerImport
     }
     '/saksnummer/$saksId/brev/': {
       preLoaderRoute: typeof SaksnummerSaksIdBrevIndexImport
