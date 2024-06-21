@@ -1,3 +1,5 @@
+import type { Nullable } from "./Nullable";
+
 export type SakDto = {
   readonly saksId: number;
   readonly foedselsnr: string;
@@ -66,15 +68,15 @@ export type BaseLetterRequest = {
   brevkode: string;
   spraak: SpraakKode;
   enhetsId: string;
-  vedtaksId?: string;
+  vedtaksId: Nullable<string>;
 };
 
 export type OrderDoksysLetterRequest = BaseLetterRequest;
 
 export type OrderExstreamLetterRequest = BaseLetterRequest & {
   isSensitive: boolean;
-  idTSSEkstern?: string;
-  brevtittel?: string;
+  idTSSEkstern: Nullable<string>;
+  brevtittel: Nullable<string>;
 };
 
 export type OrderEblankettRequest = Omit<BaseLetterRequest, "spraak"> & {

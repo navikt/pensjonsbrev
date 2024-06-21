@@ -4,11 +4,12 @@ import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 
 import { orderExstreamLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
-import { type LetterMetadata, type OrderExstreamLetterRequest, SpraakKode } from "~/types/apiTypes";
+import type { SpraakKode } from "~/types/apiTypes";
+import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/apiTypes";
 
 import Adresse from "./-Adresse";
 import BestillOgRedigerButton from "./-BestillOgRedigerButton";
@@ -16,23 +17,8 @@ import LetterTemplateHeading from "./-LetterTemplate";
 import SelectEnhet from "./-SelectEnhet";
 import SelectLanguage from "./-SelectLanguage";
 import SelectSensitivity from "./-SelectSensitivity";
+import { byggExstreamOnSubmitRequest, createValidationSchema } from "./-TemplateUtils";
 import { Route } from "./route";
-
-export const baseOrderLetterValidationSchema = z.object({
-  spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
-  enhetsId: z.string().min(1, "Obligatorisk"),
-});
-
-const exstreamOrderLetterValidationSchema = baseOrderLetterValidationSchema.extend({
-  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
-  brevtittel: z.string().optional(),
-  enhetsId: z.string().min(1, "Obligatorisk"),
-});
-
-const exstreamWithTitleOrderLetterValidationSchema = exstreamOrderLetterValidationSchema.extend({
-  brevtittel: z.string().min(1, "Du må ha tittel for dette brevet"),
-  enhetsId: z.string().min(1, "Obligatorisk"),
-});
 
 export default function BrevmalForExstream({
   letterTemplate,
@@ -51,21 +37,24 @@ export default function BrevmalForExstream({
     },
   });
 
-  const validationSchema = letterTemplate.redigerbarBrevtittel
-    ? exstreamWithTitleOrderLetterValidationSchema
-    : exstreamOrderLetterValidationSchema;
-
   const sorterteSpråk = useMemo(() => {
     return letterTemplate.spraak.toSorted();
   }, [letterTemplate.spraak]);
 
   const defaultValues = useMemo(() => {
     return {
+      /*
+        TODO - bug - react hook form håndterer dårlig hvis et felt er undefined som default value. når man resetter formet etter å ha endret
+        template vil verdien som var saksbehandler hadde valgt henge igjen, selv om selve input feltet viser at det er tomt
+        Dette skjer ut til å skje kun første gangen man endrer template
+      */
       isSensitive: undefined,
       brevtittel: "",
       spraak: preferredLanguage && sorterteSpråk.includes(preferredLanguage) ? preferredLanguage : sorterteSpråk[0],
     };
   }, [preferredLanguage, sorterteSpråk]);
+
+  const validationSchema = createValidationSchema(letterTemplate);
 
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,
@@ -86,20 +75,21 @@ export default function BrevmalForExstream({
       <Divider />
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit((submittedValues) => {
-            const orderLetterRequest = {
-              brevkode: letterTemplate.id,
-              vedtaksId,
-              idTSSEkstern,
-              ...submittedValues,
-            };
-            return orderLetterMutation.mutate(orderLetterRequest);
-          })}
+          onSubmit={methods.handleSubmit((submittedValues) =>
+            orderLetterMutation.mutate(
+              byggExstreamOnSubmitRequest({
+                template: letterTemplate,
+                idTSSEkstern: idTSSEkstern,
+                vedtaksId: vedtaksId,
+                formValues: submittedValues,
+              }),
+            ),
+          )}
         >
           <VStack gap="8">
             <Adresse />
             <SelectEnhet />
-            {letterTemplate.redigerbarBrevtittel ? (
+            {letterTemplate.redigerbarBrevtittel && (
               <TextField
                 {...methods.register("brevtittel")}
                 autoComplete="on"
@@ -109,8 +99,11 @@ export default function BrevmalForExstream({
                 label="Endre tittel"
                 size="medium"
               />
-            ) : undefined}
-            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={sorterteSpråk} />
+            )}
+            {/* Utfylling av språk vil vi ikke gjøre dersom templaten er 'Notat' */}
+            {letterTemplate.id !== "PE_IY_03_156" && (
+              <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={sorterteSpråk} />
+            )}
             <SelectSensitivity />
           </VStack>
 
