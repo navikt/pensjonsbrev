@@ -142,6 +142,6 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
 }
 
 data class BrevdataResponse(val data: Data?, val error: String? = null) {
-    data class Data(val felles: Felles, val brevdata: BrevbakerBrevdata)
+    data class Data(val felles: Felles, val brevdata: Api.GeneriskBrevdata)
 }
 
