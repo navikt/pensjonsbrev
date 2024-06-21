@@ -13,11 +13,11 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as SaksnummerIndexImport } from './routes/saksnummer.index'
-import { Route as SaksnummerSaksIdImport } from './routes/saksnummer_.$saksId'
-import { Route as SaksnummerSaksIdBrevvelgerImport } from './routes/saksnummer_.$saksId.brevvelger'
-import { Route as SaksnummerSaksIdBrevIndexImport } from './routes/saksnummer_.$saksId.brev.index'
-import { Route as SaksnummerSaksIdBrevvelgerTemplateIdImport } from './routes/saksnummer_.$saksId.brevvelger.$templateId'
-import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_.$saksId.brev.$brevId'
+import { Route as SaksnummerSaksIdImport } from './routes/saksnummer_/$saksId/route'
+import { Route as SaksnummerSaksIdBrevvelgerImport } from './routes/saksnummer_/$saksId/brevvelger/route'
+import { Route as SaksnummerSaksIdBrevIndexImport } from './routes/saksnummer_/$saksId/brev.index'
+import { Route as SaksnummerSaksIdBrevvelgerTemplateIdImport } from './routes/saksnummer_/$saksId/brevvelger/$templateId/route'
+import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_/$saksId/brev.$brevId'
 
 // Create/Update Routes
 
