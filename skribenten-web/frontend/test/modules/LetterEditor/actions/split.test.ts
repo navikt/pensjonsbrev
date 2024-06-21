@@ -1,7 +1,8 @@
 import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import type { Content, ItemList, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
+import { isEmptyContent } from "~/Brevredigering/LetterEditor/model/utils";
+import type { Content, Item, ItemList, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
 
 import { asNew, item, itemList, letter, literal, paragraph, select, variable } from "../utils";
@@ -65,18 +66,6 @@ describe("LetterEditorActions.split", () => {
       expect(result).toBe(state);
     });
 
-    test("leaves an empty literal after an itemList", () => {
-      const state = letter(paragraph(itemList(item(literal("item 1 literal"))), literal("paragraph literal")));
-      const origContent = select<LiteralValue>(state, { blockIndex: 0, contentIndex: 1 });
-      const result = Actions.split(state, { blockIndex: 0, contentIndex: 1 }, 0);
-
-      const resultContent = select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 });
-      expect(result.redigertBrev.blocks).toHaveLength(2);
-      expect(resultContent.id).toStrictEqual(origContent.id);
-      expect(resultContent.text).toStrictEqual(origContent.text);
-      expect(resultContent.editedText).toStrictEqual("");
-    });
-
     test("when splitting at the very end of a block the new block and content gets no ID (new)", () => {
       const state = letter(paragraph(variable("var1"), variable("var2"), literal("lit1")));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 2 }, 4);
@@ -121,6 +110,71 @@ describe("LetterEditorActions.split", () => {
 
       expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).editedText).toEqual("new ");
       expect(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }).editedText).toEqual("text");
+    });
+
+    test("splitting at the end of a content not last in block will not result in a block with an empty content as first element", () => {
+      const state = letter(paragraph(literal("heisann"), itemList(item(literal("item 1")))));
+
+      const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, "heisann".length);
+
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(1);
+      expect(select<ParagraphBlock>(result, { blockIndex: 1 }).content).toHaveLength(1);
+      expect(select<ParagraphBlock>(result, { blockIndex: 1, contentIndex: 0 })).toSatisfy(
+        (c: LiteralValue) => !isEmptyContent(c),
+      );
+    });
+
+    test("when splitting a block the content moved to the next block is marked as deleted", () => {
+      const state = letter(paragraph(literal("before split"), literal("after split")));
+
+      const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, "before split".length);
+
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([
+        select<LiteralValue>(state, { blockIndex: 0, contentIndex: 1 }).id,
+      ]);
+    });
+
+    test("can split a block at offset 0 when not at the first content", () => {
+      const state = letter(paragraph(literal("")), paragraph(variable("before split"), literal("after split")));
+
+      const result = Actions.split(state, { blockIndex: 1, contentIndex: 1 }, 0);
+
+      expect(result.redigertBrev.blocks).toHaveLength(3);
+    });
+
+    test("when splitting at the very beginning of a block then an new block should be inserted at cursor", () => {
+      const state = letter(paragraph(literal("begynnelse av block"), variable("slutten")));
+
+      const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, 0);
+
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+
+      const newBlock = select<ParagraphBlock>(result, { blockIndex: 0 });
+      expect(newBlock.id).toBeNull();
+      expect(newBlock.deletedContent).toHaveLength(0);
+
+      const movedExistingBlock = select<ParagraphBlock>(result, { blockIndex: 1 });
+      expect(movedExistingBlock.id).toStrictEqual(select<ParagraphBlock>(state, { blockIndex: 0 }).id);
+      expect(movedExistingBlock.deletedContent).toHaveLength(0);
+    });
+
+    test("cannot split from an empty block", () => {
+      const state = letter(paragraph(literal("ikke tom"), itemList(item(literal("ikke tom")))), paragraph(literal("")));
+
+      const result = Actions.split(state, { blockIndex: 1, contentIndex: 0 }, 0);
+
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+    });
+
+    test("when splitting from beginning of block then focus shifts with the block", () => {
+      const state = letter(paragraph(literal("ikke tom")));
+
+      const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, 0);
+
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.focus).toStrictEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
     });
   });
 
@@ -238,5 +292,55 @@ describe("LetterEditorActions.split", () => {
       expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
       expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(2);
     });
+
+    test("splitting from the last (empty) item in itemlist results in content in block and another split results in new block", () => {
+      const state = letter(paragraph(itemList(item(literal("item1")), item(literal("")))));
+
+      const splitFromEmptyItem = Actions.split(
+        state,
+        { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 },
+        0,
+      );
+      expect(splitFromEmptyItem.redigertBrev.blocks).toHaveLength(1);
+      expect(select<ParagraphBlock>(splitFromEmptyItem, { blockIndex: 0 }).content).toHaveLength(2);
+      expect(select<ItemList>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
+      expect(select<LiteralValue>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 })).toStrictEqual({
+        id: null,
+        type: LITERAL,
+        text: "",
+        editedText: "",
+      });
+
+      const splitFromEmptyLastContent = Actions.split(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 }, 0);
+      expect(splitFromEmptyLastContent.redigertBrev.blocks).toHaveLength(2);
+      expect(select<ParagraphBlock>(splitFromEmptyLastContent, { blockIndex: 0 }).content).toHaveLength(1);
+      expect(select<ParagraphBlock>(splitFromEmptyLastContent, { blockIndex: 1 }).content).toHaveLength(1);
+      expect(select<LiteralValue>(splitFromEmptyLastContent, { blockIndex: 1, contentIndex: 0 })).toStrictEqual({
+        id: null,
+        type: LITERAL,
+        text: "",
+        editedText: "",
+      });
+    });
+
+    test("splitting from last new empty item in itemlist results in in content after itemlist", () => {
+      const state = letter(
+        paragraph(itemList(item(literal("item1")), asNew(item(literal("aa"))), asNew(item(literal("​"))))),
+      );
+
+      const result = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 2, itemContentIndex: 0 }, 0);
+      expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(2);
+    });
+
+    test("splitting at the beginning an item keeps id", () => {
+      const item1 = item(literal("hei"), variable("joda"));
+      const state = letter(paragraph(itemList(item1)));
+
+      const result = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }, 0);
+      expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }).id).toBeNull();
+      expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 1 }).id).toStrictEqual(item1.id);
+    });
+
+    test("merging");
   });
 });

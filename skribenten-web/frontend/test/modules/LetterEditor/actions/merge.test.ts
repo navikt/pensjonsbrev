@@ -3,8 +3,9 @@ import { describe, expect, test } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import type { AnyBlock, Item, ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
+import { LITERAL } from "~/types/brevbakerTypes";
 
-import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
+import { asNew, item, itemList, letter, literal, paragraph, select, variable, withDeleted } from "../utils";
 
 describe("LetterEditorActions.merge", () => {
   describe("at literal", () => {
@@ -70,6 +71,20 @@ describe("LetterEditorActions.merge", () => {
           select<AnyBlock>(state, { blockIndex: mergeId.blockIndex + 1 }).id,
         );
       });
+
+      test("updates deletedContent", () => {
+        const movedContent = [literal("third"), variable("fourth")];
+        const state = letter(
+          withDeleted(
+            paragraph(literal("first"), variable("second")),
+            movedContent.map((c) => c.id!),
+          ),
+          asNew(paragraph(...movedContent)),
+        );
+
+        const result = Actions.merge(state, { blockIndex: 0, contentIndex: 1 }, MergeTarget.NEXT);
+        expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toHaveLength(0);
+      });
     });
 
     describe("previous", () => {
@@ -126,6 +141,20 @@ describe("LetterEditorActions.merge", () => {
         expect(select<AnyBlock>(result, { blockIndex: 0 }).id).toEqual(select<AnyBlock>(state, { blockIndex: 0 }).id);
       });
 
+      test("updates deletedContent", () => {
+        const movedContent = [literal("third"), variable("fourth")];
+        const state = letter(
+          withDeleted(
+            paragraph(literal("first"), variable("second")),
+            movedContent.map((c) => c.id!),
+          ),
+          asNew(paragraph(...movedContent)),
+        );
+
+        const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+        expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toHaveLength(0);
+      });
+
       describe("Update focus", () => {
         test("when previous block is empty focus is stolen to beginning of the replaced block", () => {
           const state = letter(paragraph(), paragraph(literal("lit1"), variable("var1")));
@@ -148,6 +177,26 @@ describe("LetterEditorActions.merge", () => {
 
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
           expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 0 });
+        });
+
+        test("when merging from empty block with previous focus is correctly set to the end of previous", () => {
+          const state = letter(
+            paragraph(literal("first"), variable("second"), literal("third")),
+            paragraph(literal("")),
+          );
+
+          const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(3);
+          expect(result.focus).toStrictEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: "third".length });
+        });
+
+        test("merging from empty block when last content of previous is variable keeps the empty literal", () => {
+          const state = letter(paragraph(literal("first"), variable("second")), paragraph(literal("")));
+
+          const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+          expect(result.redigertBrev.blocks).toHaveLength(1);
+          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(3);
+          expect(result.redigertBrev.blocks[0]?.content?.at(-1)?.type).toStrictEqual(LITERAL);
         });
       });
 
@@ -196,6 +245,19 @@ describe("LetterEditorActions.merge", () => {
             cursorPosition: "Det blir ".length,
             itemIndex: 0,
             itemContentIndex: 0,
+          });
+        });
+
+        test("uses edited text to calculate offset", () => {
+          const state = letter(paragraph(itemList(item(literal("item 1", ""))), literal("")));
+
+          const result = Actions.merge(state, { blockIndex: 0, contentIndex: 1 }, MergeTarget.PREVIOUS);
+          expect(result.focus).toStrictEqual({
+            blockIndex: 0,
+            contentIndex: 0,
+            itemIndex: 0,
+            itemContentIndex: 0,
+            cursorPosition: 0,
           });
         });
       });

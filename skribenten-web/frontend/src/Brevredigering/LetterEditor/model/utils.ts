@@ -1,5 +1,6 @@
 import { produce } from "immer";
 
+import { text } from "~/Brevredigering/LetterEditor/actions/common";
 import type { AnyBlock, Content, Item, TextContent } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
@@ -23,11 +24,9 @@ export function getMergeIds(sourceId: number, target: MergeTarget): [number, num
 
 export function isEmptyContent(content: Content) {
   switch (content.type) {
-    case VARIABLE: {
-      return content.text.trim().length === 0;
-    }
+    case VARIABLE:
     case LITERAL: {
-      return (content.editedText ?? content.text).trim().length === 0;
+      return text(content).trim().replaceAll("​", "").length === 0;
     }
     case ITEM_LIST: {
       return content.items.length === 1 && isEmptyItem(content.items[0]);

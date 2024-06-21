@@ -96,6 +96,7 @@ export type Block = Identifiable & {
   readonly type: string;
   readonly locked?: boolean;
   readonly editable?: boolean;
+  readonly deletedContent: number[];
 };
 
 export const PARAGRAPH = "PARAGRAPH";

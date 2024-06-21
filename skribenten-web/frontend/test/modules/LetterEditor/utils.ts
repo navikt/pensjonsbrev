@@ -39,7 +39,15 @@ export function paragraph(...content: Content[]): ParagraphBlock {
     id: randomInt(1000),
     editable: true,
     type: PARAGRAPH,
+    deletedContent: [],
     content,
+  };
+}
+
+export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number[]): T {
+  return {
+    ...block,
+    deletedContent,
   };
 }
 
@@ -48,6 +56,7 @@ export function title(...content: TextContent[]): Title1Block {
     id: randomInt(1000),
     editable: true,
     type: TITLE1,
+    deletedContent: [],
     content,
   };
 }
