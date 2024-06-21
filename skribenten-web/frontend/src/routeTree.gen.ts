@@ -31,33 +31,33 @@ const SaksnummerIndexRoute = SaksnummerIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const SaksnummerSaksIdRouteRoute = SaksnummerSaksIdRouteImport.update({
+const SaksnummerSaksIdRoute = SaksnummerSaksIdRouteImport.update({
   path: '/saksnummer/$saksId',
   getParentRoute: () => rootRoute,
 } as any)
 
-const SaksnummerSaksIdBrevvelgerRouteRoute =
+const SaksnummerSaksIdBrevvelgerRoute =
   SaksnummerSaksIdBrevvelgerRouteImport.update({
     path: '/brevvelger',
-    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+    getParentRoute: () => SaksnummerSaksIdRoute,
   } as any)
 
 const SaksnummerSaksIdBrevIndexRoute = SaksnummerSaksIdBrevIndexImport.update({
   path: '/brev/',
-  getParentRoute: () => SaksnummerSaksIdRouteRoute,
+  getParentRoute: () => SaksnummerSaksIdRoute,
 } as any)
 
 const SaksnummerSaksIdBrevBrevIdRoute = SaksnummerSaksIdBrevBrevIdImport.update(
   {
     path: '/brev/$brevId',
-    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+    getParentRoute: () => SaksnummerSaksIdRoute,
   } as any,
 )
 
-const SaksnummerSaksIdBrevvelgerTemplateIdRouteRoute =
+const SaksnummerSaksIdBrevvelgerTemplateIdRoute =
   SaksnummerSaksIdBrevvelgerTemplateIdRouteImport.update({
     path: '/$templateId',
-    getParentRoute: () => SaksnummerSaksIdBrevvelgerRouteRoute,
+    getParentRoute: () => SaksnummerSaksIdBrevvelgerRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -99,9 +99,9 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  SaksnummerSaksIdRouteRoute.addChildren([
-    SaksnummerSaksIdBrevvelgerRouteRoute.addChildren([
-      SaksnummerSaksIdBrevvelgerTemplateIdRouteRoute,
+  SaksnummerSaksIdRoute.addChildren([
+    SaksnummerSaksIdBrevvelgerRoute.addChildren([
+      SaksnummerSaksIdBrevvelgerTemplateIdRoute,
     ]),
     SaksnummerSaksIdBrevBrevIdRoute,
     SaksnummerSaksIdBrevIndexRoute,
