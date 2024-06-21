@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { orderExstreamLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
+import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
 import { type LetterMetadata, type OrderExstreamLetterRequest, SpraakKode } from "~/types/apiTypes";
 
 import Adresse from "./-Adresse";
@@ -37,6 +38,7 @@ const exstreamWithTitleOrderLetterValidationSchema = exstreamOrderLetterValidati
 export default function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, saksId } = Route.useParams();
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
+  const preferredLanguage = usePreferredLanguage(saksId, vedtaksId);
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
@@ -49,20 +51,24 @@ export default function BrevmalForExstream({ letterTemplate }: { letterTemplate:
     ? exstreamWithTitleOrderLetterValidationSchema
     : exstreamOrderLetterValidationSchema;
 
+  const defaultValues = {
+    isSensitive: undefined,
+    brevtittel: "",
+    spraak: preferredLanguage,
+  };
+
   const methods = useForm<z.infer<typeof validationSchema>>({
-    defaultValues: {
-      isSensitive: undefined,
-      brevtittel: "",
-    },
+    defaultValues: defaultValues,
     resolver: zodResolver(validationSchema),
   });
 
   const { reset: resetMutation } = orderLetterMutation;
   const { reset: resetForm } = methods;
   useEffect(() => {
-    resetForm();
+    //ved template endring vil vi resette formet - men beholde preferredLanguage hvis den finnes
+    resetForm(defaultValues);
     resetMutation();
-  }, [templateId, resetMutation, resetForm]);
+  }, [templateId]);
 
   return (
     <>
