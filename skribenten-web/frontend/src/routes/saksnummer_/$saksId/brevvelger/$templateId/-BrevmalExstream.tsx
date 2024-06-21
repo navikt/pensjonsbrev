@@ -68,7 +68,7 @@ export default function BrevmalForExstream({ letterTemplate }: { letterTemplate:
     //ved template endring vil vi resette formet - men beholde preferredLanguage hvis den finnes
     resetForm(defaultValues);
     resetMutation();
-  }, [templateId]);
+  }, [templateId, resetMutation, resetForm]);
 
   return (
     <>
