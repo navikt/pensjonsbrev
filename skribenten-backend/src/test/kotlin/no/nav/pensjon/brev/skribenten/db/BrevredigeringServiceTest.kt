@@ -91,19 +91,20 @@ class BrevredigeringServiceTest {
     )
 
     @Test
-    fun `non existing brevredingering returns null`() {
-        assertNull(service.hentBrev(99, ::mapBrev))
+    fun `non existing brevredingering returns null`() = runBlocking {
+        assertThat(service.hentBrev(callMock, sak, 99, ::mapBrev)).isInstanceOfSatisfying(ServiceResult.Error::class.java) {
+            assertThat(it.statusCode).isEqualTo(HttpStatusCode.NotFound)
+        }
     }
 
     @Test
     fun `can create and fetch brevredigering`() = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
-        val result =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, ::mapBrev).resultOrNull()!!
+        val result = service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, ::mapBrev)
 
-        assertEquals(result, service.hentBrev(result.info.id, ::mapBrev))
-        assertEquals(result.info.brevkode, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)
-        assertEquals(result.redigertBrev, letter.toEdit())
+        assertEquals(result, service.hentBrev(callMock, sak, result.resultOrNull()!!.info.id, ::mapBrev))
+        assertEquals(result.resultOrNull()?.info?.brevkode, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)
+        assertEquals(result.resultOrNull()?.redigertBrev, letter.toEdit())
     }
 
     @Test
@@ -139,18 +140,20 @@ class BrevredigeringServiceTest {
             service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, ::mapBrev).resultOrNull()!!
 
         val nyeValg = GeneriskBrevData().apply { put("valg2", true) }
-        val oppdatert =
-            service.oppdaterBrev(
-                callMock,
-                original.info.id,
-                Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
-                nyeValg,
-                letter.toEdit(),
-                ::mapBrev
-            )
-                .resultOrNull()!!
+        val oppdatert = service.oppdaterBrev(
+            callMock,
+            sak,
+            original.info.id,
+            nyeValg,
+            letter.toEdit(),
+            ::mapBrev,
+        ).resultOrNull()!!
 
-        assertEquals(oppdatert, service.hentBrev(original.info.id, ::mapBrev))
+        assertThat(service.hentBrev(callMock, sak, original.info.id, ::mapBrev))
+            .isInstanceOfSatisfying(ServiceResult.Ok::class.java) {
+                assertThat(it.result).isEqualTo(oppdatert)
+            }
+
         assertNotEquals(original.saksbehandlerValg, oppdatert.saksbehandlerValg)
     }
 
@@ -174,11 +177,11 @@ class BrevredigeringServiceTest {
         val oppdatert =
             service.oppdaterBrev(
                 callMock,
+                sak,
                 original.info.id,
-                Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
                 nyeValg,
                 letter.toEdit(),
-                ::mapBrev
+                ::mapBrev,
             )
                 .resultOrNull()!!
 
@@ -190,7 +193,7 @@ class BrevredigeringServiceTest {
     fun `cannot update non-existing brevredigering`() = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val oppdatert =
-            service.oppdaterBrev(callMock, 1099, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, letter.toEdit(), ::mapBrev)
+            service.oppdaterBrev(callMock, sak, 1099, saksbehandlerValg, letter.toEdit(), ::mapBrev)
                 .resultOrNull()
 
         assertNull(oppdatert)
@@ -217,7 +220,7 @@ class BrevredigeringServiceTest {
 
 
         val result = withTimeout(10.seconds) {
-            service.oppdaterBrev(callMock, 2098, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, letter.toEdit(), ::mapBrev)
+            service.oppdaterBrev(callMock, sak, 2098, saksbehandlerValg, letter.toEdit(), ::mapBrev)
         }
 
         assertThat(result).isInstanceOf(ServiceResult.Error::class.java)
@@ -227,17 +230,23 @@ class BrevredigeringServiceTest {
     @Test
     fun `can delete brevredigering`(): Unit = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
-        val result =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, ::mapBrev).resultOrNull()!!
+        val result = service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, saksbehandlerValg, ::mapBrev)
 
-        assertEquals(result, service.hentBrev(result.info.id, ::mapBrev))
-        assertTrue(service.slettBrev(result.info.id))
-        assertNull(service.hentBrev(result.info.id, ::mapBrev))
+        assertEquals(result, service.hentBrev(callMock, sak, result.resultOrNull()!!.info.id, ::mapBrev))
+        assertTrue(service.slettBrev(result.resultOrNull()!!.info.id))
+        assertThat(service.hentBrev(callMock, sak, result.resultOrNull()!!.info.id, ::mapBrev))
+            .isInstanceOfSatisfying(ServiceResult.Error::class.java) {
+                assertThat(it.statusCode).isEqualTo(HttpStatusCode.NotFound)
+            }
     }
 
     @Test
     fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
-        assertNull(service.hentBrev(1337, ::mapBrev))
+        assertThat(service.hentBrev(callMock, sak, 1337, ::mapBrev))
+            .isInstanceOfSatisfying(ServiceResult.Error::class.java) {
+                assertThat(it.statusCode).isEqualTo(HttpStatusCode.NotFound)
+            }
+
         assertFalse(service.slettBrev(1337))
     }
 

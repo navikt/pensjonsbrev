@@ -13,7 +13,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.TokenResponse
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class PensjonPersonDataServiceTest {
 

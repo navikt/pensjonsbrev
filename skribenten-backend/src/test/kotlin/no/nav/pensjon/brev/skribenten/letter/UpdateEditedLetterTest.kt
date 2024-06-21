@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.letter
 
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
@@ -8,7 +7,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList.Item
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
@@ -20,6 +19,23 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal 
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable as E_Variable
 
 class UpdateRenderedLetterTest {
+
+    @Test
+    fun `updates fields of editedLetter from renderedLetter`() {
+        val rendered = letter(Title1(1, true, listOf(Literal(1, "Noe tekst"))))
+        val next = rendered.copy(
+            title = "ny tittel11",
+            sakspart = Sakspart(
+                "ny gjelder",
+                "nytt fødselsnummer",
+                "nytt saksnummer",
+                "ny dato"
+            ),
+            signatur = Signatur("ny hilsenTekst", "ny saksbehandler rolle tekst", "ny saksbehandlernavn", "ny attesterendenavn", "ny avsenderenhet"),
+        )
+
+        assertEquals(next.toEdit(), rendered.toEdit().copy(deletedBlocks = setOf(-1)).updateEditedLetter(next))
+    }
 
     @Test
     fun `no changes in editedLetter and no changes in nextLetter returns same letter`() {
@@ -663,9 +679,11 @@ class UpdateRenderedLetterTest {
         )
         val edited = editedLetter(
             E_Paragraph(
-                1, true, listOf(
+                1, true,
+                listOf(
                     E_ItemList(
-                        11, listOf(
+                        11,
+                        listOf(
                             E_Item(112, listOf(E_Literal(1121, "item 2"))),
                         ),
                         setOf(111),

@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.*
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
 private const val EXPECTED_DOKSYS_URL = "http://beste-doksys-brev"

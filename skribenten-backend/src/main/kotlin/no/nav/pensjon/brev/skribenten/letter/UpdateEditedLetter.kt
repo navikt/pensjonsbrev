@@ -12,7 +12,13 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  * present.
  */
 fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
-    copy(blocks = mergeList(blocks, renderedLetter.blocks.toEdit(), ::mergeBlock, deletedBlocks))
+    copy(
+        title = renderedLetter.title,
+        sakspart = renderedLetter.sakspart,
+        signatur = renderedLetter.signatur,
+        blocks = mergeList(blocks, renderedLetter.blocks.toEdit(), ::mergeBlock, deletedBlocks),
+        deletedBlocks = deletedBlocks.filter { id -> renderedLetter.blocks.any { it.id == id } }.toSet(),
+    )
 
 /**
  * Merges a list of [edited] elements with a list of freshly [rendered] elements.
