@@ -40,7 +40,8 @@ const SaksnummerSaksIdBrevvelgerRoute = SaksnummerSaksIdBrevvelgerImport.update(
   {
     path: '/brevvelger',
     getParentRoute: () => SaksnummerSaksIdRoute,
-  } as any)
+  } as any,
+)
 
 const SaksnummerSaksIdBrevIndexRoute = SaksnummerSaksIdBrevIndexImport.update({
   path: '/brev/',
