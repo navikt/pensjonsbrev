@@ -8,7 +8,6 @@ import { z } from "zod";
 
 import { orderExstreamLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
-import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
 import { type LetterMetadata, type OrderExstreamLetterRequest, SpraakKode } from "~/types/apiTypes";
 
 import Adresse from "./-Adresse";
@@ -35,10 +34,15 @@ const exstreamWithTitleOrderLetterValidationSchema = exstreamOrderLetterValidati
   enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
-export default function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+export default function BrevmalForExstream({
+  letterTemplate,
+  preferredLanguage,
+}: {
+  letterTemplate: LetterMetadata;
+  preferredLanguage: SpraakKode | null;
+}) {
   const { templateId, saksId } = Route.useParams();
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
-  const preferredLanguage = usePreferredLanguage(saksId, vedtaksId);
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
@@ -106,7 +110,7 @@ export default function BrevmalForExstream({ letterTemplate }: { letterTemplate:
                 size="medium"
               />
             ) : undefined}
-            <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectLanguage letterTemplate={letterTemplate} preferredLanguage={preferredLanguage} />
             <SelectSensitivity />
           </VStack>
 

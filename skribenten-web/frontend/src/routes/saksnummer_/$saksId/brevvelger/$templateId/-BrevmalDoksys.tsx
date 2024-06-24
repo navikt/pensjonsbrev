@@ -8,8 +8,7 @@ import type { z } from "zod";
 
 import { orderDoksysLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
-import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
-import type { LetterMetadata, OrderDoksysLetterRequest } from "~/types/apiTypes";
+import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/types/apiTypes";
 
 import Adresse from "./-Adresse";
 import BestillOgRedigerButton from "./-BestillOgRedigerButton";
@@ -19,10 +18,15 @@ import SelectEnhet from "./-SelectEnhet";
 import SelectLanguage from "./-SelectLanguage";
 import { Route } from "./route";
 
-export default function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+export default function BrevmalForDoksys({
+  letterTemplate,
+  preferredLanguage,
+}: {
+  letterTemplate: LetterMetadata;
+  preferredLanguage: SpraakKode | null;
+}) {
   const { templateId, saksId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
-  const preferredLanguage = usePreferredLanguage(saksId, vedtaksId);
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderDoksysLetterRequest>({
     mutationFn: (payload) => orderDoksysLetter(saksId, payload),
@@ -74,7 +78,7 @@ export default function BrevmalForDoksys({ letterTemplate }: { letterTemplate: L
         >
           <VStack gap="4">
             <SelectEnhet />
-            <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectLanguage letterTemplate={letterTemplate} preferredLanguage={preferredLanguage} />
           </VStack>
 
           <BestillOgRedigerButton orderMutation={orderLetterMutation} />
