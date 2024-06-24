@@ -55,9 +55,12 @@ export default function BrevmalForExstream({ letterTemplate }: { letterTemplate:
     () => ({
       isSensitive: undefined,
       brevtittel: "",
-      spraak: preferredLanguage,
+      spraak:
+        preferredLanguage && letterTemplate.spraak.includes(preferredLanguage)
+          ? preferredLanguage
+          : letterTemplate.spraak[0],
     }),
-    [preferredLanguage],
+    [preferredLanguage, letterTemplate.spraak],
   );
 
   const methods = useForm<z.infer<typeof validationSchema>>({

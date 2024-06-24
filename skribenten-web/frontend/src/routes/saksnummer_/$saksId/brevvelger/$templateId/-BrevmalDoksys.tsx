@@ -35,9 +35,13 @@ export default function BrevmalForDoksys({ letterTemplate }: { letterTemplate: L
     () => ({
       isSensitive: undefined,
       brevtittel: "",
-      spraak: preferredLanguage,
+      // preferredLanguage finnes ikke nødvendigvis akkurat ved side last - Når vi får den lastet, vil vi ha den forhåndsvalgt, hvis brevet også støtter på språket.
+      spraak:
+        preferredLanguage && letterTemplate.spraak.includes(preferredLanguage)
+          ? preferredLanguage
+          : letterTemplate.spraak[0],
     }),
-    [preferredLanguage],
+    [preferredLanguage, letterTemplate.spraak],
   );
 
   const methods = useForm<z.infer<typeof baseOrderLetterValidationSchema>>({
