@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -34,7 +34,13 @@ const exstreamWithTitleOrderLetterValidationSchema = exstreamOrderLetterValidati
   enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
-export default function BrevmalForExstream({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+export default function BrevmalForExstream({
+  letterTemplate,
+  preferredLanguage,
+}: {
+  letterTemplate: LetterMetadata;
+  preferredLanguage: SpraakKode | null;
+}) {
   const { templateId, saksId } = Route.useParams();
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
 
@@ -49,20 +55,30 @@ export default function BrevmalForExstream({ letterTemplate }: { letterTemplate:
     ? exstreamWithTitleOrderLetterValidationSchema
     : exstreamOrderLetterValidationSchema;
 
-  const methods = useForm<z.infer<typeof validationSchema>>({
-    defaultValues: {
+  const sorterteSpråk = useMemo(() => {
+    return letterTemplate.spraak.toSorted();
+  }, [letterTemplate.spraak]);
+
+  const defaultValues = useMemo(() => {
+    return {
       isSensitive: undefined,
       brevtittel: "",
-    },
+      spraak: preferredLanguage && sorterteSpråk.includes(preferredLanguage) ? preferredLanguage : sorterteSpråk[0],
+    };
+  }, [preferredLanguage, sorterteSpråk]);
+
+  const methods = useForm<z.infer<typeof validationSchema>>({
+    defaultValues: defaultValues,
     resolver: zodResolver(validationSchema),
   });
 
   const { reset: resetMutation } = orderLetterMutation;
   const { reset: resetForm } = methods;
   useEffect(() => {
-    resetForm();
+    //ved template endring vil vi resette formet - men beholde preferredLanguage hvis den finnes
+    resetForm(defaultValues);
     resetMutation();
-  }, [templateId, resetMutation, resetForm]);
+  }, [templateId, defaultValues, resetMutation, resetForm]);
 
   return (
     <>
@@ -94,7 +110,7 @@ export default function BrevmalForExstream({ letterTemplate }: { letterTemplate:
                 size="medium"
               />
             ) : undefined}
-            <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={sorterteSpråk} />
             <SelectSensitivity />
           </VStack>
 

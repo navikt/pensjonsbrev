@@ -52,7 +52,8 @@ export enum BrevSystem {
 }
 
 export type PreferredLanguage = {
-  spraakKode: SpraakKode;
+  spraakKode: SpraakKode | null;
+  failure: string;
 };
 
 export enum SpraakKode {
