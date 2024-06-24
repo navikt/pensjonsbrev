@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { OrderDoksysLetterRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
+import type { OrderDoksysLetterRequest, OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
 import { BrevSystem, type LetterMetadata, SpraakKode } from "~/types/apiTypes";
 
 export const byggDoksysOnSubmitRequest = (argz: {
@@ -46,6 +46,26 @@ export const byggExstreamOnSubmitRequest = (argz: {
     spraak:
       argz.formValues.spraak ??
       (argz.template.spraak.includes(SpraakKode.Bokmaal) ? SpraakKode.Bokmaal : argz.template.spraak[0]),
+  };
+};
+
+export const byggEBlankettOnSubmitRequest = (argz: {
+  template: LetterMetadata;
+  vedtaksId?: string;
+  formValues: {
+    landkode: string;
+    mottakerText: string;
+    enhetsId: string;
+    isSensitive?: boolean;
+  };
+}): OrderEblankettRequest => {
+  return {
+    landkode: argz.formValues.landkode,
+    mottakerText: argz.formValues.mottakerText,
+    isSensitive: argz.formValues.isSensitive!,
+    enhetsId: argz.formValues.enhetsId,
+    vedtaksId: argz.vedtaksId ?? null,
+    brevkode: argz.template.id,
   };
 };
 
