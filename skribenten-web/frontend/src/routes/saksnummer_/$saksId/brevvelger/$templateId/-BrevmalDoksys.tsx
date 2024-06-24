@@ -35,18 +35,18 @@ export default function BrevmalForDoksys({
     },
   });
 
-  const defaultValues = useMemo(
-    () => ({
+  const sorterteSpråk = useMemo(() => {
+    return letterTemplate.spraak.toSorted();
+  }, [letterTemplate.spraak]);
+
+  const defaultValues = useMemo(() => {
+    return {
       isSensitive: undefined,
       brevtittel: "",
       // preferredLanguage finnes ikke nødvendigvis akkurat ved side last - Når vi får den lastet, vil vi ha den forhåndsvalgt, hvis brevet også støtter på språket.
-      spraak:
-        preferredLanguage && letterTemplate.spraak.includes(preferredLanguage)
-          ? preferredLanguage
-          : letterTemplate.spraak[0],
-    }),
-    [preferredLanguage, letterTemplate.spraak],
-  );
+      spraak: preferredLanguage && sorterteSpråk.includes(preferredLanguage) ? preferredLanguage : sorterteSpråk[0],
+    };
+  }, [preferredLanguage, sorterteSpråk]);
 
   const methods = useForm<z.infer<typeof baseOrderLetterValidationSchema>>({
     defaultValues: defaultValues,
@@ -78,7 +78,7 @@ export default function BrevmalForDoksys({
         >
           <VStack gap="4">
             <SelectEnhet />
-            <SelectLanguage letterTemplate={letterTemplate} preferredLanguage={preferredLanguage} />
+            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={sorterteSpråk} />
           </VStack>
 
           <BestillOgRedigerButton orderMutation={orderLetterMutation} />

@@ -1,21 +1,21 @@
 import { Select } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
-import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
+import type { SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 function SelectLanguage({
-  letterTemplate,
+  sorterteSpråk,
   preferredLanguage,
 }: {
-  letterTemplate: LetterMetadata;
+  sorterteSpråk: SpraakKode[];
   preferredLanguage: SpraakKode | null;
 }) {
   const { register } = useFormContext();
 
   return (
     <Select {...register("spraak")} label="Språk" size="medium">
-      {letterTemplate.spraak.toSorted().map((spraak) => (
+      {sorterteSpråk.map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
         </option>

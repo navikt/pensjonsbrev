@@ -55,17 +55,17 @@ export default function BrevmalForExstream({
     ? exstreamWithTitleOrderLetterValidationSchema
     : exstreamOrderLetterValidationSchema;
 
-  const defaultValues = useMemo(
-    () => ({
+  const sorterteSpråk = useMemo(() => {
+    return letterTemplate.spraak.toSorted();
+  }, [letterTemplate.spraak]);
+
+  const defaultValues = useMemo(() => {
+    return {
       isSensitive: undefined,
       brevtittel: "",
-      spraak:
-        preferredLanguage && letterTemplate.spraak.includes(preferredLanguage)
-          ? preferredLanguage
-          : letterTemplate.spraak[0],
-    }),
-    [preferredLanguage, letterTemplate.spraak],
-  );
+      spraak: preferredLanguage && sorterteSpråk.includes(preferredLanguage) ? preferredLanguage : sorterteSpråk[0],
+    };
+  }, [preferredLanguage, sorterteSpråk]);
 
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,
@@ -110,7 +110,7 @@ export default function BrevmalForExstream({
                 size="medium"
               />
             ) : undefined}
-            <SelectLanguage letterTemplate={letterTemplate} preferredLanguage={preferredLanguage} />
+            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={sorterteSpråk} />
             <SelectSensitivity />
           </VStack>
 
