@@ -2,12 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import { orderDoksysLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
+import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
 import type { LetterMetadata, OrderDoksysLetterRequest } from "~/types/apiTypes";
 
 import Adresse from "./-Adresse";
@@ -21,6 +22,7 @@ import { Route } from "./route";
 export default function BrevmalForDoksys({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, saksId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
+  const preferredLanguage = usePreferredLanguage(saksId, vedtaksId);
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderDoksysLetterRequest>({
     mutationFn: (payload) => orderDoksysLetter(saksId, payload),
@@ -29,14 +31,26 @@ export default function BrevmalForDoksys({ letterTemplate }: { letterTemplate: L
     },
   });
 
-  const { reset } = orderLetterMutation;
-  useEffect(() => {
-    reset();
-  }, [templateId, reset]);
+  const defaultValues = useMemo(
+    () => ({
+      isSensitive: undefined,
+      brevtittel: "",
+      spraak: preferredLanguage,
+    }),
+    [preferredLanguage],
+  );
 
   const methods = useForm<z.infer<typeof baseOrderLetterValidationSchema>>({
+    defaultValues: defaultValues,
     resolver: zodResolver(baseOrderLetterValidationSchema),
   });
+
+  const { reset } = orderLetterMutation;
+  const { reset: resetForm } = methods;
+  useEffect(() => {
+    reset();
+    resetForm(defaultValues);
+  }, [templateId, reset, resetForm, defaultValues]);
 
   return (
     <>

@@ -23,7 +23,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
 
   return (
     <Select {...register("spraak")} label="Språk" size="medium">
-      {letterTemplate.spraak.map((spraak) => (
+      {letterTemplate.spraak.toSorted().map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
         </option>

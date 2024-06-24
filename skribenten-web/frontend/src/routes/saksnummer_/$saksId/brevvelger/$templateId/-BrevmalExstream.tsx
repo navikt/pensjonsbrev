@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -51,11 +51,14 @@ export default function BrevmalForExstream({ letterTemplate }: { letterTemplate:
     ? exstreamWithTitleOrderLetterValidationSchema
     : exstreamOrderLetterValidationSchema;
 
-  const defaultValues = {
-    isSensitive: undefined,
-    brevtittel: "",
-    spraak: preferredLanguage,
-  };
+  const defaultValues = useMemo(
+    () => ({
+      isSensitive: undefined,
+      brevtittel: "",
+      spraak: preferredLanguage,
+    }),
+    [preferredLanguage],
+  );
 
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,
@@ -68,7 +71,7 @@ export default function BrevmalForExstream({ letterTemplate }: { letterTemplate:
     //ved template endring vil vi resette formet - men beholde preferredLanguage hvis den finnes
     resetForm(defaultValues);
     resetMutation();
-  }, [templateId, resetMutation, resetForm]);
+  }, [templateId, defaultValues, resetMutation, resetForm]);
 
   return (
     <>
