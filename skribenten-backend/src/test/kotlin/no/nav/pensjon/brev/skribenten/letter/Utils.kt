@@ -16,7 +16,7 @@ fun letter(vararg blocks: Block) =
 
 fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet()): Edit.Letter =
     Edit.Letter(
-        "Et koselig brev",
+        "En tittel",
         Sakspart("Test Testeson", "1234568910", "1234", "20.12.2022"),
         blocks.toList().toList(),
         Signatur("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "NAV Familie- og pensjonsytelser Porsgrunn"),
