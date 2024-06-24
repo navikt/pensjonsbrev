@@ -167,9 +167,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Har du allerede registrert frivillig skattetrekk, må du selv sjekke om dette skattetrekket overføres ved årsskiftet.",
-            Nynorsk to "Har du allereie registrert frivillig skattetrekk, må du sjølv sjekke om dette skattetrekket blir overført ved årsskiftet.",
-            English to "If you have registered a voluntary tax deduction, you must check that this tax deduction is carried forward to the next year.",
+            Bokmal to "Har du allerede meldt fra om frivillig skattetrekk, videreføres dette i årene fremover til du melder fra om endring.",
+            Nynorsk to "Viss du allereie har meldt frå om frivillig skattetrekk, blir dette vidareført i åra framover inntil du melder frå om endring.",
+            English to "If you have already notified us about the voluntary tax withholding, this will continue in future years until you report a change.",
         )
     }
     paragraph {
