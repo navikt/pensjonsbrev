@@ -168,6 +168,8 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-search").click().type("notat");
     cy.getDataCy("brevmal-button").click();
 
+    cy.getDataCy("språk-velger-select").should("not.exist");
+
     cy.getDataCy("brev-title-textfield").click().type("GGMU");
     cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
     cy.getDataCy("order-letter").click();
