@@ -30,8 +30,8 @@ export default function Adresse() {
   const { idTSSEkstern } = Route.useSearch();
   const { templateId } = Route.useParams();
 
-  // Special case to hide mottaker for "Notat"
-  if (templateId === "PE_IY_03_156") {
+  // Special case to hide mottaker for "Notat" & "Posteringsgrunnlag"
+  if (templateId === "PE_IY_03_156" || templateId === "PE_OK_06_101") {
     return undefined;
   }
 
