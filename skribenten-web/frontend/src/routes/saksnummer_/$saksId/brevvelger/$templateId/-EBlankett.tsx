@@ -14,6 +14,7 @@ import LetterTemplateHeading from "./-LetterTemplate";
 import SelectAvtaleland from "./-SelectAvtaleland";
 import SelectEnhet from "./-SelectEnhet";
 import SelectSensitivity from "./-SelectSensitivity";
+import { byggEBlankettOnSubmitRequest } from "./-TemplateUtils";
 import { Route } from "./route";
 
 const eblankettValidationSchema = z.object({
@@ -50,14 +51,15 @@ export default function Eblankett({ letterTemplate }: { letterTemplate: LetterMe
       <Divider />
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit((submittedValues) => {
-            const orderLetterRequest = {
-              brevkode: letterTemplate.id,
-              vedtaksId,
-              ...submittedValues,
-            };
-            return orderEblankettMutation.mutate(orderLetterRequest);
-          })}
+          onSubmit={methods.handleSubmit((submittedValues) =>
+            orderEblankettMutation.mutate(
+              byggEBlankettOnSubmitRequest({
+                template: letterTemplate,
+                vedtaksId: vedtaksId,
+                formValues: submittedValues,
+              }),
+            ),
+          )}
         >
           <VStack gap="8">
             <TextField

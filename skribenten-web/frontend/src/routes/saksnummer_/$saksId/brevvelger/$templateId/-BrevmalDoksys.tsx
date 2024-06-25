@@ -12,10 +12,10 @@ import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/typ
 
 import Adresse from "./-Adresse";
 import BestillOgRedigerButton from "./-BestillOgRedigerButton";
-import { baseOrderLetterValidationSchema } from "./-BrevmalExstream";
 import LetterTemplateHeading from "./-LetterTemplate";
 import SelectEnhet from "./-SelectEnhet";
 import SelectLanguage from "./-SelectLanguage";
+import { byggDoksysOnSubmitRequest, createValidationSchema } from "./-TemplateUtils";
 import { Route } from "./route";
 
 export default function BrevmalForDoksys({
@@ -48,9 +48,11 @@ export default function BrevmalForDoksys({
     };
   }, [preferredLanguage, sorterteSpråk]);
 
-  const methods = useForm<z.infer<typeof baseOrderLetterValidationSchema>>({
+  const validationSchema = createValidationSchema(letterTemplate);
+
+  const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,
-    resolver: zodResolver(baseOrderLetterValidationSchema),
+    resolver: zodResolver(validationSchema),
   });
 
   const { reset } = orderLetterMutation;
@@ -67,14 +69,20 @@ export default function BrevmalForDoksys({
       <Adresse />
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit((submittedValues) => {
-            const orderLetterRequest = {
-              brevkode: letterTemplate.id,
-              vedtaksId,
-              ...submittedValues,
-            };
-            return orderLetterMutation.mutate(orderLetterRequest);
-          })}
+          onSubmit={methods.handleSubmit((submittedValues) =>
+            orderLetterMutation.mutate(
+              byggDoksysOnSubmitRequest({
+                template: letterTemplate,
+                vedtaksId: vedtaksId ?? null,
+                formValues: {
+                  enhetsId: submittedValues.enhetsId,
+                  isSensitive: submittedValues.isSensitive,
+                  spraak: submittedValues.spraak ?? null,
+                  brevtittel: submittedValues.brevtittel ?? null,
+                },
+              }),
+            ),
+          )}
         >
           <VStack gap="4">
             <SelectEnhet />
