@@ -79,9 +79,14 @@ export default function BrevmalForExstream({
             orderLetterMutation.mutate(
               byggExstreamOnSubmitRequest({
                 template: letterTemplate,
-                idTSSEkstern: idTSSEkstern,
-                vedtaksId: vedtaksId,
-                formValues: submittedValues,
+                idTSSEkstern: idTSSEkstern ?? null,
+                vedtaksId: vedtaksId ?? null,
+                formValues: {
+                  enhetsId: submittedValues.enhetsId,
+                  isSensitive: submittedValues.isSensitive,
+                  spraak: submittedValues.spraak ?? null,
+                  brevtittel: submittedValues.brevtittel ?? null,
+                },
               }),
             ),
           )}

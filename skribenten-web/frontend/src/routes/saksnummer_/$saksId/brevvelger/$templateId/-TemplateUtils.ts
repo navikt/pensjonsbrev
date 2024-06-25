@@ -2,15 +2,16 @@ import { z } from "zod";
 
 import type { OrderDoksysLetterRequest, OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
 import { BrevSystem, type LetterMetadata, SpraakKode } from "~/types/apiTypes";
+import type { Nullable } from "~/types/Nullable";
 
 export const byggDoksysOnSubmitRequest = (argz: {
   template: LetterMetadata;
-  vedtaksId?: string;
+  vedtaksId: Nullable<string>;
   formValues: {
     enhetsId: string;
     isSensitive?: boolean;
-    spraak?: SpraakKode | undefined;
-    brevtittel?: string | undefined;
+    spraak: Nullable<SpraakKode>;
+    brevtittel: Nullable<string>;
   };
 }): OrderDoksysLetterRequest => {
   return {
@@ -24,13 +25,13 @@ export const byggDoksysOnSubmitRequest = (argz: {
 
 export const byggExstreamOnSubmitRequest = (argz: {
   template: LetterMetadata;
-  idTSSEkstern?: string;
-  vedtaksId?: string;
+  idTSSEkstern: Nullable<string>;
+  vedtaksId: Nullable<string>;
   formValues: {
     enhetsId: string;
     isSensitive?: boolean;
-    spraak?: SpraakKode | undefined;
-    brevtittel?: string | undefined;
+    spraak: Nullable<SpraakKode>;
+    brevtittel: Nullable<string>;
   };
 }): OrderExstreamLetterRequest => {
   return {

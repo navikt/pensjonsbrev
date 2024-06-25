@@ -73,8 +73,13 @@ export default function BrevmalForDoksys({
             orderLetterMutation.mutate(
               byggDoksysOnSubmitRequest({
                 template: letterTemplate,
-                vedtaksId: vedtaksId,
-                formValues: submittedValues,
+                vedtaksId: vedtaksId ?? null,
+                formValues: {
+                  enhetsId: submittedValues.enhetsId,
+                  isSensitive: submittedValues.isSensitive,
+                  spraak: submittedValues.spraak ?? null,
+                  brevtittel: submittedValues.brevtittel ?? null,
+                },
               }),
             ),
           )}
