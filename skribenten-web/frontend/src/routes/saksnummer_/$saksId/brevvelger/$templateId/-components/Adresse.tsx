@@ -24,7 +24,7 @@ import { SamhandlerTypeCode } from "~/types/apiTypes";
 import { getAdresseTypeName, SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 import { capitalizeString } from "~/utils/stringUtils";
 
-import { Route } from "./route";
+import { Route } from "../route";
 
 export default function Adresse() {
   const { idTSSEkstern } = Route.useSearch();

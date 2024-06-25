@@ -11,14 +11,14 @@ import { Divider } from "~/components/Divider";
 import type { SpraakKode } from "~/types/apiTypes";
 import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/apiTypes";
 
-import Adresse from "./-Adresse";
-import BestillOgRedigerButton from "./-BestillOgRedigerButton";
-import LetterTemplateHeading from "./-LetterTemplate";
-import SelectEnhet from "./-SelectEnhet";
-import SelectLanguage from "./-SelectLanguage";
-import SelectSensitivity from "./-SelectSensitivity";
-import { byggExstreamOnSubmitRequest, createValidationSchema } from "./-TemplateUtils";
-import { Route } from "./route";
+import { Route } from "../route";
+import Adresse from "./Adresse";
+import BestillOgRedigerButton from "./BestillOgRedigerButton";
+import LetterTemplateHeading from "./LetterTemplate";
+import SelectEnhet from "./SelectEnhet";
+import SelectLanguage from "./SelectLanguage";
+import SelectSensitivity from "./SelectSensitivity";
+import { byggExstreamOnSubmitRequest, createValidationSchema } from "./TemplateUtils";
 
 export default function BrevmalForExstream({
   letterTemplate,

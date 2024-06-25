@@ -10,13 +10,13 @@ import { orderDoksysLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/types/apiTypes";
 
-import Adresse from "./-Adresse";
-import BestillOgRedigerButton from "./-BestillOgRedigerButton";
-import LetterTemplateHeading from "./-LetterTemplate";
-import SelectEnhet from "./-SelectEnhet";
-import SelectLanguage from "./-SelectLanguage";
-import { byggDoksysOnSubmitRequest, createValidationSchema } from "./-TemplateUtils";
-import { Route } from "./route";
+import { Route } from "../route";
+import Adresse from "./Adresse";
+import BestillOgRedigerButton from "./BestillOgRedigerButton";
+import LetterTemplateHeading from "./LetterTemplate";
+import SelectEnhet from "./SelectEnhet";
+import SelectLanguage from "./SelectLanguage";
+import { byggDoksysOnSubmitRequest, createValidationSchema } from "./TemplateUtils";
 
 export default function BrevmalForDoksys({
   letterTemplate,

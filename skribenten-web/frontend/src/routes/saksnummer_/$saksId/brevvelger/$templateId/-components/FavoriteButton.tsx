@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { addFavoritt, deleteFavoritt, getFavoritter } from "~/api/skribenten-api-endpoints";
 
-import { Route } from "./route";
+import { Route } from "../route";
 
 export default function FavoriteButton() {
   const { templateId } = Route.useParams();
