@@ -9,13 +9,13 @@ import { orderEblankett } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderEblankettRequest } from "~/types/apiTypes";
 
-import BestillOgRedigerButton from "./-BestillOgRedigerButton";
-import LetterTemplateHeading from "./-LetterTemplate";
-import SelectAvtaleland from "./-SelectAvtaleland";
-import SelectEnhet from "./-SelectEnhet";
-import SelectSensitivity from "./-SelectSensitivity";
-import { byggEBlankettOnSubmitRequest } from "./-TemplateUtils";
-import { Route } from "./route";
+import { Route } from "../route";
+import BestillOgRedigerButton from "./BestillOgRedigerButton";
+import LetterTemplateHeading from "./LetterTemplate";
+import SelectAvtaleland from "./SelectAvtaleland";
+import SelectEnhet from "./SelectEnhet";
+import SelectSensitivity from "./SelectSensitivity";
+import { byggEBlankettOnSubmitRequest } from "./TemplateUtils";
 
 const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),

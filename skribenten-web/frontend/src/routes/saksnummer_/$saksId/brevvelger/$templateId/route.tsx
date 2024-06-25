@@ -7,10 +7,10 @@ import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
 
-import BrevmalForDoksys from "./-BrevmalDoksys";
-import BrevmalForExstream from "./-BrevmalExstream";
-import Eblankett from "./-EBlankett";
-import FavoriteButton from "./-FavoriteButton";
+import BrevmalForDoksys from "./-components/BrevmalDoksys";
+import BrevmalForExstream from "./-components/BrevmalExstream";
+import Eblankett from "./-components/EBlankett";
+import FavoriteButton from "./-components/FavoriteButton";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId")({
   component: SelectedTemplate,
