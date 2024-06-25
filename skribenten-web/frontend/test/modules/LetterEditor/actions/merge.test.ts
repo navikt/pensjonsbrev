@@ -457,6 +457,23 @@ describe("LetterEditorActions.merge", () => {
             itemContentIndex: previousItem.content.length - 1,
           });
         });
+
+        test("and it is the only one then the itemlist should be deleted", () => {
+          const state = letter(paragraph(literal("before list"), itemList(item(literal("")))));
+
+          const result = Actions.merge(
+            state,
+            { blockIndex: 0, contentIndex: 1, itemIndex: 0, itemContentIndex: 0 },
+            MergeTarget.PREVIOUS,
+          );
+
+          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(1);
+          expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toStrictEqual("before list");
+          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toContain(
+            select<ItemList>(state, { blockIndex: 0, contentIndex: 1 }).id,
+          );
+          expect(result.focus).toStrictEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: "before list".length });
+        });
       });
     });
   });

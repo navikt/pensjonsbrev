@@ -75,6 +75,27 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
             itemList.items.splice(secondId, 1);
             deleteElement(second, itemList.items, itemList.deletedItems);
           }
+        } else if (second != null && isEmptyItem(second) && itemList.items.length === 1) {
+          // We have a list with one element. That means that we want to break out of the list.
+          const block = blocks[literalIndex.blockIndex];
+
+          const contentBeforeItemList = block.content[literalIndex.contentIndex - 1];
+          if (contentBeforeItemList?.type === VARIABLE) {
+            block.content.splice(literalIndex.contentIndex, 1, { type: LITERAL, id: null, text: "", editedText: "" });
+            draft.focus = {
+              blockIndex: literalIndex.blockIndex,
+              contentIndex: literalIndex.contentIndex,
+              cursorPosition: 0,
+            };
+          } else if (contentBeforeItemList?.type === LITERAL) {
+            block.content.splice(literalIndex.contentIndex, 1);
+            draft.focus = {
+              blockIndex: literalIndex.blockIndex,
+              contentIndex: Math.max(0, literalIndex.contentIndex - 1),
+              cursorPosition: text(contentBeforeItemList).length,
+            };
+          }
+          deleteElement(itemList, block.content, block.deletedContent);
         }
       } else {
         // eslint-disable-next-line no-console
