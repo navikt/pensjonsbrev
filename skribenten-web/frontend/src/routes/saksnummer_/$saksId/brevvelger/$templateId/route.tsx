@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { Alert, VStack } from "@navikt/ds-react";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
@@ -13,12 +13,6 @@ import BrevmalForExstream from "./-components/BrevmalExstream";
 import Eblankett from "./-components/EBlankett";
 import FavoriteButton from "./-components/FavoriteButton";
 
-const postsQueryOptions = (sakId: string) =>
-  queryOptions({
-    queryKey: getPreferredLanguage.queryKey(sakId),
-    queryFn: () => getPreferredLanguage.queryFn(sakId),
-  });
-
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId")({
   component: SelectedTemplate,
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId: vedtaksId }),
@@ -29,7 +23,10 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId
   loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { templateId } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
     const letterTemplate = sakContext.brevMetadata.find((letterMetadata) => letterMetadata.id === templateId);
-    await queryClient.ensureQueryData(postsQueryOptions(sakContext.sak.saksId.toString()));
+    await queryClient.ensureQueryData({
+      queryKey: getPreferredLanguage.queryKey(sakContext.sak.saksId.toString()),
+      queryFn: () => getPreferredLanguage.queryFn(sakContext.sak.saksId.toString()),
+    });
 
     if (!letterTemplate) {
       throw notFound();
