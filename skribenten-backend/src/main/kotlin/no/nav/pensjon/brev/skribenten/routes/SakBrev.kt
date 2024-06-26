@@ -70,9 +70,11 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
         }
 
         get {
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+
             call.respond(
                 HttpStatusCode.OK,
-                brevredigeringService.hentSaksbehandlersBrev(call.principal().navIdent, ::mapBrevInfo)
+                brevredigeringService.hentBrevForSak(sak.saksId, ::mapBrevInfo)
             )
         }
     }
