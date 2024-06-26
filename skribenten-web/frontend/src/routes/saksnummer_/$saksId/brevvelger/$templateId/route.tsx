@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import { Alert, VStack } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
@@ -22,20 +23,16 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId
   loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { templateId } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
     const letterTemplate = sakContext.brevMetadata.find((letterMetadata) => letterMetadata.id === templateId);
-    //vi vil gjerne ha preferredLanguage istedenfor å hente den i komponenten - da slipper vi at den kan være undefined i et par sekunder før den blir hentet
-    const preferredLanguage =
-      (await queryClient
-        .fetchQuery({
-          queryKey: getPreferredLanguage.queryKey(sakContext.sak.saksId.toString()),
-          queryFn: () => getPreferredLanguage.queryFn(sakContext.sak.saksId.toString()),
-        })
-        .then((response) => response.spraakKode)) ?? null;
+    await queryClient.ensureQueryData({
+      queryKey: getPreferredLanguage.queryKey(sakContext.sak.saksId.toString()),
+      queryFn: () => getPreferredLanguage.queryFn(sakContext.sak.saksId.toString()),
+    });
 
     if (!letterTemplate) {
       throw notFound();
     }
 
-    return { letterTemplate, sak: sakContext.sak, preferredLanguage };
+    return { letterTemplate, sak: sakContext.sak };
   },
   notFoundComponent: () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks -- this works and is used as an example in the documentation: https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors#data-loading-inside-notfoundcomponent
@@ -55,7 +52,13 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId
 });
 
 export function SelectedTemplate() {
-  const { letterTemplate, preferredLanguage } = Route.useLoaderData();
+  const { sak, letterTemplate } = Route.useLoaderData();
+
+  const preferredLanguage =
+    useQuery({
+      queryKey: getPreferredLanguage.queryKey(sak.saksId.toString()),
+      queryFn: () => getPreferredLanguage.queryFn(sak.saksId.toString()),
+    })?.data?.spraakKode ?? null;
 
   return (
     <VStack
