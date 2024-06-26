@@ -110,9 +110,9 @@ class BrevredigeringService(
             }
         }
 
-    fun <T : Any> hentSaksbehandlersBrev(navIdent: String, mapper: Brevredigering.() -> T): List<T?> {
+    fun <T : Any> hentBrevForSak(saksId: Long, mapper: Brevredigering.() -> T): List<T> {
         return transaction {
-            Brevredigering.find { BrevredigeringTable.opprettetAvNavIdent eq navIdent }.map(mapper)
+            Brevredigering.find { BrevredigeringTable.saksId eq saksId }.map(mapper)
         }
     }
 
