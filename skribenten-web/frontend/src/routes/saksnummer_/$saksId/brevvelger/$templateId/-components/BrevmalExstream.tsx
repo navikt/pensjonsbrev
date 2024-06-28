@@ -86,7 +86,12 @@ export default function BrevmalForExstream({
           )}
         >
           <VStack gap="8">
-            <EndreMottaker />
+            <EndreMottaker
+              onManuellAdresseBekreft={(a) => {
+                //TODO - implementer
+                console.log("putting", a, "in form");
+              }}
+            />
             <Adresse />
             <SelectEnhet />
             {letterTemplate.redigerbarBrevtittel && (

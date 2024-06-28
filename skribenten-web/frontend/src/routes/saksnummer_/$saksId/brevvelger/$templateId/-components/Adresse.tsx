@@ -22,6 +22,7 @@ import type {
 } from "~/types/apiTypes";
 import { SamhandlerTypeCode } from "~/types/apiTypes";
 import { getAdresseTypeName, SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
+import type { Nullable } from "~/types/Nullable";
 import { capitalizeString } from "~/utils/stringUtils";
 
 import { Route } from "../route";
@@ -332,7 +333,7 @@ export function VerifySamhandler({ idTSSEkstern, typeMottaker }: { idTSSEkstern:
   );
 }
 
-function InversedTableRow({ label, value }: { label: string; value?: string }) {
+function InversedTableRow({ label, value }: { label: string; value?: Nullable<string> }) {
   if (!value) {
     return <></>;
   }
