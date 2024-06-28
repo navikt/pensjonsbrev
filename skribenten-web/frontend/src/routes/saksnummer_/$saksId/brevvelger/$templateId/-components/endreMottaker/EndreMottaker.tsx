@@ -41,6 +41,8 @@ const EndreMottaker = () => {
 
 export default EndreMottaker;
 
+type SamhandlerModalState = Nullable<{ id: Nullable<string>; values: FinnSamhandlerFormData }>;
+
 /*
 kjent bug: dersom man gjør formet dirty, og avbryter, vil bekreftelsen poppe opp. Dersom du så trykker "ikke avbryt", og deretter avbryt igje, vil modalen lukke seg.
             man forventer kanskje alltid at så lenge der er noe info lagt inn, så skal bekreftelsen poppe opp?
@@ -54,12 +56,16 @@ const EndreMottakerModal = (properties: {
   //dette er for å markere SB intensjon om å avbryte. Dette brukes for å gi oss en ekstra guard dersom SB har skrevet inn noe info
   const [vilAvbryte, setVilAvbryte] = useState<boolean>(false);
 
+  //dette er for å markere om SB har gjort endringer i samhandler-steget. brukes i kombinasjon med vilAvbryte
   const [harSamhandlerEndringer, setHarSamhandlerEndringer] = useState<boolean>(false);
-  const [samhandlerValues, setSamhandlerValues] = useState<Nullable<FinnSamhandlerFormData>>(null);
-  const [samhandlerId, setSamhandlerId] = useState<Nullable<string>>(null);
 
-  const onAvbrytClick = () => {
+  //verdiene til samhandler steget dersom SBH har trykker på avbryt, eller har valgt en samhandler
+  const [samhandlerValues, setSamhandlerValues] = useState<SamhandlerModalState>(null);
+
+  //dersom SBH har gjort endringer og har trykket på avbryt, vil vi ikke lukke modalen med en gang - vi vil spørre om bekreftelse
+  const onAvbrytClick = (v: SamhandlerModalState) => {
     setVilAvbryte(true);
+    setSamhandlerValues(v);
     if (!harSamhandlerEndringer) {
       properties.onClose();
     }
@@ -85,18 +91,11 @@ const EndreMottakerModal = (properties: {
           <BekreftAvbrytelse onBekreftAvbryt={properties.onClose} onIkkeAvbryt={() => setVilAvbryte(false)} />
         ) : (
           <ModalTabs
-            defaultValuesSamhandler={samhandlerValues}
-            onAvbrytClick={(v) => {
-              setSamhandlerValues(v);
-              onAvbrytClick();
-            }}
+            onAvbrytClick={onAvbrytClick}
             onBekreftNyMottaker={properties.onBekreftNyMottaker}
-            samhandlerId={samhandlerId}
+            samhandlerValues={samhandlerValues}
             setHarSamhandlerEndringer={setHarSamhandlerEndringer}
-            setSamhandler={(id, values) => {
-              setSamhandlerId(id);
-              setSamhandlerValues(values);
-            }}
+            setSamhandler={setSamhandlerValues}
           />
         )}
       </Modal.Body>
@@ -104,28 +103,30 @@ const EndreMottakerModal = (properties: {
   );
 };
 
+type ModalTabs = "samhandler" | "manuellAdresse" | "oppsummering";
+
 const ModalTabs = (properties: {
-  samhandlerId: Nullable<string>;
-  setSamhandler: (id: Nullable<string>, formValues: Nullable<FinnSamhandlerFormData>) => void;
-  onAvbrytClick: (v: FinnSamhandlerFormData) => void;
+  samhandlerValues: SamhandlerModalState;
+  setSamhandler: (values: SamhandlerModalState) => void;
   setHarSamhandlerEndringer: (b: boolean) => void;
   onBekreftNyMottaker: (id: string) => void;
-  defaultValuesSamhandler: Nullable<FinnSamhandlerFormData>;
+  onAvbrytClick: (v: SamhandlerModalState) => void;
 }) => {
+  //fordi oppsummering ikke er en tab som skal vises i tab-listen, så har vi en egen state for dette
+  const [tab, setTab] = useState<ModalTabs>("samhandler");
+
   return (
     <div>
-      {properties.samhandlerId ? (
-        <HentOgVisSamhandlerAdresse
-          id={properties.samhandlerId}
-          onBekreftNyMottaker={() => properties.onBekreftNyMottaker(properties.samhandlerId!)}
-          //kan ikke være et case der values er null når man avbryter ved oppsummeringen, vel?
-          onCloseIntent={() => properties.onAvbrytClick(properties.defaultValuesSamhandler!)}
-          //bug(?) - mutation er blitt reset, og dem må tykke på søk på nytt. SB forventer kanskje at søket er der fortsatt?
-          onTilbakeTilSøk={() => properties.setSamhandler(null, properties.defaultValuesSamhandler)}
-          typeMottaker={properties.defaultValuesSamhandler!.samhandlerType!}
+      {tab === "oppsummering" ? (
+        <OppsummeringsTab
+          onAvbrytClick={properties.onAvbrytClick}
+          onBekreftNyMottaker={properties.onBekreftNyMottaker}
+          onTilbake={(s) => setTab(s)}
+          setSamhandler={properties.setSamhandler}
+          values={properties.samhandlerValues}
         />
       ) : (
-        <Tabs defaultValue="samhandler">
+        <Tabs onChange={(s) => setTab(s as ModalTabs)} value={tab}>
           <Tabs.List>
             <Tabs.Tab label="Finn samhandler" value="samhandler" />
             <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
@@ -137,16 +138,15 @@ const ModalTabs = (properties: {
           >
             <Tabs.Panel value="samhandler">
               <SøkOgVelgSamhandlerForm
-                defaultValues={properties.defaultValuesSamhandler}
-                harEndringer={(b) => {
-                  if (b) {
-                    properties.setHarSamhandlerEndringer(true);
-                  } else {
-                    properties.setHarSamhandlerEndringer(false);
-                  }
+                defaultValues={properties.samhandlerValues?.values ?? null}
+                harEndringer={properties.setHarSamhandlerEndringer}
+                onCloseIntent={(v) =>
+                  properties.onAvbrytClick({ id: properties.samhandlerValues?.id ?? null, values: v })
+                }
+                onSamhandlerValg={(id, values) => {
+                  properties.setSamhandler({ id, values });
+                  setTab("oppsummering");
                 }}
-                onCloseIntent={(v) => properties.onAvbrytClick(v)}
-                onSamhandlerValg={(id, values) => properties.setSamhandler(id, values)}
               />
             </Tabs.Panel>
             <Tabs.Panel value="manuellAdresse">
@@ -157,5 +157,29 @@ const ModalTabs = (properties: {
         </Tabs>
       )}
     </div>
+  );
+};
+
+const OppsummeringsTab = (properties: {
+  values: SamhandlerModalState;
+  setSamhandler: (values: SamhandlerModalState) => void;
+  onBekreftNyMottaker: (id: string) => void;
+  onAvbrytClick: (v: SamhandlerModalState) => void;
+  onTilbake: (from: "samhandler") => void;
+}) => {
+  if (!properties.values?.id) {
+    throw new Error("Teknisk feil - SamhandlerId er ikke satt");
+  }
+
+  return (
+    <HentOgVisSamhandlerAdresse
+      id={properties.values?.id}
+      onBekreftNyMottaker={() => properties.onBekreftNyMottaker(properties.values!.id!)}
+      //kan ikke være et case der values er null når man avbryter ved oppsummeringen, vel?
+      onCloseIntent={() => properties.onAvbrytClick(properties.values)}
+      //bug(?) - mutation er blitt reset, og dem må tykke på søk på nytt. SB forventer kanskje at søket er der fortsatt?
+      onTilbakeTilSøk={() => properties.onTilbake("samhandler")}
+      typeMottaker={properties.values!.values.samhandlerType!}
+    />
   );
 };
