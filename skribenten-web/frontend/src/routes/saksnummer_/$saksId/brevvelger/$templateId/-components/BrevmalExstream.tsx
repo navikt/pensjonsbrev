@@ -15,7 +15,7 @@ import type { Nullable } from "~/types/Nullable";
 import { Route } from "../route";
 import Adresse from "./Adresse";
 import BestillOgRedigerButton from "./BestillOgRedigerButton";
-import EndreMottaker from "./EndreMottaker";
+import EndreMottaker from "./endreMottaker/EndreMottaker";
 import LetterTemplateHeading from "./LetterTemplate";
 import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";
