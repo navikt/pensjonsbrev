@@ -5,7 +5,7 @@
 import type { AxiosResponse } from "axios";
 import axios, { AxiosError } from "axios";
 
-import type { FinnSamhandlerRequest, Samhandler } from "~/types/apiTypes";
+import type { FinnSamhandlerRequest } from "~/types/apiTypes";
 import {
   type Avtaleland,
   type BestillOgRedigerBrevResponse,
@@ -180,7 +180,7 @@ export const getSamhandlerQuery = {
 };
 
 export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<FinnSamhandlerResponseDto> {
-  return {
+  /*return {
     samhandlere: [
       {
         navn: "AETAT ARBEIDSDIREKTORATET",
@@ -269,8 +269,8 @@ export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<F
     ],
     failureType: null,
   };
-
-  //return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
+*/
+  return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
 }
 
 export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
