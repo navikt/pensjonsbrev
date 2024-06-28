@@ -346,7 +346,7 @@ function InversedTableRow({ label, value }: { label: string; value?: string }) {
   );
 }
 
-function SamhandlerSearchResults({
+export function SamhandlerSearchResults({
   samhandlere,
   onSelect,
 }: {

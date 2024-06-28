@@ -10,10 +10,12 @@ import { orderExstreamLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { SpraakKode } from "~/types/apiTypes";
 import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/apiTypes";
+import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../route";
 import Adresse from "./Adresse";
 import BestillOgRedigerButton from "./BestillOgRedigerButton";
+import EndreMottaker from "./EndreMottaker";
 import LetterTemplateHeading from "./LetterTemplate";
 import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";
@@ -25,7 +27,7 @@ export default function BrevmalForExstream({
   preferredLanguage,
 }: {
   letterTemplate: LetterMetadata;
-  preferredLanguage: SpraakKode | null;
+  preferredLanguage: Nullable<SpraakKode>;
 }) {
   const { templateId, saksId } = Route.useParams();
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
@@ -92,6 +94,7 @@ export default function BrevmalForExstream({
           )}
         >
           <VStack gap="8">
+            <EndreMottaker />
             <Adresse />
             <SelectEnhet />
             {letterTemplate.redigerbarBrevtittel && (

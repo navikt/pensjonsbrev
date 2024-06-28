@@ -5,22 +5,23 @@
 import type { AxiosResponse } from "axios";
 import axios, { AxiosError } from "axios";
 
-import type {
-  Avtaleland,
-  BestillOgRedigerBrevResponse,
-  Enhet,
-  FinnSamhandlerRequestDto,
-  FinnSamhandlerResponseDto,
-  HentSamhandlerAdresseRequestDto,
-  HentSamhandlerAdresseResponseDto,
-  HentSamhandlerRequestDto,
-  HentsamhandlerResponseDto,
-  KontaktAdresseResponse,
-  OrderDoksysLetterRequest,
-  OrderEblankettRequest,
-  OrderExstreamLetterRequest,
-  PreferredLanguage,
-  SakContextDto,
+import type { FinnSamhandlerRequest, Samhandler } from "~/types/apiTypes";
+import {
+  type Avtaleland,
+  type BestillOgRedigerBrevResponse,
+  type Enhet,
+  type FinnSamhandlerRequestDto,
+  type FinnSamhandlerResponseDto,
+  type HentSamhandlerAdresseRequestDto,
+  type HentSamhandlerAdresseResponseDto,
+  type HentSamhandlerRequestDto,
+  type HentsamhandlerResponseDto,
+  type KontaktAdresseResponse,
+  type OrderDoksysLetterRequest,
+  type OrderEblankettRequest,
+  type OrderExstreamLetterRequest,
+  type PreferredLanguage,
+  type SakContextDto,
 } from "~/types/apiTypes";
 
 export const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
@@ -171,6 +172,105 @@ function convertBestillOgRedigerBrevResponse(response: AxiosResponse<BestillOgRe
   }
 
   return url;
+}
+
+export const getSamhandlerQuery = {
+  queryKey: ["getSamhandler"],
+  queryFn: async (request: FinnSamhandlerRequest) => finnSamhandler2(request),
+};
+
+export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<FinnSamhandlerResponseDto> {
+  return {
+    samhandlere: [
+      {
+        navn: "AETAT ARBEIDSDIREKTORATET",
+        samhandlerType: "AK",
+        offentligId: "00870309732",
+        idType: "ORG",
+        idTSSEkstern: "80000425013",
+      },
+      {
+        navn: "AETAT ARBEIDSDIREKTORATET",
+        samhandlerType: "AK",
+        offentligId: "00870309732",
+        idType: "ORG",
+        idTSSEkstern: "80000407512",
+      },
+      {
+        navn: "AETAT FYLLINGSDALEN",
+        samhandlerType: "AK",
+        offentligId: "00974742888",
+        idType: "ORG",
+        idTSSEkstern: "80000425436",
+      },
+      {
+        navn: "AETAT FYLLINGSDALEN",
+        samhandlerType: "AK",
+        offentligId: "00974742888",
+        idType: "ORG",
+        idTSSEkstern: "80000408299",
+      },
+      {
+        navn: "AETAT FØRDE",
+        samhandlerType: "AK",
+        offentligId: "00982026636",
+        idType: "ORG",
+        idTSSEkstern: "80000426070",
+      },
+      {
+        navn: "AETAT FØRDE",
+        samhandlerType: "AK",
+        offentligId: "00982026636",
+        idType: "ORG",
+        idTSSEkstern: "80000415016",
+      },
+      {
+        navn: "AETAT SKI",
+        samhandlerType: "AK",
+        offentligId: "00976818741",
+        idType: "ORG",
+        idTSSEkstern: "80000424926",
+      },
+      {
+        navn: "AETAT SKI",
+        samhandlerType: "AK",
+        offentligId: "00976818741",
+        idType: "ORG",
+        idTSSEkstern: "80000407290",
+      },
+      {
+        navn: "ARBEIDS- OG VELFERDSETATEN",
+        samhandlerType: "AK",
+        offentligId: "00889640782",
+        idType: "ORG",
+        idTSSEkstern: "80000425012",
+      },
+      {
+        navn: "ARBEIDS- OG VELFERDSETATEN",
+        samhandlerType: "AK",
+        offentligId: "00889640782",
+        idType: "ORG",
+        idTSSEkstern: "80000407511",
+      },
+      {
+        navn: "ARBEIDSKONTORET PÅ JØRPELAND",
+        samhandlerType: "AK",
+        offentligId: "00871345422",
+        idType: "ORG",
+        idTSSEkstern: "80000425341",
+      },
+      {
+        navn: "ARBEIDSKONTORET PÅ JØRPELAND",
+        samhandlerType: "AK",
+        offentligId: "00871345422",
+        idType: "ORG",
+        idTSSEkstern: "80000408122",
+      },
+    ],
+    failureType: null,
+  };
+
+  //return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
 }
 
 export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
