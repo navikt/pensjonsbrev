@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 
 import { finnSamhandler2 } from "~/api/skribenten-api-endpoints";
 import { SamhandlerTypeSelect } from "~/components/select/SamhandlerSelect";
+import type { Nullable } from "~/types/Nullable";
 
 import { SamhandlerSearchResults } from "../Adresse";
 import type { FinnSamhandlerFormData } from "./EndreMottakerUtils";
@@ -18,20 +19,23 @@ import { finnSamhandlerFormDataSchema, Identtype, identtypeToText, InnOgUtland, 
  * @param onCloseIntent - signaliserer intent om å lukke modalen
  */
 const SøkOgVelgSamhandlerForm = (properties: {
-  onSamhandlerValg: (id: string) => void;
+  onSamhandlerValg: (id: string, formValues: FinnSamhandlerFormData) => void;
   harEndringer: (b: boolean) => void;
-  onCloseIntent: () => void;
+  onCloseIntent: (values: FinnSamhandlerFormData) => void;
+  defaultValues: Nullable<FinnSamhandlerFormData>;
 }) => {
   const finnSamhandlerMutation = useMutation({ mutationFn: finnSamhandler2 });
 
+  const defaultValues = properties.defaultValues ?? {
+    søketype: Søketype.ORGANISASJONSNAVN,
+    samhandlerType: null,
+    direkteOppslag: { identtype: null, id: "" },
+    organisasjonsnavn: { innOgUtland: null, navn: "" },
+    personnavn: { fornavn: "", etternavn: "" },
+  };
+
   const form = useForm<FinnSamhandlerFormData>({
-    defaultValues: {
-      søketype: Søketype.ORGANISASJONSNAVN,
-      samhandlerType: null,
-      direkteOppslag: { identtype: null, id: "" },
-      organisasjonsnavn: { innOgUtland: null, navn: "" },
-      personnavn: { fornavn: "", etternavn: "" },
-    },
+    defaultValues: defaultValues,
     resolver: zodResolver(finnSamhandlerFormDataSchema),
   });
 
@@ -121,7 +125,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
 
         {finnSamhandlerMutation.isSuccess && (
           <SamhandlerSearchResults
-            onSelect={properties.onSamhandlerValg}
+            onSelect={(id) => properties.onSamhandlerValg(id, form.getValues())}
             samhandlere={finnSamhandlerMutation.data.samhandlere}
           />
         )}
@@ -130,7 +134,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
           css={css`
             align-self: flex-end;
           `}
-          onClick={properties.onCloseIntent}
+          onClick={() => properties.onCloseIntent(form.getValues())}
           type="button"
           variant="tertiary"
         >
