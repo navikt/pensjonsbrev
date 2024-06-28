@@ -1,3 +1,8 @@
+import type {
+  Identtype,
+  InnOgUtland,
+} from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/TemplateUtils";
+
 import type { Nullable } from "./Nullable";
 
 export type SakDto = {
@@ -123,6 +128,28 @@ export type FinnSamhandlerRequestDto = {
   navn: string;
   samhandlerType: SamhandlerTypeCode;
 };
+
+export interface SamhandlerDirekteoppslagRequest {
+  identtype: Identtype;
+  id: string;
+}
+
+export interface SamhandlerOrganisasjonsnavnRequest {
+  innOgUtland: InnOgUtland;
+  navn: string;
+}
+
+export interface SamhandlerPersonnavnRequest {
+  fornavn: string;
+  etternavn: string;
+}
+
+export interface FinnSamhandlerRequest {
+  samhandlerType: SamhandlerTypeCode;
+  direkteOppslag: Nullable<SamhandlerDirekteoppslagRequest>;
+  organisasjonsnavn: Nullable<SamhandlerOrganisasjonsnavnRequest>;
+  personnavn: Nullable<SamhandlerPersonnavnRequest>;
+}
 
 export type HentSamhandlerRequestDto = {
   idTSSEkstern: string;
