@@ -1,7 +1,7 @@
 import type {
   Identtype,
   InnOgUtland,
-} from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/TemplateUtils";
+} from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/endreMottaker/EndreMottakerUtils";
 
 import type { Nullable } from "./Nullable";
 

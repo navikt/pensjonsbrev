@@ -8,10 +8,15 @@ import { Controller, useForm } from "react-hook-form";
 import { finnSamhandler2 } from "~/api/skribenten-api-endpoints";
 import { SamhandlerTypeSelect } from "~/components/select/SamhandlerSelect";
 
+import { SamhandlerSearchResults } from "../Adresse";
 import type { FinnSamhandlerFormData } from "./EndreMottakerUtils";
 import { finnSamhandlerFormDataSchema, Identtype, identtypeToText, InnOgUtland, Søketype } from "./EndreMottakerUtils";
 
-const SøkOgVelgSamhandlerForm = (properties: { onClose: () => void }) => {
+/**
+ * @param onSamhandlerValg - Callback for når en samhandler er valgt
+ * @param onCloseIntent - signaliserer intent om å lukke modalen
+ */
+const SøkOgVelgSamhandlerForm = (properties: { onSamhandlerValg: (id: string) => void; onCloseIntent: () => void }) => {
   const finnSamhandlerMutation = useMutation({ mutationFn: finnSamhandler2 });
 
   const onSubmit = (values: FinnSamhandlerFormData) => {
@@ -101,11 +106,18 @@ const SøkOgVelgSamhandlerForm = (properties: { onClose: () => void }) => {
           </Button>
         )}
 
+        {finnSamhandlerMutation.isSuccess && (
+          <SamhandlerSearchResults
+            onSelect={properties.onSamhandlerValg}
+            samhandlere={finnSamhandlerMutation.data.samhandlere}
+          />
+        )}
+
         <Button
           css={css`
             align-self: flex-end;
           `}
-          onClick={properties.onClose}
+          onClick={properties.onCloseIntent}
           type="button"
           variant="tertiary"
         >
