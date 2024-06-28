@@ -294,7 +294,7 @@ function VelgSamhandlerModal() {
   );
 }
 
-function VerifySamhandler({ idTSSEkstern }: { idTSSEkstern: string }) {
+export function VerifySamhandler({ idTSSEkstern }: { idTSSEkstern: string }) {
   const hentSamhandlerAdresseQuery = useQuery({
     queryKey: hentSamhandlerAdresse.queryKey(idTSSEkstern),
     queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: idTSSEkstern }),
