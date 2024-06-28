@@ -30,7 +30,7 @@ fun Route.letterRoutes(
             val markup = redigerbareBrev.renderLetterMarkup(brevbestilling)
             call.respond(markup)
         }
-
+// Kall denne
         post<BestillRedigertBrevRequest<Brevkode.Redigerbar>>("/pdf") { brevbestilling ->
             call.respond(redigerbareBrev.renderPDF(call, brevbestilling))
             redigerbareBrev.countLetter(brevbestilling.kode)
