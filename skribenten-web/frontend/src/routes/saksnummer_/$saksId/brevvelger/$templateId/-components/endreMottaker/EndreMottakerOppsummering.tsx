@@ -1,11 +1,15 @@
 import { css } from "@emotion/react";
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, HStack, VStack } from "@navikt/ds-react";
+import { Button, HStack, VStack } from "@navikt/ds-react";
+
+import type { SamhandlerTypeCode } from "~/types/apiTypes";
+import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import { VerifySamhandler } from "../Adresse";
 
 const HentOgVisSamhandlerAdresse = (properties: {
   id: string;
+  typeMottaker?: SamhandlerTypeCode;
   onTilbakeTilSøk: () => void;
   onBekreftNyMottaker: (id: string) => void;
   onCloseIntent: () => void;
@@ -13,8 +17,10 @@ const HentOgVisSamhandlerAdresse = (properties: {
   return (
     <VStack gap="4">
       <VStack gap="6">
-        <BodyShort>TODO - et felt for mottakertype i tabellen</BodyShort>
-        <VerifySamhandler idTSSEkstern={properties.id} />
+        <VerifySamhandler
+          idTSSEkstern={properties.id}
+          typeMottaker={properties.typeMottaker ? SAMHANDLER_ENUM_TO_TEXT[properties.typeMottaker] : undefined}
+        />
         <Button
           css={css`
             width: fit-content;

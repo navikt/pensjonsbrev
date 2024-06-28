@@ -296,7 +296,7 @@ function VelgSamhandlerModal() {
   );
 }
 
-export function VerifySamhandler({ idTSSEkstern }: { idTSSEkstern: string }) {
+export function VerifySamhandler({ idTSSEkstern, typeMottaker }: { idTSSEkstern: string; typeMottaker?: string }) {
   const hentSamhandlerAdresseQuery = useQuery({
     queryKey: hentSamhandlerAdresse.queryKey(idTSSEkstern),
     queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: idTSSEkstern }),
@@ -321,6 +321,7 @@ export function VerifySamhandler({ idTSSEkstern }: { idTSSEkstern: string }) {
   return (
     <Table>
       <Table.Body>
+        <InversedTableRow label="Type mottaker" value={typeMottaker} />
         <InversedTableRow label="Navn" value={hentSamhandlerAdresseQuery.data.navn} />
         <InversedTableRow label="Adresselinje 1" value={hentSamhandlerAdresseQuery.data.linje1} />
         <InversedTableRow label="Adresselinje 2" value={hentSamhandlerAdresseQuery.data.linje2} />
