@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
+import BekreftAvbrytelse from "./BekreftAvbrytelse";
 import HentOgVisSamhandlerAdresse from "./EndreMottakerOppsummering";
 import SøkOgVelgSamhandlerForm from "./SøkOgVelgSamhandlerForm";
 
@@ -45,14 +46,22 @@ const EndreMottakerModal = (properties: {
   onClose: () => void;
 }) => {
   //dette er for å markere SB intensjon om å avbryte. Dette brukes for å gi oss en ekstra guard dersom SB har skrevet inn noe info
-  //const [vilAvbryte, setVilAvbryte] = useState<boolean>(false);
-  const [tab, setActiveTab] = useState<"samhandler" | "manuellAdresse">("samhandler");
+  const [vilAvbryte, setVilAvbryte] = useState<boolean>(false);
+
+  const [harSamhandlerEndringer, setHarSamhandlerEndringer] = useState<boolean>(false);
   const [samhandlerId, setSamhandlerId] = useState<Nullable<string>>(null);
+
+  const onAvbrytClick = () => {
+    setVilAvbryte(true);
+    if (!harSamhandlerEndringer) {
+      properties.onClose();
+    }
+  };
 
   return (
     <Modal
       header={{
-        heading: "Endre mottaker",
+        heading: vilAvbryte && harSamhandlerEndringer ? "Vil du avbryte endring av mottaker?" : "Endre mottaker",
       }}
       onClose={properties.onClose}
       open={properties.åpen}
@@ -65,39 +74,70 @@ const EndreMottakerModal = (properties: {
       width={600}
     >
       <Modal.Body>
-        {samhandlerId ? (
-          <HentOgVisSamhandlerAdresse
-            id={samhandlerId}
-            onBekreftNyMottaker={properties.onBekreftNyMottaker}
-            onCloseIntent={properties.onClose}
-            //Når dem går tilbake til SøkOgVelgSamhandlerForm - vil formen være tom. mulig vi vil beholde dataen? enkleste er å bare ignorere problemet intill videre...
-            onTilbakeTilSøk={() => setSamhandlerId(null)}
-          />
+        {vilAvbryte && harSamhandlerEndringer ? (
+          <BekreftAvbrytelse onBekreftAvbryt={properties.onClose} onIkkeAvbryt={() => setVilAvbryte(false)} />
         ) : (
-          <Tabs onChange={(v) => setActiveTab(v as "samhandler" | "manuellAdresse")} value={tab}>
-            <Tabs.List>
-              <Tabs.Tab label="Finn samhandler" value="samhandler" />
-              <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
-            </Tabs.List>
-            <div
-              css={css`
-                margin-top: 1rem;
-              `}
-            >
-              <Tabs.Panel value="samhandler">
-                <SøkOgVelgSamhandlerForm
-                  onCloseIntent={properties.onClose}
-                  onSamhandlerValg={(id) => setSamhandlerId(id)}
-                />
-              </Tabs.Panel>
-              <Tabs.Panel value="manuellAdresse">
-                {/*<UtfyllingAvManuellAdresseForm control={properties.control} onClose={properties.onClose} /> */}
-                <BodyShort>Her kommer det innhold</BodyShort>
-              </Tabs.Panel>
-            </div>
-          </Tabs>
+          <ModalTabs
+            onAvbrytClick={onAvbrytClick}
+            onBekreftNyMottaker={properties.onBekreftNyMottaker}
+            samhandlerId={samhandlerId}
+            setHarSamhandlerEndringer={setHarSamhandlerEndringer}
+            setSamhandlerId={setSamhandlerId}
+          />
         )}
       </Modal.Body>
     </Modal>
+  );
+};
+
+const ModalTabs = (properties: {
+  samhandlerId: Nullable<string>;
+  setSamhandlerId: (id: Nullable<string>) => void;
+  onAvbrytClick: () => void;
+  setHarSamhandlerEndringer: (b: boolean) => void;
+  onBekreftNyMottaker: (id: string) => void;
+}) => {
+  return (
+    <div>
+      {properties.samhandlerId ? (
+        <HentOgVisSamhandlerAdresse
+          id={properties.samhandlerId}
+          onBekreftNyMottaker={properties.onBekreftNyMottaker}
+          onCloseIntent={properties.onAvbrytClick}
+          //Når dem går tilbake til SøkOgVelgSamhandlerForm - vil formen være tom. mulig vi vil beholde dataen? enkleste er å bare ignorere problemet intill videre...
+          onTilbakeTilSøk={() => properties.setSamhandlerId(null)}
+        />
+      ) : (
+        <Tabs defaultValue="samhandler">
+          <Tabs.List>
+            <Tabs.Tab label="Finn samhandler" value="samhandler" />
+            <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
+          </Tabs.List>
+          <div
+            css={css`
+              margin-top: 1rem;
+            `}
+          >
+            <Tabs.Panel value="samhandler">
+              <SøkOgVelgSamhandlerForm
+                harEndringer={(b) => {
+                  if (b) {
+                    properties.setHarSamhandlerEndringer(true);
+                  } else {
+                    properties.setHarSamhandlerEndringer(false);
+                  }
+                }}
+                onCloseIntent={properties.onAvbrytClick}
+                onSamhandlerValg={(id) => properties.setSamhandlerId(id)}
+              />
+            </Tabs.Panel>
+            <Tabs.Panel value="manuellAdresse">
+              {/*<UtfyllingAvManuellAdresseForm control={properties.control} onClose={properties.onClose} /> */}
+              <BodyShort>Her kommer det innhold</BodyShort>
+            </Tabs.Panel>
+          </div>
+        </Tabs>
+      )}
+    </div>
   );
 };

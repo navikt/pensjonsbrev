@@ -2,6 +2,7 @@ import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Select, TextField, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 import type { Control } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
 
@@ -16,8 +17,23 @@ import { finnSamhandlerFormDataSchema, Identtype, identtypeToText, InnOgUtland, 
  * @param onSamhandlerValg - Callback for når en samhandler er valgt
  * @param onCloseIntent - signaliserer intent om å lukke modalen
  */
-const SøkOgVelgSamhandlerForm = (properties: { onSamhandlerValg: (id: string) => void; onCloseIntent: () => void }) => {
+const SøkOgVelgSamhandlerForm = (properties: {
+  onSamhandlerValg: (id: string) => void;
+  harEndringer: (b: boolean) => void;
+  onCloseIntent: () => void;
+}) => {
   const finnSamhandlerMutation = useMutation({ mutationFn: finnSamhandler2 });
+
+  const form = useForm<FinnSamhandlerFormData>({
+    defaultValues: {
+      søketype: Søketype.ORGANISASJONSNAVN,
+      samhandlerType: null,
+      direkteOppslag: { identtype: null, id: "" },
+      organisasjonsnavn: { innOgUtland: null, navn: "" },
+      personnavn: { fornavn: "", etternavn: "" },
+    },
+    resolver: zodResolver(finnSamhandlerFormDataSchema),
+  });
 
   const onSubmit = (values: FinnSamhandlerFormData) => {
     finnSamhandlerMutation.mutate({
@@ -46,18 +62,15 @@ const SøkOgVelgSamhandlerForm = (properties: { onSamhandlerValg: (id: string) =
     });
   };
 
-  const form = useForm<FinnSamhandlerFormData>({
-    defaultValues: {
-      søketype: null,
-      samhandlerType: null,
-      direkteOppslag: { identtype: null, id: "" },
-      organisasjonsnavn: { innOgUtland: null, navn: "" },
-      personnavn: { fornavn: "", etternavn: "" },
-    },
-    resolver: zodResolver(finnSamhandlerFormDataSchema),
-  });
-
   const watchedSøketype = form.watch("søketype");
+
+  useEffect(() => {
+    if (form.formState.isDirty) {
+      properties.harEndringer(true);
+    } else {
+      properties.harEndringer(false);
+    }
+  }, [form.formState.isDirty, properties]);
 
   return (
     <form
