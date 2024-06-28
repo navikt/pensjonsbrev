@@ -122,6 +122,7 @@ const ModalTabs = (properties: {
           onCloseIntent={() => properties.onAvbrytClick(properties.defaultValuesSamhandler!)}
           //bug(?) - mutation er blitt reset, og dem må tykke på søk på nytt. SB forventer kanskje at søket er der fortsatt?
           onTilbakeTilSøk={() => properties.setSamhandler(null, properties.defaultValuesSamhandler)}
+          typeMottaker={properties.defaultValuesSamhandler?.samhandlerType ?? undefined}
         />
       ) : (
         <Tabs defaultValue="samhandler">
