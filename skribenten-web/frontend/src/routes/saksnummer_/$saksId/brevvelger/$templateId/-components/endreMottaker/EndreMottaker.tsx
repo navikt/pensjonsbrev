@@ -7,8 +7,8 @@ import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
 import BekreftAvbrytelse from "./BekreftAvbrytelse";
-import HentOgVisSamhandlerAdresse from "./EndreMottakerOppsummering";
 import type { FinnSamhandlerFormData } from "./EndreMottakerUtils";
+import HentOgVisSamhandlerAdresse from "./HentOgVisSamhandlerAdresse";
 import SøkOgVelgSamhandlerForm from "./SøkOgVelgSamhandlerForm";
 
 const EndreMottaker = () => {
@@ -117,12 +117,12 @@ const ModalTabs = (properties: {
       {properties.samhandlerId ? (
         <HentOgVisSamhandlerAdresse
           id={properties.samhandlerId}
-          onBekreftNyMottaker={properties.onBekreftNyMottaker}
+          onBekreftNyMottaker={() => properties.onBekreftNyMottaker(properties.samhandlerId!)}
           //kan ikke være et case der values er null når man avbryter ved oppsummeringen, vel?
           onCloseIntent={() => properties.onAvbrytClick(properties.defaultValuesSamhandler!)}
           //bug(?) - mutation er blitt reset, og dem må tykke på søk på nytt. SB forventer kanskje at søket er der fortsatt?
           onTilbakeTilSøk={() => properties.setSamhandler(null, properties.defaultValuesSamhandler)}
-          typeMottaker={properties.defaultValuesSamhandler?.samhandlerType ?? undefined}
+          typeMottaker={properties.defaultValuesSamhandler!.samhandlerType!}
         />
       ) : (
         <Tabs defaultValue="samhandler">

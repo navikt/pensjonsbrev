@@ -180,7 +180,7 @@ export const getSamhandlerQuery = {
 };
 
 export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<FinnSamhandlerResponseDto> {
-  /* return {
+  return {
     samhandlere: [
       {
         navn: "AETAT ARBEIDSDIREKTORATET",
@@ -190,32 +190,11 @@ export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<F
         idTSSEkstern: "80000425013",
       },
       {
-        navn: "AETAT ARBEIDSDIREKTORATET",
-        samhandlerType: "AK",
-        offentligId: "00870309732",
-        idType: "ORG",
-        idTSSEkstern: "80000407512",
-      },
-      {
         navn: "AETAT FYLLINGSDALEN",
         samhandlerType: "AK",
         offentligId: "00974742888",
         idType: "ORG",
         idTSSEkstern: "80000425436",
-      },
-      {
-        navn: "AETAT FYLLINGSDALEN",
-        samhandlerType: "AK",
-        offentligId: "00974742888",
-        idType: "ORG",
-        idTSSEkstern: "80000408299",
-      },
-      {
-        navn: "AETAT FØRDE",
-        samhandlerType: "AK",
-        offentligId: "00982026636",
-        idType: "ORG",
-        idTSSEkstern: "80000426070",
       },
       {
         navn: "AETAT FØRDE",
@@ -229,35 +208,7 @@ export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<F
         samhandlerType: "AK",
         offentligId: "00976818741",
         idType: "ORG",
-        idTSSEkstern: "80000424926",
-      },
-      {
-        navn: "AETAT SKI",
-        samhandlerType: "AK",
-        offentligId: "00976818741",
-        idType: "ORG",
         idTSSEkstern: "80000407290",
-      },
-      {
-        navn: "ARBEIDS- OG VELFERDSETATEN",
-        samhandlerType: "AK",
-        offentligId: "00889640782",
-        idType: "ORG",
-        idTSSEkstern: "80000425012",
-      },
-      {
-        navn: "ARBEIDS- OG VELFERDSETATEN",
-        samhandlerType: "AK",
-        offentligId: "00889640782",
-        idType: "ORG",
-        idTSSEkstern: "80000407511",
-      },
-      {
-        navn: "ARBEIDSKONTORET PÅ JØRPELAND",
-        samhandlerType: "AK",
-        offentligId: "00871345422",
-        idType: "ORG",
-        idTSSEkstern: "80000425341",
       },
       {
         navn: "ARBEIDSKONTORET PÅ JØRPELAND",
@@ -268,9 +219,9 @@ export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<F
       },
     ],
     failureType: null,
-  };*/
+  };
 
-  return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
+  //return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
 }
 
 export async function finnSamhandler(request: FinnSamhandlerRequestDto) {

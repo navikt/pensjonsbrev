@@ -95,13 +95,13 @@ export enum TypeMottaker {
 }
 
 /*
-  fra Karo: Hvis det er enkelt, så er støtte for alle land best foreløpig. Hvis det er en vanskelig sak må det prioriteres opp mot andre ting tror jeg
+  TODO - hent land fra backend, fra kodeverk 
   */
 export enum Land {
   Norge = "Norge",
 }
 
-export const LeggTilManuellSamhandlerFormData = z.object({
+export const leggTilManuellSamhandlerFormDataSchema = z.object({
   typeMottaker: z
     .nativeEnum(TypeMottaker)
     .nullable()
@@ -114,12 +114,14 @@ export const LeggTilManuellSamhandlerFormData = z.object({
       }
       return refinementContext;
     }),
-  navn: z.string().min(1, "Obligatorisk"),
-  adresselinje1: z.string().min(1, "Obligatorisk"),
-  adresselinje2: z.string().min(1, "Obligatorisk"),
-  postnummer: z.string().min(1, "Obligatorisk"),
-  poststed: z.string().min(1, "Obligatorisk"),
-  land: z.nativeEnum(Land),
+  adresse: z.object({
+    navn: z.string().min(1, "Obligatorisk"),
+    adresselinje1: z.string().min(1, "Obligatorisk"),
+    adresselinje2: z.string().min(1, "Obligatorisk"),
+    postnummer: z.string().min(1, "Obligatorisk"),
+    poststed: z.string().min(1, "Obligatorisk"),
+    land: z.nativeEnum(Land),
+  }),
 });
 
 export const finnSamhandlerFormDataSchema = z
@@ -226,17 +228,7 @@ export const finnSamhandlerFormDataSchema = z
     return refinementContext;
   });
 
-export const EndreMottakerFormDataSchema = z.object({
-  finnSamhandler: finnSamhandlerFormDataSchema,
-  leggTilManuellSamhandler: LeggTilManuellSamhandlerFormData,
-});
-
-export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "manuellAdresse") => {
-  return z.object({
-    finnSamhandler: tabToValidate === "samhandler" ? finnSamhandlerFormDataSchema : z.object({}),
-    leggTilManuellSamhandler: tabToValidate === "manuellAdresse" ? LeggTilManuellSamhandlerFormData : z.object({}),
-  });
-};
-
-export type EndreMottakerFormDataType = z.infer<typeof EndreMottakerFormDataSchema>;
-export type FinnSamhandlerFormData = z.infer<typeof finnSamhandlerFormDataSchema>;
+export type ManuellAdresseUtfyllingFormData = { formType: "MANUELL" } & z.infer<
+  typeof leggTilManuellSamhandlerFormDataSchema
+>;
+export type FinnSamhandlerFormData = { formType: "SAMHANDLER" } & z.infer<typeof finnSamhandlerFormDataSchema>;

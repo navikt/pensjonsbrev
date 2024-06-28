@@ -162,12 +162,12 @@ export type HentSamhandlerAdresseResponseDto = {
 };
 export type SamhandlerPostadresse = {
   navn: string;
-  linje1?: string;
-  linje2?: string;
-  linje3?: string;
-  postnr?: string;
-  poststed?: string;
-  land?: string;
+  linje1: Nullable<string>;
+  linje2: Nullable<string>;
+  linje3: Nullable<string>;
+  postnr: Nullable<string>;
+  poststed: Nullable<string>;
+  land: Nullable<string>;
 };
 
 export type HentSamhandlerAdresseRequestDto = {
