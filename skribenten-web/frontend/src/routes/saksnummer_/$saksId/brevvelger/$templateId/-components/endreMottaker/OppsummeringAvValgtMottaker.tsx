@@ -16,6 +16,24 @@ export interface AdresseObject {
   land: Nullable<string>;
 }
 
+const BackButton = (properties: { icon: React.ReactNode; text: string; onClick: () => void }) => {
+  return (
+    <Button
+      css={css`
+        width: fit-content;
+        align-self: flex-start;
+      `}
+      icon={properties.icon}
+      onClick={properties.onClick}
+      size="small"
+      type="button"
+      variant="tertiary"
+    >
+      {properties.text}
+    </Button>
+  );
+};
+
 const OppsummeringAvValgtMottaker = (properties: {
   type: string;
   adresse: AdresseObject;
@@ -29,35 +47,11 @@ const OppsummeringAvValgtMottaker = (properties: {
   return (
     <VStack gap="4">
       {properties.onTilbake.plassering === "top" && (
-        <Button
-          css={css`
-            width: fit-content;
-            align-self: flex-start;
-          `}
-          icon={<PencilIcon />}
-          onClick={properties.onTilbake.fn}
-          size="small"
-          type="button"
-          variant="tertiary"
-        >
-          Rediger
-        </Button>
+        <BackButton icon={<PencilIcon />} onClick={properties.onTilbake.fn} text="Rediger" />
       )}
       <OppsummeringAvAdresse adresse={properties.adresse} type={properties.type} />
       {properties.onTilbake.plassering === "bottom" && (
-        <Button
-          css={css`
-            width: fit-content;
-            align-self: flex-start;
-          `}
-          icon={<ArrowLeftIcon />}
-          onClick={properties.onTilbake.fn}
-          size="small"
-          type="button"
-          variant="tertiary"
-        >
-          Tilbake til søk
-        </Button>
+        <BackButton icon={<ArrowLeftIcon />} onClick={properties.onTilbake.fn} text="Tilbake til søk" />
       )}
       <HStack
         css={css`
