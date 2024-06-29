@@ -164,6 +164,7 @@ const EndreMottakerModal = (properties: {
               if (tab === "samhandler") {
                 onFinnsamhandlerSubmit(values.finnSamhandler);
               } else if (tab === "manuellAdresse") {
+                setValgtSamhandler(null);
                 setTab("oppsummering");
               }
             })(event);
@@ -174,7 +175,7 @@ const EndreMottakerModal = (properties: {
           ) : (
             <ModalTabs
               control={form.control}
-              manuellAdresseValues={form.getValues().manuellAdresse}
+              manuellAdresseValues={valgtSamhandler ? null : form.getValues("manuellAdresse")}
               onAvbrytClick={onAvbrytClick}
               onBekreftNyMottaker={properties.onBekreftNyMottaker}
               onFinnSamhandlerSubmit={finnSamhandlerMutation}
