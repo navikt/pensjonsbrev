@@ -228,7 +228,19 @@ export const finnSamhandlerFormDataSchema = z
     return refinementContext;
   });
 
-export type ManuellAdresseUtfyllingFormData = { formType: "MANUELL" } & z.infer<
-  typeof leggTilManuellSamhandlerFormDataSchema
->;
-export type FinnSamhandlerFormData = { formType: "SAMHANDLER" } & z.infer<typeof finnSamhandlerFormDataSchema>;
+export type ManuellAdresseUtfyllingFormData = z.infer<typeof leggTilManuellSamhandlerFormDataSchema>;
+export type FinnSamhandlerFormData = z.infer<typeof finnSamhandlerFormDataSchema>;
+
+export const combinedFormSchema = z.object({
+  manuellAdresse: leggTilManuellSamhandlerFormDataSchema,
+  finnSamhandler: finnSamhandlerFormDataSchema,
+});
+
+export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "manuellAdresse" | "oppsummering") => {
+  return z.object({
+    finnSamhandler: tabToValidate === "samhandler" ? finnSamhandlerFormDataSchema : z.object({}),
+    manuellAdresse: tabToValidate === "manuellAdresse" ? leggTilManuellSamhandlerFormDataSchema : z.object({}),
+  });
+};
+
+export type CombinedFormData = z.infer<typeof combinedFormSchema>;
