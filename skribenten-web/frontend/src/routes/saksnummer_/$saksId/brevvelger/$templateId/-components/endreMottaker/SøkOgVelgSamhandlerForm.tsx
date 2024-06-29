@@ -1,165 +1,104 @@
 import { css } from "@emotion/react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Select, TextField, VStack } from "@navikt/ds-react";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect } from "react";
+import type { UseMutationResult } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 
-import { finnSamhandler2 } from "~/api/skribenten-api-endpoints";
 import { SamhandlerTypeSelect } from "~/components/select/SamhandlerSelect";
-import type { Nullable } from "~/types/Nullable";
+import type { FinnSamhandlerRequest, FinnSamhandlerResponseDto } from "~/types/apiTypes";
 
 import { SamhandlerSearchResults } from "../Adresse";
-import type { FinnSamhandlerFormData } from "./EndreMottakerUtils";
-import { finnSamhandlerFormDataSchema, Identtype, identtypeToText, InnOgUtland, Søketype } from "./EndreMottakerUtils";
+import type { CombinedFormData } from "./EndreMottakerUtils";
+import { Identtype, identtypeToText, InnOgUtland, Søketype } from "./EndreMottakerUtils";
 
-/**
- * @param onSamhandlerValg - Callback for når en samhandler er valgt
- * @param onCloseIntent - signaliserer intent om å lukke modalen
- */
 const SøkOgVelgSamhandlerForm = (properties: {
-  onSamhandlerValg: (id: string, formValues: FinnSamhandlerFormData) => void;
-  harEndringer: (b: boolean) => void;
-  onCloseIntent: (values: FinnSamhandlerFormData) => void;
-  defaultValues: Nullable<FinnSamhandlerFormData>;
+  control: Control<CombinedFormData>;
+  onCloseIntent: () => void;
+  onSamhandlerValg: (id: string) => void;
+  onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequest, unknown>;
 }) => {
-  const finnSamhandlerMutation = useMutation({ mutationFn: finnSamhandler2 });
-
-  const defaultValues = properties.defaultValues ?? {
-    søketype: Søketype.ORGANISASJONSNAVN,
-    samhandlerType: null,
-    direkteOppslag: { identtype: null, id: "" },
-    organisasjonsnavn: { innOgUtland: null, navn: "" },
-    personnavn: { fornavn: "", etternavn: "" },
-  };
-
-  const form = useForm<FinnSamhandlerFormData>({
-    defaultValues: defaultValues,
-    resolver: zodResolver(finnSamhandlerFormDataSchema),
+  const watchedSøketype = useWatch({
+    control: properties.control,
+    name: "finnSamhandler.søketype",
   });
 
-  const onSubmit = (values: FinnSamhandlerFormData) => {
-    finnSamhandlerMutation.mutate({
-      samhandlerType: values.samhandlerType!,
-      direkteOppslag:
-        values.søketype === Søketype.DIREKTE_OPPSLAG
-          ? {
-              identtype: values.direkteOppslag.identtype!,
-              id: values.direkteOppslag.id!,
-            }
-          : null,
-      organisasjonsnavn:
-        values.søketype === Søketype.ORGANISASJONSNAVN
-          ? {
-              innOgUtland: values.organisasjonsnavn.innOgUtland!,
-              navn: values.organisasjonsnavn.navn!,
-            }
-          : null,
-      personnavn:
-        values.søketype === Søketype.PERSONNAVN
-          ? {
-              fornavn: values.personnavn.fornavn!,
-              etternavn: values.personnavn.etternavn!,
-            }
-          : null,
-    });
-  };
-
-  const watchedSøketype = form.watch("søketype");
-
-  useEffect(() => {
-    if (form.formState.isDirty) {
-      properties.harEndringer(true);
-    } else {
-      properties.harEndringer(false);
-    }
-  }, [form.formState.isDirty, properties]);
-
   return (
-    <form
-      onSubmit={(event) => {
-        event.stopPropagation();
-        form.handleSubmit(onSubmit)(event);
-      }}
-    >
-      <VStack gap="6">
-        <VStack gap="4">
-          <Controller
-            control={form.control}
-            name="søketype"
-            render={({ field, fieldState }) => (
-              <Select
-                error={fieldState.error?.message}
-                id={field.name}
-                label="Søketype"
-                {...field}
-                value={field.value ?? ""}
-              >
-                <option disabled value={""}>
-                  Klikk for å velge søketype
-                </option>
-                <option value={Søketype.DIREKTE_OPPSLAG}>Direkte oppslag</option>
-                <option value={Søketype.ORGANISASJONSNAVN}>Organisasjonsnavn</option>
-                <option value={Søketype.PERSONNAVN}>Personnavn</option>
-              </Select>
-            )}
-          />
+    <VStack gap="6">
+      <VStack gap="4">
+        <Controller
+          control={properties.control}
+          name="finnSamhandler.søketype"
+          render={({ field, fieldState }) => (
+            <Select
+              error={fieldState.error?.message}
+              id={field.name}
+              label="Søketype"
+              {...field}
+              value={field.value ?? ""}
+            >
+              <option disabled value={""}>
+                Klikk for å velge søketype
+              </option>
+              <option value={Søketype.DIREKTE_OPPSLAG}>Direkte oppslag</option>
+              <option value={Søketype.ORGANISASJONSNAVN}>Organisasjonsnavn</option>
+              <option value={Søketype.PERSONNAVN}>Personnavn</option>
+            </Select>
+          )}
+        />
 
-          {watchedSøketype === Søketype.DIREKTE_OPPSLAG && <SamhandlerDirekteOppslag control={form.control} />}
-          {watchedSøketype === Søketype.ORGANISASJONSNAVN && <SamhandlerOrganisasjonsnavn control={form.control} />}
-          {watchedSøketype === Søketype.PERSONNAVN && <SamhandlerPersonnavn control={form.control} />}
-        </VStack>
+        {watchedSøketype === Søketype.DIREKTE_OPPSLAG && <SamhandlerDirekteOppslag control={properties.control} />}
+        {watchedSøketype === Søketype.ORGANISASJONSNAVN && <SamhandlerOrganisasjonsnavn control={properties.control} />}
+        {watchedSøketype === Søketype.PERSONNAVN && <SamhandlerPersonnavn control={properties.control} />}
+      </VStack>
 
-        {watchedSøketype && (
-          <Button
-            css={css`
-              align-self: flex-start;
-            `}
-            loading={false}
-            size="small"
-          >
-            Søk
-          </Button>
-        )}
-
-        {finnSamhandlerMutation.isSuccess && (
-          <SamhandlerSearchResults
-            onSelect={(id) => properties.onSamhandlerValg(id, form.getValues())}
-            samhandlere={finnSamhandlerMutation.data.samhandlere}
-          />
-        )}
-
+      {watchedSøketype && (
         <Button
           css={css`
-            align-self: flex-end;
+            align-self: flex-start;
           `}
-          onClick={() => properties.onCloseIntent(form.getValues())}
-          type="button"
-          variant="tertiary"
+          loading={false}
+          size="small"
         >
-          Avbryt
+          Søk
         </Button>
-      </VStack>
-    </form>
+      )}
+
+      {properties.onFinnSamhandlerSubmit.isSuccess && (
+        <SamhandlerSearchResults
+          onSelect={(id) => properties.onSamhandlerValg(id)}
+          samhandlere={properties.onFinnSamhandlerSubmit.data.samhandlere}
+        />
+      )}
+
+      <Button
+        css={css`
+          align-self: flex-end;
+        `}
+        onClick={properties.onCloseIntent}
+        type="button"
+        variant="tertiary"
+      >
+        Avbryt
+      </Button>
+    </VStack>
   );
 };
 
 export default SøkOgVelgSamhandlerForm;
 
-const SamhandlerDirekteOppslag = (properties: { control: Control<FinnSamhandlerFormData> }) => {
+const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormData> }) => {
   return (
     <VStack gap="4">
       <Controller
         control={properties.control}
-        name="samhandlerType"
+        name="finnSamhandler.samhandlerType"
         render={({ field, fieldState }) => (
           <SamhandlerTypeSelect error={fieldState.error} onChange={field.onChange} value={field.value ?? ""} />
         )}
       />
       <Controller
         control={properties.control}
-        name={"direkteOppslag.identtype"}
+        name="finnSamhandler.direkteOppslag.identtype"
         render={({ field, fieldState }) => (
           <Select
             error={fieldState.error?.message}
@@ -180,7 +119,7 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<FinnSamhandlerF
 
       <Controller
         control={properties.control}
-        name={"direkteOppslag.id"}
+        name="finnSamhandler.direkteOppslag.id"
         render={({ field, fieldState }) => (
           <TextField {...field} error={fieldState.error?.message} label="ID" size="medium" value={field.value ?? ""} />
         )}
@@ -189,12 +128,12 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<FinnSamhandlerF
   );
 };
 
-const SamhandlerOrganisasjonsnavn = (properties: { control: Control<FinnSamhandlerFormData> }) => {
+const SamhandlerOrganisasjonsnavn = (properties: { control: Control<CombinedFormData> }) => {
   return (
     <VStack gap="4">
       <Controller
         control={properties.control}
-        name="organisasjonsnavn.innOgUtland"
+        name="finnSamhandler.organisasjonsnavn.innOgUtland"
         render={({ field, fieldState }) => (
           <Select label="Inn-/utland" {...field} error={fieldState.error?.message} value={field.value ?? ""}>
             <option disabled value="">
@@ -208,14 +147,14 @@ const SamhandlerOrganisasjonsnavn = (properties: { control: Control<FinnSamhandl
       />
       <Controller
         control={properties.control}
-        name="samhandlerType"
+        name="finnSamhandler.samhandlerType"
         render={({ field, fieldState }) => (
           <SamhandlerTypeSelect error={fieldState.error} onChange={field.onChange} value={field.value ?? ""} />
         )}
       />
       <Controller
         control={properties.control}
-        name="organisasjonsnavn.navn"
+        name="finnSamhandler.organisasjonsnavn.navn"
         render={({ field, fieldState }) => (
           <TextField
             label="Navn"
@@ -230,19 +169,19 @@ const SamhandlerOrganisasjonsnavn = (properties: { control: Control<FinnSamhandl
   );
 };
 
-const SamhandlerPersonnavn = (properties: { control: Control<FinnSamhandlerFormData> }) => {
+const SamhandlerPersonnavn = (properties: { control: Control<CombinedFormData> }) => {
   return (
     <VStack gap="4">
       <Controller
         control={properties.control}
-        name="samhandlerType"
+        name="finnSamhandler.samhandlerType"
         render={({ field, fieldState }) => (
           <SamhandlerTypeSelect error={fieldState.error} onChange={field.onChange} value={field.value ?? ""} />
         )}
       />
       <Controller
         control={properties.control}
-        name="personnavn.fornavn"
+        name="finnSamhandler.personnavn.fornavn"
         render={({ field, fieldState }) => (
           <TextField
             label="Fornavn"
@@ -255,7 +194,7 @@ const SamhandlerPersonnavn = (properties: { control: Control<FinnSamhandlerFormD
       />
       <Controller
         control={properties.control}
-        name="personnavn.etternavn"
+        name="finnSamhandler.personnavn.etternavn"
         render={({ field, fieldState }) => (
           <TextField
             label="Etternavn"
