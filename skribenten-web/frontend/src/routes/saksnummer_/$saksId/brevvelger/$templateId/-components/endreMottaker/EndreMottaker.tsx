@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BodyShort, Button, Modal, Tabs } from "@navikt/ds-react";
+import { Button, Modal, Tabs } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -14,6 +14,7 @@ import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
 import BekreftAvbrytelse from "./BekreftAvbrytelse";
+import type { ManuellAdresseUtfyllingFormData } from "./EndreMottakerUtils";
 import {
   type CombinedFormData,
   createSamhandlerValidationSchema,
@@ -22,9 +23,12 @@ import {
   Søketype,
 } from "./EndreMottakerUtils";
 import HentOgVisSamhandlerAdresse from "./HentOgVisSamhandlerAdresse";
+import type { AdresseObject } from "./OppsummeringAvValgtMottaker";
+import OppsummeringAvValgtMottaker from "./OppsummeringAvValgtMottaker";
 import SøkOgVelgSamhandlerForm from "./SøkOgVelgSamhandlerForm";
+import UtfyllingAvManuellAdresseForm from "./UtfyllingAvManuellAdresseForm";
 
-const EndreMottaker = () => {
+const EndreMottaker = (properties: { onManuellAdresseBekreft: (a: Nullable<AdresseObject>) => void }) => {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -33,12 +37,21 @@ const EndreMottaker = () => {
       <h1>Endre mottaker</h1>
       {modalÅpen && (
         <EndreMottakerModal
-          onBekreftNyMottaker={(id) => {
+          onBekreftNyMottaker={(bekreftetMottaker) => {
             setModalÅpen(false);
-            navigate({
-              search: (s) => ({ ...s, idTSSEkstern: id }),
-              replace: true,
-            });
+            if (typeof bekreftetMottaker === "string") {
+              properties.onManuellAdresseBekreft(null);
+              navigate({
+                search: (s) => ({ ...s, idTSSEkstern: bekreftetMottaker }),
+                replace: true,
+              });
+            } else {
+              properties.onManuellAdresseBekreft(bekreftetMottaker);
+              navigate({
+                search: (s) => ({ ...s, idTSSEkstern: undefined }),
+                replace: true,
+              });
+            }
           }}
           onClose={() => setModalÅpen(false)}
           åpen={modalÅpen}
@@ -58,7 +71,7 @@ type ModalTabs = "samhandler" | "manuellAdresse" | "oppsummering";
 
 const EndreMottakerModal = (properties: {
   åpen: boolean;
-  onBekreftNyMottaker: (id: string) => void;
+  onBekreftNyMottaker: (id: string | AdresseObject) => void;
   onClose: () => void;
 }) => {
   const [tab, setTab] = useState<ModalTabs>("samhandler");
@@ -94,26 +107,29 @@ const EndreMottakerModal = (properties: {
     });
   };
 
+  const defaultManuellAdresse = {
+    typeMottaker: null,
+    adresse: {
+      navn: "",
+      adresselinje1: "",
+      adresselinje2: "",
+      postnummer: "",
+      poststed: "",
+      land: Land.Norge,
+    },
+  };
+  const defaultFinnSamhandler = {
+    søketype: Søketype.ORGANISASJONSNAVN,
+    samhandlerType: null,
+    direkteOppslag: { identtype: null, id: "" },
+    organisasjonsnavn: { innOgUtland: null, navn: "" },
+    personnavn: { fornavn: "", etternavn: "" },
+  };
+
   const form = useForm<CombinedFormData>({
     defaultValues: {
-      manuellAdresse: {
-        typeMottaker: null,
-        adresse: {
-          navn: "",
-          adresselinje1: "",
-          adresselinje2: "",
-          postnummer: "",
-          poststed: "",
-          land: Land.Norge,
-        },
-      },
-      finnSamhandler: {
-        søketype: Søketype.ORGANISASJONSNAVN,
-        samhandlerType: null,
-        direkteOppslag: { identtype: null, id: "" },
-        organisasjonsnavn: { innOgUtland: null, navn: "" },
-        personnavn: { fornavn: "", etternavn: "" },
-      },
+      manuellAdresse: defaultManuellAdresse,
+      finnSamhandler: defaultFinnSamhandler,
     },
     resolver: zodResolver(createSamhandlerValidationSchema(tab)),
   });
@@ -148,7 +164,7 @@ const EndreMottakerModal = (properties: {
               if (tab === "samhandler") {
                 onFinnsamhandlerSubmit(values.finnSamhandler);
               } else if (tab === "manuellAdresse") {
-                //TODO: implementer manuell adresse
+                setTab("oppsummering");
               }
             })(event);
           }}
@@ -158,6 +174,7 @@ const EndreMottakerModal = (properties: {
           ) : (
             <ModalTabs
               control={form.control}
+              manuellAdresseValues={form.getValues().manuellAdresse}
               onAvbrytClick={onAvbrytClick}
               onBekreftNyMottaker={properties.onBekreftNyMottaker}
               onFinnSamhandlerSubmit={finnSamhandlerMutation}
@@ -186,13 +203,15 @@ const ModalTabs = (properties: {
   onAvbrytClick: () => void;
   setSamhandler: (id: string) => void;
   onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequest, unknown>;
-  onBekreftNyMottaker: (id: string) => void;
+  onBekreftNyMottaker: (id: string | AdresseObject) => void;
   samhandlerValuesMedId: Nullable<SamhandlerValuesMedId>;
+  manuellAdresseValues: Nullable<ManuellAdresseUtfyllingFormData>;
 }) => {
   return (
     <div>
       {properties.tab.tab === "oppsummering" ? (
         <OppsummeringsTab
+          manuellAdresseValues={properties.manuellAdresseValues}
           onBekreftNyMottaker={properties.onBekreftNyMottaker}
           onCloseIntent={properties.onAvbrytClick}
           onTilbake={(from) => properties.tab.setTab(from)}
@@ -221,8 +240,11 @@ const ModalTabs = (properties: {
               />
             </Tabs.Panel>
             <Tabs.Panel value="manuellAdresse">
-              {/*<UtfyllingAvManuellAdresseForm control={properties.control} onClose={properties.onClose} /> */}
-              <BodyShort>Her kommer det innhold</BodyShort>
+              <UtfyllingAvManuellAdresseForm
+                control={properties.control}
+                onCloseIntent={properties.onAvbrytClick}
+                onSubmit={() => properties.tab.setTab("oppsummering")}
+              />
             </Tabs.Panel>
           </div>
         </Tabs>
@@ -235,10 +257,17 @@ type SamhandlerValuesMedId = { id: string } & FinnSamhandlerFormData;
 
 const OppsummeringsTab = (properties: {
   samhandlerValues: Nullable<SamhandlerValuesMedId>;
-  onBekreftNyMottaker: (id: string) => void;
+  manuellAdresseValues: Nullable<ManuellAdresseUtfyllingFormData>;
+  onBekreftNyMottaker: (id: string | AdresseObject) => void;
   onCloseIntent: () => void;
   onTilbake: (from: "samhandler" | "manuellAdresse") => void;
 }) => {
+  if (!properties.samhandlerValues && !properties.manuellAdresseValues) {
+    throw new Error(
+      "Teknisk feil Forventet at enten adresse for samhandler, eller manuell oppslag er supplert til oppsummeringen",
+    );
+  }
+
   if (properties.samhandlerValues) {
     return (
       <HentOgVisSamhandlerAdresse
@@ -247,6 +276,26 @@ const OppsummeringsTab = (properties: {
         onCloseIntent={properties.onCloseIntent}
         onTilbakeTilSøk={() => properties.onTilbake("samhandler")}
         typeMottaker={properties.samhandlerValues!.samhandlerType!}
+      />
+    );
+  }
+
+  if (properties.manuellAdresseValues) {
+    const adresse: AdresseObject = {
+      ...properties.manuellAdresseValues.adresse,
+      adresselinje3: "",
+    };
+
+    return (
+      <OppsummeringAvValgtMottaker
+        adresse={adresse}
+        onAvbryt={properties.onCloseIntent}
+        onBekreft={() => properties.onBekreftNyMottaker(adresse)}
+        onTilbake={{
+          fn: () => properties.onTilbake("manuellAdresse"),
+          plassering: "top",
+        }}
+        type={properties.manuellAdresseValues.typeMottaker!}
       />
     );
   }
