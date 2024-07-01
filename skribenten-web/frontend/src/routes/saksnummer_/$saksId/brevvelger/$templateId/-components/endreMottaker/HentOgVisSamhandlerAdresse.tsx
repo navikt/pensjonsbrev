@@ -42,10 +42,10 @@ const HentOgVisSamhandlerAdresse = (properties: {
       <OppsummeringAvValgtMottaker
         adresse={{
           navn: hentSamhandlerAdresseQuery.data?.navn,
-          adresselinje1: hentSamhandlerAdresseQuery.data?.linje1,
-          adresselinje2: hentSamhandlerAdresseQuery.data?.linje2,
-          adresselinje3: hentSamhandlerAdresseQuery.data?.linje3,
-          postnummer: hentSamhandlerAdresseQuery.data?.postnr,
+          linje1: hentSamhandlerAdresseQuery.data?.linje1,
+          linje2: hentSamhandlerAdresseQuery.data?.linje2,
+          linje3: hentSamhandlerAdresseQuery.data?.linje3,
+          postnr: hentSamhandlerAdresseQuery.data?.postnr,
           poststed: hentSamhandlerAdresseQuery.data?.poststed,
           land: hentSamhandlerAdresseQuery.data?.land,
         }}

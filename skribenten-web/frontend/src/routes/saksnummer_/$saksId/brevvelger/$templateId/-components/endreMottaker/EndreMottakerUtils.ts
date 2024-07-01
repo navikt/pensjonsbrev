@@ -116,9 +116,9 @@ export const leggTilManuellSamhandlerFormDataSchema = z.object({
     }),
   adresse: z.object({
     navn: z.string().min(1, "Obligatorisk"),
-    adresselinje1: z.string().min(1, "Obligatorisk"),
-    adresselinje2: z.string(),
-    postnummer: z.string().min(1, "Obligatorisk"),
+    linje1: z.string().min(1, "Obligatorisk"),
+    linje2: z.string(),
+    postnr: z.string().min(1, "Obligatorisk"),
     poststed: z.string().min(1, "Obligatorisk"),
     land: z.nativeEnum(Land),
   }),

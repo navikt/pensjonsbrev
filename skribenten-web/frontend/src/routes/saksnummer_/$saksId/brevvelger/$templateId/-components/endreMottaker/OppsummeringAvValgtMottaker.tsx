@@ -3,18 +3,9 @@ import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { PencilIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Table, VStack } from "@navikt/ds-react";
 
+import type { Adresse } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 import { capitalizeString } from "~/utils/stringUtils";
-
-export interface AdresseObject {
-  navn: string;
-  adresselinje1: Nullable<string>;
-  adresselinje2: Nullable<string>;
-  adresselinje3: Nullable<string>;
-  postnummer: Nullable<string>;
-  poststed: Nullable<string>;
-  land: Nullable<string>;
-}
 
 const BackButton = (properties: { icon: React.ReactNode; text: string; onClick: () => void }) => {
   return (
@@ -36,7 +27,7 @@ const BackButton = (properties: { icon: React.ReactNode; text: string; onClick: 
 
 const OppsummeringAvValgtMottaker = (properties: {
   type: string;
-  adresse: AdresseObject;
+  adresse: Adresse;
   onAvbryt: () => void;
   onBekreft: () => void;
   onTilbake: {
@@ -72,16 +63,16 @@ const OppsummeringAvValgtMottaker = (properties: {
 
 export default OppsummeringAvValgtMottaker;
 
-const OppsummeringAvAdresse = (properties: { type: string; adresse: AdresseObject }) => {
+const OppsummeringAvAdresse = (properties: { type: string; adresse: Adresse }) => {
   return (
     <Table>
       <Table.Body>
         <InversedTableRow label="Type" value={properties.type} />
         <InversedTableRow label="Navn" value={properties.adresse.navn} />
-        <InversedTableRow label="Adresselinje 1" value={properties.adresse.adresselinje1} />
-        <InversedTableRow label="Adresselinje 2" value={properties.adresse.adresselinje2} />
-        <InversedTableRow label="Adresselinje 3" value={properties.adresse.adresselinje3} />
-        <InversedTableRow label="Postnummer" value={properties.adresse.postnummer} />
+        <InversedTableRow label="Adresselinje 1" value={properties.adresse.linje1} />
+        <InversedTableRow label="Adresselinje 2" value={properties.adresse.linje2} />
+        <InversedTableRow label="Adresselinje 3" value={properties.adresse.linje3} />
+        <InversedTableRow label="Postnummer" value={properties.adresse.postnr} />
         <InversedTableRow label="Poststed" value={properties.adresse.poststed} />
         <InversedTableRow label="Land" value={properties.adresse.land} />
       </Table.Body>

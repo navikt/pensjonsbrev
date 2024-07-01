@@ -14,12 +14,7 @@ import { z } from "zod";
 import { finnSamhandler, getKontaktAdresse, getNavn, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { SamhandlerTypeSelectFormPart } from "~/components/select/SamhandlerSelect";
-import type {
-  FinnSamhandlerRequestDto,
-  FinnSamhandlerResponseDto,
-  Samhandler,
-  SamhandlerPostadresse,
-} from "~/types/apiTypes";
+import type { Adresse, FinnSamhandlerRequestDto, FinnSamhandlerResponseDto, Samhandler } from "~/types/apiTypes";
 import { SamhandlerTypeCode } from "~/types/apiTypes";
 import { getAdresseTypeName, SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 import type { Nullable } from "~/types/Nullable";
@@ -130,7 +125,7 @@ function SamhandlerAdresse() {
   );
 }
 
-function FormattedSamhandlerAdresse({ adresse }: { adresse: SamhandlerPostadresse }) {
+export function FormattedSamhandlerAdresse({ adresse }: { adresse: Adresse }) {
   const { land, linje1, postnr, poststed, navn } = adresse;
 
   return (

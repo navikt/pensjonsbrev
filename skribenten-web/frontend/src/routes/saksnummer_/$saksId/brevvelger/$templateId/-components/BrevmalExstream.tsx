@@ -15,7 +15,7 @@ import type { Nullable } from "~/types/Nullable";
 import { Route } from "../route";
 import Adresse from "./Adresse";
 import BestillOgRedigerButton from "./BestillOgRedigerButton";
-import EndreMottaker from "./endreMottaker/EndreMottaker";
+import EndreMottaker, { HentOgVisAdresse } from "./endreMottaker/EndreMottaker";
 import LetterTemplateHeading from "./LetterTemplate";
 import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";
@@ -91,7 +91,10 @@ export default function BrevmalForExstream({
                 //TODO - implementer
                 console.log("putting", a, "in form");
               }}
-            />
+            >
+              {/* TODO - case for manuell adresse */}
+              <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} />
+            </EndreMottaker>
             <Adresse />
             <SelectEnhet />
             {letterTemplate.redigerbarBrevtittel && (
