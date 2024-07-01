@@ -5,12 +5,10 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 
 fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
@@ -31,7 +29,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.oppdaterBrev(call, sak, brevId, request.saksbehandlerValg, request.redigertBrev, ::mapBrev,)
+            brevredigeringService.oppdaterBrev(call, sak, brevId, request.saksbehandlerValg, request.redigertBrev, ::mapBrev)
                 .onOk { brev ->
                     if (brev == null) {
                         call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
@@ -56,7 +54,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.hentBrev(call, sak, brevId, ::mapBrev,)
+            brevredigeringService.hentBrev(call, sak, brevId, ::mapBrev)
                 .onOk { brev ->
                     if (brev != null) {
                         call.respond(HttpStatusCode.OK, brev)
@@ -77,6 +75,23 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
                 brevredigeringService.hentBrevForSak(sak.saksId, ::mapBrevInfo)
             )
         }
+
+        post("/{brevId}/ferdigstill") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+
+            brevredigeringService.ferdigstill(call, brevId)
+            call.respond(HttpStatusCode.OK)
+        }
+
+        get("/{brevId}/pdf") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val pdf = brevredigeringService.hentPdf(brevId)
+            if (pdf != null) {
+                call.respond(HttpStatusCode.OK, pdf)
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
+            }
+        }
     }
 
 internal fun mapBrev(brev: Brevredigering): Api.BrevResponse = with(brev) {
@@ -94,7 +109,7 @@ private fun mapBrevInfo(brev: Brevredigering): Api.BrevInfo = with(brev) {
         opprettet = opprettet,
         sistredigertAv = sistRedigertAvNavIdent,
         sistredigert = sistredigert,
-        brevkode = Brevkode.Redigerbar.valueOf(brevkode),
+        brevkode = brevkode,
         redigeresAv = redigeresAvNavIdent,
     )
 }

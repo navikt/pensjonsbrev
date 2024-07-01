@@ -8,6 +8,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -31,9 +32,11 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -68,7 +71,7 @@ class BrevredigeringServiceTest {
     private val letter = letter(Paragraph(1, true, listOf(Literal(1, "red pill"))))
 
     private val brevbakerMock = mockk<BrevbakerService> {
-        coEvery { renderLetter(any(), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any(), any()) } returns ServiceResult.Ok(letter)
+        coEvery { renderMarkup(any(), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any(), any()) } returns ServiceResult.Ok(letter)
     }
     private val callMock = mockk<ApplicationCall> {
         every { principal() } returns mockk<UserPrincipal> {
@@ -166,7 +169,7 @@ class BrevredigeringServiceTest {
         val nyeValg = GeneriskBrevData().apply { put("valg2", true) }
         val freshRender = letter.copy(blocks = letter.blocks + Paragraph(2, true, listOf(Variable(21, "ny paragraph"))))
         coEvery {
-            brevbakerMock.renderLetter(
+            brevbakerMock.renderMarkup(
                 any(),
                 eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 eq(GeneriskRedigerbarBrevdata(Api.GeneriskBrevdata(), nyeValg)),
@@ -207,7 +210,7 @@ class BrevredigeringServiceTest {
         }
 
         coEvery {
-            brevbakerMock.renderLetter(
+            brevbakerMock.renderMarkup(
                 any(),
                 eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 eq(GeneriskRedigerbarBrevdata(EmptyBrevdata, saksbehandlerValg)),
@@ -250,4 +253,93 @@ class BrevredigeringServiceTest {
         assertFalse(service.slettBrev(1337))
     }
 
+    @Test
+    fun `gitt en ferdigstilling saa skal pdf lagres i DB med referanse til Brevredigering`(): Unit = runBlocking {
+
+        val pdf = "nesten en pdf".encodeToByteArray()
+        coEvery { penService.hentPesysBrevdata(any(), eq(sak.saksId), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)) } returns
+                ServiceResult.Ok(
+                    BrevdataResponse(
+                        data = BrevdataResponse.Data(
+                            felles = Felles(
+                                dokumentDato = LocalDate.now(),
+                                saksnummer = "123",
+                                avsenderEnhet = NAVEnhet(
+                                    nettside = "nav.no",
+                                    navn = "en fantastisk enhet",
+                                    telefonnummer = Telefonnummer("12345678")
+                                ),
+                                bruker = Bruker(
+                                    foedselsnummer = Foedselsnummer("12345678910"),
+                                    fornavn = "Navn",
+                                    mellomnavn = null,
+                                    etternavn = "Navnesen"
+                                ),
+                                vergeNavn = null,
+                                signerendeSaksbehandlere = null,
+                            ), brevdata = Api.GeneriskBrevdata()
+                        ),
+                        error = null
+                    )
+                )
+
+        coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(
+            LetterResponse.V2(
+                file = pdf,
+                contentType = ContentType.Application.Pdf.toString(),
+                letterMetadata = LetterMetadata(
+                    displayTitle = "En fin tittel",
+                    isSensitiv = false,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
+                )
+            )
+        )
+
+        val saksbehandlersValg = GeneriskBrevData().apply { put("valg", true) }
+
+        val freshRender = letter.copy(blocks = letter.blocks + Paragraph(2, true, listOf(Variable(21, "ny paragraph"))))
+        coEvery {
+            brevbakerMock.renderMarkup(
+                any(),
+                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                eq(GeneriskRedigerbarBrevdata(Api.GeneriskBrevdata(), saksbehandlersValg)),
+                any()
+            )
+        } returns ServiceResult.Ok(freshRender)
+
+        val unikCallMock = mockk<ApplicationCall> {
+            every { principal() } returns mockk<UserPrincipal> {
+                every { navIdent } returns "XYZ12345678"
+            }
+        }
+
+        val result = service.opprettBrev(
+            unikCallMock,
+            sak,
+            Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+            saksbehandlersValg,
+            ::mapBrev
+        ).resultOrNull()!!
+
+        transaction {
+            val brevredigering = Brevredigering.all().first { it.opprettetAvNavIdent == "XYZ12345678" }
+            val document = Document.all().filter { it.brevredigering.id == brevredigering.id }
+
+            assertEquals(0, brevredigering.document.count())
+            assertEquals(0, document.count())
+        }
+
+        service.ferdigstill(callMock, result.info.id)
+
+        transaction {
+            val brevredigering = Brevredigering.all().first { it.opprettetAvNavIdent == "XYZ12345678" }
+            val document = Document.all().filter { it.brevredigering.id == brevredigering.id }
+
+            assertEquals(1, brevredigering.document.count())
+            assertEquals(1, document.count())
+            assertTrue(pdf.contentEquals(document.first().pdf.bytes))
+        }
+    }
 }
+

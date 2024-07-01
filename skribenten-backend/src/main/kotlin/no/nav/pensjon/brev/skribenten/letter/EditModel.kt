@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Sakspart
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Signatur
 
 object Edit {
     data class Letter(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur, val deletedBlocks: Set<Int>)
@@ -33,9 +36,26 @@ object Edit {
 
         override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() } || deletedContent.isNotEmpty()
 
-        data class Title1(override val id: Int?, override val editable: Boolean, override val content: List<ParagraphContent.Text>, override val deletedContent: Set<Int> = emptySet()) : Block(Type.TITLE1)
-        data class Title2(override val id: Int?, override val editable: Boolean, override val content: List<ParagraphContent.Text>, override val deletedContent: Set<Int> = emptySet()) : Block(Type.TITLE2)
-        data class Paragraph(override val id: Int?, override val editable: Boolean, override val content: List<ParagraphContent>, override val deletedContent: Set<Int> = emptySet()) : Block(Type.PARAGRAPH)
+        data class Title1(
+            override val id: Int?,
+            override val editable: Boolean,
+            override val content: List<ParagraphContent.Text>,
+            override val deletedContent: Set<Int> = emptySet()
+        ) : Block(Type.TITLE1)
+
+        data class Title2(
+            override val id: Int?,
+            override val editable: Boolean,
+            override val content: List<ParagraphContent.Text>,
+            override val deletedContent: Set<Int> = emptySet()
+        ) : Block(Type.TITLE2)
+
+        data class Paragraph(
+            override val id: Int?,
+            override val editable: Boolean,
+            override val content: List<ParagraphContent>,
+            override val deletedContent: Set<Int> = emptySet()
+        ) : Block(Type.PARAGRAPH)
     }
 
     sealed class ParagraphContent(val type: Type) : Identifiable {
@@ -43,7 +63,8 @@ object Edit {
             ITEM_LIST, LITERAL, VARIABLE, TABLE,
         }
 
-        data class ItemList(override val id: Int?, val items: List<Item>, val deletedItems: Set<Int> = emptySet()) : ParagraphContent(Type.ITEM_LIST) {
+        data class ItemList(override val id: Int?, val items: List<Item>, val deletedItems: Set<Int> = emptySet()) :
+            ParagraphContent(Type.ITEM_LIST) {
             data class Item(override val id: Int?, val content: List<Text>) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() }
             }
@@ -55,15 +76,19 @@ object Edit {
             data class Row(override val id: Int?, val cells: List<Cell>) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() }
             }
+
             data class Cell(override val id: Int?, val text: List<Text>) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() }
             }
+
             data class Header(override val id: Int?, val colSpec: List<ColumnSpec>) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() }
             }
-            data class ColumnSpec(override val id: Int?, val headerContent: Cell, val alignment: ColumnAlignment, val span: Int): Identifiable {
+
+            data class ColumnSpec(override val id: Int?, val headerContent: Cell, val alignment: ColumnAlignment, val span: Int) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || headerContent.isEdited()
             }
+
             enum class ColumnAlignment { LEFT, RIGHT }
 
             override fun isEdited(): Boolean = isNew() || rows.any { it.isEdited() } || header.isEdited()
@@ -165,7 +190,7 @@ fun ParagraphContent.ItemList.Item.toEdit(): Edit.ParagraphContent.ItemList.Item
     Edit.ParagraphContent.ItemList.Item(id, content.map { it.toEdit() })
 
 fun ParagraphContent.Table.toEdit(): Edit.ParagraphContent.Table =
-        Edit.ParagraphContent.Table(id, rows.map { it.toEdit() }, header.toEdit())
+    Edit.ParagraphContent.Table(id, rows.map { it.toEdit() }, header.toEdit())
 
 fun ParagraphContent.Table.Row.toEdit(): Edit.ParagraphContent.Table.Row =
     Edit.ParagraphContent.Table.Row(id, cells.map { it.toEdit() })
@@ -184,3 +209,61 @@ fun ParagraphContent.Table.ColumnAlignment.toEdit(): Edit.ParagraphContent.Table
         ParagraphContent.Table.ColumnAlignment.LEFT -> Edit.ParagraphContent.Table.ColumnAlignment.LEFT
         ParagraphContent.Table.ColumnAlignment.RIGHT -> Edit.ParagraphContent.Table.ColumnAlignment.RIGHT
     }
+
+fun Edit.Letter.toMarkup(): LetterMarkup =
+    LetterMarkup(title = title, sakspart = sakspart, blocks = blocks.map { it.toMarkup() }, signatur = signatur)
+
+fun Edit.Block.toMarkup(): Block =
+    when (this) {
+        is Edit.Block.Paragraph -> Block.Paragraph(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+        is Edit.Block.Title1 -> Block.Title1(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+        is Edit.Block.Title2 -> Block.Title2(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+    }
+
+fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
+    when (this) {
+        is Edit.ParagraphContent.ItemList -> ParagraphContent.ItemList(id = id ?: 0, items = items.map { it.toMarkup() })
+        is Edit.ParagraphContent.Table -> ParagraphContent.Table(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
+        is Edit.ParagraphContent.Text -> toMarkup()
+    }
+
+//TODO add fontType til text
+fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
+    when (this) {
+        is Edit.ParagraphContent.Text.Literal -> ParagraphContent.Text.Literal(
+            id = id ?: 0,
+            text = editedText ?: text,
+            fontType = ParagraphContent.Text.FontType.PLAIN
+        )
+
+        is Edit.ParagraphContent.Text.Variable -> ParagraphContent.Text.Variable(
+            id = id ?: 0,
+            text = text,
+            fontType = ParagraphContent.Text.FontType.PLAIN
+        )
+    }
+
+fun Edit.ParagraphContent.ItemList.Item.toMarkup(): ParagraphContent.ItemList.Item =
+    ParagraphContent.ItemList.Item(id = id ?: 0, content = content.map { it.toMarkup() })
+
+fun Edit.ParagraphContent.Table.Header.toMarkup(): ParagraphContent.Table.Header =
+    ParagraphContent.Table.Header(id = id ?: 0, colSpec = colSpec.map { it.toMarkup() })
+
+fun Edit.ParagraphContent.Table.ColumnSpec.toMarkup(): ParagraphContent.Table.ColumnSpec =
+    ParagraphContent.Table.ColumnSpec(id = id ?: 0, headerContent = headerContent.toMarkup(), alignment = alignment.toMarkup(), span = span)
+
+fun Edit.ParagraphContent.Table.ColumnAlignment.toMarkup(): ParagraphContent.Table.ColumnAlignment =
+    when (this) {
+        Edit.ParagraphContent.Table.ColumnAlignment.LEFT -> ParagraphContent.Table.ColumnAlignment.LEFT
+        Edit.ParagraphContent.Table.ColumnAlignment.RIGHT -> ParagraphContent.Table.ColumnAlignment.RIGHT
+    }
+
+fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
+    ParagraphContent.Table.Row(id = id ?: 0, cells = cells.map { it.toMarkup() })
+
+fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
+    ParagraphContent.Table.Cell(id = id ?: 0, text = text.map { it.toMarkup() })
+
+
+
+
