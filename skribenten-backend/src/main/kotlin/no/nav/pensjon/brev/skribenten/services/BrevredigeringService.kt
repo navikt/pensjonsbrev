@@ -189,7 +189,7 @@ class BrevredigeringService(
     fun hentPdf(brevId: Long): ByteArray? {
         return transaction {
             val brevredigering = Brevredigering.findById(brevId)
-            brevredigering?.document?.orderBy(BrevredigeringTable.opprettet to SortOrder.ASC)?.first()?.pdf?.bytes
+            brevredigering?.document?.firstOrNull()?.pdf?.bytes
         }
     }
 }

@@ -23,6 +23,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.json.json
@@ -68,7 +69,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
-    val document by Document referrersOn DocumentTable.brevredigering
+    val document by Document referrersOn DocumentTable.brevredigering orderBy(DocumentTable.id to SortOrder.DESC)
 
     companion object: LongEntityClass<Brevredigering>(BrevredigeringTable)
 }
