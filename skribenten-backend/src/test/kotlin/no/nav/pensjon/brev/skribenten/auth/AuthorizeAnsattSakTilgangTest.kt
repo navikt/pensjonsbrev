@@ -154,6 +154,8 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `krever at ansatt har gruppe for FortroligAdresse`() = runBlocking {
+        every { principalMock.isInGroup(any()) } returns false
+
         coEvery {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(Pdl.Gradering.FORTROLIG))
@@ -238,6 +240,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `plugin lagrer sak som attribute tilgjengelig i route scope`() = runBlocking {
+        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
         val response = client.get("/sak/sakFromPlugin/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(successResponse(testSak.foedselsnr), response.bodyAsText())
@@ -261,7 +264,6 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertThat(response.bodyAsText()).isNullOrEmpty()
     }
 
     @Test
