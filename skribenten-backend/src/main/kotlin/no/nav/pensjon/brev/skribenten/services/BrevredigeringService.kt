@@ -15,8 +15,9 @@ import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -185,10 +186,10 @@ class BrevredigeringService(
         }
     }
 
-    fun hentPdf(brevId: Long): ByteArray {
+    fun hentPdf(brevId: Long): ByteArray? {
         return transaction {
-            val brevredigering = Brevredigering.findById(brevId) ?: throw BrevbakerServiceException("Fant ikke brevredigering for brevId: $brevId")
-            brevredigering.document.first().pdf.bytes
+            val brevredigering = Brevredigering.findById(brevId)
+            brevredigering?.document?.orderBy(BrevredigeringTable.opprettet to SortOrder.ASC)?.first()?.pdf?.bytes
         }
     }
 }
