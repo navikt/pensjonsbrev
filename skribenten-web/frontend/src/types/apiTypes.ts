@@ -157,10 +157,15 @@ export type HentSamhandlerRequestDto = {
 };
 
 export type HentSamhandlerAdresseResponseDto = {
-  adresse: SamhandlerPostadresse;
+  adresse: Adresse;
   failureType?: string;
 };
-export type SamhandlerPostadresse = {
+
+/* 
+  vi har '2' typer adresser vi kan få. Denne, og KontaktAdresseResponse. Dette formatet brukes for samhandler / manuell, mens KontaktAdresseResponse brukes ved getKontaktAdresse
+  lage en type som omfatter begge - og rename denne? Eventuelt forholde oss til kun 1 adresseformat. 
+*/
+export type Adresse = {
   navn: string;
   linje1: Nullable<string>;
   linje2: Nullable<string>;

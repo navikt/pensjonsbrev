@@ -59,7 +59,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
 
         <Controller
           control={properties.control}
-          name="manuellAdresse.adresse.adresselinje1"
+          name="manuellAdresse.adresse.linje1"
           render={({ field, fieldState }) => (
             <TextField label="Adresselinje 1" {...field} error={fieldState.error?.message} />
           )}
@@ -67,7 +67,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
 
         <Controller
           control={properties.control}
-          name="manuellAdresse.adresse.adresselinje2"
+          name="manuellAdresse.adresse.linje2"
           render={({ field, fieldState }) => (
             <TextField label="Adresselinje 2" {...field} error={fieldState.error?.message} />
           )}
@@ -76,7 +76,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
         <HStack gap="4">
           <Controller
             control={properties.control}
-            name="manuellAdresse.adresse.postnummer"
+            name="manuellAdresse.adresse.postnr"
             render={({ field, fieldState }) => (
               <TextField
                 css={css`
