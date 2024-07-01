@@ -55,6 +55,13 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
             )
         }.toServiceResult()
 
+    suspend fun getTemplates(call: ApplicationCall): ServiceResult<List<TemplateDescription>> =
+        client.get(call, "/v2/templates/redigerbar"){
+            url {
+                parameters.append("includeMetadata", "true")
+            }
+        }.toServiceResult()
+
     override val name = "Brevbaker"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
         client.get(call, "/ping_authorized")

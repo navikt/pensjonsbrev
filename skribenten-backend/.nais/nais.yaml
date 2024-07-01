@@ -74,7 +74,7 @@ spec:
   env:
     {{#each env as |e|}}
       - name: {{e.name}}
-        value: {{{e.value}}}
+        value: "{{{e.value}}}"
     {{/each}}
     {{#each groups as |g|}}
       - name: AD_GROUP_{{g.name}}

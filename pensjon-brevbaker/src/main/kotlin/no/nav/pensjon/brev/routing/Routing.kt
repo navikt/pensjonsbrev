@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.*
 import no.nav.pensjon.brev.api.model.AutobrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.RedigerbartbrevRequest
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.TemplateModelSpecification
@@ -23,7 +24,6 @@ import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.TemplateDescription
 import no.nav.pensjon.etterlatte.etterlatteRouting
 
 private val letterResource = LetterResource()

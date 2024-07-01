@@ -27,12 +27,10 @@ import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
 import no.nav.pensjon.brev.skribenten.services.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Month
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 private const val NAVIdent = "månedens ansatt"
 private val testSak = Pen.SakSelection(
