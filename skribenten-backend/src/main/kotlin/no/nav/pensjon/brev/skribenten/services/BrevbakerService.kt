@@ -16,6 +16,7 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
@@ -85,6 +86,13 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
                     letterMarkup = redigertBrev
                 )
             )
+        }.toServiceResult()
+
+    suspend fun getTemplates(call: ApplicationCall): ServiceResult<List<TemplateDescription>> =
+        client.get(call, "/v2/templates/redigerbar"){
+            url {
+                parameters.append("includeMetadata", "true")
+            }
         }.toServiceResult()
 
     override val name = "Brevbaker"

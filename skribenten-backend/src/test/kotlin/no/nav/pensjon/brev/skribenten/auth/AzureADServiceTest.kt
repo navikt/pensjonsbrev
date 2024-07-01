@@ -11,9 +11,9 @@ import io.ktor.utils.io.*
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.Test
 
 class AzureADServiceTest {
     private val jwtConfig = JwtConfig("navn", "utsteder", "jwks url", "skribenten-client-id", "http://localhost:9991/token", "skribenten-secret", emptyList(), true)
@@ -25,8 +25,7 @@ class AzureADServiceTest {
 
         val service = createService {
             // verify that clientId, clientSecret and principal access token is used
-            val body = it.body
-            assertIs<FormDataContent>(body)
+            val body = assertInstanceOf(FormDataContent::class.java, it.body)
             assertEquals(call().authentication.principal<UserPrincipal>()!!.accessToken.token, body.formData["assertion"])
             assertEquals(jwtConfig.clientId, body.formData["client_id"])
             assertEquals(jwtConfig.clientSecret, body.formData["client_secret"])

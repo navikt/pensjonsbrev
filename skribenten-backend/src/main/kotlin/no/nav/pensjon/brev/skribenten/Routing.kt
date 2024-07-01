@@ -30,7 +30,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
     val navansattService = NavansattService(servicesConfig.getConfig("navansatt"), authService)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
-    val brevmalService = BrevmalService(penService, brevmetadataService)
+    val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
     val brevredigeringService = BrevredigeringService(brevbakerService, penService)
 
 

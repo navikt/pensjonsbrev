@@ -90,3 +90,6 @@ env:
     value: "https://navansatt.dev-fss-pub.nais.io/"
   - name: NAVANSATT_SCOPE
     value: "api://dev-fss.teampensjon.navansatt/.default"
+
+  - name: FEATURE_brevbakerbrev
+    value: "true"

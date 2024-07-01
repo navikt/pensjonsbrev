@@ -17,8 +17,10 @@ servers:
   - url: 'https://pensjon-brevbaker.intern.nav.no'
 paths:
   /v2/templates/redigerbar:
+    parameters:
+      - $ref: "#/components/parameters/includeMetadataQuery"
     get:
-      summary: Hent alle tilgjengelige brevkoder
+      summary: Hent alle tilgjengelige brevkoder, eller brevmetadata for alle malene
       description: Brevkodene vil være gyldige verdier av enum `no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbar`.
       responses:
         '200':
@@ -57,8 +59,10 @@ paths:
           description: Malen eksisterer ikke
 
   /v2/templates/autobrev:
+    parameters:
+      - $ref: "#/components/parameters/includeMetadataQuery"
     get:
-      summary: Hent alle tilgjengelige brevkoder
+      summary: Hent alle tilgjengelige brevkoder, eller brevmetadata for alle malene
       description: Brevkodene vil være gyldige verdier av enum `no.nav.pensjon.brev.api.model.maler.Brevkode.Autobrev`
       responses:
         '200':
@@ -100,7 +104,7 @@ paths:
     post:
       summary: Bestill brev i PDF format
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
@@ -118,7 +122,7 @@ paths:
     post:
       summary: Bestill brev i HTML format
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
@@ -136,7 +140,7 @@ paths:
     post:
       summary: Bestill brev i redigerbart LetterMarkup format
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
@@ -158,7 +162,7 @@ paths:
     post:
       summary: Bestill brev i PDF format
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`.
@@ -176,7 +180,7 @@ paths:
     post:
       summary: Bestill brev i HTML format
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       requestBody:
         required: true
         description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`.
@@ -220,9 +224,13 @@ components:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              type: string
+            oneOf:
+              - type: array
+                items:
+                  type: string
+              - type: array
+                items:
+                  $ref: "#/components/schemas/TemplateDescription"
     GetTemplate:
       description: Beskrivelse av brevmal. Se data klasse `no.nav.pensjon.brevbaker.api.model.TemplateDescription`
       content:
@@ -243,6 +251,13 @@ components:
       required: true
       schema:
         type: string
+    includeMetadataQuery:
+      description: Inkluder metadata for brevmaler
+      name: includeMetadata
+      in: query
+      required: false
+      schema:
+        type: boolean
     languageParam:
       description: Språk kode
       name: language
@@ -326,6 +341,26 @@ components:
             $ref: "#/components/schemas/LanguageCode"
         metadata:
           $ref: "#/components/schemas/LetterMetadata"
+        kategori:
+          type: string
+          description: Se `no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori`
+          enum:
+            - "ETTEROPPGJOER"
+            - "FOERSTEGANGSBEHANDLING"
+            - "VEDTAK_ENDRING_OG_REVURDERING"
+            - "VEDTAK_FLYTTE_MELLOM_LAND"
+            - "SLUTTBEHANDLING"
+            - "INFORMASJONSBREV"
+            - "VARSEL"
+            - "VEDTAK_EKSPORT"
+            - "OMSORGSOPPTJENING"
+            - "UFOEREPENSJON"
+            - "INNHENTE_OPPLYSNINGER"
+            - "LEVEATTEST"
+            - "FEILUTBETALING"
+            - "KLAGE_OG_ANKE"
+            - "POSTERINGSGRUNNLAG"
+            - "FRITEKSTBREV"
     LanguageCode:
       type: string
       description: Se `no.nav.pensjon.brevbaker.api.model.LanguageCode`
@@ -527,7 +562,7 @@ components:
           properties:
             type:
               type: string
-              enum: ["TITLE1", "TITLE2"]
+              enum: [ "TITLE1", "TITLE2" ]
             content:
               type: array
               items:
@@ -546,7 +581,7 @@ components:
           properties:
             type:
               type: string
-              enum: ["PARAGRAPH"]
+              enum: [ "PARAGRAPH" ]
             content:
               type: array
               items:
@@ -571,10 +606,10 @@ components:
           $ref: "#/components/schemas/LetterMarkup_ID"
         type:
           type: string
-          enum: ["LITERAL", "VARIABLE"]
+          enum: [ "LITERAL", "VARIABLE" ]
         fontType:
           type: string
-          enum: ["PLAIN", "BOLD", "ITALIC"]
+          enum: [ "PLAIN", "BOLD", "ITALIC" ]
         text:
           type: string
 
@@ -589,7 +624,7 @@ components:
           $ref: "#/components/schemas/LetterMarkup_ID"
         type:
           type: string
-          enum: ["NEW_LINE"]
+          enum: [ "NEW_LINE" ]
 
     LetterMarkup_ItemList:
       type: object
@@ -603,7 +638,7 @@ components:
           $ref: "#/components/schemas/LetterMarkup_ID"
         type:
           type: string
-          enum: ["ITEM_LIST"]
+          enum: [ "ITEM_LIST" ]
         items:
           type: array
           items:
@@ -638,7 +673,7 @@ components:
           $ref: "#/components/schemas/LetterMarkup_ID"
         type:
           type: string
-          enum: ["TABLE"]
+          enum: [ "TABLE" ]
         rows:
           type: array
           items:
@@ -705,7 +740,7 @@ components:
           $ref: "#/components/schemas/LetterMarkup_Cell"
         alignment:
           type: string
-          enum: ["LEFT", "RIGHT"]
+          enum: [ "LEFT", "RIGHT" ]
         span:
           type: number
           format: int32
@@ -724,7 +759,7 @@ components:
           $ref: "#/components/schemas/LetterMarkup_ID"
         type:
           type: string
-          enum: ["FORM_TEXT"]
+          enum: [ "FORM_TEXT" ]
         prompt:
           type: array
           items:
@@ -733,7 +768,7 @@ components:
               - $ref: "#/components/schemas/LetterMarkup_NewLine"
         size:
           type: string
-          enum: ["NONE", "SHORT", "LONG"]
+          enum: [ "NONE", "SHORT", "LONG" ]
         vspace:
           type: boolean
 
@@ -751,7 +786,7 @@ components:
           $ref: "#/components/schemas/LetterMarkup_ID"
         type:
           type: string
-          enum: ["FORM_CHOICE"]
+          enum: [ "FORM_CHOICE" ]
         prompt:
           type: array
           items:

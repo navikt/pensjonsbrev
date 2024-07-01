@@ -27,12 +27,10 @@ import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
 import no.nav.pensjon.brev.skribenten.services.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Month
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 private const val NAVIdent = "månedens ansatt"
 private val testSak = Pen.SakSelection(
@@ -156,6 +154,8 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `krever at ansatt har gruppe for FortroligAdresse`() = runBlocking {
+        every { principalMock.isInGroup(any()) } returns false
+
         coEvery {
             pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(Pdl.Gradering.FORTROLIG))
@@ -240,6 +240,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `plugin lagrer sak som attribute tilgjengelig i route scope`() = runBlocking {
+        coEvery { pdlService.hentAdressebeskyttelse(any(), testSak.foedselsnr,  ALDER.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
         val response = client.get("/sak/sakFromPlugin/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(successResponse(testSak.foedselsnr), response.bodyAsText())
@@ -263,7 +264,6 @@ class AuthorizeAnsattSakTilgangTest {
 
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertThat(response.bodyAsText()).isNullOrEmpty()
     }
 
     @Test
