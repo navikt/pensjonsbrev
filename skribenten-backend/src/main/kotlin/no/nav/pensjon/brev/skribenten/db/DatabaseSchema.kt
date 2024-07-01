@@ -12,7 +12,10 @@ import com.typesafe.config.Config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.db.Brevredigering.Companion.transform
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import org.jetbrains.exposed.dao.ColumnWithTransform
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -20,6 +23,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.json.json
@@ -42,7 +46,7 @@ private val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
 
 object BrevredigeringTable : LongIdTable() {
     val saksId : Column<Long> = long("saksId") //TODO: Om vi skal slå opp redigineringer på sak, legg til index
-    val brevkode: Column<String> = varchar("brevkode", length = 50)
+    val brevkode: ColumnWithTransform<String, Brevkode.Redigerbar> = varchar("brevkode", length = 50).transform(Brevkode.Redigerbar::name, Brevkode.Redigerbar::valueOf)
     val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", objectMapper::writeValueAsString, objectMapper::readValue)
     val redigertBrev = json<Edit.Letter>("redigertBrev", objectMapper::writeValueAsString, objectMapper::readValue)
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
@@ -65,8 +69,21 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
+    val document by Document referrersOn DocumentTable.brevredigering orderBy(DocumentTable.id to SortOrder.DESC)
 
     companion object: LongEntityClass<Brevredigering>(BrevredigeringTable)
+}
+
+object DocumentTable : LongIdTable() {
+    val pdf = blob("brevpdf")
+    val brevredigering = reference("brevredigering", BrevredigeringTable.id)
+}
+
+class Document(id: EntityID<Long>) : LongEntity(id) {
+    var pdf by DocumentTable.pdf
+    var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
+
+    companion object: LongEntityClass<Document>(DocumentTable)
 }
 
 fun initDatabase(config: Config) =
@@ -85,7 +102,7 @@ fun initDatabase(jdbcUrl: String, username: String, password: String) {
         }),
     )
     transaction(database) {
-        SchemaUtils.create(BrevredigeringTable, Favourites)
+        SchemaUtils.create(BrevredigeringTable, DocumentTable, Favourites)
     }
 }
 
