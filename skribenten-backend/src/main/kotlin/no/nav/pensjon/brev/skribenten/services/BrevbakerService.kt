@@ -74,7 +74,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup
-    ): ServiceResult<LetterResponse.V2> =
+    ): ServiceResult<LetterResponse> =
         client.post(call, "/v2/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
             setBody(

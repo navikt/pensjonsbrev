@@ -1,60 +1,118 @@
 package no.nav.pensjon.brev.api
 
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.*
+import io.ktor.server.plugins.callid.*
+import io.micrometer.core.instrument.Tag
+import no.nav.pensjon.brev.Metrics
+import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
+import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.maler.*
-import no.nav.pensjon.brev.maler.adhoc.*
-import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
-import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
-import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
+import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
+import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.LetterWithAttachmentsMarkup
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import java.util.*
 
+private val objectMapper = jacksonObjectMapper()
+private val base64Decoder = Base64.getDecoder()
 
-val prodAutobrevTemplates: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
-    AdhocAlderspensjonFraFolketrygden,
-    AdhocGjenlevendEtter1970,
-    AdhocUfoeretrygdEtterbetalingDagpenger,
-    AdhocUfoeretrygdKombiDagpenger,
-    AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
-    AdhocVarselOpphoerMedHvilendeRett,
-    ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
-    OmsorgEgenAuto,
-    OpphoerBarnetilleggAuto,
-    OpptjeningVedForhoeyetHjelpesats,
-    UfoerOmregningEnslig,
-    UngUfoerAuto,
-    VarselSaksbehandlingstidAuto,
-)
-
-val prodRedigerbareTemplates: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
-    InformasjonOmSaksbehandlingstid
-)
-
-class TemplateResource(
-    autobrevTemplates: Set<AutobrevTemplate<*>> = prodAutobrevTemplates,
-    redigerbareTemplates: Set<RedigerbarTemplate<*>> = prodRedigerbareTemplates,
+class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
+    val name: String,
+    templates: Set<T>,
+    private val laTeXCompilerService: LaTeXCompilerService,
 ) {
-    private val autoBrevMap: Map<Brevkode.AutoBrev, AutobrevTemplate<*>> =
-        autobrevTemplates.associateBy { it.kode }
+    val templates: Map<Kode, T> = templates.associateBy { it.kode }
 
-    private val redigerbareBrevMap: Map<Brevkode.Redigerbar, RedigerbarTemplate<*>> =
-        redigerbareTemplates.associateBy { it.kode }
+    suspend fun renderPDF(call: ApplicationCall, brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
+        with(brevbestilling) {
+            renderPDF(call, createLetter(kode, letterData, language, felles))
+        }
 
-    fun getAutoBrev(): Set<Brevkode.AutoBrev> =
-        autoBrevMap.keys
+    suspend fun renderPDF(call: ApplicationCall, brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
+        with(brevbestilling) {
+            renderPDF(call, createLetter(kode, letterData, language, felles), letterMarkup)
+        }
 
-    fun getAutoBrev(kode: Brevkode.AutoBrev): LetterTemplate<*, BrevbakerBrevdata>? =
-        autoBrevMap[kode]?.template
+    fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
+        with(brevbestilling) {
+            renderHTML(createLetter(kode, letterData, language, felles))
+        }
 
-    fun getRedigerbareBrev(): Set<Brevkode.Redigerbar> =
-        redigerbareBrevMap.keys
+    fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
+        with(brevbestilling) {
+            renderHTML(createLetter(kode, letterData, language, felles), letterMarkup)
+        }
 
-    fun getRedigerbareBrevMedMetadata(): Map<Brevkode.Redigerbar, LetterMetadata> =
-        redigerbareBrevMap.mapValues { (_, v) -> v.template.letterMetadata }
+    fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
+        createLetter(brevbestilling.kode, brevbestilling.letterData, brevbestilling.language, brevbestilling.felles)
+            .let { Letter2Markup.renderLetterOnly(it.toScope(), it.template) }
 
-    fun getRedigerbartBrev(kode: Brevkode.Redigerbar): LetterTemplate<*, BrevbakerBrevdata>? =
-        redigerbareBrevMap[kode]?.template
+    fun countLetter(brevkode: Kode): Unit =
+        Metrics.prometheusRegistry.counter(
+            "pensjon_brevbaker_letter_request_count",
+            listOf(Tag.of("brevkode", brevkode.name))
+        ).increment()
+
+    private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
+        val template = templates[brevkode]?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
+
+        val language = spraak.toLanguage()
+        if (!template.language.supports(language)) {
+            throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.language}")
+        }
+
+        return Letter(
+            template = template,
+            argument = parseArgument(brevdata, template),
+            language = language,
+            felles = felles,
+        )
+    }
+
+    private suspend fun renderPDF(call: ApplicationCall, letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
+        renderCompleteMarkup(letter, redigertBrev)
+            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
+            .let { laTeXCompilerService.producePDF(it, call.callId) }
+            .let { pdf ->
+                LetterResponse(
+                    file = base64Decoder.decode(pdf.base64PDF),
+                    contentType = ContentType.Application.Pdf.toString(),
+                    letterMetadata = letter.template.letterMetadata
+                )
+            }
+
+    private fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
+        renderCompleteMarkup(letter, redigertBrev)
+            .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
+            .let { html ->
+                LetterResponse(
+                    file = html.indexHTML.content.toByteArray(Charsets.UTF_8),
+                    contentType = ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(),
+                    letterMetadata = letter.template.letterMetadata,
+                )
+            }
+
+    private fun renderCompleteMarkup(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterWithAttachmentsMarkup =
+        letter.toScope().let { scope ->
+            LetterWithAttachmentsMarkup(
+                redigertBrev ?: Letter2Markup.renderLetterOnly(scope, letter.template),
+                Letter2Markup.renderAttachmentsOnly(scope, letter.template),
+            )
+        }
+
+
+    private fun parseArgument(letterData: Any, template: LetterTemplate<*, BrevbakerBrevdata>): BrevbakerBrevdata =
+        try {
+            objectMapper.convertValue(letterData, template.letterDataType.java)
+        } catch (e: IllegalArgumentException) {
+            throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
+        }
 }

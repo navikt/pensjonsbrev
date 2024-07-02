@@ -7,7 +7,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
-import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
@@ -15,6 +14,8 @@ import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 private val letterResource = LetterResource()
+
+data class LetterResponse(val base64pdf: String, val letterMetadata: LetterMetadata)
 
 fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
 

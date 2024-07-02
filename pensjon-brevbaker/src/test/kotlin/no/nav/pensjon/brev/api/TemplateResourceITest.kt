@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api
 
+import io.mockk.mockk
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -11,13 +12,13 @@ import kotlin.reflect.KClass
 
 @Tag(TestTags.INTEGRATION_TEST)
 class TemplateResourceITest {
-    private val templateResource = TemplateResource()
+    private val templateResource = TemplateResource("autobrev", ProductionTemplates.autobrev, mockk())
 
     @Test
     fun `all templates can render and compile`() {
         requestTemplates()
-            .associateWith { templateResource.getAutoBrev(it) }
-            .forEach { testTemplate(it.key, it.value) }
+            .associateWith { templateResource.templates[it]!! }
+            .forEach { testTemplate(it.key, it.value.template) }
     }
 
     private fun testTemplate(kode: Brevkode.AutoBrev, template: LetterTemplate<*, *>?) {
@@ -27,14 +28,14 @@ class TemplateResourceITest {
         val argument = createArgument(template.letterDataType)
         try {
             val rendered = requestLetter(
-                AutobrevRequest(
+                BestillBrevRequest(
                     kode = kode,
                     letterData = argument,
                     felles = Fixtures.felles.copy(signerendeSaksbehandlere = null),
                     language = LanguageCode.BOKMAL
                 )
             )
-            writeTestPDF(kode.name, rendered.base64pdf)
+            writeTestPDF(kode.name, rendered.file)
         } catch (failedCompile: Exception) {
             fail("Failed to compile template($kode) with argument: $argument", failedCompile)
         }
