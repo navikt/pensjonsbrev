@@ -4,10 +4,15 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 data class BarnepensjonEtterbetaling(
-    val fraDato: LocalDate,
-    val tilDato: LocalDate,
-    val etterbetalingsperioder: List<BarnepensjonBeregningsperiode> = listOf()
+    val inneholderKrav: Boolean?,
+    val frivilligSkattetrekk: Boolean?,
+    val etterbetalingPeriodeValg: EtterbetalingPeriodeValg?,
 )
+
+enum class EtterbetalingPeriodeValg {
+    UNDER_3_MND,
+    FRA_3_MND,
+}
 
 data class OmstillingsstoenadEtterbetaling(
     val fraDato: LocalDate,

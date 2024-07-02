@@ -7,12 +7,18 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.etterbetalingPeriodeValg_safe
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.frivilligSkattetrekk_safe
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.inneholderKrav_safe
+import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
 object BarnepensjonFellesFraser {
-
     object FyllInn : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
@@ -108,7 +114,7 @@ object BarnepensjonFellesFraser {
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
-                    English to "Any questions?"
+                    English to "Any questions?",
                 )
             }
 
@@ -164,8 +170,8 @@ object BarnepensjonFellesFraser {
     }
 
     data class UtbetalingAvBarnepensjon(
-        val etterbetaling: Expression<Boolean>,
-        val brukerUnder18Aar: Expression<Boolean>
+        val etterbetaling: Expression<BarnepensjonEtterbetaling?>,
+        val brukerUnder18Aar: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -199,36 +205,79 @@ object BarnepensjonFellesFraser {
                         English to "Child pension is taxable, but not subject to withholding tax. You can read more about tax deductions in the attachment “Information to recipients of children’s pensions”.",
                     )
                 }
-            }
-
-            showIf(etterbetaling) {
-                paragraph {
+                showIf(etterbetaling.inneholderKrav_safe.equalTo(true)) {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                "Hvis det er lagt inn krav i etterbetalingen kan denne bli forsinket. " +
+                                "Beløpet som er trukket fra etterbetalingen vil gå frem av utbetalingsmeldingen.",
+                            Nynorsk to "todo",
+                            English to "todo",
+                        )
+                    }
+                }
+                title2 {
                     text(
-                        Bokmal to "Du får etterbetalt pensjon. Vanligvis vil du få denne i løpet av " +
-                                "tre uker. Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan " +
-                                "denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
-                        Nynorsk to "Du får etterbetalt pensjon. Normalt sett får du denne i løpet av " +
-                                "tre veker. Dersom Skatteetaten eller andre ordningar har krav i etterbetalinga, kan " +
-                                "denne bli forseinka. Frådrag i etterbetalinga vil gå fram av utbetalingsmeldinga.",
-                        English to "You will receive a back payment on your pension. You will usually " +
-                                "receive this back payment within three weeks. If the Norwegian Tax Administration or " +
-                                "other schemes are entitled to the back payment, the payment to you may be delayed. " +
-                                "Deductions from the back payment will be stated in the disbursement notice.",
+                        Bokmal to "Skatt på etterbetaling",
+                        Nynorsk to "todo",
+                        English to "todo",
                     )
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder " +
-                                "etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
-                                "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
-                        Nynorsk to "Det blir vanlegvis trekt skatt av etterbetaling. Dersom " +
-                                "etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane til " +
-                                "Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
-                        English to "Tax is usually deducted from back payments. If the back payment " +
-                                "applies to previous years, NAV will deduct the tax at the Tax Administration's " +
-                                "standard rates. You can read more about the rates here: " +
-                                "${Constants.SKATTETREKK_ETTERBETALING_URL}. ",
-                    )
+                showIf(etterbetaling.frivilligSkattetrekk_safe.equalTo(true)) {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                "Du har tidligere oppgitt frivillig skattetrekk på barnepensjonen. " +
+                                "Det samme skattetrekket vil bli brukt på etterbetalingen.",
+                            Nynorsk to "todo",
+                            English to "todo",
+                        )
+                    }
+                } orShow {
+                    showIf(etterbetaling.etterbetalingPeriodeValg_safe.equalTo(EtterbetalingPeriodeValg.UNDER_3_MND)) {
+                        paragraph {
+                            text(
+                                Bokmal to
+                                        "Vær oppmerksom på at det ikke blir trukket skatt av etterbetalingen fordi det " +
+                                        "ikke er registrert frivillig skattetrekk.",
+                                Nynorsk to "todo",
+                                English to "todo",
+                            )
+                        }
+                    }
+                    showIf(etterbetaling.etterbetalingPeriodeValg_safe.equalTo(EtterbetalingPeriodeValg.FRA_3_MND)) {
+                        paragraph {
+                            text(
+                                Bokmal to
+                                        "Det er ikke registrert frivillig skattetrekk for utbetaling av barnepensjonen. " +
+                                        "Vi må få beskjed innen tre uker om du ønsker at vi skal trekke skatt på etterbetalingen. " +
+                                        "Dette sikrer at skatten blir riktig og gir mindre risiko for restskatt.",
+                                Nynorsk to "todo",
+                                English to "todo",
+                            )
+                        }
+                    }
+                }
+                showIf(brukerUnder18Aar) {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                    "Du kan lese mer om frivillig skattetrekk og skatt i vedlegget " +
+                                    "“Informasjon til deg som handler på vegne av barnet”.",
+                            Nynorsk to "todo",
+                            English to "todo",
+                        )
+                    }
+                } orShow {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                    "Du kan lese mer om frivillig skattetrekk og skatt i vedlegget " +
+                                    "“Informasjon til deg som mottar barnepensjon”. ",
+                            Nynorsk to "todo",
+                            English to "todo",
+                        )
+                    }
                 }
             }
         }

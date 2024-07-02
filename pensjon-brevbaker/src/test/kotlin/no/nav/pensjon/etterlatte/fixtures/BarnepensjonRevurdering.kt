@@ -11,6 +11,7 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
+import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTO
 import java.time.LocalDate
@@ -106,17 +107,9 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
             bruktTrygdetid = bruktTrygdetid
         ),
         etterbetaling = BarnepensjonEtterbetaling(
-            fraDato = LocalDate.of(2023, Month.MAY, 1),
-            tilDato = LocalDate.of(2023, Month.DECEMBER, 31),
-            etterbetalingsperioder = listOf(
-                BarnepensjonBeregningsperiode(
-                    datoFOM = LocalDate.of(2023, Month.MAY, 1),
-                    datoTOM = LocalDate.of(2023, Month.DECEMBER, 31),
-                    grunnbeloep = Kroner(118620),
-                    antallBarn = 1,
-                    utbetaltBeloep = Kroner(8000)
-                )
-            )
+            inneholderKrav = true,
+            frivilligSkattetrekk = true,
+            etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
         ),
         brukerUnder18Aar = true,
         bosattUtland = false,
@@ -128,7 +121,11 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
 }
 
 fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderingRedigerbartUtfallDTO(
-    erEtterbetaling = true,
+    etterbetaling = BarnepensjonEtterbetaling(
+        inneholderKrav = true,
+        frivilligSkattetrekk = true,
+        etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
+    ),
     harUtbetaling = false,
     feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
     brukerUnder18Aar = true

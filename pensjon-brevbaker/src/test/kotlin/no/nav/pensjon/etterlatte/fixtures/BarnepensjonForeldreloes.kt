@@ -10,6 +10,7 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
+import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
 import java.time.LocalDate
@@ -94,24 +95,9 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
             bruktTrygdetid = bruktTrygdetid
         ),
         etterbetaling = BarnepensjonEtterbetaling(
-            fraDato = LocalDate.of(2020, Month.JANUARY, 1),
-            tilDato = LocalDate.of(2023, Month.JULY, 31),
-            etterbetalingsperioder = listOf(
-                BarnepensjonBeregningsperiode(
-                    datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-                    datoTOM = LocalDate.of(2023, Month.JULY, 31),
-                    grunnbeloep = Kroner(123456),
-                    antallBarn = 4,
-                    utbetaltBeloep = Kroner(6234)
-                ),
-                BarnepensjonBeregningsperiode(
-                    datoFOM = LocalDate.of(2023, Month.APRIL, 1),
-                    datoTOM = null,
-                    grunnbeloep = Kroner(123456),
-                    antallBarn = 4,
-                    utbetaltBeloep = Kroner(8234)
-                )
-            )
+            inneholderKrav = true,
+            frivilligSkattetrekk = true,
+            etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
         ),
         bosattUtland = true,
         brukerUnder18Aar = true,

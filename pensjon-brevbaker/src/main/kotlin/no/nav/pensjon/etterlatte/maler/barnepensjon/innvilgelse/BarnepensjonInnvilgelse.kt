@@ -32,7 +32,6 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepens
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterBosattUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterNasjonal
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.etterbetalingAvBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomHandlerPaaVegneAvBarnetUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjonNasjonal
@@ -84,7 +83,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
             konverterElementerTilBrevbakerformat(innhold)
 
             showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling.notNull(), brukerUnder18Aar))
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, brukerUnder18Aar))
             }
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
@@ -96,8 +95,6 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
 
         // Beregning av barnepensjon nytt regelverk
         includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
-
-        includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetaling)
 
         // Vedlegg under 18 år
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, innhold, brukerUnder18Aar.and(bosattUtland.not()))
