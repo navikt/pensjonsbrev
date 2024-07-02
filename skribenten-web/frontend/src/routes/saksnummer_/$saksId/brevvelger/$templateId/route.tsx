@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { Alert, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 
 import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -91,6 +91,8 @@ function Brevmal({
   letterTemplate: LetterMetadata;
   prefferedLanguage: SpraakKode | null;
 }) {
+  const navigate = useNavigate({ from: Route.fullPath });
+
   if (letterTemplate.dokumentkategoriCode === "E_BLANKETT") {
     return <Eblankett letterTemplate={letterTemplate} />;
   }
@@ -103,7 +105,13 @@ function Brevmal({
       return <BrevmalForExstream letterTemplate={letterTemplate} preferredLanguage={prefferedLanguage} />;
     }
     case BrevSystem.Brevbaker: {
-      return <div>TODO</div>;
+      navigate({
+        to: "/saksnummer/$saksId/brev",
+        search: () => ({ brevkode: letterTemplate.id }),
+        replace: true,
+      });
+      //typescript klager på dårlig returtype. Dem blir navigert bort fra siden uansett
+      return <></>;
     }
   }
 }

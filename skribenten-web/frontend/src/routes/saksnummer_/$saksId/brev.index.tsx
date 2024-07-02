@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
+import type { SpraakKode } from "~/types/apiTypes";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/")({
@@ -37,7 +38,14 @@ function OpprettBrevPage() {
       <ModelEditor
         brevkode={brevkode}
         disableSubmit={createBrevMutation.isPending || createBrevMutation.isSuccess}
-        onSubmit={createBrevMutation.mutate}
+        onSubmit={(submittedValues) =>
+          createBrevMutation.mutate({
+            spraak: submittedValues.spraak,
+            avsenderEnhet: submittedValues.avsenderEnhet,
+            saksbehandlerValg: submittedValues.saksbehandlerValg,
+          })
+        }
+        sakId={saksId}
       />
     </div>
   );
@@ -46,8 +54,18 @@ function OpprettBrevPage() {
 function useCreateLetterMutation(saksId: string, brevkode: string) {
   const navigate = useNavigate({ from: Route.fullPath });
   const queryClient = useQueryClient();
-  return useMutation<BrevResponse, Error, SaksbehandlerValg>({
-    mutationFn: async (saksbehandlerValg) => createBrev(saksId, { brevkode, saksbehandlerValg }),
+  return useMutation<
+    BrevResponse,
+    Error,
+    { spraak: SpraakKode; avsenderEnhet: string; saksbehandlerValg: SaksbehandlerValg }
+  >({
+    mutationFn: async (values) =>
+      createBrev(saksId, {
+        brevkode: brevkode,
+        spraak: values.spraak,
+        avsenderEnhet: values.avsenderEnhet,
+        saksbehandlerValg: values.saksbehandlerValg,
+      }),
     onSuccess: async (response) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       return navigate({
