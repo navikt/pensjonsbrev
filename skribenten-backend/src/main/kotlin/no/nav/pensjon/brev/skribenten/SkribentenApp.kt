@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.*
 import io.ktor.http.*
@@ -75,6 +76,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
         jackson {
             registerModule(JavaTimeModule())
             registerModule(Edit.JacksonModule)
+            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         }
     }
 

@@ -12,11 +12,12 @@ object Api {
 
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbar,
+        val spraak: SpraakKode,
+        val avsenderEnhet: String,
         val saksbehandlerValg: GeneriskBrevdata,
     )
 
     data class OppdaterBrevRequest(
-        val brevkode: Brevkode.Redigerbar,
         val saksbehandlerValg: GeneriskBrevdata,
         val redigertBrev: Edit.Letter,
     )

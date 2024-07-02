@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -40,15 +41,17 @@ class BrevredigeringService(
         call: ApplicationCall,
         sak: Pen.SakSelection,
         brevkode: Brevkode.Redigerbar,
+        spraak: LanguageCode,
         saksbehandlerValg: BrevbakerBrevdata,
         mapper: Brevredigering.() -> T,
     ): ServiceResult<T> =
-        rendreBrev(call, brevkode, sak, saksbehandlerValg).map { letter ->
+        rendreBrev(call, brevkode, spraak, sak, saksbehandlerValg).map { letter ->
             transaction {
                 Brevredigering.new {
                     saksId = sak.saksId
                     opprettetAvNavIdent = call.principal().navIdent
                     this.brevkode = brevkode
+                    this.spraak = spraak
                     this.saksbehandlerValg = saksbehandlerValg
                     laastForRedigering = false
                     redigeresAvNavIdent = null
@@ -71,7 +74,7 @@ class BrevredigeringService(
         val eksisterende = transaction { Brevredigering.findById(brevId) }
 
         return if (eksisterende != null) {
-            rendreBrev(call, eksisterende.brevkode, sak, saksbehandlerValg)
+            rendreBrev(call, eksisterende.brevkode, eksisterende.spraak, sak, saksbehandlerValg)
                 .map { redigertBrev.updateEditedLetter(it) }
                 .map { brev ->
                     transaction {
@@ -109,11 +112,11 @@ class BrevredigeringService(
             val brev = Brevredigering.findById(brevId)
 
             if (brev != null) {
-                rendreBrev(call, brev.brevkode, sak, brev.saksbehandlerValg)
+                rendreBrev(call, brev.brevkode, brev.spraak, sak, brev.saksbehandlerValg)
                     .map { brev.redigertBrev.updateEditedLetter(it) }
                     .map { brev.apply { redigertBrev = it }.mapper() }
             } else {
-                ServiceResult.Error("Fant ikke brev med id: $brevId", HttpStatusCode.NotFound)
+                ServiceResult.Ok(null)
             }
         }
 
@@ -126,6 +129,7 @@ class BrevredigeringService(
     private suspend fun rendreBrev(
         call: ApplicationCall,
         brevkode: Brevkode.Redigerbar,
+        spraak: LanguageCode,
         sak: Pen.SakSelection,
         saksbehandlerValg: BrevbakerBrevdata
     ): ServiceResult<LetterMarkup> {
@@ -134,6 +138,7 @@ class BrevredigeringService(
         return brevbakerService.renderMarkup(
             call = call,
             brevkode = brevkode,
+            spraak = spraak,
             brevdata = GeneriskRedigerbarBrevdata(
                 pesysData = pesysData.brevdata,
                 saksbehandlerValg = saksbehandlerValg,
@@ -166,6 +171,7 @@ class BrevredigeringService(
         brevbakerService.renderPdf(
             call = call,
             brevkode = brevredigering.brevkode,
+            spraak = brevredigering.spraak,
             brevdata = GeneriskRedigerbarBrevdata(
                 pesysData = pesysData.brevdata,
                 saksbehandlerValg = brevredigering.saksbehandlerValg,
