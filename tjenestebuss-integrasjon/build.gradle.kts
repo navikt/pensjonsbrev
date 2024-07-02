@@ -10,6 +10,7 @@ val hamkrestVersion: String by project
 val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
+val jupiterVersion: String by project
 
 plugins {
 	application
@@ -75,7 +76,9 @@ dependencies {
 
 
 	// Test
+	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+	testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
 	testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 	testImplementation("com.sun.xml.bind:jaxb-core:2.2.11")
 	testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")

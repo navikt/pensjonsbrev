@@ -13,12 +13,40 @@ data class FinnSamhandlerResponseDto(val samhandlere: List<Samhandler>, val fail
     )
 }
 
-class FinnSamhandlerRequestDto(
-    val navn: String,
+data class FinnSamhandlerRequestDto(
     val samhandlerType: SamhandlerTypeCode,
+    val direkteOppslag: DirekteOppslag?,
+    val organisasjonsnavn: Organisasjonsnavn?,
+    val personnavn: Personnavn?,
+) {
+    init {
+        require(listOf(direkteOppslag, organisasjonsnavn, personnavn).mapNotNull { it }.size == 1) {
+            "Forventer kun en oppslagstype av gangen"
+        }
+    }
+}
+
+data class DirekteOppslag(
+    val identtype: String,
+    val id: String,
+)
+
+data class Organisasjonsnavn(
+    val innUtland: String,
+    val navn: String,
+)
+
+data class Personnavn(
+    val fornavn: String,
+    val etternavn: String,
 )
 
 
+//--------------------------------------
+
+/**
+ * https://github.com/navikt/pesys/blob/a06c86a76bd38021445f685f417c68c5689612f6/pen/consumer/nav-consumer-pensjon-pen-java/src/main/java/no/nav/consumer/pensjon/pen/samhandler/SamhandlerType.kt
+ */
 enum class SamhandlerTypeCode {
     AA,    // Ambulansearbeider
     ADVO,  // Advokat / Jurist

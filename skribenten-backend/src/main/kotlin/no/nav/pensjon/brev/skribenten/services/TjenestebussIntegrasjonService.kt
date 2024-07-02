@@ -31,18 +31,12 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
 
     suspend fun finnSamhandler(
         call: ApplicationCall,
-        samhandlerType: SamhandlerTypeCode,
-        navn: String
+        requestDto: FinnSamhandlerRequestDto,
     ): FinnSamhandlerResponseDto =
         tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(
-                FinnSamhandlerRequestDto(
-                    navn = navn,
-                    samhandlerType = SamhandlerTypeCode.valueOf(samhandlerType.name)
-                )
-            )
+            setBody(requestDto)
         }.toServiceResult<FinnSamhandlerResponseDto>()
             .catch { message, status ->
                 logger.error("Feil ved samhandler søk. Status: $status Melding: $message")

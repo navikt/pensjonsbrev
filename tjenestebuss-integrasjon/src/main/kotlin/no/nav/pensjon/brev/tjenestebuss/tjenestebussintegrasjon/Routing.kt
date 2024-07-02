@@ -21,6 +21,8 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhand
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.PsakSamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerClientFactory
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.Identtype
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.InnUtland
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.SamhandlerTypeCode
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.setupServiceStatus
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
@@ -78,8 +80,14 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
         val servicesConfig = config.getConfig("services")
         val psakSamhandlerTjenestebussService =
-            PsakSamhandlerTjenestebussService(PsakSamhandlerClientFactory(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler))
-        val samhandlerService = SamhandlerService(SamhandlerClientFactory(servicesConfig.getConfig("samhandlerService")))
+            PsakSamhandlerTjenestebussService(
+                PsakSamhandlerClientFactory(
+                    servicesConfig.getConfig("tjenestebuss"),
+                    stsSercuritySOAPHandler
+                )
+            )
+        val samhandlerService =
+            SamhandlerService(SamhandlerClientFactory(servicesConfig.getConfig("samhandlerService")))
 
 
         get("/isAlive") {
@@ -104,7 +112,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 val requestDto = call.receive<HentSamhandlerRequestDto>()
                 call.respond(withCallId(psakSamhandlerTjenestebussService) { hentSamhandler(requestDto) })
             }
-            post("/hentSamhandlerAdresse"){
+            post("/hentSamhandlerAdresse") {
                 val requestDto = call.receive<HentSamhandlerAdresseRequestDto>()
                 call.respond(withCallId(samhandlerService) { hentSamhandlerPostadresse(requestDto.idTSSEkstern) })
             }
@@ -125,7 +133,34 @@ data class HentSamhandlerAdresseRequestDto(
     val idTSSEkstern: String,
 )
 
+//----------------------------------------------------------------------------------------------------
+
+
 data class FinnSamhandlerRequestDto(
-    val navn: String,
     val samhandlerType: SamhandlerTypeCode,
+    val direkteOppslag: DirekteOppslag?,
+    val organisasjonsnavn: Organisasjonsnavn?,
+    val personnavn: Personnavn?,
+) {
+    init {
+        require(listOf(direkteOppslag, organisasjonsnavn, personnavn).mapNotNull { it }.size == 1) {
+            "Forventer kun en oppslagstype av gangen"
+        }
+    }
+}
+
+data class DirekteOppslag(
+    val identtype: Identtype,
+    val id: String,
 )
+
+data class Organisasjonsnavn(
+    val innUtland: InnUtland,
+    val navn: String,
+)
+
+data class Personnavn(
+    val fornavn: String,
+    val etternavn: String,
+)
+
