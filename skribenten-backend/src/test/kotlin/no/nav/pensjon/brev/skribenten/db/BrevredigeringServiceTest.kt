@@ -94,7 +94,7 @@ class BrevredigeringServiceTest {
     )
 
     @Test
-    fun `non existing brevredingering returns null`() = runBlocking {
+    fun `non existing brevredingering returns null`(): Unit = runBlocking {
         assertThat(service.hentBrev(callMock, sak, 99, ::mapBrev)).isInstanceOfSatisfying(ServiceResult.Error::class.java) {
             assertThat(it.statusCode).isEqualTo(HttpStatusCode.NotFound)
         }
@@ -284,7 +284,7 @@ class BrevredigeringServiceTest {
                 )
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(
-            LetterResponse.V2(
+            LetterResponse(
                 file = pdf,
                 contentType = ContentType.Application.Pdf.toString(),
                 letterMetadata = LetterMetadata(

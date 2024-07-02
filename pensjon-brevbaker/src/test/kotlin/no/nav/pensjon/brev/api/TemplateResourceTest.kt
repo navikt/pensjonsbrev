@@ -1,169 +1,146 @@
 package no.nav.pensjon.brev.api
 
-import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.hasElement
+import com.natpryce.hamkrest.containsSubstring
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.callid.*
+import io.mockk.*
+import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
+import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.UngUfoerAuto
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.PDFCompilationOutput
+import no.nav.pensjon.brev.maler.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
-import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.StableHash
-import no.nav.pensjon.brev.template.jacksonObjectMapper
+import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.render.DocumentFile
+import no.nav.pensjon.brev.template.render.LatexDocument
+import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.util.*
 
 class TemplateResourceTest {
-
-    private val templateResource = TemplateResource(prodAutobrevTemplates)
-
-    @Test
-    fun `getAutoBrev fetches template`() {
-        assertEquals(OmsorgEgenAuto.template, templateResource.getAutoBrev(OmsorgEgenAuto.kode))
+    private val pdfInnhold = "generert pdf"
+    private val base64PDF = Base64.getEncoder().encodeToString(pdfInnhold.toByteArray())
+    private val latexMock = mockk<LaTeXCompilerService> {
+        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(base64PDF)
     }
+    private val autobrev = TemplateResource("autobrev", ProductionTemplates.autobrev, latexMock)
+    private val redigerbar = TemplateResource("autobrev", ProductionTemplates.redigerbare, latexMock)
 
-    @Test
-    fun `getRedigerbartBrev fetches template`() {
-        assertEquals(InformasjonOmSaksbehandlingstid.template, templateResource.getRedigerbartBrev(InformasjonOmSaksbehandlingstid.kode))
-    }
-
-    @Test
-    fun `getAutoBrev returns list of template names`() {
-        assertThat(
-            templateResource.getAutoBrev(),
-            hasElement(OmsorgEgenAuto.kode) and hasElement(UngUfoerAuto.kode)
+    private val validAutobrevRequest = BestillBrevRequest(
+        Brevkode.AutoBrev.UT_OPPHOER_BT_AUTO,
+        Fixtures.create<OpphoerBarnetilleggAutoDto>(),
+        Fixtures.fellesAuto,
+        LanguageCode.BOKMAL
+    )
+    private val validRedigertBrevRequest = BestillRedigertBrevRequest(
+        Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+        Fixtures.create<InformasjonOmSaksbehandlingstidDto>(),
+        Fixtures.felles,
+        LanguageCode.BOKMAL,
+        LetterMarkup(
+            "redigert markup",
+            LetterMarkup.Sakspart(
+                "gjelder bruker",
+                "123abc",
+                "001",
+                "en dato"
+            ),
+            emptyList(),
+            LetterMarkup.Signatur(
+                "hilsen oss",
+                "en rolle",
+                "Saksbehandlersen",
+                null,
+                "Akersgata"
+            )
         )
+    )
+
+    private val callMock = mockk<ApplicationCall> {
+        every { callId } returns "abdef"
     }
 
     @Test
-    fun `getRedigerbareBrev returns list of template names`() {
-        assertThat(
-            templateResource.getRedigerbareBrev(),
-            hasElement(InformasjonOmSaksbehandlingstid.kode)
-        )
-    }
-
-    @Test
-    fun `all names returned by getAutoBrev can be fetched with getAutoBrev`() {
-        val templateNames = templateResource.getAutoBrev().toSet()
-        val templates = templateNames.mapNotNull { templateResource.getAutoBrev(it) }
-            .map { Brevkode.AutoBrev.valueOf(it.name) }
-            .toSet()
-
-        assertEquals(templateNames, templates)
-    }
-
-    @Test
-    fun `all names returned by getRedigerbareBrev can be fetched with getRedigerbartBrev`() {
-        val templateNames = templateResource.getRedigerbareBrev().toSet()
-        val templates = templateNames.mapNotNull { templateResource.getRedigerbartBrev(it) }
-            .map { Brevkode.Redigerbar.valueOf(it.name) }
-            .toSet()
-
-        assertEquals(templateNames, templates)
-    }
-
-    @Test
-    fun `all autobrev templates have letterDataType which are data class`() {
-        val templatesWithoutDataClass: Map<Brevkode.AutoBrev, LetterTemplate<*, *>> = templateResource.getAutoBrev()
-            .associateWith { templateResource.getAutoBrev(it)!! }
-            .filterValues { it.letterDataType != EmptyBrevdata::class }
-            .filterValues { !it.letterDataType.isData }
-
-        assertEquals(emptySet<Brevkode.AutoBrev>(), templatesWithoutDataClass.keys)
-    }
-
-    @Test
-    fun `all redigerbare templates have letterDataType which are data class`() {
-        val templatesWithoutDataClass: Map<Brevkode.Redigerbar, LetterTemplate<*, *>> = templateResource.getRedigerbareBrev()
-            .associateWith { templateResource.getRedigerbartBrev(it)!! }
-            .filterValues { !it.letterDataType.isData }
-
-        assertEquals(emptySet<Brevkode.Redigerbar>(), templatesWithoutDataClass.keys)
-    }
-
-    @Test
-    fun `all autobrev templates have letterDataType that can be created`() {
-        val templatesWithoutSampleData = templateResource.getAutoBrev()
-            .associateWith { templateResource.getAutoBrev(it)!! }
-            .mapValues {
-                try {
-                    Fixtures.create(it.value.letterDataType)
-                    null
-                } catch (e: IllegalArgumentException) {
-                    e.message
-                }
-            }.filterValues { it != null }
-
+    fun `can renderPDF with valid letterData`(): Unit = runBlocking {
+        val result = autobrev.renderPDF(callMock, validAutobrevRequest)
         assertEquals(
-            emptyMap<Brevkode.AutoBrev, String>(),
-            templatesWithoutSampleData,
-            "letterDataType classes must be constructable by Fixtures.create."
+            LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), OpphoerBarnetilleggAuto.template.letterMetadata),
+            result
         )
     }
 
     @Test
-    fun `all redigerbare templates have letterDataType that can be created`() {
-        val templatesWithoutSampleData = templateResource.getRedigerbareBrev()
-            .associateWith { templateResource.getRedigerbartBrev(it)!! }
-            .mapValues {
-                try {
-                    Fixtures.create(it.value.letterDataType)
-                    null
-                } catch (e: IllegalArgumentException) {
-                    e.message
-                }
-            }.filterValues { it != null }
+    fun `can renderHTML with valid letterData`() {
+        val result = autobrev.renderHTML(validAutobrevRequest)
+        assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), result.contentType)
+        assertEquals(OpphoerBarnetilleggAuto.template.letterMetadata, result.letterMetadata)
+    }
 
-        assertEquals(
-            emptyMap<Brevkode.Redigerbar, String>(),
-            templatesWithoutSampleData,
-            "letterDataType classes must be constructable by Fixtures.create."
+    @Test
+    fun `fails renderPDF with invalid letterData`(): Unit = runBlocking {
+        assertThrows<ParseLetterDataException> {
+            autobrev.renderPDF(callMock, validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+        }
+    }
+
+    @Test
+    fun `fails renderHTML with invalid letterData`() {
+        assertThrows<ParseLetterDataException> {
+            autobrev.renderHTML(validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+        }
+    }
+
+    @Test
+    fun `renderHTML redigertBrev uses letterMarkup from argument and includes attachments`() {
+        val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
+        val anAttachmentTitle = Letter2Markup.renderAttachmentsOnly(
+            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
+            InformasjonOmSaksbehandlingstid.template
+        ).firstOrNull()?.title?.joinToString { it.text }
+
+        assertThat(result, containsSubstring(validRedigertBrevRequest.letterMarkup.title))
+
+        // TODO: Vi har ingen redigerbare maler med vedlegg, if kan fjernes når vi har en mal med vedlegg.
+        if (anAttachmentTitle != null) {
+            assertThat(result, containsSubstring(anAttachmentTitle))
+        }
+    }
+
+    @Test
+    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
+        val anAttachment = Letter2Markup.renderAttachmentsOnly(
+            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
+            InformasjonOmSaksbehandlingstid.template
+        ).firstOrNull()
+
+        val capturedLatex = slot<LatexDocument>()
+        redigerbar.renderPDF(callMock, validRedigertBrevRequest)
+        coVerify { latexMock.producePDF(capture(capturedLatex), any()) }
+
+        val letterLatexContent = capturedLatex.captured.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "letter.tex" }.content
+        assertThat(
+            letterLatexContent,
+            containsSubstring(validRedigertBrevRequest.letterMarkup.title)
         )
+
+        // TODO: Vi har ingen redigerbare maler med vedlegg, if kan fjernes når vi har en mal med vedlegg.
+        if (anAttachment != null) {
+            assertThat(letterLatexContent, containsSubstring(anAttachment.title.joinToString { it.text }))
+        }
     }
 
-    @Test
-    fun `all autobrev template letterDataType can be serialized and deserialized`() {
-        val jackson = jacksonObjectMapper()
-        templateResource.getAutoBrev()
-            .map { templateResource.getAutoBrev(it)!! }
-            .filter { it.letterDataType != EmptyBrevdata::class }
-            .forEach {
-                val data = Fixtures.create(it.letterDataType)
-                val json = jackson.writeValueAsString(data)
-                val deserialized = jackson.readValue(json, it.letterDataType.java)
-
-                assertEquals(data, deserialized)
-            }
-    }
-
-    @Test
-    fun `all redigerbar template letterDataType can be serialized and deserialized`() {
-        val jackson = jacksonObjectMapper()
-        templateResource.getRedigerbareBrev()
-            .map { templateResource.getRedigerbartBrev(it)!! }
-            .forEach {
-                val data = Fixtures.create(it.letterDataType)
-                val json = jackson.writeValueAsString(data)
-                val deserialized = jackson.readValue(json, it.letterDataType.java)
-
-                assertEquals(data, deserialized)
-            }
-    }
-
-    @Test
-    fun `all templates can generate stableHashCode`() {
-        templateResource.getAutoBrev().map { templateResource.getAutoBrev(it)!! }
-            .forEach {
-                StableHash.of(it.outline).stableHashCode()
-                StableHash.of(it.attachments).stableHashCode()
-            }
-        templateResource.getRedigerbareBrev().map { templateResource.getRedigerbartBrev(it)!! }
-            .forEach {
-                StableHash.of(it.outline).stableHashCode()
-                StableHash.of(it.attachments).stableHashCode()
-            }
-    }
 }
