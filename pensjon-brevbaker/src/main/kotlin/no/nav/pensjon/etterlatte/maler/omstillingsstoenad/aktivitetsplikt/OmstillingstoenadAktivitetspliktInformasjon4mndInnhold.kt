@@ -33,9 +33,9 @@ data class OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO(
     val nasjonalEllerUtland: NasjonalEllerUtland
 )
 
-enum class Aktivitetsgrad { IKKE_I_AKTIVITET, UNDER_50_PROSENT, OVER_50_PROSENT };
+enum class Aktivitetsgrad { IKKE_I_AKTIVITET, UNDER_50_PROSENT, OVER_50_PROSENT }
 
-enum class NasjonalEllerUtland { NASJONAL, UTLAND };
+enum class NasjonalEllerUtland { NASJONAL, UTLAND }
 
 @TemplateModelHelpers
 object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
