@@ -33,9 +33,9 @@ data class OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO(
     val nasjonalEllerUtland: NasjonalEllerUtland
 )
 
-enum class Aktivitetsgrad { IKKE_I_AKTIVITET, UNDER_50_PROSENT, OVER_50_PROSENT };
+enum class Aktivitetsgrad { IKKE_I_AKTIVITET, UNDER_50_PROSENT, OVER_50_PROSENT }
 
-enum class NasjonalEllerUtland { NASJONAL, UTLAND };
+enum class NasjonalEllerUtland { NASJONAL, UTLAND }
 
 @TemplateModelHelpers
 object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
@@ -161,13 +161,13 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     text(
                         Bokmal to "Er det en grunn til at du ikke kan være reell arbeidssøker eller annet som oppfyller " +
                                 "aktivitetsplikten på minst 50 prosent, må du sende oss dokumentasjon på dette snarest mulig og " +
-                                "senest innen 14 dager fra du mottar dette brevet. Se “Unntak for aktivitetsplikten” under.",
+                                "senest innen tre uker fra datoen på dette brevet. Se “Unntak for aktivitetsplikten” under.",
                         Nynorsk to "Viss det er ein grunn til at du ikkje kan vere reell arbeidssøkjar eller gjere " +
                                 "anna som oppfyller aktivitetsplikta på minst 50 prosent, må du sende oss dokumentasjon på " +
-                                "dette snarast mogleg og seinast innan 14 dagar frå du får dette brevet. Sjå «Unntak frå aktivitetsplikta» under.",
+                                "dette snarast mogleg og seinast innan tre veker frå datoen på dette brevet. Sjå «Unntak frå aktivitetsplikta» under.",
                         English to "If there is any reason why you are unable to be a genuine job seeker or do something else " +
                                 "that fulfils the activity obligation of at least 50 percent, you must send us documentation of this " +
-                                "as soon as possible and no later than 14 days after you have received this letter. " +
+                                "as soon as possible and no later than three weeks from the date of this letter. " +
                                 "See “Exemption from the activity obligation” below.",
                     )
                 }
@@ -207,13 +207,13 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     text(
                         Bokmal to "Er det en grunn til at du ikke kan være reell arbeidssøker eller gjøre annet som " +
                                 "oppfyller aktivitetsplikten på minst 50 prosent, må du sende oss dokumentasjon på dette " +
-                                "snarest mulig og senest innen 14 dager fra du mottar dette brevet. Se “Unntak for aktivitetsplikten” under.",
+                                "snarest mulig og senest innen tre uker fra datoen på dette brevet. Se “Unntak for aktivitetsplikten” under.",
                         Nynorsk to "Viss det er ein grunn til at du ikkje kan vere reell arbeidssøkjar eller gjere anna " +
                                 "som oppfyller aktivitetsplikta på minst 50 prosent, må du sende oss dokumentasjon på dette " +
-                                "snarast mogleg og seinast innan 14 dagar frå du får dette brevet. Sjå «Unntak frå aktivitetsplikta» under.",
+                                "snarast mogleg og seinast innan tre veker frå datoen på dette brevet. Sjå «Unntak frå aktivitetsplikta» under.",
                         English to "If there is any reason why you are unable to be a genuine job seeker or do something " +
                                 "else that fulfils the activity obligation of at least 50 percent, you must send us documentation " +
-                                "of this as soon as possible and no later than 14 days after you have received this letter. See “Exemption from the activity obligation” below.",
+                                "of this as soon as possible and no later than three weeks from the date of this letter. See “Exemption from the activity obligation” below.",
                     )
                 }
             }
@@ -222,14 +222,14 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                 paragraph {
                     text(
                         Bokmal to "Hvis situasjonen din er endret, må du gi oss informasjon om din nye situasjon " +
-                                "snarest mulig og senest innen 14 dager fra du mottar dette brevet. Les mer om hvordan du kan " +
+                                "snarest mulig og senest innen tre uker fra datoen på dette brevet. Les mer om hvordan du kan " +
                                 "fylle aktivitetsplikten og om unntak fra aktivitetsplikten lenger ned i brevet.",
                         Nynorsk to "Dersom situasjonen din har endra seg, må du gi oss informasjon om den nye " +
-                                "situasjonen snarast mogleg og seinast innan 14 dagar frå du får dette brevet. Lenger ned " +
+                                "situasjonen snarast mogleg og seinast innan tre veker frå datoen på dette brevet. Lenger ned " +
                                 "i brevet kan du lese meir om korleis du kan oppfylle aktivitetsplikta, og kva som er " +
                                 "unntaka frå aktivitetsplikta.",
                         English to "If your situation has changed, you must provide us with information about your " +
-                                "new situation as soon as possible and at the latest by 14 days after you have received this letter. " +
+                                "new situation as soon as possible and no later than three weeks from the date of this letter. " +
                                 "Read more about how you can comply with the activity obligation and exemption from " +
                                 "the activity obligation farther down in this letter.",
                     )
@@ -241,6 +241,16 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     Bokmal to "Du finner informasjon om hvordan du melder fra under “Du må melde fra om endringer”.",
                     Nynorsk to "Under «Du må melde frå om endringar» finn du meir informasjon om korleis du melder frå.",
                     English to "You will find more information about how to notify us in the section “You must notify us about any changes”.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvis du trenger mer tid for å innhente dokumentasjon, må du kontakte oss snarest mulig " +
+                            "og senest innen tre uker fra datoen på dette brevet.",
+                    Nynorsk to "Viss du treng meir tid for å innhente dokumentasjon, må du kontakte oss snarast mogleg " +
+                            "og seinast innan tre veker frå datoen på dette brevet.",
+                    English to "If you need more time to obtain documentation, you must contact us as soon as possible " +
+                            "and no later than three weeks from the date of this letter.",
                 )
             }
 
@@ -426,9 +436,9 @@ object OmstillingstoenadAktivitetspliktInformasjon4mndInnhold :
                     item {
                         text(
                             Bokmal to "har sykdom eller helseutfordringer som hindrer deg fra å være i minst 50 " +
-                                    "prosent arbeid eller arbeidsrettet aktivitet, og du benytter restarbeidsevnen din",
+                                    "prosent arbeid eller arbeidsrettet aktivitet, og du benytter din gjenværende arbeidsevne.",
                             Nynorsk to "har sjukdom eller helseutfordringar som hindrar deg i å vere i minst 50 " +
-                                    "prosent arbeid eller arbeidsretta aktivitet, og du nyttar restarbeidsevna di",
+                                    "prosent arbeid eller arbeidsretta aktivitet, og du nyttar di attverande arbeidsevne",
                             English to "have an illness or health problems that hinder you from working at least 50 " +
                                     "percent or being involved in a work-related activity, and you use your residual ability to work",
                         )
