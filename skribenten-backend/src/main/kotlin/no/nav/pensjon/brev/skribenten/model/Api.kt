@@ -13,7 +13,7 @@ object Api {
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbar,
         val spraak: SpraakKode,
-        val avsenderEnhet: String?,
+        val avsenderEnhetsId: String?,
         val saksbehandlerValg: GeneriskBrevdata,
     )
 

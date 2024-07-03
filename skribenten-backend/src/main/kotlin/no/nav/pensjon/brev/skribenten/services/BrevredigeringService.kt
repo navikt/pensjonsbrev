@@ -43,11 +43,11 @@ class BrevredigeringService(
         sak: Pen.SakSelection,
         brevkode: Brevkode.Redigerbar,
         spraak: LanguageCode,
-        avsenderEnhetId: String?,
+        avsenderEnhetsId: String?,
         saksbehandlerValg: BrevbakerBrevdata,
         mapper: Brevredigering.() -> T,
     ): ServiceResult<T> =
-        harTilgangTilEnhet(call, avsenderEnhetId) {
+        harTilgangTilEnhet(call, avsenderEnhetsId) {
             rendreBrev(call, brevkode, spraak, sak, saksbehandlerValg).map { letter ->
                 transaction {
                     Brevredigering.new {
@@ -55,7 +55,7 @@ class BrevredigeringService(
                         opprettetAvNavIdent = call.principal().navIdent
                         this.brevkode = brevkode
                         this.spraak = spraak
-                        this.avsenderEnhetId = avsenderEnhetId
+                        this.avsenderEnhetId = avsenderEnhetsId
                         this.saksbehandlerValg = saksbehandlerValg
                         laastForRedigering = false
                         redigeresAvNavIdent = null

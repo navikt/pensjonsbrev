@@ -356,7 +356,7 @@ class BrevredigeringServiceTest {
             sak = sak,
             brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
             spraak = LanguageCode.ENGLISH,
-            avsenderEnhetId = principalNavEnhetId,
+            avsenderEnhetsId = principalNavEnhetId,
             saksbehandlerValg = saksbehandlersValg,
             mapper = ::mapBrev
         )
