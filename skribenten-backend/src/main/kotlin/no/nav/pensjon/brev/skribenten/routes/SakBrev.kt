@@ -19,8 +19,9 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
         post<Api.OpprettBrevRequest> { request ->
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             val spraak = request.spraak.toLanguageCode()
+            val avsenderEnhetId = request.avsenderEnhet?.takeIf { it.isNotBlank() }
 
-            brevredigeringService.opprettBrev(call, sak, request.brevkode, spraak, request.saksbehandlerValg, ::mapBrev)
+            brevredigeringService.opprettBrev(call, sak, request.brevkode, spraak, avsenderEnhetId, request.saksbehandlerValg, ::mapBrev)
                 .onOk { brev ->
                     call.respond(HttpStatusCode.Created, brev)
                 }.onError { message, statusCode ->

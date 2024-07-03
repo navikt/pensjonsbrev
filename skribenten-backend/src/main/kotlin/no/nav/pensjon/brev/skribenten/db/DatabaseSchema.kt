@@ -24,6 +24,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.SchemaUtils.withDataBaseLock
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
@@ -46,35 +47,41 @@ private val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
 }
 
 object BrevredigeringTable : LongIdTable() {
-    val saksId : Column<Long> = long("saksId") //TODO: Om vi skal slå opp redigineringer på sak, legg til index
-    val brevkode: ColumnWithTransform<String, Brevkode.Redigerbar> = varchar("brevkode", length = 50).transform(Brevkode.Redigerbar::name, Brevkode.Redigerbar::valueOf)
-    val spraak: ColumnWithTransform<String, LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::name, LanguageCode::valueOf)
+    val saksId: Column<Long> = long("saksId").index()
+    val brevkode: ColumnWithTransform<String, Brevkode.Redigerbar> = varchar("brevkode", length = 50)
+        .transform(Brevkode.Redigerbar::name, Brevkode.Redigerbar::valueOf)
+    val spraak: ColumnWithTransform<String, LanguageCode> = varchar("spraak", length = 50)
+        // TODO: Fjern default value etter at skjema er oppdatert oppdatering
+        .default(LanguageCode.BOKMAL.name)
+        .transform(LanguageCode::name, LanguageCode::valueOf)
+    val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", objectMapper::writeValueAsString, objectMapper::readValue)
     val redigertBrev = json<Edit.Letter>("redigertBrev", objectMapper::writeValueAsString, objectMapper::readValue)
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     // TODO: introdusere value class for NavIdent?
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
-    val sistRedigertAvNavIdent : Column<String> = varchar("sistRedigertAvNavIdent", length = 50)
+    val sistRedigertAvNavIdent: Column<String> = varchar("sistRedigertAvNavIdent", length = 50)
     val opprettetAvNavIdent: Column<String> = varchar("opprettetAvNavIdent", length = 50).index()
     val opprettet: Column<LocalDateTime> = datetime("opprettet")
     val sistredigert: Column<LocalDateTime> = datetime("sistredigert")
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
-    var saksId  by BrevredigeringTable.saksId
+    var saksId by BrevredigeringTable.saksId
     var brevkode by BrevredigeringTable.brevkode
     var spraak by BrevredigeringTable.spraak
-    var saksbehandlerValg  by BrevredigeringTable.saksbehandlerValg
-    var redigertBrev  by BrevredigeringTable.redigertBrev
+    var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
+    var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
+    var redigertBrev by BrevredigeringTable.redigertBrev
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent
     var sistRedigertAvNavIdent by BrevredigeringTable.sistRedigertAvNavIdent
     var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
-    val document by Document referrersOn DocumentTable.brevredigering orderBy(DocumentTable.id to SortOrder.DESC)
+    val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
 
-    companion object: LongEntityClass<Brevredigering>(BrevredigeringTable)
+    companion object : LongEntityClass<Brevredigering>(BrevredigeringTable)
 }
 
 object DocumentTable : LongIdTable() {
@@ -86,7 +93,7 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
     var pdf by DocumentTable.pdf
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
 
-    companion object: LongEntityClass<Document>(DocumentTable)
+    companion object : LongEntityClass<Document>(DocumentTable)
 }
 
 fun initDatabase(config: Config) =
@@ -105,7 +112,9 @@ fun initDatabase(jdbcUrl: String, username: String, password: String) {
         }),
     )
     transaction(database) {
-        SchemaUtils.create(BrevredigeringTable, DocumentTable, Favourites)
+        withDataBaseLock {
+            SchemaUtils.createMissingTablesAndColumns(BrevredigeringTable, DocumentTable, Favourites)
+        }
     }
 }
 
@@ -117,8 +126,6 @@ private fun createJdbcUrl(config: Config): String =
         val dbName = getString("name")
         return "jdbc:postgresql://$url:$port/$dbName"
     }
-
-
 
 private object BrevbakerBrevdataModule : SimpleModule() {
     private fun readResolve(): Any = BrevbakerBrevdataModule

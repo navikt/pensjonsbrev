@@ -18,16 +18,13 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.mapBrev
-import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
-import no.nav.pensjon.brev.skribenten.services.GeneriskRedigerbarBrevdata
-import no.nav.pensjon.brev.skribenten.services.PenService
-import no.nav.pensjon.brev.skribenten.services.ServiceResult
+import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
@@ -65,9 +62,11 @@ class BrevredigeringServiceTest {
     private val letter = letter(Paragraph(1, true, listOf(Literal(1, "red pill"))))
 
     private val brevbakerMock: BrevbakerService = mockk<BrevbakerService>()
+    private val principalNavIdent = "Agent Smith"
+    private val principalNavEnhetId = "Nebuchadnezzar"
     private val callMock = mockk<ApplicationCall> {
         every { principal() } returns mockk<UserPrincipal> {
-            every { navIdent } returns "Agent Smith"
+            every { navIdent } returns principalNavIdent
         }
     }
 
@@ -106,9 +105,14 @@ class BrevredigeringServiceTest {
                     )
                 )
     }
+    private val navAnsattService = mockk<NavansattService> {
+        coEvery { harTilgangTilEnhet(any(), any(), any()) } returns ServiceResult.Ok(false)
+        coEvery { harTilgangTilEnhet(any(), eq(principalNavIdent), eq(principalNavEnhetId)) } returns ServiceResult.Ok(true)
+    }
     private val service: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerMock,
-        penService = penService
+        penService = penService,
+        navansattService = navAnsattService,
     )
 
     @BeforeEach
@@ -130,7 +134,15 @@ class BrevredigeringServiceTest {
     fun `can create and fetch brevredigering`() = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val result =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, LanguageCode.ENGLISH, saksbehandlerValg, ::mapBrev)
+            service.opprettBrev(
+                callMock,
+                sak,
+                Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+                LanguageCode.ENGLISH,
+                principalNavEnhetId,
+                saksbehandlerValg,
+                ::mapBrev
+            )
 
         coVerify {
             brevbakerMock.renderMarkup(
@@ -158,10 +170,35 @@ class BrevredigeringServiceTest {
     }
 
     @Test
+    fun `cannot create brevredigering for a NavEnhet without access to it`(): Unit = runBlocking {
+        val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
+        val result = service.opprettBrev(
+            callMock,
+            sak,
+            Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+            LanguageCode.ENGLISH,
+            "The Matrix",
+            saksbehandlerValg,
+            ::mapBrev
+        )
+        assertThat(result).isInstanceOfSatisfying(ServiceResult.Error::class.java) {
+            assertThat(it.statusCode).isEqualTo(HttpStatusCode.Forbidden)
+        }
+    }
+
+    @Test
     fun `can update brevredigering`() = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val original =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, LanguageCode.ENGLISH, saksbehandlerValg, ::mapBrev)
+            service.opprettBrev(
+                callMock,
+                sak,
+                Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+                LanguageCode.ENGLISH,
+                principalNavEnhetId,
+                saksbehandlerValg,
+                ::mapBrev
+            )
                 .resultOrNull()!!
 
         clearMocks()
@@ -176,7 +213,15 @@ class BrevredigeringServiceTest {
             ::mapBrev,
         ).resultOrNull()!!
 
-        coVerify(exactly = 1) { brevbakerMock.renderMarkup(any(), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), eq(LanguageCode.ENGLISH), any(), any()) }
+        coVerify(exactly = 1) {
+            brevbakerMock.renderMarkup(
+                any(),
+                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                eq(LanguageCode.ENGLISH),
+                any(),
+                any()
+            )
+        }
 
         assertThat(service.hentBrev(callMock, sak, original.info.id, ::mapBrev))
             .isInstanceOfSatisfying(ServiceResult.Ok::class.java) {
@@ -190,7 +235,15 @@ class BrevredigeringServiceTest {
     fun `updates redigertBrev with fresh rendering from brevbaker`() = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val original =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, LanguageCode.ENGLISH, saksbehandlerValg, ::mapBrev)
+            service.opprettBrev(
+                callMock,
+                sak,
+                Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+                LanguageCode.ENGLISH,
+                principalNavEnhetId,
+                saksbehandlerValg,
+                ::mapBrev
+            )
                 .resultOrNull()!!
 
         val nyeValg = GeneriskBrevData().apply { put("valg2", true) }
@@ -263,7 +316,15 @@ class BrevredigeringServiceTest {
     fun `can delete brevredigering`(): Unit = runBlocking {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val result =
-            service.opprettBrev(callMock, sak, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID, LanguageCode.ENGLISH, saksbehandlerValg, ::mapBrev)
+            service.opprettBrev(
+                callMock,
+                sak,
+                Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+                LanguageCode.ENGLISH,
+                principalNavEnhetId,
+                saksbehandlerValg,
+                ::mapBrev
+            )
 
         assertEquals(result, service.hentBrev(callMock, sak, result.resultOrNull()!!.info.id, ::mapBrev))
         assertTrue(service.slettBrev(result.resultOrNull()!!.info.id))
@@ -290,24 +351,21 @@ class BrevredigeringServiceTest {
         //
         val saksbehandlersValg = GeneriskBrevData().apply { put("valg", true) }
 
-        val unikCallMock = mockk<ApplicationCall> {
-            every { principal() } returns mockk<UserPrincipal> {
-                every { navIdent } returns "XYZ12345678"
-            }
-        }
-
-        val result = service.opprettBrev(
-            unikCallMock,
-            sak,
-            Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
-            LanguageCode.ENGLISH,
-            saksbehandlersValg,
-            ::mapBrev
-        ).resultOrNull()!!
+        val serviceResult = service.opprettBrev(
+            call = callMock,
+            sak = sak,
+            brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+            spraak = LanguageCode.ENGLISH,
+            avsenderEnhetId = principalNavEnhetId,
+            saksbehandlerValg = saksbehandlersValg,
+            mapper = ::mapBrev
+        )
+        assertThat(serviceResult).isInstanceOf(ServiceResult.Ok::class.java)
+        val result = serviceResult.resultOrNull()!!
 
         transaction {
-            val brevredigering = Brevredigering.all().first { it.opprettetAvNavIdent == "XYZ12345678" }
-            val document = Document.all().filter { it.brevredigering.id == brevredigering.id }
+            val brevredigering = Brevredigering[result.info.id]
+            val document = Document.find { DocumentTable.brevredigering.eq(brevredigering.id) }
 
             assertEquals(0, brevredigering.document.count())
             assertEquals(0, document.count())
@@ -338,8 +396,9 @@ class BrevredigeringServiceTest {
         }
 
         transaction {
-            val brevredigering = Brevredigering.all().first { it.opprettetAvNavIdent == "XYZ12345678" }
-            val document = Document.all().filter { it.brevredigering.id == brevredigering.id }
+
+            val brevredigering = Brevredigering[result.info.id]
+            val document = Document.find { DocumentTable.brevredigering.eq(brevredigering.id) }
 
             assertEquals(1, brevredigering.document.count())
             assertEquals(1, document.count())

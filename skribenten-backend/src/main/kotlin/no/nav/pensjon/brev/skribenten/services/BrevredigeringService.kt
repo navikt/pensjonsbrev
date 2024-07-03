@@ -26,13 +26,14 @@ import java.time.temporal.ChronoUnit
 
 data class GeneriskRedigerbarBrevdata(
     override val pesysData: BrevbakerBrevdata,
-    override val saksbehandlerValg: BrevbakerBrevdata
+    override val saksbehandlerValg: BrevbakerBrevdata,
 ) : RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
 
 
 class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val penService: PenService,
+    private val navansattService: NavansattService,
 ) {
 
     val logger: Logger = LoggerFactory.getLogger(BrevredigeringService::class.java)
@@ -42,24 +43,28 @@ class BrevredigeringService(
         sak: Pen.SakSelection,
         brevkode: Brevkode.Redigerbar,
         spraak: LanguageCode,
+        avsenderEnhetId: String?,
         saksbehandlerValg: BrevbakerBrevdata,
         mapper: Brevredigering.() -> T,
     ): ServiceResult<T> =
-        rendreBrev(call, brevkode, spraak, sak, saksbehandlerValg).map { letter ->
-            transaction {
-                Brevredigering.new {
-                    saksId = sak.saksId
-                    opprettetAvNavIdent = call.principal().navIdent
-                    this.brevkode = brevkode
-                    this.spraak = spraak
-                    this.saksbehandlerValg = saksbehandlerValg
-                    laastForRedigering = false
-                    redigeresAvNavIdent = null
-                    opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-                    sistredigert = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-                    redigertBrev = letter.toEdit()
-                    sistRedigertAvNavIdent = call.principal().navIdent
-                }.mapper()
+        harTilgangTilEnhet(call, avsenderEnhetId) {
+            rendreBrev(call, brevkode, spraak, sak, saksbehandlerValg).map { letter ->
+                transaction {
+                    Brevredigering.new {
+                        saksId = sak.saksId
+                        opprettetAvNavIdent = call.principal().navIdent
+                        this.brevkode = brevkode
+                        this.spraak = spraak
+                        this.avsenderEnhetId = avsenderEnhetId
+                        this.saksbehandlerValg = saksbehandlerValg
+                        laastForRedigering = false
+                        redigeresAvNavIdent = null
+                        opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+                        sistredigert = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+                        redigertBrev = letter.toEdit()
+                        sistRedigertAvNavIdent = call.principal().navIdent
+                    }.mapper()
+                }
             }
         }
 
@@ -157,6 +162,14 @@ class BrevredigeringService(
                 throw BrevbakerServiceException(response.error)
             }
         }
+
+    private suspend fun <T> harTilgangTilEnhet(call: ApplicationCall, enhetsId: String?, then: suspend () -> ServiceResult<T>): ServiceResult<T> =
+        (enhetsId?.let { navansattService.harTilgangTilEnhet(call, call.principal().navIdent, it) } ?: ServiceResult.Ok(true))
+            .then { harTilgang ->
+                if (harTilgang) {
+                    then()
+                } else ServiceResult.Error("Mangler tilgang til NavEnhet $enhetsId", HttpStatusCode.Forbidden)
+            }
 
     suspend fun ferdigstill(call: ApplicationCall, brevId: Long) {
         val brevredigering = transaction { Brevredigering[brevId] }
