@@ -53,7 +53,7 @@ const OppsummeringAvValgtMottaker = (properties: {
         <Button onClick={properties.onAvbryt} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>
-        <Button onClick={properties.onBekreft} size="small" type="button">
+        <Button data-cy="bekreft-ny-mottaker" onClick={properties.onBekreft} size="small" type="button">
           Bekreft ny mottaker
         </Button>
       </HStack>

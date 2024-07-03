@@ -9,22 +9,22 @@ export enum Søketype {
 }
 
 export enum Identtype {
-  EØS_NUMMER = "EØS_NUMMER",
-  FØDSELSDATO = "FØDSELSDATO",
-  FØDSELSNUMMER = "FØDSELSNUMMER",
-  H_NUMMER = "H_NUMMER",
-  INSTITUSJONSNR = "INSTITUSJONSNR",
-  KOMUNNENR = "KOMUNNENR",
-  LAND = "LAND",
-  LOC_NR = "LOC_NR",
-  NORSK_D_NUMMER = "NORSK_D_NUMMER",
-  NORSK_ORG_NR = "NORSK_ORG_NR",
-  NORSK_PNR = "NORSK_PNR",
-  OBJEC_IDENTIFIER = "OBJEC_IDENTIFIER",
-  TP_LEVERANDØR = "TP_LEVERANDØR",
-  TRYGDEKONTOR = "TRYGDEKONTOR",
-  UTENLANDSK_ORGNR = "UTENLANDSK_ORGNR",
-  UTENLANDSK_PNR = "UTENLANDSK_PNR",
+  EØS_NUMMER = "EØS-nummer",
+  FØDSELSDATO = "Fødselsdato",
+  FØDSELSNUMMER = "Fødselsnummer",
+  H_NUMMER = "H-nummer",
+  INSTITUSJONSNR = "Institusjonsnr",
+  KOMUNNENR = "Kommunenr",
+  LAND = "Land",
+  LOC_NR = "Loc-nr",
+  NORSK_D_NUMMER = "Norsk D-nummer",
+  NORSK_ORG_NR = "Norsk orgnr",
+  NORSK_PNR = "Norsk pnr",
+  OBJEC_IDENTIFIER = "Objec Identifier",
+  TP_LEVERANDØR = "TP leverandør",
+  TRYGDEKONTOR = "Trygdekontornr",
+  UTENLANDSK_ORGNR = "Utenlandsk orgnr",
+  UTENLANDSK_PNR = "Utenlandsk pnr",
 }
 
 export const identtypeToText = (identtype: Identtype) => {

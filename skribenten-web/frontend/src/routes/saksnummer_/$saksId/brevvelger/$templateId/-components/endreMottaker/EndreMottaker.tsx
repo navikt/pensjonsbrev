@@ -70,7 +70,13 @@ const EndreMottaker = (properties: {
         Mottaker
       </Heading>
       {properties.children}
-      <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
+      <Button
+        data-cy="toggle-endre-mottaker-modal"
+        onClick={() => setModalÅpen(true)}
+        size="small"
+        type="button"
+        variant="secondary"
+      >
         Endre mottaker
       </Button>
     </div>
@@ -231,7 +237,7 @@ const EndreMottakerModal = (properties: {
     },
   };
   const defaultFinnSamhandler = {
-    søketype: Søketype.ORGANISASJONSNAVN,
+    søketype: null,
     samhandlerType: null,
     direkteOppslag: { identtype: null, id: "" },
     organisasjonsnavn: { innOgUtland: null, navn: "" },

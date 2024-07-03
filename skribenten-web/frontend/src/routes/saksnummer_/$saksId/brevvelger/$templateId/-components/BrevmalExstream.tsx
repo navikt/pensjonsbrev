@@ -95,7 +95,7 @@ export default function BrevmalForExstream({
               {/* TODO - case for manuell adresse */}
               <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} />
             </EndreMottaker>
-            <Adresse />
+
             <SelectEnhet />
             {letterTemplate.redigerbarBrevtittel && (
               <TextField

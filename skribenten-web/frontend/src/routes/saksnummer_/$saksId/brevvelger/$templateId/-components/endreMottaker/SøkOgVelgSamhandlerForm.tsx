@@ -30,6 +30,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
           name="finnSamhandler.søketype"
           render={({ field, fieldState }) => (
             <Select
+              data-cy="endre-mottaker-søketype-select"
               error={fieldState.error?.message}
               id={field.name}
               label="Søketype"
@@ -56,6 +57,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
           css={css`
             align-self: flex-start;
           `}
+          data-cy="endre-mottaker-søk-button"
           loading={false}
           size="small"
         >
@@ -93,7 +95,12 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormDat
         control={properties.control}
         name="finnSamhandler.samhandlerType"
         render={({ field, fieldState }) => (
-          <SamhandlerTypeSelect error={fieldState.error} onChange={field.onChange} value={field.value ?? ""} />
+          <SamhandlerTypeSelect
+            data-cy="endre-mottaker-samhandlertype-select"
+            error={fieldState.error}
+            onChange={field.onChange}
+            value={field.value ?? ""}
+          />
         )}
       />
       <Controller
@@ -101,6 +108,7 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormDat
         name="finnSamhandler.direkteOppslag.identtype"
         render={({ field, fieldState }) => (
           <Select
+            data-cy="endre-mottaker-identtype-select"
             error={fieldState.error?.message}
             id={field.name}
             label="Identtype"

@@ -180,7 +180,7 @@ export const getSamhandlerQuery = {
 };
 
 export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<FinnSamhandlerResponseDto> {
-  return {
+  /*return {
     samhandlere: [
       {
         navn: "AETAT ARBEIDSDIREKTORATET",
@@ -219,9 +219,9 @@ export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<F
       },
     ],
     failureType: null,
-  };
+  };*/
 
-  //return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
+  return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
 }
 
 export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
