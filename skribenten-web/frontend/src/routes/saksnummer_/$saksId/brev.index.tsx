@@ -5,20 +5,30 @@ import { z } from "zod";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
-import type { SpraakKode } from "~/types/apiTypes";
+import { SpraakKode } from "~/types/apiTypes";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
+import type { Nullable } from "~/types/Nullable";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/")({
-  validateSearch: (search: Record<string, unknown>): { brevkode: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { brevkode: string; spraak: SpraakKode; enhetsId: Nullable<string> } => ({
     brevkode: z.string().parse(search.brevkode),
+    spraak: z.nativeEnum(SpraakKode).parse(search.spraak),
+    enhetsId: z
+      .string()
+      .nullable()
+      //er noe kødd med zod her som fører til error hvis vi enhetsId er null, og man bare gjør search.enhetsId.
+      //men det fungerer som forventet med dette her
+      .parse(search.enhetsId || null),
   }),
   component: OpprettBrevPage,
 });
 
 function OpprettBrevPage() {
   const { saksId } = Route.useParams();
-  const { brevkode } = Route.useSearch();
-  const createBrevMutation = useCreateLetterMutation(saksId, brevkode);
+  const { brevkode, spraak, enhetsId } = Route.useSearch();
+  const createBrevMutation = useCreateLetterMutation(saksId, brevkode, spraak, enhetsId);
   return (
     <div
       css={css`
@@ -40,8 +50,6 @@ function OpprettBrevPage() {
         disableSubmit={createBrevMutation.isPending || createBrevMutation.isSuccess}
         onSubmit={(submittedValues) =>
           createBrevMutation.mutate({
-            spraak: submittedValues.spraak,
-            avsenderEnhet: submittedValues.avsenderEnhet,
             saksbehandlerValg: submittedValues.saksbehandlerValg,
           })
         }
@@ -51,19 +59,15 @@ function OpprettBrevPage() {
   );
 }
 
-function useCreateLetterMutation(saksId: string, brevkode: string) {
+function useCreateLetterMutation(saksId: string, brevkode: string, språk: SpraakKode, enhetsId: Nullable<string>) {
   const navigate = useNavigate({ from: Route.fullPath });
   const queryClient = useQueryClient();
-  return useMutation<
-    BrevResponse,
-    Error,
-    { spraak: SpraakKode; avsenderEnhet: string; saksbehandlerValg: SaksbehandlerValg }
-  >({
+  return useMutation<BrevResponse, Error, { saksbehandlerValg: SaksbehandlerValg }>({
     mutationFn: async (values) =>
       createBrev(saksId, {
         brevkode: brevkode,
-        spraak: values.spraak,
-        avsenderEnhet: values.avsenderEnhet,
+        spraak: språk,
+        avsenderEnhetsId: enhetsId,
         saksbehandlerValg: values.saksbehandlerValg,
       }),
     onSuccess: async (response) => {

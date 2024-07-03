@@ -1,11 +1,12 @@
 import type { EditedLetter } from "~/types/brevbakerTypes";
 
 import type { SpraakKode } from "./apiTypes";
+import type { Nullable } from "./Nullable";
 
 export type OpprettBrevRequest = {
   brevkode: string;
   spraak: SpraakKode;
-  avsenderEnhet: string;
+  avsenderEnhetsId: Nullable<string>;
   saksbehandlerValg: SaksbehandlerValg;
 };
 

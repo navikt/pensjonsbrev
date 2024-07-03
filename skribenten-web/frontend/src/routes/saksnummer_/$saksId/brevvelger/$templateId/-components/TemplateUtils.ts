@@ -122,3 +122,8 @@ export const createValidationSchema = (template: LetterMetadata) => {
       return refinementContext;
     });
 };
+
+export const brevmalBrevbakerFormSchema = z.object({
+  spraak: z.nativeEnum(SpraakKode),
+  enhetsId: z.string(),
+});

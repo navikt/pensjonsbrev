@@ -1,16 +1,12 @@
 import { css } from "@emotion/react";
-import { Button, Select } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
+import { Button } from "@navikt/ds-react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
-import { getEnheter } from "~/api/skribenten-api-endpoints";
-import { ApiError } from "~/components/ApiError";
 import { PersonAdresse } from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/Adresse";
-import { SpraakKode } from "~/types/apiTypes";
+import type { SpraakKode } from "~/types/apiTypes";
 import type { SaksbehandlerValg } from "~/types/brev";
 import type { LetterModelSpecification } from "~/types/brevbakerTypes";
-import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import { ObjectEditor } from "./components/ObjectEditor";
 
@@ -27,7 +23,6 @@ export type ModelEditorProperties = {
 };
 
 export const ModelEditor = ({ sakId, brevkode, defaultValues, disableSubmit, onSubmit }: ModelEditorProperties) => {
-  const enheterQuery = useQuery(getEnheter);
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
 
@@ -56,39 +51,6 @@ export const ModelEditor = ({ sakId, brevkode, defaultValues, disableSubmit, onS
             )}
           >
             <PersonAdresse kanEndreAndresse={false} sakId={sakId} />
-
-            <Select
-              {...methods.register("spraak", { required: "Må oppgis" })}
-              data-cy="språk-velger-select"
-              error={methods.formState.errors.spraak?.message}
-              label="Språk"
-              size="medium"
-            >
-              {Object.entries(SpraakKode).map((spraak) => (
-                <option key={spraak[0]} value={spraak[1]}>
-                  {/* TODO hent inn hva som er brukerens foretrukkede språk */}
-                  {SPRAAK_ENUM_TO_TEXT[spraak[1]]}
-                </option>
-              ))}
-            </Select>
-
-            {enheterQuery.isSuccess && (
-              <Select
-                {...methods.register("avsenderEnhet", { required: "Må oppgis" })}
-                error={methods.formState.errors.avsenderEnhet?.message}
-                label="Avsenderenhet"
-                size="medium"
-              >
-                <option value={""}>Velg enhet</option>
-                {enheterQuery.data.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.navn}
-                  </option>
-                ))}
-              </Select>
-            )}
-            {enheterQuery.isPending && <>Henter enheter....</>}
-            {enheterQuery.isError && <ApiError error={enheterQuery.error} title="Klarte ikke å hente enheter" />}
 
             <ObjectEditor brevkode={brevkode} typeName={saksbehandlerValgType} />
             <Button loading={disableSubmit} type="submit">
