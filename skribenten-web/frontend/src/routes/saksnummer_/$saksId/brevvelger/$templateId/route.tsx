@@ -14,6 +14,7 @@ import BrevmalForDoksys from "./-components/BrevmalDoksys";
 import BrevmalForExstream from "./-components/BrevmalExstream";
 import Eblankett from "./-components/EBlankett";
 import FavoriteButton from "./-components/FavoriteButton";
+import { hentDefaultValueForSpråk } from "./-components/TemplateUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId")({
   component: SelectedTemplate,
@@ -102,13 +103,11 @@ function Brevmal({
     return letterTemplate.spraak.toSorted();
   }, [letterTemplate.spraak]);
 
-  const defaultValuesDoksysOgExstream = useMemo(() => {
+  const defaultValues = useMemo(() => {
     return {
       isSensitive: undefined,
       brevtittel: "",
-      // preferredLanguage finnes ikke nødvendigvis akkurat ved side last - Når vi får den lastet, vil vi ha den forhåndsvalgt, hvis brevet også støtter på språket.
-      spraak:
-        preferredLanguage && displayLanguages.includes(preferredLanguage) ? preferredLanguage : displayLanguages[0],
+      spraak: hentDefaultValueForSpråk(preferredLanguage, displayLanguages),
       enhetsId: "",
     };
   }, [preferredLanguage, displayLanguages]);
@@ -121,7 +120,7 @@ function Brevmal({
     case BrevSystem.DokSys: {
       return (
         <BrevmalForDoksys
-          defaultValues={defaultValuesDoksysOgExstream}
+          defaultValues={defaultValues}
           displayLanguages={displayLanguages}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
@@ -131,7 +130,7 @@ function Brevmal({
     case BrevSystem.Exstream: {
       return (
         <BrevmalForExstream
-          defaultValues={defaultValuesDoksysOgExstream}
+          defaultValues={defaultValues}
           displayLanguages={displayLanguages}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
@@ -141,7 +140,7 @@ function Brevmal({
     case BrevSystem.Brevbaker: {
       return (
         <BrevmalBrevbaker
-          defaultValues={defaultValuesDoksysOgExstream}
+          defaultValues={defaultValues}
           displayLanguages={displayLanguages}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
