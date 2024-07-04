@@ -192,39 +192,30 @@ object BarnepensjonFellesFraser {
             showIf(brukerUnder18Aar) {
                 paragraph {
                     text(
-                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig. Du kan lese mer om skattetrekk i vedlegget “Informasjon til deg som handler på vegne av barnet”.",
-                        Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig. Du kan lese meir om skattetrekk i vedlegget “Informasjon til deg som handlar på vegne av barnet”.",
-                        English to "Child pension is taxable, but not subject to withholding tax. You can read more about tax deductions in the attachment “Information for those acting on behalf of the child”.",
+                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig.",
+                        Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig.",
+                        English to "Child pension is taxable, but not subject to withholding tax.",
                     )
                 }
             } orShow {
                 paragraph {
                     text(
-                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig. Du kan lese mer om skattetrekk i vedlegget “Informasjon til deg som mottar barnepensjon”.",
-                        Nynorsk to  "Barnepensjon er skattepliktig, men ikkje trekkpliktig. Du kan lese meir om skattetrekk i vedlegget “Informasjon til deg som får barnepensjon”.",
-                        English to "Child pension is taxable, but not subject to withholding tax. You can read more about tax deductions in the attachment “Information to recipients of children’s pensions”.",
+                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig.",
+                        Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig.",
+                        English to "Child pension is taxable, but not subject to withholding tax.",
                     )
                 }
             }
             showIf(etterbetaling.notNull()) {
-                title2 {
-                    text(
-                        Bokmal to "Etterbetaling",
-                        Nynorsk to "Etterbetaling",
-                        English to "Back Payments",
-                    )
-                }
                 paragraph {
                     text(
-                        Bokmal to "Du får etterbetalt pensjon. Vanligvis vil du få denne i løpet av tre uker.",
-                        Nynorsk to "Du får etterbetalt pensjon. Vanlegvis vil du få denne i løpet av tre veker.",
+                        Bokmal to "Du får etterbetalt pensjon. Vanligvis vil du få denne i løpet av tre uker. ",
+                        Nynorsk to "Du får etterbetalt pensjon. Vanlegvis vil du få denne i løpet av tre veker. ",
                         English to
                             "You will receive a back payment on your pension. " +
                             "You will usually receive this back payment within three weeks. ",
                     )
-                }
-                showIf(etterbetaling.inneholderKrav_safe.equalTo(true)) {
-                    paragraph {
+                    showIf(etterbetaling.inneholderKrav_safe.equalTo(true)) {
                         text(
                             Bokmal to
                                 "Hvis det er lagt inn krav i etterbetalingen kan denne bli forsinket. " +
@@ -237,13 +228,6 @@ object BarnepensjonFellesFraser {
                                 "Deductions from the back payment will be stated in the disbursement notice.",
                         )
                     }
-                }
-                title2 {
-                    text(
-                        Bokmal to "Skatt på etterbetaling",
-                        Nynorsk to "Skatt på etterbetaling",
-                        English to "Taxes on back payments",
-                    )
                 }
                 showIf(etterbetaling.frivilligSkattetrekk_safe.equalTo(true)) {
                     paragraph {
@@ -294,34 +278,34 @@ object BarnepensjonFellesFraser {
                         }
                     }
                 }
-                showIf(brukerUnder18Aar) {
-                    paragraph {
-                        text(
-                            Bokmal to
-                                "Du kan lese mer om frivillig skattetrekk og skatt i vedlegget " +
-                                "“Informasjon til deg som handler på vegne av barnet”.",
-                            Nynorsk to
-                                "Du kan lese meir om frivillig skattetrekk og skatt i vedlegget " +
-                                "«Informasjon til deg som handlar på vegner av barnet». ",
-                            English to
-                                "You can read more about voluntary withholding tax and tax in the appendix, " +
-                                "Information for those acting on Behalf of the Child.",
-                        )
-                    }
-                } orShow {
-                    paragraph {
-                        text(
-                            Bokmal to
-                                "Du kan lese mer om frivillig skattetrekk og skatt i vedlegget " +
-                                "“Informasjon til deg som mottar barnepensjon”.",
-                            Nynorsk to
-                                "Du kan lese meir om skattetrekk i vedlegget " +
-                                "«Informasjon til deg som får barnepensjon»",
-                            English to
-                                "You can read more about voluntary withholding tax and tax in the appendix, " +
-                                "Information to recipients of children’s pensions. ",
-                        )
-                    }
+            }
+            showIf(brukerUnder18Aar) {
+                paragraph {
+                    text(
+                        Bokmal to
+                            "Du kan lese mer om frivillig skattetrekk og skatt i vedlegget " +
+                            "“Informasjon til deg som handler på vegne av barnet”.",
+                        Nynorsk to
+                            "Du kan lese meir om frivillig skattetrekk og skatt i vedlegget " +
+                            "«Informasjon til deg som handlar på vegner av barnet». ",
+                        English to
+                            "You can read more about voluntary withholding tax and tax in the appendix, " +
+                            "Information for those acting on Behalf of the Child.",
+                    )
+                }
+            } orShow {
+                paragraph {
+                    text(
+                        Bokmal to
+                            "Du kan lese mer om frivillig skattetrekk og skatt i vedlegget " +
+                            "“Informasjon til deg som mottar barnepensjon”.",
+                        Nynorsk to
+                            "Du kan lese meir om skattetrekk i vedlegget " +
+                            "«Informasjon til deg som får barnepensjon»",
+                        English to
+                            "You can read more about voluntary withholding tax and tax in the appendix, " +
+                            "Information to recipients of children’s pensions. ",
+                    )
                 }
             }
         }
