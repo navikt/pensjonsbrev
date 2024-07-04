@@ -49,19 +49,7 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
         ),
     ) {
         title {
-            showIf(erGjenoppretting) {
-                text(
-                    Language.Bokmal to "Du er innvilget barnepensjon på nytt",
-                    Language.Nynorsk to "Du er innvilga barnepensjon på ny",
-                    Language.English to "You have been granted children’s pension again",
-                )
-            }.orShow {
-                text(
-                    Language.Bokmal to "Vi har innvilget søknaden din om barnepensjon",
-                    Language.Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-                    Language.English to "We have granted your application for a children's pension",
-                )
-            }
+            text(Language.Bokmal to "", Language.Nynorsk to "", Language.English to "")
         }
         outline {
             includePhrase(
@@ -76,6 +64,7 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
                     harUtbetaling,
                 ),
             )
+            includePhrase(BarnepensjonInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling))
         }
     }
 }

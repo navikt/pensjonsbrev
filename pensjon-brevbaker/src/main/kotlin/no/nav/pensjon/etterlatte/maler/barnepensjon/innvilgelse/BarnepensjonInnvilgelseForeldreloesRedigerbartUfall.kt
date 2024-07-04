@@ -19,7 +19,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonFore
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.vedtattIPesys
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForeldreloesFraser
-import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import java.time.LocalDate
 
 data class BarnepensjonForeldreloesRedigerbarDTO(
@@ -63,8 +62,6 @@ object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
                     erGjenoppretting = erGjenoppretting
                 )
             )
-
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(
                 BarnepensjonForeldreloesFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling, vedtattIPesys),
             )

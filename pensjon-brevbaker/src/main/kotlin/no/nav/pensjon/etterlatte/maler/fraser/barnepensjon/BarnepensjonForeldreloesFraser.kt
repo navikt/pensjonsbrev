@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak.BegrunnelseForVedtaket
 import java.time.LocalDate
 
 object BarnepensjonForeldreloesFraser {
@@ -115,6 +116,7 @@ object BarnepensjonForeldreloesFraser {
         val vedtattIPesys: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            includePhrase(BegrunnelseForVedtaket)
             showIf(vedtattIPesys) {
                 paragraph {
                     text(
