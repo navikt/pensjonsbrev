@@ -2,6 +2,7 @@ import { css } from "@emotion/react";
 import { Alert, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { useMemo } from "react";
 
 import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -80,31 +81,70 @@ export function SelectedTemplate() {
       gap="4"
     >
       <FavoriteButton />
-      <Brevmal letterTemplate={letterTemplate} prefferedLanguage={preferredLanguage} />
+      <Brevmal letterTemplate={letterTemplate} preferredLanguage={preferredLanguage} />
     </VStack>
   );
 }
 
 function Brevmal({
   letterTemplate,
-  prefferedLanguage,
+  preferredLanguage,
 }: {
   letterTemplate: LetterMetadata;
-  prefferedLanguage: SpraakKode | null;
+  preferredLanguage: SpraakKode | null;
 }) {
+  /*
+    språk i brevene kan komme i forskjellige rekkefølge, siden de også har forskjellige verdier.
+    Dette er for at alle language-inputtene skal ha samme rekkefølge.
+    Samtidig, er det behov å bruke denne for å sjekke hva defaultValue skal være
+    */
+  const displayLanguages = useMemo(() => {
+    return letterTemplate.spraak.toSorted();
+  }, [letterTemplate.spraak]);
+
+  const defaultValuesDoksysOgExstream = useMemo(() => {
+    return {
+      isSensitive: undefined,
+      brevtittel: "",
+      // preferredLanguage finnes ikke nødvendigvis akkurat ved side last - Når vi får den lastet, vil vi ha den forhåndsvalgt, hvis brevet også støtter på språket.
+      spraak:
+        preferredLanguage && displayLanguages.includes(preferredLanguage) ? preferredLanguage : displayLanguages[0],
+    };
+  }, [preferredLanguage, displayLanguages]);
+
   if (letterTemplate.dokumentkategoriCode === "E_BLANKETT") {
     return <Eblankett letterTemplate={letterTemplate} />;
   }
 
   switch (letterTemplate.brevsystem) {
     case BrevSystem.DokSys: {
-      return <BrevmalForDoksys letterTemplate={letterTemplate} preferredLanguage={prefferedLanguage} />;
+      return (
+        <BrevmalForDoksys
+          defaultValues={defaultValuesDoksysOgExstream}
+          displayLanguages={displayLanguages}
+          letterTemplate={letterTemplate}
+          preferredLanguage={preferredLanguage}
+        />
+      );
     }
     case BrevSystem.Exstream: {
-      return <BrevmalForExstream letterTemplate={letterTemplate} preferredLanguage={prefferedLanguage} />;
+      return (
+        <BrevmalForExstream
+          defaultValues={defaultValuesDoksysOgExstream}
+          displayLanguages={displayLanguages}
+          letterTemplate={letterTemplate}
+          preferredLanguage={preferredLanguage}
+        />
+      );
     }
     case BrevSystem.Brevbaker: {
-      return <BrevmalBrevbaker letterTemplate={letterTemplate} preferredLanguage={prefferedLanguage} />;
+      return (
+        <BrevmalBrevbaker
+          displayLanguages={displayLanguages}
+          letterTemplate={letterTemplate}
+          preferredLanguage={preferredLanguage}
+        />
+      );
     }
   }
 }

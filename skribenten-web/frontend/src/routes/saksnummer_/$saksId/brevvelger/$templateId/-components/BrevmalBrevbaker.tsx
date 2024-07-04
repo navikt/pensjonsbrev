@@ -2,7 +2,6 @@ import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { Button, VStack } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -17,20 +16,20 @@ import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";
 import type { brevmalBrevbakerFormSchema } from "./TemplateUtils";
 
-const BrevmalBrevbaker = (properties: { letterTemplate: LetterMetadata; preferredLanguage: SpraakKode | null }) => {
+const BrevmalBrevbaker = (properties: {
+  letterTemplate: LetterMetadata;
+  preferredLanguage: SpraakKode | null;
+  displayLanguages: SpraakKode[];
+}) => {
   const { saksId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
-
-  const sorterteSpråk = useMemo(() => {
-    return properties.letterTemplate.spraak.toSorted();
-  }, [properties.letterTemplate.spraak]);
 
   const form = useForm<z.infer<typeof brevmalBrevbakerFormSchema>>({
     defaultValues: {
       spraak:
-        properties.preferredLanguage && sorterteSpråk.includes(properties.preferredLanguage)
+        properties.preferredLanguage && properties.displayLanguages.includes(properties.preferredLanguage)
           ? properties.preferredLanguage
-          : sorterteSpråk[0],
+          : properties.displayLanguages[0],
       enhetsId: "",
     },
   });
@@ -55,7 +54,10 @@ const BrevmalBrevbaker = (properties: { letterTemplate: LetterMetadata; preferre
         >
           <VStack gap="8">
             <PersonAdresse kanEndreAndresse={false} sakId={saksId} />
-            <SelectLanguage preferredLanguage={properties.preferredLanguage} sorterteSpråk={sorterteSpråk} />
+            <SelectLanguage
+              preferredLanguage={properties.preferredLanguage}
+              sorterteSpråk={properties.displayLanguages}
+            />
             <SelectEnhet />
           </VStack>
           <Button

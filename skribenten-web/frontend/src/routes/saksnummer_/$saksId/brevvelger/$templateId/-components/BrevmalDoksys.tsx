@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -21,9 +21,17 @@ import { byggDoksysOnSubmitRequest, createValidationSchema } from "./TemplateUti
 export default function BrevmalForDoksys({
   letterTemplate,
   preferredLanguage,
+  displayLanguages,
+  defaultValues,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: SpraakKode | null;
+  displayLanguages: SpraakKode[];
+  defaultValues: {
+    isSensitive: undefined;
+    brevtittel: string;
+    spraak: SpraakKode;
+  };
 }) {
   const { templateId, saksId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
@@ -34,19 +42,6 @@ export default function BrevmalForDoksys({
       window.open(callbackUrl);
     },
   });
-
-  const sorterteSpråk = useMemo(() => {
-    return letterTemplate.spraak.toSorted();
-  }, [letterTemplate.spraak]);
-
-  const defaultValues = useMemo(() => {
-    return {
-      isSensitive: undefined,
-      brevtittel: "",
-      // preferredLanguage finnes ikke nødvendigvis akkurat ved side last - Når vi får den lastet, vil vi ha den forhåndsvalgt, hvis brevet også støtter på språket.
-      spraak: preferredLanguage && sorterteSpråk.includes(preferredLanguage) ? preferredLanguage : sorterteSpråk[0],
-    };
-  }, [preferredLanguage, sorterteSpråk]);
 
   const validationSchema = createValidationSchema(letterTemplate);
 
@@ -86,7 +81,7 @@ export default function BrevmalForDoksys({
         >
           <VStack gap="4">
             <SelectEnhet />
-            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={sorterteSpråk} />
+            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
           </VStack>
 
           <BestillOgRedigerButton orderMutation={orderLetterMutation} />
