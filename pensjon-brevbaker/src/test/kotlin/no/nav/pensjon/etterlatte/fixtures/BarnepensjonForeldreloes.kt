@@ -109,30 +109,6 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
 }
 
 fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedigerbarDTO {
-    val bruktTrygdetid = Trygdetid(
-        trygdetidsperioder = listOf(
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2004, 1, 1),
-                datoTOM = LocalDate.of(2024, 1, 1),
-                land = "NOR",
-                opptjeningsperiode = Periode(20, 0, 0),
-                type = TrygdetidType.FAKTISK
-            ),
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2024, 1, 1),
-                datoTOM = LocalDate.of(2044, 1, 1),
-                land = "NOR",
-                opptjeningsperiode = Periode(20, 0, 0),
-                type = TrygdetidType.FREMTIDIG
-            )
-        ),
-        beregnetTrygdetidAar = 40,
-        prorataBroek = IntBroek(20, 150),
-        beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
-        beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-        mindreEnnFireFemtedelerAvOpptjeningstiden = false,
-        navnAvdoed = "Elvis Presley"
-    )
     val siste = BarnepensjonBeregningsperiode(
         datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
         datoTOM = LocalDate.of(2023, Month.JULY, 31),
