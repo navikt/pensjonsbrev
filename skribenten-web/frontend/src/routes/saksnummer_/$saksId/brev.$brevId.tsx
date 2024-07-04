@@ -63,7 +63,6 @@ const RedigerBrev = ({ brev, saksId }: { brev: BrevResponse; saksId: string }) =
         defaultValues={brev.saksbehandlerValg}
         disableSubmit={oppdaterBrevMutation.isPending}
         onSubmit={oppdaterBrevMutation.mutate}
-        sakId={saksId}
       />
       <LetterEditor editorState={editorState} setEditorState={setEditorState} />
     </div>

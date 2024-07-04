@@ -15,10 +15,12 @@ import { SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import { Route } from "../route";
+import { PersonAdresse } from "./Adresse";
 import LetterTemplateHeading from "./LetterTemplate";
 import type { brevmalBrevbakerFormSchema } from "./TemplateUtils";
 
 const BrevmalBrevbaker = (properties: { letterTemplate: LetterMetadata; preferredLanguage: SpraakKode | null }) => {
+  const { saksId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
   const enheterQuery = useQuery(getEnheter);
   const sorterteSpråk = useMemo(() => {
@@ -53,6 +55,8 @@ const BrevmalBrevbaker = (properties: { letterTemplate: LetterMetadata; preferre
         })}
       >
         <VStack gap="8">
+          <PersonAdresse kanEndreAndresse={false} sakId={saksId} />
+
           <Controller
             control={form.control}
             name="spraak"

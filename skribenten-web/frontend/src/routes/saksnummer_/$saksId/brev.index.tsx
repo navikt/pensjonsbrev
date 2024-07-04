@@ -49,7 +49,6 @@ function OpprettBrevPage() {
         brevkode={brevkode}
         disableSubmit={createBrevMutation.isPending || createBrevMutation.isSuccess}
         onSubmit={(saksbehandlerValg) => createBrevMutation.mutate({ saksbehandlerValg })}
-        sakId={saksId}
       />
     </div>
   );

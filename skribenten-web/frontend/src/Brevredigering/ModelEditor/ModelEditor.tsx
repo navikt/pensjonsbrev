@@ -3,21 +3,19 @@ import { Button } from "@navikt/ds-react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
-import { PersonAdresse } from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/Adresse";
 import type { SaksbehandlerValg } from "~/types/brev";
 import type { LetterModelSpecification } from "~/types/brevbakerTypes";
 
 import { ObjectEditor } from "./components/ObjectEditor";
 
 export type ModelEditorProperties = {
-  sakId: string;
   brevkode: string;
   defaultValues?: SaksbehandlerValg;
   disableSubmit: boolean;
   onSubmit: (saksbehandlerValg: SaksbehandlerValg) => void;
 };
 
-export const ModelEditor = ({ sakId, brevkode, defaultValues, disableSubmit, onSubmit }: ModelEditorProperties) => {
+export const ModelEditor = ({ brevkode, defaultValues, disableSubmit, onSubmit }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
 
@@ -39,8 +37,6 @@ export const ModelEditor = ({ sakId, brevkode, defaultValues, disableSubmit, onS
             `}
             onSubmit={methods.handleSubmit((values) => onSubmit(createSaksbehandlerValg(values)))}
           >
-            <PersonAdresse kanEndreAndresse={false} sakId={sakId} />
-
             <ObjectEditor brevkode={brevkode} typeName={saksbehandlerValgType} />
             <Button loading={disableSubmit} type="submit">
               Send
