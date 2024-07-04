@@ -10,13 +10,14 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import java.time.LocalDate
 
 object BarnepensjonInnvilgelseFraser {
@@ -57,9 +58,9 @@ object BarnepensjonInnvilgelseFraser {
                 showIf(harUtbetaling) {
                     showIf(harFlereUtbetalingsperioder) {
                         textExpr(
-                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
-                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ". Sjå utbetalingsbeløp for tidlegare periodar i vedlegget om etterbetaling.",
-                            Language.English to "You will receive ".expr() + formatertBeloep + " kroner each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + ". See the payment amount for previous periods in the Back Payment Attachment."
+                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ".",
+                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ".",
+                            Language.English to "You will receive ".expr() + formatertBeloep + " kroner each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + "."
                         )
                     }.orShow {
                         textExpr(
@@ -80,6 +81,26 @@ object BarnepensjonInnvilgelseFraser {
                 }
             }
             paragraph {
+                showIf(harUtbetaling and harFlereUtbetalingsperioder) {
+                    text(
+                        Language.Bokmal to "Se beløp for tidligere perioder og hvordan vi har beregnet pensjonen din " +
+                                "i vedlegget “Beregning av barnepensjon”.",
+                        Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå beløp for tidlegare periodar " +
+                                "og korleis vi har rekna ut pensjonen.",
+                        Language.English to "You can see amounts for previous periods and how we calculated your pension " +
+                                "in the attachment, Calculation of Children’s Pension."
+                    )
+                }.orShow {
+                    text(
+                        Language.Bokmal to "Se hvordan vi har beregnet pensjonen din i vedlegget “Beregning av barnepensjon”.",
+                        Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis vi har rekna ut pensjonen din.",
+                        Language.English to "You can find more information about how we have calculated your" +
+                                " children's pension in the attachment Calculating the Children's Pension.",
+                    )
+                }
+            }
+            includePhrase(Vedtak.BegrunnelseForVedtaket)
+            paragraph { // todo: punktliste
                 text(
                     Language.Bokmal to "Barnepensjon gis på bakgrunn av at du er under 20 år, medlem i folketrygden og at avdøde i de siste fem årene før dødsfallet var medlem i folketrygden eller fikk pensjon fra folketrygden.",
                     Language.Nynorsk to "Barnepensjon blir gitt på bakgrunn av at du er under 20 år, medlem i folketrygda, og at avdøde var medlem i eller fekk pensjon frå folketrygda dei siste fem åra før sin død.",

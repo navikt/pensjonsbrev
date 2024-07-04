@@ -68,7 +68,6 @@ object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
             includePhrase(
                 BarnepensjonForeldreloesFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling, vedtattIPesys),
             )
-
         }
     }
 }

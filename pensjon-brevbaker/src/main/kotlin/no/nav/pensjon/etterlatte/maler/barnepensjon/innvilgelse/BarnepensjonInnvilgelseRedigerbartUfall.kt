@@ -21,7 +21,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeDatoFom
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
-import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import java.time.LocalDate
 
 data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
@@ -59,15 +58,13 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
                 )
             }.orShow {
                 text(
-					Language.Bokmal to "Vi innvilger barnepensjonen din",
-					Language.Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-					Language.English to "We have granted your application for a children's pension",
-				)
+                    Language.Bokmal to "Vi har innvilget søknaden din om barnepensjon",
+                    Language.Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
+                    Language.English to "We have granted your application for a children's pension",
+                )
             }
         }
         outline {
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
-
             includePhrase(
                 BarnepensjonInnvilgelseFraser.Foerstegangsbehandlingsvedtak(
                     avdoed,
