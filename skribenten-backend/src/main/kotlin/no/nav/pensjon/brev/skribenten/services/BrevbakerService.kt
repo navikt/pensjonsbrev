@@ -53,6 +53,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
     suspend fun renderMarkup(
         call: ApplicationCall,
         brevkode: Brevkode.Redigerbar,
+        spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles
     ): ServiceResult<LetterMarkup> =
@@ -63,7 +64,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
                     kode = brevkode,
                     letterData = brevdata,
                     felles = felles,
-                    language = LanguageCode.BOKMAL,
+                    language = spraak,
                 )
             )
         }.toServiceResult()
@@ -71,6 +72,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
     suspend fun renderPdf(
         call: ApplicationCall,
         brevkode: Brevkode.Redigerbar,
+        spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup
@@ -82,7 +84,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
                     kode = brevkode,
                     letterData = brevdata,
                     felles = felles,
-                    language = LanguageCode.BOKMAL,
+                    language = spraak,
                     letterMarkup = redigertBrev
                 )
             )
