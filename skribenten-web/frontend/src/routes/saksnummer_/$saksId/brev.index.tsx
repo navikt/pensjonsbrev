@@ -48,7 +48,7 @@ function OpprettBrevPage() {
       <ModelEditor
         brevkode={brevkode}
         disableSubmit={createBrevMutation.isPending || createBrevMutation.isSuccess}
-        onSubmit={(saksbehandlerValg) => createBrevMutation.mutate({ saksbehandlerValg: saksbehandlerValg })}
+        onSubmit={(saksbehandlerValg) => createBrevMutation.mutate({ saksbehandlerValg })}
         sakId={saksId}
       />
     </div>
