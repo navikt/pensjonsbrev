@@ -102,8 +102,6 @@ const BrevmalBrevbaker = (properties: { letterTemplate: LetterMetadata; preferre
           data-cy="order-letter"
           icon={<ArrowRightIcon />}
           iconPosition="right"
-          //TODO - legg in pending på mutation
-          loading={false}
           size="small"
         >
           Åpne brev

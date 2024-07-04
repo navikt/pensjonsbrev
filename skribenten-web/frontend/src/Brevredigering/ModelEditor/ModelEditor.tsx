@@ -37,11 +37,7 @@ export const ModelEditor = ({ sakId, brevkode, defaultValues, disableSubmit, onS
                 width: 100%;
               }
             `}
-            onSubmit={methods.handleSubmit((values) =>
-              onSubmit({
-                saksbehandlerValg: createSaksbehandlerValg(values.saksbehandlerValg),
-              }),
-            )}
+            onSubmit={methods.handleSubmit((values) => onSubmit(createSaksbehandlerValg(values)))}
           >
             <PersonAdresse kanEndreAndresse={false} sakId={sakId} />
 

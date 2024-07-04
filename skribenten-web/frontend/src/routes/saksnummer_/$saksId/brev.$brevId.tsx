@@ -9,7 +9,6 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
-import { SpraakKode } from "~/types/apiTypes";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
@@ -61,13 +60,7 @@ const RedigerBrev = ({ brev, saksId }: { brev: BrevResponse; saksId: string }) =
     >
       <ModelEditor
         brevkode={brev.info.brevkode}
-        defaultValues={{
-          //TODO - må få inn det valgte språket på noe vis
-          spraak: SpraakKode.Bokmaal,
-          //TODO - må få inn den valgte enheten på noe vis
-          avsenderEnhet: "123456789",
-          saksbehandlerValg: brev.saksbehandlerValg,
-        }}
+        defaultValues={brev.saksbehandlerValg}
         disableSubmit={oppdaterBrevMutation.isPending}
         onSubmit={oppdaterBrevMutation.mutate}
         sakId={saksId}
