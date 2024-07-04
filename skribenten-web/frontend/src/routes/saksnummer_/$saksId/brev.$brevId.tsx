@@ -33,7 +33,6 @@ const RedigerBrev = ({ brev, saksId }: { brev: BrevResponse; saksId: string }) =
   const oppdaterBrevMutation = useMutation<BrevResponse, unknown, SaksbehandlerValg>({
     mutationFn: async (saksbehandlerValg) =>
       updateBrev(saksId, brev.info.id, {
-        brevkode: brev.info.brevkode,
         saksbehandlerValg,
         redigertBrev: editorState.redigertBrev,
       }),
