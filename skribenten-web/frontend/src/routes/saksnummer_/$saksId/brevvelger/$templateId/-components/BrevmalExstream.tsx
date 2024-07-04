@@ -33,6 +33,7 @@ export default function BrevmalForExstream({
     isSensitive: undefined;
     brevtittel: string;
     spraak: SpraakKode;
+    enhetsId: string;
   };
 }) {
   const { templateId, saksId } = Route.useParams();

@@ -20,18 +20,18 @@ const BrevmalBrevbaker = (properties: {
   letterTemplate: LetterMetadata;
   preferredLanguage: SpraakKode | null;
   displayLanguages: SpraakKode[];
+  defaultValues: {
+    isSensitive: undefined;
+    brevtittel: string;
+    spraak: SpraakKode;
+    enhetsId: string;
+  };
 }) => {
   const { saksId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
 
   const form = useForm<z.infer<typeof brevmalBrevbakerFormSchema>>({
-    defaultValues: {
-      spraak:
-        properties.preferredLanguage && properties.displayLanguages.includes(properties.preferredLanguage)
-          ? properties.preferredLanguage
-          : properties.displayLanguages[0],
-      enhetsId: "",
-    },
+    defaultValues: properties.defaultValues,
   });
 
   return (

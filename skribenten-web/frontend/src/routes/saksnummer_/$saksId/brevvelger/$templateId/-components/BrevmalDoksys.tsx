@@ -31,6 +31,7 @@ export default function BrevmalForDoksys({
     isSensitive: undefined;
     brevtittel: string;
     spraak: SpraakKode;
+    enhetsId: string;
   };
 }) {
   const { templateId, saksId } = Route.useParams();

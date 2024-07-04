@@ -109,6 +109,7 @@ function Brevmal({
       // preferredLanguage finnes ikke nødvendigvis akkurat ved side last - Når vi får den lastet, vil vi ha den forhåndsvalgt, hvis brevet også støtter på språket.
       spraak:
         preferredLanguage && displayLanguages.includes(preferredLanguage) ? preferredLanguage : displayLanguages[0],
+      enhetsId: "",
     };
   }, [preferredLanguage, displayLanguages]);
 
@@ -140,6 +141,7 @@ function Brevmal({
     case BrevSystem.Brevbaker: {
       return (
         <BrevmalBrevbaker
+          defaultValues={defaultValuesDoksysOgExstream}
           displayLanguages={displayLanguages}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
