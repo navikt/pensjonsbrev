@@ -4,7 +4,6 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
 import { PersonAdresse } from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/Adresse";
-import type { SpraakKode } from "~/types/apiTypes";
 import type { SaksbehandlerValg } from "~/types/brev";
 import type { LetterModelSpecification } from "~/types/brevbakerTypes";
 
@@ -13,13 +12,9 @@ import { ObjectEditor } from "./components/ObjectEditor";
 export type ModelEditorProperties = {
   sakId: string;
   brevkode: string;
-  defaultValues?: { spraak: SpraakKode; avsenderEnhet: string; saksbehandlerValg: SaksbehandlerValg };
+  defaultValues?: SaksbehandlerValg;
   disableSubmit: boolean;
-  onSubmit: (submittedValues: {
-    spraak: SpraakKode;
-    avsenderEnhet: string;
-    saksbehandlerValg: SaksbehandlerValg;
-  }) => void;
+  onSubmit: (saksbehandlerValg: SaksbehandlerValg) => void;
 };
 
 export const ModelEditor = ({ sakId, brevkode, defaultValues, disableSubmit, onSubmit }: ModelEditorProperties) => {
@@ -44,8 +39,6 @@ export const ModelEditor = ({ sakId, brevkode, defaultValues, disableSubmit, onS
             `}
             onSubmit={methods.handleSubmit((values) =>
               onSubmit({
-                spraak: values.spraak!,
-                avsenderEnhet: values.avsenderEnhet,
                 saksbehandlerValg: createSaksbehandlerValg(values.saksbehandlerValg),
               }),
             )}

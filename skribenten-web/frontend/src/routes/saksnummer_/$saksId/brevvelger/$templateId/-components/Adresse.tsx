@@ -48,7 +48,6 @@ export function PersonAdresse(properties: { sakId: string; kanEndreAndresse: boo
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(properties.sakId),
     queryFn: () => getNavn.queryFn(properties.sakId),
-    enabled: true,
   });
 
   return (
