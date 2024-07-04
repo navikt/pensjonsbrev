@@ -58,8 +58,7 @@ object BarnepensjonForeldreloesFraser {
                                 formatertVirkningsdato + " because both your parents are registered as deceased.".expr()
                     )
                 }
-            }
-            paragraph {
+
                 showIf(harUtbetaling) {
                     showIf(flerePerioder) {
                         textExpr(

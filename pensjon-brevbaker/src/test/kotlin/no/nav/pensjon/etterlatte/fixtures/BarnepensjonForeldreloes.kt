@@ -103,7 +103,7 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
         brukerUnder18Aar = true,
         kunNyttRegelverk = true,
         harUtbetaling = true,
-        erGjenoppretting = true,
+        erGjenoppretting = false,
         vedtattIPesys = false
     )
 }
@@ -144,10 +144,10 @@ fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedig
         virkningsdato = LocalDate.now(),
         sisteBeregningsperiodeBeloep = siste.utbetaltBeloep,
         sisteBeregningsperiodeDatoFom = siste.datoFOM,
-        erGjenoppretting = true,
+        erGjenoppretting = false,
         harUtbetaling = true,
         erEtterbetaling = true,
         flerePerioder = true,
-        vedtattIPesys = true
+        vedtattIPesys = false
     )
 }

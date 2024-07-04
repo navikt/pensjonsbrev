@@ -88,7 +88,6 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
         }
 
         outline {
-
             konverterElementerTilBrevbakerformat(innhold)
 
             showIf(harUtbetaling) {
