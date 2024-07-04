@@ -18,8 +18,7 @@ export const Route = createFileRoute("/saksnummer/$saksId/brev/")({
     enhetsId: z
       .string()
       .nullable()
-      //er noe kødd med zod her som fører til error hvis vi enhetsId er null, og man bare gjør search.enhetsId.
-      //men det fungerer som forventet med dette her
+      //selv om vi navigerer enhetsId som string | null, så vil tanstack gjøre om null til undefined
       .parse(search.enhetsId || null),
   }),
   component: OpprettBrevPage,
