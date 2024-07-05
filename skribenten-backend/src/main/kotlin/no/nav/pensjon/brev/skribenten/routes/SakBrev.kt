@@ -92,6 +92,11 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
                 call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
             }
         }
+
+        post("/{brevId}/journalfor") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            brevredigeringService.journalfor(call, brevId)
+        }
     }
 
 internal fun mapBrev(brev: Brevredigering): Api.BrevResponse = with(brev) {

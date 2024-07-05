@@ -27,7 +27,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
-class BrevbakerService(config: Config, authService: AzureADService): ServiceStatus {
+class BrevbakerService(config: Config, authService: AzureADService) : ServiceStatus {
     private val brevbakerUrl = config.getString("url")
 
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(config.getString("scope"), authService) {
@@ -89,7 +89,14 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
         }.toServiceResult()
 
     suspend fun getTemplates(call: ApplicationCall): ServiceResult<List<TemplateDescription>> =
-        client.get(call, "/v2/templates/redigerbar"){
+        client.get(call, "/v2/templates/redigerbar") {
+            url {
+                parameters.append("includeMetadata", "true")
+            }
+        }.toServiceResult()
+
+    suspend fun getRedigerbarTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<TemplateDescription> =
+        client.get(call, "/v2/templates/redigerbar/${brevkode.name}") {
             url {
                 parameters.append("includeMetadata", "true")
             }

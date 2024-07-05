@@ -13,9 +13,9 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -192,4 +192,32 @@ class BrevredigeringService(
             brevredigering?.document?.firstOrNull()?.pdf?.bytes
         }
     }
+
+    suspend fun journalfor(call: ApplicationCall, brevId: Long): ServiceResult<Pen.JournalforResponse>? {
+        val brevredigering = transaction { Brevredigering.findById(brevId) }
+        val pdf = brevredigering?.document?.firstOrNull()
+
+        if (pdf == null) {
+            return null
+        }
+
+        brevbakerService.getRedigerbarTemplate(call, brevredigering.brevkode).onOk {
+            penService.journalforBrev(
+                call,
+                SendRedigerbartBrevRequest(
+                    dokumentDato = TODO("må matche det som står i PDF, innfør ny kolonne i DocumentTable?"),
+                    saksId = brevredigering.saksId,
+                    enhetId = TODO("hent enhetid fra brevredigeringTable"),
+                    templateDescription = it,
+                    brevkode = brevredigering.brevkode,
+                    pdf = pdf.pdf.bytes,
+                    eksternReferanseId = "skribenten:${brevredigering.id}",
+                )
+            )
+        }.onError { error, statusCode ->
+            logger.error("En feil oppstod under journalføring av PDF: $error", statusCode)
+            throw BrevbakerServiceException(error)
+        }
+    }
+
 }

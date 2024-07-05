@@ -46,6 +46,7 @@ private val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
 
 object BrevredigeringTable : LongIdTable() {
     val saksId : Column<Long> = long("saksId") //TODO: Om vi skal slå opp redigineringer på sak, legg til index
+    //TODO: vi trenger optional vedtaksId
     val brevkode: ColumnWithTransform<String, Brevkode.Redigerbar> = varchar("brevkode", length = 50).transform(Brevkode.Redigerbar::name, Brevkode.Redigerbar::valueOf)
     val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", objectMapper::writeValueAsString, objectMapper::readValue)
     val redigertBrev = json<Edit.Letter>("redigertBrev", objectMapper::writeValueAsString, objectMapper::readValue)
@@ -56,6 +57,7 @@ object BrevredigeringTable : LongIdTable() {
     val opprettetAvNavIdent: Column<String> = varchar("opprettetAvNavIdent", length = 50).index()
     val opprettet: Column<LocalDateTime> = datetime("opprettet")
     val sistredigert: Column<LocalDateTime> = datetime("sistredigert")
+
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
