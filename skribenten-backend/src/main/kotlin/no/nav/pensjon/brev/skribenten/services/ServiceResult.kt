@@ -17,6 +17,11 @@ sealed class ServiceResult<Result> {
         is Error -> Error(error, statusCode)
     }
 
+    inline fun <T> then(func: (Result) -> ServiceResult<T>): ServiceResult<T> = when (this) {
+        is Ok -> func(result)
+        is Error -> Error(error, statusCode)
+    }
+
     inline fun catch(func: (String, HttpStatusCode) -> Result): Result = when (this) {
         is Ok -> result
         is Error -> func(error, statusCode)

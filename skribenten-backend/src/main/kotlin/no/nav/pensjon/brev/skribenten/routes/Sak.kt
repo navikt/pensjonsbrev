@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -13,7 +12,6 @@ import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
     penService: PenService,
-    navansattService: NavansattService,
     legacyBrevService: LegacyBrevService,
     pdlService: PdlService,
     pensjonPersonDataService: PensjonPersonDataService,
@@ -43,44 +41,35 @@ fun Route.sakRoute(
         route("/bestillBrev") {
             post<Api.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-                navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent)
-                    .onError { msg, _ -> call.respond<String>(HttpStatusCode.InternalServerError, "Feil ved henting av enheter: $msg") }
-                    .map { enhetsTilganger -> legacyBrevService.bestillOgRedigerDoksysBrev(call, request, sak.saksId, enhetsTilganger) }
-                    .onOk { call.respond(it) }
 
+                call.respond(legacyBrevService.bestillOgRedigerDoksysBrev(call, request, sak.saksId))
             }
+
             route("/exstream") {
                 post<Api.BestillExstreamBrevRequest> { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-                    navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent)
-                        .onError { msg, _ -> call.respond<String>(HttpStatusCode.InternalServerError, "Feil ved henting av enheter: $msg") }
-                        .map { enhetsTilganger ->
-                            legacyBrevService.bestillOgRedigerExstreamBrev(
-                                call = call,
-                                gjelderPid = sak.foedselsnr,
-                                request = request,
-                                saksId = sak.saksId,
-                                enhetsTilganger = enhetsTilganger,
-                            )
-                        }.onOk { call.respond(it) }
+                    call.respond(
+                        legacyBrevService.bestillOgRedigerExstreamBrev(
+                            call = call,
+                            gjelderPid = sak.foedselsnr,
+                            request = request,
+                            saksId = sak.saksId,
+                        )
+                    )
                 }
 
                 post<Api.BestillEblankettRequest>("/eblankett") { request ->
                     val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-                    navansattService.hentNavAnsattEnhetListe(call, call.principal().navIdent)
-                        .onError { msg, _ -> call.respond<String>(HttpStatusCode.InternalServerError, "Feil ved henting av enheter: $msg") }
-                        .map { enhetsTilganger ->
-                            legacyBrevService.bestillOgRedigerEblankett(
-                                call = call,
-                                gjelderPid = sak.foedselsnr,
-                                request = request,
-                                saksId = sak.saksId,
-                                enhetsTilganger = enhetsTilganger,
-                            )
-                        }.onOk { call.respond(it) }
-
+                    call.respond(
+                        legacyBrevService.bestillOgRedigerEblankett(
+                            call = call,
+                            gjelderPid = sak.foedselsnr,
+                            request = request,
+                            saksId = sak.saksId,
+                        )
+                    )
                 }
             }
         }

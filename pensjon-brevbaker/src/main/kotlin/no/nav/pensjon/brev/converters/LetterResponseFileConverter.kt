@@ -13,7 +13,7 @@ object LetterResponseFileConverter : ContentConverter {
     override suspend fun deserialize(charset: Charset, typeInfo: TypeInfo, content: ByteReadChannel): Any? = null
 
     override suspend fun serializeNullable(contentType: ContentType, charset: Charset, typeInfo: TypeInfo, value: Any?): OutgoingContent? {
-        return if (value is LetterResponse.V2) {
+        return if (value is LetterResponse) {
             ContentType.parse(value.contentType)
                 .takeIf { contentType.withCharset(charset).match(it) }
                 ?.let { ByteArrayContent(value.file, it) }

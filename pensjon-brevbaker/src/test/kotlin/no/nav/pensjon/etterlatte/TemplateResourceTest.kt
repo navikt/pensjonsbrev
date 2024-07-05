@@ -1,19 +1,11 @@
 package no.nav.pensjon.etterlatte
 
 import io.ktor.util.reflect.*
-import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.api.objectMapper
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.renderTestHtml
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LanguageSupport
-import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
+import no.nav.pensjon.brev.renderTestPDF
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.Letter2Markup
-import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
@@ -24,6 +16,8 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.nio.file.Paths
+
+private val objectMapper = jacksonObjectMapper()
 
 class TemplateResourceTest {
 
@@ -36,12 +30,9 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        val letter = Letter(template, fixtures, spraak, Fixtures.felles, )
+        val letter = Letter(template, fixtures, spraak, Fixtures.felles)
 
-        Letter2Markup.render(letter)
-            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter.language, letter.felles, letter.template.letterMetadata.brevtype) }
-            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF(filnavn(etterlatteBrevKode, spraak), it) }
+        letter.renderTestPDF(filnavn(etterlatteBrevKode, spraak))
     }
 
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")

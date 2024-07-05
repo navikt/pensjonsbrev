@@ -31,7 +31,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val navansattService = NavansattService(servicesConfig.getConfig("navansatt"), authService)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
-    val brevredigeringService = BrevredigeringService(brevbakerService, penService)
+    val brevredigeringService = BrevredigeringService(brevbakerService, penService, navansattService)
 
 
     routing {
@@ -44,7 +44,6 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             kodeverkRoute(penService)
             sakRoute(
                 penService,
-                navansattService,
                 legacyBrevService,
                 pdlService,
                 pensjonPersonDataService,

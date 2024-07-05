@@ -77,7 +77,7 @@ class LetterRoutesITest {
         val responseBody = client.post("/v2/letter/autobrev/html") {
             accept(ContentType.Application.Json)
             setBody(autoBrevRequest)
-        }.body<LetterResponse.V2>()
+        }.body<LetterResponse>()
 
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), responseBody.contentType)
         assertThat(String(responseBody.file, Charsets.UTF_8), contains(Regex("<html.*>")))
@@ -98,7 +98,7 @@ class LetterRoutesITest {
         val responseBody = client.post("/v2/letter/autobrev/pdf") {
             accept(ContentType.Application.Json)
             setBody(autoBrevRequest)
-        }.body<LetterResponse.V2>()
+        }.body<LetterResponse>()
 
         assertEquals(ContentType.Application.Pdf.toString(), responseBody.contentType)
     }
@@ -122,7 +122,7 @@ class LetterRoutesITest {
         }
 
         assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.body<LetterResponse.V2>()
+        val body = response.body<LetterResponse>()
         assertThat(String(body.file, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title))
     }
 
@@ -134,7 +134,7 @@ class LetterRoutesITest {
         }
 
         assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.body<LetterResponse.V2>()
+        val body = response.body<LetterResponse>()
         assertEquals(ContentType.Application.Pdf.toString(), body.contentType)
     }
 }

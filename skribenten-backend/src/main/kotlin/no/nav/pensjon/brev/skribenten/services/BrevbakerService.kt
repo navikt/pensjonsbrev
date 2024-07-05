@@ -53,6 +53,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
     suspend fun renderMarkup(
         call: ApplicationCall,
         brevkode: Brevkode.Redigerbar,
+        spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles
     ): ServiceResult<LetterMarkup> =
@@ -63,7 +64,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                     kode = brevkode,
                     letterData = brevdata,
                     felles = felles,
-                    language = LanguageCode.BOKMAL,
+                    language = spraak,
                 )
             )
         }.toServiceResult()
@@ -71,10 +72,11 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
     suspend fun renderPdf(
         call: ApplicationCall,
         brevkode: Brevkode.Redigerbar,
+        spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup
-    ): ServiceResult<LetterResponse.V2> =
+    ): ServiceResult<LetterResponse> =
         client.post(call, "/v2/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -82,7 +84,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                     kode = brevkode,
                     letterData = brevdata,
                     felles = felles,
-                    language = LanguageCode.BOKMAL,
+                    language = spraak,
                     letterMarkup = redigertBrev
                 )
             )

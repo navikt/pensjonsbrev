@@ -27,6 +27,7 @@ import { capitalizeString } from "~/utils/stringUtils";
 import { Route } from "../route";
 
 export default function Adresse() {
+  const { sak } = Route.useLoaderData();
   const { idTSSEkstern } = Route.useSearch();
   const { templateId } = Route.useParams();
 
@@ -35,21 +36,18 @@ export default function Adresse() {
     return undefined;
   }
 
-  return idTSSEkstern ? <SamhandlerAdresse /> : <PersonAdresse />;
+  return idTSSEkstern ? <SamhandlerAdresse /> : <PersonAdresse kanEndreAndresse sakId={sak.saksId.toString()} />;
 }
 
-function PersonAdresse() {
-  const { sak } = Route.useLoaderData();
-
+export function PersonAdresse(properties: { sakId: string; kanEndreAndresse: boolean }) {
   const adresseQuery = useQuery({
-    queryKey: getKontaktAdresse.queryKey(sak.saksId.toString()),
-    queryFn: () => getKontaktAdresse.queryFn(sak.saksId.toString()),
+    queryKey: getKontaktAdresse.queryKey(properties.sakId),
+    queryFn: () => getKontaktAdresse.queryFn(properties.sakId),
   });
 
   const { data: navn } = useQuery({
-    queryKey: getNavn.queryKey(sak.saksId.toString()),
-    queryFn: () => getNavn.queryFn(sak.saksId.toString()),
-    enabled: !!sak,
+    queryKey: getNavn.queryKey(properties.sakId),
+    queryFn: () => getNavn.queryFn(properties.sakId),
   });
 
   return (
@@ -75,7 +73,7 @@ function PersonAdresse() {
       </VStack>
       {adresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
       {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
-      <VelgSamhandlerModal />
+      {properties.kanEndreAndresse && <VelgSamhandlerModal />}
     </div>
   );
 }

@@ -122,3 +122,15 @@ export const createValidationSchema = (template: LetterMetadata) => {
       return refinementContext;
     });
 };
+
+export const brevmalBrevbakerFormSchema = z.object({
+  spraak: z.nativeEnum(SpraakKode),
+  enhetsId: z.string(),
+});
+
+//regel er at hvis brukerens foretrukne språk er tilgjengelig, og malen støtter det, skal den være valgt, ellers skal den første språkkoden i malen være valgt
+export const hentDefaultValueForSpråk = (preferredLanguage: Nullable<SpraakKode>, tilgjengeligeSpråk: SpraakKode[]) => {
+  return preferredLanguage && tilgjengeligeSpråk.includes(preferredLanguage)
+    ? preferredLanguage
+    : tilgjengeligeSpråk[0];
+};

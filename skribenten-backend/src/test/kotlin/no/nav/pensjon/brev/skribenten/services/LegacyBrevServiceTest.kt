@@ -22,15 +22,17 @@ private const val dokumentId = "5678"
 
 class LegacyBrevServiceTest {
 
+    private val principalIdent = "kulIdent1234"
     private val principal = mockk<UserPrincipal> {
         every {
             navIdent
-        } returns "kulIdent1234"
+        } returns principalIdent
     }
     private val mockCall = mockk<ApplicationCall> {
         every { callId } returns "utrolig kul callId"
         every { principal() } returns principal
     }
+    private val principalSinNAVEnhet = NAVEnhet("1111", "NAV Ozzzlo")
 
 
     private val exstreamBrevMetadata = BrevdataDto(
@@ -115,8 +117,10 @@ class LegacyBrevServiceTest {
     }
     private val navansattService = mockk<NavansattService> {
         coEvery {
-            hentNavansatt(any(), any())
+            hentNavansatt(any(), eq(principalIdent))
         } returns ServiceResult.Ok(Navansatt(emptyList(), "verdens", "beste", "saksbehandler"))
+        coEvery { harTilgangTilEnhet(any(), eq(principalIdent), any()) } returns ServiceResult.Ok(false)
+        coEvery { harTilgangTilEnhet(any(), eq(principalIdent), eq(principalSinNAVEnhet.id)) } returns ServiceResult.Ok(true)
     }
 
     private val legacyBrevService = LegacyBrevService(
@@ -127,7 +131,7 @@ class LegacyBrevServiceTest {
     )
 
     @Test
-    fun `feiler ved manglende tilgang`() {
+    fun `bestill exstream brev feiler ved manglende tilgang`() {
         runBlocking {
             val bestillBrevResult = legacyBrevService.bestillOgRedigerExstreamBrev(
                 call = mockCall, gjelderPid = "9999",
@@ -139,8 +143,7 @@ class LegacyBrevServiceTest {
                     idTSSEkstern = null,
                     brevtittel = null,
                     enhetsId = "9999"
-                ), saksId = 3333L,
-                enhetsTilganger = listOf(NAVEnhet("1111", "NAV Ozzzlo"))
+                ), saksId = 3333L
             )
             assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
         }
@@ -158,11 +161,47 @@ class LegacyBrevServiceTest {
                     vedtaksId = null,
                     idTSSEkstern = null,
                     brevtittel = null,
-                    enhetsId = "1111"
-                ), saksId = 3333L, enhetsTilganger = listOf(NAVEnhet("1111", "NAV Ozzzlo"))
+                    enhetsId = principalSinNAVEnhet.id
+                ), saksId = 3333L
             )
             assertThat(bestillBrevResult.failureType).isNull()
             assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_EXSTREAM_URL)
+        }
+    }
+
+
+    @Test
+    fun `kan bestille exstream eblankett med riktig tilgang`() {
+        runBlocking {
+            val bestillBrevResult = legacyBrevService.bestillOgRedigerEblankett(
+                call = mockCall, gjelderPid = "9999",
+                request = Api.BestillEblankettRequest(
+                    brevkode = "exstream",
+                    isSensitive = false,
+                    enhetsId = principalSinNAVEnhet.id,
+                    mottakerText = "en tekst",
+                    landkode = "NO",
+                ), saksId = 3333L
+            )
+            assertThat(bestillBrevResult.failureType).isNull()
+            assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_EXSTREAM_URL)
+        }
+    }
+
+    @Test
+    fun `bestill exstream eblankett feiler med manglende tilgang`() {
+        runBlocking {
+            val bestillBrevResult = legacyBrevService.bestillOgRedigerEblankett(
+                call = mockCall, gjelderPid = "9999",
+                request = Api.BestillEblankettRequest(
+                    brevkode = "exstream",
+                    isSensitive = false,
+                    enhetsId = "9999",
+                    mottakerText = "en tekst",
+                    landkode = "NO",
+                ), saksId = 3333L
+            )
+            assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
         }
     }
 
@@ -175,11 +214,27 @@ class LegacyBrevServiceTest {
                     brevkode = "doksys",
                     spraak = SpraakKode.NB,
                     vedtaksId = null,
-                    enhetsId = "1111"
-                ), 3333L, enhetsTilganger = listOf(NAVEnhet("1111", "NAV Ozzzlo"))
+                    enhetsId = principalSinNAVEnhet.id
+                ), 3333L
             )
             assertThat(bestillBrevResult.failureType).isNull()
             assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_DOKSYS_URL)
+        }
+    }
+
+    @Test
+    fun `bestill doksys brev feiler med manglende tilgang`() {
+        runBlocking {
+            val bestillBrevResult = legacyBrevService.bestillOgRedigerDoksysBrev(
+                mockCall,
+                Api.BestillDoksysBrevRequest(
+                    brevkode = "doksys",
+                    spraak = SpraakKode.NB,
+                    vedtaksId = null,
+                    enhetsId = "9999"
+                ), 3333L
+            )
+            assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
         }
     }
 }
