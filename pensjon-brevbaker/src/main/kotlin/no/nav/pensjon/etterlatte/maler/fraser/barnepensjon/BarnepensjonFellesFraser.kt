@@ -188,23 +188,12 @@ object BarnepensjonFellesFraser {
                     English to "The pension is paid by the 20th of each month. You can find payout dates online: ${Constants.Engelsk.UTBETALINGSDATOER_URL}.",
                 )
             }
-
-            showIf(brukerUnder18Aar) {
-                paragraph {
-                    text(
-                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig.",
-                        Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig.",
-                        English to "Child pension is taxable, but not subject to withholding tax.",
-                    )
-                }
-            } orShow {
-                paragraph {
-                    text(
-                        Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig.",
-                        Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig.",
-                        English to "Child pension is taxable, but not subject to withholding tax.",
-                    )
-                }
+            paragraph {
+                text(
+                    Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig.",
+                    Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig.",
+                    English to "Child pension is taxable, but not subject to withholding tax.",
+                )
             }
             showIf(etterbetaling.notNull()) {
                 paragraph {
