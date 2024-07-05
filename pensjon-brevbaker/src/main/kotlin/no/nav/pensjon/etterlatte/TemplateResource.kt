@@ -8,6 +8,7 @@ import no.nav.pensjon.etterlatte.maler.andre.UtsattKlagefrist
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslag
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfall
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseForeldreloes
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseForeldreloesRedigerbartUfall
@@ -65,6 +66,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall,
         BarnepensjonVedleggForhaandsvarselRedigerbartUtfall,
         BarnepensjonInformasjonDoedsfall,
+        BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt,
         // Omstillingsstønad
         OmstillingsstoenadAvslag,
         OmstillingsstoenadAvslagRedigerbartUtfall,
