@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
 import { SamhandlerTypeCode } from "~/types/apiTypes";
 
 export enum Søketype {
@@ -94,13 +95,6 @@ export enum TypeMottaker {
   Offentlig = "Offentlig",
 }
 
-/*
-  TODO - hent land fra backend, fra kodeverk 
-  */
-export enum Land {
-  Norge = "Norge",
-}
-
 export const leggTilManuellSamhandlerFormDataSchema = z.object({
   typeMottaker: z
     .nativeEnum(TypeMottaker)
@@ -120,7 +114,7 @@ export const leggTilManuellSamhandlerFormDataSchema = z.object({
     linje2: z.string(),
     postnr: z.string().min(1, "Obligatorisk"),
     poststed: z.string().min(1, "Obligatorisk"),
-    land: z.nativeEnum(Land),
+    land: z.string().min(1, "Obligatorisk"),
   }),
 });
 
@@ -244,3 +238,11 @@ export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "
 };
 
 export type CombinedFormData = z.infer<typeof combinedFormSchema>;
+
+export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is Adresse =>
+  "linje1" in adresse && "linje2" in adresse && "postnr" in adresse && "poststed" in adresse && "land" in adresse;
+
+export const erAdresseKontaktAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is KontaktAdresseResponse =>
+  "adresseString" in adresse && "adresselinjer" in adresse && "type" in adresse;
+
+export type EndreMottakerModalTabs = "samhandler" | "manuellAdresse" | "oppsummering";

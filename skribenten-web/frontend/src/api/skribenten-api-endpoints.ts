@@ -257,6 +257,12 @@ export const hentSamhandlerAdresse = {
   },
 };
 
+export const hentLandForManuellUtfyllingAvAdresse = {
+  queryKey: ["LANDKODER_OG_NAVN"],
+  queryFn: async () =>
+    (await axios.get<Array<{ kode: string; navn: string }>>(`${SKRIBENTEN_API_BASE_PATH}/land`)).data,
+};
+
 function convertResponseToAxiosError({ message, response }: { message: string; response: AxiosResponse }) {
   return new AxiosError(message, undefined, undefined, undefined, response);
 }

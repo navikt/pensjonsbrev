@@ -159,7 +159,7 @@ export function BasicSelect<
       components={{ ...properties.components }}
       css={commonSelectCss}
       escapeClearsValue
-      isClearable
+      isClearable={properties.isClearable}
       isSearchable
       menuPosition="fixed"
       placeholder={properties.placeholder ?? ""}

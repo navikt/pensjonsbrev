@@ -13,9 +13,9 @@ import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/ap
 import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../route";
-import Adresse from "./Adresse";
 import BestillOgRedigerButton from "./BestillOgRedigerButton";
-import EndreMottaker, { HentOgVisAdresse } from "./endreMottaker/EndreMottaker";
+import EndreMottaker from "./endreMottaker/EndreMottaker";
+import HentOgVisAdresse from "./endreMottaker/HentOgVisAdresse";
 import LetterTemplateHeading from "./LetterTemplate";
 import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";

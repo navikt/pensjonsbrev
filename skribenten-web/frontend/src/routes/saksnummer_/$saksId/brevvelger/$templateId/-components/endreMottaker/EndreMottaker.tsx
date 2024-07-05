@@ -1,33 +1,25 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BodyShort, Button, Heading, Modal, Tabs, VStack } from "@navikt/ds-react";
+import { Button, Heading, Modal, Tabs } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useState } from "react";
 import React from "react";
 import type { Control } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-import { finnSamhandler2, getKontaktAdresse, getNavn, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
-import { ApiError } from "~/components/ApiError";
-import type {
-  Adresse,
-  FinnSamhandlerRequest,
-  FinnSamhandlerResponseDto,
-  KontaktAdresseResponse,
-} from "~/types/apiTypes";
-import { getAdresseTypeName } from "~/types/nameMappings";
+import { finnSamhandler2 } from "~/api/skribenten-api-endpoints";
+import type { Adresse, FinnSamhandlerRequest, FinnSamhandlerResponseDto } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
 import BekreftAvbrytelse from "./BekreftAvbrytelse";
-import type { ManuellAdresseUtfyllingFormData } from "./EndreMottakerUtils";
+import type { EndreMottakerModalTabs, ManuellAdresseUtfyllingFormData } from "./EndreMottakerUtils";
 import {
   type CombinedFormData,
   createSamhandlerValidationSchema,
   type FinnSamhandlerFormData,
-  Land,
   Søketype,
 } from "./EndreMottakerUtils";
 import HentOgVisSamhandlerAdresse from "./HentOgVisSamhandlerAdresse";
@@ -83,116 +75,23 @@ const EndreMottaker = (properties: {
   );
 };
 
-export const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string }) => {
-  const hentSamhandlerAdresseQuery = useQuery({
-    queryKey: hentSamhandlerAdresse.queryKey(properties.samhandlerId as string),
-    queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: properties.samhandlerId as string }),
-    enabled: !!properties.samhandlerId,
-  });
-
-  const adresseQuery = useQuery({
-    queryKey: getKontaktAdresse.queryKey(properties.sakId),
-    queryFn: () => getKontaktAdresse.queryFn(properties.sakId),
-    enabled: !properties.samhandlerId,
-  });
-
-  return (
-    <div>
-      {!properties.samhandlerId && (
-        <div>
-          {adresseQuery.isSuccess && <MottakerAdresseOppsummering adresse={adresseQuery.data} erSamhandler={false} />}
-          {adresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
-          {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
-        </div>
-      )}
-      {properties.samhandlerId && (
-        <div>
-          {hentSamhandlerAdresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
-          {hentSamhandlerAdresseQuery.data && (
-            <MottakerAdresseOppsummering adresse={hentSamhandlerAdresseQuery.data} erSamhandler />
-          )}
-          {hentSamhandlerAdresseQuery.error && (
-            <ApiError error={hentSamhandlerAdresseQuery.error} title="Fant ikke adresse" />
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-/**
- *
- * @param erSamhandler - burde settes dersom adressen er en Adresse, og ikke en KontaktAdresseResponse
- */
-const MottakerAdresseOppsummering = (properties: {
-  adresse: Adresse | KontaktAdresseResponse;
-  erSamhandler?: boolean;
-}) => {
-  return (
-    <div>
-      {erAdresseKontaktAdresse(properties.adresse) ? (
-        <ValgtKontaktAdresseOppsummering adresse={properties.adresse} />
-      ) : (
-        <ValgtAdresseOppsummering adresse={properties.adresse} erSamhandler={properties.erSamhandler ?? false} />
-      )}
-    </div>
-  );
-};
-
-const ValgtKontaktAdresseOppsummering = (properties: { adresse: KontaktAdresseResponse }) => {
-  const { saksId } = Route.useParams();
-  const { data: navn } = useQuery({
-    queryKey: getNavn.queryKey(saksId),
-    queryFn: () => getNavn.queryFn(saksId),
-  });
-
-  return (
-    <div>
-      <div>
-        {navn} ({getAdresseTypeName(properties.adresse.type)})
-      </div>
-      <VStack gap="0">
-        {properties.adresse.adresselinjer.map((linje) => (
-          <span key={linje}>{linje}</span>
-        ))}
-      </VStack>
-    </div>
-  );
-};
-
-const ValgtAdresseOppsummering = (properties: { adresse: Adresse; erSamhandler: boolean }) => {
-  return (
-    <div>
-      <BodyShort>
-        {properties.adresse.navn} {properties.erSamhandler && "(Samhandler)"}
-      </BodyShort>
-      <VStack gap="0">
-        <BodyShort>{properties.adresse.linje1}</BodyShort>
-        <BodyShort>
-          {properties.adresse.postnr} {properties.adresse.poststed}{" "}
-          {properties.adresse.land === "NOR" ? "" : `, ${properties.adresse.land}`}
-        </BodyShort>
-      </VStack>
-    </div>
-  );
-};
-
-export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseResponse) =>
-  "linje1" in adresse && "linje2" in adresse && "postnr" in adresse && "poststed" in adresse && "land" in adresse;
-
-export const erAdresseKontaktAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is KontaktAdresseResponse =>
-  "adresseString" in adresse && "adresselinjer" in adresse && "type" in adresse;
-
 export default EndreMottaker;
 
-type ModalTabs = "samhandler" | "manuellAdresse" | "oppsummering";
-
+/*
+  litt om hvorfor denne er laget som den er:
+  Vi har 1 modal, som skal deles opp i 3 tabs. 2 av dem er velgbare, mens 1 tab (oppsummering) er intern.
+  Modalen-bodyen skal reflektere 3 tilstander - Valg av mottaker, oppsummering, og avbrytelse
+  Oppsummering og avbyrtelse skal 'fjerne' alt det andre, derfor kreves det at modal har en state som vet hva den skal rendre
+  En mulighet er som det er gjort nå - ha hele formet i modalen, og rendrer sine children basert på state. 
+  En annen måte kunne ha vært å ha forms i hver tab, mens parenten sender callbacks til children ved deres onSubmit. 
+  Med litt prøving av begge deler, har jeg landet på at det er enklere å ha alt i en form, selv om det fortsatt er litt komplisert.
+*/
 const EndreMottakerModal = (properties: {
   åpen: boolean;
   onBekreftNyMottaker: (id: string | Adresse) => void;
   onClose: () => void;
 }) => {
-  const [tab, setTab] = useState<ModalTabs>("samhandler");
+  const [tab, setTab] = useState<EndreMottakerModalTabs>("samhandler");
   const [vilAvbryte, setVilAvbryte] = useState<boolean>(false);
   const [valgtSamhandler, setValgtSamhandler] = useState<Nullable<string>>(null);
 
@@ -225,15 +124,16 @@ const EndreMottakerModal = (properties: {
     });
   };
 
-  const defaultManuellAdresse = {
+  const defaultManuellAdresse: ManuellAdresseUtfyllingFormData = {
     typeMottaker: null,
     adresse: {
       navn: "",
-      adresselinje1: "",
-      adresselinje2: "",
-      postnummer: "",
+      linje1: "",
+      linje2: "",
+      postnr: "",
       poststed: "",
-      land: Land.Norge,
+      //default value skal være norge. Siden vi henter alle landkodene i backend, hardkoder vi norges verdi.
+      land: "NO",
     },
   };
   const defaultFinnSamhandler = {
@@ -315,8 +215,8 @@ const EndreMottakerModal = (properties: {
 
 const ModalTabs = (properties: {
   tab: {
-    tab: ModalTabs;
-    setTab: (tab: ModalTabs) => void;
+    tab: EndreMottakerModalTabs;
+    setTab: (tab: EndreMottakerModalTabs) => void;
   };
   control: Control<CombinedFormData>;
   onAvbrytClick: () => void;
@@ -337,7 +237,7 @@ const ModalTabs = (properties: {
           samhandlerValues={properties.samhandlerValuesMedId}
         />
       ) : (
-        <Tabs onChange={(s) => properties.tab.setTab(s as ModalTabs)} value={properties.tab.tab}>
+        <Tabs onChange={(s) => properties.tab.setTab(s as EndreMottakerModalTabs)} value={properties.tab.tab}>
           <Tabs.List>
             <Tabs.Tab label="Finn samhandler" value="samhandler" />
             <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />

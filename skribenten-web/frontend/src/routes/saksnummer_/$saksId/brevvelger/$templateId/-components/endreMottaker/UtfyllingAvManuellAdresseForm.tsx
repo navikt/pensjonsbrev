@@ -1,17 +1,26 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, HStack, Link, Select, TextField, VStack } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
+import { hentLandForManuellUtfyllingAvAdresse } from "~/api/skribenten-api-endpoints";
+import { BasicSelect, SelectLayoutWrapper } from "~/components/select/CustomSelectComponents";
+
 import type { CombinedFormData } from "./EndreMottakerUtils";
-import { Land, TypeMottaker } from "./EndreMottakerUtils";
+import { TypeMottaker } from "./EndreMottakerUtils";
 
 const UtfyllingAvManuellAdresseForm = (properties: {
   control: Control<CombinedFormData>;
   onSubmit: () => void;
   onCloseIntent: () => void;
 }) => {
+  const hentAdresserQuery = useQuery({
+    queryKey: hentLandForManuellUtfyllingAvAdresse.queryKey,
+    queryFn: () => hentLandForManuellUtfyllingAvAdresse.queryFn(),
+  });
+
   return (
     <VStack gap="6">
       <VStack gap="4">
@@ -104,28 +113,40 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           />
         </HStack>
 
-        <Controller
-          control={properties.control}
-          name="manuellAdresse.adresse.land"
-          render={({ field, fieldState }) => (
-            <Select
-              css={css`
-                align-self: flex-start;
-                width: 60%;
-              `}
-              label="Land *"
-              {...field}
-              error={fieldState.error?.message}
-              value={field.value ?? ""}
-            >
-              {Object.values(Land).map((land) => (
-                <option key={land} value={land}>
-                  {land}
-                </option>
-              ))}
-            </Select>
+        <div>
+          {hentAdresserQuery.isLoading && <BodyShort>Laster inn land...</BodyShort>}
+          {/* TODO - hvis en eller annen feil skjer, vil vi gi dem et input felt der dem kan skrive in koden selv? */}
+          {hentAdresserQuery.isError && <BodyShort>Kunne ikke laste inn land</BodyShort>}
+          {hentAdresserQuery.isSuccess && (
+            <Controller
+              control={properties.control}
+              name="manuellAdresse.adresse.land"
+              render={({ field, fieldState }) => {
+                const options = hentAdresserQuery.data
+                  .toSorted((a, b) => (a.navn > b.navn ? 1 : -1))
+                  .map((land) => ({ label: land.navn, value: land.kode }));
+
+                return (
+                  <>
+                    <SelectLayoutWrapper error={fieldState?.error} htmlFor="samhandlerType" label="Land *">
+                      <BasicSelect
+                        {...field}
+                        css={css`
+                          align-self: flex-start;
+                          width: 60%;
+                        `}
+                        isClearable={false}
+                        onChange={(option) => field.onChange(option?.value)}
+                        options={options}
+                        value={options.find((option) => option.value === field.value) ?? null}
+                      />
+                    </SelectLayoutWrapper>
+                  </>
+                );
+              }}
+            />
           )}
-        />
+        </div>
       </VStack>
       <HStack
         css={css`
