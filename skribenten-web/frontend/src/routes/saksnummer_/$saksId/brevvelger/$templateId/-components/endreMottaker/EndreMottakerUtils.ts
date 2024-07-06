@@ -31,7 +31,7 @@ export enum Identtype {
 export const identtypeToText = (identtype: Identtype) => {
   switch (identtype) {
     case Identtype.NORSK_D_NR: {
-      return "D-nummer";
+      return "Norsk D-nummer";
     }
     case Identtype.EØS_NR: {
       return "EØS-nummer";
@@ -46,37 +46,37 @@ export const identtypeToText = (identtype: Identtype) => {
       return "H-nummer";
     }
     case Identtype.OBJEC_IDENTIFIER: {
-      return "Helsepersonellnummer";
+      return "Objec identifier";
     }
     case Identtype.INSTITUSJONSNR: {
-      return "Institusjonsnummer";
+      return "Institusjonsnr";
     }
     case Identtype.KOMMUNENR: {
-      return "Kommunenummer";
+      return "Kommunenr";
     }
     case Identtype.Land: {
       return "Land";
     }
     case Identtype.LOC_NR: {
-      return "Lokaliseringsnummer";
+      return "Loc-nr";
     }
     case Identtype.NORSK_ORGNR: {
-      return "Organisasjonsnummer";
+      return "Norsk orgnr";
     }
     case Identtype.NORSK_PNR: {
-      return "Personnummer";
+      return "Norsk pnr";
     }
     case Identtype.TRYGDEKONTORNR: {
-      return "Trygdekontornummer";
+      return "Trygdekontornr";
     }
     case Identtype.TP_LEVERANDØR: {
-      return "Tjenesteyternummer";
+      return "TP leverandør";
     }
     case Identtype.UTENLANDSK_ORGNR: {
-      return "Utenlandsk organisasjonsnummer";
+      return "Utenlandsk orgnr";
     }
     case Identtype.UTENLANDSK_PNR: {
-      return "Utenlandsk personnummer";
+      return "Utenlandsk prn";
     }
   }
 };
