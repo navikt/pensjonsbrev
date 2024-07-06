@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Button, Select, TextField, VStack } from "@navikt/ds-react";
+import { Alert, Button, Select, TextField, VStack } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller, useWatch } from "react-hook-form";
@@ -58,7 +58,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
             align-self: flex-start;
           `}
           data-cy="endre-mottaker-søk-button"
-          loading={false}
+          loading={properties.onFinnSamhandlerSubmit.isPending}
           size="small"
         >
           Søk
@@ -66,10 +66,16 @@ const SøkOgVelgSamhandlerForm = (properties: {
       )}
 
       {properties.onFinnSamhandlerSubmit.isSuccess && (
-        <SamhandlerSearchResults
-          onSelect={(id) => properties.onSamhandlerValg(id)}
-          samhandlere={properties.onFinnSamhandlerSubmit.data.samhandlere}
-        />
+        <div>
+          {properties.onFinnSamhandlerSubmit.data.failureType ? (
+            <Alert variant="error">{properties.onFinnSamhandlerSubmit.data.failureType}</Alert>
+          ) : (
+            <SamhandlerSearchResults
+              onSelect={(id) => properties.onSamhandlerValg(id)}
+              samhandlere={properties.onFinnSamhandlerSubmit.data.samhandlere}
+            />
+          )}
+        </div>
       )}
 
       <Button

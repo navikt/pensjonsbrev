@@ -377,40 +377,42 @@ export function SamhandlerSearchResults({
   return (
     <VStack gap="2">
       <BodyShort size="small">{sortedSamhandlere.length} treff</BodyShort>
-      <Table onSortChange={(sortKey) => handleSort(sortKey)} sort={sort}>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader colSpan={2} sortKey="navn" sortable>
-              Navn
-            </Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {sortedSamhandlere.map((samhandler) => (
-            <Table.Row key={samhandler.idTSSEkstern}>
-              <Table.DataCell
-                css={css`
-                  font-weight: var(--a-font-weight-regular);
-                `}
-                scope="row"
-              >
-                {capitalizeString(samhandler.navn)}
-              </Table.DataCell>
-              <Table.DataCell align="right">
-                <Button
-                  data-cy="velg-samhandler"
-                  onClick={() => onSelect(samhandler.idTSSEkstern)}
-                  size="small"
-                  type="button"
-                  variant="secondary-neutral"
-                >
-                  Velg
-                </Button>
-              </Table.DataCell>
+      {sortedSamhandlere.length > 0 && (
+        <Table onSortChange={(sortKey) => handleSort(sortKey)} sort={sort}>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader colSpan={2} sortKey="navn" sortable>
+                Navn
+              </Table.ColumnHeader>
             </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
+          </Table.Header>
+          <Table.Body>
+            {sortedSamhandlere.map((samhandler) => (
+              <Table.Row key={samhandler.idTSSEkstern}>
+                <Table.DataCell
+                  css={css`
+                    font-weight: var(--a-font-weight-regular);
+                  `}
+                  scope="row"
+                >
+                  {capitalizeString(samhandler.navn)}
+                </Table.DataCell>
+                <Table.DataCell align="right">
+                  <Button
+                    data-cy="velg-samhandler"
+                    onClick={() => onSelect(samhandler.idTSSEkstern)}
+                    size="small"
+                    type="button"
+                    variant="secondary-neutral"
+                  >
+                    Velg
+                  </Button>
+                </Table.DataCell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      )}
     </VStack>
   );
 }

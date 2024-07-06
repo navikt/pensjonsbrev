@@ -194,6 +194,7 @@ export type Samhandler = {
 
 export type FinnSamhandlerResponseDto = {
   samhandlere: Samhandler[];
+  failureType: Nullable<string>;
 };
 
 export enum SamhandlerTypeCode {
