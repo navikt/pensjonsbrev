@@ -10,73 +10,73 @@ export enum Søketype {
 }
 
 export enum Identtype {
-  EØS_NUMMER = "EØS-nummer",
-  FØDSELSDATO = "Fødselsdato",
-  FØDSELSNUMMER = "Fødselsnummer",
-  H_NUMMER = "H-nummer",
-  INSTITUSJONSNR = "Institusjonsnr",
-  KOMUNNENR = "Kommunenr",
-  LAND = "Land",
-  LOC_NR = "Loc-nr",
-  NORSK_D_NUMMER = "Norsk D-nummer",
-  NORSK_ORG_NR = "Norsk orgnr",
-  NORSK_PNR = "Norsk pnr",
-  OBJEC_IDENTIFIER = "Objec Identifier",
-  TP_LEVERANDØR = "TP leverandør",
-  TRYGDEKONTOR = "Trygdekontornr",
-  UTENLANDSK_ORGNR = "Utenlandsk orgnr",
-  UTENLANDSK_PNR = "Utenlandsk pnr",
+  NORSK_D_NR = "DNR",
+  EØS_NR = "EOS",
+  FØDSELSDATO = "FDAT",
+  FØDSELSNR = "FNR",
+  H_NR = "HNR",
+  OBJEC_IDENTIFIER = "HPR",
+  INSTITUSJONSNR = "INST",
+  KOMMUNENR = "KOMM",
+  Land = "LAND",
+  LOC_NR = "LNR",
+  NORSK_ORGNR = "ORG",
+  NORSK_PNR = "PNR",
+  TRYGDEKONTORNR = "TKNR",
+  TP_LEVERANDØR = "TPNR",
+  UTENLANDSK_ORGNR = "UTOR",
+  UTENLANDSK_PNR = "UTPE",
 }
 
 export const identtypeToText = (identtype: Identtype) => {
   switch (identtype) {
-    case Identtype.EØS_NUMMER: {
+    case Identtype.NORSK_D_NR: {
+      return "D-nummer";
+    }
+    case Identtype.EØS_NR: {
       return "EØS-nummer";
     }
     case Identtype.FØDSELSDATO: {
       return "Fødselsdato";
     }
-    case Identtype.FØDSELSNUMMER: {
+    case Identtype.FØDSELSNR: {
       return "Fødselsnummer";
     }
-    case Identtype.H_NUMMER: {
+    case Identtype.H_NR: {
       return "H-nummer";
     }
+    case Identtype.OBJEC_IDENTIFIER: {
+      return "Helsepersonellnummer";
+    }
     case Identtype.INSTITUSJONSNR: {
-      return "Institusjonsnr";
+      return "Institusjonsnummer";
     }
-    case Identtype.KOMUNNENR: {
-      return "Kommunenr";
+    case Identtype.KOMMUNENR: {
+      return "Kommunenummer";
     }
-    case Identtype.LAND: {
+    case Identtype.Land: {
       return "Land";
     }
     case Identtype.LOC_NR: {
-      return "Loc-nr";
+      return "Lokaliseringsnummer";
     }
-    case Identtype.NORSK_D_NUMMER: {
-      return "Norsk D-nummer";
-    }
-    case Identtype.NORSK_ORG_NR: {
-      return "Norsk orgnr";
+    case Identtype.NORSK_ORGNR: {
+      return "Organisasjonsnummer";
     }
     case Identtype.NORSK_PNR: {
-      return "Norsk pnr";
+      return "Personnummer";
     }
-    case Identtype.OBJEC_IDENTIFIER: {
-      return "Objec identifier";
+    case Identtype.TRYGDEKONTORNR: {
+      return "Trygdekontornummer";
     }
     case Identtype.TP_LEVERANDØR: {
-      return "TP leverandør";
-    }
-    case Identtype.TRYGDEKONTOR: {
-      return "Trygdekontor";
+      return "Tjenesteyternummer";
     }
     case Identtype.UTENLANDSK_ORGNR: {
-      return "Utenlandsk orgnr";
+      return "Utenlandsk organisasjonsnummer";
     }
     case Identtype.UTENLANDSK_PNR: {
-      return "Utenlandsk pnr";
+      return "Utenlandsk personnummer";
     }
   }
 };
