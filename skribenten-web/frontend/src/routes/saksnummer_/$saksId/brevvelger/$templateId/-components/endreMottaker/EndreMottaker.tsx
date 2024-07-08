@@ -243,7 +243,8 @@ const ModalTabs = (properties: {
         <Tabs onChange={(s) => properties.tab.setTab(s as EndreMottakerModalTabs)} value={properties.tab.tab}>
           <Tabs.List>
             <Tabs.Tab label="Finn samhandler" value="samhandler" />
-            <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
+            {/* Vi har enda ikke backend støtte for å legge til manuell adresse. Midlertidig har vi bare fjernet muligheten til å komme inn i formet */}
+            {/* <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" /> */}
           </Tabs.List>
           <div
             css={css`

@@ -302,6 +302,26 @@ describe("Brevvelger spec", () => {
     });
 
     it("manuell adresse", () => {
+      /*
+        backend har enda ikke støtte for at vi kan sende inn en manuell adresse. Midlertidig kommentert ut 
+        den faktiske testen, og erstattet med en liten verifisering på at dem ikke kan gå inn i manuell adresse
+      */
+
+      cy.visit("/saksnummer/123456/brevvelger", {
+        onBeforeLoad(window) {
+          cy.stub(window, "open").as("window-open");
+        },
+      });
+
+      //søker opp og velger brevet vi vil ha
+      cy.getDataCy("brevmal-search").click().type("brev fra nav");
+      cy.getDataCy("brevmal-button").click();
+
+      //åpner endre mottaker modal, søker og velger samhandler
+      cy.getDataCy("toggle-endre-mottaker-modal").click();
+      cy.contains("Legg til manuelt").should("not.exist");
+
+      /*
       cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream", (request) => {
         expect(request.body).to.deep.equal({
           brevkode: "PE_IY_05_300",
@@ -366,6 +386,7 @@ describe("Brevvelger spec", () => {
         "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
       );
       cy.getDataCy("order-letter-success-message");
+      */
     });
   });
 });
