@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.LocalDate
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
@@ -47,6 +48,7 @@ sealed class Expression<out Out> : StableHash {
                 is Collection<*> -> StableHash.of(v.map { stableHash(it) })
                 is Pair<*, *> -> StableHash.of(stableHash(v.first), stableHash(v.second))
                 is Unit -> StableHash.of("kotlin.Unit")
+                is LocalDate -> StableHash.of(v)
                 null -> StableHash.of(null)
                 else -> throw IllegalArgumentException("Unable to calculate stableHashCode for type ${v::class.java}")
             }

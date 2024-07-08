@@ -2,16 +2,16 @@
 
 package no.nav.pensjon.brev.maler.fraser.generated
 
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
 
 
 data class TBU1121_Generated(
-	val beregningUfore_totalNetto: Expression<Double>,
+	val beregningUfore_totalNetto: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU1121NN, TBU1121, TBU1121EN]

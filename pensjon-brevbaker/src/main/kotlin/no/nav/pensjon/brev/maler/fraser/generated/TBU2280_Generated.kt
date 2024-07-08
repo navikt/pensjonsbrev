@@ -6,26 +6,23 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
 
 
 data class TBU2280_Generated(
-	val barnetilleggFelles_BTFBinnvilget: Expression<Boolean>,
+	val barnetilleggFelles_innvilget: Expression<Boolean>,
 	val barnetilleggSerkull_innvilget: Expression<Boolean>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 		//[TBU2280NN, TBU2280, TBU2280EN]
 
 		paragraph {
 			text (
 				Bokmal to "Vi vil foreta et etteroppgjør hvis du har fått utbetalt for mye eller for lite uføretrygd ",
 				Nynorsk to "Vi gjer eit etteroppgjer dersom du har fått utbetalt for mykje eller for lite uføretrygd ",
-				English to "Once the tax assessment from the Tax Administration is complete, we will conduct a final settlement if you have been paid too much or too little in disability benefit. Read more about this in the attachment called \"Information about calculations\".",
 			)
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-			showIf(barnetilleggSerkull_innvilget or barnetilleggFelles_BTFBinnvilget){
+			showIf(barnetilleggSerkull_innvilget or barnetilleggFelles_innvilget){
 				text (
 					Bokmal to "og barnetillegg ",
 					Nynorsk to "og barnetillegg ",
@@ -37,7 +34,7 @@ data class TBU2280_Generated(
 			)
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-			showIf(barnetilleggSerkull_innvilget or barnetilleggFelles_BTFBinnvilget){
+			showIf(barnetilleggSerkull_innvilget or barnetilleggFelles_innvilget){
 				text (
 					Bokmal to " og barnetillegg",
 					Nynorsk to " og barnetillegg",
@@ -49,7 +46,7 @@ data class TBU2280_Generated(
 			)
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-			showIf(barnetilleggSerkull_innvilget or barnetilleggFelles_BTFBinnvilget){
+			showIf(barnetilleggSerkull_innvilget or barnetilleggFelles_innvilget){
 				text (
 					Bokmal to " og barnetillegg",
 					Nynorsk to " og barnetillegg",
