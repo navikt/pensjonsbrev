@@ -221,7 +221,7 @@ describe("Brevvelger spec", () => {
         expect(request.body).to.deep.equal({
           samhandlerType: "ADVO",
           direkteOppslag: {
-            identtype: "Norsk orgnr",
+            identtype: "ORG",
             id: "direkte-oppslag-id",
           },
           organisasjonsnavn: null,
@@ -272,7 +272,7 @@ describe("Brevvelger spec", () => {
       cy.getDataCy("endre-mottaker-søk-button").click();
       cy.getDataCy("velg-samhandler").first().click();
 
-      //TODO - assert oppsummering viser riktig info
+      //asserter oppsummering viser riktig info
       cy.contains("Advokat 1 As").should("be.visible");
       cy.contains("Postboks 603 Sentrum").should("be.visible");
       cy.contains("4003").should("be.visible");
@@ -280,7 +280,7 @@ describe("Brevvelger spec", () => {
       cy.contains("Nor").should("be.visible");
       cy.getDataCy("bekreft-ny-mottaker").click();
 
-      //TODO - assert at vi har byttet til samhandler
+      //asserter at vi har byttet til samhandler
       cy.url().should(
         "eq",
         "http://localhost:5173/saksnummer/123456/brevvelger/PE_IY_05_300?idTSSEkstern=%2280000781720%22",
@@ -289,6 +289,73 @@ describe("Brevvelger spec", () => {
       //fyller ut resten av inputtene
       cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
       cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
+      cy.getDataCy("språk-velger-select").should("have.value", "NB");
+      cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
+
+      //bestiller brev
+      cy.getDataCy("order-letter").click();
+      cy.get("@window-open").should(
+        "have.been.calledOnceWithExactly",
+        "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
+      );
+      cy.getDataCy("order-letter-success-message");
+    });
+
+    it("manuell adresse", () => {
+      cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream", (request) => {
+        expect(request.body).to.deep.equal({
+          brevkode: "PE_IY_05_300",
+          idTSSEkstern: null,
+          spraak: "NB",
+          isSensitive: false,
+          brevtittel: "Du får innvilget stønad av noe",
+          enhetsId: "4405",
+          vedtaksId: null,
+        });
+        request.reply({ fixture: "bestillBrevExstream.json" });
+      }).as("Brev fra nav - exstream");
+
+      cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
+        request.reply({ fixture: "land.json" });
+      }).as("Land fra backend");
+
+      cy.visit("/saksnummer/123456/brevvelger", {
+        onBeforeLoad(window) {
+          cy.stub(window, "open").as("window-open");
+        },
+      });
+
+      //søker opp og velger brevet vi vil ha
+      cy.getDataCy("brevmal-search").click().type("brev fra nav");
+      cy.getDataCy("brevmal-button").click();
+
+      //åpner endre mottaker modal, søker og velger samhandler
+      cy.getDataCy("toggle-endre-mottaker-modal").click();
+
+      //går inn i manuell adresse utfyllingsformen
+      cy.contains("Legg til manuelt").click();
+
+      //Fyller ut formen
+      cy.getDataCy("endre-mottaker-mottaker-type").select("Privatperson");
+      cy.contains("Navn").click().type("Fornavn Etternavnsen");
+      cy.contains("Adresselinje 1").click().type("Adresselinjen 1");
+      cy.contains("Postnummer").click().type("0000");
+      cy.contains("Poststed").click().type("Poststedet");
+      cy.contains("Land *").click().type("Sver{enter}");
+      cy.contains("Gå videre").click();
+
+      //asserter oppsummering viser riktig info
+      cy.contains("Privatperson").should("be.visible");
+      cy.contains("Fornavn Etternavnsen").should("be.visible");
+      cy.contains("Adresselinjen").should("be.visible");
+      cy.contains("0000").should("be.visible");
+      cy.contains("Poststedet").should("be.visible");
+      cy.contains("Se").should("be.visible");
+      cy.getDataCy("bekreft-ny-mottaker").click();
+
+      //fyller ut resten av inputtene
+      cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
+      cy.getDataCy("brev-title-textfield").click().type("Du får innvilget stønad av noe");
       cy.getDataCy("språk-velger-select").should("have.value", "NB");
       cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 

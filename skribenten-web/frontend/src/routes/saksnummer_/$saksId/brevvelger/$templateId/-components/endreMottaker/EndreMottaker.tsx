@@ -28,7 +28,8 @@ import SøkOgVelgSamhandlerForm from "./SøkOgVelgSamhandlerForm";
 import UtfyllingAvManuellAdresseForm from "./UtfyllingAvManuellAdresseForm";
 
 const EndreMottaker = (properties: {
-  onManuellAdresseBekreft: (a: Nullable<Adresse>) => void;
+  //kan være undefined fordi vi ikke kan gjøre noe manuellAdresse enda
+  onManuellAdresseBekreft?: (a: Nullable<Adresse>) => void;
   children?: React.ReactNode;
 }) => {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
@@ -40,14 +41,16 @@ const EndreMottaker = (properties: {
         <EndreMottakerModal
           onBekreftNyMottaker={(bekreftetMottaker) => {
             setModalÅpen(false);
+            //hvis mottaker er en string, betyr det at det er en samhandler
             if (typeof bekreftetMottaker === "string") {
-              properties.onManuellAdresseBekreft(null);
+              properties.onManuellAdresseBekreft?.(null);
               navigate({
                 search: (s) => ({ ...s, idTSSEkstern: bekreftetMottaker }),
                 replace: true,
               });
             } else {
-              properties.onManuellAdresseBekreft(bekreftetMottaker);
+              //hvis mottaker er en adresse, betyr det at det er en manuell adresse
+              properties.onManuellAdresseBekreft?.(bekreftetMottaker);
               navigate({
                 search: (s) => ({ ...s, idTSSEkstern: undefined }),
                 replace: true,

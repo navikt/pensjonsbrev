@@ -45,6 +45,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           name="manuellAdresse.typeMottaker"
           render={({ field, fieldState }) => (
             <Select
+              data-cy="endre-mottaker-mottaker-type"
               description="Privatperson, samhandler, institusjon, offentlig"
               label="Type mottaker"
               {...field}
@@ -130,8 +131,9 @@ const UtfyllingAvManuellAdresseForm = (properties: {
 
                 return (
                   <>
-                    <SelectLayoutWrapper error={fieldState?.error} htmlFor="samhandlerType" label="Land *">
+                    <SelectLayoutWrapper error={fieldState?.error} htmlFor="endre-mottaker-land-select" label="Land *">
                       <BasicSelect
+                        inputId="endre-mottaker-land-select"
                         {...field}
                         css={css`
                           align-self: flex-start;

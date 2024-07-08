@@ -86,12 +86,7 @@ export default function BrevmalForExstream({
           )}
         >
           <VStack gap="8">
-            <EndreMottaker
-              onManuellAdresseBekreft={(a) => {
-                //TODO - implementer
-                console.log("putting", a, "in form");
-              }}
-            >
+            <EndreMottaker>
               {/* TODO - case for manuell adresse */}
               <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} />
             </EndreMottaker>
