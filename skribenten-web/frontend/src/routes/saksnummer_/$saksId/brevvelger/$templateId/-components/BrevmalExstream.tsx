@@ -86,10 +86,13 @@ export default function BrevmalForExstream({
           )}
         >
           <VStack gap="8">
-            <EndreMottaker>
-              {/* TODO - case for manuell adresse */}
-              <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} />
-            </EndreMottaker>
+            {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
+            {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && (
+              <div>
+                <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} showMottakerTitle />
+                <EndreMottaker />
+              </div>
+            )}
 
             <SelectEnhet />
             {letterTemplate.redigerbarBrevtittel && (

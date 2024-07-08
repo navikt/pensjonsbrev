@@ -1,4 +1,5 @@
-import { BodyShort, VStack } from "@navikt/ds-react";
+import { css } from "@emotion/react";
+import { BodyShort, Heading, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getKontaktAdresse, getNavn, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
@@ -9,7 +10,7 @@ import { getAdresseTypeName } from "~/types/nameMappings";
 import { Route } from "../../route";
 import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";
 
-const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string }) => {
+const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; showMottakerTitle?: boolean }) => {
   const hentSamhandlerAdresseQuery = useQuery({
     queryKey: hentSamhandlerAdresse.queryKey(properties.samhandlerId as string),
     queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: properties.samhandlerId as string }),
@@ -23,7 +24,18 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string }) 
   });
 
   return (
-    <div>
+    <div
+      css={css`
+        h3 {
+          margin-bottom: var(--a-spacing-1);
+        }
+      `}
+    >
+      {properties.showMottakerTitle && (
+        <Heading level="3" size="xsmall">
+          Mottaker
+        </Heading>
+      )}
       {!properties.samhandlerId && (
         <div>
           {adresseQuery.isSuccess && <MottakerAdresseOppsummering adresse={adresseQuery.data} erSamhandler={false} />}

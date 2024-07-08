@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Heading, Modal, Tabs } from "@navikt/ds-react";
+import { Button, Modal, Tabs } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -30,7 +30,6 @@ import UtfyllingAvManuellAdresseForm from "./UtfyllingAvManuellAdresseForm";
 const EndreMottaker = (properties: {
   //kan være undefined fordi vi ikke kan gjøre noe manuellAdresse enda
   onManuellAdresseBekreft?: (a: Nullable<Adresse>) => void;
-  children?: React.ReactNode;
 }) => {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const navigate = useNavigate({ from: Route.fullPath });
@@ -61,10 +60,6 @@ const EndreMottaker = (properties: {
           åpen={modalÅpen}
         />
       )}
-      <Heading level="3" size="xsmall">
-        Mottaker
-      </Heading>
-      {properties.children}
       <Button
         data-cy="toggle-endre-mottaker-modal"
         onClick={() => setModalÅpen(true)}

@@ -11,8 +11,8 @@ import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/types/apiTypes";
 
 import { Route } from "../route";
-import Adresse from "./Adresse";
 import BestillOgRedigerButton from "./BestillOgRedigerButton";
+import HentOgVisAdresse from "./endreMottaker/HentOgVisAdresse";
 import LetterTemplateHeading from "./LetterTemplate";
 import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";
@@ -62,7 +62,9 @@ export default function BrevmalForDoksys({
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Divider />
-      <Adresse />
+
+      <HentOgVisAdresse sakId={saksId} showMottakerTitle />
+
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((submittedValues) =>

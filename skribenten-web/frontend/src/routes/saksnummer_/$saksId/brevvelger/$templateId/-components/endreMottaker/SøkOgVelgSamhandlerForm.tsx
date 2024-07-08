@@ -7,9 +7,9 @@ import { Controller, useWatch } from "react-hook-form";
 import { SamhandlerTypeSelect } from "~/components/select/SamhandlerSelect";
 import type { FinnSamhandlerRequest, FinnSamhandlerResponseDto } from "~/types/apiTypes";
 
-import { SamhandlerSearchResults } from "../Adresse";
 import type { CombinedFormData } from "./EndreMottakerUtils";
 import { Identtype, identtypeToText, InnOgUtland, Søketype } from "./EndreMottakerUtils";
+import { SamhandlerSearchResults } from "./SamhandlerSearchResults";
 
 const SøkOgVelgSamhandlerForm = (properties: {
   control: Control<CombinedFormData>;

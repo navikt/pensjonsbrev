@@ -180,47 +180,6 @@ export const getSamhandlerQuery = {
 };
 
 export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<FinnSamhandlerResponseDto> {
-  /*return {
-    samhandlere: [
-      {
-        navn: "AETAT ARBEIDSDIREKTORATET",
-        samhandlerType: "AK",
-        offentligId: "00870309732",
-        idType: "ORG",
-        idTSSEkstern: "80000425013",
-      },
-      {
-        navn: "AETAT FYLLINGSDALEN",
-        samhandlerType: "AK",
-        offentligId: "00974742888",
-        idType: "ORG",
-        idTSSEkstern: "80000425436",
-      },
-      {
-        navn: "AETAT FØRDE",
-        samhandlerType: "AK",
-        offentligId: "00982026636",
-        idType: "ORG",
-        idTSSEkstern: "80000415016",
-      },
-      {
-        navn: "AETAT SKI",
-        samhandlerType: "AK",
-        offentligId: "00976818741",
-        idType: "ORG",
-        idTSSEkstern: "80000407290",
-      },
-      {
-        navn: "ARBEIDSKONTORET PÅ JØRPELAND",
-        samhandlerType: "AK",
-        offentligId: "00871345422",
-        idType: "ORG",
-        idTSSEkstern: "80000408122",
-      },
-    ],
-    failureType: null,
-  };*/
-
   return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
 }
 
