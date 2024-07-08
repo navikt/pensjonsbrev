@@ -49,7 +49,6 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
         }
     }
 
-    //TODO - tester
     fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
         if (requestDto.direkteOppslag != null) {
             return finnSamhandlerVedDirekteOppslag(requestDto.samhandlerType, requestDto.direkteOppslag)
