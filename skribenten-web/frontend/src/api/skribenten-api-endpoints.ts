@@ -5,7 +5,6 @@
 import type { AxiosResponse } from "axios";
 import axios, { AxiosError } from "axios";
 
-import type { FinnSamhandlerRequest } from "~/types/apiTypes";
 import {
   type Avtaleland,
   type BestillOgRedigerBrevResponse,
@@ -176,14 +175,10 @@ function convertBestillOgRedigerBrevResponse(response: AxiosResponse<BestillOgRe
 
 export const getSamhandlerQuery = {
   queryKey: ["getSamhandler"],
-  queryFn: async (request: FinnSamhandlerRequest) => finnSamhandler2(request),
+  queryFn: async (request: FinnSamhandlerRequestDto) => finnSamhandler(request),
 };
 
-export async function finnSamhandler2(request: FinnSamhandlerRequest): Promise<FinnSamhandlerResponseDto> {
-  return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
-}
-
-export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
+export async function finnSamhandler(request: FinnSamhandlerRequestDto): Promise<FinnSamhandlerResponseDto> {
   return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
 }
 

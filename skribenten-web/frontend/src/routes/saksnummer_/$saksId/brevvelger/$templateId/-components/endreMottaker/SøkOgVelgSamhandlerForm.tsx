@@ -5,7 +5,7 @@ import type { Control } from "react-hook-form";
 import { Controller, useWatch } from "react-hook-form";
 
 import { SamhandlerTypeSelect } from "~/components/select/SamhandlerSelect";
-import type { FinnSamhandlerRequest, FinnSamhandlerResponseDto } from "~/types/apiTypes";
+import type { FinnSamhandlerRequestDto, FinnSamhandlerResponseDto } from "~/types/apiTypes";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
 import { Identtype, identtypeToText, InnOgUtland, Søketype } from "./EndreMottakerUtils";
@@ -15,7 +15,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
   control: Control<CombinedFormData>;
   onCloseIntent: () => void;
   onSamhandlerValg: (id: string) => void;
-  onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequest, unknown>;
+  onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequestDto, unknown>;
 }) => {
   const watchedSøketype = useWatch({
     control: properties.control,

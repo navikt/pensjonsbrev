@@ -125,8 +125,10 @@ export const FAILURE_TYPES = [
 export type FailureType = (typeof FAILURE_TYPES)[number];
 
 export type FinnSamhandlerRequestDto = {
-  navn: string;
   samhandlerType: SamhandlerTypeCode;
+  direkteOppslag: Nullable<SamhandlerDirekteoppslagRequest>;
+  organisasjonsnavn: Nullable<SamhandlerOrganisasjonsnavnRequest>;
+  personnavn: Nullable<SamhandlerPersonnavnRequest>;
 };
 
 export interface SamhandlerDirekteoppslagRequest {
@@ -142,13 +144,6 @@ export interface SamhandlerOrganisasjonsnavnRequest {
 export interface SamhandlerPersonnavnRequest {
   fornavn: string;
   etternavn: string;
-}
-
-export interface FinnSamhandlerRequest {
-  samhandlerType: SamhandlerTypeCode;
-  direkteOppslag: Nullable<SamhandlerDirekteoppslagRequest>;
-  organisasjonsnavn: Nullable<SamhandlerOrganisasjonsnavnRequest>;
-  personnavn: Nullable<SamhandlerPersonnavnRequest>;
 }
 
 export type HentSamhandlerRequestDto = {

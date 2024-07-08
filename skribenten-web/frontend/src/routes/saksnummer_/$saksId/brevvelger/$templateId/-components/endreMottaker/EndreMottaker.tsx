@@ -9,8 +9,8 @@ import React from "react";
 import type { Control } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-import { finnSamhandler2 } from "~/api/skribenten-api-endpoints";
-import type { Adresse, FinnSamhandlerRequest, FinnSamhandlerResponseDto } from "~/types/apiTypes";
+import { finnSamhandler } from "~/api/skribenten-api-endpoints";
+import type { Adresse, FinnSamhandlerRequestDto, FinnSamhandlerResponseDto } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
@@ -94,7 +94,7 @@ const EndreMottakerModal = (properties: {
   const [vilAvbryte, setVilAvbryte] = useState<boolean>(false);
   const [valgtSamhandler, setValgtSamhandler] = useState<Nullable<string>>(null);
 
-  const finnSamhandlerMutation = useMutation({ mutationFn: finnSamhandler2 });
+  const finnSamhandlerMutation = useMutation({ mutationFn: finnSamhandler });
 
   const onFinnsamhandlerSubmit = (values: FinnSamhandlerFormData) => {
     finnSamhandlerMutation.mutate({
@@ -220,7 +220,7 @@ const ModalTabs = (properties: {
   control: Control<CombinedFormData>;
   onAvbrytClick: () => void;
   setSamhandler: (id: string) => void;
-  onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequest, unknown>;
+  onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequestDto, unknown>;
   onBekreftNyMottaker: (id: string | Adresse) => void;
   samhandlerValuesMedId: Nullable<SamhandlerValuesMedId>;
   manuellAdresseValues: Nullable<ManuellAdresseUtfyllingFormData>;
