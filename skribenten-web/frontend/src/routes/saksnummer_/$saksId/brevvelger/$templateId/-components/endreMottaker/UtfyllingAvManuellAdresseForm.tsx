@@ -26,8 +26,10 @@ const UtfyllingAvManuellAdresseForm = (properties: {
       <VStack gap="4">
         <Alert variant="warning">
           <Heading size="xsmall">Manuell adresseendringsrutine</Heading>
-          {/* TODO - finn ut hva adressen er */}
-          <Link href="https://www.nav.no" target="_blank">
+          <Link
+            href="https://navno.sharepoint.com/sites/fag-og-ytelser-pensjon-alderspensjon/SitePages/Maler/Mal-for-rutiner.aspx "
+            target="_blank"
+          >
             Les rutinen for endring av adresse her {<ExternalLinkIcon />}
           </Link>
         </Alert>
