@@ -101,7 +101,7 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
             })
             return FinnSamhandlerResponseDto(
                 samhandlere = samhandlerResponse.samhandlere
-                    .filtrerPåInnUtland(organisasjonsnavn.innlandUtland)
+                    .filtrerPåInnlandUtland(organisasjonsnavn.innlandUtland)
                     .flatMap { samhandler -> samhandler.toSamhandler() }
                     .distinctBy { it.idTSSEkstern }
             )
@@ -159,7 +159,7 @@ private fun FaultPenBase.prettyPrint() =
     | errorMessage: $errorMessage
     """.trimMargin()
 
-private fun Array<ASBOPenSamhandler>.filtrerPåInnUtland(landFilter: InnlandUtland): List<ASBOPenSamhandler> =
+private fun Array<ASBOPenSamhandler>.filtrerPåInnlandUtland(landFilter: InnlandUtland): List<ASBOPenSamhandler> =
     this.filter {
         it.avdelinger.any { avdeling ->
             when (landFilter) {
