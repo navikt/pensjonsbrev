@@ -87,7 +87,6 @@ export enum InnOgUtland {
   ALLE = "ALLE",
 }
 
-//TODO - skissene har disse som description. er disse valgene?
 export enum TypeMottaker {
   PrivatPerson = "PrivatPerson",
   Samhandler = "Samhandler",
@@ -179,13 +178,6 @@ export const finnSamhandlerFormDataSchema = z
       }
 
       case Søketype.ORGANISASJONSNAVN: {
-        if (data.organisasjonsnavn.innOgUtland === null) {
-          refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Feltet må fylles ut",
-            path: ["organisasjonsnavn.innOgUtland"],
-          });
-        }
         if (!data.organisasjonsnavn.navn) {
           refinementContext.addIssue({
             code: z.ZodIssueCode.custom,

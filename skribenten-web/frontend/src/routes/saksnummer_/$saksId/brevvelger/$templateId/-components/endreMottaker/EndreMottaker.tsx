@@ -20,6 +20,7 @@ import {
   type CombinedFormData,
   createSamhandlerValidationSchema,
   type FinnSamhandlerFormData,
+  InnOgUtland,
   Søketype,
 } from "./EndreMottakerUtils";
 import HentOgVisSamhandlerAdresse from "./HentOgVisSamhandlerAdresse";
@@ -108,7 +109,7 @@ const EndreMottakerModal = (properties: {
       organisasjonsnavn:
         values.søketype === Søketype.ORGANISASJONSNAVN
           ? {
-              innOgUtland: values.organisasjonsnavn.innOgUtland!,
+              innUtland: values.organisasjonsnavn.innOgUtland!,
               navn: values.organisasjonsnavn.navn!,
             }
           : null,
@@ -138,7 +139,7 @@ const EndreMottakerModal = (properties: {
     søketype: null,
     samhandlerType: null,
     direkteOppslag: { identtype: null, id: "" },
-    organisasjonsnavn: { innOgUtland: null, navn: "" },
+    organisasjonsnavn: { innOgUtland: InnOgUtland.ALLE, navn: "" },
     personnavn: { fornavn: "", etternavn: "" },
   };
 
