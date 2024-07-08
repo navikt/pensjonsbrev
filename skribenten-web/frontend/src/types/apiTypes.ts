@@ -135,7 +135,7 @@ export interface SamhandlerDirekteoppslagRequest {
 }
 
 export interface SamhandlerOrganisasjonsnavnRequest {
-  innUtland: InnOgUtland;
+  innlandUtland: InnOgUtland;
   navn: string;
 }
 

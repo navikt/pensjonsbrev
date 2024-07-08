@@ -109,7 +109,7 @@ const EndreMottakerModal = (properties: {
       organisasjonsnavn:
         values.søketype === Søketype.ORGANISASJONSNAVN
           ? {
-              innUtland: values.organisasjonsnavn.innOgUtland!,
+              innlandUtland: values.organisasjonsnavn.innOgUtland!,
               navn: values.organisasjonsnavn.navn!,
             }
           : null,
