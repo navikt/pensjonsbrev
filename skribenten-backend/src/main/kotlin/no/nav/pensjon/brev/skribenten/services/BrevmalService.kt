@@ -122,9 +122,6 @@ class BrevmalService(
             true
         }
 
-    suspend fun hentTemplateDescription(call: ApplicationCall, brevkode: Brevkode.Redigerbar) =
-        brevbakerService.getRedigerbarTemplate(call, brevkode)
-
     // TODO: Filtrere brevmaler som er relevante
     private suspend fun hentBrevakerMaler(call: ApplicationCall): List<LetterMetadata> =
         if (Features.brevbakerbrev) {

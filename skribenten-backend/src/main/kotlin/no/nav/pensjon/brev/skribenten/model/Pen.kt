@@ -132,12 +132,10 @@ object Pen {
         }
     }
 
-    data class JournalforResponse(
-        val journalpostId: String
+    data class BestillBrevResponse(
+        val journalpostId: Long?,
+        val error: Error?,
     ) {
-        data class Error(
-            val type: String,
-            val message: String?,
-        )
+        data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
     }
 }

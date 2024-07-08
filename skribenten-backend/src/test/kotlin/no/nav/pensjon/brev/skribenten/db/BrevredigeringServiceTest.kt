@@ -79,7 +79,7 @@ class BrevredigeringServiceTest {
     )
 
     private val penService: PenService = mockk {
-        coEvery { hentPesysBrevdata(any(), eq(sak.saksId), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)) } returns
+        coEvery { hentPesysBrevdata(any(), eq(sak.saksId), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any()) } returns
                 ServiceResult.Ok(
                     BrevdataResponse(
                         data = BrevdataResponse.Data(
@@ -125,9 +125,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `non existing brevredingering returns null`(): Unit = runBlocking {
-        assertThat(service.hentBrev(callMock, sak, 99, ::mapBrev)).isInstanceOfSatisfying(ServiceResult.Ok::class.java) {
-            assertThat(it.result).isNull()
-        }
+        assertThat(service.hentBrev(callMock, sak, 99, ::mapBrev)).isNull()
     }
 
     @Test
@@ -198,8 +196,7 @@ class BrevredigeringServiceTest {
                 principalNavEnhetId,
                 saksbehandlerValg,
                 ::mapBrev
-            )
-                .resultOrNull()!!
+            ).resultOrNull()!!
 
         clearMocks()
 
@@ -211,7 +208,7 @@ class BrevredigeringServiceTest {
             nyeValg,
             letter.toEdit(),
             ::mapBrev,
-        ).resultOrNull()!!
+        )?.resultOrNull()!!
 
         coVerify(exactly = 1) {
             brevbakerMock.renderMarkup(
@@ -243,8 +240,7 @@ class BrevredigeringServiceTest {
                 principalNavEnhetId,
                 saksbehandlerValg,
                 ::mapBrev
-            )
-                .resultOrNull()!!
+            ).resultOrNull()!!
 
         val nyeValg = GeneriskBrevData().apply { put("valg2", true) }
         val freshRender = letter.copy(blocks = letter.blocks + Paragraph(2, true, listOf(Variable(21, "ny paragraph"))))
@@ -266,8 +262,7 @@ class BrevredigeringServiceTest {
                 nyeValg,
                 letter.toEdit(),
                 ::mapBrev,
-            )
-                .resultOrNull()!!
+            )?.resultOrNull()!!
 
         assertNotEquals(original.redigertBrev, oppdatert.redigertBrev)
         assertEquals(letter.toEdit().updateEditedLetter(freshRender), oppdatert.redigertBrev)
@@ -278,7 +273,7 @@ class BrevredigeringServiceTest {
         val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
         val oppdatert =
             service.oppdaterBrev(callMock, sak, 1099, saksbehandlerValg, letter.toEdit(), ::mapBrev)
-                .resultOrNull()
+                ?.resultOrNull()
 
         assertNull(oppdatert)
     }
@@ -308,8 +303,7 @@ class BrevredigeringServiceTest {
             service.oppdaterBrev(callMock, sak, 2098, saksbehandlerValg, letter.toEdit(), ::mapBrev)
         }
 
-        assertThat(result).isInstanceOf(ServiceResult.Error::class.java)
-        assertThat((result as ServiceResult.Error).statusCode).isEqualTo(HttpStatusCode.NotFound)
+        assertThat(result).isNull()
     }
 
     @Test
@@ -328,19 +322,12 @@ class BrevredigeringServiceTest {
 
         assertEquals(result, service.hentBrev(callMock, sak, result.resultOrNull()!!.info.id, ::mapBrev))
         assertTrue(service.slettBrev(result.resultOrNull()!!.info.id))
-        assertThat(service.hentBrev(callMock, sak, result.resultOrNull()!!.info.id, ::mapBrev))
-            .isInstanceOfSatisfying(ServiceResult.Ok::class.java) {
-                assertThat(it.result).isNull()
-            }
+        assertThat(service.hentBrev(callMock, sak, result.resultOrNull()!!.info.id, ::mapBrev)).isNull()
     }
 
     @Test
     fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
-        assertThat(service.hentBrev(callMock, sak, 1337, ::mapBrev))
-            .isInstanceOfSatisfying(ServiceResult.Ok::class.java) {
-                assertThat(it.result).isNull()
-            }
-
+        assertThat(service.hentBrev(callMock, sak, 1337, ::mapBrev)).isNull()
         assertFalse(service.slettBrev(1337))
     }
 
@@ -389,7 +376,7 @@ class BrevredigeringServiceTest {
             )
         )
 
-        service.ferdigstill(callMock, result.info.id)
+        service.opprettPdf(callMock, result.info.id)
 
         coVerify {
             brevbakerMock.renderPdf(any(), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), eq(LanguageCode.ENGLISH), any(), any(), any())
