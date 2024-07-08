@@ -162,11 +162,11 @@ private fun FaultPenBase.prettyPrint() =
 private fun Array<ASBOPenSamhandler>.filtrerPåInnlandUtland(landFilter: InnlandUtland): List<ASBOPenSamhandler> =
     this.filter {
         it.avdelinger.any { avdeling ->
+            //logikken skal gjenspeile det som er i pesys
+            //https://github.com/navikt/pesys/blob/main/pen-app/src/main/java/no/nav/pensjon/pen_app/psak2/samhandler/sokesamhandler/SokeSamhandlerController.kt#L42
             when (landFilter) {
-                //TODO - sjekk hvordan vi burde håndtere hvis samhandler ikke er registert i norge eller utlandet
                 InnlandUtland.INNLAND -> avdeling.uAdresse.land == "NOR" || avdeling.aAdresse.land == "NOR" || (avdeling.uAdresse.land == null && avdeling.aAdresse.land == null)
-                //TODO - sjekk hvordan vi burde håndtere hvis samhandler ikke er registert i norge eller utlandet
-                InnlandUtland.UTLAND -> avdeling.uAdresse.land != "NOR" || avdeling.aAdresse.land != "NOR" || (avdeling.uAdresse.land == null && avdeling.aAdresse.land == null)
+                InnlandUtland.UTLAND -> avdeling.uAdresse.land != "NOR" || avdeling.aAdresse.land != "NOR"
                 InnlandUtland.ALLE -> true
             }
         }
