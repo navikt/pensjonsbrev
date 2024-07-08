@@ -107,7 +107,7 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
             )
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
             logger.error(
-                "En feil oppstod under kall til finnSamhandler(organisasjonsnavn) med navn: ${organisasjonsnavn.navn}, innUtland: ${organisasjonsnavn.innlandUtland}, samhandlerType: $samhandlerType",
+                "En feil oppstod under kall til finnSamhandler(organisasjonsnavn) med navn: ${organisasjonsnavn.navn}, innlandUtland: ${organisasjonsnavn.innlandUtland}, samhandlerType: $samhandlerType",
                 ex.faultInfo.prettyPrint()
             )
             return FinnSamhandlerResponseDto("Feil ved henting av samhandler")
@@ -133,10 +133,9 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
             )
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
             logger.error(
-                "En feil oppstod under kall til finnSamhandler(personnavn) med navn: samhandlerType: $samhandlerType",
+                "En feil oppstod under kall til finnSamhandler(personnavn), med navn: $personnavn, samhandlerType: $samhandlerType",
                 ex.faultInfo.prettyPrint()
             )
-
             return FinnSamhandlerResponseDto("Feil ved henting av samhandler")
         }
     }

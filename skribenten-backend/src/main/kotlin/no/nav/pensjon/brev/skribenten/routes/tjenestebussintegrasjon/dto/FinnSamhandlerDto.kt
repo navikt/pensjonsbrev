@@ -41,12 +41,6 @@ data class Personnavn(
     val etternavn: String,
 )
 
-
-//--------------------------------------
-
-/**
- * https://github.com/navikt/pesys/blob/a06c86a76bd38021445f685f417c68c5689612f6/pen/consumer/nav-consumer-pensjon-pen-java/src/main/java/no/nav/consumer/pensjon/pen/samhandler/SamhandlerType.kt
- */
 enum class SamhandlerTypeCode {
     AA,    // Ambulansearbeider
     ADVO,  // Advokat / Jurist

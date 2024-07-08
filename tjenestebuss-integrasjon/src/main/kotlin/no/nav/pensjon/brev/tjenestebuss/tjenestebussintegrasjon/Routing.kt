@@ -133,9 +133,6 @@ data class HentSamhandlerAdresseRequestDto(
     val idTSSEkstern: String,
 )
 
-//----------------------------------------------------------------------------------------------------
-
-
 data class FinnSamhandlerRequestDto(
     val samhandlerType: SamhandlerTypeCode,
     val direkteOppslag: DirekteOppslag?,
