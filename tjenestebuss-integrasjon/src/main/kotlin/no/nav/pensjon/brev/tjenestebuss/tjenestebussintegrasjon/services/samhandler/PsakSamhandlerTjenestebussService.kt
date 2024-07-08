@@ -120,8 +120,8 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
     ): FinnSamhandlerResponseDto {
         try {
             val samhandlerResponse = client.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
-                //TODO: sjekk om det er riktig å sette navn på denne måten - selv pesys har en fornavn/etternavn split, men frontenden deres sender kanskje requesten som 1 string
-                this.navn = "${personnavn.fornavn} ${personnavn.etternavn}"
+                //etter en del testing og feiling, ser det ut som at dette er formatet som er forventet..
+                this.navn = "${personnavn.etternavn} ${personnavn.fornavn}"
                 this.samhandlerType = samhandlerType.name
             })
             return FinnSamhandlerResponseDto(samhandlere = samhandlerResponse.samhandlere.flatMap { samhandler ->
