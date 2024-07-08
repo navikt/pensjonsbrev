@@ -5,22 +5,22 @@
 import type { AxiosResponse } from "axios";
 import axios, { AxiosError } from "axios";
 
-import {
-  type Avtaleland,
-  type BestillOgRedigerBrevResponse,
-  type Enhet,
-  type FinnSamhandlerRequestDto,
-  type FinnSamhandlerResponseDto,
-  type HentSamhandlerAdresseRequestDto,
-  type HentSamhandlerAdresseResponseDto,
-  type HentSamhandlerRequestDto,
-  type HentsamhandlerResponseDto,
-  type KontaktAdresseResponse,
-  type OrderDoksysLetterRequest,
-  type OrderEblankettRequest,
-  type OrderExstreamLetterRequest,
-  type PreferredLanguage,
-  type SakContextDto,
+import type {
+  Avtaleland,
+  BestillOgRedigerBrevResponse,
+  Enhet,
+  FinnSamhandlerRequestDto,
+  FinnSamhandlerResponseDto,
+  HentSamhandlerAdresseRequestDto,
+  HentSamhandlerAdresseResponseDto,
+  HentSamhandlerRequestDto,
+  HentsamhandlerResponseDto,
+  KontaktAdresseResponse,
+  OrderDoksysLetterRequest,
+  OrderEblankettRequest,
+  OrderExstreamLetterRequest,
+  PreferredLanguage,
+  SakContextDto,
 } from "~/types/apiTypes";
 
 export const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
@@ -172,11 +172,6 @@ function convertBestillOgRedigerBrevResponse(response: AxiosResponse<BestillOgRe
 
   return url;
 }
-
-export const getSamhandlerQuery = {
-  queryKey: ["getSamhandler"],
-  queryFn: async (request: FinnSamhandlerRequestDto) => finnSamhandler(request),
-};
 
 export async function finnSamhandler(request: FinnSamhandlerRequestDto): Promise<FinnSamhandlerResponseDto> {
   return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;

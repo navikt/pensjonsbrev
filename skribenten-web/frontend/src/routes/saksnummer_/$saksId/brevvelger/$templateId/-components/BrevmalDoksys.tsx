@@ -62,9 +62,7 @@ export default function BrevmalForDoksys({
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Divider />
-
       <HentOgVisAdresse sakId={saksId} showMottakerTitle />
-
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((submittedValues) =>

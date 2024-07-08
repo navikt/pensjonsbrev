@@ -10,8 +10,8 @@ import { getAdresseTypeName } from "~/types/nameMappings";
 import { Route } from "../../route";
 import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";
 
-/*
- * Henter og viser adresse for mottaker. Dersom samhandlerId er satt, hentes samhandleradressen. Ellers hentes kontaktadressen.
+/**
+  En basic HentOgVis-komponent som henter og viser adresseinformasjon for en sak eller samhandler.
  */
 const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; showMottakerTitle?: boolean }) => {
   const hentSamhandlerAdresseQuery = useQuery({

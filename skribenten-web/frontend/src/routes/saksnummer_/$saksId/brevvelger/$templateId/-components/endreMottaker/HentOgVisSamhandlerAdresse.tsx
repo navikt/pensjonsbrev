@@ -9,6 +9,9 @@ import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 import type { TypeMottaker } from "./EndreMottakerUtils";
 import OppsummeringAvValgtMottaker from "./OppsummeringAvValgtMottaker";
 
+/**
+    En special case hentOgVis-komponent av samhandler som henter og viser i contexten av endre mottaker
+ */
 const HentOgVisSamhandlerAdresse = (properties: {
   id: string;
   typeMottaker: SamhandlerTypeCode | TypeMottaker;
