@@ -89,6 +89,7 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
         }
     }
 
+
     private fun finnSamhandlerVedOrganisasjonsnavn(
         samhandlerType: SamhandlerTypeCode,
         organisasjonsnavn: Organisasjonsnavn,
@@ -98,20 +99,15 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
                 this.navn = organisasjonsnavn.navn
                 this.samhandlerType = samhandlerType.name
             })
-            return FinnSamhandlerResponseDto(samhandlere = samhandlerResponse.samhandlere.flatMap { samhandler ->
-                samhandler.toSamhandler()
-            }.distinctBy { it.idTSSEkstern }
-                .filter {
-                    when (organisasjonsnavn.innUtland) {
-                        InnUtland.INNLAND -> it.innUtland == InnUtland.INNLAND || it.innUtland == null
-                        InnUtland.UTLAND -> it.innUtland == InnUtland.UTLAND
-                        InnUtland.ALLE -> true
-                    }
-                }
+            return FinnSamhandlerResponseDto(
+                samhandlere = samhandlerResponse.samhandlere
+                    .filtrerPåInnUtland(organisasjonsnavn.innlandUtland)
+                    .flatMap { samhandler -> samhandler.toSamhandler() }
+                    .distinctBy { it.idTSSEkstern }
             )
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
             logger.error(
-                "En feil oppstod under kall til finnSamhandler(organisasjonsnavn) med navn: ${organisasjonsnavn.navn}, innUtland: ${organisasjonsnavn.innUtland}, samhandlerType: $samhandlerType",
+                "En feil oppstod under kall til finnSamhandler(organisasjonsnavn) med navn: ${organisasjonsnavn.navn}, innUtland: ${organisasjonsnavn.innlandUtland}, samhandlerType: $samhandlerType",
                 ex.faultInfo.prettyPrint()
             )
             return FinnSamhandlerResponseDto("Feil ved henting av samhandler")
@@ -163,6 +159,18 @@ private fun FaultPenBase.prettyPrint() =
     | errorMessage: $errorMessage
     """.trimMargin()
 
+private fun Array<ASBOPenSamhandler>.filtrerPåInnUtland(landFilter: InnlandUtland): List<ASBOPenSamhandler> =
+    this.filter {
+        it.avdelinger.any { avdeling ->
+            when (landFilter) {
+                //TODO - sjekk hvordan vi burde håndtere hvis samhandler ikke er registert i norge eller utlandet
+                InnlandUtland.INNLAND -> avdeling.uAdresse.land == "NOR" || avdeling.aAdresse.land == "NOR" || (avdeling.uAdresse.land == null && avdeling.aAdresse.land == null)
+                //TODO - sjekk hvordan vi burde håndtere hvis samhandler ikke er registert i norge eller utlandet
+                InnlandUtland.UTLAND -> avdeling.uAdresse.land != "NOR" || avdeling.aAdresse.land != "NOR" || (avdeling.uAdresse.land == null && avdeling.aAdresse.land == null)
+                InnlandUtland.ALLE -> true
+            }
+        }
+    }
 
 private fun ASBOPenSamhandler.toSamhandler(): List<FinnSamhandlerResponseDto.Samhandler> =
     this.avdelinger.map { avdeling ->
@@ -172,9 +180,6 @@ private fun ASBOPenSamhandler.toSamhandler(): List<FinnSamhandlerResponseDto.Sam
             offentligId = this.offentligId,
             idType = Identtype.valueOf(this.idType),
             idTSSEkstern = avdeling.idTSSEkstern,
-            innUtland = avdeling.uAdresse?.land?.let {
-                if (it == "NOR") InnUtland.INNLAND else InnUtland.UTLAND
-            } ?: avdeling.aAdresse?.land?.let { if (it == "NOR") InnUtland.INNLAND else InnUtland.UTLAND }
         )
     }
 

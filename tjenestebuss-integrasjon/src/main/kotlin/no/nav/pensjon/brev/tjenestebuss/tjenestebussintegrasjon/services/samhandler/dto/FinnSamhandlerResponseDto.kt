@@ -10,7 +10,6 @@ data class FinnSamhandlerResponseDto(val samhandlere: List<Samhandler>, val fail
         val offentligId: String,
         val idType: Identtype,
         val idTSSEkstern: String,
-        val innUtland: InnUtland?,
     )
 }
 
@@ -36,7 +35,7 @@ enum class Identtype {
     UTPE, //Utenlandsk pnr
 }
 
-enum class InnUtland {
+enum class InnlandUtland {
     INNLAND,
     UTLAND,
     ALLE;

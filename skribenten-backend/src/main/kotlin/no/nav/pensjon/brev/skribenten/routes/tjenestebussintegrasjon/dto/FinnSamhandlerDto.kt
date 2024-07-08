@@ -32,7 +32,7 @@ data class DirekteOppslag(
 )
 
 data class Organisasjonsnavn(
-    val innUtland: String,
+    val innlandUtland: String,
     val navn: String,
 )
 

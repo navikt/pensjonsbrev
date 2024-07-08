@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon
 
 
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.Identtype
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.InnUtland
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.InnlandUtland
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.SamhandlerTypeCode
 import org.junit.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -15,7 +15,7 @@ class FinnSamhandlerRequestDtoTest {
             FinnSamhandlerRequestDto(
                 samhandlerType = SamhandlerTypeCode.AA,
                 direkteOppslag = DirekteOppslag(Identtype.FNR, "id"),
-                organisasjonsnavn = Organisasjonsnavn(InnUtland.INNLAND, "navn"),
+                organisasjonsnavn = Organisasjonsnavn(InnlandUtland.INNLAND, "navn"),
                 personnavn = Personnavn("fornavn", "etternavn")
             )
         }
