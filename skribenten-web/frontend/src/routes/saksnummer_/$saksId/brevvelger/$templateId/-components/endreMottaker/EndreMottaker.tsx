@@ -81,9 +81,7 @@ export default EndreMottaker;
   Vi har 1 modal, som skal deles opp i 3 tabs. 2 av dem er velgbare, mens 1 tab (oppsummering) er intern.
   Modalen-bodyen skal reflektere 3 tilstander - Valg av mottaker, oppsummering, og avbrytelse
   Oppsummering og avbyrtelse skal 'fjerne' alt det andre, derfor kreves det at modal har en state som vet hva den skal rendre
-  En mulighet er som det er gjort nå - ha hele formet i modalen, og rendrer sine children basert på state. 
-  En annen måte kunne ha vært å ha forms i hver tab, mens parenten sender callbacks til children ved deres onSubmit. 
-  Med litt prøving av begge deler, har jeg landet på at det er enklere å ha alt i en form, selv om det fortsatt er litt komplisert.
+  Vi klarer også å holde på diverse tilstander mye enklere, som f.eks sammhandler søk dersom dem navigerer seg tilbake fra oppsummering
 */
 const EndreMottakerModal = (properties: {
   åpen: boolean;
@@ -167,8 +165,7 @@ const EndreMottakerModal = (properties: {
       open={properties.åpen}
       /*
         ved å ha modalen som en portal vil ikke browseren klage på at vi kommer til å ha en form inni en annen form.
-        vi vil likevel få litt andre tekniske problemer som event propagation
-        En løsning for dette ville være å flytte EndreMottaker-formen til parent formen - men det vil jo komme med sine nedsider også. 
+        vi vil likevel få litt andre tekniske problemer som event propagation. Denne kan vi likevel bare stoppe..
       */
       portal
       width={600}
