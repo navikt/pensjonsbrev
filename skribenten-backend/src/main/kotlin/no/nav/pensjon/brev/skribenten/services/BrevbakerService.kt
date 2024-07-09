@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -12,10 +13,17 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.skribenten.auth.*
-import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
+import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
+import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
@@ -42,7 +50,13 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
     suspend fun getModelSpecification(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
         client.get(call, "/v2/templates/redigerbar/${brevkode.name}/modelSpecification").toServiceResult()
 
-    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: RedigerbarBrevdata<*,*>, felles: Felles): ServiceResult<LetterMarkup> =
+    suspend fun renderMarkup(
+        call: ApplicationCall,
+        brevkode: Brevkode.Redigerbar,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles
+    ): ServiceResult<LetterMarkup> =
         client.post(call, "/v2/letter/redigerbar/markup") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -50,9 +64,37 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
                     kode = brevkode,
                     letterData = brevdata,
                     felles = felles,
-                    language = LanguageCode.BOKMAL,
+                    language = spraak,
                 )
             )
+        }.toServiceResult()
+
+    suspend fun renderPdf(
+        call: ApplicationCall,
+        brevkode: Brevkode.Redigerbar,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles,
+        redigertBrev: LetterMarkup
+    ): ServiceResult<LetterResponse> =
+        client.post(call, "/v2/letter/redigerbar/pdf") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                BestillRedigertBrevRequest(
+                    kode = brevkode,
+                    letterData = brevdata,
+                    felles = felles,
+                    language = spraak,
+                    letterMarkup = redigertBrev
+                )
+            )
+        }.toServiceResult()
+
+    suspend fun getTemplates(call: ApplicationCall): ServiceResult<List<TemplateDescription>> =
+        client.get(call, "/v2/templates/redigerbar"){
+            url {
+                parameters.append("includeMetadata", "true")
+            }
         }.toServiceResult()
 
     override val name = "Brevbaker"

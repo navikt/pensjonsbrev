@@ -10,16 +10,16 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.AutobrevRequest
+import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.HTMLDocument
-import java.nio.file.Path
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
+import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.Path
 
@@ -43,9 +43,9 @@ val httpClient = HttpClient(CIO) {
     }
 }
 
-fun requestLetter(letterRequest: AutobrevRequest): LetterResponse =
+fun requestLetter(letterRequest: BestillBrevRequest<Brevkode.AutoBrev>): LetterResponse =
     runBlocking {
-        httpClient.post("$BREVBAKER_URL/letter/autobrev") {
+        httpClient.post("$BREVBAKER_URL/letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
             setBody(letterRequest)
         }.body()
@@ -55,20 +55,20 @@ fun requestTemplates(): Set<Brevkode.AutoBrev> = runBlocking {
     httpClient.get("$BREVBAKER_URL/templates/autobrev").body()
 }
 
-fun writeTestPDF(pdfFileName: String, pdf: String, path: Path = Path.of("build", "test_pdf")) {
+fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("build", "test_pdf")) {
     val file = path.resolve("$pdfFileName.pdf").toFile()
     file.parentFile.mkdirs()
-    file.writeBytes(Base64.getDecoder().decode(pdf))
+    file.writeBytes(pdf)
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
 private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
 
-fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(pdfFileName: String): Letter<ParameterType> {
+fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(pdfFileName: String, path: Path = Path.of("build", "test_pdf")): Letter<ParameterType> {
     Letter2Markup.render(this)
         .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, language, felles, template.letterMetadata.brevtype) }
         .let { runBlocking { laTeXCompilerService.producePDF(it, "test").base64PDF } }
-        .also { writeTestPDF(pdfFileName, it) }
+        .also { writeTestPDF(pdfFileName, Base64.getDecoder().decode(it), path) }
     return this
 }
 

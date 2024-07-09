@@ -5,19 +5,29 @@ import { z } from "zod";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
+import { SpraakKode } from "~/types/apiTypes";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
+import type { Nullable } from "~/types/Nullable";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/")({
-  validateSearch: (search: Record<string, unknown>): { brevkode: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { brevkode: string; spraak: SpraakKode; enhetsId: Nullable<string> } => ({
     brevkode: z.string().parse(search.brevkode),
+    spraak: z.nativeEnum(SpraakKode).parse(search.spraak),
+    enhetsId: z
+      .string()
+      .nullable()
+      //selv om vi navigerer enhetsId som string | null, så vil tanstack gjøre om null til undefined
+      .parse(search.enhetsId || null),
   }),
   component: OpprettBrevPage,
 });
 
 function OpprettBrevPage() {
   const { saksId } = Route.useParams();
-  const { brevkode } = Route.useSearch();
-  const createBrevMutation = useCreateLetterMutation(saksId, brevkode);
+  const { brevkode, spraak, enhetsId } = Route.useSearch();
+  const createBrevMutation = useCreateLetterMutation(saksId, brevkode, spraak, enhetsId);
   return (
     <div
       css={css`
@@ -37,17 +47,23 @@ function OpprettBrevPage() {
       <ModelEditor
         brevkode={brevkode}
         disableSubmit={createBrevMutation.isPending || createBrevMutation.isSuccess}
-        onSubmit={createBrevMutation.mutate}
+        onSubmit={(saksbehandlerValg) => createBrevMutation.mutate({ saksbehandlerValg })}
       />
     </div>
   );
 }
 
-function useCreateLetterMutation(saksId: string, brevkode: string) {
+function useCreateLetterMutation(saksId: string, brevkode: string, språk: SpraakKode, enhetsId: Nullable<string>) {
   const navigate = useNavigate({ from: Route.fullPath });
   const queryClient = useQueryClient();
-  return useMutation<BrevResponse, Error, SaksbehandlerValg>({
-    mutationFn: async (saksbehandlerValg) => createBrev(saksId, { brevkode, saksbehandlerValg }),
+  return useMutation<BrevResponse, Error, { saksbehandlerValg: SaksbehandlerValg }>({
+    mutationFn: async (values) =>
+      createBrev(saksId, {
+        brevkode: brevkode,
+        spraak: språk,
+        avsenderEnhetsId: enhetsId,
+        saksbehandlerValg: values.saksbehandlerValg,
+      }),
     onSuccess: async (response) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       return navigate({

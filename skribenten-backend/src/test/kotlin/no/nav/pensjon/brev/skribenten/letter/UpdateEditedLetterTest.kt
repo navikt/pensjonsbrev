@@ -7,9 +7,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList.Item
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import org.junit.jupiter.api.assertThrows
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
@@ -221,7 +221,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertFailsWith<UpdateEditedLetterException> { edited.updateEditedLetter(next) }
+        assertThrows<UpdateEditedLetterException> { edited.updateEditedLetter(next) }
     }
 
     @Test
@@ -306,7 +306,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        assertFailsWith<UpdateEditedLetterException> { edited.updateEditedLetter(next) }
+        assertThrows<UpdateEditedLetterException> { edited.updateEditedLetter(next) }
     }
 
     @Test

@@ -12,11 +12,12 @@ object Api {
 
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbar,
+        val spraak: SpraakKode,
+        val avsenderEnhetsId: String?,
         val saksbehandlerValg: GeneriskBrevdata,
     )
 
     data class OppdaterBrevRequest(
-        val brevkode: Brevkode.Redigerbar,
         val saksbehandlerValg: GeneriskBrevdata,
         val redigertBrev: Edit.Letter,
     )
@@ -77,22 +78,11 @@ object Api {
             DOKSYS_BESTILLING_TPS_CALL_FAILIURE,
             DOKSYS_BESTILLING_UNAUTHORIZED,
             DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR,
-            DOKSYS_REDIGERING_IKKE_FUNNET,
-            DOKSYS_REDIGERING_IKKE_REDIGERBART,
-            DOKSYS_REDIGERING_IKKE_TILGANG,
-            DOKSYS_REDIGERING_LUKKET,
-            DOKSYS_REDIGERING_UFORVENTET,
-            DOKSYS_REDIGERING_UNDER_REDIGERING,
-            DOKSYS_REDIGERING_VALIDERING_FEILET,
-            EXSTREAM_BESTILLING_ADRESSE_MANGLER,
-            EXSTREAM_BESTILLING_HENTE_BREVDATA,
             EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
-            EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST,
             EXSTREAM_REDIGERING_GENERELL,
             FERDIGSTILLING_TIMEOUT,
             SAF_ERROR,
             SKRIBENTEN_INTERNAL_ERROR,
-            ENHETSID_MANGLER,
             ENHET_UNAUTHORIZED,
             NAVANSATT_MANGLER_NAVN,
         }

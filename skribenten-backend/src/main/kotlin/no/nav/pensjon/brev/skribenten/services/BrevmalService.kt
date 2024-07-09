@@ -3,16 +3,22 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.server.application.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevregeltypeCode
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata as BrevbakerLetterMetadata
 
 class BrevmalService(
     private val penService: PenService,
     private val brevmetadataService: BrevmetadataService,
+    private val brevbakerService: BrevbakerService,
 ) {
     private val logger = LoggerFactory.getLogger(BrevmalService::class.java)
 
@@ -21,9 +27,10 @@ class BrevmalService(
         sakType: Pen.SakType,
         includeEblanketter: Boolean,
     ): List<LetterMetadata> = coroutineScope {
+        val brevbakerMaler = async { hentBrevakerMaler(call) }
         val brevmetadata = brevmetadataService.hentMaler(call, sakType, includeEblanketter)
         val relevanteMaler = brevmetadata.maler.filter { filterForSaksKontekst(it) }
-        mapToRelevantMetadata(relevanteMaler, brevmetadata.eblanketter)
+        mapToRelevantMetadata(relevanteMaler, brevmetadata.eblanketter, brevbakerMaler.await())
     }
 
     suspend fun hentBrevmalerForVedtak(
@@ -33,6 +40,7 @@ class BrevmalService(
         vedtaksId: String,
     ): List<LetterMetadata> = coroutineScope {
         val brevmetadataAsync = async { brevmetadataService.hentMaler(call, sakType, includeEblanketter) }
+        val brevbakerMaler = async { hentBrevakerMaler(call) }
         val erKravPaaGammeltRegelverk =
             if (sakType == ALDER) {
                 penService.hentIsKravPaaGammeltRegelverk(call, vedtaksId)
@@ -46,17 +54,21 @@ class BrevmalService(
         val relevanteMaler = brevmetadata.maler
             .filter { filterForVedtaksKontekst(it) }
             .filter { erRelevantRegelverkstypeForSaktype(sakType, it.brevregeltype, erKravPaaGammeltRegelverk) }
-        return@coroutineScope mapToRelevantMetadata(relevanteMaler, brevmetadata.eblanketter)
+        return@coroutineScope mapToRelevantMetadata(relevanteMaler, brevmetadata.eblanketter, brevbakerMaler.await())
     }
 
     private fun mapToRelevantMetadata(
         relevanteMaler: List<BrevdataDto>,
-        eblanketter: List<BrevdataDto>
+        eblanketter: List<BrevdataDto>,
+        brevbakerMaler: List<LetterMetadata>
     ) = relevanteMaler
+        .asSequence()
         .filter { it.redigerbart }
         .plus(eblanketter)
         .filter { !ekskluderteBrev.contains(it.brevkodeIBrevsystem) }
         .map { it.mapToMetadata() }
+        .plus(brevbakerMaler)
+        .toList()
 
     private fun filterForVedtaksKontekst(brevmetadata: BrevdataDto): Boolean =
         when (brevmetadata.brevkontekst) {
@@ -92,6 +104,28 @@ class BrevmalService(
             true
         }
 
+    // TODO: Filtrere brevmaler som er relevante
+    private suspend fun hentBrevakerMaler(call: ApplicationCall): List<LetterMetadata> =
+        if (Features.brevbakerbrev) {
+            brevbakerService.getTemplates(call)
+                .map { result ->  result.map { it.toMetadata() } }
+                .catch { message, statusCode ->
+                    logger.error("Kunne ikke hente brevmaler fra brevbaker: $message - $statusCode")
+                    emptyList()
+                }
+        } else emptyList()
+
+    private fun TemplateDescription.toMetadata(): LetterMetadata =
+        LetterMetadata(
+            name = metadata.displayTitle,
+            id = name,
+            brevsystem = BrevSystem.BREVBAKER,
+            spraak = this.languages.map { it.toSpraakKode() },
+            brevkategori = kategori?.toKategoriTekst() ?: "Øvrig",
+            dokumentkategoriCode = metadata.brevtype.toDokumentkategoriCode(),
+            redigerbart = true,
+            redigerbarBrevtittel = false,
+        )
 
     private fun BrevdataDto.mapToMetadata() =
         LetterMetadata(
@@ -102,7 +136,7 @@ class BrevmalService(
                 BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
                 BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
             },
-            brevkategori = kategoriOverrides[brevkodeIBrevsystem] ?: this.brevkategori?.toKategoriTekst(),
+            brevkategori = kategoriOverrides[brevkodeIBrevsystem]?.toKategoriTekst() ?: this.brevkategori?.toKategoriTekst(),
             dokumentkategoriCode = this.dokumentkategori,
             redigerbart = redigerbart,
             redigerbarBrevtittel = isRedigerbarBrevtittel(),
@@ -119,6 +153,38 @@ class BrevmalService(
             VEDTAK -> "Vedtak"
         }
 
+    private fun Brevkategori.toKategoriTekst() =
+        when (this) {
+            Brevkategori.ETTEROPPGJOER -> "Etteroppgjør"
+            Brevkategori.FOERSTEGANGSBEHANDLING -> "Førstegangsbehandling"
+            Brevkategori.VEDTAK_ENDRING_OG_REVURDERING -> "Vedtak - endring og revurdering"
+            Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND -> "Vedtak - flytte mellom land"
+            Brevkategori.SLUTTBEHANDLING -> "Sluttbehandling"
+            Brevkategori.INFORMASJONSBREV -> "Informasjonsbrev"
+            Brevkategori.VARSEL -> "Varsel"
+            Brevkategori.VEDTAK_EKSPORT -> "Vedtak - eksport"
+            Brevkategori.OMSORGSOPPTJENING -> "Omsorgsopptjening"
+            Brevkategori.UFOEREPENSJON -> "Uførepensjon"
+            Brevkategori.INNHENTE_OPPLYSNINGER -> "Innhente opplysninger"
+            Brevkategori.LEVEATTEST -> "Leveattest"
+            Brevkategori.FEILUTBETALING -> "Feilutbetaling"
+            Brevkategori.KLAGE_OG_ANKE -> "Klage og anke"
+            Brevkategori.POSTERINGSGRUNNLAG -> "Posteringsgrunnlag"
+            Brevkategori.FRITEKSTBREV -> "Fritekstbrev"
+        }
+
+    private fun BrevbakerLetterMetadata.Brevtype.toDokumentkategoriCode(): BrevdataDto.DokumentkategoriCode =
+        when (this) {
+            BrevbakerLetterMetadata.Brevtype.VEDTAKSBREV -> BrevdataDto.DokumentkategoriCode.VB
+            BrevbakerLetterMetadata.Brevtype.INFORMASJONSBREV -> BrevdataDto.DokumentkategoriCode.IB
+        }
+
+    private fun LanguageCode.toSpraakKode(): SpraakKode =
+        when (this) {
+            LanguageCode.BOKMAL -> SpraakKode.NB
+            LanguageCode.NYNORSK -> SpraakKode.NN
+            LanguageCode.ENGLISH -> SpraakKode.EN
+        }
 
 }
 
@@ -154,8 +220,8 @@ object Brevkoder {
 private val ekskluderteBrev =
     hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_01_010", "PE_AP_04_922", "PE_IY_03_169", "PE_IY_03_171", "PE_IY_03_172", "PE_IY_03_173")
 
-private val kategoriOverrides: Map<String, String> = mapOf(
-    "Etteroppgjør" to listOf(
+private val kategoriOverrides: Map<String, Brevkategori> = mapOf(
+    Brevkategori.ETTEROPPGJOER to listOf(
         "PE_AF_03_101",
         "PE_AF_04_100",
         "PE_AF_04_101",
@@ -170,7 +236,7 @@ private val kategoriOverrides: Map<String, String> = mapOf(
         "PE_UT_04_401",
         "PE_UT_04_402"
     ),
-    "Førstegangsbehandling" to listOf(
+    Brevkategori.FOERSTEGANGSBEHANDLING to listOf(
         "AP_AVSL_TIDLUTTAK",
         "AP_AVSL_UTTAK",
         "AP_INNV_AVT_MAN",
@@ -208,7 +274,7 @@ private val kategoriOverrides: Map<String, String> = mapOf(
         "PE_UT_04_117",
         "PE_UT_04_118"
     ),
-    "Vedtak - endring og revurdering" to listOf(
+    Brevkategori.VEDTAK_ENDRING_OG_REVURDERING to listOf(
         "AP_AVSL_ENDR",
         "AP_AVSL_FT_MAN",
         "AP_AVSL_GJRETT_MAN",
@@ -247,7 +313,7 @@ private val kategoriOverrides: Map<String, String> = mapOf(
         "PE_UT_06_300",
         "PE_UT_07_100"
     ),
-    "Vedtak - flytte mellom land" to listOf(
+    Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND to listOf(
         "AP_ENDR_FLYTT_MAN",
         "AP_STANS_FLYTT_MAN",
         "PE_AP_04_223",
@@ -257,7 +323,7 @@ private val kategoriOverrides: Map<String, String> = mapOf(
         "PE_IY_04_126",
         "PE_IY_04_127"
     ),
-    "Sluttbehandling" to listOf(
+    Brevkategori.SLUTTBEHANDLING to listOf(
         "INFO_P1",
         "PE_AP_04_903",
         "PE_AP_04_904",
@@ -267,7 +333,7 @@ private val kategoriOverrides: Map<String, String> = mapOf(
         "PE_UT_04_106",
         "PE_UT_04_107"
     ),
-    "Informasjonsbrev" to listOf(
+    Brevkategori.INFORMASJONSBREV to listOf(
         "AP_INFO_STID_MAN",
         "DOD_INFO_RETT_MAN",
         "PE_AP_04_922",
@@ -288,10 +354,10 @@ private val kategoriOverrides: Map<String, String> = mapOf(
         "PE_UT_04_001",
         "PE_UT_04_004"
     ),
-    "Varsel" to listOf("VARSEL_REVURD", "PE_IY_03_051", "PE_IY_03_179"),
-    "Vedtak - eksport" to listOf("PE_GP_04_022", "PE_UT_04_103", "PE_UT_04_115"),
-    "Omsorgsopptjening" to listOf("OMSORG_EGEN_MAN", "PE_IY_04_010"),
-    "Uførepensjon" to listOf(
+    Brevkategori.VARSEL to listOf("VARSEL_REVURD", "PE_IY_03_051", "PE_IY_03_179"),
+    Brevkategori.VEDTAK_EKSPORT to listOf("PE_GP_04_022", "PE_UT_04_103", "PE_UT_04_115"),
+    Brevkategori.OMSORGSOPPTJENING to listOf("OMSORG_EGEN_MAN", "PE_IY_04_010"),
+    Brevkategori.UFOEREPENSJON to listOf(
         "PE_UP_04_001",
         "PE_UP_04_020",
         "PE_UP_04_010",
@@ -308,7 +374,7 @@ private val kategoriOverrides: Map<String, String> = mapOf(
         "PE_UP_07_010",
         "PE_UT_04_300"
     ),
-    "Innhente opplysninger" to listOf(
+    Brevkategori.INNHENTE_OPPLYSNINGER to listOf(
         "PE_UP_07_100",
         "PE_UT_04_003",
         "HENT_INFO_MAN",
@@ -324,9 +390,9 @@ private val kategoriOverrides: Map<String, String> = mapOf(
         "PE_IY_03_049",
         "PE_GP_01_010"
     ),
-    "Leveattest" to listOf("PE_IY_03_176", "PE_IY_03_177", "PE_IY_05_411", "PE_IY_05_510", "PE_IY_05_410", "PE_IY_05_511"),
-    "Feilutbetaling" to listOf("VARSEL_TILBAKEBET", "VEDTAK_TILBAKEKREV", "VEDTAK_TILBAKEKREV_MIDL", "PE_IY_04_060", "PE_IY_04_061", "PE_IY_05_027"),
-    "Klage og anke" to listOf(
+    Brevkategori.LEVEATTEST to listOf("PE_IY_03_176", "PE_IY_03_177", "PE_IY_05_411", "PE_IY_05_510", "PE_IY_05_410", "PE_IY_05_511"),
+    Brevkategori.FEILUTBETALING to listOf("VARSEL_TILBAKEBET", "VEDTAK_TILBAKEKREV", "VEDTAK_TILBAKEKREV_MIDL", "PE_IY_04_060", "PE_IY_04_061", "PE_IY_05_027"),
+    Brevkategori.KLAGE_OG_ANKE to listOf(
         "PE_IY_03_151",
         "PE_IY_03_152",
         "PE_IY_03_158",
@@ -341,6 +407,6 @@ private val kategoriOverrides: Map<String, String> = mapOf(
         "PE_IY_03_161",
         "PE_IY_03_162"
     ),
-    "Posteringsgrunnlag" to listOf("PE_OK_06_100", "PE_OK_06_101", "PE_OK_06_102"),
-    "Fritekstbrev" to listOf("PE_IY_03_156", "PE_IY_05_300"),
+    Brevkategori.POSTERINGSGRUNNLAG to listOf("PE_OK_06_100", "PE_OK_06_101", "PE_OK_06_102"),
+    Brevkategori.FRITEKSTBREV to listOf("PE_IY_03_156", "PE_IY_05_300"),
 ).flatMap { kategori -> kategori.value.map { it to kategori.key } }.toMap()

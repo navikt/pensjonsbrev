@@ -6,29 +6,49 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.UFOREP
-import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.SAK
-import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.VEDTAK
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentType.N
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.FRITEKSTBREV_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0101_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0102_KODE
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 
 const val TEST_VEDTAKS_ID = "1234"
 
 class BrevmalServiceTest {
+    private val brevbakerbrev = listOf(
+        TemplateDescription(
+            "brevbaker mal",
+            "en dataklasse ref",
+            listOf(LanguageCode.BOKMAL),
+            no.nav.pensjon.brevbaker.api.model.LetterMetadata(
+                "brevbaker brev",
+                false,
+                no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG,
+                no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
+            ),
+            TemplateDescription.Brevkategori.INFORMASJONSBREV,
+        )
+    )
+
     private val mockCall = mockk<ApplicationCall> {
         every { callId } returns "utrolig kul callId"
     }
     private val penService: PenService = mockk()
     private val brevmetadataService: BrevmetadataService = mockk()
-    private val brevmalService = BrevmalService(penService, brevmetadataService)
+    private val brevbakerService: BrevbakerService = mockk {
+        coEvery { getTemplates(any()) } returns ServiceResult.Ok(brevbakerbrev)
+    }
+    private val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
         dekode = "dekode",
@@ -48,23 +68,23 @@ class BrevmalServiceTest {
         brevsystem = BrevdataDto.BrevSystem.GAMMEL
     )
 
-    private val testOkVedtakBrev = testOkBrev.copy(brevkontekst = VEDTAK)
-    private val testOkSakBrev = testOkBrev.copy(brevkontekst = SAK)
+    private val testOkVedtakBrev = testOkBrev.copy(brevkontekst = VEDTAK, brevkodeIBrevsystem = "BREV_KODE_SAK")
+    private val testOkSakBrev = testOkBrev.copy(brevkontekst = SAK, brevkodeIBrevsystem = "BREV_KODE_VEDTAK")
 
 
     @Test
     fun `brevmal for sakskontekst vises for sakskontekst`() {
-        assertThatBrevmalerInSakskontekst(testOkSakBrev).hasSize(1)
+        assertThatBrevmalerInSakskontekst(testOkSakBrev).anyMatch { it.id == testOkSakBrev.brevkodeIBrevsystem }
     }
 
     @Test
     fun `brevmal for vedtakskontekst vises ikke for sakskontekst`() {
-        assertThatBrevmalerInSakskontekst(testOkVedtakBrev).isEmpty()
+        assertThatBrevmalerInSakskontekst(testOkVedtakBrev).noneMatch { it.id == testOkVedtakBrev.brevkodeIBrevsystem }
     }
 
     @Test
     fun `utfiltrert brevmal vises ikke`() {
-        assertThatBrevmalerInSakskontekst(testOkSakBrev.copy(brevkodeIBrevsystem = "PE_IY_05_301")).isEmpty()
+        assertThatBrevmalerInSakskontekst(testOkSakBrev.copy(brevkodeIBrevsystem = "PE_IY_05_301")).noneMatch { it.id == "PE_IY_05_301" }
     }
 
     @Test
@@ -73,7 +93,7 @@ class BrevmalServiceTest {
             brevmetadataService.hentMaler(any(), UFOREP, true)
         }.returns(
             BrevmetadataService.Brevmaler(
-                eblanketter = listOf(testOkBrev),
+                eblanketter = listOf(testOkBrev.copy(brevkodeIBrevsystem = "e-blankett-kode")),
                 maler = emptyList()
             )
         )
@@ -81,50 +101,55 @@ class BrevmalServiceTest {
             val brevmaler = brevmalService.hentBrevmalerForSak(
                 mockCall, UFOREP, includeEblanketter = true
             )
-            assertThat(brevmaler).hasSize(1)
+            assertThat(brevmaler).anyMatch { it.id == "e-blankett-kode" }
         }
     }
 
     @Test
     fun `filtrerer ut ikke redigerbare brev`() {
-        assertThatBrevmalerInSakskontekst(testOkSakBrev.copy(redigerbart = false)).isEmpty()
+        assertThatBrevmalerInSakskontekst(testOkSakBrev.copy(redigerbart = false, brevkodeIBrevsystem = "autobrev")).noneMatch { it.id == "autobrev" }
     }
 
     @Test
     fun `viser vedtaksbrev i vedtaks kontekst`() {
-        assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, sakType = UFOREP).hasSize(1)
+        assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, sakType = UFOREP).anyMatch { it.id == testOkVedtakBrev.brevkodeIBrevsystem }
     }
 
     @Test
-    fun `viser brev for sakskontekst i vedtakskontekst`() {
-        assertThatBrevmalerInVedtaksKontekst(testOkSakBrev, sakType = UFOREP).isEmpty()
+    fun `viser ikke brev for sakskontekst i vedtakskontekst`() {
+        assertThatBrevmalerInVedtaksKontekst(testOkSakBrev, sakType = UFOREP).noneMatch { it.id == testOkSakBrev.brevkodeIBrevsystem }
+    }
+
+    @Test
+    fun `viser brev for med ALLTID i vedtakskontekst`() {
+        assertThatBrevmalerInVedtaksKontekst(testOkSakBrev.copy(brevkontekst = ALLTID), sakType = UFOREP).anyMatch { it.id == testOkSakBrev.brevkodeIBrevsystem }
     }
 
     @Test
     fun `viser ikke vedtaksbrev mal paa nytt alderspensjon regelverk naar vedtaket er pa gammel alderspensjon beregning`() {
         assertThatBrevmalerInVedtaksKontekst(
-            testOkVedtakBrev.copy(brevregeltype = BrevdataDto.BrevregeltypeCode.NN),
+            testOkVedtakBrev.copy(brevregeltype = BrevdataDto.BrevregeltypeCode.NN, brevkodeIBrevsystem = "nytt regelverk"),
             sakType = ALDER,
             isKravPaaGammeltRegelverk = true
-        ).isEmpty()
+        ).noneMatch { it.id == "nytt regelverk" }
     }
 
     @Test
     fun `viser vedtaksbrev mal paa nytt alderspensjon regelverk naar vedtaket er pa ny alderspensjon beregning`() {
         assertThatBrevmalerInVedtaksKontekst(
-            testOkVedtakBrev.copy(brevregeltype = BrevdataDto.BrevregeltypeCode.GN),
+            testOkVedtakBrev.copy(brevregeltype = BrevdataDto.BrevregeltypeCode.GN, brevkodeIBrevsystem = "nytt regelverk"),
             sakType = ALDER,
             isKravPaaGammeltRegelverk = false,
-        ).hasSize(1)
+        ).anyMatch { it.id == "nytt regelverk" }
     }
 
     @Test
     fun `viser ikke vedtaksbrev mal paa gammelt alderspensjon regelverk naar vedtaket er pa ny alderspensjon beregning`() {
         assertThatBrevmalerInVedtaksKontekst(
-            testOkVedtakBrev.copy(brevregeltype = BrevdataDto.BrevregeltypeCode.GG),
+            testOkVedtakBrev.copy(brevregeltype = BrevdataDto.BrevregeltypeCode.GG, brevkodeIBrevsystem = "gammelt regelverk"),
             sakType = ALDER,
             isKravPaaGammeltRegelverk = false,
-        ).hasSize(0)
+        ).noneMatch { it.id == "gammelt regelverk" }
     }
 
     @Test
@@ -141,6 +166,23 @@ class BrevmalServiceTest {
             .anyMatch { it.id == POSTERINGSGRUNNLAG_VIRK0102_KODE && !it.redigerbarBrevtittel }
     }
 
+    @Test
+    fun `inkluderer brevbakerbrev om feature er aktivert`() = runBlocking {
+        Features.override("brevbakerbrev", true)
+        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Pen.SakType.ALDER)
+        for (brev in brevbakerbrev) {
+            brevmalerAssert.anyMatch { it.id == brev.name }
+        }
+    }
+
+    @Test
+    fun `inkluderer ikke brevbakerbrev om feature er deaktivert`() = runBlocking {
+        Features.override("brevbakerbrev", false)
+        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Pen.SakType.ALDER)
+        for (brev in brevbakerbrev) {
+            brevmalerAssert.noneMatch { it.id == brev.name }
+        }
+    }
 
     private fun assertThatBrevmalerInVedtaksKontekst(
         brevdataDto: BrevdataDto,
