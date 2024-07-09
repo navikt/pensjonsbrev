@@ -254,9 +254,9 @@ describe("Brevvelger spec", () => {
       cy.intercept("POST", "/bff/skribenten-backend/finnSamhandler", (request) => {
         expect(request.body).to.deep.equal({
           samhandlerType: "ADVO",
-          direkteOppslag: { identtype: "ORG", id: "direkte-oppslag-id" },
-          organisasjonsnavn: null,
-          personnavn: null,
+          identtype: "ORG",
+          id: "direkte-oppslag-id",
+          type: "DirekteOppslag",
         });
         request.reply({ fixture: "finnSamhandler.json" });
       }).as("finnSamhandler");
@@ -320,9 +320,9 @@ describe("Brevvelger spec", () => {
       cy.intercept("POST", "/bff/skribenten-backend/finnSamhandler", (request) => {
         expect(request.body).to.deep.equal({
           samhandlerType: "ADVO",
-          direkteOppslag: null,
-          organisasjonsnavn: { innlandUtland: "ALLE", navn: "navnet på samhandler" },
-          personnavn: null,
+          innlandUtland: "ALLE",
+          navn: "navnet på samhandler",
+          type: "Organisasjonsnavn",
         });
         request.reply({ fixture: "finnSamhandler.json" });
       }).as("finnSamhandler");
@@ -369,14 +369,14 @@ describe("Brevvelger spec", () => {
       cy.intercept("POST", "/bff/skribenten-backend/finnSamhandler", (request) => {
         expect(request.body).to.deep.equal({
           samhandlerType: "ADVO",
-          direkteOppslag: null,
-          organisasjonsnavn: null,
-          personnavn: { fornavn: "Fornavnet", etternavn: "Etternavnet" },
+          fornavn: "Fornavnet",
+          etternavn: "Etternavnet",
+          type: "Personnavn",
         });
         request.reply({ fixture: "finnSamhandler.json" });
       }).as("finnSamhandler");
 
-      //velger organisasjonsnavn, og fyller ut resten av form
+      //velger personnavn, og fyller ut resten av form
       cy.getDataCy("endre-mottaker-søketype-select").select("Personnavn");
       cy.getDataCy("endre-mottaker-søk-button").should("be.visible");
       //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
