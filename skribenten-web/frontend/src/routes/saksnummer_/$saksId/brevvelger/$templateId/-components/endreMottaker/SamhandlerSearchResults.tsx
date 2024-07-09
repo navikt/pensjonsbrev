@@ -19,10 +19,6 @@ export function SamhandlerSearchResults({
     direction: "ascending",
   });
 
-  if (samhandlere.length === 0) {
-    return <></>;
-  }
-
   const handleSort = (sortKey: string | undefined) => {
     if (sortKey) {
       setSort({
