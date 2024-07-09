@@ -158,14 +158,15 @@ const EndreMottakerModal = (properties: {
 
   return (
     <Modal
+      data-cy="endre-mottaker-modal"
       header={{
         heading: vilAvbryte && form.formState.isDirty ? "Vil du avbryte endring av mottaker?" : "Endre mottaker",
       }}
       onClose={properties.onClose}
       open={properties.åpen}
       /*
-        ved å ha modalen som en portal vil ikke browseren klage på at vi kommer til å ha en form inni en annen form.
-        vi vil likevel få litt andre tekniske problemer som event propagation. Denne kan vi likevel bare stoppe..
+      ved å ha modalen som en portal vil ikke browseren klage på at vi kommer til å ha en form inni en annen form.
+      vi vil likevel få litt andre tekniske problemer som event propagation. Denne kan vi likevel bare stoppe..
       */
       portal
       width={600}

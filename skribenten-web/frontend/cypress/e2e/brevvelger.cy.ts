@@ -489,5 +489,25 @@ describe("Brevvelger spec", () => {
       cy.getDataCy("order-letter-success-message");
       */
     });
+    it("kan avbryte uten bekreftelse dersom det ikke finnes endringer", () => {
+      cy.contains("Avbryt").click();
+      cy.getDataCy("endre-mottaker-modal").should("not.exist");
+    });
+    it("må bekrefte avbrytelse dersom det finnes endringer", () => {
+      cy.getDataCy("endre-mottaker-søketype-select").select("Direkte oppslag");
+      cy.contains("Avbryt").click();
+
+      //får opp bekreftelse
+      cy.contains("Vil du avbryte endring av mottaker?").should("be.visible");
+      cy.contains("Infoen du har skrevet inn blir ikke lagret. Du kan ikke angre denne handlingen.").should(
+        "be.visible",
+      );
+      //kan navigere seg tilbake til form
+      cy.contains("Nei, ikke avbryt").click();
+      //velger å bekrefte avbrytelse
+      cy.contains("Avbryt").click();
+      cy.contains("Ja, avbryt").click();
+      cy.getDataCy("endre-mottaker-modal").should("not.exist");
+    });
   });
 });
