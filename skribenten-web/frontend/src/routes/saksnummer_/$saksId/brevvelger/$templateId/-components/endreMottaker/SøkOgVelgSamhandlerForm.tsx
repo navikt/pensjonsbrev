@@ -4,6 +4,7 @@ import type { UseMutationResult } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller, useWatch } from "react-hook-form";
 
+import { ApiError } from "~/components/ApiError";
 import { SamhandlerTypeSelect } from "~/components/select/SamhandlerSelect";
 import type { FinnSamhandlerRequestDto, FinnSamhandlerResponseDto } from "~/types/apiTypes";
 
@@ -76,6 +77,9 @@ const SøkOgVelgSamhandlerForm = (properties: {
             />
           )}
         </div>
+      )}
+      {properties.onFinnSamhandlerSubmit.isError && (
+        <ApiError error={properties.onFinnSamhandlerSubmit.error} title={"En feil skjedde"} />
       )}
 
       <Button

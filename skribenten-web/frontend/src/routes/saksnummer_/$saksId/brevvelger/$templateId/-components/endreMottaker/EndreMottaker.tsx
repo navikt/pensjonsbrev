@@ -95,30 +95,35 @@ const EndreMottakerModal = (properties: {
   const finnSamhandlerMutation = useMutation({ mutationFn: finnSamhandler });
 
   const onFinnsamhandlerSubmit = (values: FinnSamhandlerFormData) => {
-    finnSamhandlerMutation.mutate({
-      samhandlerType: values.samhandlerType!,
-      direkteOppslag:
-        values.søketype === Søketype.DIREKTE_OPPSLAG
-          ? {
-              identtype: values.direkteOppslag.identtype!,
-              id: values.direkteOppslag.id!,
-            }
-          : null,
-      organisasjonsnavn:
-        values.søketype === Søketype.ORGANISASJONSNAVN
-          ? {
-              innlandUtland: values.organisasjonsnavn.innOgUtland!,
-              navn: values.organisasjonsnavn.navn!,
-            }
-          : null,
-      personnavn:
-        values.søketype === Søketype.PERSONNAVN
-          ? {
-              fornavn: values.personnavn.fornavn!,
-              etternavn: values.personnavn.etternavn!,
-            }
-          : null,
-    });
+    switch (values.søketype) {
+      case null: {
+        throw new Error("Teknisk feil - Fikk case 'null' ved søk for samhandler. Ble ikke denne fanget av validering?");
+      }
+      case Søketype.DIREKTE_OPPSLAG: {
+        return finnSamhandlerMutation.mutate({
+          type: "DirekteOppslag",
+          samhandlerType: values.samhandlerType!,
+          identtype: values.direkteOppslag.identtype!,
+          id: values.direkteOppslag.id!,
+        });
+      }
+      case Søketype.ORGANISASJONSNAVN: {
+        return finnSamhandlerMutation.mutate({
+          type: "Organisasjonsnavn",
+          samhandlerType: values.samhandlerType!,
+          innlandUtland: values.organisasjonsnavn.innOgUtland!,
+          navn: values.organisasjonsnavn.navn!,
+        });
+      }
+      case Søketype.PERSONNAVN: {
+        return finnSamhandlerMutation.mutate({
+          type: "Personnavn",
+          samhandlerType: values.samhandlerType!,
+          fornavn: values.personnavn.fornavn!,
+          etternavn: values.personnavn.etternavn!,
+        });
+      }
+    }
   };
 
   const defaultManuellAdresse: ManuellAdresseUtfyllingFormData = {

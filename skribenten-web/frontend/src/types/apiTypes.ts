@@ -124,27 +124,32 @@ export const FAILURE_TYPES = [
 
 export type FailureType = (typeof FAILURE_TYPES)[number];
 
-export type FinnSamhandlerRequestDto = {
+interface SamhandlerRequestBase {
   samhandlerType: SamhandlerTypeCode;
-  direkteOppslag: Nullable<SamhandlerDirekteoppslagRequest>;
-  organisasjonsnavn: Nullable<SamhandlerOrganisasjonsnavnRequest>;
-  personnavn: Nullable<SamhandlerPersonnavnRequest>;
-};
+}
 
-export interface SamhandlerDirekteoppslagRequest {
+export interface SamhandlerDirekteoppslagRequest extends SamhandlerRequestBase {
+  readonly type: "DirekteOppslag";
   identtype: Identtype;
   id: string;
 }
 
-export interface SamhandlerOrganisasjonsnavnRequest {
+export interface SamhandlerOrganisasjonsnavnRequest extends SamhandlerRequestBase {
+  readonly type: "Organisasjonsnavn";
   innlandUtland: InnOgUtland;
   navn: string;
 }
 
-export interface SamhandlerPersonnavnRequest {
+export interface SamhandlerPersonnavnRequest extends SamhandlerRequestBase {
+  readonly type: "Personnavn";
   fornavn: string;
   etternavn: string;
 }
+
+export type FinnSamhandlerRequestDto =
+  | SamhandlerDirekteoppslagRequest
+  | SamhandlerOrganisasjonsnavnRequest
+  | SamhandlerPersonnavnRequest;
 
 export type HentSamhandlerRequestDto = {
   idTSSEkstern: string;

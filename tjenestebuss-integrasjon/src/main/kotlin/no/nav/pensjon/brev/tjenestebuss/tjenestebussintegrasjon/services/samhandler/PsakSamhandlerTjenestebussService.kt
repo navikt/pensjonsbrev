@@ -50,39 +50,29 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
     }
 
     fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
-        if (requestDto.direkteOppslag != null) {
-            return finnSamhandlerVedDirekteOppslag(requestDto.samhandlerType, requestDto.direkteOppslag)
+        return when(requestDto){
+            is FinnSamhandlerRequestDto.DirekteOppslag -> finnSamhandlerVedDirekteOppslag(requestDto)
+            is FinnSamhandlerRequestDto.Organisasjonsnavn -> finnSamhandlerVedOrganisasjonsnavn(requestDto)
+            is FinnSamhandlerRequestDto.Personnavn -> finnSamhandlerVedPersonnavn(requestDto)
         }
-
-        if (requestDto.organisasjonsnavn != null) {
-            return finnSamhandlerVedOrganisasjonsnavn(requestDto.samhandlerType, requestDto.organisasjonsnavn)
-        }
-
-        if (requestDto.personnavn != null) {
-            return finnSamhandlerVedPersonnavn(requestDto.samhandlerType, requestDto.personnavn)
-        }
-
-        //request klassen validerer at kun 1 eksisterer
-        throw IllegalArgumentException("Forventet at en av direkteOppslag, organisasjonsnavn eller personnavn er satt")
     }
 
 
     private fun finnSamhandlerVedDirekteOppslag(
-        samhandlerType: SamhandlerTypeCode,
-        direkteOppslag: DirekteOppslag,
+        oppslag: FinnSamhandlerRequestDto.DirekteOppslag
     ): FinnSamhandlerResponseDto {
         try {
             val samhandlerResponse = client.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
-                this.offentligId = direkteOppslag.id
-                this.idType = direkteOppslag.identtype.name
-                this.samhandlerType = samhandlerType.name
+                this.offentligId = oppslag.id
+                this.idType = oppslag.identtype.name
+                this.samhandlerType = oppslag.samhandlerType.name
             })
             return FinnSamhandlerResponseDto(samhandlere = samhandlerResponse.samhandlere.flatMap { samhandler ->
                 samhandler.toSamhandler()
             }.distinctBy { it.idTSSEkstern })
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
             logger.error(
-                "En feil oppstod under kall til finnSamhandler(direkte oppslag) med id: ${direkteOppslag.id}, identtype: ${direkteOppslag.identtype}, samhandlerType: $samhandlerType",
+                "En feil oppstod under kall til finnSamhandler(direkte oppslag) med id: ${oppslag.id}, identtype: ${oppslag.identtype}, samhandlerType: ${oppslag.samhandlerType}",
                 ex.faultInfo.prettyPrint()
             )
             return FinnSamhandlerResponseDto("Feil ved henting av samhandler")
@@ -91,23 +81,22 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
 
 
     private fun finnSamhandlerVedOrganisasjonsnavn(
-        samhandlerType: SamhandlerTypeCode,
-        organisasjonsnavn: Organisasjonsnavn,
+        oppslag: FinnSamhandlerRequestDto.Organisasjonsnavn
     ): FinnSamhandlerResponseDto {
         try {
             val samhandlerResponse = client.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
-                this.navn = organisasjonsnavn.navn
-                this.samhandlerType = samhandlerType.name
+                this.navn = oppslag.navn
+                this.samhandlerType = oppslag.samhandlerType.name
             })
             return FinnSamhandlerResponseDto(
                 samhandlere = samhandlerResponse.samhandlere
-                    .filtrerPåInnlandUtland(organisasjonsnavn.innlandUtland)
+                    .filtrerPåInnlandUtland(oppslag.innlandUtland)
                     .flatMap { samhandler -> samhandler.toSamhandler() }
                     .distinctBy { it.idTSSEkstern }
             )
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
             logger.error(
-                "En feil oppstod under kall til finnSamhandler(organisasjonsnavn) med navn: ${organisasjonsnavn.navn}, innlandUtland: ${organisasjonsnavn.innlandUtland}, samhandlerType: $samhandlerType",
+                "En feil oppstod under kall til finnSamhandler(organisasjonsnavn) med navn: ${oppslag.navn}, innlandUtland: ${oppslag.innlandUtland}, samhandlerType: ${oppslag.samhandlerType}",
                 ex.faultInfo.prettyPrint()
             )
             return FinnSamhandlerResponseDto("Feil ved henting av samhandler")
@@ -115,14 +104,13 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
     }
 
     private fun finnSamhandlerVedPersonnavn(
-        samhandlerType: SamhandlerTypeCode,
-        personnavn: Personnavn
+        oppslag: FinnSamhandlerRequestDto.Personnavn
     ): FinnSamhandlerResponseDto {
         try {
             val samhandlerResponse = client.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
                 //etter en del testing og feiling, ser det ut som at dette er formatet som er forventet..
-                this.navn = "${personnavn.etternavn} ${personnavn.fornavn}"
-                this.samhandlerType = samhandlerType.name
+                this.navn = "${oppslag.etternavn} ${oppslag.fornavn}"
+                this.samhandlerType = oppslag.samhandlerType.name
             })
             return FinnSamhandlerResponseDto(samhandlere = samhandlerResponse.samhandlere.flatMap { samhandler ->
                 samhandler.toSamhandler()
@@ -133,7 +121,7 @@ class PsakSamhandlerTjenestebussService(clientFactory: PsakSamhandlerClientFacto
             )
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
             logger.error(
-                "En feil oppstod under kall til finnSamhandler(personnavn), med navn: $personnavn, samhandlerType: $samhandlerType",
+                "En feil oppstod under kall til finnSamhandler(personnavn), med navn: ${oppslag.fornavn} ${oppslag.etternavn}, samhandlerType: ${oppslag.samhandlerType}",
                 ex.faultInfo.prettyPrint()
             )
             return FinnSamhandlerResponseDto("Feil ved henting av samhandler")

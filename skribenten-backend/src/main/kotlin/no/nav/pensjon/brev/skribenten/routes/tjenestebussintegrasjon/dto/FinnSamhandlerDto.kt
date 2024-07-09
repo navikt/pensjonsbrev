@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+
 data class FinnSamhandlerResponseDto(val samhandlere: List<Samhandler>, val failureType: String?) {
     constructor(samhandlere: List<Samhandler>) : this(samhandlere, null)
     constructor(failure: String) : this(emptyList(), failure)
@@ -13,33 +16,34 @@ data class FinnSamhandlerResponseDto(val samhandlere: List<Samhandler>, val fail
     )
 }
 
-data class FinnSamhandlerRequestDto(
-    val samhandlerType: SamhandlerTypeCode,
-    val direkteOppslag: DirekteOppslag?,
-    val organisasjonsnavn: Organisasjonsnavn?,
-    val personnavn: Personnavn?,
-) {
-    init {
-        require(listOf(direkteOppslag, organisasjonsnavn, personnavn).mapNotNull { it }.size == 1) {
-            "Forventer kun en oppslagstype av gangen"
-        }
-    }
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.DirekteOppslag::class, name = "DirekteOppslag"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Organisasjonsnavn::class, name = "Organisasjonsnavn"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Personnavn::class, name = "Personnavn"),
+)
+sealed class FinnSamhandlerRequestDto {
+    abstract val samhandlerType: SamhandlerTypeCode
+
+    data class DirekteOppslag(
+        val identtype: String,
+        val id: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+
+    data class Organisasjonsnavn(
+        val innlandUtland: String,
+        val navn: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+
+    data class Personnavn(
+        val fornavn: String,
+        val etternavn: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
 }
-
-data class DirekteOppslag(
-    val identtype: String,
-    val id: String,
-)
-
-data class Organisasjonsnavn(
-    val innlandUtland: String,
-    val navn: String,
-)
-
-data class Personnavn(
-    val fornavn: String,
-    val etternavn: String,
-)
 
 enum class SamhandlerTypeCode {
     AA,    // Ambulansearbeider

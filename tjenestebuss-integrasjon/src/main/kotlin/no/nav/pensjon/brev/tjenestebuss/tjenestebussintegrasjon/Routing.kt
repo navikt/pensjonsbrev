@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.core.JacksonException
 import com.typesafe.config.Config
 import io.ktor.http.*
@@ -133,31 +135,31 @@ data class HentSamhandlerAdresseRequestDto(
     val idTSSEkstern: String,
 )
 
-data class FinnSamhandlerRequestDto(
-    val samhandlerType: SamhandlerTypeCode,
-    val direkteOppslag: DirekteOppslag?,
-    val organisasjonsnavn: Organisasjonsnavn?,
-    val personnavn: Personnavn?,
-) {
-    init {
-        require(listOf(direkteOppslag, organisasjonsnavn, personnavn).mapNotNull { it }.size == 1) {
-            "Forventer kun en oppslagstype av gangen"
-        }
-    }
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.DirekteOppslag::class, name = "DirekteOppslag"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Organisasjonsnavn::class, name = "Organisasjonsnavn"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Personnavn::class, name = "Personnavn"),
+)
+sealed class FinnSamhandlerRequestDto {
+    abstract val samhandlerType: SamhandlerTypeCode
+
+    data class DirekteOppslag(
+        val identtype: Identtype,
+        val id: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+
+    data class Organisasjonsnavn(
+        val innlandUtland: InnlandUtland,
+        val navn: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+
+    data class Personnavn(
+        val fornavn: String,
+        val etternavn: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
 }
-
-data class DirekteOppslag(
-    val identtype: Identtype,
-    val id: String,
-)
-
-data class Organisasjonsnavn(
-    val innlandUtland: InnlandUtland,
-    val navn: String,
-)
-
-data class Personnavn(
-    val fornavn: String,
-    val etternavn: String,
-)
 
