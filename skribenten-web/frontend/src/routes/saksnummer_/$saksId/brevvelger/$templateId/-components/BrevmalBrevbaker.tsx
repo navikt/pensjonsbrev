@@ -10,7 +10,7 @@ import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 
 import { Route } from "../route";
-import { PersonAdresse } from "./Adresse";
+import HentOgVisAdresse from "./endreMottaker/HentOgVisAdresse";
 import LetterTemplateHeading from "./LetterTemplate";
 import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";
@@ -53,7 +53,7 @@ const BrevmalBrevbaker = (properties: {
           })}
         >
           <VStack gap="8">
-            <PersonAdresse kanEndreAndresse={false} sakId={saksId} />
+            <HentOgVisAdresse sakId={saksId} />
             <SelectLanguage
               preferredLanguage={properties.preferredLanguage}
               sorterteSpråk={properties.displayLanguages}
