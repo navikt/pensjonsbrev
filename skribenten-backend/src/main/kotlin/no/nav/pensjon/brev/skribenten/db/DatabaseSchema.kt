@@ -61,7 +61,7 @@ object BrevredigeringTable : LongIdTable() {
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     // TODO: introdusere value class for NavIdent?
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
-    val sistRedigertAvNavIdent : Column<String> = varchar("sistRedigertAvNavIdent", length = 50)
+    val sistRedigertAvNavIdent: Column<String> = varchar("sistRedigertAvNavIdent", length = 50)
     val opprettetAvNavIdent: Column<String> = varchar("opprettetAvNavIdent", length = 50).index()
     val opprettet: Column<LocalDateTime> = datetime("opprettet")
     val sistredigert: Column<LocalDateTime> = datetime("sistredigert")
