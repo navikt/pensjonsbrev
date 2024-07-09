@@ -149,7 +149,13 @@ const SamhandlerOrganisasjonsnavn = (properties: { control: Control<CombinedForm
         control={properties.control}
         name="finnSamhandler.organisasjonsnavn.innOgUtland"
         render={({ field, fieldState }) => (
-          <Select label="Inn-/utland" {...field} error={fieldState.error?.message} value={field.value ?? ""}>
+          <Select
+            data-cy="endre-mottaker-organisasjonsnavn-innOgUtland"
+            label="Inn-/utland"
+            {...field}
+            error={fieldState.error?.message}
+            value={field.value ?? ""}
+          >
             <option value={InnOgUtland.INNLAND}>Innland</option>
             <option value={InnOgUtland.UTLAND}>Utland</option>
             <option value={InnOgUtland.ALLE}>Alle</option>

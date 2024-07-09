@@ -216,24 +216,9 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("order-letter-success-message");
   });
   describe("Endrer på mottaker", () => {
-    it("direkte oppslag", () => {
-      cy.intercept("POST", "/bff/skribenten-backend/finnSamhandler", (request) => {
-        expect(request.body).to.deep.equal({
-          samhandlerType: "ADVO",
-          direkteOppslag: {
-            identtype: "ORG",
-            id: "direkte-oppslag-id",
-          },
-          organisasjonsnavn: null,
-          personnavn: null,
-        });
-        request.reply({ fixture: "finnSamhandler.json" });
-      }).as("finnSamhandler");
-
+    beforeEach(() => {
       cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", (request) => {
-        expect(request.body).to.deep.equal({
-          idTSSEkstern: "80000781720",
-        });
+        expect(request.body).to.deep.equal({ idTSSEkstern: "80000781720" });
         request.reply({ fixture: "hentSamhandlerAdresse.json" });
       }).as("hentSamhandlerAdresse");
 
@@ -260,9 +245,41 @@ describe("Brevvelger spec", () => {
       cy.getDataCy("brevmal-search").click().type("brev fra nav");
       cy.getDataCy("brevmal-button").click();
 
-      //åpner endre mottaker modal, søker og velger samhandler
+      //åpner endre mottaker modal, og verifiserer at søk button ikke vises
       cy.getDataCy("toggle-endre-mottaker-modal").click();
       cy.get("[data-cy=endre-mottaker-søk-button]").should("not.exist");
+    });
+
+    it("søk med direkte oppslag", () => {
+      cy.intercept("POST", "/bff/skribenten-backend/finnSamhandler", (request) => {
+        expect(request.body).to.deep.equal({
+          samhandlerType: "ADVO",
+          direkteOppslag: { identtype: "ORG", id: "direkte-oppslag-id" },
+          organisasjonsnavn: null,
+          personnavn: null,
+        });
+        request.reply({ fixture: "finnSamhandler.json" });
+      }).as("finnSamhandler");
+
+      cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", (request) => {
+        expect(request.body).to.deep.equal({ idTSSEkstern: "80000781720" });
+        request.reply({ fixture: "hentSamhandlerAdresse.json" });
+      }).as("hentSamhandlerAdresse");
+
+      cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream", (request) => {
+        expect(request.body).to.deep.equal({
+          brevkode: "PE_IY_05_300",
+          idTSSEkstern: "80000781720",
+          spraak: "NB",
+          isSensitive: false,
+          brevtittel: "Vedtak om bla bla",
+          enhetsId: "4405",
+          vedtaksId: null,
+        });
+        request.reply({ fixture: "bestillBrevExstream.json" });
+      }).as("Brev fra nav - exstream");
+
+      //velger direkte oppslag, og fyller ut resten av form
       cy.getDataCy("endre-mottaker-søketype-select").select("Direkte oppslag");
       cy.getDataCy("endre-mottaker-søk-button").should("be.visible");
       //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
@@ -286,7 +303,6 @@ describe("Brevvelger spec", () => {
         "http://localhost:5173/saksnummer/123456/brevvelger/PE_IY_05_300?idTSSEkstern=%2280000781720%22",
       );
 
-      //fyller ut resten av inputtene
       cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
       cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
       cy.getDataCy("språk-velger-select").should("have.value", "NB");
@@ -300,25 +316,110 @@ describe("Brevvelger spec", () => {
       );
       cy.getDataCy("order-letter-success-message");
     });
+    it("søk med organisasjonsnavn", () => {
+      cy.intercept("POST", "/bff/skribenten-backend/finnSamhandler", (request) => {
+        expect(request.body).to.deep.equal({
+          samhandlerType: "ADVO",
+          direkteOppslag: null,
+          organisasjonsnavn: { innlandUtland: "ALLE", navn: "navnet på samhandler" },
+          personnavn: null,
+        });
+        request.reply({ fixture: "finnSamhandler.json" });
+      }).as("finnSamhandler");
 
+      //velger organisasjonsnavn, og fyller ut resten av form
+      cy.getDataCy("endre-mottaker-søketype-select").select("Organisasjonsnavn");
+      cy.getDataCy("endre-mottaker-søk-button").should("be.visible");
+      cy.getDataCy("endre-mottaker-organisasjonsnavn-innOgUtland").should("have.value", "ALLE");
+      //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
+      cy.contains("Samhandlertype").click().type("adv{enter}");
+      cy.contains("Navn").click().type("navnet på samhandler");
+
+      cy.getDataCy("endre-mottaker-søk-button").click();
+      cy.getDataCy("velg-samhandler").first().click();
+
+      //asserter oppsummering viser riktig info
+      cy.contains("Advokat 1 As").should("be.visible");
+      cy.contains("Postboks 603 Sentrum").should("be.visible");
+      cy.contains("4003").should("be.visible");
+      cy.contains("Stavanger").should("be.visible");
+      cy.contains("Nor").should("be.visible");
+      cy.getDataCy("bekreft-ny-mottaker").click();
+
+      //asserter at vi har byttet til samhandler
+      cy.url().should(
+        "eq",
+        "http://localhost:5173/saksnummer/123456/brevvelger/PE_IY_05_300?idTSSEkstern=%2280000781720%22",
+      );
+
+      cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
+      cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
+      cy.getDataCy("språk-velger-select").should("have.value", "NB");
+      cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
+
+      //bestiller brev
+      cy.getDataCy("order-letter").click();
+      cy.get("@window-open").should(
+        "have.been.calledOnceWithExactly",
+        "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
+      );
+      cy.getDataCy("order-letter-success-message");
+    });
+    it("søk med personnavn", () => {
+      cy.intercept("POST", "/bff/skribenten-backend/finnSamhandler", (request) => {
+        expect(request.body).to.deep.equal({
+          samhandlerType: "ADVO",
+          direkteOppslag: null,
+          organisasjonsnavn: null,
+          personnavn: { fornavn: "Fornavnet", etternavn: "Etternavnet" },
+        });
+        request.reply({ fixture: "finnSamhandler.json" });
+      }).as("finnSamhandler");
+
+      //velger organisasjonsnavn, og fyller ut resten av form
+      cy.getDataCy("endre-mottaker-søketype-select").select("Personnavn");
+      cy.getDataCy("endre-mottaker-søk-button").should("be.visible");
+      //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
+      cy.contains("Samhandlertype").click().type("adv{enter}");
+      cy.contains("Fornavn").click().type("Fornavnet");
+      cy.contains("Etternavn").click().type("Etternavnet");
+
+      cy.getDataCy("endre-mottaker-søk-button").click();
+      cy.getDataCy("velg-samhandler").first().click();
+
+      //asserter oppsummering viser riktig info
+      cy.contains("Advokat 1 As").should("be.visible");
+      cy.contains("Postboks 603 Sentrum").should("be.visible");
+      cy.contains("4003").should("be.visible");
+      cy.contains("Stavanger").should("be.visible");
+      cy.contains("Nor").should("be.visible");
+      cy.getDataCy("bekreft-ny-mottaker").click();
+
+      //asserter at vi har byttet til samhandler
+      cy.url().should(
+        "eq",
+        "http://localhost:5173/saksnummer/123456/brevvelger/PE_IY_05_300?idTSSEkstern=%2280000781720%22",
+      );
+
+      cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
+      cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
+      cy.getDataCy("språk-velger-select").should("have.value", "NB");
+      cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
+
+      //bestiller brev
+      cy.getDataCy("order-letter").click();
+      cy.get("@window-open").should(
+        "have.been.calledOnceWithExactly",
+        "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
+      );
+      cy.getDataCy("order-letter-success-message");
+    });
     it("manuell adresse", () => {
       /*
         backend har enda ikke støtte for at vi kan sende inn en manuell adresse. Midlertidig kommentert ut 
         den faktiske testen, og erstattet med en liten verifisering på at dem ikke kan gå inn i manuell adresse
       */
 
-      cy.visit("/saksnummer/123456/brevvelger", {
-        onBeforeLoad(window) {
-          cy.stub(window, "open").as("window-open");
-        },
-      });
-
-      //søker opp og velger brevet vi vil ha
-      cy.getDataCy("brevmal-search").click().type("brev fra nav");
-      cy.getDataCy("brevmal-button").click();
-
-      //åpner endre mottaker modal, søker og velger samhandler
-      cy.getDataCy("toggle-endre-mottaker-modal").click();
       cy.contains("Legg til manuelt").should("not.exist");
 
       /*
