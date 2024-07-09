@@ -27,7 +27,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
-class BrevbakerService(config: Config, authService: AzureADService): ServiceStatus {
+class BrevbakerService(config: Config, authService: AzureADService) : ServiceStatus {
     private val brevbakerUrl = config.getString("url")
 
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(config.getString("scope"), authService) {
@@ -48,7 +48,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
      * Returns a string because Skribenten-backend doesn't really care about the content.
      */
     suspend fun getModelSpecification(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
-        client.get(call, "/v2/templates/redigerbar/${brevkode.name}/modelSpecification").toServiceResult()
+        client.get(call, "/templates/redigerbar/${brevkode.name}/modelSpecification").toServiceResult()
 
     suspend fun renderMarkup(
         call: ApplicationCall,
@@ -57,7 +57,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles
     ): ServiceResult<LetterMarkup> =
-        client.post(call, "/v2/letter/redigerbar/markup") {
+        client.post(call, "/letter/redigerbar/markup") {
             contentType(ContentType.Application.Json)
             setBody(
                 BestillBrevRequest(
@@ -77,7 +77,7 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
         felles: Felles,
         redigertBrev: LetterMarkup
     ): ServiceResult<LetterResponse> =
-        client.post(call, "/v2/letter/redigerbar/pdf") {
+        client.post(call, "/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
             setBody(
                 BestillRedigertBrevRequest(
@@ -91,11 +91,14 @@ class BrevbakerService(config: Config, authService: AzureADService): ServiceStat
         }.toServiceResult()
 
     suspend fun getTemplates(call: ApplicationCall): ServiceResult<List<TemplateDescription>> =
-        client.get(call, "/v2/templates/redigerbar"){
+        client.get(call, "/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")
             }
         }.toServiceResult()
+
+    suspend fun getRedigerbarTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<TemplateDescription> =
+        client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult()
 
     override val name = "Brevbaker"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =

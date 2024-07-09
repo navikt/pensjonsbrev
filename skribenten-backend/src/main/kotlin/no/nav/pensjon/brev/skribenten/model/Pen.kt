@@ -1,7 +1,12 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.*
+import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
+import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B255
+import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
+import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -88,4 +93,49 @@ object Pen {
     data class RedigerDokumentResponse(
         val uri: String,
     )
+
+    data class SendRedigerbartBrevRequest(
+        val templateDescription: TemplateDescription,
+        val dokumentDato: LocalDate,
+        val saksId: Long,
+        val brevkode: Brevkode.Redigerbar,
+        val enhetId: String?,
+        val pdf: ByteArray,
+        val eksternReferanseId: String,
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as SendRedigerbartBrevRequest
+
+            if (templateDescription != other.templateDescription) return false
+            if (dokumentDato != other.dokumentDato) return false
+            if (saksId != other.saksId) return false
+            if (brevkode != other.brevkode) return false
+            if (enhetId != other.enhetId) return false
+            if (!pdf.contentEquals(other.pdf)) return false
+            if (eksternReferanseId != other.eksternReferanseId) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = templateDescription.hashCode()
+            result = 31 * result + dokumentDato.hashCode()
+            result = 31 * result + saksId.hashCode()
+            result = 31 * result + brevkode.hashCode()
+            result = 31 * result + enhetId.hashCode()
+            result = 31 * result + pdf.contentHashCode()
+            result = 31 * result + eksternReferanseId.hashCode()
+            return result
+        }
+    }
+
+    data class BestillBrevResponse(
+        val journalpostId: Long?,
+        val error: Error?,
+    ) {
+        data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
+    }
 }

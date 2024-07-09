@@ -11,12 +11,13 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
+import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brevbaker.api.model.Felles
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -91,12 +92,12 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun bestillExstreamBrev(
         call: ApplicationCall,
         bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
-    ): ServiceResult<Pen.BestillExstreamBrevResponse> =
+    ): ServiceResult<BestillExstreamBrevResponse> =
         client.post(call, "brev/pjoark030/bestillbrev") {
             setBody(bestillExstreamBrevRequest)
             contentType(ContentType.Application.Json)
         }.toServiceResult {
-            it.body<Pen.BestillExstreamBrevResponse.Error>().let { error ->
+            it.body<BestillExstreamBrevResponse.Error>().let { error ->
                 ServiceResult.Error("${error.type}: ${error.message}", HttpStatusCode.InternalServerError)
             }
         }
@@ -121,8 +122,22 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun hentIsKravPaaGammeltRegelverk(call: ApplicationCall, vedtaksId: String): ServiceResult<Boolean> =
         client.get(call, "brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 
-    suspend fun hentPesysBrevdata(call: ApplicationCall, saksId: Long, brevkode: Brevkode.Redigerbar): ServiceResult<BrevdataResponse> =
-        client.get(call, "brev/skribenten/sak/$saksId/brevdata/${brevkode.name}").toServiceResult<BrevdataResponse>(::handlePenErrorResponse)
+    suspend fun hentPesysBrevdata(call: ApplicationCall, saksId: Long, brevkode: Brevkode.Redigerbar, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse> =
+        client.get(call, "brev/skribenten/sak/$saksId/brevdata/${brevkode.name}") {
+            parameters {
+                if (avsenderEnhetsId != null) append("enhetsId", avsenderEnhetsId)
+            }
+        }.toServiceResult<BrevdataResponse>(::handlePenErrorResponse)
+
+    suspend fun sendbrev(
+        call: ApplicationCall,
+        sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
+    ): ServiceResult<Pen.BestillBrevResponse> =
+        client.post(call, "brev/skribenten/sendbrev") {
+            setBody(sendRedigerbartBrevRequest)
+            contentType(ContentType.Application.Json)
+        }.toServiceResult<Pen.BestillBrevResponse>(::handlePenErrorResponse)
+
 
     private data class BestillDoksysBrevRequest(
         val saksId: Long,
