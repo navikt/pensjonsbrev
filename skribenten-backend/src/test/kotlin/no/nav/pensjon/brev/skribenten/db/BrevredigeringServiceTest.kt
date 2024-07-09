@@ -81,28 +81,25 @@ class BrevredigeringServiceTest {
     private val penService: PenService = mockk {
         coEvery { hentPesysBrevdata(any(), eq(sak.saksId), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any()) } returns
                 ServiceResult.Ok(
-                    BrevdataResponse(
-                        data = BrevdataResponse.Data(
-                            felles = Felles(
-                                dokumentDato = LocalDate.now(),
-                                saksnummer = sak.saksId.toString(),
-                                avsenderEnhet = NAVEnhet(
-                                    nettside = "nav.no",
-                                    navn = "en fantastisk enhet",
-                                    telefonnummer = Telefonnummer("12345678")
-                                ),
-                                bruker = Bruker(
-                                    foedselsnummer = Foedselsnummer("12345678910"),
-                                    fornavn = "Navn",
-                                    mellomnavn = null,
-                                    etternavn = "Navnesen"
-                                ),
-                                vergeNavn = null,
-                                signerendeSaksbehandlere = null,
-                            ), brevdata = Api.GeneriskBrevdata()
-                        ),
-                        error = null
-                    )
+                    BrevdataResponse.Data(
+                        felles = Felles(
+                            dokumentDato = LocalDate.now(),
+                            saksnummer = sak.saksId.toString(),
+                            avsenderEnhet = NAVEnhet(
+                                nettside = "nav.no",
+                                navn = "en fantastisk enhet",
+                                telefonnummer = Telefonnummer("12345678")
+                            ),
+                            bruker = Bruker(
+                                foedselsnummer = Foedselsnummer("12345678910"),
+                                fornavn = "Navn",
+                                mellomnavn = null,
+                                etternavn = "Navnesen"
+                            ),
+                            vergeNavn = null,
+                            signerendeSaksbehandlere = null,
+                        ), brevdata = Api.GeneriskBrevdata()
+                    ),
                 )
     }
     private val navAnsattService = mockk<NavansattService> {
