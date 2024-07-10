@@ -110,7 +110,7 @@ object BarnepensjonInnvilgelseFraser {
             paragraph {
                 text(
                     Language.Bokmal to "Barnepensjon gis på bakgrunn av at",
-                    Language.Nynorsk to "Barnepensjon blir innvilga på bakgrunn av at",
+                    Language.Nynorsk to "Du kan få barnepensjon når",
                     Language.English to "The children’s pension has been granted because",
                 )
                 list {
