@@ -133,7 +133,6 @@ export function SelectLayoutWrapper({
           gap: var(--a-spacing-2);
         `}
         htmlFor={htmlFor}
-        size="small"
       >
         {label}
         {helpText ? (
