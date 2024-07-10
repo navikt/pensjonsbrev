@@ -134,31 +134,20 @@ class BrevredigeringService(
         sak: Pen.SakSelection,
         saksbehandlerValg: BrevbakerBrevdata,
         avsenderEnhetsId: String?,
-    ): ServiceResult<LetterMarkup> {
-        val pesysData = hentPesysData(call = call, brevkode = brevkode, saksId = sak.saksId, avsenderEnhetsId = avsenderEnhetsId)
-
-        return brevbakerService.renderMarkup(
-            call = call,
-            brevkode = brevkode,
-            spraak = spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = saksbehandlerValg,
-            ),
-            felles = pesysData.felles
-        )
-    }
-
-    private suspend fun hentPesysData(call: ApplicationCall, brevkode: Brevkode.Redigerbar, saksId: Long, avsenderEnhetsId: String?): BrevdataResponse.Data =
-        when (val response = penService.hentPesysBrevdata(call, saksId, brevkode, avsenderEnhetsId)) {
-            is ServiceResult.Ok -> {
-                response.result.data ?: throw BrevbakerServiceException("Brevdata fra PEN var tom. error: ${response.result.error}")
+    ): ServiceResult<LetterMarkup> =
+        penService.hentPesysBrevdata(call = call, saksId = sak.saksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
+            .then { pesysData ->
+                brevbakerService.renderMarkup(
+                    call = call,
+                    brevkode = brevkode,
+                    spraak = spraak,
+                    brevdata = GeneriskRedigerbarBrevdata(
+                        pesysData = pesysData.brevdata,
+                        saksbehandlerValg = saksbehandlerValg,
+                    ),
+                    felles = pesysData.felles
+                )
             }
-
-            is ServiceResult.Error -> {
-                throw BrevbakerServiceException(response.error)
-            }
-        }
 
     private suspend fun <T> harTilgangTilEnhet(call: ApplicationCall, enhetsId: String?, then: suspend () -> ServiceResult<T>): ServiceResult<T> =
         (enhetsId?.let { navansattService.harTilgangTilEnhet(call, call.principal().navIdent, it) } ?: ServiceResult.Ok(true))
@@ -172,30 +161,30 @@ class BrevredigeringService(
         val brevredigering = transaction { Brevredigering.findById(brevId) }
 
         return if (brevredigering != null) {
-            val pesysData = hentPesysData(
+            penService.hentPesysBrevdata(
                 call = call,
-                brevkode = brevredigering.brevkode,
                 saksId = brevredigering.saksId,
-                avsenderEnhetsId = brevredigering.avsenderEnhetId,
-            )
-
-            brevbakerService.renderPdf(
-                call = call,
                 brevkode = brevredigering.brevkode,
-                spraak = brevredigering.spraak,
-                brevdata = GeneriskRedigerbarBrevdata(
-                    pesysData = pesysData.brevdata,
-                    saksbehandlerValg = brevredigering.saksbehandlerValg,
-                ),
-                felles = pesysData.felles,
-                redigertBrev = brevredigering.redigertBrev.toMarkup()
-            ).map {
-                transaction {
-                    Document.new {
-                        this.brevredigering = brevredigering
-                        pdf = ExposedBlob(it.file)
-                        dokumentDato = pesysData.felles.dokumentDato
-                    }.pdf.bytes
+                avsenderEnhetsId = brevredigering.avsenderEnhetId
+            ).then { pesysData ->
+                brevbakerService.renderPdf(
+                    call = call,
+                    brevkode = brevredigering.brevkode,
+                    spraak = brevredigering.spraak,
+                    brevdata = GeneriskRedigerbarBrevdata(
+                        pesysData = pesysData.brevdata,
+                        saksbehandlerValg = brevredigering.saksbehandlerValg,
+                    ),
+                    felles = pesysData.felles,
+                    redigertBrev = brevredigering.redigertBrev.toMarkup()
+                ).map {
+                    transaction {
+                        Document.new {
+                            this.brevredigering = brevredigering
+                            pdf = ExposedBlob(it.file)
+                            dokumentDato = pesysData.felles.dokumentDato
+                        }.pdf.bytes
+                    }
                 }
             }
         } else null

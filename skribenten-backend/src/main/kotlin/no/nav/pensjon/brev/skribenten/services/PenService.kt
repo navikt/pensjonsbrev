@@ -122,12 +122,23 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun hentIsKravPaaGammeltRegelverk(call: ApplicationCall, vedtaksId: String): ServiceResult<Boolean> =
         client.get(call, "brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 
-    suspend fun hentPesysBrevdata(call: ApplicationCall, saksId: Long, brevkode: Brevkode.Redigerbar, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse> =
+    suspend fun hentPesysBrevdata(call: ApplicationCall, saksId: Long, brevkode: Brevkode.Redigerbar, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> =
         client.get(call, "brev/skribenten/sak/$saksId/brevdata/${brevkode.name}") {
-            parameters {
-                if (avsenderEnhetsId != null) append("enhetsId", avsenderEnhetsId)
+            if (avsenderEnhetsId != null) {
+                url {
+                    parameters.append("enhetsId", avsenderEnhetsId)
+                }
             }
         }.toServiceResult<BrevdataResponse>(::handlePenErrorResponse)
+            .then {
+                if (it.error != null) {
+                    ServiceResult.Error(it.error, HttpStatusCode.InternalServerError)
+                } else if (it.data != null) {
+                    ServiceResult.Ok(it.data)
+                } else {
+                    ServiceResult.Error("Fikk hverken data eller feilmelding fra Pesys", HttpStatusCode.InternalServerError)
+                }
+            }
 
     suspend fun sendbrev(
         call: ApplicationCall,
@@ -159,4 +170,3 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
 data class BrevdataResponse(val data: Data?, val error: String? = null) {
     data class Data(val felles: Felles, val brevdata: Api.GeneriskBrevdata)
 }
-
