@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -48,7 +49,7 @@ class BrevredigeringService(
         mapper: Brevredigering.() -> T,
     ): ServiceResult<T> =
         harTilgangTilEnhet(call, avsenderEnhetsId) {
-            rendreBrev(call, brevkode, spraak, sak, saksbehandlerValg).map { letter ->
+            rendreBrev(call, brevkode, spraak, sak, saksbehandlerValg, avsenderEnhetsId).map { letter ->
                 transaction {
                     Brevredigering.new {
                         saksId = sak.saksId
@@ -72,29 +73,26 @@ class BrevredigeringService(
         call: ApplicationCall,
         sak: Pen.SakSelection,
         brevId: Long,
-        saksbehandlerValg: BrevbakerBrevdata,
-        redigertBrev: Edit.Letter,
+        nyeSaksbehandlerValg: BrevbakerBrevdata,
+        nyttRedigertbrev: Edit.Letter,
         mapper: Brevredigering.() -> T,
-    ): ServiceResult<T?> {
-        val eksisterende = transaction { Brevredigering.findById(brevId) }
+    ): ServiceResult<T>? =
+        newSuspendedTransaction {
+            val brevredigering = Brevredigering.findById(brevId)
 
-        return if (eksisterende != null) {
-            rendreBrev(call, eksisterende.brevkode, eksisterende.spraak, sak, saksbehandlerValg)
-                .map { redigertBrev.updateEditedLetter(it) }
-                .map { brev ->
-                    transaction {
-                        Brevredigering.findByIdAndUpdate(brevId) {
-                            it.redigertBrev = brev
-                            it.sistredigert = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-                            it.saksbehandlerValg = saksbehandlerValg
-                            it.sistRedigertAvNavIdent = call.principal().navIdent
-                        }?.mapper()
+            if (brevredigering != null) {
+                rendreBrev(call, brevredigering.brevkode, brevredigering.spraak, sak, nyeSaksbehandlerValg, brevredigering.avsenderEnhetId)
+                    .map { nyttRedigertbrev.updateEditedLetter(it) }
+                    .map { oppdatertBrev ->
+                        brevredigering.apply {
+                            redigertBrev = oppdatertBrev
+                            sistredigert = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+                            saksbehandlerValg = nyeSaksbehandlerValg
+                            sistRedigertAvNavIdent = call.principal().navIdent
+                        }.mapper()
                     }
-                }
-        } else {
-            ServiceResult.Error("Fant ikke brev med id: $brevId", HttpStatusCode.NotFound)
+            } else null
         }
-    }
 
     /**
      * Slett brev med id.
@@ -112,17 +110,15 @@ class BrevredigeringService(
         }
     }
 
-    suspend fun <T : Any> hentBrev(call: ApplicationCall, sak: Pen.SakSelection, brevId: Long, mapper: Brevredigering.() -> T): ServiceResult<T?> =
+    suspend fun <T : Any> hentBrev(call: ApplicationCall, sak: Pen.SakSelection, brevId: Long, mapper: Brevredigering.() -> T): ServiceResult<T>? =
         newSuspendedTransaction {
             val brev = Brevredigering.findById(brevId)
 
             if (brev != null) {
-                rendreBrev(call, brev.brevkode, brev.spraak, sak, brev.saksbehandlerValg)
+                rendreBrev(call, brev.brevkode, brev.spraak, sak, brev.saksbehandlerValg, brev.avsenderEnhetId)
                     .map { brev.redigertBrev.updateEditedLetter(it) }
                     .map { brev.apply { redigertBrev = it }.mapper() }
-            } else {
-                ServiceResult.Ok(null)
-            }
+            } else null
         }
 
     fun <T : Any> hentBrevForSak(saksId: Long, mapper: Brevredigering.() -> T): List<T> {
@@ -136,32 +132,22 @@ class BrevredigeringService(
         brevkode: Brevkode.Redigerbar,
         spraak: LanguageCode,
         sak: Pen.SakSelection,
-        saksbehandlerValg: BrevbakerBrevdata
-    ): ServiceResult<LetterMarkup> {
-        val pesysData = hentPesysData(call = call, brevkode = brevkode, saksId = sak.saksId)
-
-        return brevbakerService.renderMarkup(
-            call = call,
-            brevkode = brevkode,
-            spraak = spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = saksbehandlerValg,
-            ),
-            felles = pesysData.felles
-        )
-    }
-
-    private suspend fun hentPesysData(call: ApplicationCall, brevkode: Brevkode.Redigerbar, saksId: Long): BrevdataResponse.Data =
-        when (val response = penService.hentPesysBrevdata(call, saksId, brevkode)) {
-            is ServiceResult.Ok -> {
-                response.result.data ?: throw BrevbakerServiceException("Brevdata fra PEN var tom. error: ${response.result.error}")
+        saksbehandlerValg: BrevbakerBrevdata,
+        avsenderEnhetsId: String?,
+    ): ServiceResult<LetterMarkup> =
+        penService.hentPesysBrevdata(call = call, saksId = sak.saksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
+            .then { pesysData ->
+                brevbakerService.renderMarkup(
+                    call = call,
+                    brevkode = brevkode,
+                    spraak = spraak,
+                    brevdata = GeneriskRedigerbarBrevdata(
+                        pesysData = pesysData.brevdata,
+                        saksbehandlerValg = saksbehandlerValg,
+                    ),
+                    felles = pesysData.felles
+                )
             }
-
-            is ServiceResult.Error -> {
-                throw BrevbakerServiceException(response.error)
-            }
-        }
 
     private suspend fun <T> harTilgangTilEnhet(call: ApplicationCall, enhetsId: String?, then: suspend () -> ServiceResult<T>): ServiceResult<T> =
         (enhetsId?.let { navansattService.harTilgangTilEnhet(call, call.principal().navIdent, it) } ?: ServiceResult.Ok(true))
@@ -171,37 +157,37 @@ class BrevredigeringService(
                 } else ServiceResult.Error("Mangler tilgang til NavEnhet $enhetsId", HttpStatusCode.Forbidden)
             }
 
-    suspend fun ferdigstill(call: ApplicationCall, brevId: Long) {
-        val brevredigering = transaction { Brevredigering[brevId] }
+    suspend fun opprettPdf(call: ApplicationCall, brevId: Long): ServiceResult<ByteArray>? {
+        val brevredigering = transaction { Brevredigering.findById(brevId) }
 
-        val pesysData = hentPesysData(
-            call = call,
-            brevkode = brevredigering.brevkode,
-            saksId = brevredigering.saksId
-        )
-
-
-        brevbakerService.renderPdf(
-            call = call,
-            brevkode = brevredigering.brevkode,
-            spraak = brevredigering.spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = brevredigering.saksbehandlerValg,
-            ),
-            felles = pesysData.felles,
-            redigertBrev = brevredigering.redigertBrev.toMarkup()
-        ).onOk {
-            transaction {
-                Document.new {
-                    this.brevredigering = brevredigering
-                    pdf = ExposedBlob(it.file)
+        return if (brevredigering != null) {
+            penService.hentPesysBrevdata(
+                call = call,
+                saksId = brevredigering.saksId,
+                brevkode = brevredigering.brevkode,
+                avsenderEnhetsId = brevredigering.avsenderEnhetId
+            ).then { pesysData ->
+                brevbakerService.renderPdf(
+                    call = call,
+                    brevkode = brevredigering.brevkode,
+                    spraak = brevredigering.spraak,
+                    brevdata = GeneriskRedigerbarBrevdata(
+                        pesysData = pesysData.brevdata,
+                        saksbehandlerValg = brevredigering.saksbehandlerValg,
+                    ),
+                    felles = pesysData.felles,
+                    redigertBrev = brevredigering.redigertBrev.toMarkup()
+                ).map {
+                    transaction {
+                        Document.new {
+                            this.brevredigering = brevredigering
+                            pdf = ExposedBlob(it.file)
+                            dokumentDato = pesysData.felles.dokumentDato
+                        }.pdf.bytes
+                    }
                 }
             }
-        }.onError { error, statusCode ->
-            logger.error("En feil oppstod under rendering av PDF: $error", statusCode)
-            throw BrevbakerServiceException(error)
-        }
+        } else null
     }
 
     fun hentPdf(brevId: Long): ByteArray? {
@@ -210,4 +196,33 @@ class BrevredigeringService(
             brevredigering?.document?.firstOrNull()?.pdf?.bytes
         }
     }
+
+    suspend fun sendBrev(call: ApplicationCall, brevId: Long): ServiceResult<Pen.BestillBrevResponse>? =
+        newSuspendedTransaction {
+            val brevredigering = Brevredigering.findById(brevId)
+            val document = brevredigering?.document?.firstOrNull()
+
+            if (document != null) {
+                brevbakerService.getRedigerbarTemplate(call, brevredigering.brevkode).then {
+                    penService.sendbrev(
+                        call,
+                        SendRedigerbartBrevRequest(
+                            dokumentDato = document.dokumentDato,
+                            saksId = brevredigering.saksId,
+                            enhetId = brevredigering.avsenderEnhetId,
+                            templateDescription = it,
+                            brevkode = brevredigering.brevkode,
+                            pdf = document.pdf.bytes,
+                            eksternReferanseId = "skribenten:${brevredigering.id}",
+                        )
+                    )
+                }.onOk {
+                    if (it.journalpostId != null) {
+                        document.delete()
+                        brevredigering.delete()
+                    }
+                }
+            } else null
+        }
+
 }

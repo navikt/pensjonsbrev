@@ -1,3 +1,9 @@
+import type {
+  Identtype,
+  InnOgUtland,
+  Søketype,
+} from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/endreMottaker/EndreMottakerUtils";
+
 import type { Nullable } from "./Nullable";
 
 export type SakDto = {
@@ -119,10 +125,32 @@ export const FAILURE_TYPES = [
 
 export type FailureType = (typeof FAILURE_TYPES)[number];
 
-export type FinnSamhandlerRequestDto = {
-  navn: string;
+interface SamhandlerRequestBase {
   samhandlerType: SamhandlerTypeCode;
-};
+}
+
+export interface SamhandlerDirekteoppslagRequest extends SamhandlerRequestBase {
+  readonly type: Søketype.DIREKTE_OPPSLAG;
+  identtype: Identtype;
+  id: string;
+}
+
+export interface SamhandlerOrganisasjonsnavnRequest extends SamhandlerRequestBase {
+  readonly type: Søketype.ORGANISASJONSNAVN;
+  innlandUtland: InnOgUtland;
+  navn: string;
+}
+
+export interface SamhandlerPersonnavnRequest extends SamhandlerRequestBase {
+  readonly type: Søketype.PERSONNAVN;
+  fornavn: string;
+  etternavn: string;
+}
+
+export type FinnSamhandlerRequestDto =
+  | SamhandlerDirekteoppslagRequest
+  | SamhandlerOrganisasjonsnavnRequest
+  | SamhandlerPersonnavnRequest;
 
 export type HentSamhandlerRequestDto = {
   idTSSEkstern: string;
@@ -130,17 +158,22 @@ export type HentSamhandlerRequestDto = {
 };
 
 export type HentSamhandlerAdresseResponseDto = {
-  adresse: SamhandlerPostadresse;
+  adresse: Adresse;
   failureType?: string;
 };
-export type SamhandlerPostadresse = {
+
+/* 
+  vi har '2' typer adresser vi kan få. Denne, og KontaktAdresseResponse. Dette formatet brukes for samhandler / manuell, mens KontaktAdresseResponse brukes ved getKontaktAdresse
+  lage en type som omfatter begge - og rename denne? Eventuelt forholde oss til kun 1 adresseformat. 
+*/
+export type Adresse = {
   navn: string;
-  linje1?: string;
-  linje2?: string;
-  linje3?: string;
-  postnr?: string;
-  poststed?: string;
-  land?: string;
+  linje1: Nullable<string>;
+  linje2: Nullable<string>;
+  linje3: Nullable<string>;
+  postnr: Nullable<string>;
+  poststed: Nullable<string>;
+  land: Nullable<string>;
 };
 
 export type HentSamhandlerAdresseRequestDto = {
@@ -162,6 +195,7 @@ export type Samhandler = {
 
 export type FinnSamhandlerResponseDto = {
   samhandlere: Samhandler[];
+  failureType: Nullable<string>;
 };
 
 export enum SamhandlerTypeCode {

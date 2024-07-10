@@ -35,14 +35,12 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
             brevredigeringService.oppdaterBrev(call, sak, brevId, request.saksbehandlerValg, request.redigertBrev, ::mapBrev)
-                .onOk { brev ->
-                    if (brev == null) {
-                        call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
-                    } else call.respond(HttpStatusCode.OK, brev)
-                }.onError { message, statusCode ->
+                ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev)}
+                ?.onError { message, statusCode ->
                     call.application.log.error("$statusCode - Feil ved oppdatering av brev ${brevId}: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
                 }
+                ?: call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
         }
 
         delete("/{brevId}") {
@@ -60,16 +58,13 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
             brevredigeringService.hentBrev(call, sak, brevId, ::mapBrev)
-                .onOk { brev ->
-                    if (brev != null) {
-                        call.respond(HttpStatusCode.OK, brev)
-                    } else {
-                        call.respond(HttpStatusCode.NotFound, "Brev not found")
-                    }
-                }.onError { message, statusCode ->
+                ?.onOk { brev ->
+                    call.respond(HttpStatusCode.OK, brev)
+                }?.onError { message, statusCode ->
                     call.application.log.error("$statusCode - Feil ved oppdatering av brev: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
                 }
+                ?: call.respond(HttpStatusCode.NotFound, "Brev not found")
         }
 
         get {
@@ -81,21 +76,31 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             )
         }
 
-        post("/{brevId}/ferdigstill") {
+        post("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
 
-            brevredigeringService.ferdigstill(call, brevId)
-            call.respond(HttpStatusCode.OK)
+            brevredigeringService.opprettPdf(call, brevId)
+                ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.Created) }
+                ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev: $brevId")
         }
 
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val pdf = brevredigeringService.hentPdf(brevId)
             if (pdf != null) {
-                call.respond(HttpStatusCode.OK, pdf)
+                call.respondBytes(pdf, ContentType.Application.Pdf, HttpStatusCode.OK)
             } else {
                 call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
             }
+        }
+
+        post("/{brevId}/pdf/send") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            brevredigeringService.sendBrev(call, brevId)
+                ?.onOk { call.respond(HttpStatusCode.OK, it) }
+                ?.onError { error, _ -> call.respond(HttpStatusCode.InternalServerError, error) }
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
         }
     }
 

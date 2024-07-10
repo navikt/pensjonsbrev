@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -31,18 +33,12 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
 
     suspend fun finnSamhandler(
         call: ApplicationCall,
-        samhandlerType: SamhandlerTypeCode,
-        navn: String
+        requestDto: FinnSamhandlerRequestDto,
     ): FinnSamhandlerResponseDto =
         tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(
-                FinnSamhandlerRequestDto(
-                    navn = navn,
-                    samhandlerType = SamhandlerTypeCode.valueOf(samhandlerType.name)
-                )
-            )
+            setBody(jacksonObjectMapper().writeValueAsString(requestDto))
         }.toServiceResult<FinnSamhandlerResponseDto>()
             .catch { message, status ->
                 logger.error("Feil ved samhandler søk. Status: $status Melding: $message")

@@ -27,9 +27,12 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SchemaUtils.withDataBaseLock
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.json.json
+import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Suppress("unused")
@@ -51,8 +54,6 @@ object BrevredigeringTable : LongIdTable() {
     val brevkode: ColumnWithTransform<String, Brevkode.Redigerbar> = varchar("brevkode", length = 50)
         .transform(Brevkode.Redigerbar::name, Brevkode.Redigerbar::valueOf)
     val spraak: ColumnWithTransform<String, LanguageCode> = varchar("spraak", length = 50)
-        // TODO: Fjern default value etter at skjema er oppdatert oppdatering
-        .default(LanguageCode.BOKMAL.name)
         .transform(LanguageCode::name, LanguageCode::valueOf)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", objectMapper::writeValueAsString, objectMapper::readValue)
@@ -85,13 +86,15 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
 }
 
 object DocumentTable : LongIdTable() {
-    val pdf = blob("brevpdf")
-    val brevredigering = reference("brevredigering", BrevredigeringTable.id)
+    val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id)
+    val dokumentDato: Column<LocalDate> = date("dokumentDato")
+    val pdf: Column<ExposedBlob> = blob("brevpdf")
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
-    var pdf by DocumentTable.pdf
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
+    var dokumentDato by DocumentTable.dokumentDato
+    var pdf by DocumentTable.pdf
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }

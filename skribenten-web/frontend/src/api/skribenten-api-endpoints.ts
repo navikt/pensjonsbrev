@@ -173,7 +173,7 @@ function convertBestillOgRedigerBrevResponse(response: AxiosResponse<BestillOgRe
   return url;
 }
 
-export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
+export async function finnSamhandler(request: FinnSamhandlerRequestDto): Promise<FinnSamhandlerResponseDto> {
   return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
 }
 
@@ -204,6 +204,12 @@ export const hentSamhandlerAdresse = {
 
     return response.data.adresse;
   },
+};
+
+export const hentLandForManuellUtfyllingAvAdresse = {
+  queryKey: ["LANDKODER_OG_NAVN"],
+  queryFn: async () =>
+    (await axios.get<Array<{ kode: string; navn: string }>>(`${SKRIBENTEN_API_BASE_PATH}/land`)).data,
 };
 
 function convertResponseToAxiosError({ message, response }: { message: string; response: AxiosResponse }) {

@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.core.JacksonException
 import com.typesafe.config.Config
 import io.ktor.http.*
@@ -21,6 +23,8 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhand
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.PsakSamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerClientFactory
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.Identtype
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.InnlandUtland
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.SamhandlerTypeCode
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.setupServiceStatus
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
@@ -78,8 +82,14 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
         val servicesConfig = config.getConfig("services")
         val psakSamhandlerTjenestebussService =
-            PsakSamhandlerTjenestebussService(PsakSamhandlerClientFactory(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler))
-        val samhandlerService = SamhandlerService(SamhandlerClientFactory(servicesConfig.getConfig("samhandlerService")))
+            PsakSamhandlerTjenestebussService(
+                PsakSamhandlerClientFactory(
+                    servicesConfig.getConfig("tjenestebuss"),
+                    stsSercuritySOAPHandler
+                )
+            )
+        val samhandlerService =
+            SamhandlerService(SamhandlerClientFactory(servicesConfig.getConfig("samhandlerService")))
 
 
         get("/isAlive") {
@@ -104,7 +114,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 val requestDto = call.receive<HentSamhandlerRequestDto>()
                 call.respond(withCallId(psakSamhandlerTjenestebussService) { hentSamhandler(requestDto) })
             }
-            post("/hentSamhandlerAdresse"){
+            post("/hentSamhandlerAdresse") {
                 val requestDto = call.receive<HentSamhandlerAdresseRequestDto>()
                 call.respond(withCallId(samhandlerService) { hentSamhandlerPostadresse(requestDto.idTSSEkstern) })
             }
@@ -125,7 +135,31 @@ data class HentSamhandlerAdresseRequestDto(
     val idTSSEkstern: String,
 )
 
-data class FinnSamhandlerRequestDto(
-    val navn: String,
-    val samhandlerType: SamhandlerTypeCode,
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.DirekteOppslag::class, name = "DIREKTE_OPPSLAG"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Organisasjonsnavn::class, name = "ORGANISASJONSNAVN"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Personnavn::class, name = "PERSONNAVN"),
 )
+sealed class FinnSamhandlerRequestDto {
+    abstract val samhandlerType: SamhandlerTypeCode
+
+    data class DirekteOppslag(
+        val identtype: Identtype,
+        val id: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+
+    data class Organisasjonsnavn(
+        val innlandUtland: InnlandUtland,
+        val navn: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+
+    data class Personnavn(
+        val fornavn: String,
+        val etternavn: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+}
+

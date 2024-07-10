@@ -28,7 +28,7 @@ export function SamhandlerTypeSelectFormPart({
   );
 }
 
-function SamhandlerTypeSelect({
+export function SamhandlerTypeSelect({
   description,
   onChange,
   error,
@@ -37,7 +37,7 @@ function SamhandlerTypeSelect({
   onChange: (s: string | undefined) => void;
   description?: string;
   error?: FieldError;
-  value?: string;
+  value: string;
 }) {
   const options = Object.entries(SAMHANDLER_ENUM_TO_TEXT).map(([value, label]) => ({ label, value }));
 
