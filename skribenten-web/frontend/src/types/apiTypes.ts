@@ -130,19 +130,19 @@ interface SamhandlerRequestBase {
 }
 
 export interface SamhandlerDirekteoppslagRequest extends SamhandlerRequestBase {
-  readonly søketype: Søketype.DIREKTE_OPPSLAG;
+  readonly type: Søketype.DIREKTE_OPPSLAG;
   identtype: Identtype;
   id: string;
 }
 
 export interface SamhandlerOrganisasjonsnavnRequest extends SamhandlerRequestBase {
-  readonly søketype: Søketype.ORGANISASJONSNAVN;
+  readonly type: Søketype.ORGANISASJONSNAVN;
   innlandUtland: InnOgUtland;
   navn: string;
 }
 
 export interface SamhandlerPersonnavnRequest extends SamhandlerRequestBase {
-  readonly søketype: Søketype.PERSONNAVN;
+  readonly type: Søketype.PERSONNAVN;
   fornavn: string;
   etternavn: string;
 }
