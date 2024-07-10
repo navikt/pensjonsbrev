@@ -101,7 +101,7 @@ const EndreMottakerModal = (properties: {
       }
       case Søketype.DIREKTE_OPPSLAG: {
         return finnSamhandlerMutation.mutate({
-          type: "DirekteOppslag",
+          søketype: Søketype.DIREKTE_OPPSLAG,
           samhandlerType: values.samhandlerType!,
           identtype: values.direkteOppslag.identtype!,
           id: values.direkteOppslag.id!,
@@ -109,7 +109,7 @@ const EndreMottakerModal = (properties: {
       }
       case Søketype.ORGANISASJONSNAVN: {
         return finnSamhandlerMutation.mutate({
-          type: "Organisasjonsnavn",
+          søketype: Søketype.ORGANISASJONSNAVN,
           samhandlerType: values.samhandlerType!,
           innlandUtland: values.organisasjonsnavn.innOgUtland!,
           navn: values.organisasjonsnavn.navn!,
@@ -117,7 +117,7 @@ const EndreMottakerModal = (properties: {
       }
       case Søketype.PERSONNAVN: {
         return finnSamhandlerMutation.mutate({
-          type: "Personnavn",
+          søketype: Søketype.PERSONNAVN,
           samhandlerType: values.samhandlerType!,
           fornavn: values.personnavn.fornavn!,
           etternavn: values.personnavn.etternavn!,

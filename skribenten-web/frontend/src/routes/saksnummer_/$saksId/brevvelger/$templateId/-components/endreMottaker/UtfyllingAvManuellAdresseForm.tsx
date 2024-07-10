@@ -16,7 +16,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   onSubmit: () => void;
   onCloseIntent: () => void;
 }) => {
-  const hentAdresserQuery = useQuery({
+  const hentLand = useQuery({
     queryKey: hentLandForManuellUtfyllingAvAdresse.queryKey,
     queryFn: () => hentLandForManuellUtfyllingAvAdresse.queryFn(),
   });
@@ -117,15 +117,15 @@ const UtfyllingAvManuellAdresseForm = (properties: {
         </HStack>
 
         <div>
-          {hentAdresserQuery.isLoading && <BodyShort>Laster inn land...</BodyShort>}
+          {hentLand.isLoading && <BodyShort>Laster inn land...</BodyShort>}
           {/* TODO - hvis en eller annen feil skjer, vil vi gi dem et input felt der dem kan skrive in koden selv? */}
-          {hentAdresserQuery.isError && <BodyShort>Kunne ikke laste inn land</BodyShort>}
-          {hentAdresserQuery.isSuccess && (
+          {hentLand.isError && <BodyShort>Kunne ikke laste inn land</BodyShort>}
+          {hentLand.isSuccess && (
             <Controller
               control={properties.control}
               name="manuellAdresse.adresse.land"
               render={({ field, fieldState }) => {
-                const options = hentAdresserQuery.data
+                const options = hentLand.data
                   .toSorted((a, b) => (a.navn > b.navn ? 1 : -1))
                   .map((land) => ({ label: land.navn, value: land.kode }));
 

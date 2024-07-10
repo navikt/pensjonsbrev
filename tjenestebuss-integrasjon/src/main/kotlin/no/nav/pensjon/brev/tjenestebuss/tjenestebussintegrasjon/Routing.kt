@@ -137,9 +137,9 @@ data class HentSamhandlerAdresseRequestDto(
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
-    JsonSubTypes.Type(FinnSamhandlerRequestDto.DirekteOppslag::class, name = "DirekteOppslag"),
-    JsonSubTypes.Type(FinnSamhandlerRequestDto.Organisasjonsnavn::class, name = "Organisasjonsnavn"),
-    JsonSubTypes.Type(FinnSamhandlerRequestDto.Personnavn::class, name = "Personnavn"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.DirekteOppslag::class, name = "DIREKTE_OPPSLAG"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Organisasjonsnavn::class, name = "ORGANISASJONSNAVN"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Personnavn::class, name = "PERSONNAVN"),
 )
 sealed class FinnSamhandlerRequestDto {
     abstract val samhandlerType: SamhandlerTypeCode

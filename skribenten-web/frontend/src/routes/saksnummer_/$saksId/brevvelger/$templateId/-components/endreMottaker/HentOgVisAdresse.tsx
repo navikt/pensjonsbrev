@@ -49,7 +49,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
       {properties.samhandlerId && (
         <div>
           {hentSamhandlerAdresseQuery.isPending && <BodyShort>Henter...</BodyShort>}
-          {hentSamhandlerAdresseQuery.data && (
+          {hentSamhandlerAdresseQuery.isSuccess && (
             <MottakerAdresseOppsummering adresse={hentSamhandlerAdresseQuery.data} erSamhandler />
           )}
           {hentSamhandlerAdresseQuery.error && (

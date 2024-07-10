@@ -1,6 +1,7 @@
 import type {
   Identtype,
   InnOgUtland,
+  Søketype,
 } from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/endreMottaker/EndreMottakerUtils";
 
 import type { Nullable } from "./Nullable";
@@ -129,19 +130,19 @@ interface SamhandlerRequestBase {
 }
 
 export interface SamhandlerDirekteoppslagRequest extends SamhandlerRequestBase {
-  readonly type: "DirekteOppslag";
+  readonly søketype: Søketype.DIREKTE_OPPSLAG;
   identtype: Identtype;
   id: string;
 }
 
 export interface SamhandlerOrganisasjonsnavnRequest extends SamhandlerRequestBase {
-  readonly type: "Organisasjonsnavn";
+  readonly søketype: Søketype.ORGANISASJONSNAVN;
   innlandUtland: InnOgUtland;
   navn: string;
 }
 
 export interface SamhandlerPersonnavnRequest extends SamhandlerRequestBase {
-  readonly type: "Personnavn";
+  readonly søketype: Søketype.PERSONNAVN;
   fornavn: string;
   etternavn: string;
 }
