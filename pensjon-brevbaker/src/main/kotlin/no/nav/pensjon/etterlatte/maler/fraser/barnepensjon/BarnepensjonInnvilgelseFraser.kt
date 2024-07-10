@@ -60,7 +60,7 @@ object BarnepensjonInnvilgelseFraser {
                         textExpr(
                             Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ".",
                             Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ".",
-                            Language.English to "You will receive ".expr() + formatertBeloep + " kroner each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + "."
+                            Language.English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + "."
                         )
                     }.orShow {
                         textExpr(

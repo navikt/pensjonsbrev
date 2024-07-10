@@ -290,10 +290,10 @@ object BarnepensjonFellesFraser {
                             "“Informasjon til deg som mottar barnepensjon”.",
                         Nynorsk to
                             "Du kan lese meir om skattetrekk i vedlegget " +
-                            "«Informasjon til deg som får barnepensjon»",
+                            "«Informasjon til deg som får barnepensjon».",
                         English to
                             "You can read more about voluntary withholding tax and tax in the appendix, " +
-                            "Information to recipients of children’s pensions. ",
+                            "Information to recipients of children’s pensions.",
                     )
                 }
             }
