@@ -256,7 +256,7 @@ describe("Brevvelger spec", () => {
           samhandlerType: "ADVO",
           identtype: "ORG",
           id: "direkte-oppslag-id",
-          type: "DirekteOppslag",
+          søketype: "DIREKTE_OPPSLAG",
         });
         request.reply({ fixture: "finnSamhandler.json" });
       }).as("finnSamhandler");
@@ -322,7 +322,7 @@ describe("Brevvelger spec", () => {
           samhandlerType: "ADVO",
           innlandUtland: "ALLE",
           navn: "navnet på samhandler",
-          type: "Organisasjonsnavn",
+          søketype: "ORGANISASJONSNAVN",
         });
         request.reply({ fixture: "finnSamhandler.json" });
       }).as("finnSamhandler");
@@ -371,7 +371,7 @@ describe("Brevvelger spec", () => {
           samhandlerType: "ADVO",
           fornavn: "Fornavnet",
           etternavn: "Etternavnet",
-          type: "Personnavn",
+          søketype: "PERSONNAVN",
         });
         request.reply({ fixture: "finnSamhandler.json" });
       }).as("finnSamhandler");
