@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+
 data class FinnSamhandlerResponseDto(val samhandlere: List<Samhandler>, val failureType: String?) {
     constructor(samhandlere: List<Samhandler>) : this(samhandlere, null)
     constructor(failure: String) : this(emptyList(), failure)
@@ -13,11 +16,34 @@ data class FinnSamhandlerResponseDto(val samhandlere: List<Samhandler>, val fail
     )
 }
 
-class FinnSamhandlerRequestDto(
-    val navn: String,
-    val samhandlerType: SamhandlerTypeCode,
-)
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.DirekteOppslag::class, name = "DIREKTE_OPPSLAG"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Organisasjonsnavn::class, name = "ORGANISASJONSNAVN"),
+    JsonSubTypes.Type(FinnSamhandlerRequestDto.Personnavn::class, name = "PERSONNAVN"),
+)
+sealed class FinnSamhandlerRequestDto {
+    abstract val samhandlerType: SamhandlerTypeCode
+
+    data class DirekteOppslag(
+        val identtype: String,
+        val id: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+
+    data class Organisasjonsnavn(
+        val innlandUtland: String,
+        val navn: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+
+    data class Personnavn(
+        val fornavn: String,
+        val etternavn: String,
+        override val samhandlerType: SamhandlerTypeCode
+    ) : FinnSamhandlerRequestDto()
+}
 
 enum class SamhandlerTypeCode {
     AA,    // Ambulansearbeider
