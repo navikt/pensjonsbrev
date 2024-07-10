@@ -89,7 +89,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
           display: flex;
           padding: var(--a-spacing-2) var(--a-spacing-8);
           align-items: center;
-          border-bottom: 1px solid var(--a-gray-400);
+          border-bottom: 1px solid var(--a-gray-200);
           background: var(--a-surface-default);
 
           span {

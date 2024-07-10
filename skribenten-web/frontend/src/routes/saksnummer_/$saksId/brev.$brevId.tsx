@@ -49,12 +49,12 @@ const RedigerBrev = ({ brev, saksId }: { brev: BrevResponse; saksId: string }) =
         display: grid;
         grid-template-columns: minmax(380px, 400px) 1fr;
         flex: 1;
-        border-left: 1px solid var(--a-gray-400);
-        border-right: 1px solid var(--a-gray-400);
+        border-left: 1px solid var(--a-gray-200);
+        border-right: 1px solid var(--a-gray-200);
 
         > form:first-of-type {
           padding: var(--a-spacing-4);
-          border-right: 1px solid var(--a-gray-400);
+          border-right: 1px solid var(--a-gray-200);
         }
       `}
     >

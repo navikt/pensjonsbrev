@@ -29,7 +29,7 @@ function SelectEnhet() {
           replace: true,
         });
       }}
-      size="medium"
+      size="small"
       value={enhetsId}
     >
       <option value={""}>Velg enhet</option>

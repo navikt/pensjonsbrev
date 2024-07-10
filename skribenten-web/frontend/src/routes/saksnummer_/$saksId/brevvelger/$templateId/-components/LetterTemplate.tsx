@@ -6,7 +6,7 @@ import { BrevSystem, type LetterMetadata } from "~/types/apiTypes";
 export default function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
     <div>
-      <Heading level="2" size="medium">
+      <Heading level="2" size="small">
         {letterTemplate.name}
       </Heading>
       <div

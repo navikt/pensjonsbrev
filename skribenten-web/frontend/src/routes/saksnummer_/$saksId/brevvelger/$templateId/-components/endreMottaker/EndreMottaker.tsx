@@ -163,6 +163,9 @@ const EndreMottakerModal = (properties: {
 
   return (
     <Modal
+      css={css`
+        border-radius: 0.25rem;
+      `}
       data-cy="endre-mottaker-modal"
       header={{
         heading: vilAvbryte && form.formState.isDirty ? "Vil du avbryte endring av mottaker?" : "Endre mottaker",
@@ -243,7 +246,7 @@ const ModalTabs = (properties: {
           <Tabs.List>
             <Tabs.Tab label="Finn samhandler" value="samhandler" />
             {/* Vi har enda ikke backend støtte for å legge til manuell adresse. Midlertidig har vi bare fjernet muligheten til å komme inn i formet */}
-            {/* <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" /> */}
+            <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
           </Tabs.List>
           <div
             css={css`

@@ -117,9 +117,9 @@ const UtfyllingAvManuellAdresseForm = (properties: {
         </HStack>
 
         <div>
-          {hentLand.isLoading && <BodyShort>Laster inn land...</BodyShort>}
+          {hentLand.isLoading && <BodyShort size="small">Laster inn land...</BodyShort>}
           {/* TODO - hvis en eller annen feil skjer, vil vi gi dem et input felt der dem kan skrive in koden selv? */}
-          {hentLand.isError && <BodyShort>Kunne ikke laste inn land</BodyShort>}
+          {hentLand.isError && <BodyShort size="small">Kunne ikke laste inn land</BodyShort>}
           {hentLand.isSuccess && (
             <Controller
               control={properties.control}
