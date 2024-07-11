@@ -122,3 +122,26 @@ fun FUNKSJON_PE_UT_TBU056V(
                 and PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT.notEqualTo(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT)
                 )
     ) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak)
+
+fun FUNKSJON_PE_UT_TBU056V_51(
+    PE_pebrevkode: Expression<String>,
+    PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String>,
+    PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT: Expression<Kroner>,
+    PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT: Expression<Kroner>,
+    PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense: Expression<Double>,
+    PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak: Expression<Double>,
+    PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP: Expression<Boolean>,
+) =(
+        PE_pebrevkode.equalTo("PE_UT_04_102")
+                or PE_pebrevkode.equalTo("PE_UT_04_116")
+                or PE_pebrevkode.equalTo("PE_UT_04_101")
+                or PE_pebrevkode.equalTo("PE_UT_04_114")
+                or PE_pebrevkode.equalTo("PE_UT_04_300")
+                or PE_pebrevkode.equalTo("PE_UT_14_300")
+                or PE_pebrevkode.equalTo("PE_UT_04_500")
+                or (PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")
+                and PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT.notEqualTo(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT)
+                )
+        ) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and
+        PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP and
+        PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak)
