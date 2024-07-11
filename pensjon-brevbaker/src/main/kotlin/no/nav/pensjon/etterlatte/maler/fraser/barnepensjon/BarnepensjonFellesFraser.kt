@@ -297,11 +297,6 @@ object BarnepensjonFellesFraser {
                     )
                 }
             }
-            showIf(etterbetaling.notNull()) {
-                showIf(etterbetaling.inneholderKrav_safe.equalTo(false)){
-                    includePhrase(HvorLengeKanDuFaaBarnepensjon)
-                }
-            }
         }
     }
 }
