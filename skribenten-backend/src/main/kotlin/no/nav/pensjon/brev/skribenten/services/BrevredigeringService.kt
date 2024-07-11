@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Document
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
@@ -17,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -179,11 +181,13 @@ class BrevredigeringService(
                     redigertBrev = brevredigering.redigertBrev.toMarkup()
                 ).map {
                     transaction {
-                        Document.new {
+                        val update: Document.() -> Unit = {
                             this.brevredigering = brevredigering
                             pdf = ExposedBlob(it.file)
                             dokumentDato = pesysData.felles.dokumentDato
-                        }.pdf.bytes
+                        }
+                        Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevId, update)?.pdf?.bytes
+                            ?: Document.new(update).pdf.bytes
                     }
                 }
             }
