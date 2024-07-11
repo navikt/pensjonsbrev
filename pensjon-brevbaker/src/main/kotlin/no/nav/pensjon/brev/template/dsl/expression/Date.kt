@@ -13,7 +13,17 @@ private object LocalDateSelectors {
         override val propertyType = "Int"
         override val selector = LocalDate::getYear
     }
+    val monthSelector = object : TemplateModelSelector<LocalDate, Int> {
+        override val className = "java.time.LocalDate"
+        override val propertyName = "month"
+        override val propertyType = "Int"
+        override val selector = LocalDate::getMonthValue
+    }
+
 }
 
 val Expression<LocalDate>.year: Expression<Int>
     get() = select(LocalDateSelectors.yearSelector)
+
+val Expression<LocalDate>.month: Expression<Int>
+    get() = select(LocalDateSelectors.monthSelector)

@@ -47,7 +47,7 @@ fun createEndretUfoeretrygdPGAInntektDto() =
         harFlereSaerkullsbarn = true,
 
         beregningUfore_BelopGammelUT = Kroner(22),
-        beregningUfore_BelopNyUT = Kroner(22),
+        beregningUfore_BelopNyUT = Kroner(23),
         beregningUfore_BelopOkt = true,
         beregningUfore_BelopRedusert = true,
         beregningUfore_grunnbelop = Kroner(24),
@@ -61,7 +61,7 @@ fun createEndretUfoeretrygdPGAInntektDto() =
         gjenlevendetillegg_GTinnvilget = true,
         harInstitusjonsopphold = true,
         harKravaarsakSivilstandsendring = true,
-        uforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = 52,
+        uforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = 50,
         uforetrygdOrdiner_avkortingsbelopPerAr = Kroner(26),
         uforetrygdOrdiner_forventetInntekt = Kroner(27),
         uforetrygdOrdiner_inntektsgrense = Kroner(28),
