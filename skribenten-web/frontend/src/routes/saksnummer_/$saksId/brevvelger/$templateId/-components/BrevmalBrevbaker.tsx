@@ -52,7 +52,7 @@ const BrevmalBrevbaker = (properties: {
             });
           })}
         >
-          <VStack gap="8">
+          <VStack gap="10">
             <HentOgVisAdresse sakId={saksId} />
             <SelectLanguage
               preferredLanguage={properties.preferredLanguage}

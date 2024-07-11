@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyShort, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, Label, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getKontaktAdresse, getNavn, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
@@ -34,11 +34,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
         }
       `}
     >
-      {properties.showMottakerTitle && (
-        <Heading level="3" size="xsmall">
-          Mottaker
-        </Heading>
-      )}
+      {properties.showMottakerTitle && <Label size="small">Mottaker</Label>}
       {!properties.samhandlerId && (
         <div>
           {adresseQuery.isSuccess && <MottakerAdresseOppsummering adresse={adresseQuery.data} erSamhandler={false} />}
