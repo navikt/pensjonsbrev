@@ -10,11 +10,17 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Var
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.testcontainers.shaded.com.google.errorprone.annotations.Var
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList as E_ItemList
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList.Item as E_Item
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table as E_Table
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.Cell as E_Cell
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.ColumnSpec as E_ColumnSpec
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.Header as E_Header
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.Row as E_Row
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable as E_Variable
 
@@ -287,13 +293,14 @@ class UpdateRenderedLetterTest {
     }
 
     @Test
-    fun `an edited block where type is changed from paragraph to title1 fail`() {
+    fun `an edited block where type is changed from paragraph to title1 then any fresh nontext content is ignored`() {
         val next = letter(
             Paragraph(
                 1, true, listOf(
                     Literal(1, "Noe tekst "),
                     Variable(2, "med en oppdatert variabel"),
                     Literal(3, " og noe mer tekst"),
+                    ItemList(4, listOf(Item(41, listOf(Literal(411, "en punktliste"))))),
                 )
             )
         )
@@ -306,7 +313,51 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        assertThrows<UpdateEditedLetterException> { edited.updateEditedLetter(next) }
+        val expected = editedLetter(
+            E_Title1(
+                1, true, listOf(
+                    E_Literal(1, "Noe tekst ", "Noe redigert tekst "),
+                    E_Variable(2, "med en oppdatert variabel"),
+                    E_Literal(3, " og noe mer tekst"),
+                )
+            ),
+        )
+        assertEquals(expected, edited.updateEditedLetter(next))
+    }
+
+
+    @Test
+    fun `an edited block where type is changed from paragraph to title1 can merge`() {
+        val next = letter(
+            Paragraph(
+                1, true, listOf(
+                    Literal(1, "Noe tekst "),
+                    Variable(2, "med en oppdatert variabel"),
+                    Literal(3, " og noe mer tekst"),
+                    Literal(4, " pluss noe ny tekst"),
+                )
+            )
+        )
+        val edited = editedLetter(
+            E_Title1(
+                1, true, listOf(
+                    E_Literal(1, "Noe tekst ", "Noe redigert tekst "),
+                    E_Variable(2, "med en variabel"),
+                    E_Literal(3, " og noe mer tekst"),
+                )
+            )
+        )
+        val expected = editedLetter(
+            E_Title1(
+                1, true, listOf(
+                    E_Literal(1, "Noe tekst ", "Noe redigert tekst "),
+                    E_Variable(2, "med en oppdatert variabel"),
+                    E_Literal(3, " og noe mer tekst"),
+                    E_Literal(4, " pluss noe ny tekst"),
+                )
+            )
+        )
+        assertEquals(expected, edited.updateEditedLetter(next))
     }
 
     @Test
@@ -725,6 +776,112 @@ class UpdateRenderedLetterTest {
                     E_Literal(14, "fjerde", "fjerdeEdited"),
                 )
             )
+        )
+        assertEquals(expected, edited.updateEditedLetter(next))
+    }
+
+    @Test
+    fun `variables moved to a new block will be updated to new value from rendered`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    Literal(11, "en literal"),
+                    Variable(12, "oppdatert variabel"),
+                    Variable(1311, "oppdatert variabel 2"),
+                    Variable(141111, "oppdatert variabel 3"),
+                    Variable(14211, "oppdatert variabel 4"),
+                )
+            )
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                null, true,
+                listOf(
+                    E_Literal(11, "en literal"),
+                    E_Variable(12, "en variabel"),
+                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "variabel 2"))))),
+                    E_Table(
+                        id = 14,
+                        header = E_Header(
+                            141,
+                            colSpec = listOf(
+                                E_ColumnSpec(
+                                    1411,
+                                    E_Cell(14111, listOf(E_Variable(141111, "variabel 3"))),
+                                    Edit.ParagraphContent.Table.ColumnAlignment.LEFT,
+                                    1
+                                )
+                            )
+                        ),
+                        rows = listOf(E_Row(142, listOf(E_Cell(1421, listOf(E_Variable(14211, "variabel 4")))))),
+                    )
+                )
+            ),
+            E_Title1(null, true, listOf(E_Variable(1311, "variabel 2"))),
+            E_Title2(null, true, listOf(E_Variable(14211, "variabel 4"))),
+            deleted = setOf(1),
+        )
+        val expected = editedLetter(
+            E_Paragraph(
+                null, true,
+                listOf(
+                    E_Literal(11, "en literal"),
+                    E_Variable(12, "oppdatert variabel"),
+                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "oppdatert variabel 2"))))),
+                    E_Table(
+                        id = 14,
+                        header = E_Header(
+                            141,
+                            colSpec = listOf(
+                                E_ColumnSpec(
+                                    1411,
+                                    E_Cell(14111, listOf(E_Variable(141111, "oppdatert variabel 3"))),
+                                    Edit.ParagraphContent.Table.ColumnAlignment.LEFT,
+                                    1
+                                )
+                            )
+                        ),
+                        rows = listOf(E_Row(142, listOf(E_Cell(1421, listOf(E_Variable(14211, "oppdatert variabel 4")))))),
+                    )
+                )
+            ),
+            E_Title1(null, true, listOf(E_Variable(1311, "oppdatert variabel 2"))),
+            E_Title2(null, true, listOf(E_Variable(14211, "oppdatert variabel 4"))),
+            deleted = setOf(1),
+        )
+        assertEquals(expected, edited.updateEditedLetter(next))
+    }
+
+    @Test
+    fun `variables moved to a new block no longer present in rendered cannot be updated and is converted to literal`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    Literal(11, "en literal"),
+                )
+            )
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                null, true,
+                listOf(
+                    E_Literal(11, "en literal"),
+                    E_Variable(12, "en variabel"),
+                )
+            ),
+            deleted = setOf(1),
+        )
+        val expected = editedLetter(
+            E_Paragraph(
+                null, true,
+                listOf(
+                    E_Literal(11, "en literal"),
+                    E_Literal(12, "en variabel"),
+                )
+            ),
+            deleted = setOf(1),
         )
         assertEquals(expected, edited.updateEditedLetter(next))
     }
