@@ -14,7 +14,7 @@ export const EditorMenu = () => {
   return (
     <div
       css={css`
-        border-bottom: 1px solid var(--a-border-divider);
+        border-bottom: 1px solid var(--a-gray-200);
         background: var(--a-blue-50);
         padding: var(--a-spacing-3) var(--a-spacing-4);
         display: flex;

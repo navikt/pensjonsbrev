@@ -163,6 +163,9 @@ const EndreMottakerModal = (properties: {
 
   return (
     <Modal
+      css={css`
+        border-radius: 0.25rem;
+      `}
       data-cy="endre-mottaker-modal"
       header={{
         heading: vilAvbryte && form.formState.isDirty ? "Vil du avbryte endring av mottaker?" : "Endre mottaker",

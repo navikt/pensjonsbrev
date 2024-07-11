@@ -103,7 +103,7 @@ export default function BrevmalForExstream({
                 description="Gi brevet en kort og forklarende tittel."
                 error={methods.formState.errors.brevtittel?.message}
                 label="Endre tittel"
-                size="medium"
+                size="small"
               />
             )}
             {/* Utfylling av språk vil vi ikke gjøre dersom templaten er 'Notat' */}

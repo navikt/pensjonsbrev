@@ -139,7 +139,7 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormDat
         control={properties.control}
         name="finnSamhandler.direkteOppslag.id"
         render={({ field, fieldState }) => (
-          <TextField {...field} error={fieldState.error?.message} label="ID" size="medium" value={field.value ?? ""} />
+          <TextField {...field} error={fieldState.error?.message} label="ID" value={field.value ?? ""} />
         )}
       />
     </VStack>
@@ -177,13 +177,7 @@ const SamhandlerOrganisasjonsnavn = (properties: { control: Control<CombinedForm
         control={properties.control}
         name="finnSamhandler.organisasjonsnavn.navn"
         render={({ field, fieldState }) => (
-          <TextField
-            label="Navn"
-            {...field}
-            error={fieldState.error?.message}
-            size="medium"
-            value={field.value ?? ""}
-          />
+          <TextField label="Navn" {...field} error={fieldState.error?.message} value={field.value ?? ""} />
         )}
       />
     </VStack>
@@ -204,26 +198,14 @@ const SamhandlerPersonnavn = (properties: { control: Control<CombinedFormData> }
         control={properties.control}
         name="finnSamhandler.personnavn.fornavn"
         render={({ field, fieldState }) => (
-          <TextField
-            label="Fornavn"
-            {...field}
-            error={fieldState.error?.message}
-            size="medium"
-            value={field.value ?? ""}
-          />
+          <TextField label="Fornavn" {...field} error={fieldState.error?.message} value={field.value ?? ""} />
         )}
       />
       <Controller
         control={properties.control}
         name="finnSamhandler.personnavn.etternavn"
         render={({ field, fieldState }) => (
-          <TextField
-            label="Etternavn"
-            {...field}
-            error={fieldState.error?.message}
-            size="medium"
-            value={field.value ?? ""}
-          />
+          <TextField label="Etternavn" {...field} error={fieldState.error?.message} value={field.value ?? ""} />
         )}
       />
     </VStack>

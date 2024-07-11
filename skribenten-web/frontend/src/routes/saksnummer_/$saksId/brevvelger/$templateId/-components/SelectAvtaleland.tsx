@@ -10,7 +10,7 @@ function SelectAvtalelandComponent() {
   const options = avtalelandQuery.data ?? [];
 
   return (
-    <Select {...register("landkode")} error={formState.errors.landkode?.message?.toString()} label="Land" size="medium">
+    <Select {...register("landkode")} error={formState.errors.landkode?.message?.toString()} label="Land" size="small">
       <option value={""}>Velg land</option>
       {options.map((option) => (
         <option key={option.kode} value={option.kode}>
