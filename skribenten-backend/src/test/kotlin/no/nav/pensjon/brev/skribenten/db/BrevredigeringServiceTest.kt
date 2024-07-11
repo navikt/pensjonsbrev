@@ -360,18 +360,7 @@ class BrevredigeringServiceTest {
         clearMocks()
 
         val pdf = "nesten en pdf".encodeToByteArray()
-        coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any(), any()) } returns ServiceResult.Ok(
-            LetterResponse(
-                file = pdf,
-                contentType = ContentType.Application.Pdf.toString(),
-                letterMetadata = LetterMetadata(
-                    displayTitle = "En fin tittel",
-                    isSensitiv = false,
-                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
-                )
-            )
-        )
+        stagePdf(pdf)
 
         service.opprettPdf(callMock, result.info.id)
 
@@ -388,6 +377,71 @@ class BrevredigeringServiceTest {
             assertEquals(1, document.count())
             assertTrue(pdf.contentEquals(document.first().pdf.bytes))
         }
+    }
+
+    @Test
+    fun `sletter relaterte documents ved sletting av brevredigering`(): Unit = runBlocking {
+        val brev = service.opprettBrev(
+            call = callMock,
+            sak = sak,
+            brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+            spraak = LanguageCode.ENGLISH,
+            avsenderEnhetsId = principalNavEnhetId,
+            saksbehandlerValg = GeneriskBrevData().apply { put("valg", true) },
+            mapper = ::mapBrev
+        ).resultOrNull()!!
+
+        stagePdf("a real life pdf".encodeToByteArray())
+
+        service.opprettPdf(callMock, brev.info.id)
+
+        transaction {
+            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
+        }
+        service.slettBrev(brev.info.id)
+
+        transaction {
+            assertThat(Brevredigering.findById(brev.info.id)).isNull()
+            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(0)
+        }
+    }
+
+    @Test
+    fun `andre opprettPdf erstatter den forrige`(): Unit = runBlocking {
+        val brev = service.opprettBrev(
+            call = callMock,
+            sak = sak,
+            brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+            spraak = LanguageCode.ENGLISH,
+            avsenderEnhetsId = principalNavEnhetId,
+            saksbehandlerValg = GeneriskBrevData().apply { put("valg", true) },
+            mapper = ::mapBrev
+        ).resultOrNull()!!
+
+        stagePdf("a real life pdf".encodeToByteArray())
+        service.opprettPdf(callMock, brev.info.id)
+        stagePdf("the newest pdf".encodeToByteArray())
+        service.opprettPdf(callMock, brev.info.id)
+
+        transaction {
+            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
+            assertThat(Brevredigering[brev.info.id].document.first().pdf.bytes).isEqualTo("the newest pdf".encodeToByteArray())
+        }
+    }
+
+    private fun stagePdf(pdf: ByteArray) {
+        coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any(), any()) } returns ServiceResult.Ok(
+            LetterResponse(
+                file = pdf,
+                contentType = ContentType.Application.Pdf.toString(),
+                letterMetadata = LetterMetadata(
+                    displayTitle = "En fin tittel",
+                    isSensitiv = false,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
+                )
+            )
+        )
     }
 }
 
