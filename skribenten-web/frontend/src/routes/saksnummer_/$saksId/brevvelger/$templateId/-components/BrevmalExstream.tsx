@@ -85,7 +85,7 @@ export default function BrevmalForExstream({
             ),
           )}
         >
-          <VStack gap="8">
+          <VStack gap="10">
             {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
             {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && (
               <div>
