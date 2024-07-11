@@ -12,13 +12,16 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  * present.
  */
 fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
-    copy(
-        title = renderedLetter.title,
-        sakspart = renderedLetter.sakspart,
-        signatur = renderedLetter.signatur,
-        blocks = mergeList(blocks, renderedLetter.blocks.toEdit(), ::mergeBlock, deletedBlocks),
-        deletedBlocks = deletedBlocks.filter { id -> renderedLetter.blocks.any { it.id == id } }.toSet(),
-    )
+    renderedLetter.toEdit().let { renderedAsEdit ->
+        val variableValues = VariableValuesVisitor(renderedAsEdit).build()
+        copy(
+            title = renderedLetter.title,
+            sakspart = renderedLetter.sakspart,
+            signatur = renderedLetter.signatur,
+            blocks = mergeList(blocks, renderedAsEdit.blocks, deletedBlocks, ::mergeBlock) { updateVariableValues(it, variableValues) },
+            deletedBlocks = deletedBlocks.filter { id -> renderedLetter.blocks.any { it.id == id } }.toSet(),
+        )
+    }
 
 /**
  * Merges a list of [edited] elements with a list of freshly [rendered] elements.
@@ -41,62 +44,62 @@ fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
  *    result:   [A, B', C, D]
  * ```
  */
-private fun <E : Edit.Identifiable> mergeList(edited: List<E>, rendered: List<E>, merge: (E, E) -> E, deleted: Set<Int>): List<E> =
-    buildList {
-        // A queue of unprocessed rendered elements
-        val remainingRendered = rendered.filter { it.id != null && !deleted.contains(it.id) }.toMutableList()
+private fun <E : Edit.Identifiable> mergeList(
+    edited: List<E>,
+    rendered: List<E>,
+    deleted: Set<Int>,
+    merge: (E, E) -> E,
+    updateVariables: ((E) -> E)? = null
+): List<E> = buildList {
+    // A queue of unprocessed rendered elements
+    val remainingRendered = rendered.filter { it.id != null && !deleted.contains(it.id) }.toMutableList()
 
-        // We zip-merge the two lists with edited as basis, then we pick matching elements of remainingRendered.
-        edited.forEach { currentEdited ->
-            // If the currentEdited element is new, i.e. was added manually by Saksbehandler.
-            if (currentEdited.isNew()) {
-                add(currentEdited)
-            } else {
-                val renderedIndex = remainingRendered.indexOfFirst { it.id == currentEdited.id }
+    // We zip-merge the two lists with edited as basis, then we pick matching elements of remainingRendered.
+    edited.forEach { currentEdited ->
+        // If the currentEdited element is new, i.e. was added manually by Saksbehandler.
+        if (currentEdited.isNew()) {
+            add(updateVariables?.invoke(currentEdited) ?: currentEdited)
+        } else {
+            val renderedIndex = remainingRendered.indexOfFirst { it.id == currentEdited.id }
 
-                if (renderedIndex >= 0) {
-                    // The currentEdited element is present in the fresh render.
+            if (renderedIndex >= 0) {
+                // The currentEdited element is present in the fresh render.
 
-                    // We add any fresh elements from the fresh render that precedes currentEdited in the fresh render.
-                    for (ind in 0 until renderedIndex) {
-                        add(remainingRendered.removeFirst())
-                    }
-
-                    // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one.
-                    if (currentEdited.isEdited()) {
-                        add(merge(currentEdited, remainingRendered.removeFirst()))
-                    } else {
-                        add(remainingRendered.removeFirst())
-                    }
-                } else if (currentEdited.isEdited()) {
-                    // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
-                    // We include it so that no potentially important text is lost.
-                    // TODO dette elementet er ikke lenger med i rendring, vurdere om vi skal annotere det på et vis eller noe (slik at det kan vises til saksbehandler).
-                    add(currentEdited)
+                // We add any fresh elements from the fresh render that precedes currentEdited in the fresh render.
+                for (ind in 0 until renderedIndex) {
+                    add(remainingRendered.removeFirst())
                 }
+
+                // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one.
+                if (currentEdited.isEdited()) {
+                    add(merge(currentEdited, remainingRendered.removeFirst()))
+                } else {
+                    add(remainingRendered.removeFirst())
+                }
+            } else if (currentEdited.isEdited()) {
+                // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
+                // We include it so that no potentially important text is lost.
+                // TODO dette elementet er ikke lenger med i rendring, vurdere om vi skal annotere det på et vis eller noe (slik at det kan vises til saksbehandler).
+                add(currentEdited)
             }
         }
-        addAll(remainingRendered)
     }
-
-
-private fun mergeBlock(edited: Edit.Block, rendered: Edit.Block): Edit.Block {
-    return when (edited) {
-        is Edit.Block.Paragraph -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeParagraphContent, edited.deletedContent))
-
-        is Edit.Block.Title1 -> when (rendered) {
-            is Edit.Block.Title1 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, edited.deletedContent))
-            is Edit.Block.Title2 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, edited.deletedContent))
-            is Edit.Block.Paragraph -> throw UpdateEditedLetterException("Cannot merge a title1 block with a paragraph block: $edited - $rendered")
-        }
-
-        is Edit.Block.Title2 -> when (rendered) {
-            is Edit.Block.Title1 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, edited.deletedContent))
-            is Edit.Block.Title2 -> edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, edited.deletedContent))
-            is Edit.Block.Paragraph -> throw UpdateEditedLetterException("Cannot merge a title2 block with a paragraph block: $edited - $rendered")
-        }
-    }
+    addAll(remainingRendered)
 }
+
+private fun mergeBlock(edited: Edit.Block, rendered: Edit.Block): Edit.Block =
+    when (edited) {
+        is Edit.Block.Paragraph -> edited.copy(content = mergeList(edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent))
+        is Edit.Block.Title1 -> edited.copy(content = mergeListText(edited.content, rendered, edited.deletedContent))
+        is Edit.Block.Title2 -> edited.copy(content = mergeListText(edited.content, rendered, edited.deletedContent))
+    }
+
+private fun mergeListText(edited: List<Edit.ParagraphContent.Text>, rendered: Edit.Block, deleted: Set<Int>): List<Edit.ParagraphContent.Text> =
+    when (rendered) {
+        is Edit.Block.Title1 -> mergeList(edited, rendered.content, deleted, ::mergeTextContent)
+        is Edit.Block.Title2 -> mergeList(edited, rendered.content, deleted, ::mergeTextContent)
+        is Edit.Block.Paragraph -> mergeList(edited, rendered.content.filterIsInstance<Edit.ParagraphContent.Text>(), deleted, ::mergeTextContent)
+    }
 
 private fun mergeTextContent(edited: Edit.ParagraphContent.Text, rendered: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text =
     when (edited) {
@@ -112,7 +115,7 @@ private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.
     when (edited) {
         is Edit.ParagraphContent.ItemList ->
             if (rendered is Edit.ParagraphContent.ItemList) {
-                edited.copy(items = mergeList(edited.items, rendered.items, ::mergeItems, edited.deletedItems))
+                edited.copy(items = mergeList(edited.items, rendered.items, edited.deletedItems, ::mergeItems))
             } else {
                 throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
             }
@@ -128,5 +131,41 @@ private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.
     }
 
 private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
-    edited.copy(content = mergeList(edited.content, rendered.content, ::mergeTextContent, emptySet()))
+    edited.copy(content = mergeList(edited.content, rendered.content, emptySet(), ::mergeTextContent))
 
+private fun updateVariableValues(edited: Edit.Block, variableValues: Map<Int, String>): Edit.Block =
+    when (edited) {
+        is Edit.Block.Title1 -> edited.copy(content = edited.content.map { updateVariableValues(it, variableValues) })
+        is Edit.Block.Title2 -> edited.copy(content = edited.content.map { updateVariableValues(it, variableValues) })
+        is Edit.Block.Paragraph -> edited.copy(content = edited.content.map { updateVariableValues(it, variableValues) })
+    }
+
+private fun updateVariableValues(content: Edit.ParagraphContent, variableValues: Map<Int, String>): Edit.ParagraphContent =
+    when (content) {
+        is Edit.ParagraphContent.ItemList -> updateVariableValues(content, variableValues)
+        is Edit.ParagraphContent.Table -> updateVariableValues(content, variableValues)
+        is Edit.ParagraphContent.Text -> updateVariableValues(content, variableValues)
+    }
+
+private fun updateVariableValues(content: Edit.ParagraphContent.Text, variableValues: Map<Int, String>): Edit.ParagraphContent.Text =
+    when (content) {
+        is Edit.ParagraphContent.Text.Literal -> content
+        is Edit.ParagraphContent.Text.Variable -> variableValues[content.id]
+            ?.let { content.copy(text = it) }
+            ?: Edit.ParagraphContent.Text.Literal(content.id, content.text)
+    }
+
+private fun updateVariableValues(itemList: Edit.ParagraphContent.ItemList, variableValues: Map<Int, String>): Edit.ParagraphContent.ItemList =
+    itemList.copy(items = itemList.items.map { item -> item.copy(content = item.content.map { updateVariableValues(it, variableValues) }) })
+
+private fun updateVariableValues(table: Edit.ParagraphContent.Table, variableValues: Map<Int, String>): Edit.ParagraphContent.Table =
+    table.copy(
+        header = table.header.copy(colSpec = table.header.colSpec.map { it.copy(headerContent = updateVariableValues(it.headerContent, variableValues)) }),
+        rows = table.rows.map { updateVariableValues(it, variableValues) },
+    )
+
+private fun updateVariableValues(row: Edit.ParagraphContent.Table.Row, variableValues: Map<Int, String>): Edit.ParagraphContent.Table.Row =
+    row.copy(cells = row.cells.map { updateVariableValues(it, variableValues) })
+
+private fun updateVariableValues(cell: Edit.ParagraphContent.Table.Cell, variableValues: Map<Int, String>): Edit.ParagraphContent.Table.Cell =
+    cell.copy(text = cell.text.map { updateVariableValues(it, variableValues) })
