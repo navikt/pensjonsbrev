@@ -135,6 +135,7 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
 		    perioderMedRegistrertTrygdetid(it.navnAvdoed, it.trygdetidsperioder, it.beregningsMetodeAnvendt)
 	    }
     }
+    meldFraTilNav()
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.grunnbeloepetGammeltOgNyttRegelverk(
