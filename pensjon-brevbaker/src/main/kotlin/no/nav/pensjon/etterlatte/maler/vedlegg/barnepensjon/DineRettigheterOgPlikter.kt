@@ -178,13 +178,13 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "Viss du treng hjelp, må du gjerne ringje oss på telefon ",
             English to "The appeal must be made in writing and contain your name, national identity number and address. " +
                     "Feel free to use the form that you find online: ${Constants.Engelsk.KLAGE_URL}. " +
-                    "If you need help, you are welcome to call us by phone (",
+                    "If you need help, you are welcome to call us by phone ",
         )
         kontakttelefonPensjon(bosattUtland)
         text(
             Bokmal to ".",
             Nynorsk to ".",
-            English to ").",
+            English to ".",
         )
     }
 }

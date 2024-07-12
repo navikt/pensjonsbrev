@@ -129,6 +129,9 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
 
             konverterElementerTilBrevbakerformat(innhold)
 
+            showIf(harUtbetaling) {
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, brukerUnder18Aar))
+            }
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon)
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)

@@ -58,7 +58,7 @@ object BarnepensjonRevurderingFraser {
                                 Language.English to "You will receive NOK ".expr() + formatertBeloep + " each " +
                                         "month before tax, starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
                                         ". You can see amounts for previous periods and how we calculated your " +
-                                        "children's pension in the attachment Calculation of Children’s Pension."
+                                        "children's pension in the attachment, Calculation of Children’s Pension."
                             )
                         }
 
@@ -80,7 +80,7 @@ object BarnepensjonRevurderingFraser {
                                 Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis " +
                                         "vi har rekna ut barnepensjonen din.",
                                 Language.English to "You can find more information about how we have calculated " +
-                                        "your children's pension in the attachment Calculation of Children's " +
+                                        "your children's pension in the attachment, Calculation of Children's " +
                                         "Pension."
                             )
                         }
@@ -100,7 +100,7 @@ object BarnepensjonRevurderingFraser {
                             Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis " +
                                     "vi har rekna ut barnepensjonen din.",
                             Language.English to "You can find more information about how we have calculated " +
-                                    "your children's pension in the attachment Calculation of Children's " +
+                                    "your children's pension in the attachment, Calculation of Children's " +
                                     "Pension."
                         )
                     }
@@ -137,7 +137,7 @@ object BarnepensjonRevurderingFraser {
                         Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis vi " +
                                 "har rekna ut barnepensjonen din.",
                         Language.English to "You can find more information about how we have calculated " +
-                                "your children's pension in the attachment Calculation of Children's " +
+                                "your children's pension in the attachment, Calculation of Children's " +
                                 "Pension."
                     )
                 }

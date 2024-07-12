@@ -2,7 +2,6 @@ package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -21,7 +20,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeDatoFom
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
-import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import java.time.LocalDate
 
 data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
@@ -51,23 +49,9 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
         ),
     ) {
         title {
-            showIf(erGjenoppretting) {
-                text(
-                    Language.Bokmal to "Du er innvilget barnepensjon på nytt",
-                    Language.Nynorsk to "Du er innvilga barnepensjon på ny",
-                    Language.English to "You have been granted children’s pension again",
-                )
-            }.orShow {
-                text(
-					Language.Bokmal to "Vi innvilger barnepensjonen din",
-					Language.Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-					Language.English to "We have granted your application for a children's pension",
-				)
-            }
+            text(Language.Bokmal to "", Language.Nynorsk to "", Language.English to "")
         }
         outline {
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
-
             includePhrase(
                 BarnepensjonInnvilgelseFraser.Foerstegangsbehandlingsvedtak(
                     avdoed,
@@ -80,6 +64,7 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
                     harUtbetaling,
                 ),
             )
+            includePhrase(BarnepensjonInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling))
         }
     }
 }
