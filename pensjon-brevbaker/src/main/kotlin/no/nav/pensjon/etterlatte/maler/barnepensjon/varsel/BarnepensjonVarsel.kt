@@ -23,7 +23,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepens
 
 data class BarnepensjonVarselDTO(
     override val innhold: List<Element>,
-    val beregning: BarnepensjonBeregning,
+    val beregning: BarnepensjonBeregning?,
     val erUnder18Aar: Boolean,
     val erBosattUtlandet: Boolean,
 ) : BrevDTO
@@ -56,6 +56,6 @@ object BarnepensjonVarsel : EtterlatteTemplate<BarnepensjonVarselDTO>, Hovedmal 
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
         }
 
-        includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning)
+        includeAttachmentIfNotNull(beregningAvBarnepensjonNyttRegelverk, beregning)
     }
 }
