@@ -1,9 +1,8 @@
 import { produce } from "immer";
 
-import { text } from "~/Brevredigering/LetterEditor/actions/common";
+import { deleteElement, text } from "~/Brevredigering/LetterEditor/actions/common";
 import type { AnyBlock, Identifiable } from "~/types/brevbakerTypes";
-import { VARIABLE } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
@@ -15,15 +14,6 @@ export enum MergeTarget {
   NEXT = "NEXT",
 }
 
-function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[], deleted: number[]) {
-  if (
-    toDelete.id !== null &&
-    !deleted.includes(toDelete.id) &&
-    !verifyNotPresent.map((b) => b.id).includes(toDelete.id)
-  ) {
-    deleted.push(toDelete.id);
-  }
-}
 function updateDeleted(deleted: number[], present: Identifiable[]): number[] {
   const presentIds = new Set(present.map((element) => element.id));
   return deleted.filter((d) => !presentIds.has(d));

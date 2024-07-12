@@ -1,4 +1,6 @@
-import type { Content, EditedLetter, LiteralValue, VariableValue } from "~/types/brevbakerTypes";
+import type { Draft } from "immer";
+
+import type { Content, EditedLetter, Identifiable, LiteralValue, VariableValue } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { LetterEditorState } from "../model/state";
@@ -44,4 +46,24 @@ export function create(redigertBrev?: EditedLetter): LetterEditorState {
     },
     focus: { blockIndex: 0, contentIndex: 0 },
   };
+}
+
+export function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[], deleted: Draft<number[]>) {
+  if (
+    toDelete.id !== null &&
+    !deleted.includes(toDelete.id) &&
+    !verifyNotPresent.map((b) => b.id).includes(toDelete.id)
+  ) {
+    deleted.push(toDelete.id);
+  }
+}
+
+export function deleteElements(
+  contentToDelete: Identifiable[],
+  verifyNotPresent: Identifiable[],
+  deleted: Draft<number[]>,
+) {
+  for (const toDelete of contentToDelete) {
+    deleteElement(toDelete, verifyNotPresent, deleted);
+  }
 }
