@@ -24,12 +24,12 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SchemaUtils.withDataBaseLock
 import org.jetbrains.exposed.sql.javatime.date
-import org.jetbrains.exposed.sql.javatime.datetime
+import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.json.json
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Suppress("unused")
 object Favourites : Table() {
@@ -59,8 +59,8 @@ object BrevredigeringTable : LongIdTable() {
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
     val sistRedigertAvNavIdent: Column<String> = varchar("sistRedigertAvNavIdent", length = 50)
     val opprettetAvNavIdent: Column<String> = varchar("opprettetAvNavIdent", length = 50).index()
-    val opprettet: Column<LocalDateTime> = datetime("opprettet")
-    val sistredigert: Column<LocalDateTime> = datetime("sistredigert")
+    val opprettet: Column<Instant> = timestamp("opprettet")
+    val sistredigert: Column<Instant> = timestamp("sistredigert")
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
