@@ -58,7 +58,7 @@ object BarnepensjonRevurderingFraser {
                                 Language.English to "You will receive NOK ".expr() + formatertBeloep + " each " +
                                         "month before tax, starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
                                         ". You can see amounts for previous periods and how we calculated your " +
-                                        "children's pension in the attachment Calculation of Children’s Pension."
+                                        "children's pension in the attachment, Calculation of Children’s Pension."
                             )
                         }
 

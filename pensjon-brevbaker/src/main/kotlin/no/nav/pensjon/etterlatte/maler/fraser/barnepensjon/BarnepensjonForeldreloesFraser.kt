@@ -104,7 +104,7 @@ object BarnepensjonForeldreloesFraser {
                         Language.Bokmal to "Se hvordan vi har beregnet pensjonen din i vedlegget “Beregning av barnepensjon”.",
                         Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis vi har rekna ut pensjonen din.",
                         Language.English to "You can find more information about how we have calculated your" +
-                                " children's pension in the attachment Calculating the Children's Pension.",
+                                " children's pension in the attachment, Calculating the Children's Pension.",
                     )
                 }
             }
