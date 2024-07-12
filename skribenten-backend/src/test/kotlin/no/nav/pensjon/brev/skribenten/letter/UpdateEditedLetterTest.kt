@@ -293,6 +293,29 @@ class UpdateRenderedLetterTest {
     }
 
     @Test
+    fun `can change type of unedited block`() {
+        val next = letter(
+            Paragraph(
+                1, true, listOf(
+                    Literal(1, "Noe tekst"),
+                    Variable(2, "en variabel"),
+                )
+            )
+        )
+        val edited = editedLetter(
+            E_Title1(
+                1, true, listOf(
+                    E_Literal(1, "Noe tekst"),
+                    E_Variable(2, "en variabel"),
+                ),
+                originalType = Edit.Block.Type.PARAGRAPH,
+            )
+        )
+
+        assertEquals(edited, edited.updateEditedLetter(next))
+    }
+
+    @Test
     fun `an edited block where type is changed from paragraph to title1 then any fresh nontext content is ignored`() {
         val next = letter(
             Paragraph(
@@ -324,7 +347,6 @@ class UpdateRenderedLetterTest {
         )
         assertEquals(expected, edited.updateEditedLetter(next))
     }
-
 
     @Test
     fun `an edited block where type is changed from paragraph to title1 can merge`() {

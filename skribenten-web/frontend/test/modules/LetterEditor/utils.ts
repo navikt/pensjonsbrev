@@ -12,8 +12,10 @@ import type {
   ParagraphBlock,
   TextContent,
   Title1Block,
+  Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { TITLE2 } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, PARAGRAPH, TITLE1, VARIABLE } from "~/types/brevbakerTypes";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
@@ -51,11 +53,20 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
   };
 }
 
-export function title(...content: TextContent[]): Title1Block {
+export function title1(...content: TextContent[]): Title1Block {
   return {
     id: randomInt(1000),
     editable: true,
     type: TITLE1,
+    deletedContent: [],
+    content,
+  };
+}
+export function title2(...content: TextContent[]): Title2Block {
+  return {
+    id: randomInt(1000),
+    editable: true,
+    type: TITLE2,
     deletedContent: [],
     content,
   };

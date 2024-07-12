@@ -4,12 +4,16 @@ import type { ReactNode } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 
 import { applyAction } from "../lib/actions";
 
 export const EditorMenu = () => {
   const { editorState, setEditorState } = useEditor();
   const activeTypography = editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.type;
+  const changeableContent = isTextContent(
+    editorState.redigertBrev.blocks[editorState.focus.blockIndex].content[editorState.focus.contentIndex],
+  );
 
   return (
     <div
@@ -24,22 +28,22 @@ export const EditorMenu = () => {
     >
       <SelectTypographyButton
         dataCy="TITLE1-BUTTON"
-        isActive={activeTypography === "TITLE1"}
-        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus.blockIndex, "TITLE1")}
+        enabled={activeTypography !== "TITLE1" && changeableContent}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus, "TITLE1")}
       >
         Overskrift 1
       </SelectTypographyButton>
       <SelectTypographyButton
         dataCy="TITLE2-BUTTON"
-        isActive={activeTypography === "TITLE2"}
-        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus.blockIndex, "TITLE2")}
+        enabled={activeTypography !== "TITLE2" && changeableContent}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus, "TITLE2")}
       >
         Overskrift 2
       </SelectTypographyButton>
       <SelectTypographyButton
         dataCy="PARAGRAPH-BUTTON"
-        isActive={activeTypography === "PARAGRAPH"}
-        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus.blockIndex, "PARAGRAPH")}
+        enabled={activeTypography !== "PARAGRAPH" && changeableContent}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus, "PARAGRAPH")}
       >
         Normal
       </SelectTypographyButton>
@@ -49,26 +53,26 @@ export const EditorMenu = () => {
 
 function SelectTypographyButton({
   dataCy,
-  isActive,
+  enabled,
   children,
   onClick,
 }: {
   dataCy: string;
-  isActive: boolean;
+  enabled: boolean;
   children: ReactNode;
   onClick: () => void;
 }) {
   return (
     <Button
       css={
-        isActive &&
+        !enabled &&
         css`
           color: var(--a-text-on-action);
           background-color: var(--a-surface-action-active);
         `
       }
       data-cy={dataCy}
-      disabled={isActive}
+      disabled={!enabled}
       // Use mouseDown instead of onClick to prevent the cursor from losing focus
       onMouseDown={(event) => {
         event.preventDefault();
