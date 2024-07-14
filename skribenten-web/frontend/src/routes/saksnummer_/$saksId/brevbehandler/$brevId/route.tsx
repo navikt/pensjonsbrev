@@ -5,7 +5,7 @@ import { css } from "@emotion/react";
 import { BodyShort, Button, HStack, Modal, TextField, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Outline, pdfjs } from "react-pdf";
 import { Document, Page } from "react-pdf";
 import { i } from "vitest/dist/reporters-P7C2ytIv";
@@ -13,6 +13,7 @@ import { number } from "zod";
 
 import { hentAlleBrevForSak, lagPdfForBrev, slettBrev } from "~/api/sak-api-endpoints";
 import type { BrevInfo } from "~/types/brev";
+import type { Nullable } from "~/types/Nullable";
 
 import pdf from "./-multipage.pdf";
 
@@ -25,9 +26,14 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler/$brevId"
 function BrevForhåndsvisning() {
   const { saksId, brevId } = Route.useParams();
   const [scale, setScale] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>();
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [fieldValue, setFieldValue] = useState<string>("1");
+  const [numberPages, setNumberPages] = useState<Nullable<number>>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const inputReference = useRef(null);
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumberPages(numPages);
+  }
 
   //TODO - vil vi alltid kanskje lage PDF'en ved switchen i parent route, og bare hente den her?
   const lagPdf = useMutation({
@@ -38,23 +44,40 @@ function BrevForhåndsvisning() {
     },
   });
 
-  /*
-  const hentBrevPdf = useMutation({
-    mutationFn: () => hentPdfForBrevFunction(saksId, brevId),
-    onSuccess: (something) => {
-      console.log("res:", something);
-    },
-    onError: (error: AxiosError) => {
-      if (error.response?.data === "Fant ikke PDF") {}
+  const scrollToPage = (pageNumber) => {
+    const pageElement = document.querySelector(`#page_${pageNumber}`);
+    if (pageElement) {
+      pageElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
-      //TODO - må vi gjøre noe her? Kan vi vise error dersom det ikke har noe med if'en over å gjøre?
-    },
-  }); 
-  */
+  const handlePageInputChange = (event) => {
+    const newPageNumber = Number(event.target.value);
+    if (!Number.isNaN(newPageNumber) && newPageNumber >= 1 && newPageNumber <= numberPages) {
+      setCurrentPage(newPageNumber);
+      scrollToPage(newPageNumber);
+    }
+  };
 
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-    setTotalPages(numPages);
-  }
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handlePageInputChange(event);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < numberPages) {
+      setCurrentPage(currentPage + 1);
+      scrollToPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      scrollToPage(currentPage - 1);
+    }
+  };
 
   return (
     <div
@@ -102,23 +125,19 @@ function BrevForhåndsvisning() {
               `}
               hideLabel
               label="Side"
-              onChange={(event) => {
-                const v = event.target.value;
-                if (!Number.isNaN(Number.parseInt(v)) || v === "") {
-                  setFieldValue(v);
-                }
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" && fieldValue !== "") {
-                  setCurrentPage(Number.parseInt(fieldValue));
-                }
-              }}
-              size="small"
-              value={fieldValue}
+              onKeyDown={handleKeyDown}
+              ref={inputReference}
             />
-            / {totalPages}
+            / {numberPages}
           </HStack>
+          <button disabled={currentPage === 1} onClick={goToPreviousPage}>
+            Previous Page
+          </button>
+          <button disabled={currentPage === numberPages} onClick={goToNextPage}>
+            Next Page
+          </button>
         </HStack>
+        {/* 
         <div
           css={css`
             overflow: auto;
@@ -142,6 +161,33 @@ function BrevForhåndsvisning() {
                 pageNumber={index + 1}
                 scale={scale}
               />
+            ))}
+          </Document>
+        </div>
+*/}
+        <div
+          css={css`
+            overflow: auto;
+            max-height: 75vh;
+          `}
+        >
+          <Document
+            css={css`
+              background-color: var(--a-gray-300);
+              padding: 1rem 3rem;
+            `}
+            file={pdf}
+            onLoadSuccess={onDocumentLoadSuccess}
+          >
+            {Array.from(new Array(numberPages), (element, index) => (
+              <div id={`page_${index + 1}`} key={`page_${index + 1}`}>
+                <Page
+                  css={css`
+                    margin: 2rem 0;
+                  `}
+                  pageNumber={index + 1}
+                />
+              </div>
             ))}
           </Document>
         </div>
