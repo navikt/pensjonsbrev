@@ -16,7 +16,7 @@ servers:
   - url: 'https://pensjon-brevbaker.intern.dev.nav.no'
   - url: 'https://pensjon-brevbaker.intern.nav.no'
 paths:
-  /v2/templates/redigerbar:
+  /templates/redigerbar:
     parameters:
       - $ref: "#/components/parameters/includeMetadataQuery"
     get:
@@ -26,7 +26,7 @@ paths:
         '200':
           $ref: "#/components/responses/GetTemplateList"
 
-  /v2/templates/redigerbar/{kode}:
+  /templates/redigerbar/{kode}:
     parameters:
       - $ref: "#/components/parameters/brevkodeParam"
     get:
@@ -37,7 +37,7 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
-  /v2/templates/redigerbar/{kode}/doc/{language}:
+  /templates/redigerbar/{kode}/doc/{language}:
     parameters:
       - $ref: "#/components/parameters/brevkodeParam"
       - $ref: "#/components/parameters/languageParam"
@@ -47,7 +47,7 @@ paths:
         '200':
           description: Strukturert dokumentasjon av brevmal. Se data klasse `no.nav.pensjon.brev.template.render.TemplateDocumentation`.
 
-  /v2/templates/redigerbar/{kode}/modelSpecification:
+  /templates/redigerbar/{kode}/modelSpecification:
     parameters:
       - $ref: "#/components/parameters/brevkodeParam"
     get:
@@ -58,7 +58,7 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
-  /v2/templates/autobrev:
+  /templates/autobrev:
     parameters:
       - $ref: "#/components/parameters/includeMetadataQuery"
     get:
@@ -68,7 +68,7 @@ paths:
         '200':
           $ref: "#/components/responses/GetTemplateList"
 
-  /v2/templates/autobrev/{kode}:
+  /templates/autobrev/{kode}:
     parameters:
       - $ref: "#/components/parameters/brevkodeParam"
     get:
@@ -79,7 +79,7 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
-  /v2/templates/autobrev/{kode}/doc/{language}:
+  /templates/autobrev/{kode}/doc/{language}:
     parameters:
       - $ref: "#/components/parameters/brevkodeParam"
       - $ref: "#/components/parameters/languageParam"
@@ -89,7 +89,7 @@ paths:
         '200':
           description: TODO
 
-  /v2/templates/autobrev/{kode}/modelSpecification:
+  /templates/autobrev/{kode}/modelSpecification:
     parameters:
       - $ref: "#/components/parameters/brevkodeParam"
     get:
@@ -100,7 +100,7 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
-  /v2/letter/autobrev/pdf:
+  /letter/autobrev/pdf:
     post:
       summary: Bestill brev i PDF format
       security:
@@ -118,7 +118,7 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
-  /v2/letter/autobrev/html:
+  /letter/autobrev/html:
     post:
       summary: Bestill brev i HTML format
       security:
@@ -136,7 +136,7 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
-  /v2/letter/redigerbar/markup:
+  /letter/redigerbar/markup:
     post:
       summary: Bestill brev i redigerbart LetterMarkup format
       security:
@@ -158,7 +158,7 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
-  /v2/letter/redigerbar/pdf:
+  /letter/redigerbar/pdf:
     post:
       summary: Bestill brev i PDF format
       security:
@@ -176,7 +176,7 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
-  /v2/letter/redigerbar/html:
+  /letter/redigerbar/html:
     post:
       summary: Bestill brev i HTML format
       security:

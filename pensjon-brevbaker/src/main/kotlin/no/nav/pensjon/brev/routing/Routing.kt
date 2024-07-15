@@ -17,18 +17,6 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
         val autobrev = TemplateResource("autobrev", ProductionTemplates.autobrev, latexCompilerService)
         val redigerbareBrev = TemplateResource("redigerbar", ProductionTemplates.redigerbare, latexCompilerService)
 
-        route("/v2") {
-            route("/templates") {
-                templateRoutes(autobrev)
-                templateRoutes(redigerbareBrev)
-            }
-            authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
-                route("/letter") {
-                    letterRoutes(autobrev, redigerbareBrev)
-                }
-            }
-        }
-
         route("/templates") {
             templateRoutes(autobrev)
             templateRoutes(redigerbareBrev)
