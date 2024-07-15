@@ -60,6 +60,12 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() as T
             OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende::class -> createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() as T
             OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T
+            OpplysningerBruktIBeregningenLegacyDto::class -> createOpplysningerBruktIBeregningenLegacyDto() as T
+            OpplysningerBruktIBeregningenLegacyDto.OpplysningerOmMinstetilleggDto::class -> createOpplysningerOmMinstetillegg() as T
+            OpplysningerBruktIBeregningenLegacyDto.TrygdetidNor::class -> createOpplysningerBruktIBeregningenLegacyDto_TrygdetidNor() as T
+            OpplysningerBruktIBeregningenLegacyDto.TrygdetidEOS::class -> createOpplysningerBruktIBeregningenLegacyDto_TrygdetidEOS() as T
+            OpplysningerBruktIBeregningenLegacyDto.TrygdetidBilateral::class -> createOpplysningerBruktIBeregningenLegacyDto_TrygdetidBilateral() as T
+            OpplysningerBruktIBeregningenLegacyDto.OpplysningerOmBarnetilleggDto::class -> createOpplysningerBruktIBeregningenLegacyDto_OpplysningerOmBarnetilleggDto() as T
             OpplysningerOmEtteroppgjoeretDto::class -> createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret() as T
             OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
