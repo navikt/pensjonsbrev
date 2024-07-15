@@ -8,7 +8,6 @@ import java.time.LocalDate
 @Suppress("unused")
 data class OpplysningerBruktIBeregningenLegacyDto(
     val tabellUfoereOpplysninger: TabellufoereOpplysningerDto,
-    val opplysningerOmMinstetillegg: OpplysningerOmMinstetilleggDto?,
     val opplysningerOmBarnetillegg: OpplysningerOmBarnetilleggDto?,
 
     // Tittel
