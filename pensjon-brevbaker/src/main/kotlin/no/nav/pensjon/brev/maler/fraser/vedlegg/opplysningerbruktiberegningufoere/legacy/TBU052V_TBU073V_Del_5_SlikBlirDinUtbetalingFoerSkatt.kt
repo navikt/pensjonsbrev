@@ -31,10 +31,96 @@ data class TBU052V_TBU073V_Del_5_SlikBlirDinUtbetalingFoerSkatt(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad < FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300") THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad.lessThan(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_07_200") and PE_pebrevkode.notEqualTo("PE_UT_06_300"))){
+
+        //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_06_300" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
+        showIf(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad)
+                and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt")
+                and PE_pebrevkode.notEqualTo("PE_UT_04_108")
+                and PE_pebrevkode.notEqualTo("PE_UT_04_109")
+                and PE_pebrevkode.notEqualTo("PE_UT_06_300")
+                and PE_pebrevkode.notEqualTo("PE_UT_07_200")
+                and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak)
+                and PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT.greaterThan(0)){
             //[TBU052V-TBU073V]
 
             paragraph {
+                table(
+                    header = {
+                        column {
+                            text (
+                                Bokmal to "Slik blir din utbetaling før skatt",
+                                Nynorsk to "Slik blir den månadlege utbetalinga di før skatt",
+                                English to "This is your monthly payment before tax",
+                            )
+                        }
+                        column {
+                            text(
+                                Bokmal to "",
+                                Nynorsk to "",
+                                English to "",
+                            )
+                        }
+                    }
+                ){
+                    row {
+                        cell {
+                            text (
+                                Bokmal to "Brutto beregnet uføretrygd som følge av innmeldt inntekt:",
+                                Nynorsk to "Brutto berekna uføretrygd som følgje av innmeld inntekt:",
+                                English to "Gross estimated disability benefit corresponding to a reported income:",
+                            )
+                        }
+                        cell {
+                            textExpr (
+                                Bokmal to PE_UT_NettoAkk_pluss_NettoRestAr.format() + " kr",
+                                Nynorsk to PE_UT_NettoAkk_pluss_NettoRestAr.format() + " kr",
+                                English to PE_UT_NettoAkk_pluss_NettoRestAr.format() + " NOK",
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text (
+                                Bokmal to "- Utbetalt uføretrygd hittil i år:",
+                                Nynorsk to "- Utbetalt uføretrygd hittil i år:",
+                                English to "- Disability benefit payments so far this year:",
+                            )
+                        }
+                        cell {
+                            textExpr (
+                                Bokmal to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk.format() + " kr",
+                                Nynorsk to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk.format() + " kr",
+                                English to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk.format() + " NOK",
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text (
+                                Bokmal to "= Utbetaling av uføretrygd for resterende måneder i året:",
+                                Nynorsk to "= Utbetaling av uføretrygd for resterande månader i året:",
+                                English to "= Disability benefit payments for the remaining months of the year:",
+                            )
+                        }
+                        cell {
+                            textExpr (
+                                Bokmal to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr.format() + " kr",
+                                Nynorsk to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr.format() + " kr",
+                                English to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr.format() + " NOK",
+                            )
+                        }
+                    }
+                }
+            }
+        }.orShowIf(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad.lessThan(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad)
+                and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt")
+                and PE_pebrevkode.notEqualTo("PE_UT_04_108")
+                and PE_pebrevkode.notEqualTo("PE_UT_04_109")
+                and PE_pebrevkode.notEqualTo("PE_UT_07_200")
+                and PE_pebrevkode.notEqualTo("PE_UT_06_300")){
+            //[TBU052V-TBU073V]
+
+            title1 {
                 text (
                     Bokmal to "Slik blir din utbetaling før skatt",
                     Nynorsk to "Slik blir den månadlege utbetalinga di før skatt",
@@ -42,61 +128,6 @@ data class TBU052V_TBU073V_Del_5_SlikBlirDinUtbetalingFoerSkatt(
                 )
             }
         }
-
-        //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_06_300" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_06_300") and PE_pebrevkode.notEqualTo("PE_UT_07_200") and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) and PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT.greaterThan(0))){
-            //[TBU052V-TBU073V]
-
-            paragraph {
-                text (
-                    Bokmal to "Brutto beregnet uføretrygd som følge av innmeldt inntekt:",
-                    Nynorsk to "Brutto berekna uføretrygd som følgje av innmeld inntekt:",
-                    English to "Gross estimated disability benefit corresponding to a reported income:",
-                )
-                textExpr (
-                    Bokmal to PE_UT_NettoAkk_pluss_NettoRestAr.format() + " kr",
-                    Nynorsk to PE_UT_NettoAkk_pluss_NettoRestAr.format() + " kr",
-                    English to PE_UT_NettoAkk_pluss_NettoRestAr.format() + " NOK",
-                )
-            }
-        }
-
-        //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_06_300" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_06_300") and PE_pebrevkode.notEqualTo("PE_UT_07_200") and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) and PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT.greaterThan(0))){
-            //[TBU052V-TBU073V]
-
-            paragraph {
-                text (
-                    Bokmal to "- Utbetalt uføretrygd hittil i år:",
-                    Nynorsk to "- Utbetalt uføretrygd hittil i år:",
-                    English to "- Disability benefit payments so far this year:",
-                )
-                textExpr (
-                    Bokmal to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk.format() + " kr",
-                    Nynorsk to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk.format() + " kr",
-                    English to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk.format() + " NOK",
-                )
-            }
-        }
-
-        //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_06_300" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_06_300") and PE_pebrevkode.notEqualTo("PE_UT_07_200") and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) and PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT.greaterThan(0))){
-            //[TBU052V-TBU073V]
-
-            paragraph {
-                text (
-                    Bokmal to "= Utbetaling av uføretrygd for resterende måneder i året:",
-                    Nynorsk to "= Utbetaling av uføretrygd for resterande månader i året:",
-                    English to "= Disability benefit payments for the remaining months of the year:",
-                )
-                textExpr (
-                    Bokmal to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr.format() + " kr",
-                    Nynorsk to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr.format() + " kr",
-                    English to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr.format() + " NOK",
-                )
-            }
-        }
-
 
         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_06_300" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
         showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert and PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto.greaterThan(0) and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_06_300") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_07_200") and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) and PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT.greaterThan(0))){
@@ -163,5 +194,4 @@ data class TBU052V_TBU073V_Del_5_SlikBlirDinUtbetalingFoerSkatt(
             }
         }
     }
-
 }

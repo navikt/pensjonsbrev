@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy.functions
+package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -145,3 +145,25 @@ fun FUNKSJON_PE_UT_TBU056V_51(
         ) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and
         PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP and
         PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense.lessThan(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak)
+
+//DIM doInclude AS Boolean
+//doInclude = false
+//IF (
+//PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
+//   AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB
+//           OR
+//           PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB
+//)) THEN
+//   doInclude = true
+//ENDIF
+//value = doInclude
+fun FUNKSJON_PE_UT_TBU601V_TBU604V(
+    PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String>,
+    PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB: Expression<Kroner>,
+    PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB: Expression<Kroner>,
+    PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB: Expression<Kroner>,
+    PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB: Expression<Kroner>,
+
+) = PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt") and
+        (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB.notEqualTo(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB) or
+                PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB.notEqualTo(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB))

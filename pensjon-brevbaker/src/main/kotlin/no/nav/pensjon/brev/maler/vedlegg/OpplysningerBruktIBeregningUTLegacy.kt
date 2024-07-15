@@ -40,12 +40,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacy
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.opplysningerOmBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.opplysningerOmMinstetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.tabellUfoereOpplysninger
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy.functions.FUNKSJON_FF_GetArrayElement_Date_Boolean
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy.*
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy.functions.FUNKSJON_PE_UT_TBU056V
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy.functions.FUNKSJON_PE_UT_TBU056V_51
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy.functions.FUNKSJON_PE_UT_Trygdetid
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -243,6 +239,10 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUInntekt: Expression<Kroner> = Kroner(19).expr()
         val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse: Expression<String> = "<TEXTVARIABEL:633>".expr()
         val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt: Expression<Kroner> = Kroner(1472).expr()
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB: Expression<Kroner> = Kroner(14720).expr()
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB: Expression<Kroner> = Kroner(14721).expr()
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB: Expression<Kroner> = Kroner(14722).expr()
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB: Expression<Kroner> = Kroner(14723).expr()
         val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Skadetidspunkt: Expression<LocalDate> = LocalDate.of(2020,10, 26).expr()
         val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_TTUtlandTrygdeAvtaleListe_TTUtlandTrygdeAvtale_FaTTBilateral: Expression<Int> = 9074.expr()
         val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTEOS: Expression<Int> = 8112.expr()
@@ -279,6 +279,14 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense = PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense,
             PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak = PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak,
             PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP,
+        )
+
+        val FUNKSJON_PE_UT_TBU601V_TBU604V = FUNKSJON_PE_UT_TBU601V_TBU604V(
+            PE_Vedtaksdata_Kravhode_KravArsakType = PE_Vedtaksdata_Kravhode_KravArsakType,
+            PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB,
+            PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB,
+            PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB,
+            PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB,
         )
 
         paragraph {
@@ -531,6 +539,68 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt = PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt,
         ))
 
+        showIf(FUNKSJON_PE_UT_TBU601V_TBU604V) {
+            includePhrase(
+                TBU052V_TBU073V_Del_6_SlikRedusererViBarnetilleggetUtFraInntekt(
+                    PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget,
+                    PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget,
+                    PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT = PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT,
+                    PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner = PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner,
+                    PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall = PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall,
+                    PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr,
+                    PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto,
+                    PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr,
+                    PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto,
+                )
+            )
+        }
+
+        ifNotNull(opplysningerOmBarnetillegg) { opplysningerOmBarnetillegg ->
+            includePhrase(
+                OpplysningerOmBarnetillegg(
+                    barnetillegg = opplysningerOmBarnetillegg.barnetillegg,
+                    anvendtTrygdetid = opplysningerOmBarnetillegg.anvendtTrygdetid,
+                    harYrkesskade = opplysningerOmBarnetillegg.harYrkesskade,
+                    harKravaarsakEndringInntekt = opplysningerOmBarnetillegg.harKravaarsakEndringInntekt,
+                    fraOgMedDatoErNesteAar = opplysningerOmBarnetillegg.fraOgMedDatoErNesteAar,
+                )
+            )
+        }
+
+        // TODO TBU052V-TBU073V_del7(slik beregner vi gjenlevendetillegget ditt til tittel "Slik beregner vi gjenlevendetillegget ditt")
+        //  trengs kun for brev som ikke er:
+        //  PE_UT_04_300, PE_UT_14_300, PE_UT_05_100, PE_UT_07_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200
+        //  eller brev som er PE_UT_04_300, PE_UT_14_300
+
+        includePhrase(
+            TBU052V_TBU073V_Del_8_ForDegSomMottarEktefelletillegg(
+                PE_pebrevkode = PE_pebrevkode,
+                PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget,
+                PE_Vedtaksdata_Kravhode_KravArsakType = PE_Vedtaksdata_Kravhode_KravArsakType,
+                PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats = PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats,
+            )
+        )
+
+        showIf(
+            (PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt")
+                        and PE_pebrevkode.notEqualTo("PE_UT_04_108")
+                        and PE_pebrevkode.notEqualTo("PE_UT_04_109")
+                        and PE_pebrevkode.notEqualTo("PE_UT_04_500")
+                        and PE_pebrevkode.notEqualTo("PE_UT_07_200")
+                        and (PE_pebrevkode.notEqualTo("PE_UT_04_102")
+                            or (PE_pebrevkode.equalTo("PE_UT_04_102") and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("tilst_dod")))
+                    ) or PE_pebrevkode.equalTo("PE_UT_06_300")) {
+                includePhrase(
+                    TBU052V_TBU073V_Del_9_EtteroppgjoerAvUforetrygdOgBarnetillegg(
+                        PE_pebrevkode = PE_pebrevkode,
+                        PE_Vedtaksdata_Kravhode_KravArsakType = PE_Vedtaksdata_Kravhode_KravArsakType,
+                        PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget,
+                        PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget,
+                        PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt,
+                        PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland = PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland,
+                    )
+                )
+            }
 
 
 
@@ -547,18 +617,6 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                     )
                 )
             }
-        }
-
-        ifNotNull(opplysningerOmBarnetillegg) { opplysningerOmBarnetillegg ->
-            includePhrase(
-                OpplysningerOmBarnetillegg(
-                    barnetillegg = opplysningerOmBarnetillegg.barnetillegg,
-                    anvendtTrygdetid = opplysningerOmBarnetillegg.anvendtTrygdetid,
-                    harYrkesskade = opplysningerOmBarnetillegg.harYrkesskade,
-                    harKravaarsakEndringInntekt = opplysningerOmBarnetillegg.harKravaarsakEndringInntekt,
-                    fraOgMedDatoErNesteAar = opplysningerOmBarnetillegg.fraOgMedDatoErNesteAar,
-                )
-            )
         }
     }
 
