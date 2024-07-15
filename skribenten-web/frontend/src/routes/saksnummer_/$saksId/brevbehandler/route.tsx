@@ -48,20 +48,17 @@ function Brevbehandler() {
         }
 
         > :nth-of-type(2) {
+          background: white;
           min-width: 432px;
           max-width: 720px;
           flex: 1;
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
-
-          background: pink;
         }
       `}
     >
       <BrevbehandlerMeny sakId={saksId} />
-      <div>
-        <Outlet />
-      </div>
+      <Outlet />
     </div>
   );
 }
