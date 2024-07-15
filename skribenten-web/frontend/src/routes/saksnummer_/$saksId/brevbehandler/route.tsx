@@ -16,20 +16,31 @@ import {
 } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BrevInfo } from "~/types/brev";
 
 import { DistribusjonsMetode } from "./-BrevbehandlerUtils";
+import { PDFViewerContextProvider, usePDFViewerContext } from "./$brevId/-components/PDFViewerContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
-  component: Brevbehandler,
+  component: () => (
+    <PDFViewerContextProvider>
+      <Brevbehandler />
+    </PDFViewerContextProvider>
+  ),
 });
 
 function Brevbehandler() {
   const { saksId } = Route.useParams();
+  const brevPdfContainerReference = useRef<HTMLDivElement>(null);
+  const pdfHeightContext = usePDFViewerContext();
+
+  useEffect(() => {
+    pdfHeightContext.setHeight(brevPdfContainerReference?.current?.getBoundingClientRect().height ?? null);
+  }, [brevPdfContainerReference, pdfHeightContext]);
 
   return (
     <div
@@ -58,7 +69,10 @@ function Brevbehandler() {
       `}
     >
       <BrevbehandlerMeny sakId={saksId} />
-      <Outlet />
+      {/* vi hvar lyst til å fortsette å vise der PDF'en skal være - derfor må vi wrappe outlet'en i ev div, så css'en treffer */}
+      <div ref={brevPdfContainerReference}>
+        <Outlet />
+      </div>
     </div>
   );
 }

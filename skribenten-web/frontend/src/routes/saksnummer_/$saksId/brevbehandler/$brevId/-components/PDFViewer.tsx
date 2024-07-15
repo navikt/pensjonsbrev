@@ -7,7 +7,7 @@ import { ChevronDownIcon, ChevronUpIcon, TrashIcon, ZoomMinusIcon, ZoomPlusIcon 
 import { BodyShort, Button, HStack, Modal, TextField } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { pdfjs } from "react-pdf";
 import { Document, Page } from "react-pdf";
 
@@ -15,18 +15,22 @@ import { hentAlleBrevForSak, slettBrev } from "~/api/sak-api-endpoints";
 import type { BrevInfo } from "~/types/brev";
 
 import { Route } from "../route";
+import { usePDFViewerContext } from "./PDFViewerContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
 /**
- * @param properties.maxHeightLimit - optional, hvis satt, vil den begrense høyden vil selve PDF-visningen.
- *  Dette er nyttig fordi at i fleste tilfeller vil vi at PDF'en skal være i en scrollable div, og ikke gjør hele siden scrollable.
- *  For å gjøre div'en scrollable bruker man overflow: auto, men da må vi sette en høyde på div'en.
- *  Optional i de tilfelle vi vil vise alt uansett. Vi får se.
+ * Brukt med [PDFViewerHeightContextProvider](./PDFViewerContext.tsx) for å gi en spesifikk høyden til PDFVieweren.
+ * I fleste tilfeller vil vi vise PDF'en inni en scrollable div, og ikke la hele pagen være scrollable.
+ * For at vi skal få det til å fungere må man bruke overflow: auto på div'en som holder PDF'en.
+ * Merk at for å få det til må det settes en høyde på div'en. Denne høyden bestemmer parenten, siden den vet best i hvilken context layouten skal se ut
+ *
+ * Dersom man unnlater å bruke provideren og setter høyden, vil vi anta at man vil ha hele PDF'en rendret uten scrolling.
  */
-const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob; maxHeightLimit?: number }) => {
+const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => {
   const [scale, setScale] = useState<number>(1);
   const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(1);
+  const pdfHeightContext = usePDFViewerContext();
 
   return (
     <div>
@@ -40,7 +44,7 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob; maxHe
       <div
         css={css`
           // 48px er høyden på topbaren
-          height: ${properties.maxHeightLimit ? `${properties.maxHeightLimit - 48}px` : "100%"};
+          height: ${pdfHeightContext.height ? `${pdfHeightContext.height - 48}px` : "100%"};
           overflow: auto;
         `}
       >
@@ -179,6 +183,8 @@ const TopBarNavigation = (properties: { totalNumberOfPages: number }) => {
     if (parsedValue >= 1 && parsedValue <= properties.totalNumberOfPages) {
       setCurrentPageNumber(parsedValue);
       scrollToPage(parsedValue);
+    } else {
+      setTextFieldValue(currentPageNumber.toString());
     }
   };
 
