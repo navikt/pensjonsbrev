@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -35,6 +36,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.relevantMaanederInnAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.restanse
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
@@ -219,7 +221,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             )
         }
 
-        showIf(sisteBeregningsperiode.restanse.notEqualTo(0)) {
+        showIf(sisteBeregningsperiode.restanse.notEqualTo(0) and
+                sisteBeregningsperiode.utbetaltBeloep.notEqualTo(0)
+        ) {
             val erRestanseTrekk = sisteBeregningsperiode.restanse.greaterThan(0)
             val restanse = sisteBeregningsperiode.restanse.absoluteValue()
             title2 {
