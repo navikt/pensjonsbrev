@@ -63,7 +63,7 @@ class LetterRoutesITest {
 
     @Test
     fun `render html can respond with raw html`() = testBrevbakerApp { client ->
-        val response = client.post("/v2/letter/autobrev/html") {
+        val response = client.post("/letter/autobrev/html") {
             accept(ContentType.Text.Html)
             setBody(autoBrevRequest)
         }
@@ -74,7 +74,7 @@ class LetterRoutesITest {
 
     @Test
     fun `render html can respond with json`() = testBrevbakerApp { client ->
-        val responseBody = client.post("/v2/letter/autobrev/html") {
+        val responseBody = client.post("/letter/autobrev/html") {
             accept(ContentType.Application.Json)
             setBody(autoBrevRequest)
         }.body<LetterResponse>()
@@ -85,7 +85,7 @@ class LetterRoutesITest {
 
     @Test
     fun `render pdf can respond with raw pdf`() = testBrevbakerApp { client ->
-        val response = client.post("/v2/letter/autobrev/pdf") {
+        val response = client.post("/letter/autobrev/pdf") {
             accept(ContentType.Application.Pdf)
             setBody(autoBrevRequest)
         }
@@ -95,7 +95,7 @@ class LetterRoutesITest {
 
     @Test
     fun `render pdf can respond with json`() = testBrevbakerApp { client ->
-        val responseBody = client.post("/v2/letter/autobrev/pdf") {
+        val responseBody = client.post("/letter/autobrev/pdf") {
             accept(ContentType.Application.Json)
             setBody(autoBrevRequest)
         }.body<LetterResponse>()
@@ -105,7 +105,7 @@ class LetterRoutesITest {
 
     @Test
     fun `render markup responds with markup`() = testBrevbakerApp { client ->
-        val response = client.post("/v2/letter/redigerbar/markup") {
+        val response = client.post("/letter/redigerbar/markup") {
             accept(ContentType.Application.Json)
             setBody(bestillMarkupRequest)
         }
@@ -116,7 +116,7 @@ class LetterRoutesITest {
 
     @Test
     fun `can render html from markup`() = testBrevbakerApp { client ->
-        val response = client.post("/v2/letter/redigerbar/html") {
+        val response = client.post("/letter/redigerbar/html") {
             accept(ContentType.Application.Json)
             setBody(redigertBestilling)
         }
@@ -128,7 +128,7 @@ class LetterRoutesITest {
 
     @Test
     fun `can render pdf from markup`() = testBrevbakerApp { client ->
-        val response = client.post("/v2/letter/redigerbar/pdf") {
+        val response = client.post("/letter/redigerbar/pdf") {
             accept(ContentType.Application.Json)
             setBody(redigertBestilling)
         }
