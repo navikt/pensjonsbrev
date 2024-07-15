@@ -91,10 +91,10 @@ const BrevbehandlerMeny = (properties: { sakId: string }) => {
         Brevbehandler
       </Heading>
       <div>
+        {alleBrevForSak.isPending && <Label>Henter alle brev for saken...</Label>}
         {alleBrevForSak.isError && (
           <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle brev for saken"} />
         )}
-        {alleBrevForSak.isPending && <Label>Henter alle brev for saken...</Label>}
         {alleBrevForSak.isSuccess && <Saksbrev brev={alleBrevForSak.data} sakId={properties.sakId} />}
       </div>
     </VStack>
