@@ -54,6 +54,7 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
             padding: 0 3rem 1rem 3rem;
           `}
           file={properties.pdf}
+          loading="Henter brev..."
           onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
         >
           {Array.from({ length: totalNumberOfPages }, (_, index) => (

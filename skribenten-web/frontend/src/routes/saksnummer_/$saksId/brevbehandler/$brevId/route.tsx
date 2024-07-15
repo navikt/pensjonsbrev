@@ -1,7 +1,9 @@
+import { BodyShort } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { hentPdfForBrev, hentPdfForBrevFunction } from "~/api/sak-api-endpoints";
+import { ApiError } from "~/components/ApiError";
 
 import PDFViewer from "./-components/PDFViewer";
 
@@ -26,5 +28,11 @@ function BrevForhåndsvisning() {
     queryFn: () => hentPdfForBrevFunction(saksId, brevId),
   });
 
-  return <div>{hentPdfQuery.isSuccess && <PDFViewer brevId={brevId} pdf={hentPdfQuery.data} sakId={saksId} />}</div>;
+  return (
+    <div>
+      {hentPdfQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
+      {hentPdfQuery.isError && <ApiError error={hentPdfQuery.error} title={"Kunne ikke hente PDF"} />}
+      {hentPdfQuery.isSuccess && <PDFViewer brevId={brevId} pdf={hentPdfQuery.data} sakId={saksId} />}
+    </div>
+  );
 }
