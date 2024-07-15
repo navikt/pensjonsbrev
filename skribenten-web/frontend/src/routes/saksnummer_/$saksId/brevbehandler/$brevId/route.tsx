@@ -39,8 +39,8 @@ function BrevForhåndsvisning() {
   const lagPdf = useMutation({
     mutationFn: () => lagPdfForBrev(saksId, brevId),
     onSuccess: (pdfData) => {
-      //console.log(pdfData);
-      //window.open(URL.createObjectURL(new Blob([pdfData], { type: "application/pdf" })), "_blank");
+      console.log(pdfData);
+      window.open(URL.createObjectURL(new Blob([pdfData], { type: "application/pdf" })), "_blank");
     },
   });
 
@@ -186,6 +186,7 @@ function BrevForhåndsvisning() {
                     margin: 2rem 0;
                   `}
                   pageNumber={index + 1}
+                  scale={scale}
                 />
               </div>
             ))}
