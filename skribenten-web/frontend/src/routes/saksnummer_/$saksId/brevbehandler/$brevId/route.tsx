@@ -6,10 +6,8 @@ import { BodyShort, Button, HStack, Modal, TextField, VStack } from "@navikt/ds-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Outline, pdfjs } from "react-pdf";
+import { pdfjs } from "react-pdf";
 import { Document, Page } from "react-pdf";
-import { i } from "vitest/dist/reporters-P7C2ytIv";
-import { number } from "zod";
 
 import { hentAlleBrevForSak, lagPdfForBrev, slettBrev } from "~/api/sak-api-endpoints";
 import type { BrevInfo } from "~/types/brev";
@@ -40,7 +38,7 @@ function BrevForhåndsvisning() {
     mutationFn: () => lagPdfForBrev(saksId, brevId),
     onSuccess: (pdfData) => {
       console.log(pdfData);
-      window.open(URL.createObjectURL(new Blob([pdfData], { type: "application/pdf" })), "_blank");
+      window.open(URL.createObjectURL(pdfData));
     },
   });
 
