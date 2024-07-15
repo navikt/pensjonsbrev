@@ -31,7 +31,6 @@ fun createOpplysningerBruktIBeregningenLegacyDto() =
             kravGjelderFoerstegangsbehandlingBosattUtland = true,
             ufoeretrygd_reduksjonsgrunnlag_gradertOppjustertIFU = Kroner(10)
         ),
-        opplysningerOmMinstetillegg = Fixtures.create(),
         opplysningerOmBarnetillegg = Fixtures.create(),
         inntektsgrenseAar = Kroner(100),
         inntektstak = Kroner(1001),
