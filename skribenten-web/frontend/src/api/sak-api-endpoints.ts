@@ -30,7 +30,7 @@ export const lagPdfForBrev = async (saksId: string, brevId: string) => {
                 startxref
                 149
                 %EOF`;*/
-  //return (await axios.post(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`)).data;
+  return (await axios.post(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`)).data;
 };
 
 export const hentPdfForBrev = {
