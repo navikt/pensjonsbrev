@@ -1,16 +1,19 @@
-package no.nav.pensjon.brev.skribenten.db
+package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.mockk.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
+import io.mockk.InternalPlatformDsl.toArray
+import kotlinx.coroutines.*
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.db.Brevredigering
+import no.nav.pensjon.brev.skribenten.db.Document
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
@@ -18,7 +21,6 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.routes.mapBrev
-import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
@@ -26,6 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Var
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -426,6 +429,29 @@ class BrevredigeringServiceTest {
         transaction {
             assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
             assertThat(Brevredigering[brev.info.id].document.first().pdf.bytes).isEqualTo("the newest pdf".encodeToByteArray())
+        }
+    }
+
+    @Test
+    fun `dobbel oppretting av pdf er ikke mulig`(): Unit = runBlocking {
+        val brev = service.opprettBrev(
+            call = callMock,
+            sak = sak,
+            brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+            spraak = LanguageCode.ENGLISH,
+            avsenderEnhetsId = principalNavEnhetId,
+            saksbehandlerValg = GeneriskBrevData().apply { put("valg", true) },
+            mapper = ::mapBrev
+        ).resultOrNull()!!
+
+        stagePdf("a real life pdf".encodeToByteArray())
+
+        val jobs = awaitAll(*(0..<10).map { async(Dispatchers.IO) { service.opprettPdf(callMock, brev.info.id) } }.toTypedArray())
+        jobs.forEach { println(String(it?.resultOrNull()!!)) }
+
+
+        transaction {
+            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
         }
     }
 
