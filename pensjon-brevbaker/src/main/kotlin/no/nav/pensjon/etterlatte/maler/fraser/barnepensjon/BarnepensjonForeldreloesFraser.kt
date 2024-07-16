@@ -63,27 +63,27 @@ object BarnepensjonForeldreloesFraser {
                 showIf(harUtbetaling) {
                     showIf(flerePerioder) {
                         textExpr(
-                            Language.Bokmal to "Du får ".expr() + formatertBeloep +
+                            Language.Bokmal to " Du får ".expr() + formatertBeloep +
                                     " kroner hver måned før skatt fra " + formatertFom + ".",
-                            Language.Nynorsk to "Du får ".expr() + formatertBeloep +
+                            Language.Nynorsk to " Du får ".expr() + formatertBeloep +
                                     " kroner per månad før skatt frå " + formatertFom + ".",
-                            Language.English to "You will receive NOK ".expr() + formatertBeloep +
+                            Language.English to " You will receive NOK ".expr() + formatertBeloep +
                                     " each month before tax, starting on " + formatertFom + "."
                         )
                     }.orShow {
                         textExpr(
-                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
-                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
-                            Language.English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax.".expr(),
+                            Language.Bokmal to " Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
+                            Language.Nynorsk to " Du får ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
+                            Language.English to " You will receive NOK ".expr() + formatertBeloep + " each month before tax.".expr(),
                         )
                     }
                 }.orShow {
                     text(
-                        Language.Bokmal to "Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du" +
+                        Language.Bokmal to " Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du" +
                                 " mottar i uføretrygd fra NAV.",
-                        Language.Nynorsk to "Du får ikkje utbetalt barnepensjon, då denne har blitt redusert med" +
+                        Language.Nynorsk to " Du får ikkje utbetalt barnepensjon, då denne har blitt redusert med" +
                                 " utgangspunkt i uføretrygda du får frå NAV.",
-                        Language.English to "You will not receive payments from the children’s pension because they" +
+                        Language.English to " You will not receive payments from the children’s pension because they" +
                                 " have been reduced according to what you already receive in disability benefits from NAV.",
                     )
                 }
