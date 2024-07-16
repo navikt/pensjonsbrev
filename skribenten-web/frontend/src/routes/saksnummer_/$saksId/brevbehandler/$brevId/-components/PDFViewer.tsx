@@ -33,7 +33,11 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
   const pdfHeightContext = usePDFViewerContext();
 
   return (
-    <div>
+    <div
+      css={css`
+        background: var(--a-gray-300);
+      `}
+    >
       <PDFViewerTopBar
         brevId={properties.brevId}
         sakId={properties.sakId}
@@ -137,13 +141,6 @@ const SlettBrevModal = (properties: { sakId: string; brevId: string; åpen: bool
   );
 };
 
-const scrollToPage = (pageNumber: number) => {
-  const pageElement = document.querySelector(`#page_${pageNumber}`);
-  if (pageElement) {
-    pageElement.scrollIntoView();
-  }
-};
-
 const PDFViewerTopBar = (properties: {
   sakId: string;
   brevId: string;
@@ -155,6 +152,7 @@ const PDFViewerTopBar = (properties: {
     <HStack
       align="center"
       css={css`
+        background-color: white;
         border-top: 1px solid var(--a-gray-200);
         border-bottom: 1px solid var(--a-gray-200);
         padding: 0 1rem;
@@ -178,6 +176,14 @@ const TopBarNavigation = (properties: { totalNumberOfPages: number }) => {
   useEffect(() => {
     setTextFieldValue(currentPageNumber.toString());
   }, [currentPageNumber]);
+
+  const scrollToPage = (pageNumber: number) => {
+    const pageElement = document.querySelector(`#page_${pageNumber}`);
+    if (pageElement) {
+      pageElement.scrollIntoView();
+      setCurrentPageNumber(pageNumber);
+    }
+  };
 
   const handlePageInputChange = () => {
     const parsedValue = Number.parseInt(textFieldValue, 10);
@@ -238,14 +244,15 @@ const TopBarNavigation = (properties: { totalNumberOfPages: number }) => {
         <TextField
           css={css`
             input {
-              width: 36px;
+              width: 28px;
               height: 32px;
               min-height: 32px;
+              //sentrerer teksten i inputfeltet dersom feltet har et tegn, eller fler
+              padding: 0 ${textFieldValue.length > 1 ? "4px" : "8px"};
             }
           `}
           hideLabel
           label="Side"
-          //legg på onchange som sjekker at det er et tall
           onChange={(event) => {
             const value = event.target.value;
             const parsedValue = Number.parseInt(value, 10);
