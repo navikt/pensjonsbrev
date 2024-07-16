@@ -24,7 +24,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.LocalDateTime
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 data class GeneriskRedigerbarBrevdata(
@@ -62,8 +62,8 @@ class BrevredigeringService(
                         this.saksbehandlerValg = saksbehandlerValg
                         laastForRedigering = false
                         redigeresAvNavIdent = null
-                        opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-                        sistredigert = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+                        opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+                        sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         redigertBrev = letter.toEdit()
                         sistRedigertAvNavIdent = call.principal().navIdent
                     }.mapper()
@@ -88,7 +88,7 @@ class BrevredigeringService(
                     .map { oppdatertBrev ->
                         brevredigering.apply {
                             redigertBrev = oppdatertBrev
-                            sistredigert = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+                            sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                             saksbehandlerValg = nyeSaksbehandlerValg
                             sistRedigertAvNavIdent = call.principal().navIdent
                         }.mapper()

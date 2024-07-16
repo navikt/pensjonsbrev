@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.skribenten.model
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import java.time.LocalDateTime
 import no.nav.pensjon.brev.skribenten.services.LetterMetadata
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import java.time.Instant
 
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
@@ -25,9 +25,9 @@ object Api {
     data class BrevInfo(
         val id: Long,
         val opprettetAv: String,
-        val opprettet: LocalDateTime,
+        val opprettet: Instant,
         val sistredigertAv: String,
-        val sistredigert: LocalDateTime,
+        val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbar,
         val redigeresAv: String?,
     )
