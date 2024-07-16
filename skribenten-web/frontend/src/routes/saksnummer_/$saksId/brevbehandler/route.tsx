@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from "react";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BrevInfo } from "~/types/brev";
+import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
 import { DistribusjonsMetode } from "./-BrevbehandlerUtils";
 import { PDFViewerContextProvider, usePDFViewerContext } from "./$brevId/-components/PDFViewerContext";
@@ -59,7 +60,7 @@ function Brevbehandler() {
         }
 
         > :nth-of-type(2) {
-          background: white;
+          background-color: var(--a-gray-300);
           min-width: 432px;
           max-width: 720px;
           flex: 1;
@@ -217,14 +218,18 @@ const BrevItem = (properties: { sakId: string; brev: BrevInfo }) => {
                 color: var(--a-grayalpha-700);
               `}
             >
-              Sist endret: {properties.brev.sistredigert} av {properties.brev.sistredigertAv}
+              Sist endret:{" "}
+              {isDateToday(properties.brev.sistredigert)
+                ? formatStringDateWithTime(properties.brev.sistredigert)
+                : formatStringDate(properties.brev.sistredigert)}{" "}
+              av {properties.brev.sistredigertAv}
             </BodyShort>
             <BodyShort
               css={css`
                 color: var(--a-grayalpha-700);
               `}
             >
-              Brev opprettet: {properties.brev.opprettet}
+              Brev opprettet: {formatStringDate(properties.brev.opprettet)}
             </BodyShort>
           </div>
         </VStack>
