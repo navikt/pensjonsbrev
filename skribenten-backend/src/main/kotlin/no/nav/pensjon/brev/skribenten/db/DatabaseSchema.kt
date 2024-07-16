@@ -82,7 +82,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
 }
 
 object DocumentTable : LongIdTable() {
-    val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE)
+    val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdf: Column<ExposedBlob> = blob("brevpdf")
 }
