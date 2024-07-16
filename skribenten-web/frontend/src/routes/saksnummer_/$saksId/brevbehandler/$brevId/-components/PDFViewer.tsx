@@ -7,7 +7,7 @@ import { ChevronDownIcon, ChevronUpIcon, TrashIcon, ZoomMinusIcon, ZoomPlusIcon 
 import { BodyShort, Button, HStack, Modal, TextField } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { pdfjs } from "react-pdf";
 import { Document, Page } from "react-pdf";
 
@@ -31,6 +31,55 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
   const [scale, setScale] = useState<number>(1);
   const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(1);
   const pdfHeightContext = usePDFViewerContext();
+  const [currentPageNumber, setCurrentPageNumber] = useState(1);
+  const pdfContainerReference = useRef<HTMLDivElement>(null);
+
+  const handleScroll = useCallback(() => {
+    const container = pdfContainerReference.current;
+    if (!container) return;
+
+    //dette er antall pixler som er scrollet ned fra containerens topp punkt.
+    //det vil si at om man er scrollet til til toppen av containeren, vil denne være 0.
+    //og når man scroller nedover, vil denne øke.
+    const scrollTop = container.scrollTop;
+    //dette er høyden til containeren, alstå innholdet som er under PDF-vieweren sin toppbar.
+    const containerHeight = container.clientHeight;
+    //dette er midten av containeren, altså midten av PDF-vieweren sin viewport.
+    const containerMiddle = scrollTop + containerHeight / 2;
+
+    //her henter vi bare alle <Page> elementene som er i PDF'en - vi har definert en class .pdf-page på alle disse elementene
+    const pages = [...container.querySelectorAll<HTMLDivElement>(".pdf-page")];
+
+    for (const [index, page] of pages.entries()) {
+      const pageTop = page.offsetTop;
+      const pageBottom = page.offsetTop + page.offsetHeight;
+
+      //sjekker om den midtre delen av containeren er innenfor Pagen.
+      if (containerMiddle >= pageTop && containerMiddle <= pageBottom) {
+        const newVisiblePage = index + 1;
+        if (currentPageNumber !== newVisiblePage) {
+          setCurrentPageNumber(newVisiblePage);
+        }
+        break;
+      }
+    }
+  }, [currentPageNumber]);
+
+  /*
+   * Når vi scroller i PDF'en, vil vi oppdatere hvilken side vi er på.
+   * Vi legger på scroll events på containeren som holder PDF'en, som kaller handleScroll() funksjonen når man scroller gjennom.
+   *
+   * Vi cleaner eventlisteneren når komponenten blir unmounted.
+   */
+  useEffect(() => {
+    const container = pdfContainerReference.current;
+    if (!container) return;
+    container.addEventListener("scroll", handleScroll);
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [totalNumberOfPages, handleScroll]);
 
   return (
     <div
@@ -40,8 +89,10 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
     >
       <PDFViewerTopBar
         brevId={properties.brevId}
+        currentPageNumber={currentPageNumber}
         sakId={properties.sakId}
         scale={scale}
+        setCurrentPageNumber={setCurrentPageNumber}
         setScale={setScale}
         totalNumberOfPages={totalNumberOfPages}
       />
@@ -51,6 +102,7 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
           height: ${pdfHeightContext.height ? `${pdfHeightContext.height - 48}px` : "100%"};
           overflow: auto;
         `}
+        ref={pdfContainerReference}
       >
         <Document
           css={css`
@@ -62,7 +114,7 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
           onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
         >
           {Array.from({ length: totalNumberOfPages }, (_, index) => (
-            <div id={`page_${index + 1}`} key={`page_${index + 1}`}>
+            <div className={`pdf-page`} id={`page_${index + 1}`} key={`page_${index + 1}`}>
               <Page
                 css={css`
                   margin-bottom: 1rem;
@@ -147,6 +199,8 @@ const PDFViewerTopBar = (properties: {
   totalNumberOfPages: number;
   scale: number;
   setScale: (n: number) => void;
+  currentPageNumber: number;
+  setCurrentPageNumber: (n: number) => void;
 }) => {
   return (
     <HStack
@@ -161,7 +215,11 @@ const PDFViewerTopBar = (properties: {
       justify="space-between"
     >
       <HStack align="center" gap="2">
-        <TopBarNavigation totalNumberOfPages={properties.totalNumberOfPages} />
+        <TopBarNavigation
+          currentPageNumber={properties.currentPageNumber}
+          setCurrentPageNumber={properties.setCurrentPageNumber}
+          totalNumberOfPages={properties.totalNumberOfPages}
+        />
         <TopBarZoom scale={properties.scale} setScale={properties.setScale} />
       </HStack>
       <SlettBrev brevId={properties.brevId} sakId={properties.sakId} />
@@ -169,8 +227,13 @@ const PDFViewerTopBar = (properties: {
   );
 };
 
-const TopBarNavigation = (properties: { totalNumberOfPages: number }) => {
-  const [currentPageNumber, setCurrentPageNumber] = useState(1);
+const TopBarNavigation = (properties: {
+  totalNumberOfPages: number;
+  currentPageNumber: number;
+  setCurrentPageNumber: (n: number) => void;
+}) => {
+  //const [currentPageNumber, setCurrentPageNumber] = useState(1);
+  const { currentPageNumber, setCurrentPageNumber } = properties;
   const [textFieldValue, setTextFieldValue] = useState("1");
 
   useEffect(() => {

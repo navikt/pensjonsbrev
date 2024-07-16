@@ -28,6 +28,7 @@ import { PDFViewerContextProvider, usePDFViewerContext } from "./$brevId/-compon
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
   component: () => (
+    //Fordi høyden til routen som viser PDF'en ikke er helt fastsatt på forhånd, anser vi denne routen som direkte parenten av PDF-vieweren, som da får bestemme PDF-viewerens høyde
     <PDFViewerContextProvider>
       <Brevbehandler />
     </PDFViewerContextProvider>
