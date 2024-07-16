@@ -232,43 +232,41 @@ const TopBarNavigation = (properties: {
   currentPageNumber: number;
   setCurrentPageNumber: (n: number) => void;
 }) => {
-  //const [currentPageNumber, setCurrentPageNumber] = useState(1);
-  const { currentPageNumber, setCurrentPageNumber } = properties;
   const [textFieldValue, setTextFieldValue] = useState("1");
 
   useEffect(() => {
-    setTextFieldValue(currentPageNumber.toString());
-  }, [currentPageNumber]);
+    setTextFieldValue(properties.currentPageNumber.toString());
+  }, [properties.currentPageNumber]);
 
   const scrollToPage = (pageNumber: number) => {
     const pageElement = document.querySelector(`#page_${pageNumber}`);
     if (pageElement) {
       pageElement.scrollIntoView();
-      setCurrentPageNumber(pageNumber);
+      properties.setCurrentPageNumber(pageNumber);
     }
   };
 
   const handlePageInputChange = () => {
     const parsedValue = Number.parseInt(textFieldValue, 10);
     if (parsedValue >= 1 && parsedValue <= properties.totalNumberOfPages) {
-      setCurrentPageNumber(parsedValue);
+      properties.setCurrentPageNumber(parsedValue);
       scrollToPage(parsedValue);
     } else {
-      setTextFieldValue(currentPageNumber.toString());
+      setTextFieldValue(properties.currentPageNumber.toString());
     }
   };
 
   const goToNextPage = () => {
-    if (currentPageNumber < properties.totalNumberOfPages) {
-      setCurrentPageNumber(currentPageNumber + 1);
-      scrollToPage(currentPageNumber + 1);
+    if (properties.currentPageNumber < properties.totalNumberOfPages) {
+      properties.setCurrentPageNumber(properties.currentPageNumber + 1);
+      scrollToPage(properties.currentPageNumber + 1);
     }
   };
 
   const goToPreviousPage = () => {
-    if (currentPageNumber > 1) {
-      setCurrentPageNumber(currentPageNumber - 1);
-      scrollToPage(currentPageNumber - 1);
+    if (properties.currentPageNumber > 1) {
+      properties.setCurrentPageNumber(properties.currentPageNumber - 1);
+      scrollToPage(properties.currentPageNumber - 1);
     }
   };
 
@@ -287,7 +285,7 @@ const TopBarNavigation = (properties: {
           height: 24px;
           widht: 24px;
         `}
-        disabled={currentPageNumber === 1}
+        disabled={properties.currentPageNumber === 1}
         onClick={goToPreviousPage}
       >
         <ChevronUpIcon fontSize="24px" title="forrige side" />
@@ -298,7 +296,7 @@ const TopBarNavigation = (properties: {
           height: 24px;
           widht: 24px;
         `}
-        disabled={currentPageNumber === properties.totalNumberOfPages}
+        disabled={properties.currentPageNumber === properties.totalNumberOfPages}
         onClick={goToNextPage}
       >
         <ChevronDownIcon fontSize="24px" title="neste side" />
