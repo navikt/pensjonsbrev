@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from "react";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BrevInfo } from "~/types/brev";
+import type { Nullable } from "~/types/Nullable";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
 import { DistribusjonsMetode } from "./-BrevbehandlerUtils";
@@ -104,6 +105,12 @@ const BrevbehandlerMeny = (properties: { sakId: string }) => {
 };
 
 const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
+  const [åpenBrevItem, setÅpenBrevItem] = useState<Nullable<number>>(null);
+
+  const handleOpenChange = (brevId: number) => (isOpen: boolean) => {
+    setÅpenBrevItem(isOpen ? brevId : null);
+  };
+
   if (properties.brev.length === 0) {
     return <Alert variant="info">Fant ingen brev som er under behandling</Alert>;
   }
@@ -111,18 +118,29 @@ const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
   return (
     <Accordion>
       {properties.brev.map((brev) => (
-        <BrevItem brev={brev} key={brev.id} sakId={properties.sakId} />
+        <BrevItem
+          brev={brev}
+          key={brev.id}
+          onOpenChange={handleOpenChange(brev.id)}
+          open={åpenBrevItem === brev.id}
+          sakId={properties.sakId}
+        />
       ))}
     </Accordion>
   );
 };
 
-const BrevItem = (properties: { sakId: string; brev: BrevInfo }) => {
+const BrevItem = (properties: {
+  sakId: string;
+  brev: BrevInfo;
+  open: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+}) => {
   const [erFerdigstilt, setErFerdigstilt] = useState<boolean>(false);
   const navigate = useNavigate({ from: Route.fullPath });
 
   return (
-    <Accordion.Item>
+    <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
       <Accordion.Header>
         <VStack gap="2">
           <Brevtilstand />
