@@ -27,8 +27,22 @@ export type BrevInfo = {
   sistredigertAv: string;
   sistredigert: string;
   brevkode: string;
-  redigeresAv: string | null;
+  status: BrevInfoStatus;
 };
+
+export interface BrevInfoStatus {
+  type: BrevInfoStatusType;
+  /**
+   * eksisterer kun dersom type er UNDER_REDIGERING
+   */
+  redigeresAv?: string;
+}
+
+export enum BrevInfoStatusType {
+  KLADD = "Kladd",
+  KLAR = "Klar",
+  UNDER_REDIGERING = "UnderRedigering",
+}
 
 export type OppdaterBrevRequest = {
   saksbehandlerValg: SaksbehandlerValg;
