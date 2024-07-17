@@ -14,14 +14,15 @@ import {
   Tag,
   VStack,
 } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { type BrevInfo, type BrevInfoStatus, BrevInfoStatusType } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
+import { erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
 import { EndreMottakerModal } from "../brevvelger/$templateId/-components/endreMottaker/EndreMottaker";
@@ -42,6 +43,7 @@ function Brevbehandler() {
   const brevPdfContainerReference = useRef<HTMLDivElement>(null);
   const pdfHeightContext = usePDFViewerContext();
 
+  //TODO - et lite problem er dersom dem resizer vinduet etter at PDF'en er lastet inn, så vil høyden være feil
   useEffect(() => {
     pdfHeightContext.setHeight(brevPdfContainerReference?.current?.getBoundingClientRect().height ?? null);
   }, [brevPdfContainerReference, pdfHeightContext]);
@@ -150,8 +152,14 @@ const BrevItem = (properties: {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
 }) => {
-  const [erFerdigstilt, setErFerdigstilt] = useState<boolean>(false);
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
+
+  const ferdigstillMutation = useMutation<unknown, unknown, boolean, unknown>({
+    mutationFn: (låst) =>
+      delvisOppdaterBrev({ sakId: properties.sakId, brevId: properties.brev.id, laastForRedigering: låst }),
+  });
+
+  const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
 
   return (
     <>
@@ -185,7 +193,7 @@ const BrevItem = (properties: {
                 </BodyShort>
                 <HStack gap="2">
                   <BodyShort>En mottaker</BodyShort>
-                  {!erFerdigstilt && (
+                  {!erLåst && (
                     <Button
                       css={css`
                         padding: 0;
@@ -201,20 +209,11 @@ const BrevItem = (properties: {
                 </HStack>
               </div>
 
-              <Switch
-                checked={erFerdigstilt}
-                onChange={(event) => {
-                  if (event.target.checked) {
-                    setErFerdigstilt(true);
-                  } else {
-                    setErFerdigstilt(false);
-                  }
-                }}
-              >
+              <Switch checked={erLåst} onChange={(event) => ferdigstillMutation.mutate(event.target.checked)}>
                 Lås for redigering
               </Switch>
 
-              {!erFerdigstilt && (
+              {!erLåst && (
                 <VStack
                   css={css`
                     align-items: flex-start;
@@ -252,7 +251,7 @@ const BrevItem = (properties: {
                 </VStack>
               )}
 
-              {erFerdigstilt && (
+              {erLåst && (
                 <RadioGroup description={"Distribusjon"} legend="" size="small">
                   <Radio value={DistribusjonsMetode.Sentralprint}>Sentralprint</Radio>
                   <Radio value={DistribusjonsMetode.Lokaltprint}>Lokaltprint</Radio>

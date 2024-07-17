@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-import type { BrevInfo } from "~/types/brev";
+import type { BrevInfo, DelvisOppdaterBrevRequest } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
 
@@ -37,6 +37,10 @@ export const hentPdfForBrevFunction = async (saksId: string, brevId: string) =>
       headers: { Accept: "application/pdf" },
     })
   ).data;
+
+export const delvisOppdaterBrev = (argz: DelvisOppdaterBrevRequest) => {
+  return axios.patch(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.sakId}/brev/${argz.brevId}`, argz);
+};
 
 export const slettBrev = async (saksId: string, brevId: string) =>
   (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`)).data;

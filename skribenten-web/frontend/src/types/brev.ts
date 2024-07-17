@@ -20,6 +20,12 @@ export type BrevResponse = {
   saksbehandlerValg: SaksbehandlerValg;
 };
 
+export interface DelvisOppdaterBrevRequest {
+  sakId: string;
+  brevId: number;
+  laastForRedigering: Nullable<boolean>;
+}
+
 export type BrevInfo = {
   id: number;
   opprettetAv: string;
