@@ -27,6 +27,12 @@ export interface DelvisOppdaterBrevRequest {
     laastForRedigering: Nullable<boolean>;
 }
 
+export interface DelvisOppdaterBrevResponse {
+  info: BrevInfo;
+  redigertBrev: EditedLetter;
+  saksbehandlerValg: SaksbehandlerValg;
+}
+
 export type ReservasjonResponse = {
   vellykket: boolean;
   reservertAv: NavAnsatt;

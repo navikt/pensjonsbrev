@@ -14,12 +14,13 @@ import {
   Tag,
   VStack,
 } from "@navikt/ds-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
+import type { DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo, type BrevInfoStatus, BrevInfoStatusType } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevKlar } from "~/utils/brevUtils";
@@ -153,10 +154,16 @@ const BrevItem = (properties: {
   onOpenChange: (isOpen: boolean) => void;
 }) => {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
-  const ferdigstillMutation = useMutation<unknown, unknown, boolean, unknown>({
+  const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (låst) =>
       delvisOppdaterBrev({ sakId: properties.sakId, brevId: properties.brev.id, laastForRedigering: låst }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
+      );
+    },
   });
 
   const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
@@ -209,7 +216,12 @@ const BrevItem = (properties: {
                 </HStack>
               </div>
 
-              <Switch checked={erLåst} onChange={(event) => ferdigstillMutation.mutate(event.target.checked)}>
+              <Switch
+                checked={erLåst}
+                // TODO - finn en måte å gi feedback på dersom kallet gir error
+                loading={låsForRedigeringMutation.isPending}
+                onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
+              >
                 Lås for redigering
               </Switch>
 
