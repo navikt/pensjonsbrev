@@ -21,6 +21,12 @@ export type BrevResponse = {
   saksbehandlerValg: SaksbehandlerValg;
 };
 
+export interface DelvisOppdaterBrevRequest {
+    sakId: string;
+    brevId: number;
+    laastForRedigering: Nullable<boolean>;
+}
+
 export type ReservasjonResponse = {
   vellykket: boolean;
   reservertAv: NavAnsatt;
