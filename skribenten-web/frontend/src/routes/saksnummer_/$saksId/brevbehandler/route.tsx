@@ -106,9 +106,19 @@ const BrevbehandlerMeny = (properties: { sakId: string }) => {
 
 const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
   const [åpenBrevItem, setÅpenBrevItem] = useState<Nullable<number>>(null);
+  const navigate = useNavigate({ from: Route.fullPath });
 
   const handleOpenChange = (brevId: number) => (isOpen: boolean) => {
     setÅpenBrevItem(isOpen ? brevId : null);
+    isOpen
+      ? navigate({
+          to: "/saksnummer/$saksId/brevbehandler/$brevId",
+          params: { saksId: properties.sakId, brevId: brevId.toString() },
+        })
+      : navigate({
+          to: "/saksnummer/$saksId/brevbehandler",
+          params: { saksId: properties.sakId },
+        });
   };
 
   if (properties.brev.length === 0) {
@@ -169,16 +179,8 @@ const BrevItem = (properties: {
               onChange={(event) => {
                 if (event.target.checked) {
                   setErFerdigstilt(true);
-                  navigate({
-                    to: "/saksnummer/$saksId/brevbehandler/$brevId",
-                    params: { saksId: properties.sakId, brevId: properties.brev.id.toString() },
-                  });
                 } else {
                   setErFerdigstilt(false);
-                  navigate({
-                    to: "/saksnummer/$saksId/brevbehandler",
-                    params: { saksId: properties.sakId },
-                  });
                 }
               }}
             >
