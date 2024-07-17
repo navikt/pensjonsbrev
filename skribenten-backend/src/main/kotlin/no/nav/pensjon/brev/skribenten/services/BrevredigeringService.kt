@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.principal
@@ -41,15 +42,14 @@ class BrevredigeringService(
 
     val logger: Logger = LoggerFactory.getLogger(BrevredigeringService::class.java)
 
-    suspend fun <T : Any> opprettBrev(
+    suspend fun opprettBrev(
         call: ApplicationCall,
         sak: Pen.SakSelection,
         brevkode: Brevkode.Redigerbar,
         spraak: LanguageCode,
         avsenderEnhetsId: String?,
         saksbehandlerValg: BrevbakerBrevdata,
-        mapper: Brevredigering.() -> T,
-    ): ServiceResult<T> =
+    ): ServiceResult<Api.BrevResponse> =
         harTilgangTilEnhet(call, avsenderEnhetsId) {
             rendreBrev(call, brevkode, spraak, sak, saksbehandlerValg, avsenderEnhetsId).map { letter ->
                 transaction {
@@ -66,19 +66,18 @@ class BrevredigeringService(
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         redigertBrev = letter.toEdit()
                         sistRedigertAvNavIdent = call.principal().navIdent
-                    }.mapper()
+                    }.mapBrev()
                 }
             }
         }
 
-    suspend fun <T : Any> oppdaterBrev(
+    suspend fun oppdaterBrev(
         call: ApplicationCall,
         sak: Pen.SakSelection,
         brevId: Long,
         nyeSaksbehandlerValg: BrevbakerBrevdata,
         nyttRedigertbrev: Edit.Letter,
-        mapper: Brevredigering.() -> T,
-    ): ServiceResult<T>? =
+    ): ServiceResult<Api.BrevResponse>? =
         newSuspendedTransaction {
             val brevredigering = Brevredigering.findById(brevId)
 
@@ -91,10 +90,17 @@ class BrevredigeringService(
                             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                             saksbehandlerValg = nyeSaksbehandlerValg
                             sistRedigertAvNavIdent = call.principal().navIdent
-                        }.mapper()
+                        }.mapBrev()
                     }
             } else null
         }
+
+    fun delvisOppdaterBrev(brevId: Long, patch: Api.DelvisOppdaterBrevRequest): Api.BrevResponse? =
+        transaction {
+            Brevredigering.findByIdAndUpdate(brevId) { brev ->
+                patch.laastForRedigering?.also { brev.laastForRedigering = it }
+            }
+        }?.mapBrev()
 
     /**
      * Slett brev med id.
@@ -112,20 +118,20 @@ class BrevredigeringService(
         }
     }
 
-    suspend fun <T : Any> hentBrev(call: ApplicationCall, sak: Pen.SakSelection, brevId: Long, mapper: Brevredigering.() -> T): ServiceResult<T>? =
+    suspend fun hentBrev(call: ApplicationCall, sak: Pen.SakSelection, brevId: Long): ServiceResult<Api.BrevResponse>? =
         newSuspendedTransaction {
             val brev = Brevredigering.findById(brevId)
 
             if (brev != null) {
                 rendreBrev(call, brev.brevkode, brev.spraak, sak, brev.saksbehandlerValg, brev.avsenderEnhetId)
                     .map { brev.redigertBrev.updateEditedLetter(it) }
-                    .map { brev.apply { redigertBrev = it }.mapper() }
+                    .map { brev.apply { redigertBrev = it }.mapBrev() }
             } else null
         }
 
-    fun <T : Any> hentBrevForSak(saksId: Long, mapper: Brevredigering.() -> T): List<T> {
+    fun hentBrevForSak(saksId: Long): List<Api.BrevInfo> {
         return transaction {
-            Brevredigering.find { BrevredigeringTable.saksId eq saksId }.map(mapper)
+            Brevredigering.find { BrevredigeringTable.saksId eq saksId }.map(::mapBrevInfo)
         }
     }
 
@@ -229,4 +235,27 @@ class BrevredigeringService(
             } else null
         }
 
+    private fun Brevredigering.mapBrev(): Api.BrevResponse =
+        Api.BrevResponse(
+            info = mapBrevInfo(this),
+            redigertBrev = redigertBrev,
+            saksbehandlerValg = saksbehandlerValg,
+        )
+
+    private fun mapBrevInfo(brev: Brevredigering): Api.BrevInfo = with(brev) {
+        val redigeresAv = redigeresAvNavIdent
+        Api.BrevInfo(
+            id = id.value,
+            opprettetAv = opprettetAvNavIdent,
+            opprettet = opprettet,
+            sistredigertAv = sistRedigertAvNavIdent,
+            sistredigert = sistredigert,
+            brevkode = brevkode,
+            status = when {
+                laastForRedigering -> Api.BrevStatus.Klar
+                redigeresAv != null -> Api.BrevStatus.UnderRedigering(redigeresAv)
+                else -> Api.BrevStatus.Kladd
+            },
+        )
+    }
 }
