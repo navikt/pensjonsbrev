@@ -77,6 +77,8 @@ const EndreMottaker = (properties: {
 export default EndreMottaker;
 
 /*
+  TODO - flytt ut til generel components mappe siden den nå benyttes i flere steder
+
   litt om hvorfor denne er laget som den er:
   Vi har 1 modal, som skal deles opp i 3 tabs. 2 av dem er velgbare, mens 1 tab (oppsummering) er intern.
   Modalen-bodyen skal reflektere 3 tilstander - Valg av mottaker, oppsummering, og avbrytelse

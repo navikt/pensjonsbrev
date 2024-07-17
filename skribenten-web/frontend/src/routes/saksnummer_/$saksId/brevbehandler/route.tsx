@@ -20,8 +20,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { Adresse } from "~/types/apiTypes";
-import type { BrevInfo } from "~/types/brev";
+import { type BrevInfo, type BrevInfoStatus, BrevInfoStatusType } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
@@ -169,7 +168,7 @@ const BrevItem = (properties: {
       <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
         <Accordion.Header>
           <VStack gap="2">
-            <Brevtilstand />
+            <Brevtilstand status={properties.brev.status} />
             <Label size="small">{properties.brev.brevkode}</Label>
           </VStack>
         </Accordion.Header>
@@ -288,16 +287,36 @@ const BrevItem = (properties: {
   );
 };
 
-const Brevtilstand = () => {
+const Brevtilstand = (properties: { status: BrevInfoStatus }) => {
+  const { variant, text, description } = brevInfoStatusTypeToTextAndTagVariant(properties.status);
+
   return (
     <Tag
       css={css`
         align-self: flex-start;
       `}
       size="small"
-      variant="info"
+      variant={variant}
     >
-      Tilstand
+      <HStack>
+        <BodyShort>{text}</BodyShort>
+        {description && <BodyShort>{description}</BodyShort>}
+      </HStack>
     </Tag>
   );
+};
+
+const brevInfoStatusTypeToTextAndTagVariant = (status: BrevInfoStatus) => {
+  switch (status.type) {
+    case BrevInfoStatusType.KLADD: {
+      return { variant: "warning" as const, text: "Kladd", description: null };
+    }
+    case BrevInfoStatusType.KLAR: {
+      return { variant: "success" as const, text: "Klar", description: null };
+    }
+
+    case BrevInfoStatusType.UNDER_REDIGERING: {
+      return { variant: "alt1" as const, text: "Under redigering", description: `Redigeres av ${status.redigeresAv}` };
+    }
+  }
 };
