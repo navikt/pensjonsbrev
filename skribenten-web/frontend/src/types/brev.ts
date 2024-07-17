@@ -26,6 +26,12 @@ export interface DelvisOppdaterBrevRequest {
   laastForRedigering: Nullable<boolean>;
 }
 
+export interface DelvisOppdaterBrevResponse {
+  info: BrevInfo;
+  redigertBrev: EditedLetter;
+  saksbehandlerValg: SaksbehandlerValg;
+}
+
 export type BrevInfo = {
   id: number;
   opprettetAv: string;
