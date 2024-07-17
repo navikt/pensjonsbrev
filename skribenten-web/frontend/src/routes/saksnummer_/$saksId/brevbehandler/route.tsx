@@ -110,15 +110,18 @@ const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
 
   const handleOpenChange = (brevId: number) => (isOpen: boolean) => {
     setÅpenBrevItem(isOpen ? brevId : null);
-    isOpen
-      ? navigate({
-          to: "/saksnummer/$saksId/brevbehandler/$brevId",
-          params: { saksId: properties.sakId, brevId: brevId.toString() },
-        })
-      : navigate({
-          to: "/saksnummer/$saksId/brevbehandler",
-          params: { saksId: properties.sakId },
-        });
+
+    if (isOpen) {
+      navigate({
+        to: "/saksnummer/$saksId/brevbehandler/$brevId",
+        params: { saksId: properties.sakId, brevId: brevId.toString() },
+      });
+    } else {
+      navigate({
+        to: "/saksnummer/$saksId/brevbehandler",
+        params: { saksId: properties.sakId },
+      });
+    }
   };
 
   if (properties.brev.length === 0) {
@@ -147,7 +150,6 @@ const BrevItem = (properties: {
   onOpenChange: (isOpen: boolean) => void;
 }) => {
   const [erFerdigstilt, setErFerdigstilt] = useState<boolean>(false);
-  const navigate = useNavigate({ from: Route.fullPath });
 
   return (
     <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>

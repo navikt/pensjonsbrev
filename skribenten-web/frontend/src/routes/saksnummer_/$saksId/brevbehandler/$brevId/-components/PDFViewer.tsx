@@ -27,27 +27,26 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
   const pdfContainerReference = useRef<HTMLDivElement>(null);
 
   const handleScroll = useCallback(() => {
-    const container = pdfContainerReference.current;
-    if (!container) return;
+    const pdfContainer = pdfContainerReference.current;
+    if (!pdfContainer) return;
 
     //dette er antall pixler som er scrollet ned fra containerens topp punkt.
-    //det vil si at om man er scrollet til til toppen av containeren, vil denne være 0.
-    //og når man scroller nedover, vil denne øke.
-    const scrollTop = container.scrollTop;
+    //det vil si at om man er scrollet til toppen av containeren, vil denne være 0, og når man scroller nedover, vil denne øke.
+    const scrollTop = pdfContainer.scrollTop;
     //dette er høyden til containeren, alstå innholdet som er under PDF-vieweren sin toppbar.
-    const containerHeight = container.clientHeight;
+    const pdfContainerHeight = pdfContainer.clientHeight;
     //dette er midten av containeren, altså midten av PDF-vieweren sin viewport.
-    const containerMiddle = scrollTop + containerHeight / 2;
+    const pdfContainerMiddle = scrollTop + pdfContainerHeight / 2;
 
     //her henter vi bare alle <Page> elementene som er i PDF'en - vi har definert en class .pdf-page på alle disse elementene
-    const pages = [...container.querySelectorAll<HTMLDivElement>(".pdf-page")];
+    const pages = [...pdfContainer.querySelectorAll<HTMLDivElement>(".pdf-page")];
 
     for (const [index, page] of pages.entries()) {
       const pageTop = page.offsetTop;
       const pageBottom = page.offsetTop + page.offsetHeight;
 
       //sjekker om den midtre delen av containeren er innenfor Pagen.
-      if (containerMiddle >= pageTop && containerMiddle <= pageBottom) {
+      if (pdfContainerMiddle >= pageTop && pdfContainerMiddle <= pageBottom) {
         const newVisiblePage = index + 1;
         if (currentPageNumber !== newVisiblePage) {
           setCurrentPageNumber(newVisiblePage);
