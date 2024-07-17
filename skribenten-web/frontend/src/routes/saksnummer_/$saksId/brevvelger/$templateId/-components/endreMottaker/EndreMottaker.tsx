@@ -83,7 +83,7 @@ export default EndreMottaker;
   Oppsummering og avbyrtelse skal 'fjerne' alt det andre, derfor kreves det at modal har en state som vet hva den skal rendre
   Vi klarer også å holde på diverse tilstander mye enklere, som f.eks sammhandler søk dersom dem navigerer seg tilbake fra oppsummering
 */
-const EndreMottakerModal = (properties: {
+export const EndreMottakerModal = (properties: {
   åpen: boolean;
   onBekreftNyMottaker: (id: string | Adresse) => void;
   onClose: () => void;

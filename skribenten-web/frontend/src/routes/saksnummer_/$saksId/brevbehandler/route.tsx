@@ -20,10 +20,12 @@ import { useEffect, useRef, useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
+import type { Adresse } from "~/types/apiTypes";
 import type { BrevInfo } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
+import { EndreMottakerModal } from "../brevvelger/$templateId/-components/endreMottaker/EndreMottaker";
 import { DistribusjonsMetode } from "./-BrevbehandlerUtils";
 import { PDFViewerContextProvider, usePDFViewerContext } from "./$brevId/-components/PDFViewerContext";
 
@@ -150,114 +152,139 @@ const BrevItem = (properties: {
   onOpenChange: (isOpen: boolean) => void;
 }) => {
   const [erFerdigstilt, setErFerdigstilt] = useState<boolean>(false);
+  const [modalÅpen, setModalÅpen] = useState<boolean>(false);
 
   return (
-    <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
-      <Accordion.Header>
-        <VStack gap="2">
-          <Brevtilstand />
-          <Label size="small">{properties.brev.brevkode}</Label>
-        </VStack>
-      </Accordion.Header>
-      <Accordion.Content>
-        <VStack gap="8">
-          <VStack gap="4">
+    <>
+      {modalÅpen && (
+        <EndreMottakerModal
+          onBekreftNyMottaker={(nyMottaker) => {
+            setModalÅpen(false);
+            console.log("Bekreft ny mottaker:", nyMottaker);
+          }}
+          onClose={() => setModalÅpen(false)}
+          åpen={modalÅpen}
+        />
+      )}
+      <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
+        <Accordion.Header>
+          <VStack gap="2">
+            <Brevtilstand />
+            <Label size="small">{properties.brev.brevkode}</Label>
+          </VStack>
+        </Accordion.Header>
+        <Accordion.Content>
+          <VStack gap="8">
+            <VStack gap="4">
+              <div>
+                <BodyShort
+                  css={css`
+                    color: var(--a-grayalpha-700);
+                  `}
+                >
+                  Mottaker
+                </BodyShort>
+                <HStack gap="2">
+                  <BodyShort>En mottaker</BodyShort>
+                  {!erFerdigstilt && (
+                    <Button
+                      css={css`
+                        padding: 0;
+                      `}
+                      onClick={() => setModalÅpen(true)}
+                      size="small"
+                      type="button"
+                      variant="tertiary"
+                    >
+                      <PencilIcon fontSize="24px" />
+                    </Button>
+                  )}
+                </HStack>
+              </div>
+
+              <Switch
+                checked={erFerdigstilt}
+                onChange={(event) => {
+                  if (event.target.checked) {
+                    setErFerdigstilt(true);
+                  } else {
+                    setErFerdigstilt(false);
+                  }
+                }}
+              >
+                Lås for redigering
+              </Switch>
+
+              {!erFerdigstilt && (
+                <VStack
+                  css={css`
+                    align-items: flex-start;
+                  `}
+                  gap="4"
+                >
+                  <Button
+                    css={css`
+                      color: #23262a;
+                      border-color: #23262a;
+                      box-shadow: inset 0 0 0 2px #23262a;
+                    `}
+                    onClick={() => {
+                      //TODO: Implementer oppdatering av data
+                      console.log("Oppdaterer data");
+                    }}
+                    size="small"
+                    type="button"
+                    variant="secondary"
+                  >
+                    Oppdater data
+                  </Button>
+                  <Link
+                    className="navds-button navds-button--small navds-label navds-label--small"
+                    css={css`
+                      color: #23262a;
+                      border-color: #23262a;
+                      box-shadow: inset 0 0 0 2px #23262a;
+                    `}
+                    params={{ saksId: properties.sakId, brevId: properties.brev.id }}
+                    to="/saksnummer/$saksId/brev/$brevId"
+                  >
+                    Fortsett redigering
+                  </Link>
+                </VStack>
+              )}
+
+              {erFerdigstilt && (
+                <RadioGroup description={"Distribusjon"} legend="" size="small">
+                  <Radio value={DistribusjonsMetode.Sentralprint}>Sentralprint</Radio>
+                  <Radio value={DistribusjonsMetode.Lokaltprint}>Lokaltprint</Radio>
+                </RadioGroup>
+              )}
+            </VStack>
+
             <div>
               <BodyShort
                 css={css`
                   color: var(--a-grayalpha-700);
                 `}
               >
-                Mottaker
+                Sist endret:{" "}
+                {isDateToday(properties.brev.sistredigert)
+                  ? formatStringDateWithTime(properties.brev.sistredigert)
+                  : formatStringDate(properties.brev.sistredigert)}{" "}
+                av {properties.brev.sistredigertAv}
               </BodyShort>
-              <HStack gap="2">
-                <BodyShort>En mottaker</BodyShort>
-                {!erFerdigstilt && <PencilIcon fontSize="24px" />}
-              </HStack>
-            </div>
-
-            <Switch
-              checked={erFerdigstilt}
-              onChange={(event) => {
-                if (event.target.checked) {
-                  setErFerdigstilt(true);
-                } else {
-                  setErFerdigstilt(false);
-                }
-              }}
-            >
-              Lås for redigering
-            </Switch>
-
-            {!erFerdigstilt && (
-              <VStack
+              <BodyShort
                 css={css`
-                  align-items: flex-start;
+                  color: var(--a-grayalpha-700);
                 `}
-                gap="4"
               >
-                <Button
-                  css={css`
-                    color: #23262a;
-                    border-color: #23262a;
-                    box-shadow: inset 0 0 0 2px #23262a;
-                  `}
-                  onClick={() => {
-                    //TODO: Implementer oppdatering av data
-                    console.log("Oppdaterer data");
-                  }}
-                  size="small"
-                  type="button"
-                  variant="secondary"
-                >
-                  Oppdater data
-                </Button>
-                <Link
-                  className="navds-button navds-button--small navds-label navds-label--small"
-                  css={css`
-                    color: #23262a;
-                    border-color: #23262a;
-                    box-shadow: inset 0 0 0 2px #23262a;
-                  `}
-                  params={{ saksId: properties.sakId, brevId: properties.brev.id }}
-                  to="/saksnummer/$saksId/brev/$brevId"
-                >
-                  Fortsett redigering
-                </Link>
-              </VStack>
-            )}
-
-            {erFerdigstilt && (
-              <RadioGroup description={"Distribusjon"} legend="" size="small">
-                <Radio value={DistribusjonsMetode.Sentralprint}>Sentralprint</Radio>
-                <Radio value={DistribusjonsMetode.Lokaltprint}>Lokaltprint</Radio>
-              </RadioGroup>
-            )}
+                Brev opprettet: {formatStringDate(properties.brev.opprettet)}
+              </BodyShort>
+            </div>
           </VStack>
-
-          <div>
-            <BodyShort
-              css={css`
-                color: var(--a-grayalpha-700);
-              `}
-            >
-              Sist endret:{" "}
-              {isDateToday(properties.brev.sistredigert)
-                ? formatStringDateWithTime(properties.brev.sistredigert)
-                : formatStringDate(properties.brev.sistredigert)}{" "}
-              av {properties.brev.sistredigertAv}
-            </BodyShort>
-            <BodyShort
-              css={css`
-                color: var(--a-grayalpha-700);
-              `}
-            >
-              Brev opprettet: {formatStringDate(properties.brev.opprettet)}
-            </BodyShort>
-          </div>
-        </VStack>
-      </Accordion.Content>
-    </Accordion.Item>
+        </Accordion.Content>
+      </Accordion.Item>
+    </>
   );
 };
 
