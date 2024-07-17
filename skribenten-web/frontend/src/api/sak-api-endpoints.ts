@@ -26,7 +26,7 @@ export const lagPdfForBrev = async (saksId: string, brevId: string) => {
 };
 
 export const hentPdfForBrev = {
-  queryKey: ["hentPdfForBrev"],
+  queryKey: (brevId: string) => ["hentPdfForBrev", brevId],
   queryFn: async (saksId: string, brevId: string) => hentPdfForBrevFunction(saksId, brevId),
 };
 
