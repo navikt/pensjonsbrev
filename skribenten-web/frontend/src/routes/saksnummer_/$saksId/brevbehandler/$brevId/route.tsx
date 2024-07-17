@@ -1,4 +1,5 @@
-import { BodyShort } from "@navikt/ds-react";
+import { css } from "@emotion/react";
+import { Label, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -14,25 +15,26 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler/$brevId"
 function BrevForhåndsvisning() {
   const { saksId, brevId } = Route.useParams();
 
-  /*
-  //TODO - vil vi alltid kanskje lage PDF'en ved switchen i parent route, og bare hente den her?
-  const lagPdf = useMutation({
-    mutationFn: () => lagPdfForBrev(saksId, brevId),
-    onSuccess: (pdfData) => {
-      window.open(URL.createObjectURL(pdfData));
-    },
-  });*/
-
   const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey,
+    queryKey: hentPdfForBrev.queryKey(brevId),
     queryFn: () => hentPdfForBrevFunction(saksId, brevId),
   });
 
   return (
-    <div>
-      {hentPdfQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
+    <VStack
+      css={css`
+        height: 100%;
+      `}
+      justify={"center"}
+    >
+      {hentPdfQuery.isPending && (
+        <VStack align="center" justify="center">
+          <Loader size="3xlarge" title="Henter..." />
+          <Label>Henter brev...</Label>
+        </VStack>
+      )}
       {hentPdfQuery.isError && <ApiError error={hentPdfQuery.error} title={"Kunne ikke hente PDF"} />}
       {hentPdfQuery.isSuccess && <PDFViewer brevId={brevId} pdf={hentPdfQuery.data} sakId={saksId} />}
-    </div>
+    </VStack>
   );
 }
