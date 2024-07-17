@@ -73,14 +73,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
         }
     }
 
-    install(ContentNegotiation) {
-        jackson {
-            registerModule(JavaTimeModule())
-            registerModule(Edit.JacksonModule)
-            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-        }
-    }
+    skribentenContenNegotiation()
 
     install(CORS) {
         allowMethod(HttpMethod.Options)
@@ -101,4 +94,15 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
     }
     configureRouting(azureADConfig, skribentenConfig)
     configureMetrics()
+}
+
+fun Application.skribentenContenNegotiation() {
+    install(ContentNegotiation) {
+        jackson {
+            registerModule(JavaTimeModule())
+            registerModule(Edit.JacksonModule)
+            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        }
+    }
 }

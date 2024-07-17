@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -22,6 +24,8 @@ object Api {
         val redigertBrev: Edit.Letter,
     )
 
+    data class DelvisOppdaterBrevRequest(val laastForRedigering: Boolean?)
+
     data class BrevInfo(
         val id: Long,
         val opprettetAv: String,
@@ -29,8 +33,21 @@ object Api {
         val sistredigertAv: String,
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbar,
-        val redigeresAv: String?,
+        val status: BrevStatus,
     )
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(BrevStatus.Kladd::class, name = "Kladd"),
+        JsonSubTypes.Type(BrevStatus.UnderRedigering::class, name = "UnderRedigering"),
+        JsonSubTypes.Type(BrevStatus.Klar::class, name = "Klar"),
+    )
+    sealed class BrevStatus {
+        data object Kladd : BrevStatus()
+        data class UnderRedigering(val redigeresAv: String) : BrevStatus()
+        data object Klar : BrevStatus()
+    }
+
     data class BrevResponse(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
