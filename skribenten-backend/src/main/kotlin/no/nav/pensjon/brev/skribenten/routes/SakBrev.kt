@@ -81,10 +81,11 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             )
         }
 
+        // TODO: Slett når frontend er endret til å bruke get
         post("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
 
-            brevredigeringService.opprettPdf(call, brevId)
+            brevredigeringService.hentEllerOpprettPdf(call, brevId)
                 ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.Created) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev: $brevId")
@@ -92,12 +93,10 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val pdf = brevredigeringService.hentPdf(brevId)
-            if (pdf != null) {
-                call.respondBytes(pdf, ContentType.Application.Pdf, HttpStatusCode.OK)
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
-            }
+            brevredigeringService.hentEllerOpprettPdf(call, brevId)
+                ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK) }
+                ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev: $brevId")
         }
 
         post("/{brevId}/pdf/send") {

@@ -39,7 +39,7 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
-private val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
+internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(Edit.JacksonModule)
     registerModule(BrevbakerBrevdataModule)
@@ -52,8 +52,8 @@ object BrevredigeringTable : LongIdTable() {
     val spraak: ColumnWithTransform<String, LanguageCode> = varchar("spraak", length = 50)
         .transform(LanguageCode::name, LanguageCode::valueOf)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
-    val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", objectMapper::writeValueAsString, objectMapper::readValue)
-    val redigertBrev = json<Edit.Letter>("redigertBrev", objectMapper::writeValueAsString, objectMapper::readValue)
+    val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
+    val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     // TODO: introdusere value class for NavIdent?
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
@@ -85,12 +85,16 @@ object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdf: Column<ExposedBlob> = blob("brevpdf")
+    val redigertBrevHash: Column<ByteArray> = binary("redigertBrevHash", 32)
+        // TODO: Fjern når skjema er oppdatert
+        .default(ByteArray(0))
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
     var pdf by DocumentTable.pdf
+    var redigertBrevHash by DocumentTable.redigertBrevHash
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }

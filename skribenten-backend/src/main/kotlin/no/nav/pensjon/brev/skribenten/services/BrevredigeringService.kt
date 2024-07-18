@@ -5,10 +5,8 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.skribenten.db.Brevredigering
-import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.Document
-import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
@@ -25,6 +23,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.security.MessageDigest
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -33,7 +32,7 @@ data class GeneriskRedigerbarBrevdata(
     override val saksbehandlerValg: BrevbakerBrevdata,
 ) : RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
 
-
+// TODO: newSuspendedTransaction er blocking, så vi bør mest sannsynlig holde kall til andre tjenester utenfor transaksjoner.
 class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val penService: PenService,
@@ -165,45 +164,49 @@ class BrevredigeringService(
                 } else ServiceResult.Error("Mangler tilgang til NavEnhet $enhetsId", HttpStatusCode.Forbidden)
             }
 
-    suspend fun opprettPdf(call: ApplicationCall, brevId: Long): ServiceResult<ByteArray>? {
-        val brevredigering = transaction { Brevredigering.findById(brevId) }
-
-        return if (brevredigering != null) {
-            penService.hentPesysBrevdata(
+    private suspend fun opprettPdf(call: ApplicationCall, brevredigering: Brevredigering, redigertBrevHash: ByteArray): ServiceResult<ByteArray> {
+        return penService.hentPesysBrevdata(
+            call = call,
+            saksId = brevredigering.saksId,
+            brevkode = brevredigering.brevkode,
+            avsenderEnhetsId = brevredigering.avsenderEnhetId
+        ).then { pesysData ->
+            brevbakerService.renderPdf(
                 call = call,
-                saksId = brevredigering.saksId,
                 brevkode = brevredigering.brevkode,
-                avsenderEnhetsId = brevredigering.avsenderEnhetId
-            ).then { pesysData ->
-                brevbakerService.renderPdf(
-                    call = call,
-                    brevkode = brevredigering.brevkode,
-                    spraak = brevredigering.spraak,
-                    brevdata = GeneriskRedigerbarBrevdata(
-                        pesysData = pesysData.brevdata,
-                        saksbehandlerValg = brevredigering.saksbehandlerValg,
-                    ),
-                    felles = pesysData.felles,
-                    redigertBrev = brevredigering.redigertBrev.toMarkup()
-                ).map {
-                    transaction {
-                        val update: Document.() -> Unit = {
-                            this.brevredigering = brevredigering
-                            pdf = ExposedBlob(it.file)
-                            dokumentDato = pesysData.felles.dokumentDato
-                        }
-                        Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevId, update)?.pdf?.bytes
-                            ?: Document.new(update).pdf.bytes
+                spraak = brevredigering.spraak,
+                brevdata = GeneriskRedigerbarBrevdata(
+                    pesysData = pesysData.brevdata,
+                    saksbehandlerValg = brevredigering.saksbehandlerValg,
+                ),
+                felles = pesysData.felles,
+                redigertBrev = brevredigering.redigertBrev.toMarkup()
+            ).map {
+                transaction {
+                    val update: Document.() -> Unit = {
+                        this.brevredigering = brevredigering
+                        pdf = ExposedBlob(it.file)
+                        dokumentDato = pesysData.felles.dokumentDato
+                        this.redigertBrevHash = redigertBrevHash
                     }
+                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.id, update)?.pdf?.bytes
+                        ?: Document.new(update).pdf.bytes
                 }
             }
-        } else null
+        }
     }
 
-    fun hentPdf(brevId: Long): ByteArray? {
-        return transaction {
-            val brevredigering = Brevredigering.findById(brevId)
-            brevredigering?.document?.firstOrNull()?.pdf?.bytes
+    suspend fun hentEllerOpprettPdf(call: ApplicationCall, brevId: Long): ServiceResult<ByteArray>? {
+        val (brevredigering, document) = transaction { Brevredigering.findById(brevId).let { it to it?.document?.firstOrNull() } }
+
+        return brevredigering?.let {
+            val currentHash = hashBrev(brevredigering.redigertBrev)
+
+            if (document != null && document.redigertBrevHash.contentEquals(currentHash)) {
+                ServiceResult.Ok(document.pdf.bytes)
+            } else {
+                opprettPdf(call, brevredigering, currentHash)
+            }
         }
     }
 
@@ -258,4 +261,9 @@ class BrevredigeringService(
             },
         )
     }
+
+    private val digest: MessageDigest = MessageDigest.getInstance("SHA3-256")
+    private fun hashBrev(brev: Edit.Letter): ByteArray =
+        digest.digest(databaseObjectMapper.writeValueAsBytes(brev))
+            .also { assert(it.size == 32) { "SHA3-256 hash of redigertbrev was longer than 32 bytes: ${it.size}" } }
 }

@@ -20,7 +20,7 @@ export const switchTypography: Action<
     return;
   }
 
-  if (!block.originalType) {
+  if (!block.originalType && block.id !== null) {
     block.originalType = block.type;
   }
 
