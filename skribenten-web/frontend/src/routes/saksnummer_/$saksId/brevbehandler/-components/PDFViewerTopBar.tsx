@@ -25,7 +25,6 @@ const PDFViewerTopBar = (properties: {
       align="center"
       css={css`
         background-color: white;
-        border-top: 1px solid var(--a-gray-200);
         border-bottom: 1px solid var(--a-gray-200);
         padding: 0 1rem;
         height: 48px;

@@ -22,15 +22,26 @@ export type BrevResponse = {
 };
 
 export interface DelvisOppdaterBrevRequest {
-    sakId: string;
-    brevId: number;
-    laastForRedigering: Nullable<boolean>;
+  sakId: string;
+  brevId: string | number;
+  laastForRedigering: Nullable<boolean>;
 }
 
 export interface DelvisOppdaterBrevResponse {
   info: BrevInfo;
   redigertBrev: EditedLetter;
   saksbehandlerValg: SaksbehandlerValg;
+}
+
+export interface BestillBrevResponse {
+  journalpostId: Nullable<number>;
+  error: Nullable<BestillBrevError>;
+}
+
+export interface BestillBrevError {
+  brevIkkeStoettet: Nullable<string>;
+  tekniskgrunn: Nullable<string>;
+  beskrivelse: Nullable<string>;
 }
 
 export type ReservasjonResponse = {
