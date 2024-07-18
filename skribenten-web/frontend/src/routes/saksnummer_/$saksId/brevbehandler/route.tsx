@@ -31,9 +31,8 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
 function Brevbehandler() {
   const { saksId } = Route.useParams();
   const { brevId } = Route.useSearch();
-  const navigate = useNavigate({
-    from: Route.fullPath,
-  });
+  const navigate = useNavigate({ from: Route.fullPath });
+  const [modalÅpen, setModalÅpen] = useState<boolean>(false);
 
   const brevPdfContainerReference = useRef<HTMLDivElement>(null);
   const pdfHeightContext = usePDFViewerContext();
@@ -58,6 +57,7 @@ function Brevbehandler() {
         justify-content: center;
       `}
     >
+      {modalÅpen && <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />}
       <div
         css={css`
           display: grid;
@@ -106,11 +106,12 @@ function Brevbehandler() {
               <BodyShort>Lag nytt brev</BodyShort>
             </HStack>
           </Button>
-          {alleBrevForSak.isSuccess && brevId && (
-            <FerdigstillBrevWrapper
-              brev={alleBrevForSak.data.find((brev) => brev.id.toString() === brevId)}
-              brevId={brevId}
+          {alleBrevForSak.isSuccess && (
+            <FerdigstillOgSendBrevButton
+              brevInfo={alleBrevForSak.data}
               sakId={saksId}
+              valgtBrev={brevId}
+              åpneFerdigstillModal={() => setModalÅpen(true)}
             />
           )}
         </HStack>
@@ -119,16 +120,59 @@ function Brevbehandler() {
   );
 }
 
-const FerdigstillBrevWrapper = (properties: { sakId: string; brevId: string; brev?: BrevInfo }) => {
-  if (!properties.brev) {
+const FerdigstillOgSendBrevButton = (properties: {
+  sakId: string;
+  valgtBrev?: string;
+  brevInfo: BrevInfo[];
+  åpneFerdigstillModal: () => void;
+}) => {
+  if (!properties.valgtBrev && properties.brevInfo.some(erBrevKlar)) {
+    return (
+      <Button onClick={properties.åpneFerdigstillModal} type="button">
+        Send ferdigstilte brev
+      </Button>
+    );
+  }
+
+  if (properties.valgtBrev && !properties.brevInfo.some((brev) => brev.id.toString() === properties.valgtBrev)) {
+    return <BodyShort>Fant ikke brev med id {properties.valgtBrev}</BodyShort>;
+  }
+
+  if (properties.valgtBrev) {
+    return (
+      <FerdigstillValgtBrevWrapper
+        brevId={properties.valgtBrev}
+        brevInfo={properties.brevInfo}
+        sakId={properties.sakId}
+        åpneFerdigstillModal={properties.åpneFerdigstillModal}
+      />
+    );
+  }
+
+  return null;
+};
+
+const FerdigstillValgtBrevWrapper = (properties: {
+  sakId: string;
+  brevId: string;
+  brevInfo: BrevInfo[];
+  åpneFerdigstillModal: () => void;
+}) => {
+  const valgtBrev = properties.brevInfo.find((brev) => brev.id.toString() === properties.brevId);
+  if (!valgtBrev) {
     return <BodyShort>Fant ikke brev med id {properties.brevId}</BodyShort>;
   }
 
-  return <FerdigstillBrev brev={properties.brev} sakId={properties.sakId} />;
+  return (
+    <FerdigstillValgtBrev
+      brev={valgtBrev}
+      sakId={properties.sakId}
+      åpneFerdigstillModal={properties.åpneFerdigstillModal}
+    />
+  );
 };
 
-const FerdigstillBrev = (properties: { sakId: string; brev: BrevInfo }) => {
-  const [modalÅpen, setModalÅpen] = useState<boolean>(false);
+const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpneFerdigstillModal: () => void }) => {
   const queryClient = useQueryClient();
 
   const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
@@ -138,7 +182,7 @@ const FerdigstillBrev = (properties: { sakId: string; brev: BrevInfo }) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
       );
-      setModalÅpen(true);
+      properties.åpneFerdigstillModal();
     },
   });
 
@@ -146,14 +190,11 @@ const FerdigstillBrev = (properties: { sakId: string; brev: BrevInfo }) => {
 
   return (
     <div>
-      {modalÅpen && (
-        <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={properties.sakId} åpen={modalÅpen} />
-      )}
       <Button
         loading={låsForRedigeringMutation.isPending}
         onClick={() => {
           if (erLåst) {
-            setModalÅpen(true);
+            properties.åpneFerdigstillModal();
           } else {
             låsForRedigeringMutation.mutate(true);
           }
