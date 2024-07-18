@@ -28,17 +28,14 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotEquals
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
+import kotlin.collections.LinkedHashMap
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -322,52 +319,24 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `gitt en ferdigstilling saa skal pdf lagres i DB med referanse til Brevredigering`(): Unit = runBlocking {
-
-        // Stage et brev og verifiser
-        //
-        val saksbehandlersValg = GeneriskBrevData().apply { put("valg", true) }
-
-        val serviceResult = brevredigeringService.opprettBrev(
-            call = callMock,
-            sak = sak,
-            brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
-            spraak = LanguageCode.ENGLISH,
-            avsenderEnhetsId = principalNavEnhetId,
-            saksbehandlerValg = saksbehandlersValg
-        )
-        assertThat(serviceResult).isInstanceOf(ServiceResult.Ok::class.java)
-        val result = serviceResult.resultOrNull()!!
+    fun `hentPdf skal opprette et Document med referanse til Brevredigering`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
 
         transaction {
-            val brevredigering = Brevredigering[result.info.id]
-            val document = Document.find { DocumentTable.brevredigering.eq(brevredigering.id) }
-
-            assertEquals(0, brevredigering.document.count())
-            assertEquals(0, document.count())
+            assertThat(Brevredigering[brev.info.id].document).isEmpty()
+            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).isEmpty()
         }
-
-        // Ferdigstill og verifiser
-        //
-        clearMocks()
 
         val pdf = "nesten en pdf".encodeToByteArray()
         stagePdf(pdf)
 
-        brevredigeringService.opprettPdf(callMock, result.info.id)
-
-        coVerify {
-            brevbakerMock.renderPdf(any(), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), eq(LanguageCode.ENGLISH), any(), any(), any())
-        }
+        assertThat(brevredigeringService.hentPdf(callMock, brev.info.id)?.resultOrNull()).isEqualTo(pdf)
 
         transaction {
-
-            val brevredigering = Brevredigering[result.info.id]
-            val document = Document.find { DocumentTable.brevredigering.eq(brevredigering.id) }
-
-            assertEquals(1, brevredigering.document.count())
-            assertEquals(1, document.count())
-            assertTrue(pdf.contentEquals(document.first().pdf.bytes))
+            val brevredigering = Brevredigering[brev.info.id]
+            assertThat(brevredigering.document).hasSize(1)
+            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
+            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(pdf)
         }
     }
 
@@ -377,31 +346,13 @@ class BrevredigeringServiceTest {
 
         stagePdf("a real life pdf".encodeToByteArray())
 
-        brevredigeringService.opprettPdf(callMock, brev.info.id)
+        brevredigeringService.hentPdf(callMock, brev.info.id)
+        transaction { assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1) }
 
-        transaction {
-            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
-        }
         brevredigeringService.slettBrev(brev.info.id)
-
         transaction {
             assertThat(Brevredigering.findById(brev.info.id)).isNull()
             assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(0)
-        }
-    }
-
-    @Test
-    fun `andre opprettPdf erstatter den forrige`(): Unit = runBlocking {
-        val brev = opprettBrev().resultOrNull()!!
-
-        stagePdf("a real life pdf".encodeToByteArray())
-        brevredigeringService.opprettPdf(callMock, brev.info.id)
-        stagePdf("the newest pdf".encodeToByteArray())
-        brevredigeringService.opprettPdf(callMock, brev.info.id)
-
-        transaction {
-            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
-            assertThat(Brevredigering[brev.info.id].document.first().pdf.bytes).isEqualTo("the newest pdf".encodeToByteArray())
         }
     }
 
@@ -410,14 +361,77 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         stagePdf("a real life pdf".encodeToByteArray())
-
-        val jobs = awaitAll(*(0..<10).map { async(Dispatchers.IO) { brevredigeringService.opprettPdf(callMock, brev.info.id) } }.toTypedArray())
-        jobs.forEach { println(String(it?.resultOrNull()!!)) }
-
+        awaitAll(*(0..<10).map { async(Dispatchers.IO) { brevredigeringService.hentPdf(callMock, brev.info.id) } }.toTypedArray())
 
         transaction {
             assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
         }
+    }
+
+    @Test
+    fun `Document redigertBrevHash er stabil`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        stagePdf("min første pdf".encodeToByteArray())
+
+        brevredigeringService.hentPdf(callMock, brev.info.id)
+        val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+
+        transaction { Brevredigering[brev.info.id].document.first().delete() }
+        brevredigeringService.hentPdf(callMock, brev.info.id)
+        val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+
+        assertThat(firstHash).isEqualTo(secondHash)
+    }
+
+    @Test
+    fun `Document redigertBrevHash endres basert paa redigertBrev`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+
+        stagePdf("min første pdf".encodeToByteArray())
+        brevredigeringService.hentPdf(callMock, brev.info.id)
+        val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+
+        transaction { Brevredigering[brev.info.id].redigertBrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit() }
+        brevredigeringService.hentPdf(callMock, brev.info.id)
+        val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+
+        assertThat(firstHash).isNotEqualTo(secondHash)
+    }
+
+    @Test
+    fun `hentPdf rendrer ny pdf om den ikke eksisterer`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        stagePdf("what a cool party".encodeToByteArray())
+
+        val pdf = brevredigeringService.hentPdf(callMock, brev.info.id)
+
+        assertThat(pdf?.resultOrNull()?.toString(Charsets.UTF_8)).isEqualTo("what a cool party")
+    }
+
+    @Test
+    fun `hentPdf rendrer ny pdf om den ikke er basert paa gjeldende redigertBrev`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        stagePdf("min første pdf".encodeToByteArray())
+        brevredigeringService.hentPdf(callMock, brev.info.id)
+
+        transaction { Brevredigering[brev.info.id].redigertBrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit() }
+
+        stagePdf("min andre pdf".encodeToByteArray())
+        val pdf = brevredigeringService.hentPdf(callMock, brev.info.id)?.resultOrNull()?.toString(Charsets.UTF_8)
+
+        assertEquals("min andre pdf", pdf)
+    }
+
+    @Test
+    fun `hentPdf rendrer ikke ny pdf om den er basert paa gjeldende redigertBrev`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        stagePdf("min første pdf".encodeToByteArray())
+        val first = brevredigeringService.hentPdf(callMock, brev.info.id)
+
+        stagePdf("min første pdf".encodeToByteArray())
+        val second = brevredigeringService.hentPdf(callMock, brev.info.id)
+
+        assertThat(first).isNotEqualTo(second)
     }
 
     @Test

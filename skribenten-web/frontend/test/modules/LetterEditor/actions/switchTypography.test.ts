@@ -4,7 +4,7 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import type { ParagraphBlock, Title1Block, Title2Block } from "~/types/brevbakerTypes";
 import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
-import { item, itemList, letter, literal, paragraph, select, title1, title2, variable } from "../utils";
+import { asNew, item, itemList, letter, literal, paragraph, select, title1, title2, variable } from "../utils";
 
 describe("switchTypography", () => {
   test("can switch from paragraph to title1", () => {
@@ -211,5 +211,11 @@ describe("switchTypography", () => {
 
     expect(result).toBe(state);
     expect(result).toEqual(state);
+  });
+
+  test("does not set originalType for new blocks", () => {
+    const state = letter(asNew(paragraph(literal("noe tekst"))));
+    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
+    expect(select<ParagraphBlock>(result, { blockIndex: 0 }).originalType).toBeUndefined();
   });
 });
