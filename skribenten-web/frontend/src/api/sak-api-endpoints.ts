@@ -4,7 +4,12 @@
 
 import axios from "axios";
 
-import type { BrevInfo, DelvisOppdaterBrevRequest, DelvisOppdaterBrevResponse } from "~/types/brev";
+import type {
+  BestillBrevResponse,
+  BrevInfo,
+  DelvisOppdaterBrevRequest,
+  DelvisOppdaterBrevResponse,
+} from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
 
@@ -15,15 +20,6 @@ export const hentAlleBrevForSak = {
 
 const hentAlleBrevForSakFunction = async (saksId: string) =>
   (await axios.get<BrevInfo[]>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`)).data;
-
-export const lagPdfForBrev = async (saksId: string, brevId: string) => {
-  return (
-    await axios.post(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, undefined, {
-      responseType: "blob",
-      headers: { Accept: "application/pdf" },
-    })
-  ).data;
-};
 
 export const hentPdfForBrev = {
   queryKey: (brevId: string) => ["hentPdfForBrev", brevId],
@@ -48,3 +44,6 @@ export const delvisOppdaterBrev = async (argz: DelvisOppdaterBrevRequest) =>
 
 export const slettBrev = async (saksId: string, brevId: string) =>
   (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`)).data;
+
+export const sendBrev = async (saksId: string, brevId: string | number) =>
+  (await axios.post<BestillBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf/send`)).data;

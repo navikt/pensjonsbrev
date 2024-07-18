@@ -1,23 +1,16 @@
 import { css } from "@emotion/react";
 import { Label, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
 
 import { hentPdfForBrev, hentPdfForBrevFunction } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
-import PDFViewer from "./-components/PDFViewer";
+import PDFViewer from "../-components/PDFViewer";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler/$brevId")({
-  component: BrevForhåndsvisning,
-});
-
-function BrevForhåndsvisning() {
-  const { saksId, brevId } = Route.useParams();
-
+export const BrevForhåndsvisning = (properties: { sakId: string; brevId: string }) => {
   const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey(brevId),
-    queryFn: () => hentPdfForBrevFunction(saksId, brevId),
+    queryKey: hentPdfForBrev.queryKey(properties.brevId),
+    queryFn: () => hentPdfForBrevFunction(properties.sakId, properties.brevId),
   });
 
   return (
@@ -34,7 +27,11 @@ function BrevForhåndsvisning() {
         </VStack>
       )}
       {hentPdfQuery.isError && <ApiError error={hentPdfQuery.error} title={"Kunne ikke hente PDF"} />}
-      {hentPdfQuery.isSuccess && <PDFViewer brevId={brevId} pdf={hentPdfQuery.data} sakId={saksId} />}
+      {hentPdfQuery.isSuccess && (
+        <PDFViewer brevId={properties.brevId} pdf={hentPdfQuery.data} sakId={properties.sakId} />
+      )}
     </VStack>
   );
-}
+};
+
+export default BrevForhåndsvisning;

@@ -1,34 +1,20 @@
 import { css } from "@emotion/react";
-import { PencilIcon } from "@navikt/aksel-icons";
-import {
-  Accordion,
-  Alert,
-  BodyShort,
-  Button,
-  Heading,
-  HStack,
-  Label,
-  Radio,
-  RadioGroup,
-  Switch,
-  Tag,
-  VStack,
-} from "@navikt/ds-react";
+import { PlusIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
+import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { delvisOppdaterBrev, hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { DelvisOppdaterBrevResponse } from "~/types/brev";
-import { type BrevInfo, type BrevInfoStatus, BrevInfoStatusType } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import type { BestillBrevResponse, DelvisOppdaterBrevResponse } from "~/types/brev";
+import { type BrevInfo } from "~/types/brev";
 import { erBrevKlar } from "~/utils/brevUtils";
-import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
-import { EndreMottakerModal } from "../brevvelger/$templateId/-components/endreMottaker/EndreMottaker";
-import { DistribusjonsMetode } from "./-BrevbehandlerUtils";
-import { PDFViewerContextProvider, usePDFViewerContext } from "./$brevId/-components/PDFViewerContext";
+import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
+import { BrevForhåndsvisning } from "./-components/BrevForhåndsvisning";
+import { PDFViewerContextProvider, usePDFViewerContext } from "./-components/PDFViewerContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
   component: () => (
@@ -37,10 +23,15 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
       <Brevbehandler />
     </PDFViewerContextProvider>
   ),
+  validateSearch: (search: Record<string, unknown>): { brevId?: string } => ({
+    brevId: search.brevId?.toString(),
+  }),
 });
 
 function Brevbehandler() {
   const { saksId } = Route.useParams();
+  const { brevId } = Route.useSearch();
+
   const brevPdfContainerReference = useRef<HTMLDivElement>(null);
   const pdfHeightContext = usePDFViewerContext();
 
@@ -49,110 +40,81 @@ function Brevbehandler() {
     pdfHeightContext.setHeight(brevPdfContainerReference?.current?.getBoundingClientRect().height ?? null);
   }, [brevPdfContainerReference, pdfHeightContext]);
 
+  //TODO - sjekk om dette er good
+  //vi henter data her istedenfor i route-loaderen fordi vi vil vise stort sett lik skjermbilde
+  const alleBrevForSak = useQuery({
+    queryKey: hentAlleBrevForSak.queryKey,
+    queryFn: () => hentAlleBrevForSak.queryFn(saksId),
+  });
+
   return (
     <div
       css={css`
         display: flex;
         flex: 1;
         justify-content: center;
-
-        > :first-of-type {
-          background: white;
-          min-width: 336px;
-          max-width: 388px;
-          border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-4);
-          flex: 1;
-        }
-
-        > :nth-of-type(2) {
-          background-color: var(--a-gray-300);
-          min-width: 432px;
-          max-width: 720px;
-          flex: 1;
-          border-left: 1px solid var(--a-gray-200);
-          border-right: 1px solid var(--a-gray-200);
-        }
       `}
     >
-      <BrevbehandlerMeny sakId={saksId} />
-      {/* vi hvar lyst til å fortsette å vise der PDF'en skal være - derfor må vi wrappe outlet'en i ev div, så css'en treffer */}
-      <div ref={brevPdfContainerReference}>
-        <Outlet />
+      <div
+        css={css`
+          display: grid;
+          grid-template-columns: 33% 66%;
+          grid-template-rows: 1fr auto;
+          grid-template-areas:
+            "meny pdf"
+            "footer footer";
+
+          background-color: white;
+          width: 1200px;
+        `}
+      >
+        <div>
+          {alleBrevForSak.isPending && <Label>Henter alle brev for saken...</Label>}
+          {alleBrevForSak.isError && (
+            <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle brev for saken"} />
+          )}
+          {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} sakId={saksId} />}
+        </div>
+
+        {/* vi har lyst til å fortsette å vise der PDF'en skal være - derfor må vi wrappe outlet'en i ev div, så css'en treffer */}
+        <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} sakId={saksId} />}</div>
+
+        <HStack
+          css={css`
+            padding: 8px 12px;
+            grid-area: footer;
+            border-top: 1px solid var(--a-gray-200);
+          `}
+          justify="space-between"
+        >
+          <Button size="small" type="button" variant="secondary">
+            <HStack>
+              <PlusIcon fontSize="1.5rem" title="a11y-title" />
+              <BodyShort>Lag nytt brev</BodyShort>
+            </HStack>
+          </Button>
+          {alleBrevForSak.isSuccess && brevId && (
+            <FerdigstillBrevWrapper
+              brev={alleBrevForSak.data.find((brev) => brev.id.toString() === brevId)}
+              brevId={brevId}
+              sakId={saksId}
+            />
+          )}
+        </HStack>
       </div>
     </div>
   );
 }
 
-const BrevbehandlerMeny = (properties: { sakId: string }) => {
-  //TODO - sjekk om dette er good
-  //vi henter data her istedenfor i route-loaderen fordi vi vil vise stort sett lik skjermbilde
-  const alleBrevForSak = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey,
-    queryFn: () => hentAlleBrevForSak.queryFn(properties.sakId),
-  });
-
-  return (
-    <VStack gap="8">
-      <Heading level="1" size="small">
-        Brevbehandler
-      </Heading>
-      <div>
-        {alleBrevForSak.isPending && <Label>Henter alle brev for saken...</Label>}
-        {alleBrevForSak.isError && (
-          <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle brev for saken"} />
-        )}
-        {alleBrevForSak.isSuccess && <Saksbrev brev={alleBrevForSak.data} sakId={properties.sakId} />}
-      </div>
-    </VStack>
-  );
-};
-
-const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
-  const [åpenBrevItem, setÅpenBrevItem] = useState<Nullable<number>>(null);
-  const navigate = useNavigate({ from: Route.fullPath });
-
-  const handleOpenChange = (brevId: number) => (isOpen: boolean) => {
-    setÅpenBrevItem(isOpen ? brevId : null);
-
-    if (isOpen) {
-      navigate({
-        to: "/saksnummer/$saksId/brevbehandler/$brevId",
-        params: { saksId: properties.sakId, brevId: brevId.toString() },
-      });
-    } else {
-      navigate({
-        to: "/saksnummer/$saksId/brevbehandler",
-        params: { saksId: properties.sakId },
-      });
-    }
-  };
-
-  if (properties.brev.length === 0) {
-    return <Alert variant="info">Fant ingen brev som er under behandling</Alert>;
+const FerdigstillBrevWrapper = (properties: { sakId: string; brevId: string; brev?: BrevInfo }) => {
+  if (!properties.brev) {
+    return <BodyShort>Fant ikke brev med id {properties.brevId}</BodyShort>;
   }
 
-  return (
-    <Accordion>
-      {properties.brev.map((brev) => (
-        <BrevItem
-          brev={brev}
-          key={brev.id}
-          onOpenChange={handleOpenChange(brev.id)}
-          open={åpenBrevItem === brev.id}
-          sakId={properties.sakId}
-        />
-      ))}
-    </Accordion>
-  );
+  return <FerdigstillBrev brev={properties.brev} sakId={properties.sakId} />;
 };
 
-const BrevItem = (properties: {
-  sakId: string;
-  brev: BrevInfo;
-  open: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-}) => {
+const FerdigstillBrev = (properties: { sakId: string; brev: BrevInfo }) => {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
@@ -163,171 +125,128 @@ const BrevItem = (properties: {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
       );
+      setModalÅpen(true);
     },
   });
 
   const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
 
   return (
-    <>
+    <div>
       {modalÅpen && (
-        <EndreMottakerModal
-          onBekreftNyMottaker={(nyMottaker) => {
-            setModalÅpen(false);
-            console.log("Bekreft ny mottaker:", nyMottaker);
-          }}
-          onClose={() => setModalÅpen(false)}
-          åpen={modalÅpen}
-        />
+        <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={properties.sakId} åpen={modalÅpen} />
       )}
-      <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
-        <Accordion.Header>
-          <VStack gap="2">
-            <Brevtilstand status={properties.brev.status} />
-            <Label size="small">{properties.brev.brevkode}</Label>
-          </VStack>
-        </Accordion.Header>
-        <Accordion.Content>
-          <VStack gap="8">
-            <VStack gap="4">
-              <div>
-                <BodyShort
-                  css={css`
-                    color: var(--a-grayalpha-700);
-                  `}
-                >
-                  Mottaker
-                </BodyShort>
-                <HStack gap="2">
-                  <BodyShort>En mottaker</BodyShort>
-                  {!erLåst && (
-                    <Button
-                      css={css`
-                        padding: 0;
-                      `}
-                      onClick={() => setModalÅpen(true)}
-                      size="small"
-                      type="button"
-                      variant="tertiary"
-                    >
-                      <PencilIcon fontSize="24px" />
-                    </Button>
-                  )}
-                </HStack>
-              </div>
-
-              <Switch
-                checked={erLåst}
-                // TODO - finn en måte å gi feedback på dersom kallet gir error
-                loading={låsForRedigeringMutation.isPending}
-                onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
-              >
-                Lås for redigering
-              </Switch>
-
-              {!erLåst && (
-                <VStack
-                  css={css`
-                    align-items: flex-start;
-                  `}
-                  gap="4"
-                >
-                  <Button
-                    css={css`
-                      color: #23262a;
-                      border-color: #23262a;
-                      box-shadow: inset 0 0 0 2px #23262a;
-                    `}
-                    onClick={() => {
-                      //TODO: Implementer oppdatering av data
-                      console.log("Oppdaterer data");
-                    }}
-                    size="small"
-                    type="button"
-                    variant="secondary"
-                  >
-                    Oppdater data
-                  </Button>
-                  <Link
-                    className="navds-button navds-button--small navds-label navds-label--small"
-                    css={css`
-                      color: #23262a;
-                      border-color: #23262a;
-                      box-shadow: inset 0 0 0 2px #23262a;
-                    `}
-                    params={{ saksId: properties.sakId, brevId: properties.brev.id }}
-                    to="/saksnummer/$saksId/brev/$brevId"
-                  >
-                    Fortsett redigering
-                  </Link>
-                </VStack>
-              )}
-
-              {erLåst && (
-                <RadioGroup description={"Distribusjon"} legend="" size="small">
-                  <Radio value={DistribusjonsMetode.Sentralprint}>Sentralprint</Radio>
-                  <Radio value={DistribusjonsMetode.Lokaltprint}>Lokaltprint</Radio>
-                </RadioGroup>
-              )}
-            </VStack>
-
-            <div>
-              <BodyShort
-                css={css`
-                  color: var(--a-grayalpha-700);
-                `}
-              >
-                Sist endret:{" "}
-                {isDateToday(properties.brev.sistredigert)
-                  ? formatStringDateWithTime(properties.brev.sistredigert)
-                  : formatStringDate(properties.brev.sistredigert)}{" "}
-                av {properties.brev.sistredigertAv}
-              </BodyShort>
-              <BodyShort
-                css={css`
-                  color: var(--a-grayalpha-700);
-                `}
-              >
-                Brev opprettet: {formatStringDate(properties.brev.opprettet)}
-              </BodyShort>
-            </div>
-          </VStack>
-        </Accordion.Content>
-      </Accordion.Item>
-    </>
+      <Button
+        loading={låsForRedigeringMutation.isPending}
+        onClick={() => {
+          if (erLåst) {
+            setModalÅpen(true);
+          } else {
+            låsForRedigeringMutation.mutate(true);
+          }
+        }}
+        size="small"
+        type="button"
+      >
+        {erLåst ? "Ferdigstill brev" : "Ferdigstill brev og send"}
+      </Button>
+    </div>
   );
 };
 
-const Brevtilstand = (properties: { status: BrevInfoStatus }) => {
-  const { variant, text, description } = brevInfoStatusTypeToTextAndTagVariant(properties.status);
+const useSendMutation = (sakId: string): UseMutationResult<BestillBrevResponse, Error, number> => {
+  return useMutation({
+    mutationFn: (brevId) => sendBrev(sakId, brevId),
+  });
+};
+
+const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
+  const [brevSomSkalSendes, setBrevSomSkalSendes] = useState<number[]>([]);
+
+  const alleBrevForSak = useQuery({
+    queryKey: hentAlleBrevForSak.queryKey,
+    queryFn: () => hentAlleBrevForSak.queryFn(properties.sakId),
+  });
+
+  const alleFerdigstilteBrev = useMemo(() => {
+    if (alleBrevForSak.isSuccess) {
+      return alleBrevForSak.data.filter(erBrevKlar);
+    }
+    return [];
+  }, [alleBrevForSak.data, alleBrevForSak.isSuccess]);
+
+  useEffect(() => {
+    setBrevSomSkalSendes(alleFerdigstilteBrev.map((brev) => brev.id));
+  }, [alleFerdigstilteBrev]);
+
+  const mutation = useSendMutation(properties.sakId);
+
+  const handleMutations = async () => {
+    try {
+      const results = await Promise.all(brevSomSkalSendes.map((brevId) => mutation.mutateAsync(brevId)));
+      console.log("All mutations completed", results);
+    } catch (error) {
+      console.error("Error with some items", error);
+    }
+  };
 
   return (
-    <Tag
+    <Modal
       css={css`
-        align-self: flex-start;
+        border-radius: 0.25rem;
       `}
-      size="small"
-      variant={variant}
+      header={{
+        heading: "Vil du ferdigstille, og sende disse brevene?",
+      }}
+      onClose={properties.onClose}
+      open={properties.åpen}
+      portal
+      width={600}
     >
-      <HStack>
-        <BodyShort>{text}</BodyShort>
-        {description && <BodyShort>{description}</BodyShort>}
-      </HStack>
-    </Tag>
+      <Modal.Body>
+        <div>
+          <BodyShort>
+            Brevene du ferdigstiller og sender vil bli lagt til i brukers dokumentoversikt. Du kan ikke angre denne
+            handlingen.
+          </BodyShort>
+          <br />
+          <BodyShort>Kun brev du har valgt å ferdigstille vil bli sendt.</BodyShort>
+        </div>
+        <br />
+        <div>
+          {alleBrevForSak.isPending && <Label>Henter alle ferdigstilte brev...</Label>}
+          {alleBrevForSak.isError && (
+            <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />
+          )}
+          {alleBrevForSak.isSuccess && (
+            <div>
+              <CheckboxGroup hideLegend legend="Something?" onChange={setBrevSomSkalSendes} value={brevSomSkalSendes}>
+                {alleFerdigstilteBrev.map((brev) => (
+                  <Checkbox key={brev.id} value={brev.id}>
+                    {brev.brevkode}
+                  </Checkbox>
+                ))}
+              </CheckboxGroup>
+            </div>
+          )}
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <HStack gap="4">
+          <Button onClick={properties.onClose} type="button" variant="tertiary">
+            Avbryt
+          </Button>
+          <Button
+            onClick={() => {
+              console.log("Ferdigstiller og sender brev:", brevSomSkalSendes);
+              handleMutations();
+            }}
+            type="button"
+          >
+            Ja, send valgte brev
+          </Button>
+        </HStack>
+      </Modal.Footer>
+    </Modal>
   );
-};
-
-const brevInfoStatusTypeToTextAndTagVariant = (status: BrevInfoStatus) => {
-  switch (status.type) {
-    case BrevInfoStatusType.KLADD: {
-      return { variant: "warning" as const, text: "Kladd", description: null };
-    }
-    case BrevInfoStatusType.KLAR: {
-      return { variant: "success" as const, text: "Klar", description: null };
-    }
-
-    case BrevInfoStatusType.UNDER_REDIGERING: {
-      return { variant: "alt1" as const, text: "Under redigering", description: `Redigeres av ${status.redigeresAv}` };
-    }
-  }
 };
