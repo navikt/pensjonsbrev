@@ -196,7 +196,7 @@ class BrevredigeringService(
         }
     }
 
-    suspend fun hentPdf(call: ApplicationCall, brevId: Long): ServiceResult<ByteArray>? {
+    suspend fun hentEllerOpprettPdf(call: ApplicationCall, brevId: Long): ServiceResult<ByteArray>? {
         val (brevredigering, document) = transaction { Brevredigering.findById(brevId).let { it to it?.document?.firstOrNull() } }
 
         return brevredigering?.let {
@@ -265,4 +265,5 @@ class BrevredigeringService(
     private val digest: MessageDigest = MessageDigest.getInstance("SHA3-256")
     private fun hashBrev(brev: Edit.Letter): ByteArray =
         digest.digest(databaseObjectMapper.writeValueAsBytes(brev))
+            .also { assert(it.size == 32) { "SHA3-256 hash of redigertbrev was longer than 32 bytes: ${it.size}" } }
 }

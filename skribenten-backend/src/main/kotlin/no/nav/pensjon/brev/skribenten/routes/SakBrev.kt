@@ -85,7 +85,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
         post("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
 
-            brevredigeringService.hentPdf(call, brevId)
+            brevredigeringService.hentEllerOpprettPdf(call, brevId)
                 ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.Created) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev: $brevId")
@@ -93,7 +93,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            brevredigeringService.hentPdf(call, brevId)
+            brevredigeringService.hentEllerOpprettPdf(call, brevId)
                 ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev: $brevId")

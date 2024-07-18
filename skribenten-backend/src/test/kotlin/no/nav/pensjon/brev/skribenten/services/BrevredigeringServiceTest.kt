@@ -44,7 +44,6 @@ class BrevredigeringServiceTest {
 
     private val postgres = PostgreSQLContainer("postgres:15-alpine")
 
-
     @BeforeAll
     fun startDb() {
         postgres.start()
@@ -330,7 +329,7 @@ class BrevredigeringServiceTest {
         val pdf = "nesten en pdf".encodeToByteArray()
         stagePdf(pdf)
 
-        assertThat(brevredigeringService.hentPdf(callMock, brev.info.id)?.resultOrNull()).isEqualTo(pdf)
+        assertThat(brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)?.resultOrNull()).isEqualTo(pdf)
 
         transaction {
             val brevredigering = Brevredigering[brev.info.id]
@@ -346,7 +345,7 @@ class BrevredigeringServiceTest {
 
         stagePdf("a real life pdf".encodeToByteArray())
 
-        brevredigeringService.hentPdf(callMock, brev.info.id)
+        brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)
         transaction { assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1) }
 
         brevredigeringService.slettBrev(brev.info.id)
@@ -361,7 +360,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         stagePdf("a real life pdf".encodeToByteArray())
-        awaitAll(*(0..<10).map { async(Dispatchers.IO) { brevredigeringService.hentPdf(callMock, brev.info.id) } }.toTypedArray())
+        awaitAll(*(0..<10).map { async(Dispatchers.IO) { brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id) } }.toTypedArray())
 
         transaction {
             assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
@@ -373,11 +372,11 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
         stagePdf("min første pdf".encodeToByteArray())
 
-        brevredigeringService.hentPdf(callMock, brev.info.id)
+        brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)
         val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
         transaction { Brevredigering[brev.info.id].document.first().delete() }
-        brevredigeringService.hentPdf(callMock, brev.info.id)
+        brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)
         val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
         assertThat(firstHash).isEqualTo(secondHash)
@@ -388,11 +387,11 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         stagePdf("min første pdf".encodeToByteArray())
-        brevredigeringService.hentPdf(callMock, brev.info.id)
+        brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)
         val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
         transaction { Brevredigering[brev.info.id].redigertBrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit() }
-        brevredigeringService.hentPdf(callMock, brev.info.id)
+        brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)
         val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
         assertThat(firstHash).isNotEqualTo(secondHash)
@@ -403,7 +402,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
         stagePdf("what a cool party".encodeToByteArray())
 
-        val pdf = brevredigeringService.hentPdf(callMock, brev.info.id)
+        val pdf = brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)
 
         assertThat(pdf?.resultOrNull()?.toString(Charsets.UTF_8)).isEqualTo("what a cool party")
     }
@@ -412,12 +411,12 @@ class BrevredigeringServiceTest {
     fun `hentPdf rendrer ny pdf om den ikke er basert paa gjeldende redigertBrev`(): Unit = runBlocking {
         val brev = opprettBrev().resultOrNull()!!
         stagePdf("min første pdf".encodeToByteArray())
-        brevredigeringService.hentPdf(callMock, brev.info.id)
+        brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)
 
         transaction { Brevredigering[brev.info.id].redigertBrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit() }
 
         stagePdf("min andre pdf".encodeToByteArray())
-        val pdf = brevredigeringService.hentPdf(callMock, brev.info.id)?.resultOrNull()?.toString(Charsets.UTF_8)
+        val pdf = brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)?.resultOrNull()?.toString(Charsets.UTF_8)
 
         assertEquals("min andre pdf", pdf)
     }
@@ -426,10 +425,10 @@ class BrevredigeringServiceTest {
     fun `hentPdf rendrer ikke ny pdf om den er basert paa gjeldende redigertBrev`(): Unit = runBlocking {
         val brev = opprettBrev().resultOrNull()!!
         stagePdf("min første pdf".encodeToByteArray())
-        val first = brevredigeringService.hentPdf(callMock, brev.info.id)
+        val first = brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)
 
         stagePdf("min første pdf".encodeToByteArray())
-        val second = brevredigeringService.hentPdf(callMock, brev.info.id)
+        val second = brevredigeringService.hentEllerOpprettPdf(callMock, brev.info.id)
 
         assertThat(first).isNotEqualTo(second)
     }
