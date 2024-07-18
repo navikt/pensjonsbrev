@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
-import { PlusIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
+import { ArrowRightIcon, PlusIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal, VStack } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -97,13 +97,12 @@ function Brevbehandler() {
                 params: { saksId: saksId },
               });
             }}
-            size="small"
             type="button"
             variant="secondary"
           >
             <HStack>
-              <PlusIcon fontSize="1.5rem" title="a11y-title" />
-              <BodyShort>Lag nytt brev</BodyShort>
+              <PlusIcon fontSize="1.5rem" title="pluss-ikon" />
+              Lag nytt brev
             </HStack>
           </Button>
           {alleBrevForSak.isSuccess && (
@@ -129,7 +128,10 @@ const FerdigstillOgSendBrevButton = (properties: {
   if (!properties.valgtBrev && properties.brevInfo.some(erBrevKlar)) {
     return (
       <Button onClick={properties.åpneFerdigstillModal} type="button">
-        Send ferdigstilte brev
+        <HStack gap="2">
+          Send ferdigstilte brev
+          <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+        </HStack>
       </Button>
     );
   }
@@ -199,10 +201,12 @@ const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpne
             låsForRedigeringMutation.mutate(true);
           }
         }}
-        size="small"
         type="button"
       >
-        {erLåst ? "Ferdigstill brev" : "Ferdigstill brev og send"}
+        <HStack gap="2">
+          {erLåst ? "Ferdigstill brev" : "Ferdigstill brev og send"}
+          <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+        </HStack>
       </Button>
     </div>
   );
