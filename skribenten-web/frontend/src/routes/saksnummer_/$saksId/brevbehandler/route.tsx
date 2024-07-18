@@ -3,7 +3,7 @@ import { PlusIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { delvisOppdaterBrev, hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
@@ -31,6 +31,9 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
 function Brevbehandler() {
   const { saksId } = Route.useParams();
   const { brevId } = Route.useSearch();
+  const navigate = useNavigate({
+    from: Route.fullPath,
+  });
 
   const brevPdfContainerReference = useRef<HTMLDivElement>(null);
   const pdfHeightContext = usePDFViewerContext();
@@ -87,7 +90,17 @@ function Brevbehandler() {
           `}
           justify="space-between"
         >
-          <Button size="small" type="button" variant="secondary">
+          <Button
+            onClick={() => {
+              navigate({
+                to: "/saksnummer/$saksId/brevvelger",
+                params: { saksId: saksId },
+              });
+            }}
+            size="small"
+            type="button"
+            variant="secondary"
+          >
             <HStack>
               <PlusIcon fontSize="1.5rem" title="a11y-title" />
               <BodyShort>Lag nytt brev</BodyShort>
