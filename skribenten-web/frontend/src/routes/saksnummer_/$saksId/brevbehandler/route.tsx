@@ -91,12 +91,13 @@ function Brevbehandler() {
             onClick={() => {
               navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: saksId } });
             }}
+            size="small"
             type="button"
             variant="secondary"
           >
             <HStack>
               <PlusIcon fontSize="1.5rem" title="pluss-ikon" />
-              Lag nytt brev
+              <Label>Lag nytt brev</Label>
             </HStack>
           </Button>
           {alleBrevForSak.isSuccess && (
