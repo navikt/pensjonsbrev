@@ -1,19 +1,5 @@
 import { css } from "@emotion/react";
-import { PencilIcon } from "@navikt/aksel-icons";
-import {
-  Accordion,
-  Alert,
-  BodyShort,
-  Button,
-  Heading,
-  HStack,
-  Label,
-  Radio,
-  RadioGroup,
-  Switch,
-  Tag,
-  VStack,
-} from "@navikt/ds-react";
+import { Accordion, Alert, BodyShort, Heading, HStack, Label, Switch, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
@@ -26,7 +12,7 @@ import { erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
 import { EndreMottakerModal } from "../../brevvelger/$templateId/-components/endreMottaker/EndreMottaker";
-import { brevInfoStatusTypeToTextAndTagVariant, DistribusjonsMetode } from "../-BrevbehandlerUtils";
+import { brevInfoStatusTypeToTextAndTagVariant } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
 const BrevbehandlerMeny = (properties: { sakId: string; brevInfo: BrevInfo[] }) => {
@@ -117,9 +103,9 @@ const BrevItem = (properties: {
     <>
       {modalÅpen && (
         <EndreMottakerModal
-          onBekreftNyMottaker={(nyMottaker) => {
+          onBekreftNyMottaker={() => {
             setModalÅpen(false);
-            console.log("Bekreft ny mottaker:", nyMottaker);
+            //TODO - bekreft ny mottaker
           }}
           onClose={() => setModalÅpen(false)}
           åpen={modalÅpen}
@@ -135,6 +121,10 @@ const BrevItem = (properties: {
         <Accordion.Content>
           <VStack gap="8">
             <VStack gap="4">
+              {/* 
+              TODO - Implementer endring av mottaker
+              1. Vise hvem mottakeren er. Brevet starter default til brukeren, så kan dem endre til sahmandler / manuell adresse
+              2. Gjør et kall til backend for å endre mottakeren
               <div>
                 <BodyShort
                   css={css`
@@ -160,10 +150,11 @@ const BrevItem = (properties: {
                   )}
                 </HStack>
               </div>
+              */}
 
               <Switch
                 checked={erLåst}
-                // TODO - finn en måte å gi feedback på dersom kallet gir error
+                // TODO - finn en måte å gi feedback på dersom kallet gir error. Jeg antar at switcehn ikke blir endret dersom det er en error
                 loading={låsForRedigeringMutation.isPending}
                 onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
               >
@@ -177,6 +168,8 @@ const BrevItem = (properties: {
                   `}
                   gap="4"
                 >
+                  {/*
+                  TODO - Implementer oppdatering av data
                   <Button
                     css={css`
                       color: #23262a;
@@ -193,6 +186,7 @@ const BrevItem = (properties: {
                   >
                     Oppdater data
                   </Button>
+                  */}
                   <Link
                     className="navds-button navds-button--small navds-label navds-label--small"
                     css={css`
@@ -208,12 +202,17 @@ const BrevItem = (properties: {
                 </VStack>
               )}
 
+              {/* 
+              TODO - Implementer distribusjonstype
+                Kommer dette til å kanskje gjøres på samme måte som lås? Et kall på onChangen? 
+
               {erLåst && (
                 <RadioGroup description={"Distribusjon"} legend="" size="small">
                   <Radio value={DistribusjonsMetode.Sentralprint}>Sentralprint</Radio>
                   <Radio value={DistribusjonsMetode.Lokaltprint}>Lokaltprint</Radio>
                 </RadioGroup>
               )}
+              */}
             </VStack>
 
             <div>
