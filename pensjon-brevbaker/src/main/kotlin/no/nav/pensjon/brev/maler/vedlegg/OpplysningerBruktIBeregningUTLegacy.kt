@@ -55,7 +55,6 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         ),
         includeSakspart = false,
     ) {
-
         val PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning: Expression<Boolean> = true.expr()
         val PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland: Expression<String> = "<TEXTVARIABEL:4932>".expr()
         val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidFomBilateral: Expression<LocalDate> = LocalDate.of(2020,4, 11).expr()
