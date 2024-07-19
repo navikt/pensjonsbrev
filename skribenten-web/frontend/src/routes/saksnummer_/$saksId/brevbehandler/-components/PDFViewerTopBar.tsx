@@ -102,7 +102,7 @@ const TopBarNavigation = (properties: {
         cssOveride={css`
           padding: 0;
           height: 24px;
-          widht: 24px;
+          width: 24px;
         `}
         disabled={properties.currentPageNumber === 1}
         onClick={goToPreviousPage}
@@ -113,7 +113,7 @@ const TopBarNavigation = (properties: {
         cssOveride={css`
           padding: 0;
           height: 24px;
-          widht: 24px;
+          width: 24px;
         `}
         disabled={properties.currentPageNumber === properties.totalNumberOfPages}
         onClick={goToNextPage}
@@ -127,7 +127,8 @@ const TopBarNavigation = (properties: {
               width: 28px;
               height: 32px;
               min-height: 32px;
-              //sentrerer teksten i inputfeltet dersom feltet har et tegn, eller fler
+
+              /* sentrerer teksten i inputfeltet dersom feltet har et tegn, eller fler */
               padding: 0 ${textFieldValue.length > 1 ? "4px" : "8px"};
             }
           `}
