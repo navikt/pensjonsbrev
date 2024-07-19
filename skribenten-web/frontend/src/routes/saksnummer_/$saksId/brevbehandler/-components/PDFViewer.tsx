@@ -89,7 +89,7 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
       />
       <div
         css={css`
-          // 48px er høyden på topbaren
+          /* 48px er høyden på topbaren */
           height: ${pdfHeightContext.height ? `${pdfHeightContext.height - 48}px` : "100%"};
           overflow: auto;
           display: flex;
@@ -100,7 +100,7 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
         <Document
           css={css`
             background-color: var(--a-gray-300);
-            padding: 0rem 3rem 1rem 3rem;
+            padding: 0 3rem 1rem;
           `}
           file={properties.pdf}
           loading="Henter brev..."

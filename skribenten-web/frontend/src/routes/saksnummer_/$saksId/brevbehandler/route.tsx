@@ -59,11 +59,9 @@ function Brevbehandler() {
       <div
         css={css`
           display: grid;
-          grid-template-columns: 33% 66%;
-          grid-template-rows: 1fr auto;
-          grid-template-areas:
-            "meny pdf"
-            "footer footer";
+          grid-template:
+            "meny pdf" 1fr
+            "footer footer" auto / 33% 66%;
 
           background-color: white;
           width: 1200px;
