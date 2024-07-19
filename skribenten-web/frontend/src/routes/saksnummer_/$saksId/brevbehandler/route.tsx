@@ -16,6 +16,7 @@ import { PDFViewerContextProvider, usePDFViewerContext } from "./-components/PDF
 export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
   component: () => (
     //Fordi høyden til routen som viser PDF'en ikke er helt fastsatt på forhånd, anser vi denne routen som direkte parenten av PDF-vieweren, som da får bestemme PDF-viewerens høyde
+    //Dette funker, men er ikke så stor fan av hvordan den er løst. Se om vi kan gjøre dette på en bedre måte når vi får tid.
     <PDFViewerContextProvider>
       <Brevbehandler />
     </PDFViewerContextProvider>
@@ -39,8 +40,8 @@ function Brevbehandler() {
     pdfHeightContext.setHeight(brevPdfContainerReference?.current?.getBoundingClientRect().height ?? null);
   }, [brevPdfContainerReference, pdfHeightContext]);
 
-  //TODO - sjekk om dette er good
   //vi henter data her istedenfor i route-loaderen fordi vi vil vise stort sett lik skjermbilde
+  //Vi kan muligens gjøre en load i route-loader slik at brevene laster litt fortere
   const alleBrevForSak = useQuery({
     queryKey: hentAlleBrevForSak.queryKey,
     queryFn: () => hentAlleBrevForSak.queryFn(saksId),
