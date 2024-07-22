@@ -150,7 +150,9 @@ object BarnepensjonFellesFraser {
         }
     }
 
-    object HvorLengeKanDuFaaBarnepensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class HvorLengeKanDuFaaBarnepensjon(
+        val migrertYrkesskade: Expression<Boolean>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -161,9 +163,25 @@ object BarnepensjonFellesFraser {
             }
             paragraph {
                 text(
-                    Bokmal to "Du er innvilget barnepensjon til og med den kalendermåneden du fyller 20 år, så lenge du oppfyller vilkårene.",
-                    Nynorsk to "Under føresetnad av at du innfrir vilkåra, kan du få barnepensjon fram til og med kalendermånaden du fyller 20 år.",
-                    English to "You will receive the children’s pension until and including the calendar month in which you turn 20, as long as you satisfy the conditions.",
+                    Bokmal to "Du er innvilget barnepensjon til og med den kalendermåneden du fyller ",
+                    Nynorsk to "Under føresetnad av at du innfrir vilkåra, kan du få barnepensjon fram til og med kalendermånaden du fyller ",
+                    English to "You will receive the children’s pension until and including the calendar month in which you turn 20 ",
+                )
+                showIf(migrertYrkesskade) {
+                    text(
+                        Bokmal to "21",
+                        Nynorsk to "21",
+                        English to "21",
+                    )
+                }.orShow { text(
+                    Bokmal to "20",
+                    Nynorsk to "20",
+                    English to "20",
+                ) }
+                text(
+                    Bokmal to " år, så lenge du oppfyller vilkårene.",
+                    Nynorsk to " år.",
+                    English to ", as long as you satisfy the conditions.",
                 )
             }
         }

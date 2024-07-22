@@ -21,6 +21,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonFore
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.erGjenoppretting
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.erMigrertYrkesskade
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.innhold
@@ -45,7 +46,8 @@ data class BarnepensjonForeldreloesDTO(
     val kunNyttRegelverk: Boolean,
     val harUtbetaling: Boolean,
     val erGjenoppretting: Boolean,
-    val vedtattIPesys: Boolean
+    val vedtattIPesys: Boolean,
+    val erMigrertYrkesskade: Boolean,
 ) : BrevDTO
 
 
@@ -92,7 +94,7 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
             showIf(harUtbetaling) {
                 includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, brukerUnder18Aar))
             }
-            includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon)
+            includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))

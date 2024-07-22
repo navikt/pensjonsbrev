@@ -29,6 +29,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.datoVedtakOmgjoering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erMigrertYrkesskade
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erOmgjoering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.feilutbetaling
@@ -63,7 +64,8 @@ data class BarnepensjonRevurderingDTO(
     val kunNyttRegelverk: Boolean,
     val harFlereUtbetalingsperioder: Boolean,
     val harUtbetaling: Boolean,
-    val feilutbetaling: FeilutbetalingType
+    val feilutbetaling: FeilutbetalingType,
+    val erMigrertYrkesskade: Boolean,
 ) : BrevDTO
 
 @TemplateModelHelpers
@@ -132,7 +134,7 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
             showIf(harUtbetaling) {
                 includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, brukerUnder18Aar))
             }
-            includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon)
+            includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
