@@ -167,3 +167,5 @@ fun FUNKSJON_PE_UT_TBU601V_TBU604V(
 ) = PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt") and
         (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB.notEqualTo(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB) or
                 PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB.notEqualTo(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB))
+
+fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate>): Expression<Boolean> = date.month.equalTo(1) and date.day.equalTo(1)
