@@ -145,11 +145,7 @@ data class TBU039V_TBU044V_1(
             )
 
             //IF(FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom) = true) THEN      INCLUDE ENDIF
-            showIf(
-                (FUNKSJON_FF_GetArrayElement_Date_Boolean(
-                    PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom
-                ))
-            ) {
+            showIf(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom.notNull()) {
                 text(
                     Bokmal to " Den faktiske trygdetiden din i denne perioden er fastsatt på grunnlag av følgende perioder:",
                     Nynorsk to " Den faktiske trygdetida di i denne perioden er fastsett på grunnlag av følgjande periodar:",
@@ -190,11 +186,7 @@ data class TBU039V_TBU044V_1(
             )
 
             //IF(FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom) = true) THEN      INCLUDE ENDIF
-            showIf(
-                (FUNKSJON_FF_GetArrayElement_Date_Boolean(
-                    PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom
-                ))
-            ) {
+            showIf(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom.notNull()) {
                 text(
                     Bokmal to "Den faktiske trygdetiden din er fastsatt på grunnlag av følgende perioder:",
                     Nynorsk to " Den faktiske trygdetida di er fastsett på grunnlag av følgjande periodar:",

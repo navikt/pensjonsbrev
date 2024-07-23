@@ -1,9 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TrygdetidBilateralSelectors.fom
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TrygdetidBilateralSelectors.land
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TrygdetidBilateralSelectors.tom
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateral
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.TrygdetidBilateralLand
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.TrygdetidFomBilateral
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.TrygdetidTomBilateral
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateralSelectors.TrygdetidsgrunnlagBilateral_safe
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -14,8 +15,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TBU046V_2(
-    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral: Expression<List<OpplysningerBruktIBeregningenLegacyDto.TrygdetidBilateral>>
-): OutlinePhrase<LangBokmalNynorskEnglish>(){
+    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral: Expression<List<TrygdetidsgrunnlagBilateral>>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             table(
@@ -43,24 +44,28 @@ data class TBU046V_2(
                     }
                 }
             ) {
-                forEach(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral){ trygdetidBilateral ->
+                forEach(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral) { trygdetidBilateral ->
                     row {
                         cell {
-                            textExpr(
-                                Bokmal to trygdetidBilateral.land,
-                                Nynorsk to trygdetidBilateral.land,
-                                English to trygdetidBilateral.land,
-                            )
+                            ifNotNull(trygdetidBilateral.TrygdetidBilateralLand) {
+                                textExpr(
+                                    Bokmal to it,
+                                    Nynorsk to it,
+                                    English to it,
+                                )
+                            }
                         }
                         cell {
-                            textExpr(
-                                Bokmal to trygdetidBilateral.fom.format(),
-                                Nynorsk to trygdetidBilateral.fom.format(),
-                                English to trygdetidBilateral.fom.format(),
-                            )
+                            ifNotNull(trygdetidBilateral.TrygdetidFomBilateral) {
+                                textExpr(
+                                    Bokmal to it.format(),
+                                    Nynorsk to it.format(),
+                                    English to it.format(),
+                                )
+                            }
                         }
                         cell {
-                            ifNotNull(trygdetidBilateral.tom) { tom ->
+                            ifNotNull(trygdetidBilateral.TrygdetidTomBilateral) { tom ->
                                 textExpr(
                                     Bokmal to tom.format(),
                                     Nynorsk to tom.format(),

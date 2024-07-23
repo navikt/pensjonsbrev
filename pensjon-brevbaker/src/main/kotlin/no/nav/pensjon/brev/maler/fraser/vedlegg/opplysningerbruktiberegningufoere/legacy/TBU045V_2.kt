@@ -1,20 +1,23 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TrygdetidEOSSelectors.fom
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TrygdetidEOSSelectors.land
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TrygdetidEOSSelectors.tom
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.TrygdetidEOSLand
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.TrygdetidFomEOS_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.TrygdetidTomEOS_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOS
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOSSelectors.TrygdetidsgrunnlagEOS
+
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TBU045V_2(
-    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS: Expression<List<OpplysningerBruktIBeregningenLegacyDto.TrygdetidEOS>>
+    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS: Expression<TrygdetidsgrunnlagListeEOS>
 ): OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -43,28 +46,30 @@ data class TBU045V_2(
                     }
                 }
             ) {
-                forEach(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS){ trygdetidEOS ->
+                forEach(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS.TrygdetidsgrunnlagEOS){ trygdetidEOS ->
                     row {
                         cell {
                             textExpr(
-                                Bokmal to trygdetidEOS.land,
-                                Nynorsk to trygdetidEOS.land,
-                                English to trygdetidEOS.land,
+                                Bokmal to trygdetidEOS.TrygdetidEOSLand.ifNull(""),
+                                Nynorsk to trygdetidEOS.TrygdetidEOSLand.ifNull(""),
+                                English to trygdetidEOS.TrygdetidEOSLand.ifNull(""),
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to trygdetidEOS.fom.format(),
-                                Nynorsk to trygdetidEOS.fom.format(),
-                                English to trygdetidEOS.fom.format(),
-                            )
-                        }
-                        cell {
-                            ifNotNull(trygdetidEOS.tom) { tom ->
+                            ifNotNull(trygdetidEOS.TrygdetidFomEOS_safe) {
                                 textExpr(
-                                    Bokmal to tom.format(),
-                                    Nynorsk to tom.format(),
-                                    English to tom.format(),
+                                    Bokmal to it.format(),
+                                    Nynorsk to it.format(),
+                                    English to it.format(),
+                                )
+                            }
+                        }
+                        cell {
+                            ifNotNull(trygdetidEOS.TrygdetidTomEOS_safe) {
+                                textExpr(
+                                    Bokmal to it.format(),
+                                    Nynorsk to it.format(),
+                                    English to it.format(),
                                 )
                             }
                         }

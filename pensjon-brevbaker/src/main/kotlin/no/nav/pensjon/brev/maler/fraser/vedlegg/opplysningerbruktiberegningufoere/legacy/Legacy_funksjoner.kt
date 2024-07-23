@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -67,11 +68,6 @@ fun FUNKSJON_PE_UT_Trygdetid_Avdod(
 //	ENDIF
 //ELSE Value = false
 //ENDIFÿÿÿc4WðBÿÿÿz4WðBÿÿÿ4WðB4ÿÿÿÒ2>ô2Æä@T110988pHËø2Æä@T110988WðBÿÿÿSer om det eksisterer en datoüÿÿÈApprove HL3-2016T133804Íä@T133804Ü£Íä@üÿÿüÿÿüÿÿWðBh4FF_GetArrayElement_Date_BooleanfghWðBgÈeArray_Variabel
-fun FUNKSJON_FF_GetArrayElement_Date_Boolean(localDate: Expression<LocalDate?>) = localDate.notNull()
-
-
-
-
 
 // Boolean doInclude
 //

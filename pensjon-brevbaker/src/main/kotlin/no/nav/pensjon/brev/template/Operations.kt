@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import sun.jvm.hotspot.debugger.cdbg.EnumType
 import kotlin.math.absoluteValue
 
 abstract class Operation : StableHash {
@@ -123,6 +124,11 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
     class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>(), StableHash by StableHash.of("BinaryOperation.EnumInList") {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
+
+    class GetElement<ListType> : BinaryOperation<List<ListType>?, Int, ListType?>(), StableHash by StableHash.of("BinaryOperation.GetElement") {
+        override fun apply(first: List<ListType>?, second: Int): ListType? = first?.getOrNull(second)
+    }
+
 
     class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>(), StableHash by StableHash.of("BinaryOperation.IfElse") {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second

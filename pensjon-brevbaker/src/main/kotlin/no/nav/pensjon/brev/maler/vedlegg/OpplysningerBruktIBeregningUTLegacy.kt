@@ -1,15 +1,93 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.Vedtaksbrev_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.GrunnlagSelectors.Persongrunnlagsliste_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.BrukerFlyktning_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.PersonBostedsland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.TrygdetidsgrunnlagListeBilateral_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.TrygdetidsgrunnlagListeEOS_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.TrygdetidsgrunnlagListeNor_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.TrygdetidFomBilateral_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateralSelectors.TrygdetidsgrunnlagBilateral_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNorSelectors.Trygdetidsgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.TrygdetidFom_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.Grunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.Vedtaksdata_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.BeregningsData_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.Kravhode_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.VilkarsVedtakList_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.BeregningUfore_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.BelopGammelBTFB_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.BelopNyBTFB_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYKSelectors.BelopGammelBTSB_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYKSelectors.BelopNyBTSB_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.BarnetilleggFellesYK_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.BarnetilleggSerkullYK_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.UforetrygdOrdinerYK_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.BelopRedusert_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.Belopsendring_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.BeregningSivilstandAnvendt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.BeregningYtelsesKomp_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.Reduksjonsgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.TotalNetto_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.Uforetrygdberegning_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.MinsteytelseSelectors.Sats_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.AndelYtelseAvOIFU_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.UforetrygdOrdinerYKSelectors.BelopGammelUT_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.UforetrygdOrdinerYKSelectors.BelopNyUT_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonBTSelectors.JusteringsbelopPerAr_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.Belopsgrense_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.ForventetInntekt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.Inntektsgrense_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.Inntektstak_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.Kompensasjonsgrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.Oifu_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.UgradertBruttoPerAr_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.Utbetalingsgrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.AvkortningsInformasjon_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.BTFBinnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.BTFBnetto_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.AvkortningsInformasjon_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.BTSBinnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.BTSBnetto_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.BarnetilleggFelles_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.BarnetilleggSerkull_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.Ektefelletillegg_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.UforetrygdOrdiner_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.EktefelletilleggSelectors.ETinnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.AvkortningsInformasjon_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.Fradrag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.Minsteytelse_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.NettoAkk_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.NettoRestAr_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.AnvendtTrygdetid_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.Mottarminsteytelse_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.Uforegrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.Yrkesskadegrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.BoddArbeidUtland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.BrukerKonvertertUP_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.KravArsakType_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakListSelectors.VilkarsVedtak_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.YrkesskadeResultat_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.BeregningsVilkar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.Vilkar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.IEUBegrunnelse_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.IFUBegrunnelse_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.IFUInntekt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.Trygdetid_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.Uforegrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.TrygdetidSelectors.FaTTEOS_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.TrygdetidSelectors.FramtidigTTEOS_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.TrygdetidSelectors.FramtidigTTNorsk_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.TrygdetidSelectors.RedusertFramtidigTrygdetid_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.OpplysningerOmBarnetilleggDtoSelectors.anvendtTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.OpplysningerOmBarnetilleggDtoSelectors.barnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.OpplysningerOmBarnetilleggDtoSelectors.fraOgMedDatoErNesteAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.OpplysningerOmBarnetilleggDtoSelectors.harKravaarsakEndringInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.OpplysningerOmBarnetilleggDtoSelectors.harYrkesskade
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.PE
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerDtoSelectors.antallAarOver1G
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerDtoSelectors.antallAarOverInntektIAvtaleland
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerDtoSelectors.barnetilleggGjeldende
@@ -55,10 +133,15 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         ),
         includeSakspart = false,
     ) {
-        val PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning: Expression<Boolean> = true.expr()
-        val PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland: Expression<String> = "<TEXTVARIABEL:4932>".expr()
-        val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidFomBilateral: Expression<LocalDate> = LocalDate.of(2020,4, 11).expr()
-        val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom: Expression<LocalDate> = LocalDate.of(2020,11, 11).expr()
+        val PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning: Expression<Boolean> = PE.Vedtaksbrev_safe.Grunnlag_safe.Persongrunnlagsliste_safe.getOrNull().BrukerFlyktning_safe.ifNull(false)
+        val PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland: Expression<String> = PE.Vedtaksbrev_safe.Grunnlag_safe.Persongrunnlagsliste_safe.getOrNull().PersonBostedsland_safe.ifNull("")
+        val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidFomBilateral: Expression<LocalDate?> =
+            PE.Vedtaksbrev_safe.Grunnlag_safe.Persongrunnlagsliste_safe.getOrNull().TrygdetidsgrunnlagListeBilateral_safe.TrygdetidsgrunnlagBilateral_safe.getOrNull().TrygdetidFomBilateral_safe
+
+        val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom: Expression<LocalDate?> =
+            PE.Vedtaksbrev_safe.Grunnlag_safe.Persongrunnlagsliste_safe.getOrNull().TrygdetidsgrunnlagListeNor_safe.Trygdetidsgrunnlag_safe.getOrNull().TrygdetidFom_safe
+
+        // TODO globale funksjoner:
         val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: Expression<String> = "<TEXTVARIABEL:1287>".expr()
         val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner: Expression<String> = "<TEXTVARIABEL:6599>".expr()
         val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall: Expression<String> = "<TEXTVARIABEL:8818>".expr()
@@ -67,52 +150,145 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         val PE_UT_OpplyningerOmBergeningen_NettoPerAr: Expression<Kroner> = Kroner(2683).expr()
         val PE_UT_Overskytende: Expression<Kroner> = Kroner(9111).expr()
         val PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12: Expression<Int> = 6761.expr()
-        val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr: Expression<Kroner> = Kroner(4846).expr()
-        val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr: Expression<Kroner> = Kroner(2598).expr()
-        val PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP: Expression<Boolean> = true.expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert: Expression<Boolean> = true.expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT: Expression<Kroner> = Kroner(6206).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT: Expression<Kroner> = Kroner(4537).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense: Expression<Kroner> = Kroner(8977).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt: Expression<Kroner> = Kroner(4946).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense: Expression<Kroner> = Kroner(1189).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak: Expression<Kroner> = Kroner(2427).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Kompensasjonsgrad: Expression<Int> = 4500.expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu: Expression<Kroner> = Kroner(2264).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_UgradertBruttoPerAr: Expression<Kroner> = Kroner(1975).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad: Expression<Int> = 9582.expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Fradrag: Expression<Kroner> = Kroner(9978).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats: Expression<Double> = 99.0.expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk: Expression<Kroner> = Kroner(3814).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU: Expression<Double> = 29.0.expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto: Expression<Kroner> = Kroner(9765).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid: Expression<Int> = 3196.expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse: Expression<Boolean> = true.expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad: Expression<Int> = 7514.expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad: Expression<Int> = 4987.expr()
-        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt: Expression<String> = "<TEXTVARIABEL:8197>".expr()
-        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget: Expression<Boolean> = true.expr()
-        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto: Expression<Kroner> = Kroner(9126).expr()
-        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget: Expression<Boolean> = true.expr()
-        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto: Expression<Kroner> = Kroner(755).expr()
-        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget: Expression<Boolean> = true.expr()
-        val PE_Vedtaksdata_Kravhode_BoddArbeidUtland: Expression<Boolean> = true.expr()
-        val PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String> = "<TEXTVARIABEL:637>".expr()
-        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUBegrunnelse: Expression<String> = "<TEXTVARIABEL:235>".expr()
-        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse: Expression<String> = "<TEXTVARIABEL:633>".expr()
-        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt: Expression<Kroner> = Kroner(1472).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB: Expression<Kroner> = Kroner(14720).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB: Expression<Kroner> = Kroner(14721).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB: Expression<Kroner> = Kroner(14722).expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB: Expression<Kroner> = Kroner(14723).expr()
-        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTEOS: Expression<Int> = 8112.expr()
-        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTEOS: Expression<Int> = 8560.expr()
-        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk: Expression<Int> = 5410.expr()
-        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_RedusertFramtidigTrygdetid: Expression<Boolean> = true.expr()
-        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad: Expression<Int> = 3.expr()
-        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat: Expression<String> = "<TEXTVARIABEL:7131>".expr()
         val PE_pebrevkode: Expression<String> = "<TEXTVARIABEL:3348>".expr()
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr: Expression<Kroner> = Kroner(4980).expr()
+
+
+
+        val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.BarnetilleggFelles_safe.AvkortningsInformasjon_safe.JusteringsbelopPerAr_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.BarnetilleggSerkull_safe.AvkortningsInformasjon_safe.JusteringsbelopPerAr_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP: Expression<Boolean> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.Kravhode_safe.BrukerKonvertertUP_safe.ifNull(false)
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert: Expression<Boolean> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BelopRedusert_safe.ifNull(false)
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Belopsendring_safe.BarnetilleggFellesYK_safe.BelopGammelBTFB_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Belopsendring_safe.BarnetilleggFellesYK_safe.BelopNyBTFB_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Belopsendring_safe.BarnetilleggSerkullYK_safe.BelopGammelBTSB_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Belopsendring_safe.BarnetilleggSerkullYK_safe.BelopNyBTSB_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Belopsendring_safe.UforetrygdOrdinerYK_safe.BelopGammelUT_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Belopsendring_safe.UforetrygdOrdinerYK_safe.BelopNyUT_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Belopsgrense_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.ForventetInntekt_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Inntektsgrense_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Inntektstak_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Kompensasjonsgrad: Expression<Int> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Kompensasjonsgrad_safe.ifNull(0)
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Oifu_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_UgradertBruttoPerAr: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.UgradertBruttoPerAr_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad: Expression<Int> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Utbetalingsgrad_safe.ifNull(0)
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Fradrag: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.Fradrag_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats: Expression<Double> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.Minsteytelse_safe.Sats_safe
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.NettoAkk_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.NettoRestAr_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU: Expression<Double> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Reduksjonsgrunnlag_safe.AndelYtelseAvOIFU_safe
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.TotalNetto_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid: Expression<Int> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Uforetrygdberegning_safe.AnvendtTrygdetid_safe.ifNull(0)
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse: Expression<Boolean> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Uforetrygdberegning_safe.Mottarminsteytelse_safe.ifNull(false)
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad: Expression<Int> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Uforetrygdberegning_safe.Uforegrad_safe.ifNull(0)
+
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad: Expression<Int> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Uforetrygdberegning_safe.Yrkesskadegrad_safe.ifNull(0)
+
+        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt: Expression<String> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningSivilstandAnvendt_safe.ifNull("")
+
+        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget: Expression<Boolean> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.BarnetilleggFelles_safe.BTFBinnvilget_safe.ifNull(false)
+
+        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.BarnetilleggFelles_safe.BTFBnetto_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget: Expression<Boolean> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.BarnetilleggSerkull_safe.BTSBinnvilget_safe.ifNull(false)
+
+        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.BarnetilleggSerkull_safe.BTSBnetto_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget: Expression<Boolean> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.Ektefelletillegg_safe.ETinnvilget_safe.ifNull(false)
+
+        val PE_Vedtaksdata_Kravhode_BoddArbeidUtland: Expression<Boolean> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.Kravhode_safe.BoddArbeidUtland_safe.ifNull(false)
+
+        val PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.Kravhode_safe.KravArsakType_safe.ifNull("")
+
+        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUBegrunnelse: Expression<String> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.VilkarsVedtakList_safe.VilkarsVedtak_safe.getOrNull().BeregningsVilkar_safe.IEUBegrunnelse_safe.ifNull("")
+
+        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse: Expression<String> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.VilkarsVedtakList_safe.VilkarsVedtak_safe.getOrNull().BeregningsVilkar_safe.IFUBegrunnelse_safe.ifNull("")
+
+        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt: Expression<Kroner> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.VilkarsVedtakList_safe.VilkarsVedtak_safe.getOrNull().BeregningsVilkar_safe.IFUInntekt_safe.ifNull(Kroner(0))
+
+        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTEOS: Expression<Int> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.VilkarsVedtakList_safe.VilkarsVedtak_safe.getOrNull().BeregningsVilkar_safe.Trygdetid_safe.FaTTEOS_safe.ifNull(0)
+
+        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTEOS: Expression<Int> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.VilkarsVedtakList_safe.VilkarsVedtak_safe.getOrNull().BeregningsVilkar_safe.Trygdetid_safe.FramtidigTTEOS_safe.ifNull(0)
+
+        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk: Expression<Int> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.VilkarsVedtakList_safe.VilkarsVedtak_safe.getOrNull().BeregningsVilkar_safe.Trygdetid_safe.FramtidigTTNorsk_safe.ifNull(0)
+
+        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_RedusertFramtidigTrygdetid: Expression<Int?> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.VilkarsVedtakList_safe.VilkarsVedtak_safe.getOrNull().BeregningsVilkar_safe.Trygdetid_safe.RedusertFramtidigTrygdetid_safe
+
+        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad: Expression<Int> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.VilkarsVedtakList_safe.VilkarsVedtak_safe.getOrNull().BeregningsVilkar_safe.Uforegrad_safe.ifNull(0)
+
+        val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat: Expression<String> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.VilkarsVedtakList_safe.VilkarsVedtak_safe.getOrNull().Vilkar_safe.YrkesskadeResultat_safe.ifNull("")
+
 
 
         // UNUSED VARIABLES (used in phrases that has not been written yet):
@@ -409,15 +585,17 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 and not(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning)
                 and PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12.lessThan(40) or
                 (PE_Vedtaksdata_Kravhode_BoddArbeidUtland
-                        and FUNKSJON_FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom)  ))
+                        and PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom.notNull()  ))
         {
-            includePhrase(TBU1187_2(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor))
+            includePhrase(TBU1187_2(PE.Vedtaksbrev_safe.Grunnlag_safe.Persongrunnlagsliste_safe.getOrNull(1).TrygdetidsgrunnlagListeNor_safe))
         }
         // TBU1187_F 2 er bare whitespace under tabellen
 
         showIf(FUNKSJON_PE_UT_Trygdetid and PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTEOS.greaterThan(0)){
-            includePhrase(TBU045V_1)
-            includePhrase(TBU045V_2(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS))
+            ifNotNull(PE.Vedtaksbrev_safe.Grunnlag_safe.Persongrunnlagsliste_safe.getOrNull().TrygdetidsgrunnlagListeEOS_safe){
+                includePhrase(TBU045V_1)
+                includePhrase(TBU045V_2(it))
+            }
         }
 
         //[TBU046V_1]
@@ -428,13 +606,17 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 and PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid.lessThan(40)))
                 and PE_pebrevkode.notEqualTo("PE_UT_04_108")
                 and PE_pebrevkode.notEqualTo("PE_UT_04_109")
-                and FUNKSJON_FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidFomBilateral)){
-            includePhrase(TBU046V_1)
-            includePhrase(TBU046V_2(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral))
+                and PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidFomBilateral.notNull()){
+
+            ifNotNull(PE.Vedtaksbrev_safe.Grunnlag_safe.Persongrunnlagsliste_safe.getOrNull().TrygdetidsgrunnlagListeBilateral_safe.TrygdetidsgrunnlagBilateral_safe){
+                includePhrase(TBU046V_1)
+                includePhrase(TBU046V_2(it))
+            }
+
         }
 
         showIf(FUNKSJON_PE_UT_Trygdetid
-                    and PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_RedusertFramtidigTrygdetid
+                    and PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_RedusertFramtidigTrygdetid.notNull()
                     and not(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning)
         ) {
             includePhrase(TBU047V)

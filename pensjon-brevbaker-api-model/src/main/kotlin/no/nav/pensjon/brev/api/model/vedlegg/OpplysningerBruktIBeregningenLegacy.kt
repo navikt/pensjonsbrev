@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -9,35 +10,13 @@ import java.time.LocalDate
 data class OpplysningerBruktIBeregningenLegacyDto(
     val tabellUfoereOpplysninger: TabellufoereOpplysningerDto,
     val opplysningerOmBarnetillegg: OpplysningerOmBarnetilleggDto?,
-
+    val PE: PE, // Legacy data
     // Tittel
     val inntektsgrenseAar: Kroner,
     val inntektstak: Kroner,
     val beregnetUTPerMaanedGjeldendeVirkFom: LocalDate,
     val beregnetUTPerMaanedGjeldendeGrunnbeloep: Kroner,
-
-    // strengt nødvendige ekstra variabler for legacy:
-    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor: List<TrygdetidNor>,
-    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS: List<TrygdetidEOS>,
-    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral: List<TrygdetidBilateral>,
 ){
-
-    data class TrygdetidNor(
-        val fom: LocalDate,
-        val tom: LocalDate?,
-    )
-
-    data class TrygdetidEOS(
-        val land: String,
-        val fom: LocalDate,
-        val tom: LocalDate?,
-    )
-
-    data class TrygdetidBilateral(
-        val land: String,
-        val fom: LocalDate,
-        val tom: LocalDate?,
-    )
 
     data class TabellufoereOpplysningerDto(
         val ufoeretrygdGjeldende: OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende,
