@@ -61,6 +61,7 @@ object BrevredigeringTable : LongIdTable() {
     val opprettetAvNavIdent: Column<String> = varchar("opprettetAvNavIdent", length = 50).index()
     val opprettet: Column<Instant> = timestamp("opprettet")
     val sistredigert: Column<Instant> = timestamp("sistredigert")
+    val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
@@ -76,6 +77,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
+    var sistReservert by BrevredigeringTable.sistReservert
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable)
@@ -86,8 +88,6 @@ object DocumentTable : LongIdTable() {
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdf: Column<ExposedBlob> = blob("brevpdf")
     val redigertBrevHash: Column<ByteArray> = binary("redigertBrevHash", 32)
-        // TODO: Fjern når skjema er oppdatert
-        .default(ByteArray(0))
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {

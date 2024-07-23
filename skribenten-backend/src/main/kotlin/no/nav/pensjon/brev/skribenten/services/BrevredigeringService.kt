@@ -5,8 +5,8 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
@@ -21,16 +21,19 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.security.MessageDigest
+import java.sql.Connection
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 data class GeneriskRedigerbarBrevdata(
     override val pesysData: BrevbakerBrevdata,
     override val saksbehandlerValg: BrevbakerBrevdata,
 ) : RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
+
+class KanIkkeReservereBrevredigeringException(override val message: String) : RuntimeException(message)
 
 // TODO: newSuspendedTransaction er blocking, så vi bør mest sannsynlig holde kall til andre tjenester utenfor transaksjoner.
 class BrevredigeringService(
@@ -38,8 +41,9 @@ class BrevredigeringService(
     private val penService: PenService,
     private val navansattService: NavansattService,
 ) {
-
-    val logger: Logger = LoggerFactory.getLogger(BrevredigeringService::class.java)
+    companion object {
+        val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
+    }
 
     suspend fun opprettBrev(
         call: ApplicationCall,
@@ -48,9 +52,10 @@ class BrevredigeringService(
         spraak: LanguageCode,
         avsenderEnhetsId: String?,
         saksbehandlerValg: BrevbakerBrevdata,
+        reserverForRedigering: Boolean = false,
     ): ServiceResult<Api.BrevResponse> =
         harTilgangTilEnhet(call, avsenderEnhetsId) {
-            rendreBrev(call, brevkode, spraak, sak, saksbehandlerValg, avsenderEnhetsId).map { letter ->
+            rendreBrev(call, brevkode, spraak, sak.saksId, saksbehandlerValg, avsenderEnhetsId).map { letter ->
                 transaction {
                     Brevredigering.new {
                         saksId = sak.saksId
@@ -60,7 +65,7 @@ class BrevredigeringService(
                         this.avsenderEnhetId = avsenderEnhetsId
                         this.saksbehandlerValg = saksbehandlerValg
                         laastForRedigering = false
-                        redigeresAvNavIdent = null
+                        redigeresAvNavIdent = if (reserverForRedigering) call.principal().navIdent else null
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         redigertBrev = letter.toEdit()
@@ -72,26 +77,23 @@ class BrevredigeringService(
 
     suspend fun oppdaterBrev(
         call: ApplicationCall,
-        sak: Pen.SakSelection,
         brevId: Long,
         nyeSaksbehandlerValg: BrevbakerBrevdata,
         nyttRedigertbrev: Edit.Letter,
     ): ServiceResult<Api.BrevResponse>? =
-        newSuspendedTransaction {
-            val brevredigering = Brevredigering.findById(brevId)
-
-            if (brevredigering != null) {
-                rendreBrev(call, brevredigering.brevkode, brevredigering.spraak, sak, nyeSaksbehandlerValg, brevredigering.avsenderEnhetId)
-                    .map { nyttRedigertbrev.updateEditedLetter(it) }
-                    .map { oppdatertBrev ->
-                        brevredigering.apply {
+        hentBrevMedReservasjon(call.principal(), brevId) { brev ->
+            rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, nyeSaksbehandlerValg, brev.avsenderEnhetId)
+                .map { nyttRedigertbrev.updateEditedLetter(it) }
+                .map { oppdatertBrev ->
+                    transaction {
+                        brev.apply {
                             redigertBrev = oppdatertBrev
                             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                             saksbehandlerValg = nyeSaksbehandlerValg
                             sistRedigertAvNavIdent = call.principal().navIdent
-                        }.mapBrev()
-                    }
-            } else null
+                        }
+                    }.mapBrev()
+                }
         }
 
     fun delvisOppdaterBrev(brevId: Long, patch: Api.DelvisOppdaterBrevRequest): Api.BrevResponse? =
@@ -117,16 +119,12 @@ class BrevredigeringService(
         }
     }
 
-    suspend fun hentBrev(call: ApplicationCall, sak: Pen.SakSelection, brevId: Long): ServiceResult<Api.BrevResponse>? =
-        newSuspendedTransaction {
-            val brev = Brevredigering.findById(brevId)
-
-            if (brev != null) {
-                rendreBrev(call, brev.brevkode, brev.spraak, sak, brev.saksbehandlerValg, brev.avsenderEnhetId)
-                    .map { brev.redigertBrev.updateEditedLetter(it) }
-                    .map { brev.apply { redigertBrev = it }.mapBrev() }
-            } else null
-        }
+    suspend fun hentBrev(call: ApplicationCall, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Api.BrevResponse>? =
+        if (reserverForRedigering) hentBrevMedReservasjon(call.principal(), brevId) { brev ->
+            rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, brev.saksbehandlerValg, brev.avsenderEnhetId)
+                .map { brev.redigertBrev.updateEditedLetter(it) }
+                .map { transaction { brev.apply { redigertBrev = it }.mapBrev() } }
+        } else transaction { Brevredigering.findById(brevId)?.mapBrev() }?.let { ServiceResult.Ok(it) }
 
     fun hentBrevForSak(saksId: Long): List<Api.BrevInfo> {
         return transaction {
@@ -134,15 +132,31 @@ class BrevredigeringService(
         }
     }
 
+    private suspend fun <T> hentBrevMedReservasjon(principal: UserPrincipal, brevId: Long, block: suspend (Brevredigering) -> T): T? {
+        val brev = transaction(Connection.TRANSACTION_REPEATABLE_READ) {
+            Brevredigering.findById(brevId)?.apply {
+                if (redigeresAvNavIdent == null || erReservasjonUtloept()) {
+                    redigeresAvNavIdent = principal.navIdent
+                    sistReservert = Instant.now()
+                }
+            }
+        }
+        return brev?.let {
+            if (brev.redigeresAvNavIdent == principal.navIdent) {
+                block(brev)
+            } else throw KanIkkeReservereBrevredigeringException("Brev er allerede reservert av: ${brev.redigeresAvNavIdent}")
+        }
+    }
+
     private suspend fun rendreBrev(
         call: ApplicationCall,
         brevkode: Brevkode.Redigerbar,
         spraak: LanguageCode,
-        sak: Pen.SakSelection,
+        saksId: Long,
         saksbehandlerValg: BrevbakerBrevdata,
         avsenderEnhetsId: String?,
     ): ServiceResult<LetterMarkup> =
-        penService.hentPesysBrevdata(call = call, saksId = sak.saksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
+        penService.hentPesysBrevdata(call = call, saksId = saksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
             .then { pesysData ->
                 brevbakerService.renderMarkup(
                     call = call,
@@ -246,13 +260,14 @@ class BrevredigeringService(
         )
 
     private fun mapBrevInfo(brev: Brevredigering): Api.BrevInfo = with(brev) {
-        val redigeresAv = redigeresAvNavIdent
+        val redigeresAv = if (erReservasjonUtloept()) null else redigeresAvNavIdent
         Api.BrevInfo(
             id = id.value,
             opprettetAv = opprettetAvNavIdent,
             opprettet = opprettet,
             sistredigertAv = sistRedigertAvNavIdent,
             sistredigert = sistredigert,
+            redigeresAv = redigeresAv,
             brevkode = brevkode,
             status = when {
                 laastForRedigering -> Api.BrevStatus.Klar
@@ -261,6 +276,9 @@ class BrevredigeringService(
             },
         )
     }
+
+    private fun Brevredigering.erReservasjonUtloept(): Boolean =
+        sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true
 
     private val digest: MessageDigest = MessageDigest.getInstance("SHA3-256")
     private fun hashBrev(brev: Edit.Letter): ByteArray =
