@@ -132,6 +132,10 @@ class BrevredigeringService(
         }
     }
 
+    suspend fun fornyReservasjon(call: ApplicationCall, brevId: Long) {
+        hentBrevMedReservasjon(call.principal(), brevId) { }
+    }
+
     private suspend fun <T> hentBrevMedReservasjon(principal: UserPrincipal, brevId: Long, block: suspend (Brevredigering) -> T): T? {
         val brev = transaction(Connection.TRANSACTION_REPEATABLE_READ) {
             Brevredigering.findById(brevId)?.apply {

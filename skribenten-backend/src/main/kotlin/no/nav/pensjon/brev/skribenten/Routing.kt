@@ -49,6 +49,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 brevredigeringService,
 
             )
+            brev(brevredigeringService)
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
             meRoute(navansattService)
         }

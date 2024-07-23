@@ -23,6 +23,7 @@ import io.ktor.server.response.*
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.services.KanIkkeReservereBrevredigeringException
 
 
 fun main() {
@@ -66,6 +67,9 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
             } else {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
+        }
+        exception<KanIkkeReservereBrevredigeringException> { call, cause ->
+            call.respond(HttpStatusCode.Locked, cause.message)
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)
