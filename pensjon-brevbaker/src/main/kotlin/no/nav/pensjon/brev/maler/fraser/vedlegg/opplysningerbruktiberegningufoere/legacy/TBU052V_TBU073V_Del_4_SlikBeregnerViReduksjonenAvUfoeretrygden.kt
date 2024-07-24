@@ -20,7 +20,7 @@ data class TBU052V_TBU073V_Del_4_SlikBeregnerViReduksjonenAvUfoeretrygden(
     val PE_UT_Overskytende: Expression<Kroner>,
     val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak: Expression<Kroner>,
     val PE_pebrevkode: Expression<String>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Kompensasjonsgrad: Expression<Int>,
+    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Kompensasjonsgrad: Expression<Double>,
     val PE_UT_OpplyningerOmBergeningen_NettoPerAr: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

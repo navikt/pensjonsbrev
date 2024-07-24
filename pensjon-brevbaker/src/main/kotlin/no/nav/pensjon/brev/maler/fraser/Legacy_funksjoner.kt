@@ -1,6 +1,5 @@
-package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
+package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -164,4 +163,6 @@ fun FUNKSJON_PE_UT_TBU601V_TBU604V(
         (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB.notEqualTo(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB) or
                 PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB.notEqualTo(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB))
 
-fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate>): Expression<Boolean> = date.month.equalTo(1) and date.day.equalTo(1)
+fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Expression<Boolean> =
+    date.ifNull(LocalDate.of(2020,2,2)).month.equalTo(1) and
+        date.ifNull(LocalDate.of(2020,2,2)).day.equalTo(1)

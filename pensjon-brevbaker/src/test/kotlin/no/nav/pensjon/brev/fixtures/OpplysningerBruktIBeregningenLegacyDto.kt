@@ -36,9 +36,7 @@ fun createOpplysningerBruktIBeregningenLegacyDto() =
         inntektstak = Kroner(1001),
         beregnetUTPerMaanedGjeldendeVirkFom = LocalDate.of(2020, 1, 1),
         beregnetUTPerMaanedGjeldendeGrunnbeloep = Kroner(1),
-        PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor = listOf(Fixtures.create()),
-        PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS = listOf(Fixtures.create()),
-        PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral = listOf(Fixtures.create()),
+        PE = Fixtures.create()
     )
 
 fun createOpplysningerOmMinstetillegg() = OpplysningerBruktIBeregningenLegacyDto.OpplysningerOmMinstetilleggDto(
@@ -48,26 +46,6 @@ fun createOpplysningerOmMinstetillegg() = OpplysningerBruktIBeregningenLegacyDto
     inntektFoerUfoereGjeldende = Fixtures.create(),
     inntektsgrenseErUnderTak = true,
 )
-
-fun createOpplysningerBruktIBeregningenLegacyDto_TrygdetidNor() =
-    OpplysningerBruktIBeregningenLegacyDto.TrygdetidNor(
-        fom = LocalDate.of(2020, 1, 1),
-        tom = LocalDate.of(2020, 2, 2),
-    )
-
-fun createOpplysningerBruktIBeregningenLegacyDto_TrygdetidEOS() =
-    OpplysningerBruktIBeregningenLegacyDto.TrygdetidEOS(
-        fom = LocalDate.of(2020, 1, 1),
-        tom = LocalDate.of(2020, 2, 2),
-        land = "USA"
-    )
-
-fun createOpplysningerBruktIBeregningenLegacyDto_TrygdetidBilateral() =
-    OpplysningerBruktIBeregningenLegacyDto.TrygdetidBilateral(
-        fom = LocalDate.of(2020, 1, 1),
-        tom = LocalDate.of(2020, 2, 2),
-        land = "USA"
-    )
 
 fun createOpplysningerBruktIBeregningenLegacyDto_OpplysningerOmBarnetilleggDto() =
     OpplysningerBruktIBeregningenLegacyDto.OpplysningerOmBarnetilleggDto(

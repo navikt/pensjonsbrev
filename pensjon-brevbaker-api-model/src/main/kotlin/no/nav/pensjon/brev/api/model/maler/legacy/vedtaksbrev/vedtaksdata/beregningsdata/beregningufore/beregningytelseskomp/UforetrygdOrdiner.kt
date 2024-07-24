@@ -6,6 +6,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 data class UforetrygdOrdiner(
     val AvkortningsInformasjon: AvkortningsInformasjon?,
     val Fradrag: Kroner?,
+    val Netto: Kroner?,
     val NettoAkk: Kroner?,
     val Minsteytelse: Minsteytelse?,
     val AvkortingsbelopPerAr: Kroner?,

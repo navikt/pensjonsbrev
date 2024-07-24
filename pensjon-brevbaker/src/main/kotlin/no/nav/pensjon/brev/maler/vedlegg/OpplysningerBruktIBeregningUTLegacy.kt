@@ -1,3 +1,5 @@
+@file:Suppress("LocalVariableName")
+
 package no.nav.pensjon.brev.maler.vedlegg
 
 
@@ -112,6 +114,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacy
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.beregnetUTPerMaanedGjeldendeVirkFom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.opplysningerOmBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.tabellUfoereOpplysninger
+import no.nav.pensjon.brev.maler.fraser.FUNKSJON_PE_UT_TBU056V
+import no.nav.pensjon.brev.maler.fraser.FUNKSJON_PE_UT_TBU056V_51
+import no.nav.pensjon.brev.maler.fraser.FUNKSJON_PE_UT_TBU601V_TBU604V
+import no.nav.pensjon.brev.maler.fraser.FUNKSJON_PE_UT_Trygdetid
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy.*
 import no.nav.pensjon.brev.model.format
@@ -196,8 +202,8 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak: Expression<Kroner> =
             PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Inntektstak_safe.ifNull(Kroner(0))
 
-        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Kompensasjonsgrad: Expression<Int> =
-            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Kompensasjonsgrad_safe.ifNull(0)
+        val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Kompensasjonsgrad: Expression<Double> =
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Kompensasjonsgrad_safe.ifNull(0.0)
 
         val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu: Expression<Kroner> =
             PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.AvkortningsInformasjon_safe.Oifu_safe.ifNull(Kroner(0))
@@ -212,7 +218,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.Fradrag_safe.ifNull(Kroner(0))
 
         val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats: Expression<Double> =
-            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.Minsteytelse_safe.Sats_safe
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.Minsteytelse_safe.Sats_safe.ifNull(0.0)
 
         val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk: Expression<Kroner> =
             PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.NettoAkk_safe.ifNull(Kroner(0))
@@ -221,7 +227,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.NettoRestAr_safe.ifNull(Kroner(0))
 
         val PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU: Expression<Double> =
-            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Reduksjonsgrunnlag_safe.AndelYtelseAvOIFU_safe
+            PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.Reduksjonsgrunnlag_safe.AndelYtelseAvOIFU_safe.ifNull(0.0)
 
         val PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto: Expression<Kroner> =
             PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe.TotalNetto_safe.ifNull(Kroner(0))
@@ -587,7 +593,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 (PE_Vedtaksdata_Kravhode_BoddArbeidUtland
                         and PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom.notNull()  ))
         {
-            includePhrase(TBU1187_2(PE.Vedtaksbrev_safe.Grunnlag_safe.Persongrunnlagsliste_safe.getOrNull(1).TrygdetidsgrunnlagListeNor_safe))
+            includePhrase(TBU1187_2(PE.Vedtaksbrev_safe.Grunnlag_safe.Persongrunnlagsliste_safe.getOrNull().TrygdetidsgrunnlagListeNor_safe.Trygdetidsgrunnlag_safe))
         }
         // TBU1187_F 2 er bare whitespace under tabellen
 

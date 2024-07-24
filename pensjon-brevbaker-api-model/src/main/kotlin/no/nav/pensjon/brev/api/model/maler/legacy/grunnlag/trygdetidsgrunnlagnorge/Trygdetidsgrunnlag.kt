@@ -4,4 +4,5 @@ import java.time.LocalDate
 
 data class Trygdetidsgrunnlag(
     val TrygdetidFom: LocalDate?,
+    val TrygdetidTom: LocalDate?,
 )

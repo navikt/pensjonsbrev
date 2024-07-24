@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import sun.jvm.hotspot.debugger.cdbg.EnumType
 import kotlin.math.absoluteValue
 
 abstract class Operation : StableHash {

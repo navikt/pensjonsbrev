@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev
 
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
@@ -62,9 +63,6 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T
             OpplysningerBruktIBeregningenLegacyDto::class -> createOpplysningerBruktIBeregningenLegacyDto() as T
             OpplysningerBruktIBeregningenLegacyDto.OpplysningerOmMinstetilleggDto::class -> createOpplysningerOmMinstetillegg() as T
-            OpplysningerBruktIBeregningenLegacyDto.TrygdetidNor::class -> createOpplysningerBruktIBeregningenLegacyDto_TrygdetidNor() as T
-            OpplysningerBruktIBeregningenLegacyDto.TrygdetidEOS::class -> createOpplysningerBruktIBeregningenLegacyDto_TrygdetidEOS() as T
-            OpplysningerBruktIBeregningenLegacyDto.TrygdetidBilateral::class -> createOpplysningerBruktIBeregningenLegacyDto_TrygdetidBilateral() as T
             OpplysningerBruktIBeregningenLegacyDto.OpplysningerOmBarnetilleggDto::class -> createOpplysningerBruktIBeregningenLegacyDto_OpplysningerOmBarnetilleggDto() as T
             OpplysningerOmEtteroppgjoeretDto::class -> createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret() as T
             OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
@@ -73,6 +71,7 @@ object Fixtures {
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             VarselSaksbehandlingstidAutoDto::class -> createVarselSaksbehandlingstidAutoDto() as T
             EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T
+            PE::class -> createPE() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")

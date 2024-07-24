@@ -11,8 +11,7 @@ data class AvkortningsInformasjon(
     val Inntektstak: Kroner?,
     val UgradertBruttoPerAr: Kroner?,
     val Kompensasjonsgrad: Double?,
-    val Utbetalingsgrad: Kroner?,
+    val Utbetalingsgrad: Int?,
     val ForventetInntekt: Kroner?,
     val InntektsgrenseNesteAr: Kroner?,
-    val InntektsavkortingType: String?,
 )
