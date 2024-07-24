@@ -120,10 +120,12 @@ class BrevredigeringService(
     }
 
     suspend fun hentBrev(call: ApplicationCall, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Api.BrevResponse>? =
-        if (reserverForRedigering) hentBrevMedReservasjon(call.principal(), brevId) { brev ->
-            rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, brev.saksbehandlerValg, brev.avsenderEnhetId)
-                .map { brev.redigertBrev.updateEditedLetter(it) }
-                .map { transaction { brev.apply { redigertBrev = it }.mapBrev() } }
+        if (reserverForRedigering) {
+            hentBrevMedReservasjon(call.principal(), brevId) { brev ->
+                rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, brev.saksbehandlerValg, brev.avsenderEnhetId)
+                    .map { brev.redigertBrev.updateEditedLetter(it) }
+                    .map { transaction { brev.apply { redigertBrev = it }.mapBrev() } }
+            }
         } else transaction { Brevredigering.findById(brevId)?.mapBrev() }?.let { ServiceResult.Ok(it) }
 
     fun hentBrevForSak(saksId: Long): List<Api.BrevInfo> {
