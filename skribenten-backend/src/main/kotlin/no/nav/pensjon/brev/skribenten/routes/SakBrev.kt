@@ -31,9 +31,8 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
         put<Api.OppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.oppdaterBrev(call, sak, brevId, request.saksbehandlerValg, request.redigertBrev)
+            brevredigeringService.oppdaterBrev(call, brevId, request.saksbehandlerValg, request.redigertBrev)
                 ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev)}
                 ?.onError { message, statusCode ->
                     call.application.log.error("$statusCode - Feil ved oppdatering av brev ${brevId}: $message")
@@ -60,16 +59,15 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
         get("/{brevId}") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.hentBrev(call, sak, brevId)
+            brevredigeringService.hentBrev(call, brevId)
                 ?.onOk { brev ->
                     call.respond(HttpStatusCode.OK, brev)
                 }?.onError { message, statusCode ->
-                    call.application.log.error("$statusCode - Feil ved oppdatering av brev: $message")
-                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
+                    call.application.log.error("$statusCode - Feil ved henting av brev: $message")
+                    call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
                 }
-                ?: call.respond(HttpStatusCode.NotFound, "Brev not found")
+                ?: call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
         }
 
         get {
