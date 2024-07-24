@@ -7,11 +7,7 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.db.initDatabase
-import no.nav.pensjon.brev.skribenten.routes.brevmal
-import no.nav.pensjon.brev.skribenten.routes.healthRoute
-import no.nav.pensjon.brev.skribenten.routes.kodeverkRoute
-import no.nav.pensjon.brev.skribenten.routes.meRoute
-import no.nav.pensjon.brev.skribenten.routes.sakRoute
+import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
@@ -31,7 +27,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val navansattService = NavansattService(servicesConfig.getConfig("navansatt"), authService)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
-    val brevredigeringService = BrevredigeringService(brevbakerService, penService)
+    val brevredigeringService = BrevredigeringService(brevbakerService, penService, navansattService)
 
 
     routing {
@@ -40,11 +36,11 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         authenticate(authConfig.name) {
             setupServiceStatus(safService, penService, pensjonPersonDataService, pdlService, krrService, brevbakerService, brevmetadataService, tjenestebussIntegrasjonService, navansattService)
 
+            landRoute()
             brevmal(brevbakerService)
             kodeverkRoute(penService)
             sakRoute(
                 penService,
-                navansattService,
                 legacyBrevService,
                 pdlService,
                 pensjonPersonDataService,
@@ -53,6 +49,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 brevredigeringService,
 
             )
+            brev(brevredigeringService)
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
             meRoute(navansattService)
         }

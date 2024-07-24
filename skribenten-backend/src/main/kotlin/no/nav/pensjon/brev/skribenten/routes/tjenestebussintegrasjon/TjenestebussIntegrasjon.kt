@@ -13,7 +13,7 @@ fun Route.tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService: Tjenesteb
 
     post("/finnSamhandler") {
         val requestDto = call.receive<FinnSamhandlerRequestDto>()
-        call.respond(tjenestebussIntegrasjonService.finnSamhandler(call, requestDto.samhandlerType, requestDto.navn))
+        call.respond(tjenestebussIntegrasjonService.finnSamhandler(call, requestDto))
     }
     post("/hentSamhandler") {
         val requestDto = call.receive<HentSamhandlerRequestDto>()

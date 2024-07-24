@@ -66,9 +66,6 @@ private fun sjekkAdressebeskyttelse(
         }
     }
 
-fun harTilgangTilSakSinEnhet(navAnsattEnheter: List<NAVEnhet>, penSakEnheter: List<String>): Boolean =
-    penSakEnheter.any { sakEnhet -> navAnsattEnheter.any { sakEnhet == it.id } }
-
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)
 
 private fun Pdl.Gradering?.toADGruppe(): ADGroup? =

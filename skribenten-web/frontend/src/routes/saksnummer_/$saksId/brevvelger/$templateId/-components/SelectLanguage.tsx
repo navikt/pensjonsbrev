@@ -14,7 +14,7 @@ function SelectLanguage({
   const { register } = useFormContext();
 
   return (
-    <Select {...register("spraak")} data-cy="språk-velger-select" label="Språk" size="medium">
+    <Select {...register("spraak")} data-cy="språk-velger-select" label="Språk" size="small">
       {sorterteSpråk.map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}

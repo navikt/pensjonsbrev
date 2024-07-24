@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.*
 import io.ktor.http.*
@@ -21,6 +23,7 @@ import io.ktor.server.response.*
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.services.KanIkkeReservereBrevredigeringException
 
 
 fun main() {
@@ -65,18 +68,16 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
         }
+        exception<KanIkkeReservereBrevredigeringException> { call, cause ->
+            call.respond(HttpStatusCode.Locked, cause.message)
+        }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)
             call.respond(HttpStatusCode.InternalServerError, "Ukjent intern feil")
         }
     }
 
-    install(ContentNegotiation) {
-        jackson {
-            registerModule(JavaTimeModule())
-            registerModule(Edit.JacksonModule)
-        }
-    }
+    skribentenContenNegotiation()
 
     install(CORS) {
         allowMethod(HttpMethod.Options)
@@ -97,4 +98,15 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
     }
     configureRouting(azureADConfig, skribentenConfig)
     configureMetrics()
+}
+
+fun Application.skribentenContenNegotiation() {
+    install(ContentNegotiation) {
+        jackson {
+            registerModule(JavaTimeModule())
+            registerModule(Edit.JacksonModule)
+            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        }
+    }
 }

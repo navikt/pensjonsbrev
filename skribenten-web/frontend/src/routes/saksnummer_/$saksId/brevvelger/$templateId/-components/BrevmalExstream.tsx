@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -10,10 +10,12 @@ import { orderExstreamLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { SpraakKode } from "~/types/apiTypes";
 import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/apiTypes";
+import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../route";
-import Adresse from "./Adresse";
 import BestillOgRedigerButton from "./BestillOgRedigerButton";
+import EndreMottaker from "./endreMottaker/EndreMottaker";
+import HentOgVisAdresse from "./endreMottaker/HentOgVisAdresse";
 import LetterTemplateHeading from "./LetterTemplate";
 import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";
@@ -23,9 +25,18 @@ import { byggExstreamOnSubmitRequest, createValidationSchema } from "./TemplateU
 export default function BrevmalForExstream({
   letterTemplate,
   preferredLanguage,
+  displayLanguages,
+  defaultValues,
 }: {
   letterTemplate: LetterMetadata;
-  preferredLanguage: SpraakKode | null;
+  preferredLanguage: Nullable<SpraakKode>;
+  displayLanguages: SpraakKode[];
+  defaultValues: {
+    isSensitive: undefined;
+    brevtittel: string;
+    spraak: SpraakKode;
+    enhetsId: string;
+  };
 }) {
   const { templateId, saksId } = Route.useParams();
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
@@ -36,23 +47,6 @@ export default function BrevmalForExstream({
       window.open(callbackUrl);
     },
   });
-
-  const sorterteSpråk = useMemo(() => {
-    return letterTemplate.spraak.toSorted();
-  }, [letterTemplate.spraak]);
-
-  const defaultValues = useMemo(() => {
-    return {
-      /*
-        TODO - bug - react hook form håndterer dårlig hvis et felt er undefined som default value. når man resetter formet etter å ha endret
-        template vil verdien som var saksbehandler hadde valgt henge igjen, selv om selve input feltet viser at det er tomt
-        Dette skjer ut til å skje kun første gangen man endrer template
-      */
-      isSensitive: undefined,
-      brevtittel: "",
-      spraak: preferredLanguage && sorterteSpråk.includes(preferredLanguage) ? preferredLanguage : sorterteSpråk[0],
-    };
-  }, [preferredLanguage, sorterteSpråk]);
 
   const validationSchema = createValidationSchema(letterTemplate);
 
@@ -91,8 +85,15 @@ export default function BrevmalForExstream({
             ),
           )}
         >
-          <VStack gap="8">
-            <Adresse />
+          <VStack gap="10">
+            {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
+            {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && (
+              <div>
+                <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} showMottakerTitle />
+                <EndreMottaker />
+              </div>
+            )}
+
             <SelectEnhet />
             {letterTemplate.redigerbarBrevtittel && (
               <TextField
@@ -102,12 +103,12 @@ export default function BrevmalForExstream({
                 description="Gi brevet en kort og forklarende tittel."
                 error={methods.formState.errors.brevtittel?.message}
                 label="Endre tittel"
-                size="medium"
+                size="small"
               />
             )}
             {/* Utfylling av språk vil vi ikke gjøre dersom templaten er 'Notat' */}
             {letterTemplate.id !== "PE_IY_03_156" && (
-              <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={sorterteSpråk} />
+              <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
             )}
             <SelectSensitivity />
           </VStack>

@@ -277,20 +277,6 @@ class AuthorizeAnsattSakTilgangTest {
         assertEquals(HttpStatusCode.InternalServerError, response.status)
     }
 
-    @Test
-    fun `should return true if one of the penSakEnheter ids matches one of the navAnsattEnheter ids`() {
-        val navAnsattEnheter = listOf(NAVEnhet("1", "Enhet1"), NAVEnhet("2", "Enhet2"))
-        val penSakEnheter = listOf("2", "3")
-        assertTrue(harTilgangTilSakSinEnhet(navAnsattEnheter, penSakEnheter))
-    }
-
-    @Test
-    fun `should return false if none of the penSakEnheter ids matches navAnsattEnheter ids`() {
-        val navAnsattEnheter = listOf(NAVEnhet("1", "Enhet1"), NAVEnhet("2", "Enhet2"))
-        val penSakEnheter = listOf("3", "4")
-        assertFalse(harTilgangTilSakSinEnhet(navAnsattEnheter, penSakEnheter))
-    }
-
     private fun successResponse(saksId: String) =
         "Fikk tilgang til den strengt bevoktede saken: $saksId"
 }

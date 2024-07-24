@@ -1,13 +1,11 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse
 
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -70,14 +68,14 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
             showIf(vedtattIPesys) {
                 text(
                     Bokmal to "Barnepensjonen er endret fra 1. januar 2024",
-                    Language.Nynorsk to "Barnepensjonen er endra frå 1. januar 2024",
-                    Language.English to "Your children’s pension has been changed as of 1 January 2024",
+                    Nynorsk to "Barnepensjonen er endra frå 1. januar 2024",
+                    English to "Your children’s pension has been changed as of 1 January 2024",
                 )
             }.orShowIf(erGjenoppretting) {
                 text(
-                    Language.Bokmal to "Du er innvilget barnepensjon på nytt",
-                    Language.Nynorsk to "Du er innvilga barnepensjon på ny",
-                    Language.English to "You have been granted children’s pension again",
+                    Bokmal to "Du er innvilget barnepensjon på nytt",
+                    Nynorsk to "Du er innvilga barnepensjon på ny",
+                    English to "You have been granted children’s pension again",
                 )
             }.orShow {
                 text(
@@ -89,11 +87,10 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
         }
 
         outline {
-
             konverterElementerTilBrevbakerformat(innhold)
 
             showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling.notNull(), brukerUnder18Aar))
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, brukerUnder18Aar))
             }
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon)
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)

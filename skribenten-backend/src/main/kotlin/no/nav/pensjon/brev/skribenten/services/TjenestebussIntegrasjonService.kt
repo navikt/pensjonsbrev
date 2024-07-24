@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -7,17 +9,11 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExstreamRequestDto.SakskontekstDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseResponseDto.FailureType.GENERISK
-import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentkategoriCode.SED
 import org.slf4j.LoggerFactory
-import java.util.*
-import javax.xml.datatype.DatatypeFactory
-import javax.xml.datatype.XMLGregorianCalendar
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) : ServiceStatus {
 
@@ -37,18 +33,12 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
 
     suspend fun finnSamhandler(
         call: ApplicationCall,
-        samhandlerType: SamhandlerTypeCode,
-        navn: String
+        requestDto: FinnSamhandlerRequestDto,
     ): FinnSamhandlerResponseDto =
         tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(
-                FinnSamhandlerRequestDto(
-                    navn = navn,
-                    samhandlerType = SamhandlerTypeCode.valueOf(samhandlerType.name)
-                )
-            )
+            setBody(jacksonObjectMapper().writeValueAsString(requestDto))
         }.toServiceResult<FinnSamhandlerResponseDto>()
             .catch { message, status ->
                 logger.error("Feil ved samhandler søk. Status: $status Melding: $message")

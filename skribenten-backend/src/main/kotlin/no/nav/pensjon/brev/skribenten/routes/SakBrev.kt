@@ -2,21 +2,25 @@ package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
-import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
+import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
     route("/brev") {
         post<Api.OpprettBrevRequest> { request ->
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val spraak = request.spraak.toLanguageCode()
+            val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
 
-            brevredigeringService.opprettBrev(call, sak, request.brevkode, request.saksbehandlerValg, ::mapBrev)
+            brevredigeringService.opprettBrev(call, sak, request.brevkode, spraak, avsenderEnhetsId, request.saksbehandlerValg)
                 .onOk { brev ->
                     call.respond(HttpStatusCode.Created, brev)
                 }.onError { message, statusCode ->
@@ -25,19 +29,22 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
                 }
         }
 
-        post<Api.OppdaterBrevRequest>("/{brevId}") { request ->
+        put<Api.OppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.oppdaterBrev(call, sak, brevId, request.saksbehandlerValg, request.redigertBrev, ::mapBrev)
-                .onOk { brev ->
-                    if (brev == null) {
-                        call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
-                    } else call.respond(HttpStatusCode.OK, brev)
-                }.onError { message, statusCode ->
-                    call.application.log.error("$statusCode - Feil ved oppdatering av brev ${request.brevkode}: $message")
+            brevredigeringService.oppdaterBrev(call, brevId, request.saksbehandlerValg, request.redigertBrev)
+                ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev)}
+                ?.onError { message, statusCode ->
+                    call.application.log.error("$statusCode - Feil ved oppdatering av brev ${brevId}: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
                 }
+                ?: call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
+        }
+
+        patch<Api.DelvisOppdaterBrevRequest>("/{brevId}") { request ->
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            brevredigeringService.delvisOppdaterBrev(brevId, request)?.also { call.respond(HttpStatusCode.OK, it) }
+                ?: call.respond(HttpStatusCode.NotFound, "Brev med id $brevId: ikke funnet")
         }
 
         delete("/{brevId}") {
@@ -46,25 +53,21 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             if (brevredigeringService.slettBrev(brevId)) {
                 call.respond(HttpStatusCode.NoContent)
             } else {
-                call.respond(HttpStatusCode.NotFound, "Brev med id $brevId ikke funnet")
+                call.respond(HttpStatusCode.NotFound, "Brev med id $brevId: ikke funnet")
             }
         }
 
         get("/{brevId}") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.hentBrev(call, sak, brevId, ::mapBrev)
-                .onOk { brev ->
-                    if (brev != null) {
-                        call.respond(HttpStatusCode.OK, brev)
-                    } else {
-                        call.respond(HttpStatusCode.NotFound, "Brev not found")
-                    }
-                }.onError { message, statusCode ->
-                    call.application.log.error("$statusCode - Feil ved oppdatering av brev: $message")
-                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
+            brevredigeringService.hentBrev(call, brevId)
+                ?.onOk { brev ->
+                    call.respond(HttpStatusCode.OK, brev)
+                }?.onError { message, statusCode ->
+                    call.application.log.error("$statusCode - Feil ved henting av brev: $message")
+                    call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
                 }
+                ?: call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
         }
 
         get {
@@ -72,44 +75,41 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
             call.respond(
                 HttpStatusCode.OK,
-                brevredigeringService.hentBrevForSak(sak.saksId, ::mapBrevInfo)
+                brevredigeringService.hentBrevForSak(sak.saksId)
             )
         }
 
-        post("/{brevId}/ferdigstill") {
+        // TODO: Slett når frontend er endret til å bruke get
+        post("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
 
-            brevredigeringService.ferdigstill(call, brevId)
-            call.respond(HttpStatusCode.OK)
+            brevredigeringService.hentEllerOpprettPdf(call, brevId)
+                ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.Created) }
+                ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev: $brevId")
         }
 
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val pdf = brevredigeringService.hentPdf(brevId)
-            if (pdf != null) {
-                call.respond(HttpStatusCode.OK, pdf)
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
-            }
+            brevredigeringService.hentEllerOpprettPdf(call, brevId)
+                ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK) }
+                ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev: $brevId")
+        }
+
+        post("/{brevId}/pdf/send") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            brevredigeringService.sendBrev(call, brevId)
+                ?.onOk { call.respond(HttpStatusCode.OK, it) }
+                ?.onError { error, _ -> call.respond(HttpStatusCode.InternalServerError, error) }
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
         }
     }
 
-internal fun mapBrev(brev: Brevredigering): Api.BrevResponse = with(brev) {
-    Api.BrevResponse(
-        info = mapBrevInfo(this),
-        redigertBrev = redigertBrev,
-        saksbehandlerValg = saksbehandlerValg,
-    )
-}
-
-private fun mapBrevInfo(brev: Brevredigering): Api.BrevInfo = with(brev) {
-    Api.BrevInfo(
-        id = id.value,
-        opprettetAv = opprettetAvNavIdent,
-        opprettet = opprettet,
-        sistredigertAv = sistRedigertAvNavIdent,
-        sistredigert = sistredigert,
-        brevkode = brevkode,
-        redigeresAv = redigeresAvNavIdent,
-    )
-}
+private fun SpraakKode.toLanguageCode(): LanguageCode =
+    when (this) {
+        SpraakKode.NB -> LanguageCode.BOKMAL
+        SpraakKode.NN -> LanguageCode.NYNORSK
+        SpraakKode.EN -> LanguageCode.ENGLISH
+        SpraakKode.FR, SpraakKode.SE -> throw BadRequestException("Brevbaker støtter ikke SpraakKode: ${this.name}")
+    }

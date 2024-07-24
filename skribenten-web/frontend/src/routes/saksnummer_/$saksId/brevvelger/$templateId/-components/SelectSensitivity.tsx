@@ -12,6 +12,10 @@ function SelectSensitivity() {
           legend="Er brevet sensitivt?"
           {...field}
           css={css`
+            .navds-label {
+              margin-bottom: 0.25rem;
+            }
+
             .navds-radio-buttons {
               margin: 0 !important;
             }
@@ -21,7 +25,7 @@ function SelectSensitivity() {
             }
           `}
           error={fieldState.error?.message}
-          size="medium"
+          size="small"
           value={field.value ?? null}
         >
           <Radio value>Ja</Radio>

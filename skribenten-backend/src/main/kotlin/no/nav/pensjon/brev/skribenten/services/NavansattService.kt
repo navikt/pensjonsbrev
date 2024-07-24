@@ -11,7 +11,7 @@ import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 
-class NavansattService(config: Config, authService: AzureADService): ServiceStatus {
+class NavansattService(config: Config, authService: AzureADService) : ServiceStatus {
 
     private val navansattUrl = config.getString("url")
     private val navansattScope = config.getString("scope")
@@ -31,6 +31,10 @@ class NavansattService(config: Config, authService: AzureADService): ServiceStat
     suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult<List<NAVEnhet>> {
         return client.get(call, "navansatt/$ansattId/enheter").toServiceResult<List<NAVEnhet>>()
     }
+
+    suspend fun harTilgangTilEnhet(call: ApplicationCall, ansattId: String, enhetsId: String): ServiceResult<Boolean> =
+        hentNavAnsattEnhetListe(call, ansattId)
+            .map { it.any { enhet -> enhet.id == enhetsId } }
 
     suspend fun hentNavansatt(call: ApplicationCall, ansattId: String): ServiceResult<Navansatt> {
         return client.get(call, "/navansatt/$ansattId").toServiceResult<Navansatt>()

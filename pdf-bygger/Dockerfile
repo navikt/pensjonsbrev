@@ -2,7 +2,7 @@ FROM --platform=linux/amd64 eclipse-temurin:17-jre
 
 EXPOSE 8080
 
-RUN groupadd -r --gid 1000 apprunner && useradd -r --uid 1000 -g apprunner apprunner
+RUN groupadd -r --gid 1001 apprunner && useradd -r --uid 1001 -g apprunner apprunner
 
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"

@@ -9,11 +9,12 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak.BegrunnelseForVedtaket
 import java.time.LocalDate
 
 object BarnepensjonForeldreloesFraser {
@@ -58,51 +59,54 @@ object BarnepensjonForeldreloesFraser {
                                 formatertVirkningsdato + " because both your parents are registered as deceased.".expr()
                     )
                 }
-            }
-            showIf(harUtbetaling) {
-                showIf(flerePerioder) {
-                    paragraph {
+
+                showIf(harUtbetaling) {
+                    showIf(flerePerioder) {
                         textExpr(
-                            Language.Bokmal to "Du får ".expr() + formatertBeloep +
-                                    " kroner hver måned før skatt fra " + formatertFom +
-                                    ". Se beløp for tidligere perioder og hvordan vi har beregnet pensjonen i vedlegg “Beregning av barnepensjon”.",
-                            Language.Nynorsk to "Du får ".expr() + formatertBeloep +
-                                    " kroner per månad før skatt frå " + formatertFom +
-                                    ". I vedlegget «Utrekning av barnepensjon» kan du sjå beløp for tidlegare periodar og korleis vi har rekna ut pensjonen.",
-                            Language.English to "You will receive NOK ".expr() + formatertBeloep +
-                                    " each month before tax, starting on " + formatertFom +
-                                    ". You can see amounts for previous periods and how we calculated your pension in the attachment" +
-                                    " Calculation of Children’s Pension.".expr(),
+                            Language.Bokmal to " Du får ".expr() + formatertBeloep +
+                                    " kroner hver måned før skatt fra " + formatertFom + ".",
+                            Language.Nynorsk to " Du får ".expr() + formatertBeloep +
+                                    " kroner per månad før skatt frå " + formatertFom + ".",
+                            Language.English to " You will receive NOK ".expr() + formatertBeloep +
+                                    " each month before tax, starting on " + formatertFom + "."
+                        )
+                    }.orShow {
+                        textExpr(
+                            Language.Bokmal to " Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
+                            Language.Nynorsk to " Du får ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
+                            Language.English to " You will receive NOK ".expr() + formatertBeloep + " each month before tax.".expr(),
                         )
                     }
                 }.orShow {
-                    paragraph {
-                        textExpr(
-                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
-                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
-                            Language.English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax.".expr(),
-                        )
-                    }
-                }
-            }.orShow {
-                paragraph {
                     text(
-                        Language.Bokmal to "Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du" +
+                        Language.Bokmal to " Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du" +
                                 " mottar i uføretrygd fra NAV.",
-                        Language.Nynorsk to "Du får ikkje utbetalt barnepensjon, då denne har blitt redusert med" +
+                        Language.Nynorsk to " Du får ikkje utbetalt barnepensjon, då denne har blitt redusert med" +
                                 " utgangspunkt i uføretrygda du får frå NAV.",
-                        Language.English to "You will not receive payments from the children’s pension because they" +
+                        Language.English to " You will not receive payments from the children’s pension because they" +
                                 " have been reduced according to what you already receive in disability benefits from NAV.",
                     )
                 }
             }
+
             paragraph {
-                text(
-                    Language.Bokmal to "Se hvordan vi har beregnet pensjonen din i vedlegget “Beregning av barnepensjon”.",
-                    Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis vi har rekna ut pensjonen din.",
-                    Language.English to "You can find more information about how we have calculated your" +
-                            " children's pension in the attachment Calculating the Children's Pension.",
-                )
+                showIf(harUtbetaling and flerePerioder) {
+                    text(
+                        Language.Bokmal to "Se beløp for tidligere perioder og hvordan vi har beregnet pensjonen din " +
+                                "i vedlegget “Beregning av barnepensjon”.",
+                        Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå beløp for tidlegare periodar " +
+                                "og korleis vi har rekna ut pensjonen.",
+                        Language.English to "You can see amounts for previous periods and how we calculated your pension " +
+                                "in the attachment, Calculation of Children’s Pension."
+                    )
+                }.orShow {
+                    text(
+                        Language.Bokmal to "Se hvordan vi har beregnet pensjonen din i vedlegget “Beregning av barnepensjon”.",
+                        Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis vi har rekna ut pensjonen din.",
+                        Language.English to "You can find more information about how we have calculated your" +
+                                " children's pension in the attachment, Calculating the Children's Pension.",
+                    )
+                }
             }
         }
     }
@@ -112,6 +116,7 @@ object BarnepensjonForeldreloesFraser {
         val vedtattIPesys: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            includePhrase(BegrunnelseForVedtaket)
             showIf(vedtattIPesys) {
                 paragraph {
                     text(
@@ -124,7 +129,7 @@ object BarnepensjonForeldreloesFraser {
             paragraph {
                 text(
                     Language.Bokmal to "Barnepensjon gis på bakgrunn av at",
-                    Language.Nynorsk to "Barnepensjon blir innvilga på bakgrunn av at",
+                    Language.Nynorsk to "Du kan få barnepensjon når",
                     Language.English to "The children’s pension has been granted because",
                 )
                 list {

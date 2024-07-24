@@ -8,12 +8,12 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BestillOgRedigerBrevResponse.FailureType.*
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExstreamBrevResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentkategoriCode.SED
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
+
+class LegacyBrevException(message: String) : Exception(message)
 
 class LegacyBrevService(
     private val brevmetadataService: BrevmetadataService,
@@ -27,41 +27,30 @@ class LegacyBrevService(
         call: ApplicationCall,
         request: Api.BestillDoksysBrevRequest,
         saksId: Long,
-        enhetsTilganger: List<NAVEnhet>,
     ): Api.BestillOgRedigerBrevResponse =
         coroutineScope {
             val brevMetadata = async { brevmetadataService.getMal(request.brevkode) }
 
-            if (!harTilgangTilEnhet(request.enhetsId, enhetsTilganger)) {
-                Api.BestillOgRedigerBrevResponse(failureType = ENHET_UNAUTHORIZED)
-            } else {
-                val result = bestillDoksysBrev(call, request, request.enhetsId, saksId)
+            val result = bestillDoksysBrev(call, request, request.enhetsId, saksId)
 
-                if (result.failureType == null && result.journalpostId != null && brevMetadata.await().redigerbart) {
-                    ventPaaJournalpostOgRedigerDoksysBrev(call, result.journalpostId).let {
-                        Api.BestillOgRedigerBrevResponse(url = it.url, failureType = it.failureType)
-                    }
-                } else result
-            }
+            if (result.failureType == null && result.journalpostId != null && brevMetadata.await().redigerbart) {
+                ventPaaJournalpostOgRedigerDoksysBrev(call, result.journalpostId).let {
+                    Api.BestillOgRedigerBrevResponse(url = it.url, failureType = it.failureType)
+                }
+            } else result
         }
-
-    private fun harTilgangTilEnhet(enhetsId: String, enhetsTilganger: List<NAVEnhet>): Boolean =
-        enhetsTilganger.any { enhet -> enhet.id == enhetsId }
 
     suspend fun bestillOgRedigerExstreamBrev(
         call: ApplicationCall,
         gjelderPid: String,
         request: Api.BestillExstreamBrevRequest,
         saksId: Long,
-        enhetsTilganger: List<NAVEnhet>,
     ): Api.BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
         val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent).resultOrNull()
 
-        return if (!harTilgangTilEnhet(request.enhetsId, enhetsTilganger)) {
-            Api.BestillOgRedigerBrevResponse(failureType = ENHET_UNAUTHORIZED)
-        } else if (brevtittel.isNullOrBlank()) {
+        return if (brevtittel.isNullOrBlank()) {
             Api.BestillOgRedigerBrevResponse(failureType = EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
         } else if (navansatt == null) {
             Api.BestillOgRedigerBrevResponse(failureType = NAVANSATT_MANGLER_NAVN)
@@ -92,15 +81,12 @@ class LegacyBrevService(
         gjelderPid: String,
         request: Api.BestillEblankettRequest,
         saksId: Long,
-        enhetsTilganger: List<NAVEnhet>,
     ): Api.BestillOgRedigerBrevResponse = coroutineScope {
         val brevMetadataDeffered = async { brevmetadataService.getMal(request.brevkode) }
         val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent).resultOrNull()
         val brevMetadata = brevMetadataDeffered.await()
 
-        if (!harTilgangTilEnhet(request.enhetsId, enhetsTilganger)) {
-            Api.BestillOgRedigerBrevResponse(failureType = ENHET_UNAUTHORIZED)
-        } else if (navansatt == null) {
+        if (navansatt == null) {
             Api.BestillOgRedigerBrevResponse(failureType = NAVANSATT_MANGLER_NAVN)
         } else {
             val result = bestillExstreamBrevPen(
@@ -148,32 +134,36 @@ class LegacyBrevService(
             return Api.BestillOgRedigerBrevResponse(failureType = Api.BestillOgRedigerBrevResponse.FailureType.EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
         }
 
-        return penService.bestillExstreamBrev(call, Pen.BestillExstreamBrevRequest(
-            brevKode = brevkode,
-            brevGruppe = metadata.brevgruppe,
-            redigerbart = metadata.redigerbart,
-            sprakKode = spraak.toString(),
-            brevMottakerNavn = mottakerText?.takeIf { isEblankett },    // custom felt kun for sed/eblankett,
-            sakskontekst = Pen.BestillExstreamBrevRequest.Sakskontekst(
-                journalenhet = enhetsId,                                // NAV org enhet nr som skriver brevet. Kommer med i signatur.
-                gjelder = gjelderPid,                                   // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
-                dokumentdato = LocalDateTime.now(),
-                dokumenttype = metadata.dokType.toString(),
-                fagsystem = "PEN",
-                fagomradeKode = "PEN",                                  // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
-                innhold = brevtittel,                                   // Visningsnavn
-                kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),
-                saksid = saksId.toString(),
-                saksbehandlernavn = saksbehandler.navn,
-                saksbehandlerid = call.principal().navIdent,
-                kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
-                land = landkode.takeIf { isEblankett },
-                mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
+        return if (!harTilgangTilEnhet(call, enhetsId)) {
+            Api.BestillOgRedigerBrevResponse(failureType = ENHET_UNAUTHORIZED)
+        } else penService.bestillExstreamBrev(
+            call, Pen.BestillExstreamBrevRequest(
+                brevKode = brevkode,
+                brevGruppe = metadata.brevgruppe,
+                redigerbart = metadata.redigerbart,
+                sprakKode = spraak.toString(),
+                brevMottakerNavn = mottakerText?.takeIf { isEblankett },    // custom felt kun for sed/eblankett,
+                sakskontekst = Pen.BestillExstreamBrevRequest.Sakskontekst(
+                    journalenhet = enhetsId,                                // NAV org enhet nr som skriver brevet. Kommer med i signatur.
+                    gjelder = gjelderPid,                                   // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
+                    dokumentdato = LocalDateTime.now(),
+                    dokumenttype = metadata.dokType.toString(),
+                    fagsystem = "PEN",
+                    fagomradeKode = "PEN",                                  // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
+                    innhold = brevtittel,                                   // Visningsnavn
+                    kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),
+                    saksid = saksId.toString(),
+                    saksbehandlernavn = saksbehandler.navn,
+                    saksbehandlerid = call.principal().navIdent,
+                    kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
+                    land = landkode.takeIf { isEblankett },
+                    mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
 
-                sensitivt = isSensitive
-            ),
-            vedtaksInformasjon = vedtaksId?.toString()
-        )).map {
+                    sensitivt = isSensitive
+                ),
+                vedtaksInformasjon = vedtaksId?.toString()
+            )
+        ).map {
             Api.BestillOgRedigerBrevResponse(journalpostId = it.journalpostId)
         }.catch { message, statusCode ->
             logger.error("Feil ved bestilling av brev fra exstream mot PEN: $message - status: $statusCode")
@@ -205,7 +195,9 @@ class LegacyBrevService(
         enhetsId: String,
         saksId: Long
     ): Api.BestillOgRedigerBrevResponse =
-        penService.bestillDoksysBrev(call, request, enhetsId, saksId)
+        if (!harTilgangTilEnhet(call, enhetsId)) {
+            Api.BestillOgRedigerBrevResponse(failureType = ENHET_UNAUTHORIZED)
+        } else penService.bestillDoksysBrev(call, request, enhetsId, saksId)
             .map { response ->
                 if (response.failure != null || response.journalpostId != null) {
                     Api.BestillOgRedigerBrevResponse(journalpostId = response.journalpostId, failureType = response.failure?.toApi())
@@ -261,6 +253,10 @@ class LegacyBrevService(
                 Api.BestillOgRedigerBrevResponse(failureType = SKRIBENTEN_INTERNAL_ERROR)
             }
 
+    private suspend fun harTilgangTilEnhet(call: ApplicationCall, enhetsId: String): Boolean =
+        navansattService.harTilgangTilEnhet(call, call.principal().navIdent, enhetsId)
+            .catch { message, httpStatusCode -> throw LegacyBrevException("Kunne ikke hente NavEnheter - $httpStatusCode: $message") }
+
     private fun Pen.BestillDoksysBrevResponse.FailureType.toApi(): Api.BestillOgRedigerBrevResponse.FailureType =
         when (this) {
             Pen.BestillDoksysBrevResponse.FailureType.ADDRESS_NOT_FOUND -> DOKSYS_BESTILLING_ADDRESS_NOT_FOUND
@@ -271,23 +267,4 @@ class LegacyBrevService(
             Pen.BestillDoksysBrevResponse.FailureType.TPS_CALL_FAILIURE -> DOKSYS_BESTILLING_TPS_CALL_FAILIURE
         }
 
-    private fun BestillExstreamBrevResponseDto.FailureType.toApi(): Api.BestillOgRedigerBrevResponse.FailureType =
-        when (this) {
-            BestillExstreamBrevResponseDto.FailureType.ADRESSE_MANGLER -> EXSTREAM_BESTILLING_ADRESSE_MANGLER
-            BestillExstreamBrevResponseDto.FailureType.HENTE_BREVDATA -> EXSTREAM_BESTILLING_HENTE_BREVDATA
-            BestillExstreamBrevResponseDto.FailureType.MANGLER_OBLIGATORISK_INPUT -> EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT
-            BestillExstreamBrevResponseDto.FailureType.OPPRETTE_JOURNALPOST -> EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST
-        }
-
-    private fun RedigerDoksysDokumentResponseDto.FailureType.toApi(): Api.BestillOgRedigerBrevResponse.FailureType =
-        when (this) {
-            RedigerDoksysDokumentResponseDto.FailureType.UNDER_REDIGERING -> DOKSYS_REDIGERING_UNDER_REDIGERING
-            RedigerDoksysDokumentResponseDto.FailureType.IKKE_REDIGERBART -> DOKSYS_REDIGERING_IKKE_REDIGERBART
-            RedigerDoksysDokumentResponseDto.FailureType.VALIDERING_FEILET -> DOKSYS_REDIGERING_VALIDERING_FEILET
-            RedigerDoksysDokumentResponseDto.FailureType.IKKE_FUNNET -> DOKSYS_REDIGERING_IKKE_FUNNET
-            RedigerDoksysDokumentResponseDto.FailureType.IKKE_TILGANG -> DOKSYS_REDIGERING_IKKE_TILGANG
-            RedigerDoksysDokumentResponseDto.FailureType.LUKKET -> DOKSYS_REDIGERING_LUKKET
-            RedigerDoksysDokumentResponseDto.FailureType.UFORVENTET -> DOKSYS_REDIGERING_UFORVENTET
-            RedigerDoksysDokumentResponseDto.FailureType.ENHETSID_MANGLER -> ENHETSID_MANGLER
-        }
 }

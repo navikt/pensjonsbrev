@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -11,8 +11,8 @@ import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/types/apiTypes";
 
 import { Route } from "../route";
-import Adresse from "./Adresse";
 import BestillOgRedigerButton from "./BestillOgRedigerButton";
+import HentOgVisAdresse from "./endreMottaker/HentOgVisAdresse";
 import LetterTemplateHeading from "./LetterTemplate";
 import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";
@@ -21,9 +21,18 @@ import { byggDoksysOnSubmitRequest, createValidationSchema } from "./TemplateUti
 export default function BrevmalForDoksys({
   letterTemplate,
   preferredLanguage,
+  displayLanguages,
+  defaultValues,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: SpraakKode | null;
+  displayLanguages: SpraakKode[];
+  defaultValues: {
+    isSensitive: undefined;
+    brevtittel: string;
+    spraak: SpraakKode;
+    enhetsId: string;
+  };
 }) {
   const { templateId, saksId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
@@ -34,19 +43,6 @@ export default function BrevmalForDoksys({
       window.open(callbackUrl);
     },
   });
-
-  const sorterteSpråk = useMemo(() => {
-    return letterTemplate.spraak.toSorted();
-  }, [letterTemplate.spraak]);
-
-  const defaultValues = useMemo(() => {
-    return {
-      isSensitive: undefined,
-      brevtittel: "",
-      // preferredLanguage finnes ikke nødvendigvis akkurat ved side last - Når vi får den lastet, vil vi ha den forhåndsvalgt, hvis brevet også støtter på språket.
-      spraak: preferredLanguage && sorterteSpråk.includes(preferredLanguage) ? preferredLanguage : sorterteSpråk[0],
-    };
-  }, [preferredLanguage, sorterteSpråk]);
 
   const validationSchema = createValidationSchema(letterTemplate);
 
@@ -66,7 +62,7 @@ export default function BrevmalForDoksys({
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Divider />
-      <Adresse />
+      <HentOgVisAdresse sakId={saksId} showMottakerTitle />
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((submittedValues) =>
@@ -84,9 +80,9 @@ export default function BrevmalForDoksys({
             ),
           )}
         >
-          <VStack gap="4">
+          <VStack gap="10">
             <SelectEnhet />
-            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={sorterteSpråk} />
+            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
           </VStack>
 
           <BestillOgRedigerButton orderMutation={orderLetterMutation} />

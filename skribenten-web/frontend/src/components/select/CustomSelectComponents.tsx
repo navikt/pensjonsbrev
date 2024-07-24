@@ -141,7 +141,11 @@ export function SelectLayoutWrapper({
           </HelpText>
         ) : undefined}
       </Label>
-      {description && <BodyShort className="navds-form-field__description">{description}</BodyShort>}
+      {description && (
+        <BodyShort className="navds-form-field__description" size="small">
+          {description}
+        </BodyShort>
+      )}
       {children}
       {error && <ErrorMessage>{error.message}</ErrorMessage>}
     </div>
@@ -159,7 +163,7 @@ export function BasicSelect<
       components={{ ...properties.components }}
       css={commonSelectCss}
       escapeClearsValue
-      isClearable
+      isClearable={properties.isClearable}
       isSearchable
       menuPosition="fixed"
       placeholder={properties.placeholder ?? ""}

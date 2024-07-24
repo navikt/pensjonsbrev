@@ -10,6 +10,7 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
+import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
 import java.time.LocalDate
@@ -94,59 +95,20 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
             bruktTrygdetid = bruktTrygdetid
         ),
         etterbetaling = BarnepensjonEtterbetaling(
-            fraDato = LocalDate.of(2020, Month.JANUARY, 1),
-            tilDato = LocalDate.of(2023, Month.JULY, 31),
-            etterbetalingsperioder = listOf(
-                BarnepensjonBeregningsperiode(
-                    datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-                    datoTOM = LocalDate.of(2023, Month.JULY, 31),
-                    grunnbeloep = Kroner(123456),
-                    antallBarn = 4,
-                    utbetaltBeloep = Kroner(6234)
-                ),
-                BarnepensjonBeregningsperiode(
-                    datoFOM = LocalDate.of(2023, Month.APRIL, 1),
-                    datoTOM = null,
-                    grunnbeloep = Kroner(123456),
-                    antallBarn = 4,
-                    utbetaltBeloep = Kroner(8234)
-                )
-            )
+            inneholderKrav = true,
+            frivilligSkattetrekk = true,
+            etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
         ),
         bosattUtland = true,
         brukerUnder18Aar = true,
         kunNyttRegelverk = true,
         harUtbetaling = true,
-        erGjenoppretting = true,
+        erGjenoppretting = false,
         vedtattIPesys = false
     )
 }
 
 fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedigerbarDTO {
-    val bruktTrygdetid = Trygdetid(
-        trygdetidsperioder = listOf(
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2004, 1, 1),
-                datoTOM = LocalDate.of(2024, 1, 1),
-                land = "NOR",
-                opptjeningsperiode = Periode(20, 0, 0),
-                type = TrygdetidType.FAKTISK
-            ),
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2024, 1, 1),
-                datoTOM = LocalDate.of(2044, 1, 1),
-                land = "NOR",
-                opptjeningsperiode = Periode(20, 0, 0),
-                type = TrygdetidType.FREMTIDIG
-            )
-        ),
-        beregnetTrygdetidAar = 40,
-        prorataBroek = IntBroek(20, 150),
-        beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
-        beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-        mindreEnnFireFemtedelerAvOpptjeningstiden = false,
-        navnAvdoed = "Elvis Presley"
-    )
     val siste = BarnepensjonBeregningsperiode(
         datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
         datoTOM = LocalDate.of(2023, Month.JULY, 31),
@@ -158,10 +120,10 @@ fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedig
         virkningsdato = LocalDate.now(),
         sisteBeregningsperiodeBeloep = siste.utbetaltBeloep,
         sisteBeregningsperiodeDatoFom = siste.datoFOM,
-        erGjenoppretting = true,
+        erGjenoppretting = false,
         harUtbetaling = true,
         erEtterbetaling = true,
         flerePerioder = true,
-        vedtattIPesys = true
+        vedtattIPesys = false
     )
 }

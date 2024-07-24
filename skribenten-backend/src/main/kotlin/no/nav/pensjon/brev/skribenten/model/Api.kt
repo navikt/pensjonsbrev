@@ -1,35 +1,55 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import java.time.LocalDateTime
 import no.nav.pensjon.brev.skribenten.services.LetterMetadata
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import java.time.Instant
 
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
 
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbar,
+        val spraak: SpraakKode,
+        val avsenderEnhetsId: String?,
         val saksbehandlerValg: GeneriskBrevdata,
+        val reserverForRedigering: Boolean?,
     )
 
     data class OppdaterBrevRequest(
-        val brevkode: Brevkode.Redigerbar,
         val saksbehandlerValg: GeneriskBrevdata,
         val redigertBrev: Edit.Letter,
     )
 
+    data class DelvisOppdaterBrevRequest(val laastForRedigering: Boolean?)
+
     data class BrevInfo(
         val id: Long,
         val opprettetAv: String,
-        val opprettet: LocalDateTime,
+        val opprettet: Instant,
         val sistredigertAv: String,
-        val sistredigert: LocalDateTime,
-        val brevkode: Brevkode.Redigerbar,
+        val sistredigert: Instant,
         val redigeresAv: String?,
+        val brevkode: Brevkode.Redigerbar,
+        val status: BrevStatus,
     )
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(BrevStatus.Kladd::class, name = "Kladd"),
+        JsonSubTypes.Type(BrevStatus.UnderRedigering::class, name = "UnderRedigering"),
+        JsonSubTypes.Type(BrevStatus.Klar::class, name = "Klar"),
+    )
+    sealed class BrevStatus {
+        data object Kladd : BrevStatus()
+        data class UnderRedigering(val redigeresAv: String) : BrevStatus()
+        data object Klar : BrevStatus()
+    }
+
     data class BrevResponse(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
@@ -77,22 +97,11 @@ object Api {
             DOKSYS_BESTILLING_TPS_CALL_FAILIURE,
             DOKSYS_BESTILLING_UNAUTHORIZED,
             DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR,
-            DOKSYS_REDIGERING_IKKE_FUNNET,
-            DOKSYS_REDIGERING_IKKE_REDIGERBART,
-            DOKSYS_REDIGERING_IKKE_TILGANG,
-            DOKSYS_REDIGERING_LUKKET,
-            DOKSYS_REDIGERING_UFORVENTET,
-            DOKSYS_REDIGERING_UNDER_REDIGERING,
-            DOKSYS_REDIGERING_VALIDERING_FEILET,
-            EXSTREAM_BESTILLING_ADRESSE_MANGLER,
-            EXSTREAM_BESTILLING_HENTE_BREVDATA,
             EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
-            EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST,
             EXSTREAM_REDIGERING_GENERELL,
             FERDIGSTILLING_TIMEOUT,
             SAF_ERROR,
             SKRIBENTEN_INTERNAL_ERROR,
-            ENHETSID_MANGLER,
             ENHET_UNAUTHORIZED,
             NAVANSATT_MANGLER_NAVN,
         }

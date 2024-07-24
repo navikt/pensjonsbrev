@@ -20,6 +20,7 @@ function SelectEnhet() {
   return (
     <Select
       {...register("enhetsId")}
+      data-cy="avsenderenhet-select"
       error={formState.errors.enhetsId?.message?.toString()}
       label="Avsenderenhet"
       onChangeCapture={(element) => {
@@ -28,7 +29,7 @@ function SelectEnhet() {
           replace: true,
         });
       }}
-      size="medium"
+      size="small"
       value={enhetsId}
     >
       <option value={""}>Velg enhet</option>

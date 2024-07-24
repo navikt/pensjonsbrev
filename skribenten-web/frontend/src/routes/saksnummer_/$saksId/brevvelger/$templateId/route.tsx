@@ -2,16 +2,19 @@ import { css } from "@emotion/react";
 import { Alert, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { useMemo } from "react";
 
 import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
 
+import BrevmalBrevbaker from "./-components/BrevmalBrevbaker";
 import BrevmalForDoksys from "./-components/BrevmalDoksys";
 import BrevmalForExstream from "./-components/BrevmalExstream";
 import Eblankett from "./-components/EBlankett";
 import FavoriteButton from "./-components/FavoriteButton";
+import { hentDefaultValueForSpråk } from "./-components/TemplateUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/$templateId")({
   component: SelectedTemplate,
@@ -63,12 +66,6 @@ export function SelectedTemplate() {
   return (
     <VStack
       css={css`
-        /* Override form elements to be same size as xsmall headings */
-        label,
-        legend {
-          font-size: var(--a-font-size-heading-xsmall);
-        }
-
         form {
           display: flex;
           flex-direction: column;
@@ -79,31 +76,70 @@ export function SelectedTemplate() {
       gap="4"
     >
       <FavoriteButton />
-      <Brevmal letterTemplate={letterTemplate} prefferedLanguage={preferredLanguage} />
+      <Brevmal letterTemplate={letterTemplate} preferredLanguage={preferredLanguage} />
     </VStack>
   );
 }
 
 function Brevmal({
   letterTemplate,
-  prefferedLanguage,
+  preferredLanguage,
 }: {
   letterTemplate: LetterMetadata;
-  prefferedLanguage: SpraakKode | null;
+  preferredLanguage: SpraakKode | null;
 }) {
+  /*
+    språk i brevene kan komme i forskjellige rekkefølge, siden de også har forskjellige verdier.
+    Dette er for at alle language-inputtene skal ha samme rekkefølge.
+    Samtidig, er det behov å bruke denne for å sjekke hva defaultValue skal være
+    */
+  const displayLanguages = useMemo(() => {
+    return letterTemplate.spraak.toSorted();
+  }, [letterTemplate.spraak]);
+
+  const defaultValues = useMemo(() => {
+    return {
+      isSensitive: undefined,
+      brevtittel: "",
+      spraak: hentDefaultValueForSpråk(preferredLanguage, displayLanguages),
+      enhetsId: "",
+    };
+  }, [preferredLanguage, displayLanguages]);
+
   if (letterTemplate.dokumentkategoriCode === "E_BLANKETT") {
     return <Eblankett letterTemplate={letterTemplate} />;
   }
 
   switch (letterTemplate.brevsystem) {
     case BrevSystem.DokSys: {
-      return <BrevmalForDoksys letterTemplate={letterTemplate} preferredLanguage={prefferedLanguage} />;
+      return (
+        <BrevmalForDoksys
+          defaultValues={defaultValues}
+          displayLanguages={displayLanguages}
+          letterTemplate={letterTemplate}
+          preferredLanguage={preferredLanguage}
+        />
+      );
     }
     case BrevSystem.Exstream: {
-      return <BrevmalForExstream letterTemplate={letterTemplate} preferredLanguage={prefferedLanguage} />;
+      return (
+        <BrevmalForExstream
+          defaultValues={defaultValues}
+          displayLanguages={displayLanguages}
+          letterTemplate={letterTemplate}
+          preferredLanguage={preferredLanguage}
+        />
+      );
     }
     case BrevSystem.Brevbaker: {
-      return <div>TODO</div>;
+      return (
+        <BrevmalBrevbaker
+          defaultValues={defaultValues}
+          displayLanguages={displayLanguages}
+          letterTemplate={letterTemplate}
+          preferredLanguage={preferredLanguage}
+        />
+      );
     }
   }
 }

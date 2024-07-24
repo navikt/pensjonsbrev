@@ -68,7 +68,7 @@ export default function Eblankett({ letterTemplate }: { letterTemplate: LetterMe
               autoComplete="off"
               error={methods.formState.errors.mottakerText?.message}
               label="Mottaker"
-              size="medium"
+              size="small"
             />
             <SelectAvtaleland />
             <SelectEnhet />

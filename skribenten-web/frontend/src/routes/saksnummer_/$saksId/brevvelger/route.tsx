@@ -35,8 +35,8 @@ export function BrevvelgerPage() {
           min-width: 432px;
           max-width: 720px;
           flex: 1;
-          border-left: 1px solid var(--a-gray-400);
-          border-right: 1px solid var(--a-gray-400);
+          border-left: 1px solid var(--a-gray-200);
+          border-right: 1px solid var(--a-gray-200);
           padding: var(--a-spacing-6);
         }
 
@@ -44,7 +44,7 @@ export function BrevvelgerPage() {
           background: white;
           min-width: 336px;
           max-width: 388px;
-          border-right: 1px solid var(--a-gray-400);
+          border-right: 1px solid var(--a-gray-200);
           padding: var(--a-spacing-4);
           flex: 1;
         }
@@ -88,7 +88,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
 
   return (
     <VStack gap="6">
-      <Heading level="1" size="medium">
+      <Heading level="1" size="small">
         Brevmeny
       </Heading>
       <Search
@@ -96,7 +96,7 @@ function Brevmaler({ letterTemplates }: { letterTemplates: LetterMetadata[] }) {
         hideLabel={false}
         label="Søk etter brevmal"
         onChange={(value) => setSearchTerm(value)}
-        size="medium"
+        size="small"
         value={searchTerm}
         variant="simple"
       />
@@ -191,7 +191,6 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
           search: (s) => s,
         })
       }
-      size="medium"
       variant="tertiary"
     >
       {letterMetadata.name}

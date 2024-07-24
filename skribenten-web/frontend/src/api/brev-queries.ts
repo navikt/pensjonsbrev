@@ -38,7 +38,7 @@ export async function createBrev(saksId: string, request: OpprettBrevRequest) {
 }
 
 export async function updateBrev(saksId: string, brevId: number, request: OppdaterBrevRequest) {
-  return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, request)).data;
+  return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, request)).data;
 }
 
 export function useModelSpecification<T>(brevkode: string, select: (data: LetterModelSpecification) => T) {

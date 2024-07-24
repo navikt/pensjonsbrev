@@ -7,8 +7,25 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.model.Pen.SakType.*
-import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.*
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.AFP
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.AFP_PRIVAT
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.BARNEP
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.FAM_PL
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GAM_YRK
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GJENLEV
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GRBL
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.KRIGSP
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.OMSORG
+import no.nav.pensjon.brev.skribenten.model.Pen.SakType.UFOREP
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.BREV_MED_SKJEMA
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.INFORMASJON
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.INNHENTE_OPPL
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.NOTAT
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.OVRIG
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.VARSEL
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkategoriCode.VEDTAK
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevregeltypeCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -108,7 +125,7 @@ class BrevmalService(
     private suspend fun hentBrevakerMaler(call: ApplicationCall): List<LetterMetadata> =
         if (Features.brevbakerbrev) {
             brevbakerService.getTemplates(call)
-                .map { result ->  result.map { it.toMetadata() } }
+                .map { result -> result.map { it.toMetadata() } }
                 .catch { message, statusCode ->
                     logger.error("Kunne ikke hente brevmaler fra brevbaker: $message - $statusCode")
                     emptyList()
@@ -391,7 +408,14 @@ private val kategoriOverrides: Map<String, Brevkategori> = mapOf(
         "PE_GP_01_010"
     ),
     Brevkategori.LEVEATTEST to listOf("PE_IY_03_176", "PE_IY_03_177", "PE_IY_05_411", "PE_IY_05_510", "PE_IY_05_410", "PE_IY_05_511"),
-    Brevkategori.FEILUTBETALING to listOf("VARSEL_TILBAKEBET", "VEDTAK_TILBAKEKREV", "VEDTAK_TILBAKEKREV_MIDL", "PE_IY_04_060", "PE_IY_04_061", "PE_IY_05_027"),
+    Brevkategori.FEILUTBETALING to listOf(
+        "VARSEL_TILBAKEBET",
+        "VEDTAK_TILBAKEKREV",
+        "VEDTAK_TILBAKEKREV_MIDL",
+        "PE_IY_04_060",
+        "PE_IY_04_061",
+        "PE_IY_05_027"
+    ),
     Brevkategori.KLAGE_OG_ANKE to listOf(
         "PE_IY_03_151",
         "PE_IY_03_152",

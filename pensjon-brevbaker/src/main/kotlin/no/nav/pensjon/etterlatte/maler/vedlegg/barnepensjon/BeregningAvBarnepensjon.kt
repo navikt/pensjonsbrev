@@ -135,6 +135,7 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
 		    perioderMedRegistrertTrygdetid(it.navnAvdoed, it.trygdetidsperioder, it.beregningsMetodeAnvendt)
 	    }
     }
+    meldFraTilNav()
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.grunnbeloepetGammeltOgNyttRegelverk(
@@ -220,7 +221,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         textExpr(
             Bokmal to "Folketrygdens grunnbeløp er per i dag ".expr()  + grunnbeloep.format() + " kroner. Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år.",
             Nynorsk to "Grunnbeløpet i folketrygda er per i dag ".expr()  + grunnbeloep.format() + " kroner. Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
-            English to "The national insurance basic amount currently amounts to ".expr()  + grunnbeloep.format() + " kroner. The basic amount is adjusted on 1 May each year. You will receive payment of any increase in June of each year.",
+            English to "The national insurance basic amount currently amounts to NOK ".expr()  + grunnbeloep.format() + ". The basic amount is adjusted on 1 May each year. You will receive payment of any increase in June of each year.",
         )
     }
 }
@@ -259,8 +260,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                         "Grunnbeløpet i folketrygda er per i dag  " + grunnbeloep.format() + " kroner. " +
                         "Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
                 English to "The children's pension per year amounts to 1 x the national insurance basic ".expr() +
-                        "amount (G). The national insurance basic amount currently amounts to " +
-                        grunnbeloep.format() + " kroner.  The basic amount is adjusted on 1 May each year. " +
+                        "amount (G). The national insurance basic amount currently amounts to NOK " +
+                        grunnbeloep.format() + ".  The basic amount is adjusted on 1 May each year. " +
                         "You will receive payment of any increase in June of each year. ",
             )
         }

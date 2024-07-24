@@ -33,28 +33,35 @@ object Edit {
         abstract val editable: Boolean
         abstract val content: List<ParagraphContent>
         abstract val deletedContent: Set<Int>
+        abstract val originalType: Type?
 
-        override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() } || deletedContent.isNotEmpty()
+        @JsonIgnore
+        fun isChangedType() = type != (originalType ?: type)
+
+        override fun isEdited(): Boolean = isNew() || isChangedType() || content.any { it.isEdited() } || deletedContent.isNotEmpty()
 
         data class Title1(
             override val id: Int?,
             override val editable: Boolean,
             override val content: List<ParagraphContent.Text>,
-            override val deletedContent: Set<Int> = emptySet()
+            override val deletedContent: Set<Int> = emptySet(),
+            override val originalType: Type? = null,
         ) : Block(Type.TITLE1)
 
         data class Title2(
             override val id: Int?,
             override val editable: Boolean,
             override val content: List<ParagraphContent.Text>,
-            override val deletedContent: Set<Int> = emptySet()
+            override val deletedContent: Set<Int> = emptySet(),
+            override val originalType: Type? = null,
         ) : Block(Type.TITLE2)
 
         data class Paragraph(
             override val id: Int?,
             override val editable: Boolean,
             override val content: List<ParagraphContent>,
-            override val deletedContent: Set<Int> = emptySet()
+            override val deletedContent: Set<Int> = emptySet(),
+            override val originalType: Type? = null,
         ) : Block(Type.PARAGRAPH)
     }
 
@@ -166,7 +173,7 @@ fun List<Block>.toEdit(): List<Edit.Block> =
 
 fun Block.toEdit(): Edit.Block =
     when (this) {
-        is Block.Paragraph -> Edit.Block.Paragraph(id, editable, content.map { it.toEdit() }, emptySet())
+        is Block.Paragraph -> Edit.Block.Paragraph(id, editable, content.map { it.toEdit() })
         is Block.Title1 -> Edit.Block.Title1(id, editable, content.map { it.toEdit() })
         is Block.Title2 -> Edit.Block.Title2(id, editable, content.map { it.toEdit() })
     }
