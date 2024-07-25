@@ -12,4 +12,5 @@ data class UforetrygdOrdiner(
     val AvkortingsbelopPerAr: Kroner?,
     val Brutto: Kroner?,
     val NettoRestAr: Kroner?,
+    val Ytelsesgrunnlag: Ytelsesgrunnlag?,
 )

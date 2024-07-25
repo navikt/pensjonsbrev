@@ -3,7 +3,24 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.Vedtaksbrev_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.Vedtaksdata_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.BeregningsData_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.Kravhode_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.BeregningUfore_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.BeregningVirkningDatoFom_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.BeregningYtelsesKomp_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.Reduksjonsgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.AndelYtelseAvOIFU_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.GradertOppjustertIFU_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.ProsentsatsOIFUForTak_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.UforetrygdOrdiner_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.AntallArInntektIAvtaleland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.AntallArOver1G_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.Ytelsesgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.YtelsesgrunnlagSelectors.BeregningsgrunnlagOrdinar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.KravArsakType_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.inntektAnnenForelder
@@ -46,6 +63,19 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.skadetidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.barnetilleggGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.beregnetUTPerManedGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.borMedSivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.brukersSivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.erUngUfoer
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.harMinsteytelse
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.inntektEtterUfoereGjeldendeBeloep
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.inntektFoerUfoereGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.inntektsAvkortingGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.trygdetidsdetaljerGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.ufoeretrygdGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.yrkesskadeGjeldende
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.tableFormat
 import no.nav.pensjon.brev.template.Element
@@ -60,29 +90,16 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
-data class TabellUfoereOpplysningerV2(
-    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
-    val yrkesskadeGjeldende: Expression<OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende?>,
-    val inntektFoerUfoereGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende>,
-    val inntektsAvkortingGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende>,
-    val inntektsgrenseErUnderTak: Expression<Boolean>,
-    val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
-    val inntektEtterUfoereGjeldendeBeloep: Expression<Kroner?>,
-    val erUngUfoer: Expression<Boolean>,
-    val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
-    val barnetilleggGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende?>,
-    val harMinsteytelse: Expression<Boolean>,
-    val brukersSivilstand: Expression<Sivilstand>,
-    val borMedSivilstand: Expression<BorMedSivilstand?>,
-    val kravGjelderFoerstegangsbehandlingBosattUtland: Expression<Boolean>,
-    val antallAarOver1G: Expression<Int>,
-    val antallAarOverInntektIAvtaleland: Expression<Int>,
-    val ufoeretrygd_reduksjonsgrunnlag_gradertOppjustertIFU: Expression<Kroner>,
-    val beregningUfore_andelYtelseAvOIFU: Expression<Int>,
-    val beregningUfore_BeregningVirkningDatoFom: Expression<LocalDate>,
-    val beregningUfore_prosentsatsOIFUForTak: Expression<Int>,
+data class TabellUfoereOpplysningerLegacy(
+    val tabellUfoereOpplysningerLegacy: Expression<OpplysningerBruktIBeregningenLegacyDto.TabellufoereOpplysningerLegacyDto>,
+    val PE: Expression<PE>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        val inntektsgrenseErUnderTak = tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektsgrenseAar
+            .lessThan(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektstak)
+
+        val beregningufore = PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe
+        val uforetrygdordiner = beregningufore.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe
         paragraph {
             table(
                 header = {
@@ -106,7 +123,7 @@ data class TabellUfoereOpplysningerV2(
                         )
                     }
                     cell {
-                        val ufoeretidspunkt = ufoeretrygdGjeldende.ufoeretidspunkt.format()
+                        val ufoeretidspunkt = tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.ufoeretidspunkt.format()
                         textExpr(
                             Bokmal to ufoeretidspunkt,
                             Nynorsk to ufoeretidspunkt,
@@ -114,7 +131,7 @@ data class TabellUfoereOpplysningerV2(
                         )
                     }
                 }
-                showIf(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar.greaterThan(0) and not(harMinsteytelse)) {
+                showIf(tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar.greaterThan(0) and not(tabellUfoereOpplysningerLegacy.harMinsteytelse)) {
                     row {
                         cell {
                             text(
@@ -124,11 +141,11 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar))
+                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar))
                         }
                     }
                 }
-                ifNotNull(yrkesskadeGjeldende.beregningsgrunnlagBeloepAar_safe) { beloep ->
+                ifNotNull(tabellUfoereOpplysningerLegacy.yrkesskadeGjeldende.beregningsgrunnlagBeloepAar_safe) { beloep ->
                     showIf(beloep.greaterThan(0)) {
                         row {
                             cell {
@@ -144,7 +161,7 @@ data class TabellUfoereOpplysningerV2(
                         }
                     }
                 }
-                showIf(inntektFoerUfoereGjeldende.ifuInntekt.greaterThan(0)) {
+                showIf(tabellUfoereOpplysningerLegacy.inntektFoerUfoereGjeldende.ifuInntekt.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -154,11 +171,11 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektFoerUfoereGjeldende.ifuInntekt))
+                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektFoerUfoereGjeldende.ifuInntekt))
                         }
                     }
                 }
-                ifNotNull(inntektEtterUfoereGjeldendeBeloep) { beloep ->
+                ifNotNull(tabellUfoereOpplysningerLegacy.inntektEtterUfoereGjeldendeBeloep) { beloep ->
                     showIf(beloep.greaterThan(0)) {
                         row {
                             cell {
@@ -183,7 +200,7 @@ data class TabellUfoereOpplysningerV2(
                         )
                     }
                     cell {
-                        val ufoeregrad = ufoeretrygdGjeldende.ufoeregrad.format()
+                        val ufoeregrad = tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.ufoeregrad.format()
                         textExpr(
                             Bokmal to ufoeregrad + " %",
                             Nynorsk to ufoeregrad + " %",
@@ -191,7 +208,7 @@ data class TabellUfoereOpplysningerV2(
                         )
                     }
                 }
-                showIf(inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThan(0)) {
+                showIf(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -201,11 +218,11 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
+                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektsgrenseAar))
                         }
                     }
                 }
-                showIf(inntektsAvkortingGjeldende.forventetInntektAar.greaterThan(0)) {
+                showIf(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.forventetInntektAar.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -215,11 +232,11 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.forventetInntektAar))
+                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.forventetInntektAar))
                         }
                     }
                 }
-                showIf(inntektsgrenseErUnderTak and ufoeretrygdGjeldende.kompensasjonsgrad.greaterThan(0.0)) {
+                showIf(inntektsgrenseErUnderTak and tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.kompensasjonsgrad.greaterThan(0.0)) {
                     row {
                         cell {
                             text(
@@ -229,7 +246,7 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.format()
+                            val kompensasjonsgrad = tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.kompensasjonsgrad.format()
                             textExpr(
                                 Bokmal to kompensasjonsgrad + " %",
                                 Nynorsk to kompensasjonsgrad + " %",
@@ -248,7 +265,7 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektstak))
+                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektstak))
                         }
                     }
                 }.orShow {
@@ -261,12 +278,12 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
+                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektsgrenseAar))
                         }
                     }
                 }
 
-                showIf(harMinsteytelse) {
+                showIf(tabellUfoereOpplysningerLegacy.harMinsteytelse) {
                     row {
                         cell {
                             text(
@@ -276,13 +293,13 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            ifNotNull(borMedSivilstand){
+                            ifNotNull(tabellUfoereOpplysningerLegacy.borMedSivilstand){
                                 textExpr(
                                     Bokmal to it.tableFormat(),
                                     Nynorsk to it.tableFormat(),
                                     English to it.tableFormat()
                                 )
-                            }.orShowIf(brukersSivilstand.isOneOf(Sivilstand.ENKE)) {
+                            }.orShowIf(tabellUfoereOpplysningerLegacy.brukersSivilstand.isOneOf(Sivilstand.ENKE)) {
                                 text(
                                     Bokmal to "Enke/Enkemann",
                                     Nynorsk to "Enkje/Enkjemann",
@@ -298,7 +315,7 @@ data class TabellUfoereOpplysningerV2(
                         }
                     }
 
-                    ifNotNull(borMedSivilstand){ borMedSivilstand->
+                    ifNotNull(tabellUfoereOpplysningerLegacy.borMedSivilstand){ borMedSivilstand->
                         showIf(borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT, BorMedSivilstand.PARTNER_LEVER_ADSKILT)) {
                             val erGift = borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)
                             row {
@@ -328,7 +345,7 @@ data class TabellUfoereOpplysningerV2(
                     }
                 }
 
-                showIf(erUngUfoer) {
+                showIf(tabellUfoereOpplysningerLegacy.erUngUfoer) {
                     row {
                         cell {
                             text(
@@ -347,7 +364,7 @@ data class TabellUfoereOpplysningerV2(
                     }
                 }
 
-                ifNotNull(yrkesskadeGjeldende) { yrkesskade ->
+                ifNotNull(tabellUfoereOpplysningerLegacy.yrkesskadeGjeldende) { yrkesskade ->
                     showIf(yrkesskade.yrkesskadegrad.greaterThan(0)) {
                         row {
                             cell {
@@ -400,9 +417,9 @@ data class TabellUfoereOpplysningerV2(
                     }
                 }
 
-                val beregningsmetode = trygdetidsdetaljerGjeldende.beregningsmetode
+                val beregningsmetode = tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.beregningsmetode
 
-                showIf(beregnetUTPerManedGjeldende.brukerErFlyktning) {
+                showIf(tabellUfoereOpplysningerLegacy.beregnetUTPerManedGjeldende.brukerErFlyktning) {
                     row {
                         cell {
                             text(
@@ -430,7 +447,7 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            val anvendtTT = trygdetidsdetaljerGjeldende.anvendtTT.format()
+                            val anvendtTT = tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.anvendtTT.format()
                             textExpr(
                                 Bokmal to anvendtTT + " år",
                                 Nynorsk to anvendtTT + " år",
@@ -451,7 +468,7 @@ data class TabellUfoereOpplysningerV2(
                         }
                         // Implement logic for year/years
                         cell {
-                            val anvendtTT = trygdetidsdetaljerGjeldende.anvendtTT.format()
+                            val anvendtTT = tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.anvendtTT.format()
                             textExpr(
                                 Bokmal to anvendtTT + " år",
                                 Nynorsk to anvendtTT + " år",
@@ -478,7 +495,7 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
-                            val anvendtTT = trygdetidsdetaljerGjeldende.anvendtTT.format()
+                            val anvendtTT = tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.anvendtTT.format()
                             textExpr(
                                 Bokmal to anvendtTT + " år",
                                 Nynorsk to anvendtTT + " år",
@@ -487,7 +504,7 @@ data class TabellUfoereOpplysningerV2(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljerGjeldende.faktiskTTNorge) {
+                ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.faktiskTTNorge) {
                     showIf(beregningsmetode.isNotAnyOf(Beregningsmetode.FOLKETRYGD)) {
                         row {
                             cell {
@@ -505,7 +522,7 @@ data class TabellUfoereOpplysningerV2(
                 }
 
                 showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS)) {
-                    ifNotNull(trygdetidsdetaljerGjeldende.faktiskTTEOS) { faktiskTTEOS ->
+                    ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.faktiskTTEOS) { faktiskTTEOS ->
                         row {
                             cell {
                                 text(
@@ -520,7 +537,7 @@ data class TabellUfoereOpplysningerV2(
                         }
                     }
 
-                    ifNotNull(trygdetidsdetaljerGjeldende.nevnerTTEOS) { nevnerTTEOS ->
+                    ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.nevnerTTEOS) { nevnerTTEOS ->
                         row {
                             cell {
                                 text(
@@ -534,8 +551,8 @@ data class TabellUfoereOpplysningerV2(
                     }
 
                     ifNotNull(
-                        trygdetidsdetaljerGjeldende.tellerTTEOS,
-                        trygdetidsdetaljerGjeldende.nevnerTTEOS
+                        tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.tellerTTEOS,
+                        tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.nevnerTTEOS
                     ) { tellerTTEOS, nevnerTTEOS ->
                         row {
                             cell {
@@ -557,7 +574,7 @@ data class TabellUfoereOpplysningerV2(
                 }
 
                 showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
-                    ifNotNull(trygdetidsdetaljerGjeldende.faktiskTTNordiskKonv) { faktiskTTNordiskKonv ->
+                    ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.faktiskTTNordiskKonv) { faktiskTTNordiskKonv ->
                         row {
                             cell {
                                 text(
@@ -570,7 +587,7 @@ data class TabellUfoereOpplysningerV2(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljerGjeldende.framtidigTTNorsk) { framtidigTTNorsk ->
+                ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.framtidigTTNorsk) { framtidigTTNorsk ->
                     showIf(
                         beregningsmetode.isOneOf(
                             Beregningsmetode.NORDISK,
@@ -593,8 +610,8 @@ data class TabellUfoereOpplysningerV2(
                 }
                 showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
                     ifNotNull(
-                        trygdetidsdetaljerGjeldende.tellerTTNordiskKonv,
-                        trygdetidsdetaljerGjeldende.nevnerTTNordiskKonv
+                        tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.tellerTTNordiskKonv,
+                        tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.nevnerTTNordiskKonv
                     ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
                         row {
                             cell {
@@ -614,7 +631,7 @@ data class TabellUfoereOpplysningerV2(
                         }
                     }
 
-                    ifNotNull(trygdetidsdetaljerGjeldende.samletTTNordiskKonv) { samletTTNordiskKonv ->
+                    ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.samletTTNordiskKonv) { samletTTNordiskKonv ->
                         row {
                             cell {
                                 text(
@@ -628,7 +645,7 @@ data class TabellUfoereOpplysningerV2(
                     }
                 }
 
-                ifNotNull(trygdetidsdetaljerGjeldende.utenforEOSogNorden) {
+                ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.utenforEOSogNorden) {
 
                     val faktiskTTBilateral = it.faktiskTTBilateral
                     val nevnerProRata = it.nevnerProRata
@@ -685,7 +702,7 @@ data class TabellUfoereOpplysningerV2(
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) THEN      INCLUDE ENDIF
-                showIf(kravGjelderFoerstegangsbehandlingBosattUtland and yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).lessThan(ufoeretrygdGjeldende.ufoeregrad)) {
+                showIf(PE.Vedtaksbrev_safe.Vedtaksdata_safe.Kravhode_safe.KravArsakType_safe.ifNull("").equalTo("f_bh_bo_utl") and tabellUfoereOpplysningerLegacy.yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).lessThan(tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.ufoeregrad)) {
                     //[TBU010V]
 
                     row {
@@ -698,6 +715,8 @@ data class TabellUfoereOpplysningerV2(
                         }
                         cell {
                             //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArOver1G
+                            val antallAarOver1G =
+                                beregningufore.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.Ytelsesgrunnlag_safe.BeregningsgrunnlagOrdinar_safe.AntallArOver1G_safe.ifNull(0)
                             textExpr(
                                 Bokmal to antallAarOver1G.format() + " år",
                                 Nynorsk to antallAarOver1G.format() + " år",
@@ -708,7 +727,7 @@ data class TabellUfoereOpplysningerV2(
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArInntektIAvtaleland <> 0) THEN      INCLUDE ENDIF
-                showIf(antallAarOverInntektIAvtaleland.notEqualTo(0)) {
+                showIf(uforetrygdordiner.notEqualTo(0)) {
                     //[TBU010V]
 
                     row {
@@ -720,6 +739,8 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                         cell {
+                            //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArInntektIAvtaleland
+                            val antallAarOverInntektIAvtaleland = uforetrygdordiner.Ytelsesgrunnlag_safe.BeregningsgrunnlagOrdinar_safe.AntallArInntektIAvtaleland_safe.ifNull(0)
                             textExpr(
                                 Bokmal to antallAarOverInntektIAvtaleland.format() + " år",
                                 Nynorsk to antallAarOverInntektIAvtaleland.format() + " år",
@@ -729,7 +750,7 @@ data class TabellUfoereOpplysningerV2(
                     }
                 }
 
-                ifNotNull(barnetilleggGjeldende) { barnetillegg ->
+                ifNotNull(tabellUfoereOpplysningerLegacy.barnetilleggGjeldende) { barnetillegg ->
                     row {
                         cell {
                             text(
@@ -747,18 +768,28 @@ data class TabellUfoereOpplysningerV2(
                             )
                         }
                     }
-                    //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU > 95 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
-                    showIf(ufoeretrygd_reduksjonsgrunnlag_gradertOppjustertIFU.greaterThan(0) and beregningUfore_andelYtelseAvOIFU.greaterThan(95) and beregningUfore_BeregningVirkningDatoFom.greaterThanOrEqual(LocalDate.of(2016,1,1))){
+                    //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU > 0 AND
+                    // PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU > 95 AND
+                    // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
+
+                    val reduksjonsgrunnlag = beregningufore.Reduksjonsgrunnlag_safe
+                    showIf(
+                        reduksjonsgrunnlag.GradertOppjustertIFU_safe.ifNull(Kroner(0)).greaterThan(0)
+                            and reduksjonsgrunnlag.AndelYtelseAvOIFU_safe.ifNull(0.0).greaterThan(95.0)
+                            and beregningufore.BeregningVirkningDatoFom_safe.ifNull(LocalDate.MIN).greaterThanOrEqual(LocalDate.of(2016,1,1))){
                         row {
                             cell {
+                                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_ProsentsatsOIFUForTak
+                                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU
+                                val prosentSats = reduksjonsgrunnlag.ProsentsatsOIFUForTak_safe.ifNull(0)
                                 textExpr(
-                                    Bokmal to beregningUfore_prosentsatsOIFUForTak.format() + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
-                                    Nynorsk to beregningUfore_prosentsatsOIFUForTak.format() + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
-                                    English to beregningUfore_prosentsatsOIFUForTak.format() + " % of income before disability, adjusted for changes in the basic amount",
+                                    Bokmal to prosentSats.format() + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
+                                    Nynorsk to prosentSats.format() + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
+                                    English to prosentSats.format() + " % of income before disability, adjusted for changes in the basic amount",
                                 )
                             }
                             cell {
-                                Felles.KronerText(ufoeretrygd_reduksjonsgrunnlag_gradertOppjustertIFU)
+                                Felles.KronerText(reduksjonsgrunnlag.GradertOppjustertIFU_safe.ifNull(Kroner(0)))
                             }
                         }
                     }

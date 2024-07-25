@@ -9,7 +9,7 @@ import java.time.LocalDate
 
 fun createOpplysningerBruktIBeregningenLegacyDto() =
     OpplysningerBruktIBeregningenLegacyDto(
-        tabellUfoereOpplysninger = OpplysningerBruktIBeregningenLegacyDto.TabellufoereOpplysningerDto(
+        tabellUfoereOpplysninger = OpplysningerBruktIBeregningenLegacyDto.TabellufoereOpplysningerLegacyDto(
             barnetilleggGjeldende = Fixtures.create(),
             beregnetUTPerManedGjeldende = Fixtures.create(),
             inntektFoerUfoereGjeldende = Fixtures.create(),
@@ -21,15 +21,7 @@ fun createOpplysningerBruktIBeregningenLegacyDto() =
             brukersSivilstand = Sivilstand.GIFT,
             harMinsteytelse = true,
             erUngUfoer = true,
-            inntektsgrenseErUnderTak = true,
             inntektEtterUfoereGjeldendeBeloep = Kroner(1),
-            antallAarOver1G = 4,
-            antallAarOverInntektIAvtaleland = 3,
-            beregningUfore_andelYtelseAvOIFU = 5,
-            beregningUfore_BeregningVirkningDatoFom = LocalDate.of(2020, 1, 1),
-            beregningUfore_prosentsatsOIFUForTak = 2,
-            kravGjelderFoerstegangsbehandlingBosattUtland = true,
-            ufoeretrygd_reduksjonsgrunnlag_gradertOppjustertIFU = Kroner(10)
         ),
         opplysningerOmBarnetillegg = Fixtures.create(),
         inntektsgrenseAar = Kroner(100),

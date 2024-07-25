@@ -6,4 +6,5 @@ data class Trygdetid(
     val FramtidigTTEOS: Int?,
     val FramtidigTTNorsk: Int?,
     val RedusertFramtidigTrygdetid: Int?,
+    val FaTTNorge: Int?,
 )

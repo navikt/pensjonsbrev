@@ -8,7 +8,7 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class OpplysningerBruktIBeregningenLegacyDto(
-    val tabellUfoereOpplysninger: TabellufoereOpplysningerDto,
+    val tabellUfoereOpplysninger: TabellufoereOpplysningerLegacyDto,
     val opplysningerOmBarnetillegg: OpplysningerOmBarnetilleggDto?,
     val PE: PE, // Legacy data
     // Tittel
@@ -18,12 +18,11 @@ data class OpplysningerBruktIBeregningenLegacyDto(
     val beregnetUTPerMaanedGjeldendeGrunnbeloep: Kroner,
 ){
 
-    data class TabellufoereOpplysningerDto(
+    data class TabellufoereOpplysningerLegacyDto(
         val ufoeretrygdGjeldende: OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende,
         val yrkesskadeGjeldende: OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende?,
         val inntektFoerUfoereGjeldende: OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende,
         val inntektsAvkortingGjeldende: OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende,
-        val inntektsgrenseErUnderTak: Boolean,
         val beregnetUTPerManedGjeldende: OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende,
         val inntektEtterUfoereGjeldendeBeloep: Kroner?,
         val erUngUfoer: Boolean,
@@ -32,13 +31,6 @@ data class OpplysningerBruktIBeregningenLegacyDto(
         val harMinsteytelse: Boolean,
         val brukersSivilstand: Sivilstand,
         val borMedSivilstand: BorMedSivilstand?,
-        val kravGjelderFoerstegangsbehandlingBosattUtland: Boolean,
-        val antallAarOver1G: Int,
-        val antallAarOverInntektIAvtaleland: Int,
-        val ufoeretrygd_reduksjonsgrunnlag_gradertOppjustertIFU: Kroner,
-        val beregningUfore_andelYtelseAvOIFU: Int,
-        val beregningUfore_BeregningVirkningDatoFom: LocalDate,
-        val beregningUfore_prosentsatsOIFUForTak: Int,
     )
 
     data class OpplysningerOmMinstetilleggDto(

@@ -27,7 +27,20 @@ import java.time.LocalDate
 
 fun createPE() =
     PE(
-        createVedtaksbrev()
+        Vedtaksbrev = createVedtaksbrev(),
+        functions = PE.ExstreamFunctions(
+            PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT = "ektefelle",
+            PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner = "spouse",
+            PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall = "ektefellen",
+            PE_UT_NettoAkk_pluss_NettoRestAr = Kroner(8313),
+            PE_UT_NettoAkk_pluss_NettoRestAr_pluss_ForventetInntekt = Kroner(8314),
+            PE_UT_OpplyningerOmBergeningen_NettoPerAr = Kroner(8315),
+            PE_UT_Overskytende = Kroner(8316),
+            PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12 = Kroner(8317),
+            PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus = Kroner(1881),
+            PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus = Kroner(1882),
+            PE_UT_VirkningstidpunktArMinus1Ar = 2019
+        )
     )
 
 fun createVedtaksbrev(): Vedtaksbrev =
@@ -119,6 +132,7 @@ fun createTrygdetid() =
         FramtidigTTEOS = 31,
         FramtidigTTNorsk = 32,
         RedusertFramtidigTrygdetid = 33,
+        FaTTNorge = 34,
     )
 
 fun createKravhode() =
@@ -169,7 +183,9 @@ fun createUforetrygdberegning() =
 fun createReduksjonsgrunnlag() =
     Reduksjonsgrunnlag(
         AndelYtelseAvOIFU = 25.5,
-        BarnetilleggRegelverkType = "overgangsregler_2016"
+        BarnetilleggRegelverkType = "overgangsregler_2016",
+        GradertOppjustertIFU = Kroner(1938),
+        ProsentsatsOIFUForTak = 30,
     )
 
 fun createBelopsendring() =
@@ -249,6 +265,18 @@ fun createUforetrygdOrdiner() =
         AvkortingsbelopPerAr = Kroner(5819),
         Brutto = Kroner(9832),
         NettoRestAr = Kroner(5934),
+        Ytelsesgrunnlag = createYtelsesgrunnlag()
+    )
+
+fun createYtelsesgrunnlag() =
+    Ytelsesgrunnlag(
+        BeregningsgrunnlagOrdinar = createBeregningsgrunnlagOrdinar()
+    )
+
+fun createBeregningsgrunnlagOrdinar() =
+    BeregningsgrunnlagOrdinar(
+        AntallArOver1G = 10,
+        AntallArInntektIAvtaleland = 11,
     )
 
 fun createAvkortningsInformasjon(): AvkortningsInformasjon =
