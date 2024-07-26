@@ -3,5 +3,5 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.bereg
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKomp
 
 data class BeregningUforePeriode(
-    val BeregningYtelsesKomp: BeregningYtelsesKomp?
+    val beregningytelseskomp: BeregningYtelsesKomp?
 )

@@ -1,10 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateral
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.TrygdetidBilateralLand
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.TrygdetidFomBilateral
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.TrygdetidTomBilateral
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateralSelectors.TrygdetidsgrunnlagBilateral_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.trygdetidbilateralland
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.trygdetidfombilateral
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.trygdetidtombilateral
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -47,7 +46,7 @@ data class TBU046V_2(
                 forEach(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral) { trygdetidBilateral ->
                     row {
                         cell {
-                            ifNotNull(trygdetidBilateral.TrygdetidBilateralLand) {
+                            ifNotNull(trygdetidBilateral.trygdetidbilateralland) {
                                 textExpr(
                                     Bokmal to it,
                                     Nynorsk to it,
@@ -56,7 +55,7 @@ data class TBU046V_2(
                             }
                         }
                         cell {
-                            ifNotNull(trygdetidBilateral.TrygdetidFomBilateral) {
+                            ifNotNull(trygdetidBilateral.trygdetidfombilateral) {
                                 textExpr(
                                     Bokmal to it.format(),
                                     Nynorsk to it.format(),
@@ -65,7 +64,7 @@ data class TBU046V_2(
                             }
                         }
                         cell {
-                            ifNotNull(trygdetidBilateral.TrygdetidTomBilateral) { tom ->
+                            ifNotNull(trygdetidBilateral.trygdetidtombilateral) { tom ->
                                 textExpr(
                                     Bokmal to tom.format(),
                                     Nynorsk to tom.format(),

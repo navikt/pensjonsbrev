@@ -10,12 +10,7 @@ import java.time.LocalDate
 data class OpplysningerBruktIBeregningenLegacyDto(
     val tabellUfoereOpplysninger: TabellufoereOpplysningerLegacyDto,
     val opplysningerOmBarnetillegg: OpplysningerOmBarnetilleggDto?,
-    val PE: PE, // Legacy data
-    // Tittel
-    val inntektsgrenseAar: Kroner,
-    val inntektstak: Kroner,
-    val beregnetUTPerMaanedGjeldendeVirkFom: LocalDate,
-    val beregnetUTPerMaanedGjeldendeGrunnbeloep: Kroner,
+    val pe: PE, // Legacy data
 ){
 
     data class TabellufoereOpplysningerLegacyDto(

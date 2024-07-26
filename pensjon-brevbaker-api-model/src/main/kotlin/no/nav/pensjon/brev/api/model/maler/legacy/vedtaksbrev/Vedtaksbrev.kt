@@ -5,6 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.Vedtak
 
 
 data class Vedtaksbrev(
-    val Vedtaksdata: Vedtaksdata?,
-    val Grunnlag: Grunnlag,
+    val vedtaksdata: Vedtaksdata?,
+    val grunnlag: Grunnlag,
 )

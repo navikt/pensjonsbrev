@@ -3,6 +3,6 @@ package no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagno
 import java.time.LocalDate
 
 data class Trygdetidsgrunnlag(
-    val TrygdetidFom: LocalDate?,
-    val TrygdetidTom: LocalDate?,
+    val trygdetidfom: LocalDate?,
+    val trygdetidtom: LocalDate?,
 )

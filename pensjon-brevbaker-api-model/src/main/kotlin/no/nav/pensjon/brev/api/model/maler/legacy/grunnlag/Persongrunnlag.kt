@@ -6,9 +6,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnor
 
 
 data class Persongrunnlag(
-    val BrukerFlyktning: Boolean?,
-    val PersonBostedsland: String?,
-    val TrygdetidsgrunnlagListeBilateral: TrygdetidsgrunnlagListeBilateral?,
-    val TrygdetidsgrunnlagListeEOS: TrygdetidsgrunnlagListeEOS?,
-    val TrygdetidsgrunnlagListeNor: TrygdetidsgrunnlagListeNor?,
+    val brukerflyktning: Boolean?,
+    val personbostedsland: String?,
+    val trygdetidsgrunnlaglistebilateral: TrygdetidsgrunnlagListeBilateral?,
+    val trygdetidsgrunnlaglisteeos: TrygdetidsgrunnlagListeEOS?,
+    val trygdetidsgrunnlaglistenor: TrygdetidsgrunnlagListeNor?,
 )

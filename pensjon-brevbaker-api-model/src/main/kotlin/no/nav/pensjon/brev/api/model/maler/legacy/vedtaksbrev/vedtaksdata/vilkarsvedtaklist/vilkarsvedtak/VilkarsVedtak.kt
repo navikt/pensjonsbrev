@@ -4,6 +4,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 
 
 data class VilkarsVedtak(
-    val BeregningsVilkar: BeregningsVilkar?,
-    val Vilkar: Vilkar?,
+    val beregningsvilkar: BeregningsVilkar?,
+    val vilkar: Vilkar?,
 )

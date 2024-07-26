@@ -6,9 +6,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import java.time.LocalDate
 
 data class Vedtaksdata(
-    val BeregningsData: BeregningsData?,
-    val Kravhode: Kravhode?,
-    val VilkarsVedtakList: VilkarsVedtakList?,
-    val VirkningFOM: LocalDate?,
-    val Faktoromregnet: Boolean?,
+    val beregningsdata: BeregningsData?,
+    val kravhode: Kravhode?,
+    val vilkarsvedtaklist: VilkarsVedtakList?,
+    val virkningfom: LocalDate?,
+    val faktoromregnet: Boolean?,
 )

@@ -4,5 +4,5 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 
 
 data class VilkarsVedtakList(
-    val VilkarsVedtak: List<VilkarsVedtak>
+    val vilkarsvedtak: List<VilkarsVedtak>
 )

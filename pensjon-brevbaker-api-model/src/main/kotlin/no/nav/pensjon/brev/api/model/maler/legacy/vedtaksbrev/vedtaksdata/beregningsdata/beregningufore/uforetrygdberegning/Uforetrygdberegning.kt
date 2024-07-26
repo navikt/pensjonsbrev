@@ -4,10 +4,10 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 data class Uforetrygdberegning(
-    val AnvendtTrygdetid: Int?,
-    val Mottarminsteytelse: Boolean?,
-    val Uforegrad: Int?,
-    val Yrkesskadegrad: Int?,
-    val Grunnbelop: Kroner?,
-    val InstOppholdType: String?,
+    val anvendttrygdetid: Int?,
+    val mottarminsteytelse: Boolean?,
+    val uforegrad: Int?,
+    val yrkesskadegrad: Int?,
+    val grunnbelop: Kroner?,
+    val instoppholdtype: String?,
 )

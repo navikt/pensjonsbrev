@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.TrygdetidFom
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.TrygdetidTom
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.trygdetidfom
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.trygdetidtom
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -37,7 +37,7 @@ data class TBU1187_2(
                     forEach(trygdetidsliste) { trygdetidNor ->
                         row {
                             cell {
-                                ifNotNull(trygdetidNor.TrygdetidFom) {
+                                ifNotNull(trygdetidNor.trygdetidfom) {
                                     textExpr(
                                         Bokmal to it.format(),
                                         Nynorsk to it.format(),
@@ -46,7 +46,7 @@ data class TBU1187_2(
                                 }
                             }
                             cell {
-                                ifNotNull(trygdetidNor.TrygdetidTom) {
+                                ifNotNull(trygdetidNor.trygdetidtom) {
                                     textExpr(
                                         Bokmal to it.format(),
                                         Nynorsk to it.format(),

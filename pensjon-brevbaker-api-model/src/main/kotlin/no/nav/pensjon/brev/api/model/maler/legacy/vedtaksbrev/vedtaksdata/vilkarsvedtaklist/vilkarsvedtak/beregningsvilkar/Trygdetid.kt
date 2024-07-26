@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilka
 
 
 data class Trygdetid(
-    val FaTTEOS: Int?,
-    val FramtidigTTEOS: Int?,
-    val FramtidigTTNorsk: Int?,
-    val RedusertFramtidigTrygdetid: Int?,
-    val FaTTNorge: Int?,
+    val fatteos: Int?,
+    val framtidigtteos: Int?,
+    val framtidigttnorsk: Int?,
+    val redusertframtidigtrygdetid: Int?,
+    val fattnorge: Int?,
 )

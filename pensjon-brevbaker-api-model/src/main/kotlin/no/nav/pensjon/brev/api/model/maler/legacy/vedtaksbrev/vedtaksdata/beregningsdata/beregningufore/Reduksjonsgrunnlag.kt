@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.bereg
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class Reduksjonsgrunnlag(
-    val AndelYtelseAvOIFU: Double?,
-    val BarnetilleggRegelverkType: String?,
-    val GradertOppjustertIFU: Kroner?,
-    val ProsentsatsOIFUForTak: Int?,
+    val andelytelseavoifu: Double?,
+    val barnetilleggregelverktype: String?,
+    val gradertoppjustertifu: Kroner?,
+    val prosentsatsoifufortak: Int?,
 )

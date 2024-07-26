@@ -4,13 +4,13 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class UforetrygdOrdiner(
-    val AvkortningsInformasjon: AvkortningsInformasjon?,
-    val Fradrag: Kroner?,
-    val Netto: Kroner?,
-    val NettoAkk: Kroner?,
-    val Minsteytelse: Minsteytelse?,
-    val AvkortingsbelopPerAr: Kroner?,
-    val Brutto: Kroner?,
-    val NettoRestAr: Kroner?,
-    val Ytelsesgrunnlag: Ytelsesgrunnlag?,
+    val avkortningsinformasjon: AvkortningsInformasjon?,
+    val fradrag: Kroner?,
+    val netto: Kroner?,
+    val nettoakk: Kroner?,
+    val minsteytelse: Minsteytelse?,
+    val avkortingsbelopperar: Kroner?,
+    val brutto: Kroner?,
+    val nettorestar: Kroner?,
+    val ytelsesgrunnlag: Ytelsesgrunnlag?,
 )

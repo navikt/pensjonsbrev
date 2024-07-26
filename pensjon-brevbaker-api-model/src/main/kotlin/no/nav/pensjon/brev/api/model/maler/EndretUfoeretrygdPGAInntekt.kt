@@ -5,6 +5,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacy
 
 @Suppress("unused")
 data class EndretUfoeretrygdPGAInntektDto(
-    val PE: PE,
+    val pe: PE,
     val opplysningerBruktIBeregningenLegacyDto: OpplysningerBruktIBeregningenLegacyDto?,
 ): BrevbakerBrevdata

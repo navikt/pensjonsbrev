@@ -4,12 +4,12 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 data class BarnetilleggFelles(
-    val AvkortningsInformasjon: AvkortningsInformasjonBT?,
-    val BTFBinnvilget: Boolean?,
-    val BTFBnetto: Kroner?,
-    val BTFBBrukersInntektTilAvkortning: Kroner?,
-    val BTFBInntektBruktiAvkortning: Kroner?,
-    val BTFBbelopFratrukketAnnenForeldersInntekt: Kroner?,
-    val BTFBfribelop: Kroner?,
-    val BTFBinntektAnnenForelder: Kroner?,
+    val avkortningsinformasjon: AvkortningsInformasjonBT?,
+    val btfbinnvilget: Boolean?,
+    val btfbnetto: Kroner?,
+    val btfbbrukersinntekttilavkortning: Kroner?,
+    val btfbinntektbruktiavkortning: Kroner?,
+    val btfbbelopfratrukketannenforeldersinntekt: Kroner?,
+    val btfbfribelop: Kroner?,
+    val btfbinntektannenforelder: Kroner?,
 )

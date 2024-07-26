@@ -6,6 +6,6 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 fun createEndretUfoeretrygdPGAInntektDto() =
     EndretUfoeretrygdPGAInntektDto(
-        PE = Fixtures.create(),
+        pe = Fixtures.create(),
         opplysningerBruktIBeregningenLegacyDto = Fixtures.create(),
     )

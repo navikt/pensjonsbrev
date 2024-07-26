@@ -4,9 +4,9 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 data class BeregningsVilkar(
-    val IEUBegrunnelse: String?,
-    val IFUBegrunnelse: String?,
-    val IFUInntekt: Kroner?,
-    val Trygdetid: Trygdetid?,
-    val Uforegrad: Int?
+    val ieubegrunnelse: String?,
+    val ifubegrunnelse: String?,
+    val ifuinntekt: Kroner?,
+    val trygdetid: Trygdetid?,
+    val uforegrad: Int?
 )

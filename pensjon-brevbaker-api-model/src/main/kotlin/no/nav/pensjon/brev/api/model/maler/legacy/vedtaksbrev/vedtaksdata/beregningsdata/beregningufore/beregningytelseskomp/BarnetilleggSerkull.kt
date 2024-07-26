@@ -4,9 +4,9 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 data class BarnetilleggSerkull(
-    val AvkortningsInformasjon: AvkortningsInformasjonBT?,
-    val BTSBinnvilget: Boolean?,
-    val BTSBnetto: Kroner?,
-    val BTSBInntektBruktiAvkortning: Kroner?,
-    val BTSBfribelop: Kroner?,
+    val avkortningsinformasjon: AvkortningsInformasjonBT?,
+    val btsbinnvilget: Boolean?,
+    val btsbnetto: Kroner?,
+    val btsbinntektbruktiavkortning: Kroner?,
+    val btsbfribelop: Kroner?,
 )

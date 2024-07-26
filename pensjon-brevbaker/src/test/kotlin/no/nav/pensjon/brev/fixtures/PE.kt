@@ -27,26 +27,27 @@ import java.time.LocalDate
 
 fun createPE() =
     PE(
-        Vedtaksbrev = createVedtaksbrev(),
+        vedtaksbrev = createVedtaksbrev(),
         functions = PE.ExstreamFunctions(
-            PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT = "ektefelle",
-            PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner = "spouse",
-            PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall = "ektefellen",
-            PE_UT_NettoAkk_pluss_NettoRestAr = Kroner(8313),
-            PE_UT_NettoAkk_pluss_NettoRestAr_pluss_ForventetInntekt = Kroner(8314),
-            PE_UT_OpplyningerOmBergeningen_NettoPerAr = Kroner(8315),
-            PE_UT_Overskytende = Kroner(8316),
-            PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12 = Kroner(8317),
-            PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus = Kroner(1881),
-            PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus = Kroner(1882),
-            PE_UT_VirkningstidpunktArMinus1Ar = 2019
-        )
+            pe_sivilstand_ektefelle_partner_samboer_bormed_ut = "ektefelle",
+            pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner = "spouse",
+            pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall = "ektefellen",
+            pe_ut_nettoakk_pluss_nettorestar = Kroner(8313),
+            pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt = Kroner(8314),
+            pe_ut_opplyningerombergeningen_nettoperar = Kroner(8315),
+            pe_ut_overskytende = Kroner(8316),
+            pe_ut_sum_fattnorge_framtidigttnorge_div_12 = 20,
+            pe_barnetilleggfelles_justeringsbelopperarutenminus = Kroner(1881),
+            pe_barnetilleggserkull_justeringsbelopperarutenminus = Kroner(1882),
+            pe_ut_virkningstidpunktarminus1ar = 2019
+        ),
+        pebrevkode = "PE_UT_05_100"
     )
 
 fun createVedtaksbrev(): Vedtaksbrev =
     Vedtaksbrev(
-        Vedtaksdata = createVedtaksdata(),
-        Grunnlag = createGrunnlag()
+        vedtaksdata = createVedtaksdata(),
+        grunnlag = createGrunnlag()
     )
 
 fun createGrunnlag() =
@@ -56,20 +57,20 @@ fun createGrunnlag() =
 
 fun createPersongrunnlag() =
     Persongrunnlag(
-        BrukerFlyktning = true,
-        PersonBostedsland = "nor",
-        TrygdetidsgrunnlagListeBilateral = createTrygdetidsgrunnlagListeBilateral(),
-        TrygdetidsgrunnlagListeEOS = createTrygdetidsgrunnlagListeEOS(),
-        TrygdetidsgrunnlagListeNor = createTrygdetidsgrunnlagListeNor(),
+        brukerflyktning = true,
+        personbostedsland = "nor",
+        trygdetidsgrunnlaglistebilateral = createTrygdetidsgrunnlagListeBilateral(),
+        trygdetidsgrunnlaglisteeos = createTrygdetidsgrunnlagListeEOS(),
+        trygdetidsgrunnlaglistenor = createTrygdetidsgrunnlagListeNor(),
     )
 
 fun createTrygdetidsgrunnlagListeBilateral() =
     TrygdetidsgrunnlagListeBilateral(
         listOf(
             TrygdetidsgrunnlagBilateral(
-                TrygdetidBilateralLand = "usa",
-                TrygdetidFomBilateral = LocalDate.of(2020, 1, 5),
-                TrygdetidTomBilateral = LocalDate.of(2020, 5, 5),
+                trygdetidbilateralland = "usa",
+                trygdetidfombilateral = LocalDate.of(2020, 1, 5),
+                trygdetidtombilateral = LocalDate.of(2020, 5, 5),
             )
         )
     )
@@ -78,9 +79,9 @@ fun createTrygdetidsgrunnlagListeEOS() =
     TrygdetidsgrunnlagListeEOS(
         listOf(
             TrygdetidsgrunnlagEOS(
-                TrygdetidEOSLand = "swe",
-                TrygdetidFomEOS = LocalDate.of(2020, 6, 5),
-                TrygdetidTomEOS = LocalDate.of(2020, 8, 5),
+                trygdetideosland = "swe",
+                trygdetidfomeos = LocalDate.of(2020, 6, 5),
+                trygdetidtomeos = LocalDate.of(2020, 8, 5),
             )
         )
     )
@@ -89,18 +90,18 @@ fun createTrygdetidsgrunnlagListeNor() =
     TrygdetidsgrunnlagListeNor(
         listOf(
             Trygdetidsgrunnlag(
-                TrygdetidFom = LocalDate.of(2020, 8, 5),
-                TrygdetidTom = LocalDate.of(2020, 10, 5),
+                trygdetidfom = LocalDate.of(2020, 8, 5),
+                trygdetidtom = LocalDate.of(2020, 10, 5),
             )
         )
     )
 
 fun createVedtaksdata() = Vedtaksdata(
-    BeregningsData = createBeregningsData(),
-    Kravhode = createKravhode(),
-    VilkarsVedtakList = createVilkarsVedtakList(),
-    VirkningFOM = LocalDate.of(2020, 1, 1),
-    Faktoromregnet = false,
+    beregningsdata = createBeregningsData(),
+    kravhode = createKravhode(),
+    vilkarsvedtaklist = createVilkarsVedtakList(),
+    virkningfom = LocalDate.of(2020, 1, 1),
+    faktoromregnet = false,
 )
 
 fun createVilkarsVedtakList() =
@@ -110,43 +111,43 @@ fun createVilkarsVedtakList() =
 
 fun createVilkarsVedtak() =
     VilkarsVedtak(
-        BeregningsVilkar = createBeregningsVilkar(),
-        Vilkar = createVilkar(),
+        beregningsvilkar = createBeregningsVilkar(),
+        vilkar = createVilkar(),
     )
 
 fun createVilkar() =
-    Vilkar(YrkesskadeResultat = null)
+    Vilkar(yrkesskaderesultat = null)
 
 fun createBeregningsVilkar() =
     BeregningsVilkar(
-        IEUBegrunnelse = null,
-        IFUBegrunnelse = null,
-        IFUInntekt = Kroner(9938),
-        Trygdetid = createTrygdetid(),
-        Uforegrad = 100,
+        ieubegrunnelse = null,
+        ifubegrunnelse = null,
+        ifuinntekt = Kroner(9938),
+        trygdetid = createTrygdetid(),
+        uforegrad = 100,
     )
 
 fun createTrygdetid() =
     Trygdetid(
-        FaTTEOS = 30,
-        FramtidigTTEOS = 31,
-        FramtidigTTNorsk = 32,
-        RedusertFramtidigTrygdetid = 33,
-        FaTTNorge = 34,
+        fatteos = 30,
+        framtidigtteos = 31,
+        framtidigttnorsk = 32,
+        redusertframtidigtrygdetid = 33,
+        fattnorge = 34,
     )
 
 fun createKravhode() =
     Kravhode(
-        BoddArbeidUtland = true,
-        BrukerKonvertertUP = false,
-        KravArsakType = "endring_ifu",
+        boddarbeidutland = true,
+        brukerkonvertertup = false,
+        kravarsaktype = "endring_ifu",
     )
 
 fun createBeregningsData() =
     BeregningsData(
-        BeregningUfore = createBeregningUfore(),
-        BeregningAntallPerioder = 1,
-        BeregningUforePeriode = createBeregningUforePeriode()
+        beregningufore = createBeregningUfore(),
+        beregningantallperioder = 1,
+        beregninguforeperiode = createBeregningUforePeriode()
     )
 
 fun createBeregningUforePeriode() =
@@ -158,65 +159,65 @@ fun createBeregningUforePeriode() =
 
 fun createBeregningUfore() =
     BeregningUfore(
-        BeregningYtelsesKomp = createBeregningYtelsesKomp(),
-        BelopRedusert = false,
-        TotalNetto = Kroner(1231),
-        Total = Kroner(1232),
-        Reduksjonsgrunnlag = createReduksjonsgrunnlag(),
-        Belopsendring = createBelopsendring(),
-        Uforetrygdberegning = createUforetrygdberegning(),
-        BeregningSivilstandAnvendt = "bormed 1-5",
-        BelopOkt = true,
-        BeregningVirkningDatoFom = LocalDate.of(2020, 1, 1),
+        beregningytelseskomp = createBeregningYtelsesKomp(),
+        belopredusert = false,
+        totalnetto = Kroner(1231),
+        total = Kroner(1232),
+        reduksjonsgrunnlag = createReduksjonsgrunnlag(),
+        belopsendring = createBelopsendring(),
+        uforetrygdberegning = createUforetrygdberegning(),
+        beregningsivilstandanvendt = "bormed 1-5",
+        belopokt = true,
+        beregningvirkningdatofom = LocalDate.of(2020, 1, 1),
     )
 
 fun createUforetrygdberegning() =
     Uforetrygdberegning(
-        AnvendtTrygdetid = 20,
-        Mottarminsteytelse = false,
-        Uforegrad = 100,
-        Yrkesskadegrad = 0,
-        Grunnbelop = Kroner(1010),
-        InstOppholdType = null,
+        anvendttrygdetid = 20,
+        mottarminsteytelse = false,
+        uforegrad = 100,
+        yrkesskadegrad = 0,
+        grunnbelop = Kroner(1010),
+        instoppholdtype = null,
     )
 
 fun createReduksjonsgrunnlag() =
     Reduksjonsgrunnlag(
-        AndelYtelseAvOIFU = 25.5,
-        BarnetilleggRegelverkType = "overgangsregler_2016",
-        GradertOppjustertIFU = Kroner(1938),
-        ProsentsatsOIFUForTak = 30,
+        andelytelseavoifu = 25.5,
+        barnetilleggregelverktype = "overgangsregler_2016",
+        gradertoppjustertifu = Kroner(1938),
+        prosentsatsoifufortak = 30,
     )
 
 fun createBelopsendring() =
     Belopsendring(
-        BarnetilleggFellesYK = createBarnetilleggFellesYK(),
-        BarnetilleggSerkullYK = createBarnetilleggSerkullYK(),
-        UforetrygdOrdinerYK = createUforetrygdOrdinerYK(),
+        barnetilleggfellesyk = createBarnetilleggFellesYK(),
+        barnetilleggserkullyk = createBarnetilleggSerkullYK(),
+        uforetrygdordineryk = createUforetrygdOrdinerYK(),
     )
 
 fun createBarnetilleggFellesYK() = BarnetilleggFellesYK(
-    BelopGammelBTFB = Kroner(5850),
-    BelopNyBTFB = Kroner(5851),
+    belopgammelbtfb = Kroner(5850),
+    belopnybtfb = Kroner(5851),
 )
 
 fun createBarnetilleggSerkullYK() = BarnetilleggSerkullYK(
-    BelopGammelBTSB = Kroner(5140),
-    BelopNyBTSB = Kroner(5141),
+    belopgammelbtsb = Kroner(5140),
+    belopnybtsb = Kroner(5141),
 )
 
 fun createUforetrygdOrdinerYK() = UforetrygdOrdinerYK(
-    BelopGammelUT = Kroner(5810),
-    BelopNyUT = Kroner(5811),
+    belopgammelut = Kroner(5810),
+    belopnyut = Kroner(5811),
 )
 
 fun createBeregningYtelsesKomp() =
     BeregningYtelsesKomp(
-        UforetrygdOrdiner = createUforetrygdOrdiner(),
-        BarnetilleggFelles = createBarnetilleggFelles(),
-        BarnetilleggSerkull = createBarnetilleggSerkull(),
-        Ektefelletillegg = createEktefelletillegg(),
-        Gjenlevendetillegg = createGjenlevendetillegg(),
+        uforetrygdordiner = createUforetrygdOrdiner(),
+        barnetilleggfelles = createBarnetilleggFelles(),
+        barnetilleggserkull = createBarnetilleggSerkull(),
+        ektefelletillegg = createEktefelletillegg(),
+        gjenlevendetillegg = createGjenlevendetillegg(),
     )
 
 fun createEktefelletillegg() =
@@ -227,70 +228,70 @@ fun createGjenlevendetillegg() =
 
 fun createBarnetilleggSerkull() =
     BarnetilleggSerkull(
-        AvkortningsInformasjon = createAvkortningsInformasjonBT(),
-        BTSBinnvilget = true,
-        BTSBnetto = Kroner(8450),
-        BTSBInntektBruktiAvkortning = Kroner(8451),
-        BTSBfribelop = Kroner(8452),
+        avkortningsinformasjon = createAvkortningsInformasjonBT(),
+        btsbinnvilget = true,
+        btsbnetto = Kroner(8450),
+        btsbinntektbruktiavkortning = Kroner(8451),
+        btsbfribelop = Kroner(8452),
     )
 
 fun createBarnetilleggFelles() =
     BarnetilleggFelles(
-        AvkortningsInformasjon = createAvkortningsInformasjonBT(),
-        BTFBinnvilget = false,
-        BTFBnetto = Kroner(1200),
-        BTFBBrukersInntektTilAvkortning = Kroner(1201),
-        BTFBInntektBruktiAvkortning = Kroner(1202),
-        BTFBbelopFratrukketAnnenForeldersInntekt = Kroner(1203),
-        BTFBfribelop = Kroner(1204),
-        BTFBinntektAnnenForelder = Kroner(1205),
+        avkortningsinformasjon = createAvkortningsInformasjonBT(),
+        btfbinnvilget = false,
+        btfbnetto = Kroner(1200),
+        btfbbrukersinntekttilavkortning = Kroner(1201),
+        btfbinntektbruktiavkortning = Kroner(1202),
+        btfbbelopfratrukketannenforeldersinntekt = Kroner(1203),
+        btfbfribelop = Kroner(1204),
+        btfbinntektannenforelder = Kroner(1205),
     )
 
 fun createAvkortningsInformasjonBT() =
     AvkortningsInformasjonBT(
-        JusteringsbelopPerAr = Kroner(1110),
-        AvkortingsbelopPerAr = Kroner(1111),
-        FribelopPeriodisert = true,
-        InntektPeriodisert = true,
-        Inntektstak = Kroner(1114),
+        justeringsbelopperar = Kroner(1110),
+        avkortingsbelopperar = Kroner(1111),
+        fribelopperiodisert = true,
+        inntektperiodisert = true,
+        inntektstak = Kroner(1114),
     )
 
 fun createUforetrygdOrdiner() =
     UforetrygdOrdiner(
-        AvkortningsInformasjon = createAvkortningsInformasjon(),
-        Fradrag = Kroner(3802),
-        Netto = Kroner(1201),
-        NettoAkk = Kroner(10134),
-        Minsteytelse = createMinsteytelse(),
-        AvkortingsbelopPerAr = Kroner(5819),
-        Brutto = Kroner(9832),
-        NettoRestAr = Kroner(5934),
-        Ytelsesgrunnlag = createYtelsesgrunnlag()
+        avkortningsinformasjon = createAvkortningsInformasjon(),
+        fradrag = Kroner(3802),
+        netto = Kroner(1201),
+        nettoakk = Kroner(10134),
+        minsteytelse = createMinsteytelse(),
+        avkortingsbelopperar = Kroner(5819),
+        brutto = Kroner(9832),
+        nettorestar = Kroner(5934),
+        ytelsesgrunnlag = createYtelsesgrunnlag()
     )
 
 fun createYtelsesgrunnlag() =
     Ytelsesgrunnlag(
-        BeregningsgrunnlagOrdinar = createBeregningsgrunnlagOrdinar()
+        beregningsgrunnlagordinar = createBeregningsgrunnlagOrdinar()
     )
 
 fun createBeregningsgrunnlagOrdinar() =
     BeregningsgrunnlagOrdinar(
-        AntallArOver1G = 10,
-        AntallArInntektIAvtaleland = 11,
+        antallarover1g = 10,
+        antallarinntektiavtaleland = 11,
     )
 
 fun createAvkortningsInformasjon(): AvkortningsInformasjon =
     AvkortningsInformasjon(
-        Oifu = Kroner(1910),
-        Oieu = Kroner(1911),
-        Belopsgrense = Kroner(1912),
-        Inntektsgrense = Kroner(1913),
-        Inntektstak = Kroner(1914),
-        UgradertBruttoPerAr = Kroner(1915),
-        Kompensasjonsgrad = 5.0,
-        Utbetalingsgrad = 100,
-        ForventetInntekt = Kroner(1918),
-        InntektsgrenseNesteAr = Kroner(1919),
+        oifu = Kroner(1910),
+        oieu = Kroner(1911),
+        belopsgrense = Kroner(1912),
+        inntektsgrense = Kroner(1913),
+        inntektstak = Kroner(1914),
+        ugradertbruttoperar = Kroner(1915),
+        kompensasjonsgrad = 5.0,
+        utbetalingsgrad = 100,
+        forventetinntekt = Kroner(1918),
+        inntektsgrensenestear = Kroner(1919),
     )
 
 fun createMinsteytelse() =

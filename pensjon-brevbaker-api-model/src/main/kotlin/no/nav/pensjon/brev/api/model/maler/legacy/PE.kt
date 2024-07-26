@@ -5,20 +5,21 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class PE(
-    val Vedtaksbrev: Vedtaksbrev,
+    val vedtaksbrev: Vedtaksbrev,
+    val pebrevkode: String,
     val functions: ExstreamFunctions,
 ) : BrevbakerBrevdata {
     data class ExstreamFunctions(
-        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: String,
-        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner: String,
-        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall: String,
-        val PE_UT_NettoAkk_pluss_NettoRestAr_pluss_ForventetInntekt: Kroner,
-        val PE_UT_OpplyningerOmBergeningen_NettoPerAr: Kroner,
-        val PE_UT_Overskytende: Kroner,
-        val PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12: Kroner,
-        val PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus: Kroner,
-        val PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus: Kroner,
-        val PE_UT_NettoAkk_pluss_NettoRestAr: Kroner,
-        val PE_UT_VirkningstidpunktArMinus1Ar: Int,
+        val pe_sivilstand_ektefelle_partner_samboer_bormed_ut: String,
+        val pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner: String,
+        val pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall: String,
+        val pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt: Kroner,
+        val pe_ut_opplyningerombergeningen_nettoperar: Kroner,
+        val pe_ut_overskytende: Kroner,
+        val pe_ut_sum_fattnorge_framtidigttnorge_div_12: Int,
+        val pe_barnetilleggfelles_justeringsbelopperarutenminus: Kroner,
+        val pe_barnetilleggserkull_justeringsbelopperarutenminus: Kroner,
+        val pe_ut_nettoakk_pluss_nettorestar: Kroner,
+        val pe_ut_virkningstidpunktarminus1ar: Int,
     )
 }

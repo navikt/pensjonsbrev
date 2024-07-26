@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.bereg
 
 
 data class Belopsendring(
-    val BarnetilleggFellesYK: BarnetilleggFellesYK?,
-    val BarnetilleggSerkullYK: BarnetilleggSerkullYK?,
-    val UforetrygdOrdinerYK: UforetrygdOrdinerYK?,
+    val barnetilleggfellesyk: BarnetilleggFellesYK?,
+    val barnetilleggserkullyk: BarnetilleggSerkullYK?,
+    val uforetrygdordineryk: UforetrygdOrdinerYK?,
 )

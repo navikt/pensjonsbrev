@@ -4,9 +4,9 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 data class AvkortningsInformasjonBT(
-    val JusteringsbelopPerAr: Kroner?,
-    val AvkortingsbelopPerAr: Kroner?,
-    val FribelopPeriodisert: Boolean?,
-    val InntektPeriodisert: Boolean?,
-    val Inntektstak: Kroner?,
+    val justeringsbelopperar: Kroner?,
+    val avkortingsbelopperar: Kroner?,
+    val fribelopperiodisert: Boolean?,
+    val inntektperiodisert: Boolean?,
+    val inntektstak: Kroner?,
 )

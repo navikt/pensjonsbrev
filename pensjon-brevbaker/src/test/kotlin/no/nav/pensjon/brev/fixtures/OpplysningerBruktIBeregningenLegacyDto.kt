@@ -24,11 +24,7 @@ fun createOpplysningerBruktIBeregningenLegacyDto() =
             inntektEtterUfoereGjeldendeBeloep = Kroner(1),
         ),
         opplysningerOmBarnetillegg = Fixtures.create(),
-        inntektsgrenseAar = Kroner(100),
-        inntektstak = Kroner(1001),
-        beregnetUTPerMaanedGjeldendeVirkFom = LocalDate.of(2020, 1, 1),
-        beregnetUTPerMaanedGjeldendeGrunnbeloep = Kroner(1),
-        PE = Fixtures.create()
+        pe = Fixtures.create()
     )
 
 fun createOpplysningerOmMinstetillegg() = OpplysningerBruktIBeregningenLegacyDto.OpplysningerOmMinstetilleggDto(

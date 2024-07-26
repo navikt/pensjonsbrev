@@ -4,23 +4,23 @@ import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.Vedtaksbrev_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.Vedtaksdata_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.BeregningsData_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.Kravhode_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.BeregningUfore_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.BeregningVirkningDatoFom_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.BeregningYtelsesKomp_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.Reduksjonsgrunnlag_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.AndelYtelseAvOIFU_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.GradertOppjustertIFU_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.ProsentsatsOIFUForTak_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.UforetrygdOrdiner_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.AntallArInntektIAvtaleland_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.AntallArOver1G_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.Ytelsesgrunnlag_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.YtelsesgrunnlagSelectors.BeregningsgrunnlagOrdinar_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.KravArsakType_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.beregningsdata_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.kravhode_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningufore_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.beregningvirkningdatofom_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.beregningytelseskomp_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.reduksjonsgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.andelytelseavoifu_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.gradertoppjustertifu_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.prosentsatsoifufortak_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.uforetrygdordiner_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.antallarinntektiavtaleland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.antallarover1g_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.ytelsesgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.YtelsesgrunnlagSelectors.beregningsgrunnlagordinar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.inntektAnnenForelder
@@ -92,14 +92,14 @@ import java.time.LocalDate
 
 data class TabellUfoereOpplysningerLegacy(
     val tabellUfoereOpplysningerLegacy: Expression<OpplysningerBruktIBeregningenLegacyDto.TabellufoereOpplysningerLegacyDto>,
-    val PE: Expression<PE>,
+    val pe: Expression<PE>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val inntektsgrenseErUnderTak = tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektsgrenseAar
             .lessThan(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektstak)
 
-        val beregningufore = PE.Vedtaksbrev_safe.Vedtaksdata_safe.BeregningsData_safe.BeregningUfore_safe
-        val uforetrygdordiner = beregningufore.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe
+        val beregningufore = pe.vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe
+        val uforetrygdordiner = beregningufore.beregningytelseskomp_safe.uforetrygdordiner_safe
         paragraph {
             table(
                 header = {
@@ -702,7 +702,7 @@ data class TabellUfoereOpplysningerLegacy(
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) THEN      INCLUDE ENDIF
-                showIf(PE.Vedtaksbrev_safe.Vedtaksdata_safe.Kravhode_safe.KravArsakType_safe.ifNull("").equalTo("f_bh_bo_utl") and tabellUfoereOpplysningerLegacy.yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).lessThan(tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.ufoeregrad)) {
+                showIf(pe.vedtaksbrev_safe.vedtaksdata_safe.kravhode_safe.kravarsaktype_safe.ifNull("").equalTo("f_bh_bo_utl") and tabellUfoereOpplysningerLegacy.yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).lessThan(tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.ufoeregrad)) {
                     //[TBU010V]
 
                     row {
@@ -716,7 +716,7 @@ data class TabellUfoereOpplysningerLegacy(
                         cell {
                             //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArOver1G
                             val antallAarOver1G =
-                                beregningufore.BeregningYtelsesKomp_safe.UforetrygdOrdiner_safe.Ytelsesgrunnlag_safe.BeregningsgrunnlagOrdinar_safe.AntallArOver1G_safe.ifNull(0)
+                                beregningufore.beregningytelseskomp_safe.uforetrygdordiner_safe.ytelsesgrunnlag_safe.beregningsgrunnlagordinar_safe.antallarover1g_safe.ifNull(0)
                             textExpr(
                                 Bokmal to antallAarOver1G.format() + " år",
                                 Nynorsk to antallAarOver1G.format() + " år",
@@ -740,7 +740,7 @@ data class TabellUfoereOpplysningerLegacy(
                         }
                         cell {
                             //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArInntektIAvtaleland
-                            val antallAarOverInntektIAvtaleland = uforetrygdordiner.Ytelsesgrunnlag_safe.BeregningsgrunnlagOrdinar_safe.AntallArInntektIAvtaleland_safe.ifNull(0)
+                            val antallAarOverInntektIAvtaleland = uforetrygdordiner.ytelsesgrunnlag_safe.beregningsgrunnlagordinar_safe.antallarinntektiavtaleland_safe.ifNull(0)
                             textExpr(
                                 Bokmal to antallAarOverInntektIAvtaleland.format() + " år",
                                 Nynorsk to antallAarOverInntektIAvtaleland.format() + " år",
@@ -772,16 +772,16 @@ data class TabellUfoereOpplysningerLegacy(
                     // PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU > 95 AND
                     // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
 
-                    val reduksjonsgrunnlag = beregningufore.Reduksjonsgrunnlag_safe
+                    val reduksjonsgrunnlag = beregningufore.reduksjonsgrunnlag_safe
                     showIf(
-                        reduksjonsgrunnlag.GradertOppjustertIFU_safe.ifNull(Kroner(0)).greaterThan(0)
-                            and reduksjonsgrunnlag.AndelYtelseAvOIFU_safe.ifNull(0.0).greaterThan(95.0)
-                            and beregningufore.BeregningVirkningDatoFom_safe.ifNull(LocalDate.MIN).greaterThanOrEqual(LocalDate.of(2016,1,1))){
+                        reduksjonsgrunnlag.gradertoppjustertifu_safe.ifNull(Kroner(0)).greaterThan(0)
+                            and reduksjonsgrunnlag.andelytelseavoifu_safe.ifNull(0.0).greaterThan(95.0)
+                            and beregningufore.beregningvirkningdatofom_safe.ifNull(LocalDate.MIN).greaterThanOrEqual(LocalDate.of(2016,1,1))){
                         row {
                             cell {
                                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_ProsentsatsOIFUForTak
                                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU
-                                val prosentSats = reduksjonsgrunnlag.ProsentsatsOIFUForTak_safe.ifNull(0)
+                                val prosentSats = reduksjonsgrunnlag.prosentsatsoifufortak_safe.ifNull(0)
                                 textExpr(
                                     Bokmal to prosentSats.format() + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
                                     Nynorsk to prosentSats.format() + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
@@ -789,7 +789,7 @@ data class TabellUfoereOpplysningerLegacy(
                                 )
                             }
                             cell {
-                                Felles.KronerText(reduksjonsgrunnlag.GradertOppjustertIFU_safe.ifNull(Kroner(0)))
+                                Felles.KronerText(reduksjonsgrunnlag.gradertoppjustertifu_safe.ifNull(Kroner(0)))
                             }
                         }
                     }

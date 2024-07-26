@@ -4,6 +4,6 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 data class UforetrygdOrdinerYK(
-    val BelopGammelUT: Kroner?,
-    val BelopNyUT: Kroner?,
+    val belopgammelut: Kroner?,
+    val belopnyut: Kroner?,
 )

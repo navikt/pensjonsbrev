@@ -2,5 +2,5 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilka
 
 
 data class Vilkar(
-    val YrkesskadeResultat: String?
+    val yrkesskaderesultat: String?
 )

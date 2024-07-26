@@ -4,14 +4,14 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 data class AvkortningsInformasjon(
-    val Oifu: Kroner?,
-    val Oieu: Kroner?,
-    val Belopsgrense: Kroner?,
-    val Inntektsgrense: Kroner?,
-    val Inntektstak: Kroner?,
-    val UgradertBruttoPerAr: Kroner?,
-    val Kompensasjonsgrad: Double?,
-    val Utbetalingsgrad: Int?,
-    val ForventetInntekt: Kroner?,
-    val InntektsgrenseNesteAr: Kroner?,
+    val oifu: Kroner?,
+    val oieu: Kroner?,
+    val belopsgrense: Kroner?,
+    val inntektsgrense: Kroner?,
+    val inntektstak: Kroner?,
+    val ugradertbruttoperar: Kroner?,
+    val kompensasjonsgrad: Double?,
+    val utbetalingsgrad: Int?,
+    val forventetinntekt: Kroner?,
+    val inntektsgrensenestear: Kroner?,
 )

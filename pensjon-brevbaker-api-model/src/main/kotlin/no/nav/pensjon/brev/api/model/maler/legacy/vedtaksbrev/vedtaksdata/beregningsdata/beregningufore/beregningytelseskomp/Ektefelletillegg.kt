@@ -2,5 +2,5 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.bereg
 
 
 data class Ektefelletillegg(
-    val ETinnvilget: Boolean?
+    val etinnvilget: Boolean?
 )

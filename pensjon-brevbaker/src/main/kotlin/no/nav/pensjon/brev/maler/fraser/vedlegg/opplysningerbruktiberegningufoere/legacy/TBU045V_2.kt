@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.TrygdetidEOSLand
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.TrygdetidFomEOS_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.TrygdetidTomEOS_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.trygdetideosland
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.trygdetidfomeos_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.trygdetidtomeos_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOS
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOSSelectors.TrygdetidsgrunnlagEOS
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOSSelectors.trygdetidsgrunnlageos
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -46,17 +46,17 @@ data class TBU045V_2(
                     }
                 }
             ) {
-                forEach(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS.TrygdetidsgrunnlagEOS){ trygdetidEOS ->
+                forEach(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS.trygdetidsgrunnlageos){ trygdetidEOS ->
                     row {
                         cell {
                             textExpr(
-                                Bokmal to trygdetidEOS.TrygdetidEOSLand.ifNull(""),
-                                Nynorsk to trygdetidEOS.TrygdetidEOSLand.ifNull(""),
-                                English to trygdetidEOS.TrygdetidEOSLand.ifNull(""),
+                                Bokmal to trygdetidEOS.trygdetideosland.ifNull(""),
+                                Nynorsk to trygdetidEOS.trygdetideosland.ifNull(""),
+                                English to trygdetidEOS.trygdetideosland.ifNull(""),
                             )
                         }
                         cell {
-                            ifNotNull(trygdetidEOS.TrygdetidFomEOS_safe) {
+                            ifNotNull(trygdetidEOS.trygdetidfomeos_safe) {
                                 textExpr(
                                     Bokmal to it.format(),
                                     Nynorsk to it.format(),
@@ -65,7 +65,7 @@ data class TBU045V_2(
                             }
                         }
                         cell {
-                            ifNotNull(trygdetidEOS.TrygdetidTomEOS_safe) {
+                            ifNotNull(trygdetidEOS.trygdetidtomeos_safe) {
                                 textExpr(
                                     Bokmal to it.format(),
                                     Nynorsk to it.format(),

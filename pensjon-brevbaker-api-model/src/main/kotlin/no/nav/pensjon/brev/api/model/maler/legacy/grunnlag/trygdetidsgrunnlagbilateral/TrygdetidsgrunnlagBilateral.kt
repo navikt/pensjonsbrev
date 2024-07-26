@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbi
 import java.time.LocalDate
 
 data class TrygdetidsgrunnlagBilateral(
-    val TrygdetidBilateralLand: String?,
-    val TrygdetidFomBilateral: LocalDate?,
-    val TrygdetidTomBilateral: LocalDate?,
+    val trygdetidbilateralland: String?,
+    val trygdetidfombilateral: LocalDate?,
+    val trygdetidtombilateral: LocalDate?,
 )
