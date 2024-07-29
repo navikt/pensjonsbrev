@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.LetterMetadata
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import java.time.Duration
 import java.time.Instant
 
 object Api {
@@ -53,8 +55,19 @@ object Api {
     data class BrevResponse(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
+        val redigertBrevHash: EditLetterHash,
         val saksbehandlerValg: BrevbakerBrevdata,
     )
+
+    data class ReservasjonResponse(
+        val vellykket: Boolean,
+        val reservertAv: NavAnsatt,
+        val timestamp: Instant,
+        val expiresIn: Duration,
+        val redigertBrevHash: EditLetterHash,
+    )
+
+    data class NavAnsatt(val id: String, val navn: String?)
 
     data class SakContext(
         val sak: Pen.SakSelection,

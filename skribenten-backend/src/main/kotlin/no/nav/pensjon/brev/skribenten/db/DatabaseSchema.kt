@@ -13,10 +13,8 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.Brevredigering.Companion.transform
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import org.jetbrains.exposed.dao.ColumnWithTransform
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -47,13 +45,12 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
 
 object BrevredigeringTable : LongIdTable() {
     val saksId: Column<Long> = long("saksId").index()
-    val brevkode: ColumnWithTransform<String, Brevkode.Redigerbar> = varchar("brevkode", length = 50)
-        .transform(Brevkode.Redigerbar::name, Brevkode.Redigerbar::valueOf)
-    val spraak: ColumnWithTransform<String, LanguageCode> = varchar("spraak", length = 50)
-        .transform(LanguageCode::name, LanguageCode::valueOf)
+    val brevkode: Column<String> = varchar("brevkode", length = 50)
+    val spraak: Column<String> = varchar("spraak", length = 50)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
+    val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     // TODO: introdusere value class for NavIdent?
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
@@ -66,11 +63,12 @@ object BrevredigeringTable : LongIdTable() {
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksId by BrevredigeringTable.saksId
-    var brevkode by BrevredigeringTable.brevkode
-    var spraak by BrevredigeringTable.spraak
+    var brevkode by BrevredigeringTable.brevkode.transform(Brevkode.Redigerbar::name, Brevkode.Redigerbar::valueOf)
+    var spraak by BrevredigeringTable.spraak.transform(LanguageCode::name, LanguageCode::valueOf)
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
-    var redigertBrev by BrevredigeringTable.redigertBrev
+    var redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
+    val redigertBrevHash by BrevredigeringTable.redigertBrevHash.editLetterHash()
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent
     var sistRedigertAvNavIdent by BrevredigeringTable.sistRedigertAvNavIdent
@@ -80,21 +78,28 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var sistReservert by BrevredigeringTable.sistReservert
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
 
-    companion object : LongEntityClass<Brevredigering>(BrevredigeringTable)
+    companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
+        fun findByIdAndSaksId(id: Long, saksId: Long?) =
+            if (saksId == null) {
+              findById(id)
+            } else {
+                find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
+            }
+    }
 }
 
 object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdf: Column<ExposedBlob> = blob("brevpdf")
-    val redigertBrevHash: Column<ByteArray> = binary("redigertBrevHash", 32)
+    val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
     var pdf by DocumentTable.pdf
-    var redigertBrevHash by DocumentTable.redigertBrevHash
+    var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }
