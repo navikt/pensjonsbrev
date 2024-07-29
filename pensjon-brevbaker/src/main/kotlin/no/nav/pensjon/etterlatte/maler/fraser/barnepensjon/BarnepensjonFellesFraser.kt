@@ -257,11 +257,11 @@ object BarnepensjonFellesFraser {
                                     "Dette sikrer at skatten blir riktig og gir mindre risiko for restskatt.",
                                 Nynorsk to
                                     "Det er ikkje registrert frivillig skattetrekk for utbetaling av barnepensjonen. " +
-                                    "Vi må få beskjed innan 3 veker dersom du vil at vi skal trekkje skatt på etterbetalinga. " +
+                                    "Vi må få beskjed innan tre veker dersom du vil at vi skal trekkje skatt på etterbetalinga. " +
                                     "Dette sikrar at skatten blir rett, og gir mindre risiko for restskatt.",
                                 English to
                                     "There is no registered voluntary tax deduction on the payment of your children's pension. " +
-                                    "We must be notified within 3 weeks if you want us to deduct tax from the back payment. " +
+                                    "We must be notified within three weeks if you want us to deduct tax from the back payment. " +
                                     "This ensures that your tax payment is correct and minimises the risk of back taxes.",
                             )
                         }
