@@ -727,7 +727,7 @@ data class TabellUfoereOpplysningerLegacy(
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArInntektIAvtaleland <> 0) THEN      INCLUDE ENDIF
-                showIf(uforetrygdordiner.notEqualTo(0)) {
+                showIf(uforetrygdordiner.ytelsesgrunnlag_safe.beregningsgrunnlagordinar_safe.antallarinntektiavtaleland_safe.notEqualTo(0)) {
                     //[TBU010V]
 
                     row {

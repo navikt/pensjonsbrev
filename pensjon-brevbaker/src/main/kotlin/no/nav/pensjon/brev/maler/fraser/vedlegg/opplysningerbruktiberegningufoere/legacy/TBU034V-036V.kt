@@ -34,10 +34,10 @@ data class TBU034V_036V(
         }
 
         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300") THEN      INCLUDE ENDIF
-        showIf(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad.greaterThan(0)) {
+        showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad.greaterThan(0) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_07_200") and PE_pebrevkode.notEqualTo("PE_UT_06_300"))) {
             //[TBU034V-TBU36V]
 
-            paragraph {
+            title1 {
                 text(
                     Bokmal to "Beregning av uføretrygd som skyldes yrkesskade eller yrkessykdom",
                     Nynorsk to "Berekning av uføretrygd som kjem av yrkesskade eller yrkessjukdom",
@@ -66,7 +66,7 @@ data class TBU034V_036V(
         ) {
             //[TBU034V-TBU36V]
 
-            paragraph {
+            title1 {
                 text(
                     Bokmal to "Dette er inntektene vi har brukt i beregningen din",
                     Nynorsk to "Dette er inntektene vi har brukt i berekninga di",
