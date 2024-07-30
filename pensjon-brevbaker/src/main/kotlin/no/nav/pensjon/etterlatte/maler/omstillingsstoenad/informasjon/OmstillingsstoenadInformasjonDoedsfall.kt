@@ -16,8 +16,6 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.fraser.common.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_ANDRE_STOENADER_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_URL
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
