@@ -280,7 +280,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                     text(
                         Bokmal to "Du kan finne svar på $OMS_URL. På $KONTAKT_URL kan du chatte eller skrive til oss. Du kan også kontakte oss på telefon ${KONTAKTTELEFON_PENSJON_MED_LANDKODE}, hverdager kl. 09.00-15.00. Hvis du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
                         Nynorsk to "Du kan finne svar på $OMS_URL. Du kan skrive til eller chatte med oss på $KONTAKT_URL. Du kan også kontakte oss på telefon ${KONTAKTTELEFON_PENSJON_MED_LANDKODE}, kvardagar 09:00–15:00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer.",
-                        English to "You can find answers to your questions online: $OMS_URL. Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact us by phone (${KONTAKTTELEFON_PENSJON_MED_LANDKODE}), weekdays 09:00-15:00. If you provide your national identity number, we can more easily provide you with quick and good help.",
+                        English to "You can find answers to your questions online: $OMS_URL. Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact us by phone ${KONTAKTTELEFON_PENSJON_MED_LANDKODE}, weekdays 09:00-15:00. If you provide your national identity number, we can more easily provide you with quick and good help.",
                     )
                 }
             }
