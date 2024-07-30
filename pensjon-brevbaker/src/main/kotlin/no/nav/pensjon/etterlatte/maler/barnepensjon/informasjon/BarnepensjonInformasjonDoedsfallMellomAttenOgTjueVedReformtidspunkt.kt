@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon
 
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -14,8 +15,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.borIutland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.erOver18aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTOSelectors.borIutland
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
@@ -27,13 +27,13 @@ data class BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDT
 ) : BrevDTO
 
 @TemplateModelHelpers
-object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : EtterlatteTemplate<BarnepensjonInformasjonDoedsfallDTO>, Hovedmal {
+object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : EtterlatteTemplate<BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INFORMASJON_DOEDSFALL_MELLOM_ATTEN_OG_TJUE_VED_REFORMTIDSPUNKT
 
     override val template =
         createTemplate(
             name = kode.name,
-            letterDataType = BarnepensjonInformasjonDoedsfallDTO::class,
+            letterDataType = BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
                 LetterMetadata(
@@ -164,7 +164,7 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erOver18aar.not(), borIutland))
+                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(Expression.Literal(false), borIutland))
             }
         }
 }
