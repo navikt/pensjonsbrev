@@ -10,6 +10,8 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.isInstanceOf
+import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
@@ -208,7 +210,7 @@ class BrevredigeringServiceTest {
             "The Matrix",
             saksbehandlerValg
         )
-        assertThat(result).isInstanceOfSatisfying(ServiceResult.Error::class.java) {
+        assertThat(result).isInstanceOfSatisfying<ServiceResult.Error<*>> {
             assertThat(it.statusCode).isEqualTo(HttpStatusCode.Forbidden)
         }
     }
@@ -249,7 +251,7 @@ class BrevredigeringServiceTest {
         }
 
         assertThat(brevredigeringService.hentBrev(call = callMock(), saksId = sak.saksId, brevId = original.info.id))
-            .isInstanceOfSatisfying(ServiceResult.Ok::class.java) {
+            .isInstanceOfSatisfying<ServiceResult.Ok<*>> {
                 assertThat(it.result).isEqualTo(oppdatert)
             }
 
@@ -495,7 +497,9 @@ class BrevredigeringServiceTest {
     fun `brev kan reserveres for redigering gjennom opprett brev`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
 
-        assertThat(brev.info.redigeresAv).isEqualTo(principalNavIdent)
+        assertThat(brev.info.status).isInstanceOfSatisfying<Api.BrevStatus.UnderRedigering> {
+            assertThat(it.redigeresAv).isEqualTo(principalNavIdent)
+        }
         assertThat(transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }).isEqualTo(principalNavIdent)
     }
 
@@ -503,12 +507,14 @@ class BrevredigeringServiceTest {
     fun `brev kan reserveres for redigering gjennom hent brev`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = false).resultOrNull()!!
 
-        assertThat(brev.info.redigeresAv).isNull()
+        assertThat(brev.info.status).isInstanceOf<Api.BrevStatus.Kladd>()
         assertThat(transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }).isNull()
 
-        val hentetBrev =
-            brevredigeringService.hentBrev(call = callMock(), saksId = sak.saksId, brevId = brev.info.id, reserverForRedigering = true)?.resultOrNull()!!
-        assertThat(hentetBrev.info.redigeresAv).isEqualTo(principalNavIdent)
+        val hentetBrev = brevredigeringService.hentBrev(call = callMock(), saksId = sak.saksId, brevId = brev.info.id, reserverForRedigering = true)
+            ?.resultOrNull()!!
+        assertThat(hentetBrev.info.status).isInstanceOfSatisfying<Api.BrevStatus.UnderRedigering> {
+            assertThat(it.redigeresAv).isEqualTo(principalNavIdent)
+        }
         assertThat(transaction { Brevredigering[hentetBrev.info.id].redigeresAvNavIdent }).isEqualTo(principalNavIdent)
     }
 
@@ -548,11 +554,11 @@ class BrevredigeringServiceTest {
                 }
             }
             val awaited = hentBrev.awaitAll()
-            val redigeresFaktiskAv = transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }
+            val redigeresFaktiskAv = transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }!!
 
             assertThat(awaited).areExactly(1, condition("Vellykkede hentBrev med reservasjon") { it.isSuccess })
             assertThat(awaited).areExactly(awaited.size - 1, condition("Feilende hentBrev med reservasjon") { it.isFailure })
-            assertThat(awaited).allMatch { it.isFailure || it.getOrNull()?.resultOrNull()?.info?.redigeresAv == redigeresFaktiskAv }
+            assertThat(awaited).allMatch { it.isFailure || it.getOrNull()?.resultOrNull()?.info?.status == Api.BrevStatus.UnderRedigering(redigeresFaktiskAv) }
         }
     }
 
@@ -582,9 +588,9 @@ class BrevredigeringServiceTest {
             Brevredigering[brev.info.id].sistReservert = Instant.now().minus(BrevredigeringService.RESERVASJON_TIMEOUT.plusSeconds(1))
         }
 
-        val hentetBrev =
-            brevredigeringService.hentBrev(call = callMock(), saksId = sak.saksId, brevId = brev.info.id)?.resultOrNull()!!
-        assertThat(hentetBrev.info.redigeresAv).isNull()
+        val hentetBrev = brevredigeringService.hentBrev(call = callMock(), saksId = sak.saksId, brevId = brev.info.id)
+            ?.resultOrNull()!!
+        assertThat(hentetBrev.info.status).isInstanceOf<Api.BrevStatus.Kladd>()
 
         val hentetBrevMedReservasjon = brevredigeringService.hentBrev(
             call = callMock(principalNavIdent2),
@@ -592,7 +598,9 @@ class BrevredigeringServiceTest {
             brevId = brev.info.id,
             reserverForRedigering = true
         )?.resultOrNull()!!
-        assertThat(hentetBrevMedReservasjon.info.redigeresAv).isEqualTo(principalNavIdent2)
+        assertThat(hentetBrevMedReservasjon.info.status).isInstanceOfSatisfying<Api.BrevStatus.UnderRedigering> {
+            assertThat(it.redigeresAv).isEqualTo(principalNavIdent2)
+        }
     }
 
     @Test

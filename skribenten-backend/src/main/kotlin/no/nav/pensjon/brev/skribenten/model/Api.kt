@@ -35,7 +35,6 @@ object Api {
         val opprettet: Instant,
         val sistredigertAv: String,
         val sistredigert: Instant,
-        val redigeresAv: String?,
         val brevkode: Brevkode.Redigerbar,
         val status: BrevStatus,
     )

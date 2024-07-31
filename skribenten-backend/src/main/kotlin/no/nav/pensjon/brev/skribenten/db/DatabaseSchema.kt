@@ -51,6 +51,8 @@ object BrevredigeringTable : LongIdTable() {
     val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
+        // TODO: Fjern default når miljøene er oppdatert
+        .default(ByteArray(1).apply { fill(1) })
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     // TODO: introdusere value class for NavIdent?
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()

@@ -15,11 +15,13 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
 
     if (content.type === LITERAL) {
       updateLiteralText(content, text);
+      draft.isDirty = true;
     } else if (content.type === ITEM_LIST) {
       if ("itemIndex" in literalIndex) {
         const itemContent = content.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
         if (itemContent.type === LITERAL) {
           updateLiteralText(itemContent, text);
+          draft.isDirty = true;
         } else {
           // eslint-disable-next-line no-console
           console.warn("Cannot update text of:", itemContent.type);

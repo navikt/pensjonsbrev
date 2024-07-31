@@ -15,9 +15,11 @@ import { SignaturView } from "./components/SignaturView";
 import type { LetterEditorState } from "./model/state";
 
 export const LetterEditor = ({
+  freeze,
   editorState,
   setEditorState,
 }: {
+  freeze: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
 }) => {
@@ -32,7 +34,7 @@ export const LetterEditor = ({
         align-items: center;
       `}
     >
-      <EditorStateContext.Provider value={{ editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze, editorState, setEditorState }}>
         <EditorMenu />
         <div className="editor">
           <SakspartView sakspart={letter.sakspart} />
@@ -61,9 +63,11 @@ export const LetterEditor = ({
 };
 
 export const EditorStateContext = createContext<{
+  freeze: boolean;
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
 }>({
+  freeze: false,
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
 });

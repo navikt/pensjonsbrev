@@ -17,7 +17,21 @@ export type SaksbehandlerValg = {
 export type BrevResponse = {
   info: BrevInfo;
   redigertBrev: EditedLetter;
+  redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
+};
+
+export type ReservasjonResponse = {
+  vellykket: boolean;
+  reservertAv: NavAnsatt;
+  timestamp: string;
+  expiresIn: string;
+  redigertBrevHash: string;
+};
+
+export type NavAnsatt = {
+  id: string;
+  navn: string;
 };
 
 export type BrevInfo = {
@@ -27,8 +41,12 @@ export type BrevInfo = {
   sistredigertAv: string;
   sistredigert: string;
   brevkode: string;
-  redigeresAv: string | null;
+  status: BrevStatus;
 };
+export type BrevStatus = Kladd | UnderRedigering | Klar;
+export type Kladd = { type: "Kladd" };
+export type UnderRedigering = { type: "UnderRedigering"; redigeresAv: string };
+export type Klar = { type: "Klar" };
 
 export type OppdaterBrevRequest = {
   saksbehandlerValg: SaksbehandlerValg;

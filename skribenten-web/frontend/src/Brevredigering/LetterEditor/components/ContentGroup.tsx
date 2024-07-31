@@ -107,7 +107,7 @@ function hasFocus(focus: Focus, literalIndex: LiteralIndex) {
 
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
-  const { editorState, setEditorState } = useEditor();
+  const { freeze, editorState, setEditorState } = useEditor();
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -120,13 +120,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   useEffect(() => {
     if (
+      !freeze &&
       shouldBeFocused &&
       contentEditableReference.current !== null &&
       editorState.focus.cursorPosition !== undefined
     ) {
       focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
     }
-  }, [editorState.focus.cursorPosition, shouldBeFocused]);
+  }, [editorState.focus.cursorPosition, shouldBeFocused, freeze]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -236,7 +237,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // NOTE: ideally this would be "plaintext-only", and it works in practice.
       // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
       // This is not documented anywhere I could find and caused a day of frustration, beware
-      contentEditable="true"
+      contentEditable={!freeze}
       onFocus={() => {
         setEditorState((oldState) => ({
           ...oldState,
