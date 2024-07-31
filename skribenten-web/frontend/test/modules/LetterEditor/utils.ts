@@ -20,6 +20,19 @@ import { ITEM_LIST, LITERAL, PARAGRAPH, TITLE1, VARIABLE } from "~/types/brevbak
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
+    isDirty: false,
+    info: {
+      id: 1,
+      opprettetAv: "Z993104",
+      opprettet: "2024-07-24T09:23:21.381Z",
+      sistredigertAv: "Z993104",
+      sistredigert: "2024-07-26T14:15:57.173Z",
+      brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+      status: {
+        type: "UnderRedigering",
+        redigeresAv: "Z993104",
+      },
+    },
     redigertBrev: {
       title: "tittel",
       sakspart: { gjelderNavn: "navn", gjelderFoedselsnummer: "123", saksnummer: "456", dokumentDato: "2022-01-01" },
@@ -32,6 +45,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       },
       deletedBlocks: [],
     },
+    redigertBrevHash: "hash1",
     focus: { blockIndex: 0, contentIndex: 0 },
   };
 }
