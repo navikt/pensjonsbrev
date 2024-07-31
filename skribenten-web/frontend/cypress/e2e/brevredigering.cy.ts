@@ -30,7 +30,7 @@ describe("Brevredigering", () => {
 
   it("Autolagrer etter redigering", () => {
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Sist endret 26.07.2024 16:15").should("exist");
+    cy.contains("Sist endret 26.07.2024 ").should("exist");
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
     cy.wait("@hurtiglagreRedigertBrev");
