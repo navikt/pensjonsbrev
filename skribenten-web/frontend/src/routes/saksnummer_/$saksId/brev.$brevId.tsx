@@ -3,10 +3,10 @@ import { BodyLong, Button, Modal } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
+import React, { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 
-import { getBrev, getBrevReservasjon, hurtiglagreBrev, updateBrev } from "~/api/brev-queries";
+import { getBrev, getBrevReservasjon, hurtiglagreBrev, hurtiglagreSaksbehandlerValg } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -14,7 +14,7 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
+import type { BrevResponse, ReservasjonResponse } from "~/types/brev";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
@@ -38,7 +38,7 @@ function RedigerBrevPage() {
       />
     );
   } else if (brevQuery.data) {
-    return <RedigerBrev brev={brevQuery.data} doReload={brevQuery.refetch} saksId={saksId} />;
+    return <RedigerBrev brev={brevQuery.data} doReload={brevQuery.refetch} />;
   } else {
     return <div>Laster...</div>;
   }
@@ -73,42 +73,12 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
   }
 };
 
-const RedigerBrev = ({ brev, saksId, doReload }: { brev: BrevResponse; saksId: string; doReload: () => void }) => {
+const RedigerBrev = ({ brev, doReload }: { brev: BrevResponse; doReload: () => void }) => {
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
-  const queryClient = useQueryClient();
-  const oppdaterBrevMutation = useMutation<BrevResponse, unknown, SaksbehandlerValg>({
-    mutationFn: async (saksbehandlerValg) =>
-      updateBrev(saksId, brev.info.id, {
-        saksbehandlerValg,
-        redigertBrev: editorState.redigertBrev,
-      }),
-    onSuccess: (response) => {
-      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
-      setEditorState({
-        focus: editorState.focus,
-        redigertBrev: response.redigertBrev,
-        redigertBrevHash: response.redigertBrevHash,
-        info: response.info,
-        isDirty: false,
-      });
-    },
-  });
-  const hurtiglagreBrevMutation = useMutation<BrevResponse, AxiosError>({
-    mutationFn: async () => {
-      applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
-      return hurtiglagreBrev(brev.info.id, editorState.redigertBrev);
-    },
-    onSuccess: (response) => {
-      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
-      setEditorState({
-        focus: editorState.focus,
-        redigertBrev: response.redigertBrev,
-        redigertBrevHash: response.redigertBrevHash,
-        info: response.info,
-        isDirty: false,
-      });
-    },
-  });
+
+  const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
+  const redigertBrevMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreBrev);
+
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
     queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
@@ -118,11 +88,11 @@ const RedigerBrev = ({ brev, saksId, doReload }: { brev: BrevResponse; saksId: s
   useEffect(() => {
     const timoutId = setTimeout(() => {
       if (editorState.isDirty) {
-        hurtiglagreBrevMutation.mutate();
+        redigertBrevMutation.mutate(editorState.redigertBrev);
       }
     }, 5000);
     return () => clearTimeout(timoutId);
-  }, [editorState.isDirty, editorState.redigertBrev, hurtiglagreBrevMutation]);
+  }, [editorState.isDirty, editorState.redigertBrev, redigertBrevMutation]);
 
   useEffect(() => {
     if (editorState.redigertBrevHash !== brev.redigertBrevHash) {
@@ -155,15 +125,41 @@ const RedigerBrev = ({ brev, saksId, doReload }: { brev: BrevResponse; saksId: s
         <ModelEditor
           brevkode={brev.info.brevkode}
           defaultValues={brev.saksbehandlerValg}
-          disableSubmit={oppdaterBrevMutation.isPending}
-          onSubmit={oppdaterBrevMutation.mutate}
+          disableSubmit={saksbehandlerValgMutation.isPending}
+          onSubmit={saksbehandlerValgMutation.mutate}
         />
         <LetterEditor
           editorState={editorState}
-          freeze={hurtiglagreBrevMutation.isPending}
+          freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
           setEditorState={setEditorState}
         />
       </div>
     </>
   );
 };
+
+function useHurtiglagreMutation<T>(
+  brevId: number,
+  setEditorState: Dispatch<SetStateAction<LetterEditorState>>,
+  mutationFunction: (brevId: number, body: T) => Promise<BrevResponse>,
+) {
+  const queryClient = useQueryClient();
+
+  return useMutation<BrevResponse, AxiosError, T>({
+    mutationFn: async (saksbehandlerValg) => {
+      applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
+      return mutationFunction(brevId, saksbehandlerValg);
+    },
+    onSuccess: (response: BrevResponse) => {
+      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+      setEditorState((previousState) => ({
+        ...previousState,
+        redigertBrev: response.redigertBrev,
+        redigertBrevHash: response.redigertBrevHash,
+        saksbehandlerValg: response.saksbehandlerValg,
+        info: response.info,
+        isDirty: false,
+      }));
+    },
+  });
+}

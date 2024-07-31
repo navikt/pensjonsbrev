@@ -5,7 +5,13 @@ import type { AxiosResponse } from "axios";
 import axios from "axios";
 
 import { SKRIBENTEN_API_BASE_PATH } from "~/api/skribenten-api-endpoints";
-import type { BrevResponse, OppdaterBrevRequest, OpprettBrevRequest, ReservasjonResponse } from "~/types/brev";
+import type {
+  BrevResponse,
+  OppdaterBrevRequest,
+  OpprettBrevRequest,
+  ReservasjonResponse,
+  SaksbehandlerValg,
+} from "~/types/brev";
 import type { EditedLetter, LetterModelSpecification } from "~/types/brevbakerTypes";
 
 export const brevmalKeys = {
@@ -44,6 +50,12 @@ export async function updateBrev(saksId: string, brevId: number, request: Oppdat
 
 export async function hurtiglagreBrev(brevId: number, redigertBrev: EditedLetter) {
   return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/redigertBrev`, redigertBrev)).data;
+}
+
+export async function hurtiglagreSaksbehandlerValg(brevId: number, saksbehandlerValg: SaksbehandlerValg) {
+  return (
+    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/saksbehandlerValg`, saksbehandlerValg)
+  ).data;
 }
 
 export const getBrevReservasjon = {

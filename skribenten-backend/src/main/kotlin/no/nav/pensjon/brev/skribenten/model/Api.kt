@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import java.time.Duration
 import java.time.Instant
 
+typealias SaksbehandlerValg = Api.GeneriskBrevdata
+
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
 
@@ -18,12 +20,12 @@ object Api {
         val brevkode: Brevkode.Redigerbar,
         val spraak: SpraakKode,
         val avsenderEnhetsId: String?,
-        val saksbehandlerValg: GeneriskBrevdata,
+        val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean?,
     )
 
     data class OppdaterBrevRequest(
-        val saksbehandlerValg: GeneriskBrevdata,
+        val saksbehandlerValg: SaksbehandlerValg,
         val redigertBrev: Edit.Letter,
     )
 

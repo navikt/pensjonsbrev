@@ -78,11 +78,11 @@ class BrevredigeringService(
         saksId: Long?,
         brevId: Long,
         nyeSaksbehandlerValg: BrevbakerBrevdata?,
-        nyttRedigertbrev: Edit.Letter,
+        nyttRedigertbrev: Edit.Letter?,
     ): ServiceResult<Api.BrevResponse>? =
         hentBrevMedReservasjon(call = call, brevId = brevId, saksId = saksId) { brev ->
             rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, nyeSaksbehandlerValg ?: brev.saksbehandlerValg, brev.avsenderEnhetId)
-                .map { nyttRedigertbrev.updateEditedLetter(it) }
+                .map { (nyttRedigertbrev ?: brev.redigertBrev).updateEditedLetter(it) }
                 .map { oppdatertBrev ->
                     transaction {
                         brev.apply {
