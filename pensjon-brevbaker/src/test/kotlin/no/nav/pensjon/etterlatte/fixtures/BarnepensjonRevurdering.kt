@@ -116,7 +116,8 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
         kunNyttRegelverk = false,
         harFlereUtbetalingsperioder = true,
         harUtbetaling = true,
-        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
+        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
+        erMigrertYrkesskade = false,
     )
 }
 
