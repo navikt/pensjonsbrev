@@ -21,7 +21,7 @@ describe("LetterEditorActions.merge", () => {
         const state = letter(paragraph(literal("p1")), paragraph(literal("p2")));
 
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.NEXT);
-        expect(result).toBe(state);
+        expect(result.redigertBrev).toBe(state.redigertBrev);
       });
 
       test("the content of the next block is added to the end of the specified", () => {
@@ -98,7 +98,7 @@ describe("LetterEditorActions.merge", () => {
         const state = letter(paragraph(literal("p1")), paragraph(variable("p2")));
 
         const result = Actions.merge(state, { blockIndex: 0, contentIndex: 0 }, MergeTarget.PREVIOUS);
-        expect(result).toBe(state);
+        expect(result.redigertBrev).toBe(state.redigertBrev);
       });
 
       test("the content of the specified block is added to the end of the previous", () => {
@@ -283,7 +283,7 @@ describe("LetterEditorActions.merge", () => {
           { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 },
           MergeTarget.NEXT,
         );
-        expect(result).toBe(state);
+        expect(result.redigertBrev).toBe(state.redigertBrev);
       });
 
       test("the content of the next item is added to the end of the specified", () => {

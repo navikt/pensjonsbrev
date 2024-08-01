@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.LetterMetadata
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import java.time.Duration
 import java.time.Instant
+
+typealias SaksbehandlerValg = Api.GeneriskBrevdata
 
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
@@ -16,12 +20,12 @@ object Api {
         val brevkode: Brevkode.Redigerbar,
         val spraak: SpraakKode,
         val avsenderEnhetsId: String?,
-        val saksbehandlerValg: GeneriskBrevdata,
+        val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean?,
     )
 
     data class OppdaterBrevRequest(
-        val saksbehandlerValg: GeneriskBrevdata,
+        val saksbehandlerValg: SaksbehandlerValg,
         val redigertBrev: Edit.Letter,
     )
 
@@ -33,7 +37,6 @@ object Api {
         val opprettet: Instant,
         val sistredigertAv: String,
         val sistredigert: Instant,
-        val redigeresAv: String?,
         val brevkode: Brevkode.Redigerbar,
         val status: BrevStatus,
     )
@@ -53,8 +56,19 @@ object Api {
     data class BrevResponse(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
+        val redigertBrevHash: EditLetterHash,
         val saksbehandlerValg: BrevbakerBrevdata,
     )
+
+    data class ReservasjonResponse(
+        val vellykket: Boolean,
+        val reservertAv: NavAnsatt,
+        val timestamp: Instant,
+        val expiresIn: Duration,
+        val redigertBrevHash: EditLetterHash,
+    )
+
+    data class NavAnsatt(val id: String, val navn: String?)
 
     data class SakContext(
         val sak: Pen.SakSelection,

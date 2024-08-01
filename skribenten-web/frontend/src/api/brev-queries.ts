@@ -1,11 +1,18 @@
 /* eslint-disable unicorn/no-await-expression-member*/
 
 import { useQuery } from "@tanstack/react-query";
+import type { AxiosResponse } from "axios";
 import axios from "axios";
 
 import { SKRIBENTEN_API_BASE_PATH } from "~/api/skribenten-api-endpoints";
-import type { BrevResponse, OppdaterBrevRequest, OpprettBrevRequest } from "~/types/brev";
-import type { LetterModelSpecification } from "~/types/brevbakerTypes";
+import type {
+  BrevResponse,
+  OppdaterBrevRequest,
+  OpprettBrevRequest,
+  ReservasjonResponse,
+  SaksbehandlerValg,
+} from "~/types/brev";
+import type { EditedLetter, LetterModelSpecification } from "~/types/brevbakerTypes";
 
 export const brevmalKeys = {
   all: ["BREVMAL"] as const,
@@ -16,6 +23,7 @@ export const brevmalKeys = {
 export const brevKeys = {
   all: ["BREV"] as const,
   id: (brevId: number) => [...brevKeys.all, brevId] as const,
+  reservasjon: (brevId: number) => [...brevKeys.id(brevId), "RESERVASJON"] as const,
 };
 
 export const getModelSpecification = {
@@ -27,10 +35,9 @@ export const getModelSpecification = {
 
 export const getBrev = {
   queryKey: brevKeys.id,
-  queryFn: async (saksId: string, brevId: number) => {
-    await new Promise((resolve) => setTimeout(resolve, 10_000));
-    return (await axios.get<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`)).data;
-  },
+  queryFn: async (saksId: string, brevId: number, reserver: boolean = true) =>
+    (await axios.get<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}?reserver=${reserver}`))
+      .data,
 };
 
 export async function createBrev(saksId: string, request: OpprettBrevRequest) {
@@ -40,6 +47,32 @@ export async function createBrev(saksId: string, request: OpprettBrevRequest) {
 export async function updateBrev(saksId: string, brevId: number, request: OppdaterBrevRequest) {
   return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, request)).data;
 }
+
+export async function hurtiglagreBrev(brevId: number, redigertBrev: EditedLetter) {
+  return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/redigertBrev`, redigertBrev)).data;
+}
+
+export async function hurtiglagreSaksbehandlerValg(brevId: number, saksbehandlerValg: SaksbehandlerValg) {
+  return (
+    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/saksbehandlerValg`, saksbehandlerValg)
+  ).data;
+}
+
+export const getBrevReservasjon = {
+  querykey: brevKeys.reservasjon,
+  queryFn: async (brevId: number) => {
+    const response = await axios
+      .get<ReservasjonResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/reservasjon`)
+      .catch((error) => {
+        if (error.response.status === 423) {
+          return error.response as AxiosResponse<ReservasjonResponse>;
+        } else {
+          throw error;
+        }
+      });
+    return response.data;
+  },
+};
 
 export function useModelSpecification<T>(brevkode: string, select: (data: LetterModelSpecification) => T) {
   return useQuery({

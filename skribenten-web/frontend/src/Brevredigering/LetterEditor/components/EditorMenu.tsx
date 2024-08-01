@@ -1,15 +1,18 @@
 import { css } from "@emotion/react";
-import { Button } from "@navikt/ds-react";
+import { CheckmarkCircleFillIcon } from "@navikt/aksel-icons";
+import { Button, HStack, Loader } from "@navikt/ds-react";
+import { format, isToday } from "date-fns";
 import type { ReactNode } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { formatTime } from "~/utils/dateUtils";
 
 import { applyAction } from "../lib/actions";
 
 export const EditorMenu = () => {
-  const { editorState, setEditorState } = useEditor();
+  const { freeze, editorState, setEditorState } = useEditor();
   const activeTypography = editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.type;
   const changeableContent = isTextContent(
     editorState.redigertBrev.blocks[editorState.focus.blockIndex].content[editorState.focus.contentIndex],
@@ -47,9 +50,34 @@ export const EditorMenu = () => {
       >
         Normal
       </SelectTypographyButton>
+      <LagretTidspunkt datetime={editorState.info.sistredigert} freeze={freeze} isDirty={editorState.isDirty} />
     </div>
   );
 };
+
+function LagretTidspunkt({ freeze, datetime, isDirty }: { freeze: boolean; datetime: string; isDirty: boolean }) {
+  if (freeze) {
+    return (
+      <HStack gap="1">
+        <Loader title="Lagrer..." />
+        Lagrer...
+      </HStack>
+    );
+  } else {
+    const tekst = isToday(datetime)
+      ? `Automatisk lagret kl ${formatTime(datetime)}`
+      : `Sist endret ${format(datetime, "dd.MM.yyyy HH:mm")}`;
+
+    const ikon = isDirty ? null : <CheckmarkCircleFillIcon color="#007C2E" fontSize="1.5rem" title="vellykket-ikon" />;
+
+    return (
+      <HStack gap="1">
+        {ikon}
+        {tekst}
+      </HStack>
+    );
+  }
+}
 
 function SelectTypographyButton({
   dataCy,

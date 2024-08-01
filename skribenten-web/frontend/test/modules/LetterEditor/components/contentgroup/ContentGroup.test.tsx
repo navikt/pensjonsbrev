@@ -35,7 +35,7 @@ function setup() {
   return {
     user: userEvent.setup(),
     ...render(
-      <EditorStateContext.Provider value={{ editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze: false, editorState, setEditorState }}>
         <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
       </EditorStateContext.Provider>,
     ),
@@ -66,7 +66,7 @@ function setupComplex() {
   return {
     user: userEvent.setup(),
     ...render(
-      <EditorStateContext.Provider value={{ editorState: complexEditorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze: false, editorState: complexEditorState, setEditorState }}>
         {complexEditorState.redigertBrev.blocks.map((block, blockIndex) => (
           <div className={block.type} key={blockIndex}>
             <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
@@ -161,7 +161,7 @@ describe("backspaceHandler", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
 
-    expect(setEditorState.mock.lastCall?.[0](editorState)).toBe(editorState);
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.redigertBrev).toBe(editorState.redigertBrev);
   });
 });
 

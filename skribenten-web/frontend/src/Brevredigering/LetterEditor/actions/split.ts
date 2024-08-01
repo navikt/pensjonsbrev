@@ -18,6 +18,8 @@ export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
     const previousBlock = editedLetter.blocks[literalIndex.blockIndex - 1];
     const content = block.content[literalIndex.contentIndex];
 
+    draft.isDirty = true;
+
     if (content.type === LITERAL) {
       const isAtStartOfBlock = literalIndex.contentIndex === 0 && offset === 0;
       const previousBlockIsNotEmpty = previousBlock && !isEmptyBlock(previousBlock);

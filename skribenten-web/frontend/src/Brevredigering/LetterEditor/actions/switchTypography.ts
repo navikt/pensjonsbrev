@@ -24,6 +24,8 @@ export const switchTypography: Action<
     block.originalType = block.type;
   }
 
+  draft.isDirty = true;
+
   switch (typography) {
     case PARAGRAPH: {
       block.type = typography;

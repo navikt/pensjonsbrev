@@ -8,7 +8,7 @@ import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/services/c
 import type { AnyBlock, Content, Item } from "~/types/brevbakerTypes";
 
 export function DebugPanel() {
-  const { editorState } = useEditor();
+  const { freeze, editorState } = useEditor();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [caretOffset, setCaretOffset] = useState(0);
   const [caretRect, setCaretRect] = useState<DOMRect>();
@@ -43,13 +43,16 @@ export function DebugPanel() {
       `}
     >
       <HStack gap={"4"}>
-        MODEL:
+        FOCUS:
         {Object.entries(editorState.focus).map(([key, value]) => (
           <div key={key}>
             <b>{key}: </b>
             <span>{value}</span>
           </div>
         ))}
+      </HStack>
+      <HStack gap={"4"}>
+        FREEZE: <b>{freeze.toString()}</b>
       </HStack>
       <HStack gap={"4"}>
         MOUSE:

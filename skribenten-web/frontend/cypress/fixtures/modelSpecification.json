@@ -1,0 +1,57 @@
+{
+  "types" : {
+    "no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto" : {
+      "saksbehandlerValg" : {
+        "type" : "object",
+        "nullable" : false,
+        "typeName" : "no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg"
+      },
+      "pesysData" : {
+        "type" : "object",
+        "nullable" : false,
+        "typeName" : "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata"
+      }
+    },
+    "no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg" : {
+      "mottattSoeknad" : {
+        "type" : "scalar",
+        "nullable" : false,
+        "kind" : "DATE"
+      },
+      "ytelse" : {
+        "type" : "scalar",
+        "nullable" : false,
+        "kind" : "STRING"
+      },
+      "land" : {
+        "type" : "scalar",
+        "nullable" : true,
+        "kind" : "STRING"
+      },
+      "inkluderVenterSvarAFP" : {
+        "type" : "object",
+        "nullable" : true,
+        "typeName" : "no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg.InkluderVenterSvarAFP"
+      },
+      "svartidUker" : {
+        "type" : "scalar",
+        "nullable" : false,
+        "kind" : "NUMBER"
+      }
+    },
+    "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata" : { },
+    "no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg.InkluderVenterSvarAFP" : {
+      "uttakAlderspensjonProsent" : {
+        "type" : "scalar",
+        "nullable" : false,
+        "kind" : "NUMBER"
+      },
+      "uttaksDato" : {
+        "type" : "scalar",
+        "nullable" : false,
+        "kind" : "DATE"
+      }
+    }
+  },
+  "letterModelTypeName" : "no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto"
+}
