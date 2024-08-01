@@ -77,13 +77,15 @@ const EndreMottaker = (properties: {
 export default EndreMottaker;
 
 /*
+  TODO - flytt ut til generel components mappe siden den nå benyttes i flere steder
+
   litt om hvorfor denne er laget som den er:
   Vi har 1 modal, som skal deles opp i 3 tabs. 2 av dem er velgbare, mens 1 tab (oppsummering) er intern.
   Modalen-bodyen skal reflektere 3 tilstander - Valg av mottaker, oppsummering, og avbrytelse
   Oppsummering og avbyrtelse skal 'fjerne' alt det andre, derfor kreves det at modal har en state som vet hva den skal rendre
   Vi klarer også å holde på diverse tilstander mye enklere, som f.eks sammhandler søk dersom dem navigerer seg tilbake fra oppsummering
 */
-const EndreMottakerModal = (properties: {
+export const EndreMottakerModal = (properties: {
   åpen: boolean;
   onBekreftNyMottaker: (id: string | Adresse) => void;
   onClose: () => void;

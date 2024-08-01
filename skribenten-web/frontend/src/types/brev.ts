@@ -20,6 +20,29 @@ export type BrevResponse = {
   saksbehandlerValg: SaksbehandlerValg;
 };
 
+export interface DelvisOppdaterBrevRequest {
+  sakId: string;
+  brevId: string | number;
+  laastForRedigering: Nullable<boolean>;
+}
+
+export interface DelvisOppdaterBrevResponse {
+  info: BrevInfo;
+  redigertBrev: EditedLetter;
+  saksbehandlerValg: SaksbehandlerValg;
+}
+
+export interface BestillBrevResponse {
+  journalpostId: Nullable<number>;
+  error: Nullable<BestillBrevError>;
+}
+
+export interface BestillBrevError {
+  brevIkkeStoettet: Nullable<string>;
+  tekniskgrunn: Nullable<string>;
+  beskrivelse: Nullable<string>;
+}
+
 export type BrevInfo = {
   id: number;
   opprettetAv: string;
@@ -27,8 +50,22 @@ export type BrevInfo = {
   sistredigertAv: string;
   sistredigert: string;
   brevkode: string;
-  redigeresAv: string | null;
+  status: BrevInfoStatus;
 };
+
+export interface BrevInfoStatus {
+  type: BrevInfoStatusType;
+  /**
+   * eksisterer kun dersom type er UNDER_REDIGERING
+   */
+  redigeresAv?: string;
+}
+
+export enum BrevInfoStatusType {
+  KLADD = "Kladd",
+  KLAR = "Klar",
+  UNDER_REDIGERING = "UnderRedigering",
+}
 
 export type OppdaterBrevRequest = {
   saksbehandlerValg: SaksbehandlerValg;
