@@ -60,6 +60,7 @@ data class OmstillingsstoenadBeregningsperiode(
     val restanse: Kroner,
     val utbetaltBeloep: Kroner,
     val trygdetid: Int,
+    val sanksjon: Boolean,
 )
 
 data class Trygdetid(

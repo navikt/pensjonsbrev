@@ -267,6 +267,25 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         }
     }
 
+    title2 {
+        text(
+            Bokmal to "Sanksjon - stans i utbetalingen av omstillingsstønaden",
+            Nynorsk to "Sanksjon – stans i utbetaling av omstillingsstønad",
+            English to "Sanction – stoppage of payment of Adjustment Allowance",
+        )
+    }
+
+    paragraph {
+        text(
+            Bokmal to "Omstillingsstønaden din er stanset fordi du ikke har oppfylt kravet om aktivitetsplikt. " +
+                    "“Utbetaling per måned” er derfor satt til 0 fra gjeldende tidspunkt, slik det fremgår i tabellen over.",
+            Nynorsk to "Då du ikkje har oppfylt kravet om aktivitetsplikt, har omstillingsstønaden din blitt stansa. " +
+                    "«Utbetaling per månad» er difor sett til 0 frå gjeldande tidspunkt, slik det går fram av tabellen over.",
+            English to "Your Adjustment Allowance has been stopped because you have mot met the mandatory activity requirements. " +
+                    "«Payment per month is therefore set at «0» from the relevant date, as evident in the table above.",
+        )
+    }
+
     konverterElementerTilBrevbakerformat(innhold)
 
 }

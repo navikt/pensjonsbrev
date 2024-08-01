@@ -22,6 +22,8 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
@@ -94,11 +96,19 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
                         English to "changed",
                     )
                 } orShow {
-                    text(
-                        Bokmal to "vurdert",
-                        Nynorsk to "vurdert",
-                        English to "evaluated",
-                    )
+                    showIf(beregning.sisteBeregningsperiode.sanksjon) {
+                        text(
+                            Bokmal to "stanset",
+                            Nynorsk to "stansa",
+                            English to "stopped",
+                        )
+                    } orShow {
+                        text(
+                            Bokmal to "vurdert",
+                            Nynorsk to "vurdert",
+                            English to "evaluated",
+                        )
+                    }
                 }
                 text(
                     Bokmal to " omstillingsstønaden din",
