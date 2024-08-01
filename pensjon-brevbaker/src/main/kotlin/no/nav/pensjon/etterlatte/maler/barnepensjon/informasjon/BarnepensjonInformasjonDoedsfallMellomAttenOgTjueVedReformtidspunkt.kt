@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon
 
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -8,20 +9,16 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.avdoedNavn
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.borIutland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.erOver18aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTOSelectors.borIutland
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKTTELEFON_PENSJON
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE
 
 data class BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO(
     override val innhold: List<Element>,
@@ -30,13 +27,13 @@ data class BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDT
 ) : BrevDTO
 
 @TemplateModelHelpers
-object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : EtterlatteTemplate<BarnepensjonInformasjonDoedsfallDTO>, Hovedmal {
+object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : EtterlatteTemplate<BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INFORMASJON_DOEDSFALL_MELLOM_ATTEN_OG_TJUE_VED_REFORMTIDSPUNKT
 
     override val template =
         createTemplate(
             name = kode.name,
-            letterDataType = BarnepensjonInformasjonDoedsfallDTO::class,
+            letterDataType = BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
                 LetterMetadata(
@@ -167,31 +164,7 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                title2 {
-                    text(
-                        Bokmal to "Har du spørsmål?",
-                        Nynorsk to "Har du spørsmål?",
-                        English to "Do you have any questions?",
-                    )
-                }
-                showIf(borIutland.not()) {
-                    paragraph {
-                        text(
-                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
-                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                            English to "You can find more information here: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can also call us at $KONTAKTTELEFON_PENSJON on weekdays 09:00-15:00. If you provide your national identity number, we will be able to help you faster and give you better answers.",
-                        )
-                    }
-                }
-                showIf(borIutland) {
-                    paragraph {
-                        text(
-                            Bokmal to "Du finner mer informasjon på $BARNEPENSJON_URL. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon $KONTAKTTELEFON_PENSJON_MED_LANDKODE hverdager kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
-                            Nynorsk to "Du finn meir informasjon på $BARNEPENSJON_URL. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon $KONTAKTTELEFON_PENSJON_MED_LANDKODE, kvardagar kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                            English to "You can find more information here: ${Constants.Engelsk.BARNEPENSJON_URL}. If you can’t find the answer to your question, you can also call us at ($KONTAKTTELEFON_PENSJON_MED_LANDKODE) on weekdays 09:00-15:00. If you provide your national identity number, we will be able to help you faster and give you better answers.",
-                        )
-                    }
-                }
+                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(Expression.Literal(false), borIutland))
             }
         }
 }
