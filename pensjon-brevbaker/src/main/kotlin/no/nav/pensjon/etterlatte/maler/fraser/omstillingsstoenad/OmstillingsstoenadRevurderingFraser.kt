@@ -6,10 +6,12 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -37,7 +39,7 @@ class OmstillingsstoenadRevurderingFraser {
                 val formatertBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
                 val sanksjon = beregning.sisteBeregningsperiode.sanksjon
 
-                showIf(erEndret) {
+                showIf(erEndret and sanksjon.not()) {
                     showIf(harUtbetaling) {
                         showIf(harFlereUtbetalingsperioder) {
                             paragraph {

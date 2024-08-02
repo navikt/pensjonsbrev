@@ -89,18 +89,18 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
                     )
                 }
             }.orShow {
-                showIf(erEndret) {
+                showIf(beregning.sisteBeregningsperiode.sanksjon) {
                     text(
-                        Bokmal to "endret",
-                        Nynorsk to "endra",
-                        English to "changed",
+                        Bokmal to "stanset",
+                        Nynorsk to "stansa",
+                        English to "stopped",
                     )
                 } orShow {
-                    showIf(beregning.sisteBeregningsperiode.sanksjon) {
+                    showIf(erEndret) {
                         text(
-                            Bokmal to "stanset",
-                            Nynorsk to "stansa",
-                            English to "stopped",
+                            Bokmal to "endret",
+                            Nynorsk to "endra",
+                            English to "changed",
                         )
                     } orShow {
                         text(
