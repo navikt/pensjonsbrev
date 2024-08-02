@@ -57,17 +57,17 @@ class BrevredigeringService(
                 transaction {
                     Brevredigering.new {
                         saksId = sak.saksId
-                        opprettetAvNavIdent = call.principal().navIdent
+                        opprettetAvNavIdent = call.principal().navIdent()
                         this.brevkode = brevkode
                         this.spraak = spraak
                         this.avsenderEnhetId = avsenderEnhetsId
                         this.saksbehandlerValg = saksbehandlerValg
                         laastForRedigering = false
-                        redigeresAvNavIdent = if (reserverForRedigering) call.principal().navIdent else null
+                        redigeresAvNavIdent = if (reserverForRedigering) call.principal().navIdent() else null
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         redigertBrev = letter.toEdit()
-                        sistRedigertAvNavIdent = call.principal().navIdent
+                        sistRedigertAvNavIdent = call.principal().navIdent()
                     }.mapBrev()
                 }
             }
@@ -89,7 +89,7 @@ class BrevredigeringService(
                             redigertBrev = oppdatertBrev
                             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                             saksbehandlerValg = nyeSaksbehandlerValg ?: brev.saksbehandlerValg
-                            sistRedigertAvNavIdent = call.principal().navIdent
+                            sistRedigertAvNavIdent = call.principal().navIdent()
                         }
                     }.mapBrev()
                 }
@@ -137,7 +137,7 @@ class BrevredigeringService(
         hentBrevMedReservasjon(call = call, brevId = brevId) { brev ->
             Api.ReservasjonResponse(
                 vellykket = true,
-                reservertAv = Api.NavAnsatt(id = call.principal().navIdent, navn = call.principal().fullName),
+                reservertAv = Api.NavAnsatt(id = call.principal().navIdent(), navn = call.principal().fullName),
                 timestamp = brev.sistReservert ?: Instant.now(),
                 expiresIn = RESERVASJON_TIMEOUT,
                 redigertBrevHash = brev.redigertBrevHash,
@@ -148,20 +148,20 @@ class BrevredigeringService(
         transaction(Connection.TRANSACTION_REPEATABLE_READ) {
             Brevredigering.findByIdAndSaksId(brevId, saksId)
                 ?.apply {
-                    if (redigeresAvNavIdent == null || redigeresAvNavIdent == call.principal().navIdent || erReservasjonUtloept()) {
-                        redigeresAvNavIdent = call.principal().navIdent
+                    if (redigeresAvNavIdent == null || redigeresAvNavIdent == call.principal().navIdent() || erReservasjonUtloept()) {
+                        redigeresAvNavIdent = call.principal().navIdent()
                         sistReservert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                     }
                 }
         }?.let { brev ->
-            if (brev.redigeresAvNavIdent == call.principal().navIdent) {
+            if (brev.redigeresAvNavIdent == call.principal().navIdent()) {
                 block(brev)
             } else throw KanIkkeReservereBrevredigeringException(
                 message = "Brev er allerede reservert av: ${brev.redigeresAvNavIdent}",
                 response = Api.ReservasjonResponse(
                     vellykket = false,
                     reservertAv = brev.redigeresAvNavIdent!!
-                        .let { Api.NavAnsatt(id = it, navn = navansattService.hentNavansatt(call, ansattId = it).resultOrNull()?.navn) },
+                        .let { Api.NavAnsatt(id = it, navn = navansattService.hentNavansatt(call, ansattId = it.id).resultOrNull()?.navn) },
                     timestamp = brev.sistReservert ?: Instant.now(),
                     expiresIn = RESERVASJON_TIMEOUT,
                     redigertBrevHash = brev.redigertBrevHash,
@@ -187,17 +187,22 @@ class BrevredigeringService(
                         pesysData = pesysData.brevdata,
                         saksbehandlerValg = saksbehandlerValg,
                     ),
-                    felles = pesysData.felles
+                    felles = pesysData.felles.copy(signerendeSaksbehandlere = null)
                 )
             }
 
-    private suspend fun <T> harTilgangTilEnhet(call: ApplicationCall, enhetsId: String?, then: suspend () -> ServiceResult<T>): ServiceResult<T> =
-        (enhetsId?.let { navansattService.harTilgangTilEnhet(call, call.principal().navIdent, it) } ?: ServiceResult.Ok(true))
-            .then { harTilgang ->
-                if (harTilgang) {
-                    then()
-                } else ServiceResult.Error("Mangler tilgang til NavEnhet $enhetsId", HttpStatusCode.Forbidden)
-            }
+    private suspend fun <T> harTilgangTilEnhet(call: ApplicationCall, enhetsId: String?, then: suspend () -> ServiceResult<T>): ServiceResult<T> {
+        return if (enhetsId == null) {
+            then()
+        } else {
+            navansattService.harTilgangTilEnhet(call, call.principal().navIdent, enhetsId)
+                .then { harTilgang ->
+                    if (harTilgang) {
+                        then()
+                    } else ServiceResult.Error("Mangler tilgang til NavEnhet $enhetsId", HttpStatusCode.Forbidden)
+                }
+        }
+    }
 
     private suspend fun opprettPdf(call: ApplicationCall, brevredigering: Brevredigering, redigertBrevHash: EditLetterHash): ServiceResult<ByteArray> {
         return penService.hentPesysBrevdata(
