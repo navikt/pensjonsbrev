@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
 import io.ktor.server.application.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -11,11 +13,13 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -53,7 +57,7 @@ class BrevredigeringService(
         reserverForRedigering: Boolean = false,
     ): ServiceResult<Api.BrevResponse> =
         harTilgangTilEnhet(call, avsenderEnhetsId) {
-            rendreBrev(call, brevkode, spraak, sak.saksId, saksbehandlerValg, avsenderEnhetsId).map { letter ->
+            rendreBrev(call, brevkode, spraak, sak.saksId, saksbehandlerValg, avsenderEnhetsId, call.principal().navIdent()).map { letter ->
                 transaction {
                     Brevredigering.new {
                         saksId = sak.saksId
@@ -81,7 +85,7 @@ class BrevredigeringService(
         nyttRedigertbrev: Edit.Letter?,
     ): ServiceResult<Api.BrevResponse>? =
         hentBrevMedReservasjon(call = call, brevId = brevId, saksId = saksId) { brev ->
-            rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, nyeSaksbehandlerValg ?: brev.saksbehandlerValg, brev.avsenderEnhetId)
+            rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, nyeSaksbehandlerValg ?: brev.saksbehandlerValg, brev.avsenderEnhetId, call.principal().navIdent())
                 .map { (nyttRedigertbrev ?: brev.redigertBrev).updateEditedLetter(it) }
                 .map { oppdatertBrev ->
                     transaction {
@@ -121,7 +125,7 @@ class BrevredigeringService(
     suspend fun hentBrev(call: ApplicationCall, saksId: Long, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Api.BrevResponse>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(call = call, brevId = brevId, saksId = saksId) { brev ->
-                rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, brev.saksbehandlerValg, brev.avsenderEnhetId)
+                rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, brev.saksbehandlerValg, brev.avsenderEnhetId, brev.sistRedigertAvNavIdent)
                     .map { brev.redigertBrev.updateEditedLetter(it) }
                     .map { transaction { brev.apply { redigertBrev = it }.mapBrev() } }
             }
@@ -176,9 +180,14 @@ class BrevredigeringService(
         saksId: Long,
         saksbehandlerValg: BrevbakerBrevdata,
         avsenderEnhetsId: String?,
-    ): ServiceResult<LetterMarkup> =
+        signerendeSaksbehandler: NavIdent,
+        attesterendeSaksbehandler: NavIdent? = null,
+    ): ServiceResult<LetterMarkup> = coroutineScope {
+        val signerendeNavn = async { navansattService.hentNavansatt(call, signerendeSaksbehandler.id) }
+        val attesterendeNavn = async { attesterendeSaksbehandler?.let { navansattService.hentNavansatt(call, it.id) } ?: ServiceResult.Ok(null) }
+
         penService.hentPesysBrevdata(call = call, saksId = saksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
-            .then { pesysData ->
+            .then(signerendeNavn.await(), attesterendeNavn.await()) { pesysData, signerende, attesterende ->
                 brevbakerService.renderMarkup(
                     call = call,
                     brevkode = brevkode,
@@ -187,9 +196,10 @@ class BrevredigeringService(
                         pesysData = pesysData.brevdata,
                         saksbehandlerValg = saksbehandlerValg,
                     ),
-                    felles = pesysData.felles.copy(signerendeSaksbehandlere = null)
+                    felles = pesysData.felles.copy(signerendeSaksbehandlere = SignerendeSaksbehandlere(signerende.navn, attesterende?.navn))
                 )
             }
+    }
 
     private suspend fun <T> harTilgangTilEnhet(call: ApplicationCall, enhetsId: String?, then: suspend () -> ServiceResult<T>): ServiceResult<T> {
         return if (enhetsId == null) {

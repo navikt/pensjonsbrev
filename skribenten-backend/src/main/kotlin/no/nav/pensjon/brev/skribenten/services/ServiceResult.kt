@@ -22,6 +22,22 @@ sealed class ServiceResult<Result> {
         is Error -> Error(error, statusCode)
     }
 
+    inline fun <T, Second> then(second: ServiceResult<Second>, func: (Result, Second) -> ServiceResult<T>): ServiceResult<T> =
+        when (this) {
+            is Ok -> second.then { func(result, it) }
+            is Error -> Error(error, statusCode)
+        }
+
+    inline fun <T, Second, Third> then(
+        second: ServiceResult<Second>,
+        third: ServiceResult<Third>,
+        func: (Result, Second, Third) -> ServiceResult<T>
+    ): ServiceResult<T> =
+        when (this) {
+            is Ok -> second.then(third) { secondResult, thirdResult -> func(result, secondResult, thirdResult) }
+            is Error -> Error(error, statusCode)
+        }
+
     inline fun catch(func: (String, HttpStatusCode) -> Result): Result = when (this) {
         is Ok -> result
         is Error -> func(error, statusCode)
