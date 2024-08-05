@@ -6,10 +6,12 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -18,6 +20,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
@@ -34,8 +37,9 @@ class OmstillingsstoenadRevurderingFraser {
                 val formatertNyesteUtbetalingsperiodeDatoFom = beregning.sisteBeregningsperiode.datoFOM.format()
                 val formatertVirkningsdato = beregning.virkningsdato.format()
                 val formatertBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
+                val sanksjon = beregning.sisteBeregningsperiode.sanksjon
 
-                showIf(erEndret) {
+                showIf(erEndret and sanksjon.not()) {
                     showIf(harUtbetaling) {
                         showIf(harFlereUtbetalingsperioder) {
                             paragraph {
@@ -122,26 +126,36 @@ class OmstillingsstoenadRevurderingFraser {
                     }
 
                 }.orShow {
-                    paragraph {
-                        text(
-                            Language.Bokmal to "Omstillingsstønaden din er vurdert på nytt. ",
-                            Language.Nynorsk to "Omstillingsstønaden din er vurdert på nytt. ",
-                            Language.English to "We have re-evaluated your adjustment allowance. "
-                        )
-                        showIf(harUtbetaling) {
+                    showIf(sanksjon){
+                        paragraph {
                             textExpr(
-                                Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + " kroner per " +
-                                        "måned før skatt.",
-                                Language.Nynorsk to "Du får framleis ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
-                                Language.English to "You will continue to receive NOK ".expr() + formatertBeloep + " per month before tax.".expr()
+                                Language.Bokmal to "Omstillingsstønaden din er stanset fra ".expr() + formatertVirkningsdato + ".",
+                                Language.Nynorsk to "Omstillingsstønaden din er stansa frå ".expr() + formatertVirkningsdato + ".",
+                                Language.English to "Your Adjustment Allowance has been stopped from ".expr() + formatertVirkningsdato + ".",
                             )
-                        }.orShow {
+                        }
+                    }.orShow {
+                        paragraph {
                             text(
-                                Language.Bokmal to "Du får fortsatt ikke utbetalt stønad.",
-                                Language.Nynorsk to "Du får framleis ikkje utbetalt stønad.",
-                                Language.English to "You will still not receive adjustment allowances because " +
-                                        "your income is higher than the limit for receiving adjustment allowance."
+                                Language.Bokmal to "Omstillingsstønaden din er vurdert på nytt. ",
+                                Language.Nynorsk to "Omstillingsstønaden din er vurdert på nytt. ",
+                                Language.English to "We have re-evaluated your adjustment allowance. "
                             )
+                            showIf(harUtbetaling) {
+                                textExpr(
+                                    Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + " kroner per " +
+                                            "måned før skatt.",
+                                    Language.Nynorsk to "Du får framleis ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
+                                    Language.English to "You will continue to receive NOK ".expr() + formatertBeloep + " per month before tax.".expr()
+                                )
+                            }.orShow {
+                                text(
+                                    Language.Bokmal to "Du får fortsatt ikke utbetalt stønad.",
+                                    Language.Nynorsk to "Du får framleis ikkje utbetalt stønad.",
+                                    Language.English to "You will still not receive adjustment allowances because " +
+                                            "your income is higher than the limit for receiving adjustment allowance."
+                                )
+                            }
                         }
                     }
                     paragraph {
