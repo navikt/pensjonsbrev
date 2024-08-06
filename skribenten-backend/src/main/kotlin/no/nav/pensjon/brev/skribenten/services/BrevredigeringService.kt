@@ -85,7 +85,15 @@ class BrevredigeringService(
         nyttRedigertbrev: Edit.Letter?,
     ): ServiceResult<Api.BrevResponse>? =
         hentBrevMedReservasjon(call = call, brevId = brevId, saksId = saksId) { brev ->
-            rendreBrev(call, brev.brevkode, brev.spraak, brev.saksId, nyeSaksbehandlerValg ?: brev.saksbehandlerValg, brev.avsenderEnhetId, call.principal().navIdent())
+            rendreBrev(
+                call,
+                brev.brevkode,
+                brev.spraak,
+                brev.saksId,
+                nyeSaksbehandlerValg ?: brev.saksbehandlerValg,
+                brev.avsenderEnhetId,
+                call.principal().navIdent()
+            )
                 .map { (nyttRedigertbrev ?: brev.redigertBrev).updateEditedLetter(it) }
                 .map { oppdatertBrev ->
                     transaction {
@@ -260,33 +268,32 @@ class BrevredigeringService(
         }
     }
 
-    suspend fun sendBrev(call: ApplicationCall, saksId: Long, brevId: Long): ServiceResult<Pen.BestillBrevResponse>? =
-        newSuspendedTransaction {
-            val brevredigering = Brevredigering.findByIdAndSaksId(brevId, saksId)
-            val document = brevredigering?.document?.firstOrNull()
+    suspend fun sendBrev(call: ApplicationCall, saksId: Long, brevId: Long, distribuer: Boolean): ServiceResult<Pen.BestillBrevResponse>? {
+        val (brevredigering, document) = transaction { Brevredigering.findByIdAndSaksId(brevId, saksId).let { it to it?.document?.firstOrNull() } }
 
-            if (document != null) {
-                brevbakerService.getRedigerbarTemplate(call, brevredigering.brevkode).then {
-                    penService.sendbrev(
-                        call,
-                        SendRedigerbartBrevRequest(
-                            dokumentDato = document.dokumentDato,
-                            saksId = brevredigering.saksId,
-                            enhetId = brevredigering.avsenderEnhetId,
-                            templateDescription = it,
-                            brevkode = brevredigering.brevkode,
-                            pdf = document.pdf.bytes,
-                            eksternReferanseId = "skribenten:${brevredigering.id}",
-                        )
-                    )
-                }.onOk {
-                    if (it.journalpostId != null) {
-                        document.delete()
-                        brevredigering.delete()
-                    }
+        return if (brevredigering != null && document != null) {
+            brevbakerService.getRedigerbarTemplate(call, brevredigering.brevkode).then {
+                penService.sendbrev(
+                    call,
+                    SendRedigerbartBrevRequest(
+                        dokumentDato = document.dokumentDato,
+                        saksId = brevredigering.saksId,
+                        enhetId = brevredigering.avsenderEnhetId,
+                        templateDescription = it,
+                        brevkode = brevredigering.brevkode,
+                        pdf = document.pdf.bytes,
+                        eksternReferanseId = "skribenten:${brevredigering.id}",
+                    ),
+                    distribuer = distribuer,
+                )
+            }.onOk {
+                if (it.journalpostId != null) {
+                    document.delete()
+                    brevredigering.delete()
                 }
-            } else null
-        }
+            }
+        } else null
+    }
 
     private fun Brevredigering.mapBrev(): Api.BrevResponse =
         Api.BrevResponse(
