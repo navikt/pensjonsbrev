@@ -5,7 +5,6 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.Omstil
 
 fun createOmstillingsstoenadAktivitetspliktInformasjon6mndDto() =
     OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO(
-        innhold = emptyList(),
         redusertEtterInntekt = true,
         nasjonalEllerUtland = NasjonalEllerUtland.NASJONAL
     )

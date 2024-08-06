@@ -10,18 +10,15 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
-import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAktivitetspliktFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTOSelectors.nasjonalEllerUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTOSelectors.redusertEtterInntekt
 
 data class OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO(
-    override val innhold: List<Element>,
     val redusertEtterInntekt: Boolean,
     val nasjonalEllerUtland: NasjonalEllerUtland,
-) : BrevDTO
+)
 
 @TemplateModelHelpers
 object OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold : EtterlatteTemplate<OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO> {
