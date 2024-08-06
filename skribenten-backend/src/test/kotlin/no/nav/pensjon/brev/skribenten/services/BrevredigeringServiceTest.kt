@@ -197,7 +197,7 @@ class BrevredigeringServiceTest {
 
         // Må generere pdf nå, slik at sendBrev ikke returnerer null pga. manglende dokument
         brevredigeringService.hentEllerOpprettPdf(call = callMock(), saksId = sak.saksId, brevId = brev.info.id)
-        assertThat(brevredigeringService.sendBrev(call = callMock(), saksId = sak.saksId + 1, brevId = brev.info.id)).isNull()
+        assertThat(brevredigeringService.sendBrev(call = callMock(), saksId = sak.saksId + 1, brevId = brev.info.id, true)).isNull()
         assertThat(brevredigeringService.slettBrev(saksId = sak.saksId + 1, brevId = brev.info.id)).isFalse()
     }
 
