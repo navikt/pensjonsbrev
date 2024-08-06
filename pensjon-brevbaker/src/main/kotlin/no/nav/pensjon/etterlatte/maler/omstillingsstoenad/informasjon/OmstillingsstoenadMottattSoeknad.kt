@@ -77,7 +77,7 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
                         list {
                             item {
                                 text(
-                                    Bokmal to "changes in family or care relationships",
+                                    Bokmal to "endringer av nåværende familie- eller omsorgsforhold",
                                     Nynorsk to "endringar i noverande familie- eller omsorgsforhold",
                                     English to "varig opphald på ein institusjon",
                                 )

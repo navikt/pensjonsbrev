@@ -94,7 +94,7 @@ object OmstillingsstoenadMottattSoeknadRedigerbart :
                             English to
                                 "You must contact the national insurance authority in the country where you live to apply " +
                                 "for an adjustment allowance. This country’s national insurance authority will then " +
-                                "forward your application to NAV. The application we received has therefore been terminated and will not be processed. ",
+                                "forward your application to NAV. The application we received has therefore been terminated and will not be processed.",
                         )
                     }
                 }
