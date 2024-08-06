@@ -5,7 +5,6 @@ import java.time.LocalDate
 
 fun createOmstillingsstoenadMotattSoekdnadDTO() =
     OmstillingsstoenadMottattSoeknadDTO(
-        innhold = emptyList(),
         mottattDato = LocalDate.of(2024, 5, 1),
         borINorgeEllerIkkeAvtaleland = true,
     )

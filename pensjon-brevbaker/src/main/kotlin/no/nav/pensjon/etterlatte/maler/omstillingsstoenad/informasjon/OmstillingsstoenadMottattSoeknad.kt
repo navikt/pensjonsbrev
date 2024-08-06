@@ -14,18 +14,15 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
-import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.borINorgeEllerIkkeAvtaleland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.mottattDato
 import java.time.LocalDate
 
 data class OmstillingsstoenadMottattSoeknadDTO(
-    override val innhold: List<Element>,
     val mottattDato: LocalDate,
     val borINorgeEllerIkkeAvtaleland: Boolean,
-) : BrevDTO
+)
 
 @TemplateModelHelpers
 object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadMottattSoeknadDTO> {
