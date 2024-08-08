@@ -11,7 +11,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTOSelectors.borIUtlandet
 
@@ -82,7 +81,36 @@ object OmstillingsstoenadInnhentingAvOpplysninger : EtterlatteTemplate<Omstillin
                         English to "If you are submitting anything through the mail, you must use the following address:",
                     )
                 }
-                postadresse(borIUtlandet)
+                paragraph {
+                    text(
+                        Bokmal to "NAV skanning",
+                        Nynorsk to "NAV skanning",
+                        English to "NAV skanning",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Postboks 1400",
+                        Nynorsk to "Postboks 1400",
+                        English to "Postboks 1400",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "0109 Oslo",
+                        Nynorsk to "0109 Oslo",
+                        English to "0109 Oslo",
+                    )
+                }
+                showIf(borIUtlandet) {
+                    paragraph {
+                        text(
+                            Bokmal to "Norge/Norway",
+                            Nynorsk to "Norge/Norway",
+                            English to "Norge/Norway",
+                        )
+                    }
+                }
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
         }
