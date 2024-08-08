@@ -36,7 +36,6 @@ data class GeneriskRedigerbarBrevdata(
 
 class KanIkkeReservereBrevredigeringException(override val message: String, val response: Api.ReservasjonResponse) : RuntimeException(message)
 
-// TODO: newSuspendedTransaction er blocking, så vi bør mest sannsynlig holde kall til andre tjenester utenfor transaksjoner.
 class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val penService: PenService,
