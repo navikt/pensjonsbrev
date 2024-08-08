@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTOSelectors.borIUtlandet
 
@@ -60,16 +61,16 @@ object OmstillingsstoenadInnhentingAvOpplysninger : EtterlatteTemplate<Omstillin
                 paragraph {
                     text(
                         Bokmal to "Du kan logge deg inn på våre nettsider for å sende oss opplysninger. " +
-                            "Du kan også chatte eller sende melding via nav.no/skrivtiloss. " +
-                            "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, " +
+                            "Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. " +
+                            "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside ${Constants.NAV_URL}, " +
                             "kan du kontakte oss på telefon.",
                         Nynorsk to "Du kan logge deg inn på nettsidene våre for å sende oss opplysningar. " +
-                            "Du kan også chatte eller sende melding via nav.no/skrivtiloss. " +
-                            "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, " +
+                            "Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. " +
+                            "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår ${Constants.NAV_URL}, " +
                             "kan du kontakte oss på telefon.",
                         English to "You can log in to our website to submit information. " +
-                            "You can also use nav.no/skrivtiloss/en to chat with us or send us a message. " +
-                            "If you do not have BankID or another option to log in to our website, nav.no, " +
+                            "You can also use ${Constants.Engelsk.SKRIVTILOSS_URL} to chat with us or send us a message. " +
+                            "If you do not have BankID or another option to log in to our website, ${Constants.NAV_URL}, " +
                             "you can also call us.",
                     )
                 }
