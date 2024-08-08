@@ -99,6 +99,7 @@ object Fixtures {
 
             OmstillingstoenadInformasjonDoedsfallDTO::class -> createOmstillingsstoenadInformasjonDoedsfallDto() as T
             OmstillingsstoenadMottattSoeknadDTO::class -> createOmstillingsstoenadMotattSoekdnadDTO() as T
+            OmstillingsstoenadInnhentingAvOpplysningerDTO::class -> createOmstillingsstoenadInnhentingAvOpplysningerDTO() as T
             OmstillingsstoenadInnvilgelseDTO::class -> createOmstillingsstoenadInnvilgelseDTO() as T
             OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class -> createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() as T
             OmstillingstoenadAvslagDTO::class -> createOmstillingsstoenadAvslagDTO() as T
