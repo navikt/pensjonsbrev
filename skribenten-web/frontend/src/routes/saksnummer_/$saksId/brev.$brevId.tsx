@@ -38,7 +38,7 @@ function RedigerBrevPage() {
       />
     );
   } else if (brevQuery.data) {
-    return <RedigerBrev brev={brevQuery.data} doReload={brevQuery.refetch} />;
+    return <RedigerBrev brev={brevQuery.data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={undefined} />;
   } else {
     return <div>Laster...</div>;
   }
@@ -73,7 +73,17 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
   }
 };
 
-const RedigerBrev = ({ brev, doReload }: { brev: BrevResponse; doReload: () => void }) => {
+function RedigerBrev({
+  brev,
+  doReload,
+  saksId,
+  vedtaksId,
+}: {
+  brev: BrevResponse;
+  doReload: () => void;
+  saksId: string;
+  vedtaksId: string | undefined;
+}) {
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
 
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
@@ -127,6 +137,8 @@ const RedigerBrev = ({ brev, doReload }: { brev: BrevResponse; doReload: () => v
           defaultValues={brev.saksbehandlerValg}
           disableSubmit={saksbehandlerValgMutation.isPending}
           onSubmit={saksbehandlerValgMutation.mutate}
+          saksId={saksId}
+          vedtaksId={vedtaksId}
         />
         <LetterEditor
           editorState={editorState}
@@ -136,7 +148,7 @@ const RedigerBrev = ({ brev, doReload }: { brev: BrevResponse; doReload: () => v
       </div>
     </>
   );
-};
+}
 
 function useHurtiglagreMutation<T>(
   brevId: number,
