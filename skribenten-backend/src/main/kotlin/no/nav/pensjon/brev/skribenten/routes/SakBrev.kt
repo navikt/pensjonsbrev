@@ -20,7 +20,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val spraak = request.spraak.toLanguageCode()
             val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
 
-            brevredigeringService.opprettBrev(call, sak, request.brevkode, spraak, avsenderEnhetsId, request.saksbehandlerValg)
+            brevredigeringService.opprettBrev(call, sak, request.brevkode, spraak, avsenderEnhetsId, request.saksbehandlerValg, true)
                 .onOk { brev ->
                     call.respond(HttpStatusCode.Created, brev)
                 }.onError { message, statusCode ->
@@ -114,9 +114,10 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
         post("/{brevId}/pdf/send") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
+            val distribuer = call.parameters["distribuer"].toBoolean()
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.sendBrev(call = call, saksId = sak.saksId, brevId = brevId)
+            brevredigeringService.sendBrev(call = call, saksId = sak.saksId, brevId = brevId, distribuer = distribuer)
                 ?.onOk { call.respond(HttpStatusCode.OK, it) }
                 ?.onError { error, _ -> call.respond(HttpStatusCode.InternalServerError, error) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
