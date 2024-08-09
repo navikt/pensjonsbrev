@@ -9,6 +9,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbil
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOS
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNor
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PSfnr
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.Vedtaksdata
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsData
@@ -39,9 +41,12 @@ fun createPE() =
             pe_ut_sum_fattnorge_framtidigttnorge_div_12 = 20,
             pe_barnetilleggfelles_justeringsbelopperarutenminus = Kroner(1881),
             pe_barnetilleggserkull_justeringsbelopperarutenminus = Kroner(1882),
-            pe_ut_virkningstidpunktarminus1ar = 2019
+            pe_ut_virkningstidpunktarminus1ar = 2019,
+            pe_ut_vilfylle67ivirkningfomar = true,
+            pe_ut_virkningfomar = 2020,
         ),
-        pebrevkode = "PE_UT_05_100"
+        pebrevkode = "PE_UT_05_100",
+        personsak = PersonSak(PSfnr("01019878910"))
     )
 
 fun createVedtaksbrev(): Vedtaksbrev =
@@ -233,6 +238,7 @@ fun createBarnetilleggSerkull() =
         btsbnetto = Kroner(8450),
         btsbinntektbruktiavkortning = Kroner(8451),
         btsbfribelop = Kroner(8452),
+        antallbarnserkull = 2,
     )
 
 fun createBarnetilleggFelles() =
@@ -245,6 +251,7 @@ fun createBarnetilleggFelles() =
         btfbbelopfratrukketannenforeldersinntekt = Kroner(1203),
         btfbfribelop = Kroner(1204),
         btfbinntektannenforelder = Kroner(1205),
+        antallbarnfelles = 2,
     )
 
 fun createAvkortningsInformasjonBT() =

@@ -118,3 +118,4 @@ fun <T> Expression<T>.format(formatter: LocalizedFormatter<T>): StringExpression
         second = Expression.FromScope.Language,
         operation = formatter,
     )
+

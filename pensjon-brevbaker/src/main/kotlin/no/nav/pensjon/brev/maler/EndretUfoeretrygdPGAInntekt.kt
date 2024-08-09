@@ -6,6 +6,15 @@ import no.nav.pensjon.brev.api.model.maler.EndretUfoeretrygdPGAInntektDtoSelecto
 import no.nav.pensjon.brev.api.model.maler.EndretUfoeretrygdPGAInntektDtoSelectors.opplysningerBruktIBeregningenLegacyDto
 import no.nav.pensjon.brev.api.model.maler.EndretUfoeretrygdPGAInntektDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.EndretUfoeretrygdPGAInntektDtoSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_barnetilleggfelles_justeringsbelopperarutenminus
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_barnetilleggserkull_justeringsbelopperarutenminus
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_nettoakk_pluss_nettorestar
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_vilfylle67ivirkningfomar
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_virkningfomar
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_virkningstidpunktarminus1ar
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.beregningsdata_safe
@@ -68,9 +77,12 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.uforegrad_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype_safe
 import no.nav.pensjon.brev.maler.fraser.FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear
+import no.nav.pensjon.brev.maler.fraser.pe_ut_barnet_barna_felles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.generated.*
+import no.nav.pensjon.brev.maler.fraser.pe_ut_barnet_barna_felles_serkull
+import no.nav.pensjon.brev.maler.fraser.pe_ut_barnet_barna_serkull
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -107,18 +119,25 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus: Expression<Kroner> = Kroner(4741).expr()
-        val PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus: Expression<Kroner> = Kroner(1433).expr()
-        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: Expression<String> = "<TEXTVARIABEL:2527>".expr()
-        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall: Expression<String> = "<TEXTVARIABEL:7856>".expr()
-        val PE_UT_Barnet_Barna_Felles: Expression<String> = "<TEXTVARIABEL:8092>".expr()
-        val PE_UT_Barnet_Barna_Felles_serkull: Expression<String> = "<TEXTVARIABEL:7252>".expr()
-        val PE_UT_Barnet_Barna_Serkull: Expression<String> = "<TEXTVARIABEL:3572>".expr()
-        val PE_UT_NettoAkk_pluss_NettoRestAr: Expression<Kroner> = Kroner(3579).expr()
-        val PE_UT_VilFylle67iVirkningFomAr: Expression<Boolean> = true.expr()
-        val PE_UT_VirkningFomAr: Expression<String> = "<TEXTVARIABEL:9790>".expr()
-        val PE_UT_VirkningstidpunktArMinus1Ar: Expression<Int> = 9413.expr()
+        val PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus: Expression<Kroner> =
+            pe.functions.pe_barnetilleggfelles_justeringsbelopperarutenminus
+        val PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus: Expression<Kroner> =
+            pe.functions.pe_barnetilleggserkull_justeringsbelopperarutenminus
+        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: Expression<String> =
+            pe.functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut
+        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall: Expression<String> =
+            pe.functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
+
+        val PE_UT_Barnet_Barna_Felles: Expression<String> = pe.pe_ut_barnet_barna_felles()
+        val PE_UT_Barnet_Barna_Felles_serkull: Expression<String> = pe.pe_ut_barnet_barna_felles_serkull()
+        val PE_UT_Barnet_Barna_Serkull: Expression<String> = pe.pe_ut_barnet_barna_serkull()
+        val PE_UT_NettoAkk_pluss_NettoRestAr: Expression<Kroner> = pe.functions.pe_ut_nettoakk_pluss_nettorestar
+
+        val PE_UT_VilFylle67iVirkningFomAr: Expression<Boolean> = pe.functions.pe_ut_vilfylle67ivirkningfomar
         val PE_VedtaksData_VirkningFOM: Expression<LocalDate?> = pe.vedtaksbrev_safe.vedtaksdata_safe.virkningfom_safe
+        val PE_UT_VirkningFomAr: Expression<String> = pe.functions.pe_ut_virkningfomar.format()
+        val PE_UT_VirkningstidpunktArMinus1Ar: Expression<Int> = pe.functions.pe_ut_virkningstidpunktarminus1ar
+
 
         val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr: Expression<Kroner> =
             pe.vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggfelles_safe.avkortningsinformasjon_safe.avkortingsbelopperar_safe.ifNull(Kroner(0))

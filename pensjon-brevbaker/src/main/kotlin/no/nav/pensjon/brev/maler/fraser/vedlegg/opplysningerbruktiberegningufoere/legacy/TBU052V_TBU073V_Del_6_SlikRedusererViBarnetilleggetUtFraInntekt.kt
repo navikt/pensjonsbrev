@@ -33,9 +33,16 @@ data class TBU052V_TBU073V_Del_6_SlikRedusererViBarnetilleggetUtFraInntekt(
 
         paragraph {
             text(
-                Bokmal to "Størrelsen på barnetillegget er avhengig av inntekt. Barnetillegget blir redusert ut fra personinntekt. Dette kan for eksempel være:",
-                Nynorsk to "Storleiken på barnetillegget er avhengig av inntekt.Barnetillegget kan bli redusert ut frå personinntekt. Dette kan til dømes være:",
-                English to "The amount of child supplement depends on your income. The child supplement is reduced on the basis of personal income. This can be for example:",
+                Bokmal to "Størrelsen på barnetillegget er avhengig av inntekt.",
+                Nynorsk to "Storleiken på barnetillegget er avhengig av inntekt.",
+                English to "The amount of child supplement depends on your income.",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Barnetillegget blir redusert ut fra personinntekt. Dette kan for eksempel være:",
+                Nynorsk to "Barnetillegget kan bli redusert ut frå personinntekt. Dette kan til dømes være:",
+                English to "The child supplement is reduced on the basis of personal income. This can be for example:",
             )
             list {
                 item {
@@ -146,7 +153,7 @@ data class TBU052V_TBU073V_Del_6_SlikRedusererViBarnetilleggetUtFraInntekt(
         }
 
 
-        //IF(PE_UT_TBU601V_TBU604V() = true AND ((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0)  OR (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0))  ) THEN      INCLUDE ENDIF
+        //IF(pe_ut_tbu601v_tbu604v() = true AND ((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0)  OR (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0))  ) THEN      INCLUDE ENDIF
         showIf(
             (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0)
                     and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget
