@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -13,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import kotlin.text.Typography.paragraph
 
 data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
     val pe: Expression<PE>
@@ -1383,6 +1381,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             Bokmal to "Reduksjon av barnetillegg for fellesbarn før skatt ",
                             Nynorsk to "Reduksjon av barnetillegg for fellesbarn før skatt ",
                             English to "Reduction of child supplement payment for joint children before tax,",
+                            FontType.BOLD
                         )
 
                         //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
@@ -1760,6 +1759,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt ",
                                 Nynorsk to "Reduksjon av barnetillegg for særkullsbarn før skatt ",
                                 English to "Reduction of child supplement payment for children from a previous relationship before tax, ",
+                                FontType.BOLD
                             )
 
                             //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
