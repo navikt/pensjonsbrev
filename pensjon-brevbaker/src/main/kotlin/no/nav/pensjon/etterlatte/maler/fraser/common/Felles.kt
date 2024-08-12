@@ -1,16 +1,15 @@
 package no.nav.pensjon.etterlatte.maler.fraser.common
 
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 
 object Felles {
-
     object BlankTekst : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
@@ -103,4 +102,78 @@ object Felles {
         }
     }
 
+    data class HvordanSendeOpplysninger(
+        val utland: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Hvordan sende opplysninger til oss?",
+                    Nynorsk to "Korleis melder du frå om endringar?",
+                    English to "How to submit information to NAV?",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du kan logge deg inn på våre nettsider for å sende oss opplysninger. " +
+                        "Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. " +
+                        "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside ${Constants.NAV_URL}, " +
+                        "kan du kontakte oss på telefon.",
+                    Nynorsk to "Du kan logge deg inn på nettsidene våre for å sende oss opplysningar. " +
+                        "Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. " +
+                        "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår ${Constants.NAV_URL}, " +
+                        "kan du kontakte oss på telefon.",
+                    English to "You can log in to our website to submit information. " +
+                        "You can also use ${Constants.Engelsk.SKRIVTILOSS_URL} to chat with us or send us a message. " +
+                        "If you do not have BankID or another option to log in to our website, ${Constants.NAV_URL}, " +
+                        "you can also call us.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Skal du sende oss noe per post må du bruke adressen",
+                    Nynorsk to "Skal du sende oss noko per post, bruker du adressa",
+                    English to "If you are submitting anything through the mail, you must use the following address:",
+                )
+            }
+            includePhrase(AdresseMedMellomrom(utland))
+        }
+    }
+
+    data class AdresseMedMellomrom(
+        val utland: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "NAV skanning",
+                    Nynorsk to "NAV skanning",
+                    English to "NAV skanning",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Postboks 1400",
+                    Nynorsk to "Postboks 1400",
+                    English to "Postboks 1400",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "0109 Oslo",
+                    Nynorsk to "0109 Oslo",
+                    English to "0109 Oslo",
+                )
+            }
+            showIf(utland) {
+                paragraph {
+                    text(
+                        Bokmal to "Norge/Norway",
+                        Nynorsk to "Norge/Norway",
+                        English to "Norge/Norway",
+                    )
+                }
+            }
+        }
+    }
 }
