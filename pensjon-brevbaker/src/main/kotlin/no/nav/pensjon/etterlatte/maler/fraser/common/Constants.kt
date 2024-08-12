@@ -18,7 +18,7 @@ object Constants {
     const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelopet"
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
     const val ETTERSENDE_OMS_URL = "$NAV_URL/ettersende#omstillingsstonad"
-    const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
+    const val BESKJED_TIL_NAV_URL = "$NAV_URL/send-beskjed"
     const val BP_SKATTETREKK = "$NAV_URL/barnepensjon#skattetrekk"
     const val SKATTETREKK_ETTERBETALING_URL = "$NAV_URL/skattetrekk#etterbetaling"
     const val SKATTETREKK_KILDESKATT_URL = "$NAV_URL/skattetrekk#kildeskatt"
