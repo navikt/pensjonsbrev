@@ -1,25 +1,29 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.fraser.pebrevkode
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_kravhode_kravarsaktype
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 data class TBU034V_036V(
-    val PE_pebrevkode: Expression<String>,
-    val PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense: Expression<Kroner>, //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad: Expression<Int>,
+    val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         //IF(PE_pebrevkode <> "PE_UT_05_100" AND PE_pebrevkode <> "PE_UT_07_100" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense <> 60000 AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300") THEN      INCLUDE ENDIF
         showIf(
-            PE_pebrevkode.notEqualTo("PE_UT_05_100")
-                    and PE_pebrevkode.notEqualTo("PE_UT_07_100")
-                    and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense.notEqualTo(60000)
+            pe.pebrevkode().notEqualTo("PE_UT_05_100")
+                    and pe.pebrevkode().notEqualTo("PE_UT_07_100")
+                    and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense()
+                .notEqualTo(
+                    60000
+                )
 
         ) {
             //[TBU034V-TBU36V]
@@ -34,7 +38,13 @@ data class TBU034V_036V(
         }
 
         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300") THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad.greaterThan(0) and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_07_200") and PE_pebrevkode.notEqualTo("PE_UT_06_300"))) {
+        showIf(
+            (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()
+                .greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype()
+                .notEqualTo(
+                    "soknad_bt"
+                ) and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode()
+                .notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300"))) {
             //[TBU034V-TBU36V]
 
             title1 {
@@ -56,13 +66,17 @@ data class TBU034V_036V(
 
         //IF(PE_pebrevkode <> "PE_UT_07_100"  AND PE_pebrevkode <> "PE_UT_05_100"  AND PE_pebrevkode <> "PE_UT_04_300"  AND PE_pebrevkode <> "PE_UT_14_300"  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense <> 60000  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt"  AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109"  AND PE_pebrevkode <> "PE_UT_07_200"   AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_500"  AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod")))) THEN      INCLUDE ENDIF
         showIf(
-            (PE_pebrevkode.notEqualTo("PE_UT_07_100")
-                    and PE_pebrevkode.notEqualTo("PE_UT_05_100")
-                    and PE_pebrevkode.notEqualTo("PE_UT_04_300")
-                    and PE_pebrevkode.notEqualTo("PE_UT_14_300")
-                    and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense.notEqualTo(60000)
-                    and (PE_pebrevkode.notEqualTo("PE_UT_04_500") and (PE_pebrevkode.notEqualTo("PE_UT_04_102") or (PE_pebrevkode.equalTo("PE_UT_04_102")
-                    and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("tilst_dod")))))
+            (pe.pebrevkode().notEqualTo("PE_UT_07_100")
+                    and pe.pebrevkode().notEqualTo("PE_UT_05_100")
+                    and pe.pebrevkode().notEqualTo("PE_UT_04_300")
+                    and pe.pebrevkode().notEqualTo("PE_UT_14_300")
+                    and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense()
+                .notEqualTo(
+                    60000
+                )
+                    and (pe.pebrevkode()
+                .notEqualTo("PE_UT_04_500") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102")
+                    and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))))
         ) {
             //[TBU034V-TBU36V]
 

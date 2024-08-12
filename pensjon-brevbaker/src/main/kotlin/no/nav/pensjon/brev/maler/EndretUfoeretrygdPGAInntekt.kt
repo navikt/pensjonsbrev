@@ -6,8 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.EndretUfoeretrygdPGAInntektDtoSelecto
 import no.nav.pensjon.brev.api.model.maler.EndretUfoeretrygdPGAInntektDtoSelectors.opplysningerBruktIBeregningenLegacyDto
 import no.nav.pensjon.brev.api.model.maler.EndretUfoeretrygdPGAInntektDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.EndretUfoeretrygdPGAInntektDtoSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_barnetilleggfelles_justeringsbelopperarutenminus
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_barnetilleggserkull_justeringsbelopperarutenminus
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_nettoakk_pluss_nettorestar
@@ -76,13 +74,10 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.instoppholdtype_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.uforegrad_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype_safe
-import no.nav.pensjon.brev.maler.fraser.FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear
-import no.nav.pensjon.brev.maler.fraser.pe_ut_barnet_barna_felles
+import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.generated.*
-import no.nav.pensjon.brev.maler.fraser.pe_ut_barnet_barna_felles_serkull
-import no.nav.pensjon.brev.maler.fraser.pe_ut_barnet_barna_serkull
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -119,18 +114,14 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus: Expression<Kroner> =
-            pe.functions.pe_barnetilleggfelles_justeringsbelopperarutenminus
-        val PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus: Expression<Kroner> =
-            pe.functions.pe_barnetilleggserkull_justeringsbelopperarutenminus
-        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: Expression<String> =
-            pe.functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut
-        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall: Expression<String> =
-            pe.functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
+        val PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus: Expression<Kroner> = pe.barnetilleggfelles_justeringsbelopperarutenminus()
+        val PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus: Expression<Kroner> = pe.barnetilleggserkull_justeringsbelopperarutenminus()
+        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: Expression<String> = pe.functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut
+        val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall: Expression<String> = pe.functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
 
-        val PE_UT_Barnet_Barna_Felles: Expression<String> = pe.pe_ut_barnet_barna_felles()
+        val PE_UT_Barnet_Barna_Felles: Expression<String> = pe.ut_barnet_barna_felles()
         val PE_UT_Barnet_Barna_Felles_serkull: Expression<String> = pe.pe_ut_barnet_barna_felles_serkull()
-        val PE_UT_Barnet_Barna_Serkull: Expression<String> = pe.pe_ut_barnet_barna_serkull()
+        val PE_UT_Barnet_Barna_Serkull: Expression<String> = pe.ut_barnet_barna_serkull()
         val PE_UT_NettoAkk_pluss_NettoRestAr: Expression<Kroner> = pe.functions.pe_ut_nettoakk_pluss_nettorestar
 
         val PE_UT_VilFylle67iVirkningFomAr: Expression<Boolean> = pe.functions.pe_ut_vilfylle67ivirkningfomar

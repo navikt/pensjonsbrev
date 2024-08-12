@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.fraser.pebrevkode
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -9,9 +13,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class TBUxx4v_og_TBU048V_TBU055V(
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad: Expression<Int>,
-    val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse: Expression<String>,
-    val PE_pebrevkode: Expression<String>
+    val pe: Expression<PE>,
 ): OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
@@ -62,7 +64,7 @@ data class TBUxx4v_og_TBU048V_TBU055V(
         }
 
         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100) THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad.lessThan(100))){
+        showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100))){
             //[TBUxx4 og TBU048V-TBU055V]
 
             paragraph {
@@ -94,7 +96,12 @@ data class TBUxx4v_og_TBU048V_TBU055V(
 
 
         //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_3" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_4" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_5" OR PE_pebrevkode = "PE_UT_04_500") THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse.equalTo("stdbegr_12_8_2_3") or PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse.equalTo("stdbegr_12_8_2_4") or PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse.equalTo("stdbegr_12_8_2_5") or PE_pebrevkode.equalTo("PE_UT_04_500"))){
+        showIf(
+            (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
+                .equalTo("stdbegr_12_8_2_3") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
+                .equalTo("stdbegr_12_8_2_4") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo(
+                "stdbegr_12_8_2_5"
+            ) or pe.pebrevkode().equalTo("PE_UT_04_500"))){
             //[TBUxx4 og TBU048V-TBU055V]
 
             paragraph {
@@ -107,7 +114,12 @@ data class TBUxx4v_og_TBU048V_TBU055V(
         }
 
         //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_3" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_4" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_5" OR PE_pebrevkode = "PE_UT_04_500") THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse.equalTo("stdbegr_12_8_2_3") or PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse.equalTo("stdbegr_12_8_2_4") or PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse.equalTo("stdbegr_12_8_2_5") or PE_pebrevkode.equalTo("PE_UT_04_500"))){
+        showIf(
+            (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
+                .equalTo("stdbegr_12_8_2_3") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
+                .equalTo("stdbegr_12_8_2_4") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo(
+                "stdbegr_12_8_2_5"
+            ) or pe.pebrevkode().equalTo("PE_UT_04_500"))){
             //[TBUxx4 og TBU048V-TBU055V]
 
             paragraph {
@@ -144,7 +156,9 @@ data class TBUxx4v_og_TBU048V_TBU055V(
 
 
         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad > 0) THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad.lessThan(100) and PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad.greaterThan(0))){
+        showIf(
+            (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                .lessThan(100) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().greaterThan(0))){
             //[TBUxx4 og TBU048V-TBU055V]
 
             paragraph {
@@ -165,7 +179,7 @@ data class TBUxx4v_og_TBU048V_TBU055V(
         }
 
         //IF(PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109") THEN      INCLUDE ENDIF
-        showIf(PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109")){
+        showIf(pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109")){
             //[TBUxx4 og TBU048V-TBU055V]
 
             title1 {

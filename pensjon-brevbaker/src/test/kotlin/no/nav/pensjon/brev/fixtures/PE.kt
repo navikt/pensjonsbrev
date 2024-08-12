@@ -39,11 +39,12 @@ fun createPE() =
             pe_ut_opplyningerombergeningen_nettoperar = Kroner(8315),
             pe_ut_overskytende = Kroner(8316),
             pe_ut_sum_fattnorge_framtidigttnorge_div_12 = 20,
-            pe_barnetilleggfelles_justeringsbelopperarutenminus = Kroner(1881),
-            pe_barnetilleggserkull_justeringsbelopperarutenminus = Kroner(1882),
             pe_ut_virkningstidpunktarminus1ar = 2019,
             pe_ut_vilfylle67ivirkningfomar = true,
             pe_ut_virkningfomar = 2020,
+            pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en = "spouse",
+            pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop = Kroner(1058),
+            pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop = Kroner(1087),
         ),
         pebrevkode = "PE_UT_05_100",
         personsak = PersonSak(PSfnr("01019878910"))
@@ -118,6 +119,7 @@ fun createVilkarsVedtak() =
     VilkarsVedtak(
         beregningsvilkar = createBeregningsVilkar(),
         vilkar = createVilkar(),
+        vilkarVirkningFom = LocalDate.of(2020,1,1)
     )
 
 fun createVilkar() =
@@ -130,6 +132,7 @@ fun createBeregningsVilkar() =
         ifuinntekt = Kroner(9938),
         trygdetid = createTrygdetid(),
         uforegrad = 100,
+        virkningstidpunkt = LocalDate.of(2020,2,12)
     )
 
 fun createTrygdetid() =
@@ -192,6 +195,8 @@ fun createReduksjonsgrunnlag() =
         barnetilleggregelverktype = "overgangsregler_2016",
         gradertoppjustertifu = Kroner(1938),
         prosentsatsoifufortak = 30,
+        sumbruttoforreduksjonbt = Kroner(8752),
+        sumbruttoetterreduksjonbt = Kroner(8510),
     )
 
 fun createBelopsendring() =
@@ -239,6 +244,8 @@ fun createBarnetilleggSerkull() =
         btsbinntektbruktiavkortning = Kroner(8451),
         btsbfribelop = Kroner(8452),
         antallbarnserkull = 2,
+        btsbbruttoperar = Kroner(8590),
+        btsbnettoperar = Kroner(19111),
     )
 
 fun createBarnetilleggFelles() =
@@ -252,6 +259,8 @@ fun createBarnetilleggFelles() =
         btfbfribelop = Kroner(1204),
         btfbinntektannenforelder = Kroner(1205),
         antallbarnfelles = 2,
+        btfbbruttoperar = Kroner(5819),
+        btfbnettoperar = Kroner(10085)
     )
 
 fun createAvkortningsInformasjonBT() =

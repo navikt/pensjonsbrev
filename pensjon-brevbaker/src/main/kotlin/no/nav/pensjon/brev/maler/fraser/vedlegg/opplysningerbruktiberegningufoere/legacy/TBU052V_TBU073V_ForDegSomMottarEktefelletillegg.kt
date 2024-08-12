@@ -1,5 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.fraser.pebrevkode
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_kravhode_kravarsaktype
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -9,22 +14,22 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(
-    val PE_pebrevkode: Expression<String>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget: Expression<Boolean>,
-    val PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats: Expression<Double>
+    val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         //IF(PE_pebrevkode <> "PE_UT_04_101"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt"  AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109"  AND PE_pebrevkode <> "PE_UT_04_500" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))) THEN      INCLUDE ENDIF
-        showIf((PE_pebrevkode.notEqualTo("PE_UT_04_101")
-                and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget
-                and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt")
-                and PE_pebrevkode.notEqualTo("PE_UT_04_108")
-                and PE_pebrevkode.notEqualTo("PE_UT_04_109")
-                and PE_pebrevkode.notEqualTo("PE_UT_04_500")
-                and PE_pebrevkode.notEqualTo("PE_UT_07_200")
-                and PE_pebrevkode.notEqualTo("PE_UT_06_300")
-                and (PE_pebrevkode.notEqualTo("PE_UT_04_102") or (PE_pebrevkode.equalTo("PE_UT_04_102") and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("tilst_dod"))))){
+        showIf((pe.pebrevkode().notEqualTo("PE_UT_04_101")
+                and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+                and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
+                and pe.pebrevkode().notEqualTo("PE_UT_04_108")
+                and pe.pebrevkode().notEqualTo("PE_UT_04_109")
+                and pe.pebrevkode().notEqualTo("PE_UT_04_500")
+                and pe.pebrevkode().notEqualTo("PE_UT_07_200")
+                and pe.pebrevkode().notEqualTo("PE_UT_06_300")
+                and (pe.pebrevkode()
+            .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
+            "tilst_dod"
+        ))))){
             //[TBU052V-TBU073V]
 
             title1 {
@@ -45,13 +50,21 @@ data class TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(
         }
 
         //IF( ( (PE_pebrevkode = "PE_UT_04_300"  OR  PE_pebrevkode = "PE_UT_14_300") AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true ) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true AND PE_pebrevkode <> "PE_UT_04_101" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_04_500" AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod")))  ) THEN      INCLUDE ENDIF
-        showIf((((PE_pebrevkode.equalTo("PE_UT_04_300") or PE_pebrevkode.equalTo("PE_UT_14_300")) and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget and PE_pebrevkode.notEqualTo("PE_UT_04_101") and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_04_500") and PE_pebrevkode.notEqualTo("PE_UT_06_300") and (PE_pebrevkode.notEqualTo("PE_UT_04_102") or (PE_pebrevkode.equalTo("PE_UT_04_102") and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("tilst_dod")))))){
+        showIf((((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode()
+            .equalTo("PE_UT_14_300")) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.pebrevkode()
+            .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode()
+            .notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode()
+            .notEqualTo("PE_UT_04_500") and pe.pebrevkode()
+            .notEqualTo("PE_UT_06_300") and (pe.pebrevkode()
+            .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
+            "tilst_dod"
+        )))))){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(PE_pebrevkode = "PE_UT_04_300" OR PE_pebrevkode = "PE_UT_14_300") THEN      INCLUDE ENDIF
-                showIf((PE_pebrevkode.equalTo("PE_UT_04_300") or PE_pebrevkode.equalTo("PE_UT_14_300"))){
+                showIf((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode().equalTo("PE_UT_14_300"))){
                     text (
                         Bokmal to "Når vi beregner ektefelletillegget tar vi utgangspunkt i den årlige uførepensjonen du har rett til i desember 2014. Deretter regner vi ut tillegget ut fra fastsatte overgangsregler. ",
                         Nynorsk to "Når vi bereknar ektefelletillegget, tek vi utgangspunkt i den årlege uførepensjonen du har rett til i desember 2014. Deretter reknar vi ut tillegget ut frå fastsette overgangsreglar. ",
@@ -60,7 +73,17 @@ data class TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(
                 }
 
                 //IF(PE_pebrevkode <> "PE_UT_04_101"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt"  AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109"  AND  PE_pebrevkode <> "PE_UT_04_500"  AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))) THEN      INCLUDE ENDIF
-                showIf((PE_pebrevkode.notEqualTo("PE_UT_04_101") and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_04_500") and PE_pebrevkode.notEqualTo("PE_UT_07_200") and PE_pebrevkode.notEqualTo("PE_UT_06_300") and (PE_pebrevkode.notEqualTo("PE_UT_04_102") or (PE_pebrevkode.equalTo("PE_UT_04_102") and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("tilst_dod"))))){
+                showIf((pe.pebrevkode()
+                    .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype()
+                    .notEqualTo(
+                        "soknad_bt"
+                    ) and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode()
+                    .notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode()
+                    .notEqualTo("PE_UT_07_200") and pe.pebrevkode()
+                    .notEqualTo("PE_UT_06_300") and (pe.pebrevkode()
+                    .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
+                    "tilst_dod"
+                ))))){
                     text (
                         Bokmal to "Du kan beholde ektefelletillegget ut vedtaksperioden, men det opphører senest 31. desember 2024.",
                         Nynorsk to "Du kan behalde ektefelletillegget ut vedtaksperioden, men det tek slutt seinast 31. desember 2024.",
@@ -71,7 +94,16 @@ data class TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(
         }
 
         //IF(PE_pebrevkode <> "PE_UT_04_101"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt"  AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109"  AND  PE_pebrevkode <> "PE_UT_04_500"  AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))) THEN      INCLUDE ENDIF
-        showIf((PE_pebrevkode.notEqualTo("PE_UT_04_101") and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("soknad_bt") and PE_pebrevkode.notEqualTo("PE_UT_04_108") and PE_pebrevkode.notEqualTo("PE_UT_04_109") and PE_pebrevkode.notEqualTo("PE_UT_04_500") and PE_pebrevkode.notEqualTo("PE_UT_07_200") and PE_pebrevkode.notEqualTo("PE_UT_06_300") and (PE_pebrevkode.notEqualTo("PE_UT_04_102") or (PE_pebrevkode.equalTo("PE_UT_04_102") and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("tilst_dod"))))){
+        showIf((pe.pebrevkode()
+            .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype()
+            .notEqualTo(
+                "soknad_bt"
+            ) and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode()
+            .notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode()
+            .notEqualTo("PE_UT_06_300") and (pe.pebrevkode()
+            .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
+            "tilst_dod"
+        ))))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -84,7 +116,12 @@ data class TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(
         }
 
         //IF(PE_pebrevkode = "PE_UT_04_300" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats = 3.76 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN      INCLUDE ENDIF
-        showIf((PE_pebrevkode.equalTo("PE_UT_04_300") and PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats.equalTo(3.76) and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget)){
+        showIf(
+            (pe.pebrevkode()
+                .equalTo("PE_UT_04_300") and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats()
+                .equalTo(
+                    3.76
+                ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget())){
             //[TBU052V-TBU073V]
 
             paragraph {

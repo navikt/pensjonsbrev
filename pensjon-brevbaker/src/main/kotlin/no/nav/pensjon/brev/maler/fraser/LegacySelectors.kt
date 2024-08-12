@@ -1,31 +1,86 @@
+@file:Suppress("FunctionName")
+
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_sum_fattnorge_framtidigttnorge_div_12
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.pebrevkode_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.GrunnlagSelectors.persongrunnlagsliste_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.brukerflyktning_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.personbostedsland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistebilateral_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglisteeos_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistenor_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.trygdetidbilateralland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.trygdetidfombilateral_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.trygdetideosland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateralSelectors.trygdetidsgrunnlagbilateral_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOSSelectors.trygdetidsgrunnlageos_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNorSelectors.trygdetidsgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.trygdetidfom_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.grunnlag_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.beregningsdata_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.kravhode_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.vilkarsvedtaklist_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningufore_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.belopgammelbtfb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.belopnybtfb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYKSelectors.belopgammelbtsb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYKSelectors.belopnybtsb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.barnetilleggfellesyk_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.barnetilleggserkullyk_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.uforetrygdordineryk_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.belopredusert_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.belopsendring_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.beregningsivilstandanvendt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.beregningvirkningdatofom_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.beregningytelseskomp_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.reduksjonsgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.totalnetto_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.uforetrygdberegning_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.MinsteytelseSelectors.sats_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.andelytelseavoifu_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.barnetilleggregelverktype_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.gradertoppjustertifu_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.prosentsatsoifufortak_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.sumbruttoetterreduksjonbt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.sumbruttoforreduksjonbt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.UforetrygdOrdinerYKSelectors.belopgammelut_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.UforetrygdOrdinerYKSelectors.belopnyut_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonBTSelectors.avkortingsbelopperar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonBTSelectors.fribelopperiodisert_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonBTSelectors.inntektperiodisert_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonBTSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonBTSelectors.justeringsbelopperar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.belopsgrense_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.forventetinntekt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.inntektsgrense_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.inntektstak_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.kompensasjonsgrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.oifu_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.ugradertbruttoperar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonSelectors.utbetalingsgrad_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.antallbarnfelles_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.avkortningsinformasjon_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbbelopfratrukketannenforeldersinntekt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbbrukersinntekttilavkortning_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbbruttoperar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbfribelop_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbinntektannenforelder_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbinntektbruktiavkortning_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbinnvilget_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbnetto_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbnettoperar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.antallbarnserkull_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.avkortningsinformasjon_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.btsbbruttoperar_safe
@@ -33,18 +88,52 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.btsbinntektbruktiavkortning_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.btsbinnvilget_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.btsbnetto_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.btsbnettoperar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.barnetilleggfelles_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.barnetilleggserkull_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.ektefelletillegg_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.gjenlevendetillegg_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.uforetrygdordiner_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.antallarinntektiavtaleland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.antallarover1g_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.EktefelletilleggSelectors.etinnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.GjenlevendetilleggSelectors.gtinnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.avkortningsinformasjon_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.fradrag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.minsteytelse_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.nettoakk_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.nettorestar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.ytelsesgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.YtelsesgrunnlagSelectors.beregningsgrunnlagordinar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.anvendttrygdetid_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.grunnbelop_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.mottarminsteytelse_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.uforegrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.yrkesskadegrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.boddarbeidutland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.brukerkonvertertup_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakListSelectors.vilkarsvedtak_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.yrkesskaderesultat_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.beregningsvilkar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkarVirkningFom_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.ieubegrunnelse_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.ifubegrunnelse_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.ifuinntekt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.trygdetid_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.uforegrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.TrygdetidSelectors.fatteos_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.TrygdetidSelectors.fattnorge_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.TrygdetidSelectors.framtidigtteos_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.TrygdetidSelectors.framtidigttnorsk_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.TrygdetidSelectors.redusertframtidigtrygdetid_safe
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.getOrNull
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import java.time.LocalDate
 
 fun Expression<PE>.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget(): Expression<Boolean> =
     vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggserkull_safe.btsbinnvilget_safe.ifNull(false)
@@ -106,12 +195,6 @@ fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskom
 fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar(): Expression<Kroner> =
     vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggserkull_safe.btsbnettoperar_safe.ifNull(Kroner(0))
 
-fun Expression<PE>.ut_barnet_barna_felles(): Expression<String> =
-    ut_safe.barnet_safe.barna_safe.felles_safe.ifNull("")
-
-fun Expression<PE>.ut_barnet_barna_serkull(): Expression<String> =
-    ut_safe.barnet_safe.barna_safe.serkull_safe.ifNull("")
-
 fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert(): Expression<Boolean> =
     vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggserkull_safe.avkortningsinformasjon_safe.fribelopperiodisert_safe.ifNull(false)
 
@@ -133,14 +216,14 @@ fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregni
 fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar(): Expression<Kroner> =
     vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggfelles_safe.btfbbruttoperar_safe.ifNull(Kroner(0))
 
-fun Expression<PE>.ut_btfbinntektbruktiavkortningminusbtfbfribelop(): Expression<Kroner> =
-    ut_safe.btfbinntektbruktiavkortningminusbtfbfribelop_safe.ifNull(Kroner(0))
-
 fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar(): Expression<Kroner> =
     vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggserkull_safe.btsbbruttoperar_safe.ifNull(Kroner(0))
 
 fun Expression<PE>.ut_btsbinntektbruktiavkortningminusbtsbfribelop(): Expression<Kroner> =
-    ut_safe.btsbinntektbruktiavkortningminusbtsbfribelop_safe.ifNull(Kroner(0))
+    functions.pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.ut_btfbinntektbruktiavkortningminusbtfbfribelop(): Expression<Kroner> =
+    functions.pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop.ifNull(Kroner(0))
 
 fun Expression<PE>.sivilstand_ektefelle_partner_samboer_bormed_ut(): Expression<String> =
     functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut.ifNull("")
@@ -155,8 +238,187 @@ fun Expression<PE>.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_
 fun Expression<PE>.sivilstand_ektefelle_partner_samboer_bormed_ut_en(): Expression<String> =
     functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en.ifNull("")
 
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom(): Expression<LocalDate?> =
+    vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkarVirkningFom_safe
+
+fun Expression<PE>.barnetilleggfelles_justeringsbelopperarutenminus() =
+    vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
+
 fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus(): Expression<Kroner> =
     vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggfelles_safe.avkortningsinformasjon_safe.justeringsbelopperar_safe.ifNull(Kroner(0)).absoluteValue()
 
+fun Expression<PE>.barnetilleggserkull_justeringsbelopperarutenminus() =
+    vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus()
+
 fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus(): Expression<Kroner> =
     vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggserkull_safe.avkortningsinformasjon_safe.justeringsbelopperar_safe.ifNull(Kroner(0)).absoluteValue()
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.belopsendring_safe.uforetrygdordineryk_safe.belopgammelut_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.belopsendring_safe.uforetrygdordineryk_safe.belopnyut_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.uforetrygdberegning_safe.mottarminsteytelse_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.avkortningsinformasjon_safe.utbetalingsgrad_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse(): Expression<String> =
+    vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.ifubegrunnelse_safe.ifNull("")
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom(): Expression<LocalDate?> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningvirkningdatofom_safe
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.uforetrygdberegning_safe.grunnbelop_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.ifuinntekt_safe.ifNull(Kroner(0))
+
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.uforetrygdberegning_safe.uforegrad_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.avkortningsinformasjon_safe.inntektsgrense_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.avkortningsinformasjon_safe.forventetinntekt_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad(): Expression<Double> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.avkortningsinformasjon_safe.kompensasjonsgrad_safe.ifNull(0.0)
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.avkortningsinformasjon_safe.inntektstak_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats(): Expression<Double> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.minsteytelse_safe.sats_safe.ifNull(0.0)
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.ektefelletillegg_safe.etinnvilget_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.uforetrygdberegning_safe.yrkesskadegrad_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.trygdetid_safe.fattnorge_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.trygdetid_safe.fatteos_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.trygdetid_safe.framtidigttnorsk_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.ytelsesgrunnlag_safe.beregningsgrunnlagordinar_safe.antallarover1g_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.ytelsesgrunnlag_safe.beregningsgrunnlagordinar_safe.antallarinntektiavtaleland_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.reduksjonsgrunnlag_safe.gradertoppjustertifu_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu(): Expression<Double> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.reduksjonsgrunnlag_safe.andelytelseavoifu_safe.ifNull(0.0)
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.reduksjonsgrunnlag_safe.prosentsatsoifufortak_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggfelles_safe.btfbinntektannenforelder_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggfelles_safe.btfbbelopfratrukketannenforeldersinntekt_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.avkortningsinformasjon_safe.belopsgrense_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggfelles_safe.btfbbrukersinntekttilavkortning_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.gjenlevendetillegg_safe.gtinnvilget_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.kravhode_safe.brukerkonvertertup_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigtteos(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.trygdetid_safe.framtidigtteos_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.trygdetid_safe.redusertframtidigtrygdetid_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieubegrunnelse(): Expression<String> =
+    vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.ieubegrunnelse_safe.ifNull("")
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.avkortningsinformasjon_safe.oifu_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.avkortningsinformasjon_safe.ugradertbruttoperar_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad(): Expression<Int> =
+    vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.uforegrad_safe.ifNull(0)
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.nettoakk_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettorestar(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.nettorestar_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_belopredusert(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.belopredusert_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_totalnetto(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.totalnetto_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.fradrag_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype(): Expression<String> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.reduksjonsgrunnlag_safe.barnetilleggregelverktype_safe.ifNull("")
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.reduksjonsgrunnlag_safe.sumbruttoforreduksjonbt_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.reduksjonsgrunnlag_safe.sumbruttoetterreduksjonbt_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.belopsendring_safe.barnetilleggfellesyk_safe.belopgammelbtfb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.belopsendring_safe.barnetilleggfellesyk_safe.belopnybtfb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.belopsendring_safe.barnetilleggserkullyk_safe.belopgammelbtsb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.belopsendring_safe.barnetilleggserkullyk_safe.belopnybtsb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.pebrevkode(): Expression<String> = pebrevkode_safe.ifNull("")
+
+fun Expression<PE>.vedtaksdata_kravhode_boddarbeidutland(): Expression<Boolean> = vedtaksbrev_safe.vedtaksdata_safe.kravhode_safe.boddarbeidutland_safe.ifNull(false)
+
+fun Expression<PE>.grunnlag_persongrunnlagsliste_brukerflyktning(): Expression<Boolean> =
+    vedtaksbrev.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().brukerflyktning_safe.ifNull(false)
+
+fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglisteeos_trygdetidsgrunnlageos_trygdetideosland(): Expression<String> =
+    vedtaksbrev.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglisteeos_safe.trygdetidsgrunnlageos_safe.getOrNull().trygdetideosland_safe.ifNull("")
+
+fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidbilateralland(): Expression<String> =
+    vedtaksbrev.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe.getOrNull().trygdetidbilateralland_safe.ifNull("")
+
+fun Expression<PE>.grunnlag_persongrunnlagsliste_personbostedsland(): Expression<String> =
+    vedtaksbrev.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().personbostedsland_safe.ifNull("")
+
+fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral(): Expression<LocalDate?> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe.getOrNull().trygdetidfombilateral_safe
+
+fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom(): Expression<LocalDate?> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe.getOrNull().trygdetidfom_safe
+
+fun Expression<PE>.ut_sum_fattnorge_framtidigttnorge_div_12(): Expression<Int> = functions.pe_ut_sum_fattnorge_framtidigttnorge_div_12
+

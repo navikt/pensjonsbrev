@@ -7,4 +7,6 @@ data class Reduksjonsgrunnlag(
     val barnetilleggregelverktype: String?,
     val gradertoppjustertifu: Kroner?,
     val prosentsatsoifufortak: Int?,
+    val sumbruttoforreduksjonbt: Kroner?,
+    val sumbruttoetterreduksjonbt: Kroner?,
 )

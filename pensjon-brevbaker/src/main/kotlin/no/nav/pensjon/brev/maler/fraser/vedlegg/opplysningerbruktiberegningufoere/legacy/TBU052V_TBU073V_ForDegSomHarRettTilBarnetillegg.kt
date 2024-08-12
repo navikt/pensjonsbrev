@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
-import no.nav.pensjon.brev.maler.fraser.FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -10,74 +11,17 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import java.time.LocalDate
 
 data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
-    val FUNKSJON_PE_UT_Etteroppgjor_BT_Utbetalt: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU605: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU605V_eller_til_din: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU606V_TBU608V: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU606V_TBU611V: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU608_Far_Ikke: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU609V_TBU611V: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU611_Far_Ikke: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU613V: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU613V_1_3: Expression<Boolean>,
-    val FUNKSJON_PE_UT_TBU613V_4_5: Expression<Boolean>,
-    val FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM: Expression<Kroner>,
-    val PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus: Expression<Kroner>,
-    val PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus: Expression<Kroner>,
-    val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: Expression<String>,
-    val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN: Expression<String>,
-    val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner: Expression<String>,
-    val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall: Expression<String>,
-    val PE_UT_BTFBInntektBruktiAvkortningMinusBTFBfribelop: Expression<Kroner>,
-    val PE_UT_BTSBinntektBruktiAvkortningMinusBTSBfribelop: Expression<Kroner>,
-    val PE_UT_Barnet_Barna_Felles: Expression<String>,
-    val PE_UT_Barnet_Barna_Serkull: Expression<String>,
-    val PE_UT_TBU069V: Expression<Boolean>,
-    val PE_UT_VirkningstidpunktStorreEnn01012016: Expression<Boolean>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr: Expression<Kroner>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert: Expression<Boolean>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert: Expression<Boolean>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_Inntektstak: Expression<Kroner>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr: Expression<Kroner>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr_UtenMinus: Expression<Kroner>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr: Expression<Kroner>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert: Expression<Boolean>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert: Expression<Boolean>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_Inntektstak: Expression<Kroner>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr: Expression<Kroner>,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr_UtenMinus: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbruttoPerAr: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBnettoPerAr: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBbruttoPerAr: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBnettoPerAr: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid: Expression<Int>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt: Expression<String>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles: Expression<Int>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBInntektBruktiAvkortning: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget: Expression<Boolean>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull: Expression<Int>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop: Expression<Kroner>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget: Expression<Boolean>,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto: Expression<Kroner>,
-    val PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String>,
-    val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM: Expression<LocalDate?>,
-    val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat: Expression<String>,
-
+    val pe: Expression<PE>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         //IF(PE_UT_TBU069V() = true) THEN      INCLUDE ENDIF
-        showIf(PE_UT_TBU069V){
+        showIf(pe.ut_tbu069v()) {
             //[TBU052V-TBU073V]
 
             paragraph {
-                text (
+                text(
                     Bokmal to "Slik beregner vi størrelsen på barnetillegget",
                     Nynorsk to "Slik bereknar vi storleiken på barnetillegget",
                     English to "How we calculate the amount of child supplement",
@@ -86,7 +30,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V)){
+        showIf((pe.ut_tbu069v())){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -99,7 +43,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V)){
+        showIf((pe.ut_tbu069v())){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -112,7 +56,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true   AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false ) ) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and not(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget)))){
+        showIf(
+            (pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(
+                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
+            )))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -125,7 +72,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true   AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false ) ) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and not(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget)))){
+        showIf(
+            (pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(
+                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
+            )))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -136,7 +86,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid < 40 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "oppfylt") THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid.lessThan(40) and PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat.notEqualTo("oppfylt"))){
+                showIf(
+                    (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
+                        .lessThan(40) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("oppfylt"))){
                     text (
                         Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har.",
                         Nynorsk to "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har.",
@@ -147,7 +99,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true   AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false ) ) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and not(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget)))){
+        showIf(
+            (pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(
+                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
+            )))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -160,20 +115,20 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false   AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true ) ) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V and (not(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget) and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget))){
+        showIf((pe.ut_tbu069v() and (not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
                     Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. ".expr(),
                     Nynorsk to "Vi fastset storleiken på barnetillegget ut frå inntekta di. Inntekt til ein ektefelle/partnar/sambuar som ikkje er forelder til barnet, har ikkje betydning for storleiken på barnetillegget.".expr(),
-                    English to "We determine the amount of child supplement based on your income. The income of a  ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner + "who is not a parent of the child does not affect the size of the child supplement.",
+                    English to "We determine the amount of child supplement based on your income. The income of a  ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + "who is not a parent of the child does not affect the size of the child supplement.",
                 )
             }
         }
 
         //IF(PE_UT_TBU069V() = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false   AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true ) ) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V and (not(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget) and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget))){
+        showIf((pe.ut_tbu069v() and (not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -184,7 +139,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid < 40 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "oppfylt") THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid.lessThan(40) and PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat.notEqualTo("oppfylt"))){
+                showIf(
+                    (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
+                        .lessThan(40) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("oppfylt"))){
                     text (
                         Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har.",
                         Nynorsk to "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har.",
@@ -195,7 +152,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false   AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true ) ) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V and (not(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget) and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget))){
+        showIf((pe.ut_tbu069v() and (not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -208,18 +165,18 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true   AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true ) ) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget))){
+        showIf((pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra inntekten til deg og din ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT + " for " + PE_UT_Barnet_Barna_Felles + " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. ",
-                    Nynorsk to "Vi fastset storleiken på barnetillegget ut frå inntekta til deg og ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall + " din for " + PE_UT_Barnet_Barna_Felles + " som bur med begge foreldra sine. Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn som bur med begge foreldra, er 4,6 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. ",
-                    English to "We determine the amount of the child supplement based on your and your ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN + "'s income for the " + PE_UT_Barnet_Barna_Felles + " that ",
+                    Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra inntekten til deg og din ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. ",
+                    Nynorsk to "Vi fastset storleiken på barnetillegget ut frå inntekta til deg og ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din for " + pe.ut_barnet_barna_felles() + " som bur med begge foreldra sine. Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn som bur med begge foreldra, er 4,6 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. ",
+                    English to "We determine the amount of the child supplement based on your and your ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en() + "'s income for the " + pe.ut_barnet_barna_felles() + " that ",
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles = 1
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles.equalTo(1)){
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().equalTo(1)){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -228,7 +185,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles > 1) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles.greaterThan(1))){
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().greaterThan(1))){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -244,18 +201,18 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true   AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true ) ) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget))){
+        showIf((pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "For ".expr() + PE_UT_Barnet_Barna_Serkull + " som ikke bor sammen med begge foreldre, fastsetter vi størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn som ikke bor sammen med begge foreldrene er 3,1 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. ",
-                    Nynorsk to "For ".expr() + PE_UT_Barnet_Barna_Serkull + " som ikkje bur saman med begge foreldra, fastset vi storleiken på barnetillegget ut frå inntekta di. Inntekt til ein ektefelle/partnar/sambuar som ikkje er forelder til barnet, har ikkje betydning for storleiken på barnetillegget. Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn som ikkje bur saman med begge foreldra, er 3,1 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. ",
+                    Bokmal to "For ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldre, fastsetter vi størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn som ikke bor sammen med begge foreldrene er 3,1 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. ",
+                    Nynorsk to "For ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra, fastset vi storleiken på barnetillegget ut frå inntekta di. Inntekt til ein ektefelle/partnar/sambuar som ikkje er forelder til barnet, har ikkje betydning for storleiken på barnetillegget. Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn som ikkje bur saman med begge foreldra, er 3,1 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. ",
                     English to "For ".expr(),
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull = 1
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull.equalTo(1)){
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equalTo(1)){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -265,11 +222,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 textExpr (
                     Bokmal to "".expr(),
                     Nynorsk to "".expr(),
-                    English to PE_UT_Barnet_Barna_Serkull + " that ",
+                    English to pe.ut_barnet_barna_serkull() + " that ",
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull = 1
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull.equalTo(1)){
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equalTo(1)){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -278,7 +235,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull > 1) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull.greaterThan(1))){
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().greaterThan(1))){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -294,7 +251,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU069V() = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true   AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true ) AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid < 40 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "oppfylt") AND   (PE_UT_VirkningstidpunktStorreEnn01012016() = true) ) THEN      INCLUDE ENDIF
-        showIf((PE_UT_TBU069V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget) and (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid.lessThan(40) and PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat.notEqualTo("oppfylt")) and (PE_UT_VirkningstidpunktStorreEnn01012016))){
+        showIf(
+            (pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
+                .lessThan(
+                    40
+                ) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("oppfylt")) and (pe.ut_virkningstidpunktstorreenn01012016()))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -308,13 +269,13 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
 
         // Velger å ikke slå sammen denne teksten ettersom det er vesentlige forskjeller i styringen på de ulike språklagene.
         //IF(PE_UT_TBU605() = true) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU605)){
+        showIf((pe.ut_tbu605())){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(( PE_UT_TBU605V_eller_til_din() )) THEN    INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din))){
+                showIf(((pe.ut_tbu605v_eller_til_din()))){
                     text (
                         Bokmal to "",
                         Nynorsk to "Har det vore ei endring i inntekta ",
@@ -323,16 +284,25 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(( PE_UT_TBU605V_eller_til_din() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN      INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert partner") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2"))))){
+                showIf(((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo(
+                        "bormed ektefelle"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 1-5"
+                ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 3-2"
+                ))))){
                     textExpr (
                             Bokmal to "".expr(),
-                        Nynorsk to "til deg eller ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall + " ",
+                        Nynorsk to "til deg eller ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " ",
                         English to "".expr(),
                     )
                 }
 
                 //IF(( PE_UT_TBU605V_eller_til_din() )) THEN    INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din))){
+                showIf(((pe.ut_tbu605v_eller_til_din()))){
                     text (
                             Bokmal to "",
                         Nynorsk to "di",
@@ -341,7 +311,16 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(( PE_UT_TBU605V_eller_til_din() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN      INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert partner") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2"))))){
+                showIf(((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo(
+                        "bormed ektefelle"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 1-5"
+                ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 3-2"
+                ))))){
                     text (
                             Bokmal to "",
                         Nynorsk to "n",
@@ -350,7 +329,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(( PE_UT_TBU605V_eller_til_din() )) THEN    INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din))){
+                showIf(((pe.ut_tbu605v_eller_til_din()))){
                     text (
                         Bokmal to "",
                         Nynorsk to ",",
@@ -359,7 +338,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "",
                         Nynorsk to "Når inntekta di ",
@@ -368,16 +347,22 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(( PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN      INCLUDE ENDIF
-                showIf(((PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt") and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert partner") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2"))))){
+                showIf(((pe.vedtaksdata_kravhode_kravarsaktype()
+                    .equalTo("endret_inntekt") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 1-5"
+                ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2"))))){
                     textExpr (
                         Bokmal to "".expr(),
-                        Nynorsk to "eller til ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall + " din ",
+                        Nynorsk to "eller til ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din ",
                         English to "".expr(),
                     )
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "",
                         Nynorsk to "endrar seg" + ",",
@@ -391,7 +376,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert)){
+                showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert())){
                     text (
                         Bokmal to "",
                         Nynorsk to "blir rekna om til et årleg beløp som svarer til ",
@@ -400,7 +385,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = false) THEN      INCLUDE ENDIF
-                showIf((not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert) and not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert) and not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert) and not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert))){
+                showIf((not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) and not(
+                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()
+                ) and not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()) and not(
+                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert()
+                ))){
                     text (
                         Bokmal to "",
                         Nynorsk to "er ",
@@ -409,19 +398,21 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget){
-                    textExpr (
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    textExpr(
                         Bokmal to "".expr(),
-                        Nynorsk to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.format(),
+                        Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                            .format(),
                         English to "".expr(),
                     )
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget and not(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget))){
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))){
                     textExpr (
                         Bokmal to "".expr(),
-                        Nynorsk to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.format(),
+                        Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                            .format(),
                         English to "".expr(),
                     )
                 }
@@ -432,7 +423,12 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .equalTo(
+                            0
+                        ))){
                     text (
                         Bokmal to "",
                         Nynorsk to "Dette beløpet bruker vi til å redusere barnetillegget ditt for heile året. ",
@@ -444,13 +440,13 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
 
         // Velger å ikke slå sammen denne teksten ettersom det er vesentlige forskjeller i styringen på de ulike språklagene.
         //IF(PE_UT_TBU605() = true) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU605)){
+        showIf((pe.ut_tbu605())){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(( PE_UT_TBU605V_eller_til_din() )) THEN    INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din))){
+                showIf(((pe.ut_tbu605v_eller_til_din()))){
                     text (
                         Bokmal to "Har det vært en endring i inntekten din",
                         Nynorsk to "",
@@ -459,7 +455,16 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(( PE_UT_TBU605V_eller_til_din() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN      INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert partner") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2"))))){
+                showIf(((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo(
+                        "bormed ektefelle"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 1-5"
+                ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 3-2"
+                ))))){
                     text (
                         Bokmal to " eller til din ",
                         Nynorsk to "",
@@ -468,16 +473,16 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(( PE_UT_TBU605V_eller_til_din() AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true )) THEN    INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget))){
+                showIf(((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))){
                     textExpr (
-                        Bokmal to PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT + ",",
+                        Bokmal to pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + ",",
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "Når inntekten din ",
                         Nynorsk to "",
@@ -486,16 +491,22 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(( PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN      INCLUDE ENDIF
-                showIf(((PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt") and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert partner") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2"))))){
+                showIf(((pe.vedtaksdata_kravhode_kravarsaktype()
+                    .equalTo("endret_inntekt") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 1-5"
+                ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2"))))){
                     textExpr (
-                        Bokmal to "eller til din ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT + " ",
+                        Bokmal to "eller til din ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " ",
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "endrer seg,",
                         Nynorsk to "",
@@ -509,7 +520,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert)){
+                showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert())){
                     text (
                         Bokmal to "blir omregnet til et årlig beløp som tilsvarer ",
                         Nynorsk to "",
@@ -518,7 +529,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = false) THEN      INCLUDE ENDIF
-                showIf((not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert) and not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert) and not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert) and not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert))){
+                showIf((not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) and not(
+                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()
+                ) and not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()) and not(
+                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert()
+                ))){
                     text (
                         Bokmal to "er ",
                         Nynorsk to "",
@@ -527,18 +542,20 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget){
-                    textExpr (
-                        Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.format(),
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    textExpr(
+                        Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                            .format(),
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget and not(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget))){
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))){
                     textExpr (
-                        Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.format(),
+                        Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                            .format(),
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
@@ -550,7 +567,12 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .equalTo(
+                            0
+                        ))){
                     text (
                         Bokmal to "Dette beløpet bruker vi til å redusere barnetillegget ditt for hele året. ",
                         Nynorsk to "",
@@ -562,13 +584,13 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
 
         // Velger å ikke slå sammen denne teksten ettersom det er vesentlige forskjeller i styringen på de ulike språklagene.
         //IF(PE_UT_TBU605() = true) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU605)){
+        showIf((pe.ut_tbu605())){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt") THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("endret_inntekt"))){
+                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -578,7 +600,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -592,11 +614,17 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN      INCLUDE ENDIF
-                showIf(((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert partner") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2"))))){
+                showIf(
+                    ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                        "bormed 1-5"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2"))))){
                     textExpr (
                         Bokmal to "".expr(),
                         Nynorsk to "".expr(),
-                        English to "or your ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner + "'s ",
+                        English to "or your ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + "'s ",
                     )
                 }
                 text (
@@ -606,7 +634,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert)){
+                showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert())){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -615,7 +643,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = false) THEN      INCLUDE ENDIF
-                showIf((not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert) and not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert) and not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert) and not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert))){
+                showIf((not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) and not(
+                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()
+                ) and not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()) and not(
+                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert()
+                ))){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -629,20 +661,22 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget){
-                    textExpr (
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    textExpr(
                         Bokmal to "".expr(),
                         Nynorsk to "".expr(),
-                        English to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.format(),
+                        English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                            .format(),
                     )
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                showIf((not(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget) and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget)){
+                showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
                     textExpr (
                         Bokmal to "".expr(),
                         Nynorsk to "".expr(),
-                        English to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.format(),
+                        English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                            .format(),
                     )
                 }
                 text (
@@ -652,7 +686,12 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .equalTo(
+                            0
+                        ))){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -663,7 +702,14 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF (PE_UT_TBU605() = true      AND (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0     OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0)    ) THEN   INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU605 and (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0) or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0)))){
+        showIf(
+            (pe.ut_tbu605() and (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ) or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                )))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -674,7 +720,12 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr > 0 OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.greaterThan(0) or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.greaterThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .greaterThan(0) or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .greaterThan(
+                            0
+                        ))){
                     text (
                         Bokmal to "lagt til",
                         Nynorsk to "lagt til",
@@ -683,7 +734,12 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr < 0 OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr < 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.lessThan(0) or PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.lessThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .lessThan(0) or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .lessThan(
+                            0
+                        ))){
                     text (
                         Bokmal to "redusert",
                         Nynorsk to "trekt frå",
@@ -697,20 +753,20 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget){
-                    textExpr (
-                        Bokmal to PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus.format(),
-                        Nynorsk to PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus.format(),
-                        English to PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus.format(),
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    textExpr(
+                        Bokmal to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(),
+                        Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(),
+                        English to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(),
                     )
                 }
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget){
-                    textExpr (
-                        Bokmal to PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus.format(),
-                        Nynorsk to PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus.format(),
-                        English to PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus.format(),
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
+                    textExpr(
+                        Bokmal to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(),
+                        Nynorsk to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(),
+                        English to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(),
                     )
                 }
                 text (
@@ -723,13 +779,13 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
 
         // Velger å ikke slå sammen denne teksten ettersom det er vesentlige forskjeller i styringen på de ulike språklagene.
         //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU613V and FUNKSJON_PE_UT_TBU613V_1_3)){
+        showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt") THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("endret_inntekt"))){
+                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))){
                     text (
                         Bokmal to "",
                         Nynorsk to "Har det vore ei endring i inntekta ",
@@ -738,16 +794,23 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2")) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("endret_inntekt") and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2")))){
+                showIf(
+                    (pe.vedtaksdata_kravhode_kravarsaktype()
+                        .notEqualTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed registrert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                        "bormed 1-5"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))){
                     textExpr (
                         Bokmal to "".expr(),
-                        Nynorsk to "til deg eller ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall + " ",
+                        Nynorsk to "til deg eller ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " ",
                         English to "".expr(),
                     )
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt") THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("endret_inntekt"))){
+                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))){
                     text (
                         Bokmal to "",
                         Nynorsk to "di",
@@ -756,7 +819,14 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2")) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("endret_inntekt") and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2")))){
+                showIf(
+                    (pe.vedtaksdata_kravhode_kravarsaktype()
+                        .notEqualTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed registrert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                        "bormed 1-5"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))){
                     text (
                         Bokmal to "",
                         Nynorsk to "n",
@@ -765,7 +835,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt") THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("endret_inntekt"))){
+                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))){
                     text (
                         Bokmal to "",
                         Nynorsk to ",",
@@ -774,7 +844,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "",
                         Nynorsk to "Når inntekta di ",
@@ -783,16 +853,23 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2")) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt") and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2")))){
+                showIf(
+                    (pe.vedtaksdata_kravhode_kravarsaktype()
+                        .equalTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed registrert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                        "bormed 1-5"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))){
                     textExpr (
                         Bokmal to "".expr(),
-                        Nynorsk to "eller til ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall + " din ",
+                        Nynorsk to "eller til ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din ",
                         English to "".expr(),
                     )
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "",
                         Nynorsk to "endrar seg,",
@@ -809,13 +886,13 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
 
         // Velger å ikke slå sammen denne teksten ettersom det er vesentlige forskjeller i styringen på de ulike språklagene.
         //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU613V and FUNKSJON_PE_UT_TBU613V_1_3)){
+        showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(( PE_UT_TBU605V_eller_til_din() )) THEN    INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din))){
+                showIf(((pe.ut_tbu605v_eller_til_din()))){
                     text (
                         Bokmal to "Har det vært en endring i inntekten din",
                         Nynorsk to "",
@@ -824,7 +901,16 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(( PE_UT_TBU605V_eller_til_din() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN      INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert partner") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2"))))){
+                showIf(((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo(
+                        "bormed ektefelle"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 1-5"
+                ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                    "bormed 3-2"
+                ))))){
                     text (
                         Bokmal to " eller til din",
                         Nynorsk to "",
@@ -833,16 +919,16 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(( PE_UT_TBU605V_eller_til_din() )) THEN    INCLUDE ENDIF
-                showIf(((FUNKSJON_PE_UT_TBU605V_eller_til_din))){
+                showIf(((pe.ut_tbu605v_eller_til_din()))){
                     textExpr (
-                        Bokmal to " ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT + ",",
+                        Bokmal to " ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + ",",
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "Når inntekten din ",
                         Nynorsk to "",
@@ -851,16 +937,23 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2")) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt") and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2")))){
+                showIf(
+                    (pe.vedtaksdata_kravhode_kravarsaktype()
+                        .equalTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed registrert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                        "bormed 1-5"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))){
                     textExpr (
-                        Bokmal to "eller til din ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT + " ",
+                        Bokmal to "eller til din ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " ",
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "endrer seg,",
                         Nynorsk to "",
@@ -877,13 +970,13 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
 
         // Velger å ikke slå sammen denne teksten ettersom det er vesentlige forskjeller i styringen på de ulike språklagene.
         //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU613V and FUNKSJON_PE_UT_TBU613V_1_3)){
+        showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt") THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("endret_inntekt"))){
+                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -892,7 +985,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-                showIf(PE_Vedtaksdata_Kravhode_KravArsakType.equalTo("endret_inntekt")){
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -906,11 +999,17 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5") THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed ektefelle") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed registrert partner") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1-5") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 3-2") or PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt.equalTo("bormed 1_5"))){
+                showIf(
+                    (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
+                        "bormed 1-5"
+                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .equalTo("bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 1_5"))){
                     textExpr (
                         Bokmal to "".expr(),
                         Nynorsk to "".expr(),
-                        English to "or your ".expr() + PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_EN_cohabiting_partner + "'s ",
+                        English to "or your ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + "'s ",
                     )
                 }
                 text (
@@ -925,18 +1024,18 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
 
         //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU613V and FUNKSJON_PE_UT_TBU613V_1_3)){
+        showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr(
-                    Bokmal to "50 prosent av den inntekten som overstiger fribeløpet for ".expr() + PE_UT_Barnet_Barna_Felles + " som bor med begge sine foreldre ",
-                    Nynorsk to "50 prosent av inntekta som overstig fribeløpet for ".expr() + PE_UT_Barnet_Barna_Felles + " som bur med begge foreldra ",
-                    English to "50 percent of the income that exceeds the exemption amount for the ".expr() + PE_UT_Barnet_Barna_Felles + " that ",
+                    Bokmal to "50 prosent av den inntekten som overstiger fribeløpet for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre ",
+                    Nynorsk to "50 prosent av inntekta som overstig fribeløpet for ".expr() + pe.ut_barnet_barna_felles() + " som bur med begge foreldra ",
+                    English to "50 percent of the income that exceeds the exemption amount for the ".expr() + pe.ut_barnet_barna_felles() + " that ",
                 )
 
 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles = 1
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles.equalTo(1)){
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().equalTo(1)){
                     text(
                         Bokmal to "",
                         Nynorsk to "",
@@ -945,7 +1044,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles > 1) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles.greaterThan(1))){
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().greaterThan(1))){
                     text(
                         Bokmal to "",
                         Nynorsk to "",
@@ -958,7 +1057,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to " with both of their parents, ",
                 )
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true
-                showIf(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert){
+                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()) {
                     text(
                         Bokmal to "blir omregnet til et årlig beløp som tilsvarer ",
                         Nynorsk to "sine blir rekna om til et årleg beløp som svarer til ",
@@ -967,7 +1066,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = false
-                showIf(not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert)){
+                showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert())){
                     text(
                         Bokmal to "er ",
                         Nynorsk to "er ",
@@ -975,13 +1074,19 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     )
                 }
                 textExpr (
-                    Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + " kroner. ",
-                    Nynorsk to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + " kroner. ",
-                    English to " NOK ".expr() + PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + ". ",
+                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + " kroner. ",
+                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + " kroner. ",
+                    English to " NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + ". ",
                 )
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0
-                showIf(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0)){
+                showIf(
+                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .equalTo(0)
+                ){
                     text (
                         Bokmal to "Dette beløpet bruker vi til å redusere dette barnetillegget for hele året.",
                         Nynorsk to "Dette beløpet bruker vi til å redusere dette barnetillegget for hele året.",
@@ -992,7 +1097,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU613V and FUNKSJON_PE_UT_TBU613V_1_3 and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))){
+        showIf(
+            (pe.ut_tbu613v() and pe.ut_tbu613v_1_3() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1003,7 +1112,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.greaterThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .greaterThan(0))){
                     text (
                         Bokmal to "lagt til",
                         Nynorsk to "lagt til",
@@ -1012,7 +1123,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr < 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.lessThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .lessThan(0))){
                     text (
                         Bokmal to "trukket fra",
                         Nynorsk to "trekt frå",
@@ -1020,24 +1133,26 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     )
                 }
                 textExpr (
-                    Bokmal to " ".expr() + PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                    Nynorsk to " ".expr() + PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                    English to " with NOK ".expr() + PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus.format() + ".",
+                    Bokmal to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
+                        .format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                    Nynorsk to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
+                        .format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                    English to " with NOK ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus().format() + ".",
                 )
             }
         }
 
         //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_4_5() = true) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU613V and FUNKSJON_PE_UT_TBU613V_4_5)){
+        showIf((pe.ut_tbu613v() and pe.ut_tbu613v_4_5())){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "For ".expr() + PE_UT_Barnet_Barna_Serkull + " som ikke bor sammen med begge foreldrene ",
-                    Nynorsk to "For ".expr() + PE_UT_Barnet_Barna_Serkull + " som ikkje bur med begge foreldra ",
+                    Bokmal to "For ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene ",
+                    Nynorsk to "For ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur med begge foreldra ",
                     English to "For ".expr(),
                 )
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull.equalTo(1)){
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equalTo(1)){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -1047,10 +1162,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 textExpr (
                     Bokmal to "".expr(),
                     Nynorsk to "".expr(),
-                    English to PE_UT_Barnet_Barna_Serkull + " that ",
+                    English to pe.ut_barnet_barna_serkull() + " that ",
                 )
 
-                showIf(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull.equalTo(1)){
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equalTo(1)){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -1059,7 +1174,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull > 1) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull.greaterThan(1))){
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().greaterThan(1))){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -1072,7 +1187,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to " not live with both parents ",
                 )
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = false
-                showIf(not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert)){
+                showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())){
                     text (
                         Bokmal to "er 50 prosent av den inntekten som overstiger fribeløpet ",
                         Nynorsk to "er 50 prosent av den inntekta som overstig fribeløpet ",
@@ -1081,15 +1196,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = true
-                showIf(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert){
-                    text (
+                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) {
+                    text(
                         Bokmal to "blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ",
                         Nynorsk to "blir 50 prosent av den inntekta som overstig fribeløpet regna om til et årleg beløp som svarer til ",
                         English to "is recalculated to an annual amount of",
 
-                    )
+                        )
                 }
-                showIf(not(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert)){
+                showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())){
                     text (
                         Bokmal to "",
                         Nynorsk to "",
@@ -1098,13 +1213,19 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 textExpr (
-                    Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + " kroner. ",
-                    Nynorsk to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + " kroner. ",
-                    English to " NOK ".expr() + PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + ". ",
+                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + " kroner. ",
+                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + " kroner. ",
+                    English to " NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + ". ",
                 )
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0
-                showIf(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0)){
+                showIf(
+                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .equalTo(0)
+                ){
                     text (
                         Bokmal to "Dette beløpet bruker vi til å redusere dette barnetillegget for hele året. ",
                         Nynorsk to "Dette beløpet bruker vi til å redusere dette barnetillegget for heile året. ",
@@ -1115,7 +1236,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_4_5() = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
-        showIf((FUNKSJON_PE_UT_TBU613V and FUNKSJON_PE_UT_TBU613V_4_5 and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))){
+        showIf(
+            (pe.ut_tbu613v() and pe.ut_tbu613v_4_5() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1126,7 +1251,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.greaterThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .greaterThan(0))){
                     text (
                         Bokmal to "lagt til",
                         Nynorsk to "lagt til",
@@ -1135,7 +1262,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr < 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.lessThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .lessThan(0))){
                     text (
                         Bokmal to "trukket fra",
                         Nynorsk to "trekt frå",
@@ -1143,15 +1272,17 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     )
                 }
                 textExpr (
-                    Bokmal to " ".expr() + PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                    Nynorsk to " ".expr() + PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                    English to " with NOK ".expr() + PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus.format() + ".",
+                    Bokmal to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
+                        .format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                    Nynorsk to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
+                        .format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                    English to " with NOK ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus().format() + ".",
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V)){
+        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1162,7 +1293,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
-                showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM)))){
+                showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom())))){
                     text (
                         Bokmal to "i år",
                         Nynorsk to "i år",
@@ -1171,7 +1302,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = true) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM))){
+                showIf((FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom()))){
                     text (
                         Bokmal to "for neste år",
                         Nynorsk to "for neste år",
@@ -1182,7 +1313,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V)){
+        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1192,54 +1323,88 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to "Yearly child supplement before income reduction  ",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbruttoPerAr.format() + " kr",
-                    Nynorsk to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbruttoPerAr.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbruttoPerAr.format(),
+                    Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar().format() + " kr",
+                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar().format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V)){
+        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBInntektBruktiAvkortning.format() + " kr",
-                    Nynorsk to "Samla inntekt brukt i fastsetting av barnetillegget er ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBInntektBruktiAvkortning.format() + " kr",
-                    English to "Total income applied in calculation of reduction in child supplement for joint children areNOK ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBInntektBruktiAvkortning.format(),
+                    Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
+                        .format() + " kr",
+                    Nynorsk to "Samla inntekt brukt i fastsetting av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
+                        .format() + " kr",
+                    English to "Total income applied in calculation of reduction in child supplement for joint children areNOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true      AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto > 0              OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0                     AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0                    ) 	)     ) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.greaterThan(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .greaterThan(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))))){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop.format() + " kr",
-                    Nynorsk to "Fribeløp brukt i fastsetting av barnetillegget er ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop.format() + " kr",
-                    English to "Exemption amount applied in calculation of reduction in child supplement are NOK ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop.format(),
+                    Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                        .format() + " kr",
+                    Nynorsk to "Fribeløp brukt i fastsetting av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                        .format() + " kr",
+                    English to "Exemption amount applied in calculation of reduction in child supplement are NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true      AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0              OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0                     AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0                    ) 		)     ) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.notEqualTo(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .notEqualTo(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))))){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "Inntekt over fribeløpet er ".expr() + PE_UT_BTFBInntektBruktiAvkortningMinusBTFBfribelop.format() + " kr",
-                    Nynorsk to "Inntekt over fribeløpet er ".expr() + PE_UT_BTFBInntektBruktiAvkortningMinusBTFBfribelop.format() + " kr",
-                    English to "Income exceeding the exemption amount NOK ".expr() + PE_UT_BTFBInntektBruktiAvkortningMinusBTFBfribelop.format(),
+                    Bokmal to "Inntekt over fribeløpet er ".expr() + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop().format() + " kr",
+                    Nynorsk to "Inntekt over fribeløpet er ".expr() + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop().format() + " kr",
+                    English to "Income exceeding the exemption amount NOK ".expr() + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop().format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true      AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0              OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0                     AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0                    ) 		) 	 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr > 0     ) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.notEqualTo(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.greaterThan(0))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .notEqualTo(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                .greaterThan(
+                    0
+                ))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1250,29 +1415,38 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true
-                showIf(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert){
-                    text (
+                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()) {
+                    text(
                         Bokmal to "(oppgitt som et årlig beløp)",
                         Nynorsk to "(oppgitt som eit årleg beløp)",
                         English to "(calculated to an annual amount)",
                     )
                 }
                 textExpr (
-                    Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + " kr",
-                    Nynorsk to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr.format(),
+                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + " kr",
+                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                        .format(),
                 )
             }
         }
 
         //IF((PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
-        showIf(((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))){
+        showIf(
+            ((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.greaterThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .greaterThan(0))){
                     text (
                         Bokmal to "-",
                         Nynorsk to "-",
@@ -1281,7 +1455,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr < 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.lessThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .lessThan(0))){
                     text (
                         Bokmal to "+",
                         Nynorsk to "+",
@@ -1294,15 +1470,25 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to " Amount which is used to adjust the reduction of child supplement",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr_UtenMinus.format() + " kr",
-                    Nynorsk to PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr_UtenMinus.format(),
+                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
+                        .format() + " kr",
+                    Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus().format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true      AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0              OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0                     AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0                    ) 		)     ) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.notEqualTo(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .notEqualTo(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1312,15 +1498,24 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to "= Calculation of the yearly reduction of the child supplement",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBnettoPerAr.format() + " kr",
-                    Nynorsk to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBnettoPerAr.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBnettoPerAr.format(),
+                    Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format() + " kr",
+                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true      AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0              OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0                     AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0                    ) 		)     ) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.notEqualTo(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .notEqualTo(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1330,15 +1525,22 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to "Child supplement payment for the remaining months of the year",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.format() + " kr",
-                    Nynorsk to PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.format(),
+                    Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().format() + " kr",
+                    Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true     AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0     AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0     ) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .equalTo(
+                    0
+                ) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                .equalTo(
+                    0
+                ))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1348,31 +1550,41 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to "The income limit for receiving child supplement",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_Inntektstak.format() + " kr",
-                    Nynorsk to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_Inntektstak.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_Inntektstak.format(),
+                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+                        .format() + " kr",
+                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+                        .format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+                        .format(),
                 )
             }
         }
 
 
         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto > 0 AND PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.greaterThan(0) and FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V)){
+        showIf(
+            (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                .greaterThan(
+                    0
+                ) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "Du vil få utbetalt ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.format() + " kroner i måneden før skatt i barnetillegg",
-                    Nynorsk to "Du vil få utbetalt ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.format() + " kroner i månaden før skatt i barnetillegg",
-                    English to "You will receive a monthly child supplement payment of NOK ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.format(),
+                    Bokmal to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                        .format() + " kroner i måneden før skatt i barnetillegg",
+                    Nynorsk to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                        .format() + " kroner i månaden før skatt i barnetillegg",
+                    English to "You will receive a monthly child supplement payment of NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                        .format(),
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_UT_Etteroppgjor_BT_Utbetalt() = true) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget and FUNKSJON_PE_UT_Etteroppgjor_BT_Utbetalt)){
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.ut_etteroppgjor_bt_utbetalt())){
                     textExpr (
-                        Bokmal to " for ".expr() + PE_UT_Barnet_Barna_Felles + " som bor med begge sine foreldre",
-                        Nynorsk to " for ".expr() + PE_UT_Barnet_Barna_Felles + " som bur saman med begge foreldra sine",
-                        English to " for the ".expr() + PE_UT_Barnet_Barna_Felles + " who live together with both parents",
+                        Bokmal to " for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre",
+                        Nynorsk to " for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine",
+                        English to " for the ".expr() + pe.ut_barnet_barna_felles() + " who live together with both parents",
                     )
                 }
                 text (
@@ -1384,13 +1596,14 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.equalTo(0) and FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU606V_TBU608V)){
+        showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+            .equalTo(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(PE_UT_TBU608_Far_Ikke() = true) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_PE_UT_TBU608_Far_Ikke)){
+                showIf((pe.ut_tbu608_far_ikke())){
                     text (
                         Bokmal to "Du får ikke utbetalt barnetillegget ",
                         Nynorsk to "Du får ikkje utbetalt barnetillegget ",
@@ -1399,16 +1612,16 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_UT_TBU608_Far_Ikke() = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_PE_UT_TBU608_Far_Ikke and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget)){
+                showIf((pe.ut_tbu608_far_ikke() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
                     textExpr (
-                        Bokmal to "for ".expr() + PE_UT_Barnet_Barna_Felles + " som bor med begge sine foreldre ",
-                        Nynorsk to "for ".expr() + PE_UT_Barnet_Barna_Felles + " som bur saman med begge foreldra sine ",
-                        English to "for the ".expr() + PE_UT_Barnet_Barna_Felles + " who live together with both parents ",
+                        Bokmal to "for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre ",
+                        Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine ",
+                        English to "for the ".expr() + pe.ut_barnet_barna_felles() + " who live together with both parents ",
                     )
                 }
 
                 //IF(PE_UT_TBU608_Far_Ikke() = true) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_PE_UT_TBU608_Far_Ikke)){
+                showIf((pe.ut_tbu608_far_ikke())){
                     text (
                         Bokmal to "fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. ",
                         Nynorsk to "fordi samla inntekt er over grensa for å få utbetalt barnetillegg. ",
@@ -1417,7 +1630,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))){
+                showIf(
+                    (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                        .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                        .notEqualTo(0))){
                     text (
                         Bokmal to "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. ",
                         Nynorsk to "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. ",
@@ -1428,7 +1644,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V)){
+        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1439,7 +1655,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
-                showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM)))){
+                showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom())))){
                     text (
                         Bokmal to "i år",
                         Nynorsk to "i år",
@@ -1448,7 +1664,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = true) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM))){
+                showIf((FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom()))){
                     text (
                         Bokmal to "for neste år",
                         Nynorsk to "for neste år",
@@ -1459,7 +1675,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V)){
+        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1469,54 +1685,89 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to "Yearly child supplement before income reduction  ",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBbruttoPerAr.format() + " kr",
-                    Nynorsk to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBbruttoPerAr.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBbruttoPerAr.format(),
+                    Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format() + " kr",
+                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar()
+                        .format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V)){
+        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning.format() + " kr",
-                    Nynorsk to "Samla inntekt brukt i fastsetting av barnetillegget er ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning.format() + " kr",
-                    English to "Total income applied in calculation of reduction in child supplement from a previous relationship NOK ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning.format(),
+                    Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
+                        .format() + " kr",
+                    Nynorsk to "Samla inntekt brukt i fastsetting av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
+                        .format() + " kr",
+                    English to "Total income applied in calculation of reduction in child supplement from a previous relationship NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true     AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0         OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0             AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0            )         ) 	) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.greaterThan(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .greaterThan(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))))){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop.format() + " kr",
-                    Nynorsk to "Fribeløp brukt i fastsetting av barnetillegget er ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop.format() + " kr",
-                    English to "Exemption amount applied in calculation of reduction in child supplement are NOK ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop.format(),
+                    Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+                        .format() + " kr",
+                    Nynorsk to "Fribeløp brukt i fastsetting av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+                        .format() + " kr",
+                    English to "Exemption amount applied in calculation of reduction in child supplement are NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true     AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0         OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0             AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0            )         ) 	) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.notEqualTo(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .notEqualTo(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))))){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "Inntekt over fribeløpet er ".expr() + PE_UT_BTSBinntektBruktiAvkortningMinusBTSBfribelop.format() + " kr",
-                    Nynorsk to "Inntekt over fribeløpet er ".expr() + PE_UT_BTSBinntektBruktiAvkortningMinusBTSBfribelop.format() + " kr",
-                    English to "Income exceeding the exemption amount NOK ".expr() + PE_UT_BTSBinntektBruktiAvkortningMinusBTSBfribelop.format(),
+                    Bokmal to "Inntekt over fribeløpet er ".expr() + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format() + " kr",
+                    Nynorsk to "Inntekt over fribeløpet er ".expr() + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format() + " kr",
+                    English to "Income exceeding the exemption amount NOK ".expr() + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true     AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0         OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0             AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0            )      AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr > 0         ) 	) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.notEqualTo(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0)) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.greaterThan(0)))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .notEqualTo(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                )) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                .greaterThan(
+                    0
+                )))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1527,29 +1778,38 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true
-                showIf(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert){
-                    text (
+                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()) {
+                    text(
                         Bokmal to "(oppgitt som et årlig beløp)",
                         Nynorsk to "(oppgitt som eit årleg beløp)",
                         English to "(calculated to an annual amount)",
                     )
                 }
                 textExpr (
-                    Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + " kr",
-                    Nynorsk to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr.format(),
+                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + " kr",
+                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                        .format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                        .format(),
                 )
             }
         }
 
         //IF((PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
-        showIf(((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))){
+        showIf(
+            ((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.greaterThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .greaterThan(0))){
                     text (
                         Bokmal to "-",
                         Nynorsk to "-",
@@ -1558,7 +1818,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr < 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.lessThan(0))){
+                showIf(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .lessThan(0))){
                     text (
                         Bokmal to "+",
                         Nynorsk to "+",
@@ -1571,15 +1833,25 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to " Amount which is used to adjust the reduction of child supplement",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr_UtenMinus.format() + " kr",
-                    Nynorsk to PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr_UtenMinus.format(),
+                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus()
+                        .format() + " kr",
+                    Nynorsk to pe.barnetilleggserkull_justeringsbelopperarutenminus().format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true     AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0         OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0             AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0            )         ) 	) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.notEqualTo(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .notEqualTo(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1589,15 +1861,24 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to "= Calculation of the yearly reduction of the child supplement",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBnettoPerAr.format() + " kr",
-                    Nynorsk to PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBnettoPerAr.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBnettoPerAr.format(),
+                    Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format() + " kr",
+                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar()
+                        .format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true     AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0         OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0             AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0            )         ) 	) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V and (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.notEqualTo(0) or (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .notEqualTo(
+                    0
+                ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                .notEqualTo(
+                    0
+                ))))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1607,15 +1888,22 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to "Child supplement payment for the remaining months of the year",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.format() + " kr",
-                    Nynorsk to PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.format(),
+                    Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format() + " kr",
+                    Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(),
                 )
             }
         }
 
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true     AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0     AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 	) THEN    INCLUDE END IF
-        showIf((FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.equalTo(0))){
+        showIf(
+            (pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .equalTo(
+                    0
+                ) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                .equalTo(
+                    0
+                ))){
             //[TBU052V-TBU073V]
 
             paragraph {
@@ -1625,31 +1913,41 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     English to "The income limit for receiving child supplement ",
                 )
                 textExpr (
-                    Bokmal to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_Inntektstak.format() + " kr",
-                    Nynorsk to PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_Inntektstak.format() + " kr",
-                    English to "NOK ".expr() + PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_Inntektstak.format(),
+                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+                        .format() + " kr",
+                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+                        .format() + " kr",
+                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+                        .format(),
                 )
             }
         }
 
 
         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.greaterThan(0) and FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V)){
+        showIf(
+            (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                .greaterThan(
+                    0
+                ) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
             //[TBU052V-TBU073V]
 
             paragraph {
                 textExpr (
-                    Bokmal to "Du vil få utbetalt ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.format() + " kroner i måneden før skatt i barnetillegg",
-                    Nynorsk to "Du vil få utbetalt ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.format() + " kroner i månaden før skatt i barnetillegg",
-                    English to "You will receive a monthly child supplement payment of NOK ".expr() + PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.format(),
+                    Bokmal to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                        .format() + " kroner i måneden før skatt i barnetillegg",
+                    Nynorsk to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                        .format() + " kroner i månaden før skatt i barnetillegg",
+                    English to "You will receive a monthly child supplement payment of NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                        .format(),
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_UT_Etteroppgjor_BT_Utbetalt() = true) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget and FUNKSJON_PE_UT_Etteroppgjor_BT_Utbetalt)){
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.ut_etteroppgjor_bt_utbetalt())){
                     textExpr (
-                        Bokmal to " for ".expr() + PE_UT_Barnet_Barna_Serkull + " som ikke bor med begge sine foreldre",
-                        Nynorsk to " for ".expr() + PE_UT_Barnet_Barna_Serkull + " som ikkje bur saman med begge foreldra",
-                        English to " for the ".expr() + PE_UT_Barnet_Barna_Serkull + " who do not live together with both parents",
+                        Bokmal to " for ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor med begge sine foreldre",
+                        Nynorsk to " for ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra",
+                        English to " for the ".expr() + pe.ut_barnet_barna_serkull() + " who do not live together with both parents",
                     )
                 }
                 text (
@@ -1661,13 +1959,14 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         }
 
         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) THEN      INCLUDE ENDIF
-        showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.equalTo(0) and FUNKSJON_PE_UT_TBU606V_TBU611V and FUNKSJON_PE_UT_TBU609V_TBU611V)){
+        showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+            .equalTo(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
             //[TBU052V-TBU073V]
 
             paragraph {
 
                 //IF(PE_UT_TBU611_Far_Ikke() = true) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_PE_UT_TBU611_Far_Ikke)){
+                showIf((pe.ut_tbu611_far_ikke())){
                     text (
                         Bokmal to "Du får ikke utbetalt barnetillegget ",
                         Nynorsk to "Du får ikkje utbetalt barnetillegget ",
@@ -1676,16 +1975,16 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_UT_TBU611_Far_Ikke() = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_PE_UT_TBU611_Far_Ikke and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget and PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget)){
+                showIf((pe.ut_tbu611_far_ikke() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
                     textExpr (
-                        Bokmal to "for ".expr() + PE_UT_Barnet_Barna_Serkull + " som ikke bor med begge sine foreldre ",
-                        Nynorsk to "for ".expr() + PE_UT_Barnet_Barna_Serkull + " som ikkje bur saman med begge foreldra ",
-                        English to "for the ".expr() + PE_UT_Barnet_Barna_Serkull + " who do not live together with both parents ",
+                        Bokmal to "for ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor med begge sine foreldre ",
+                        Nynorsk to "for ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra ",
+                        English to "for the ".expr() + pe.ut_barnet_barna_serkull() + " who do not live together with both parents ",
                     )
                 }
 
                 //IF(PE_UT_TBU611_Far_Ikke() = true) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_PE_UT_TBU611_Far_Ikke)){
+                showIf((pe.ut_tbu611_far_ikke())){
                     text (
                         Bokmal to "fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. ",
                         Nynorsk to "fordi samla inntekt er over grensa for å få utbetalt barnetillegg. ",
@@ -1694,7 +1993,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
-                showIf((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto.equalTo(0) and PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr.notEqualTo(0))){
+                showIf(
+                    (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                        .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                        .notEqualTo(0))){
                     text (
                         Bokmal to "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
                         Nynorsk to "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. ",

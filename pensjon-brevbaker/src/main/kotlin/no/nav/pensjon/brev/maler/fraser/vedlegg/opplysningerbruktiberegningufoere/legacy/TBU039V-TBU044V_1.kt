@@ -1,26 +1,20 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy
 
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import java.time.LocalDate
 
 data class TBU039V_TBU044V_1(
-    val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk: Expression<Int>,
-    val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTEOS: Expression<Int>,
-    val PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12: Expression<Int>,
-    val PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning: Expression<Boolean>,
-    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom: Expression<LocalDate?>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad: Expression<Int>,
-    val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat: Expression<String>,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad: Expression<Int>,
+    val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        //[TBU039V-TBU044V_1]
 
+        //[TBU039V-TBU044V_1]
         paragraph {
             text(
                 Bokmal to "Dette er trygdetiden din",
@@ -39,9 +33,11 @@ data class TBU039V_TBU044V_1(
 
             //IF(FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk) <> 0 OR FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTEOS) <> 0) THEN      INCLUDE ENDIF
             showIf(
-                (PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk.notEqualTo(0) or PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTEOS.notEqualTo(
-                    0
-                ))
+                (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk()
+                    .notEqualTo(0) or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigtteos()
+                    .notEqualTo(
+                        0
+                    ))
             ) {
                 text(
                     Bokmal to " og framtidig trygdetid",
@@ -57,9 +53,11 @@ data class TBU039V_TBU044V_1(
 
             //IF(FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk) <> 0 OR FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTEOS) <> 0) THEN      INCLUDE ENDIF
             showIf(
-                (PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk.notEqualTo(0) or PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTEOS.notEqualTo(
-                    0
-                ))
+                (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk()
+                    .notEqualTo(0) or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigtteos()
+                    .notEqualTo(
+                        0
+                    ))
             ) {
                 text(
                     Bokmal to "Den framtidige trygdetiden er perioden fra uføretidspunktet ditt og fram til og med det året du fyller 66 år.",
@@ -86,11 +84,11 @@ data class TBU039V_TBU044V_1(
         //[TBU039V-TBU044V_1]
         // Manuelt konvertert
         showIf(
-            PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12.greaterThanOrEqual(40)
-                    and not(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning)
-                    and (PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat.notEqualTo("oppfylt")
-                    or PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad.lessThan(
-                PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad
+            pe.ut_sum_fattnorge_framtidigttnorge_div_12().greaterThanOrEqual(40)
+                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
+                    and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("oppfylt")
+                    or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(
+                pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()
             )
                     )
         ) {
@@ -105,7 +103,7 @@ data class TBU039V_TBU044V_1(
         }
 
         //IF(FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = true) THEN      INCLUDE ENDIF
-        showIf(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) {
+        showIf(pe.grunnlag_persongrunnlagsliste_brukerflyktning()) {
             //[TBU039V-TBU044V_1]
 
             paragraph {
@@ -139,13 +137,16 @@ data class TBU039V_TBU044V_1(
 
         paragraph {
             textExpr(
-                Bokmal to "Trygdetiden i folketrygden er fastsatt til ".expr() + PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12.format() + " år for den delen av uførheten din som ikke skyldes en godkjent yrkesskade eller yrkessykdom.",
-                Nynorsk to "Trygdetida i folketrygda er fastsett til ".expr() + PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12.format() + " år for den delen av uføretrygda di som ikkje skuldas ein godkjend yrkesskade eller yrkessjukdom.",
-                English to "The period of national insurance coverage has been set to ".expr() + PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12.format() + " years for the part of your disability that is not caused by an approved occupational injury or occupational illness.",
+                Bokmal to "Trygdetiden i folketrygden er fastsatt til ".expr() + pe.ut_sum_fattnorge_framtidigttnorge_div_12()
+                    .format() + " år for den delen av uførheten din som ikke skyldes en godkjent yrkesskade eller yrkessykdom.",
+                Nynorsk to "Trygdetida i folketrygda er fastsett til ".expr() + pe.ut_sum_fattnorge_framtidigttnorge_div_12()
+                    .format() + " år for den delen av uføretrygda di som ikkje skuldas ein godkjend yrkesskade eller yrkessjukdom.",
+                English to "The period of national insurance coverage has been set to ".expr() + pe.ut_sum_fattnorge_framtidigttnorge_div_12()
+                    .format() + " years for the part of your disability that is not caused by an approved occupational injury or occupational illness.",
             )
 
             //IF(FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom) = true) THEN      INCLUDE ENDIF
-            showIf(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom.notNull()) {
+            showIf(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()) {
                 text(
                     Bokmal to " Den faktiske trygdetiden din i denne perioden er fastsatt på grunnlag av følgende perioder:",
                     Nynorsk to " Den faktiske trygdetida di i denne perioden er fastsett på grunnlag av følgjande periodar:",
@@ -156,10 +157,11 @@ data class TBU039V_TBU044V_1(
 
         //IF(FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) <> true AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad) THEN      INCLUDE ENDIF
         showIf(
-            (PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning.notEqualTo(true) and PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat.equalTo(
+            (pe.grunnlag_persongrunnlagsliste_brukerflyktning()
+                .notEqualTo(true) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo(
                 "oppfylt"
-            ) and PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad.equalTo(
-                PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad
+            ) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(
+                pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()
             ))
         ) {
             //[TBU039V-TBU044V_1]
@@ -180,13 +182,14 @@ data class TBU039V_TBU044V_1(
 
         paragraph {
             textExpr(
-                Bokmal to "Trygdetiden din i folketrygden er fastsatt til ".expr() + PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12.format() + " år. ",
-                Nynorsk to "Trygdetida di i folketrygda er fastsett til ".expr() + PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12.format() + " år.",
-                English to "Your period of national insurance coverage has been set to ".expr() + PE_UT_SUM_FaTTNorge_FramtidigTTNorge_DIV_12.format() + " years.",
+                Bokmal to "Trygdetiden din i folketrygden er fastsatt til ".expr() + pe.ut_sum_fattnorge_framtidigttnorge_div_12().format() + " år. ",
+                Nynorsk to "Trygdetida di i folketrygda er fastsett til ".expr() + pe.ut_sum_fattnorge_framtidigttnorge_div_12().format() + " år.",
+                English to "Your period of national insurance coverage has been set to ".expr() + pe.ut_sum_fattnorge_framtidigttnorge_div_12()
+                    .format() + " years.",
             )
 
             //IF(FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom) = true) THEN      INCLUDE ENDIF
-            showIf(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom.notNull()) {
+            showIf(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()) {
                 text(
                     Bokmal to "Den faktiske trygdetiden din er fastsatt på grunnlag av følgende perioder:",
                     Nynorsk to " Den faktiske trygdetida di er fastsett på grunnlag av følgjande periodar:",
