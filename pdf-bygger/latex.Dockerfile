@@ -1,4 +1,4 @@
-FROM debian
+FROM debian AS latex
 USER root
 LABEL org.opencontainers.image.source="https://github.com/navikt/pensjonsbrev/latexinstallation"
 LABEL org.opencontainers.image.description="XeLaTeX installation with required packages for NAVs letter template"
@@ -18,4 +18,16 @@ RUN ./install-tl/install-tl --no-interaction -s f -portable -texdir /app/tex -te
 #Install xetex and required packages from uib using texlive package manager
 RUN tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet/
 RUN tlmgr install xetex
-RUN tlmgr install collection-latex fontspec ninecolors xcolor tabularray nowidow enumitem textpos pdfx xmpincl
+RUN tlmgr install collection-latex
+RUN tlmgr install fontspec
+RUN tlmgr install ninecolors
+RUN tlmgr install xcolor
+RUN tlmgr install tabularray
+RUN tlmgr install nowidow
+RUN tlmgr install enumitem
+RUN tlmgr install textpos
+RUN tlmgr install pdfx
+RUN tlmgr install xmpincl
+RUN tlmgr install everyshi
+RUN tlmgr install etoolbox
+

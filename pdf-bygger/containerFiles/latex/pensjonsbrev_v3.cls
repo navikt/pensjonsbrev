@@ -61,7 +61,7 @@
 \setlength{\listtopsep}{0pt} % separation between top of list and content
 % removes whitespace between items, removes parskip whitespace over and under the list
 % adds custom space to margin and after list
-\setlist[itemize]{noitemsep, topsep=\dimexpr(-\parskip), leftmargin=15pt, after=\vspace{10pt}}
+\setlist[itemize]{noitemsep, before=\vspace{-5pt}, topsep=\dimexpr(-\parskip), leftmargin=15pt, after=\vspace{10pt}}
 
 
 % paragraph formatting

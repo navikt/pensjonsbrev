@@ -47,16 +47,17 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                 )
             }
 
+            for (i in 1..9){
+                paragraph {
+                    text(Bokmal to "BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA ", Nynorsk to "BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA ")
+                }
+            }
 
             title1 {
                 text(Bokmal to "Utbetalingsoversikt", Nynorsk to "Utbetalingsoversikt")
             }
 
             paragraph {
-                text(
-                    Bokmal to "Dette er din månedlige pensjonsutbetaling",
-                    Nynorsk to "Dette er din månedlige pensjonsutbetaling"
-                )
                 table(
                     header = {
                         column(1) { text(Bokmal to "Måned", Nynorsk to "Måned", FontType.BOLD) }

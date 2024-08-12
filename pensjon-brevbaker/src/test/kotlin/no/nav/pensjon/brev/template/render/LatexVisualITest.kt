@@ -46,21 +46,29 @@ class LatexVisualITest {
     @Test
     fun `Title1 after letter title`() {
         render {
-            title1 { text(Bokmal to "A title1 text") }
+            title1 { text(Bokmal to "Title 1") }
         }
     }
 
     @Test
     fun `Title2 after letter title`() {
         render {
-            title2 { text(Bokmal to "A title2 text") }
+            title2 { text(Bokmal to "Title 2") }
         }
     }
 
     @Test
     fun `Title1 after letter title followed by paragraph`() {
         render {
-            title1 { text(Bokmal to "A title1 text") }
+            title1 { text(Bokmal to "Title 1") }
+            paragraph { ipsumText() }
+        }
+    }
+
+    @Test
+    fun `Title2 after letter title followed by paragraph`() {
+        render {
+            title2 { text(Bokmal to "Title 2") }
             paragraph { ipsumText() }
         }
     }
@@ -76,7 +84,7 @@ class LatexVisualITest {
     @Test
     fun `Title1 with ingress text then table`() {
         render {
-            title1 { text(Bokmal to "A table title") }
+            title1 { text(Bokmal to "Title 1") }
             paragraph {
                 text(Bokmal to "Some further descriptive text.")
                 table(
@@ -93,6 +101,58 @@ class LatexVisualITest {
             }
         }
     }
+
+    @Test
+    fun `Title1 then list`() {
+        render {
+            title1 { text(Bokmal to "Title 1") }
+            paragraph {
+                list {
+                    item {
+                        text(Bokmal to "Text point 1")
+                    }
+                    item {
+                        text(Bokmal to "Text point 2")
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `Title2 then list`() {
+        render {
+            title2 { text(Bokmal to "Title2 before point list") }
+            paragraph {
+                list {
+                    item {
+                        text(Bokmal to "Text point 1")
+                    }
+                    item {
+                        text(Bokmal to "Text point 2")
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `list after text`() {
+        render {
+            paragraph {
+                text(Bokmal to "Text before point list")
+                list {
+                    item {
+                        text(Bokmal to "Text point 1")
+                    }
+                    item {
+                        text(Bokmal to "Text point 2")
+                    }
+                }
+            }
+        }
+    }
+
 
     @Test
     fun `Title1 then table`() {
@@ -115,6 +175,27 @@ class LatexVisualITest {
     }
 
     @Test
+    fun `Title2 then table`() {
+        render {
+            title2 { text(Bokmal to "A table title") }
+            paragraph {
+                table(
+                    header = {
+                        column { text(Bokmal to "Column A") }
+                        column { text(Bokmal to "Column B") }
+                    }
+                ) {
+                    row {
+                        cell { text(Bokmal to "Cell A-1") }
+                        cell { text(Bokmal to "Cell B-1") }
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Test
     fun `Two pages`() {
         render {
             title1 { text(Bokmal to "First title") }
@@ -123,4 +204,6 @@ class LatexVisualITest {
             paragraph { ipsumText() }
         }
     }
+
+
 }
