@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
-data class TBU052V_TBU073V_Del_9_EtteroppgjoerAvUforetrygdOgBarnetillegg(
+data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
     val PE_pebrevkode: Expression<String>,
     val PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String>,
     val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget: Expression<Boolean>,

@@ -11,6 +11,7 @@ data class BarnetilleggFelles(
     val btfbinntektbruktiavkortning: Kroner?,
     val btfbbelopfratrukketannenforeldersinntekt: Kroner?,
     val btfbfribelop: Kroner?,
+    val btfbbruttoperar: Kroner?,
     val btfbinntektannenforelder: Kroner?,
     val antallbarnfelles: Int?,
 )

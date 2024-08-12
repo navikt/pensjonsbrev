@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
-data class TBU052V_TBU073V_Del_8_ForDegSomMottarEktefelletillegg(
+data class TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(
     val PE_pebrevkode: Expression<String>,
     val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget: Expression<Boolean>,
     val PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String>,

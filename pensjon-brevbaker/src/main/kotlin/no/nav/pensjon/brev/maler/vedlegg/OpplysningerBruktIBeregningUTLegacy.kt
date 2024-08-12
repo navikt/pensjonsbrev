@@ -530,7 +530,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         //includePhrase(TBU052V_TBU073V_Del_1_InntektenDinFoerDuBleUfoer())
 
         includePhrase(
-            TBU052V_TBU073V_Del_2_SlikHarViFastsattKompensasjonsgradenDin(
+            TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                 FUNKSJON_PE_UT_TBU056V = FUNKSJON_PE_UT_TBU056V,
                 FUNKSJON_PE_UT_TBU056V_51 = FUNKSJON_PE_UT_TBU056V_51,
                 PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad,
@@ -542,7 +542,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             )
         )
 
-        includePhrase(TBU052V_TBU073V_Del_3_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
+        includePhrase(TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
             PE_Vedtaksdata_Kravhode_KravArsakType = PE_Vedtaksdata_Kravhode_KravArsakType,
             PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT,
             PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT,
@@ -554,7 +554,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             PE_UT_Overskytende = PE_UT_Overskytende,
         ))
 
-        includePhrase(TBU052V_TBU073V_Del_4_SlikBeregnerViReduksjonenAvUfoeretrygden(
+        includePhrase(TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(
             PE_Vedtaksdata_Kravhode_KravArsakType = PE_Vedtaksdata_Kravhode_KravArsakType,
             PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT,
             PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT,
@@ -567,7 +567,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             PE_UT_OpplyningerOmBergeningen_NettoPerAr = PE_UT_OpplyningerOmBergeningen_NettoPerAr,
         ))
 
-        includePhrase(TBU052V_TBU073V_Del_5_SlikBlirDinUtbetalingFoerSkatt(
+        includePhrase(TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
             PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad,
             PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad = PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad,
             PE_Vedtaksdata_Kravhode_KravArsakType = PE_Vedtaksdata_Kravhode_KravArsakType,
@@ -588,7 +588,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         showIf(FUNKSJON_PE_UT_TBU601V_TBU604V) {
             includePhrase(
-                TBU052V_TBU073V_Del_6_SlikRedusererViBarnetilleggetUtFraInntekt(
+                TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(
                     PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget,
                     PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget,
                     PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT = PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT,
@@ -664,7 +664,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         //  PE_UT_04_300, PE_UT_14_300, PE_UT_05_100, PE_UT_07_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200
 
         includePhrase(
-            TBU052V_TBU073V_Del_8_ForDegSomMottarEktefelletillegg(
+            TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(
                 PE_pebrevkode = PE_pebrevkode,
                 PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget,
                 PE_Vedtaksdata_Kravhode_KravArsakType = PE_Vedtaksdata_Kravhode_KravArsakType,
@@ -682,7 +682,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                             or (PE_pebrevkode.equalTo("PE_UT_04_102") and PE_Vedtaksdata_Kravhode_KravArsakType.notEqualTo("tilst_dod")))
                     ) or PE_pebrevkode.equalTo("PE_UT_06_300")) {
                 includePhrase(
-                    TBU052V_TBU073V_Del_9_EtteroppgjoerAvUforetrygdOgBarnetillegg(        //  eller brev som er PE_UT_04_300, PE_UT_14_300
+                    TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(        //  eller brev som er PE_UT_04_300, PE_UT_14_300
                         PE_pebrevkode = PE_pebrevkode,
                         PE_Vedtaksdata_Kravhode_KravArsakType = PE_Vedtaksdata_Kravhode_KravArsakType,
                         PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget,

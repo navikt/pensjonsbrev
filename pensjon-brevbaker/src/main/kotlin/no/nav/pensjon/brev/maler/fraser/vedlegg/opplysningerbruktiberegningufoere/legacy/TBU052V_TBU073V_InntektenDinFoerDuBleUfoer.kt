@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 
-data class TBU052V_TBU073V_Del_1_InntektenDinFoerDuBleUfoer(
+data class TBU052V_TBU073V_InntektenDinFoerDuBleUfoer(
     val PE_pebrevkode: Expression<String>,
     val FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt_LIK_3_3_G: Expression<Boolean>,
     val FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt_LIK_3_5_G: Expression<Boolean>,

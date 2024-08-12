@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
-data class TBU052V_TBU073V_Del_6_SlikRedusererViBarnetilleggetUtFraInntekt(
+data class TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(
     val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget: Expression<Boolean>,
     val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget: Expression<Boolean>,
     val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: Expression<String>,

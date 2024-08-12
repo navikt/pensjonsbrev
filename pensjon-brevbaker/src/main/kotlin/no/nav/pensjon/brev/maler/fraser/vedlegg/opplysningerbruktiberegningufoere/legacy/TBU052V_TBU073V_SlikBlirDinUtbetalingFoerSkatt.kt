@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
-data class TBU052V_TBU073V_Del_5_SlikBlirDinUtbetalingFoerSkatt(
+data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
     val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad: Expression<Int>,
     val PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad: Expression<Int>,
     val PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String>,

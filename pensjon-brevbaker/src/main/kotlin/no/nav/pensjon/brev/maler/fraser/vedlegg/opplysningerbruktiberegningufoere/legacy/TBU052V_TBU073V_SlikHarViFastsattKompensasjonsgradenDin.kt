@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
-data class TBU052V_TBU073V_Del_2_SlikHarViFastsattKompensasjonsgradenDin(
+data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
     val FUNKSJON_PE_UT_TBU056V: Expression<Boolean>,
     val FUNKSJON_PE_UT_TBU056V_51: Expression.BinaryInvoke<Boolean, Boolean, Boolean>,
     val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad: Expression<Int>,

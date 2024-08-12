@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
-data class TBU052V_TBU073V_Del_4_SlikBeregnerViReduksjonenAvUfoeretrygden(
+data class TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(
     val PE_Vedtaksdata_Kravhode_KravArsakType: Expression<String>,
     val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT: Expression<Kroner>,
     val PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT: Expression<Kroner>,

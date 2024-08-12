@@ -25,5 +25,6 @@ data class PE(
         val pe_ut_virkningstidpunktarminus1ar: Int,
         val pe_ut_vilfylle67ivirkningfomar: Boolean,
         val pe_ut_virkningfomar: Int,
+        val pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en: String,
     )
 }
