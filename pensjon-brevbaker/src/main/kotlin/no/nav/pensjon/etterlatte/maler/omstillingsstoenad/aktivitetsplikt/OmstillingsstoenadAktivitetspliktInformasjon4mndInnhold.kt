@@ -68,7 +68,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 paragraph {
                     text(
                         Bokmal to "Du mottar omstillingsstønad. Du får utbetalt <beløp> kroner per måned før skatt.",
-                        Nynorsk to "Du har omstillingsstønad. Du får utbetalt <beløp> kroner i stønad kvar månad før skatt.",
+                        Nynorsk to "Du mottar omstillingsstønad. Du får utbetalt <beløp> kroner i stønad kvar månad før skatt.",
                         English to "You are receiving an adjustment allowance. You will receive NOK <amount> each month before tax.",
                     )
                 }
