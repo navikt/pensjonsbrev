@@ -1,21 +1,20 @@
-import type { BrevInfoStatus } from "~/types/brev";
-import { BrevInfoStatusType } from "~/types/brev";
+import { type BrevStatus } from "~/types/brev";
 
 export enum DistribusjonsMetode {
   Sentralprint = "Sentralprint",
   Lokaltprint = "Lokaltprint",
 }
 
-export const brevInfoStatusTypeToTextAndTagVariant = (status: BrevInfoStatus) => {
+export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus) => {
   switch (status.type) {
-    case BrevInfoStatusType.KLADD: {
+    case "Kladd": {
       return { variant: "warning" as const, text: "Kladd", description: null };
     }
-    case BrevInfoStatusType.KLAR: {
+    case "Klar": {
       return { variant: "success" as const, text: "Klar", description: null };
     }
 
-    case BrevInfoStatusType.UNDER_REDIGERING: {
+    case "UnderRedigering": {
       return { variant: "alt1" as const, text: "Under redigering", description: `Redigeres av ${status.redigeresAv}` };
     }
   }

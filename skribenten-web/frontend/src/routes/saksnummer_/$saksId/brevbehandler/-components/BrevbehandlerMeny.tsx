@@ -5,14 +5,14 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import type { DelvisOppdaterBrevResponse } from "~/types/brev";
-import { type BrevInfo, type BrevInfoStatus } from "~/types/brev";
+import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
+import { type BrevInfo } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
 import { EndreMottakerModal } from "../../brevvelger/$templateId/-components/endreMottaker/EndreMottaker";
-import { brevInfoStatusTypeToTextAndTagVariant } from "../-BrevbehandlerUtils";
+import { brevStatusTypeToTextAndTagVariant } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
 const BrevbehandlerMeny = (properties: { sakId: string; brevInfo: BrevInfo[] }) => {
@@ -242,8 +242,8 @@ const BrevItem = (properties: {
   );
 };
 
-const Brevtilstand = (properties: { status: BrevInfoStatus }) => {
-  const { variant, text, description } = brevInfoStatusTypeToTextAndTagVariant(properties.status);
+const Brevtilstand = (properties: { status: BrevStatus }) => {
+  const { variant, text, description } = brevStatusTypeToTextAndTagVariant(properties.status);
 
   return (
     <Tag
