@@ -30,7 +30,8 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     restanse = Kroner(300),
                     ytelseFoerAvkorting = Kroner(20000),
                     trygdetid = 40,
-                    sanksjon = false
+                    sanksjon = false,
+                    institusjon = false,
                 ),
                 OmstillingsstoenadBeregningsperiode(
                     datoFOM = LocalDate.of(2024, 2, 1),
@@ -44,7 +45,8 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     restanse = Kroner(300),
                     ytelseFoerAvkorting = Kroner(22000),
                     trygdetid = 40,
-                    sanksjon = false
+                    sanksjon = false,
+                    institusjon = false,
                 )
             ),
             sisteBeregningsperiode = OmstillingsstoenadBeregningsperiode(
@@ -59,7 +61,8 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 restanse = Kroner(300),
                 ytelseFoerAvkorting = Kroner(22000),
                 trygdetid = 40,
-                sanksjon = false
+                sanksjon = false,
+                institusjon = false,
             ),
             trygdetid = Trygdetid(
                 trygdetidsperioder = listOf(
@@ -102,7 +105,8 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                     restanse = Kroner(300),
                     utbetaltBeloep = Kroner(9000),
                     trygdetid = 40,
-                    sanksjon = false
+                    sanksjon = false,
+                    institusjon = false,
                 )
             )
         ),
