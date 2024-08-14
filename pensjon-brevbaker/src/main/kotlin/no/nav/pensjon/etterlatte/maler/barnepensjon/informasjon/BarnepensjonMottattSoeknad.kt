@@ -56,9 +56,9 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
             outline {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi viser til søknaden din som vi mottok ".expr() + mottattDato.format() + ".".expr(),
-                        Nynorsk to "Vi viser til søknaden din som vi tok imot ".expr() + mottattDato.format() + ".".expr(),
-                        English to "We refer to your application that we received ".expr() + mottattDato.format() + ".".expr(),
+                        Bokmal to "Vi viser til søknaden din som vi mottok ".expr() + mottattDato.format() + ".",
+                        Nynorsk to "Vi viser til søknaden din som vi tok imot ".expr() + mottattDato.format() + ".",
+                        English to "We refer to your application that we received ".expr() + mottattDato.format() + ".",
                     )
                 }
                 showIf(borINorgeEllerIkkeAvtaleland) {
