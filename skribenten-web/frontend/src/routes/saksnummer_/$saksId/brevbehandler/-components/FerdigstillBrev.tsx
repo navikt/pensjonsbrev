@@ -134,24 +134,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   }, [alleFerdigstilteBrev]);
 
   const handleMutations = async () => {
-    //const resultat = await Promise.allSettled(brevSomSkalSendes.map((brevId) => mutation.mutateAsync(brevId)));
-    const resultat = [
-      { status: "fulfilled" as const, value: { error: null, journalpostId: 1 } },
-      {
-        status: "fulfilled" as const,
-        value: {
-          error: {
-            brevIkkeStoettet: "brev er ikke støttet",
-            beskrivelse:
-              "en beskrivelse for å forklare hvorfor vi fikk denne feilen. Dette skyldes en teknisk grunn - grunnen er fordi brevet ikke er støttet",
-            tekniskgrunn: "den tekniske grunnen",
-          },
-          journalpostId: null,
-        },
-      },
-      { status: "fulfilled" as const, value: { error: null, journalpostId: null } },
-      { status: "rejected" as const, reason: { something: "lol" } },
-    ];
+    const resultat = await Promise.allSettled(brevSomSkalSendes.map((brevId) => mutation.mutateAsync(brevId)));
     ferdigstillBrevContext.setResultat(resultat);
     navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
   };
