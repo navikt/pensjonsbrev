@@ -4,19 +4,26 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.borINorgeEllerIkkeAvtaleland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.erOver18aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.mottattDato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
+import java.time.LocalDate
 
 data class BarnepensjonMottattSoeknadDTO(
+    val mottattDato: LocalDate,
     val erOver18aar: Boolean,
     val bosattUtland: Boolean,
     val borINorgeEllerIkkeAvtaleland: Boolean,
@@ -46,8 +53,14 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                     English to "We received your application for a children's pension",
                 )
             }
-
             outline {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi viser til søknaden din som vi mottok ".expr() + mottattDato.format() + ".",
+                        Nynorsk to "Vi viser til søknaden din som vi tok imot ".expr() + mottattDato.format() + ".",
+                        English to "We refer to your application that we received ".expr() + mottattDato.format() + ".",
+                    )
+                }
                 showIf(borINorgeEllerIkkeAvtaleland) {
                     title2 {
                         text(
