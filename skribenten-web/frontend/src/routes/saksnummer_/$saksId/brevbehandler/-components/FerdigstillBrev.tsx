@@ -2,6 +2,7 @@ import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import { delvisOppdaterBrev, hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
@@ -9,6 +10,9 @@ import { ApiError } from "~/components/ApiError";
 import type { BestillBrevResponse, DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
 import { erBrevKlar } from "~/utils/brevUtils";
+
+import { useFerdigstillResultatContext } from "../../kvittering/-components/FerdigstillResultatContext";
+import { Route } from "../route";
 
 export const FerdigstillOgSendBrevButton = (properties: {
   sakId: string;
@@ -105,7 +109,9 @@ const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpne
 };
 
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
+  const navigate = useNavigate({ from: Route.fullPath });
   const [brevSomSkalSendes, setBrevSomSkalSendes] = useState<number[]>([]);
+  const ferdigstillBrevContext = useFerdigstillResultatContext();
 
   const mutation = useMutation<BestillBrevResponse, Error, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
@@ -128,14 +134,26 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   }, [alleFerdigstilteBrev]);
 
   const handleMutations = async () => {
-    const theResult = await Promise.allSettled(brevSomSkalSendes.map((brevId) => mutation.mutateAsync(brevId)));
-
-    /*
-    TODO
-      her blir ønsket at man skal bli navigert til en kvitteringsside med alle breven man har valgt å sende
-      Må finne ut hvordan vi kan 'sende' over resultatet av mutationene til en ny side
-      https://www.figma.com/design/oUFhsO7YJUxDJeaWYKop30/%E2%9C%89%EF%B8%8F-Skribenten---MVP%2FPROTO?node-id=4007-9483&t=7TpSxrszVit6tUDf-4
-    */
+    //const resultat = await Promise.allSettled(brevSomSkalSendes.map((brevId) => mutation.mutateAsync(brevId)));
+    const resultat = [
+      { status: "fulfilled" as const, value: { error: null, journalpostId: 1 } },
+      {
+        status: "fulfilled" as const,
+        value: {
+          error: {
+            brevIkkeStoettet: "brev er ikke støttet",
+            beskrivelse:
+              "en beskrivelse for å forklare hvorfor vi fikk denne feilen. Dette skyldes en teknisk grunn - grunnen er fordi brevet ikke er støttet",
+            tekniskgrunn: "den tekniske grunnen",
+          },
+          journalpostId: null,
+        },
+      },
+      { status: "fulfilled" as const, value: { error: null, journalpostId: null } },
+      { status: "rejected" as const, reason: { something: "lol" } },
+    ];
+    ferdigstillBrevContext.setResultat(resultat);
+    navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
   };
 
   return (

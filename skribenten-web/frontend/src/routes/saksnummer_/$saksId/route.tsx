@@ -10,6 +10,8 @@ import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 
+import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
+
 export const Route = createFileRoute("/saksnummer/$saksId")({
   beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
     const getSakContextQueryOptions = {
@@ -53,10 +55,10 @@ function SakBreadcrumbsPage() {
   const sakContext = Route.useLoaderData();
 
   return (
-    <>
+    <FerdigstillResultatContextProvider>
       <SakInfoBreadcrumbs sak={sakContext?.sak} />
       <Outlet />
-    </>
+    </FerdigstillResultatContextProvider>
   );
 }
 

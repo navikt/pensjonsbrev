@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import type { BestillBrevResponse } from "~/types/brev";
 
+import { useFerdigstillResultatContext } from "./-components/FerdigstillResultatContext";
 import ResultatAccordionContent from "./-components/ResultatAccordionContent";
 import ResultatTag from "./-components/ResultatTag";
 
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/saksnummer/$saksId/kvittering")({
 
 function Kvittering() {
   const { saksId } = Route.useParams();
-
+  const ferdigstillBrevContext = useFerdigstillResultatContext();
   return (
     <div
       css={css`
@@ -78,28 +79,7 @@ function Kvittering() {
           width: 1px;
         `}
       ></div>
-      <div css={css``}>
-        <FerdigstillingsResultat
-          resultat={[
-            { status: "fulfilled", value: { error: null, journalpostId: 1 } },
-            {
-              status: "fulfilled",
-              value: {
-                error: {
-                  brevIkkeStoettet: "brev er ikke støttet",
-                  beskrivelse:
-                    "en beskrivelse for å forklare hvorfor vi fikk denne feilen. Dette skyldes en teknisk grunn - grunnen er fordi brevet ikke er støttet",
-                  tekniskgrunn: "den tekniske grunnen",
-                },
-                journalpostId: null,
-              },
-            },
-            { status: "fulfilled", value: { error: null, journalpostId: null } },
-            { status: "rejected", reason: { something: "lol" } },
-          ]}
-          sakId={saksId}
-        />
-      </div>
+      <FerdigstillingsResultat resultat={ferdigstillBrevContext.resultat} sakId={saksId} />
     </div>
   );
 }
