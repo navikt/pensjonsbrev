@@ -27,6 +27,7 @@ fun createOmstillingsstoenadRevurderingDTO() =
                     restanse = Kroner(1000),
                     trygdetid = 40,
                     sanksjon = false,
+                    institusjon = false,
                 ),
                 OmstillingsstoenadBeregningsperiode(
                     datoFOM = LocalDate.of(2024, 1, 1),
@@ -40,7 +41,8 @@ fun createOmstillingsstoenadRevurderingDTO() =
                     ytelseFoerAvkorting = Kroner(22000),
                     restanse = Kroner(1000),
                     trygdetid = 40,
-                    sanksjon = false
+                    sanksjon = false,
+                    institusjon = false,
                 )
             ),
             sisteBeregningsperiode = OmstillingsstoenadBeregningsperiode(
@@ -55,7 +57,8 @@ fun createOmstillingsstoenadRevurderingDTO() =
                 ytelseFoerAvkorting = Kroner(22000),
                 restanse = Kroner(1000),
                 trygdetid = 40,
-                sanksjon = false
+                sanksjon = false,
+                institusjon = false,
             ),
             trygdetid = Trygdetid(
                 trygdetidsperioder = listOf(
