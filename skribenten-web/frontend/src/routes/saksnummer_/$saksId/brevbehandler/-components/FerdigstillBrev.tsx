@@ -128,7 +128,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   }, [alleFerdigstilteBrev]);
 
   const handleMutations = async () => {
-    await Promise.allSettled(brevSomSkalSendes.map((brevId) => mutation.mutateAsync(brevId)));
+    const theResult = await Promise.allSettled(brevSomSkalSendes.map((brevId) => mutation.mutateAsync(brevId)));
 
     /*
     TODO

@@ -253,10 +253,7 @@ const Brevtilstand = (properties: { status: BrevStatus }) => {
       size="small"
       variant={variant}
     >
-      <HStack>
-        <BodyShort>{text}</BodyShort>
-        {description && <BodyShort>{description}</BodyShort>}
-      </HStack>
+      <HStack>{description ? <BodyShort>{description}</BodyShort> : <BodyShort>{text}</BodyShort>}</HStack>
     </Tag>
   );
 };

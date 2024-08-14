@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as SaksnummerIndexImport } from './routes/saksnummer.index'
 import { Route as SaksnummerSaksIdRouteImport } from './routes/saksnummer_/$saksId/route'
+import { Route as SaksnummerSaksIdKvitteringRouteImport } from './routes/saksnummer_/$saksId/kvittering/route'
 import { Route as SaksnummerSaksIdBrevvelgerRouteImport } from './routes/saksnummer_/$saksId/brevvelger/route'
 import { Route as SaksnummerSaksIdBrevbehandlerRouteImport } from './routes/saksnummer_/$saksId/brevbehandler/route'
 import { Route as SaksnummerSaksIdBrevIndexImport } from './routes/saksnummer_/$saksId/brev.index'
@@ -36,6 +37,12 @@ const SaksnummerSaksIdRouteRoute = SaksnummerSaksIdRouteImport.update({
   path: '/saksnummer/$saksId',
   getParentRoute: () => rootRoute,
 } as any)
+
+const SaksnummerSaksIdKvitteringRouteRoute =
+  SaksnummerSaksIdKvitteringRouteImport.update({
+    path: '/kvittering',
+    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+  } as any)
 
 const SaksnummerSaksIdBrevvelgerRouteRoute =
   SaksnummerSaksIdBrevvelgerRouteImport.update({
@@ -91,6 +98,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteImport
     }
+    '/saksnummer/$saksId/kvittering': {
+      preLoaderRoute: typeof SaksnummerSaksIdKvitteringRouteImport
+      parentRoute: typeof SaksnummerSaksIdRouteImport
+    }
     '/saksnummer/$saksId/brevvelger/$templateId': {
       preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerTemplateIdRouteImport
       parentRoute: typeof SaksnummerSaksIdBrevvelgerRouteImport
@@ -115,6 +126,7 @@ export const routeTree = rootRoute.addChildren([
     SaksnummerSaksIdBrevvelgerRouteRoute.addChildren([
       SaksnummerSaksIdBrevvelgerTemplateIdRouteRoute,
     ]),
+    SaksnummerSaksIdKvitteringRouteRoute,
     SaksnummerSaksIdBrevBrevIdRoute,
     SaksnummerSaksIdBrevIndexRoute,
   ]),
