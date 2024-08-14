@@ -48,8 +48,8 @@ object OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold : EtterlatteTempl
             outline {
                 paragraph {
                     text(
-                        Bokmal to "Du har omstillingsstønad.",
-                        Nynorsk to "Du har omstillingsstønad.",
+                        Bokmal to "Du mottar omstillingsstønad.",
+                        Nynorsk to "Du mottar omstillingsstønad.",
                         English to "You are receiving an adjustment allowance.",
                     )
                 }
