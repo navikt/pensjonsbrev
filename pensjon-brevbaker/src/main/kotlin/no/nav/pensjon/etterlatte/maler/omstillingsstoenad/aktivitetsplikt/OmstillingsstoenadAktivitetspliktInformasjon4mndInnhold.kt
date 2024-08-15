@@ -116,7 +116,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 text(
                     Bokmal to "Når det er gått seks måneder etter dødsfallet, er det et krav for å motta " +
                             "omstillingsstønad at du er i minst 50 prosent arbeid eller annen aktivitet med sikte på å " +
-                            "komme i arbeid. 12 måneder etter dødsfallet kan det kreves 100 prosent aktivitet.",
+                            "komme i arbeid. Når det er gått 12 måneder siden dødsfallet kan det kreves 100 prosent aktivitet.",
                     Nynorsk to "For å kunne halde fram med å få omstillingsstønad når det har gått seks månader " +
                             "sidan dødsfallet, må du vere i minst 50 prosent arbeid eller annan aktivitet med sikte på " +
                             "å kome i arbeid. 12 månader etter dødsfallet kan det bli stilt krav om 100 prosent aktivitet.",
