@@ -14,6 +14,7 @@ import com.zaxxer.hikari.HikariDataSource
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -45,16 +46,13 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
 
 object BrevredigeringTable : LongIdTable() {
     val saksId: Column<Long> = long("saksId").index()
-    val brevkode: Column<String> = varchar("brevkode", length = 50)
-    val spraak: Column<String> = varchar("spraak", length = 50)
+    val brevkode: Column<Brevkode.Redigerbar> = varchar("brevkode", length = 50).transform(Brevkode.Redigerbar::valueOf, Brevkode.Redigerbar::name)
+    val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<BrevbakerBrevdata>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
-        // TODO: Fjern default når miljøene er oppdatert
-        .default(ByteArray(1).apply { fill(1) })
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
-    // TODO: introdusere value class for NavIdent?
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
     val sistRedigertAvNavIdent: Column<String> = varchar("sistRedigertAvNavIdent", length = 50)
     val opprettetAvNavIdent: Column<String> = varchar("opprettetAvNavIdent", length = 50).index()
@@ -65,16 +63,16 @@ object BrevredigeringTable : LongIdTable() {
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksId by BrevredigeringTable.saksId
-    var brevkode by BrevredigeringTable.brevkode.transform(Brevkode.Redigerbar::name, Brevkode.Redigerbar::valueOf)
-    var spraak by BrevredigeringTable.spraak.transform(LanguageCode::name, LanguageCode::valueOf)
+    var brevkode by BrevredigeringTable.brevkode
+    var spraak by BrevredigeringTable.spraak
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     var redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
     val redigertBrevHash by BrevredigeringTable.redigertBrevHash.editLetterHash()
     var laastForRedigering by BrevredigeringTable.laastForRedigering
-    var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent
-    var sistRedigertAvNavIdent by BrevredigeringTable.sistRedigertAvNavIdent
-    var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent
+    var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
+    var sistRedigertAvNavIdent by BrevredigeringTable.sistRedigertAvNavIdent.wrap(::NavIdent, NavIdent::id)
+    var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent.wrap(::NavIdent, NavIdent::id)
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
     var sistReservert by BrevredigeringTable.sistReservert
@@ -83,7 +81,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
             if (saksId == null) {
-              findById(id)
+                findById(id)
             } else {
                 find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
             }

@@ -20,7 +20,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val spraak = request.spraak.toLanguageCode()
             val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
 
-            brevredigeringService.opprettBrev(call, sak, request.brevkode, spraak, avsenderEnhetsId, request.saksbehandlerValg)
+            brevredigeringService.opprettBrev(call, sak, request.brevkode, spraak, avsenderEnhetsId, request.saksbehandlerValg, true)
                 .onOk { brev ->
                     call.respond(HttpStatusCode.Created, brev)
                 }.onError { message, statusCode ->

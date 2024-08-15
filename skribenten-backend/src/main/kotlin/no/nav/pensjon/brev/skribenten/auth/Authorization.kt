@@ -9,6 +9,7 @@ import io.ktor.http.auth.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.slf4j.LoggerFactory
 import java.net.URL
 
@@ -111,5 +112,5 @@ data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Paylo
     }
 
     fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
-
+    fun navIdent(): NavIdent = NavIdent(navIdent)
 }
