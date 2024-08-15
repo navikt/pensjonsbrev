@@ -1,6 +1,7 @@
 import type { Draft } from "immer";
 
-import type { Content, EditedLetter, Identifiable, LiteralValue, VariableValue } from "~/types/brevbakerTypes";
+import type { BrevResponse } from "~/types/brev";
+import type { Content, Identifiable, LiteralValue, VariableValue } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { LetterEditorState } from "../model/state";
@@ -25,25 +26,12 @@ export function text<T extends LiteralValue | VariableValue | undefined>(
   }
 }
 
-export function create(redigertBrev?: EditedLetter): LetterEditorState {
+export function create(brev: BrevResponse): LetterEditorState {
   return {
-    redigertBrev: redigertBrev || {
-      title: "",
-      sakspart: {
-        gjelderNavn: "",
-        gjelderFoedselsnummer: "",
-        saksnummer: "",
-        dokumentDato: "",
-      },
-      blocks: [],
-      signatur: {
-        hilsenTekst: "",
-        saksbehandlerRolleTekst: "",
-        saksbehandlerNavn: "",
-        navAvsenderEnhet: "",
-      },
-      deletedBlocks: [],
-    },
+    info: brev.info,
+    redigertBrev: brev.redigertBrev,
+    redigertBrevHash: brev.redigertBrevHash,
+    isDirty: false,
     focus: { blockIndex: 0, contentIndex: 0 },
   };
 }

@@ -25,6 +25,8 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
     const blocks = editedLetter.blocks;
     const previousContentSameBlock = blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex - 1];
 
+    draft.isDirty = true;
+
     if ("itemIndex" in literalIndex) {
       const itemList = blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
       if (itemList.type === ITEM_LIST) {

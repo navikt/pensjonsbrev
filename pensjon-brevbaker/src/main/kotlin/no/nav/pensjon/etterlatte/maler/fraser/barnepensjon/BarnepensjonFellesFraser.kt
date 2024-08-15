@@ -123,34 +123,36 @@ object BarnepensjonFellesFraser {
                     text(
                         Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
                         Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ",
-                        English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ("
+                        English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone at "
                     )
                     kontakttelefonPensjon(bosattUtland)
                     text(
-                        Bokmal to " hverdager mellom kl. 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
-                        Nynorsk to ", kvardagar mellom kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
-                        English to ") weekdays between 09.00-15.00. If you provide your child's national identity number, we can more easily provide you with quick and good help."
+                        Bokmal to ", hverdager mellom klokken 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                        Nynorsk to ", kvardagar mellom klokka 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
+                        English to ", Monday to Friday between 09:00 AM and 03:00 PM. If you provide your child's national identity number, we can more easily provide you with quick and good help."
                     )
                 }
             }.orShow {
                 paragraph {
                     text(
-                        Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
-                        Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ",
-                        English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ("
+                        Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. Du kan også kontakte oss på telefon ",
+                        Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Du kan skrive til eller chatte med oss på ${Constants.KONTAKT_URL}. Alternativt kan du ringje oss på telefon ",
+                        English to "You can find answers to your questions online: ${Constants.Engelsk.BARNEPENSJON_URL}. Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact us by phone at "
                     )
                     kontakttelefonPensjon(bosattUtland)
                     text(
-                        Bokmal to " hverdager mellom kl. 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
-                        Nynorsk to ", kvardagar mellom kl. 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                        English to ") weekdays between 09.00-15.00. If you provide your national identity number, we can more easily provide you with quick and good help."
+                        Bokmal to ", hverdager klokken 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                        Nynorsk to ", kvardagar mellom klokka 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
+                        English to ", Monday to Friday between 9:00 AM and 3:00 PM. If you provide your national identity number, we can more easily provide you with quick and good help."
                     )
                 }
             }
         }
     }
 
-    object HvorLengeKanDuFaaBarnepensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class HvorLengeKanDuFaaBarnepensjon(
+        val migrertYrkesskade: Expression<Boolean>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -161,9 +163,25 @@ object BarnepensjonFellesFraser {
             }
             paragraph {
                 text(
-                    Bokmal to "Du er innvilget barnepensjon til og med den kalendermåneden du fyller 20 år, så lenge du oppfyller vilkårene.",
-                    Nynorsk to "Under føresetnad av at du innfrir vilkåra, kan du få barnepensjon fram til og med kalendermånaden du fyller 20 år.",
-                    English to "You will receive the children’s pension until and including the calendar month in which you turn 20, as long as you satisfy the conditions.",
+                    Bokmal to "Du er innvilget barnepensjon til og med den kalendermåneden du fyller ",
+                    Nynorsk to "Under føresetnad av at du innfrir vilkåra, kan du få barnepensjon fram til og med kalendermånaden du fyller ",
+                    English to "You will receive the children’s pension until and including the calendar month in which you turn 20 ",
+                )
+                showIf(migrertYrkesskade) {
+                    text(
+                        Bokmal to "21",
+                        Nynorsk to "21",
+                        English to "21",
+                    )
+                }.orShow { text(
+                    Bokmal to "20",
+                    Nynorsk to "20",
+                    English to "20",
+                ) }
+                text(
+                    Bokmal to " år, så lenge du oppfyller vilkårene.",
+                    Nynorsk to " år.",
+                    English to ", as long as you satisfy the conditions.",
                 )
             }
         }
@@ -257,11 +275,11 @@ object BarnepensjonFellesFraser {
                                     "Dette sikrer at skatten blir riktig og gir mindre risiko for restskatt.",
                                 Nynorsk to
                                     "Det er ikkje registrert frivillig skattetrekk for utbetaling av barnepensjonen. " +
-                                    "Vi må få beskjed innan 3 veker dersom du vil at vi skal trekkje skatt på etterbetalinga. " +
+                                    "Vi må få beskjed innan tre veker dersom du vil at vi skal trekkje skatt på etterbetalinga. " +
                                     "Dette sikrar at skatten blir rett, og gir mindre risiko for restskatt.",
                                 English to
                                     "There is no registered voluntary tax deduction on the payment of your children's pension. " +
-                                    "We must be notified within 3 weeks if you want us to deduct tax from the back payment. " +
+                                    "We must be notified within three weeks if you want us to deduct tax from the back payment. " +
                                     "This ensures that your tax payment is correct and minimises the risk of back taxes.",
                             )
                         }

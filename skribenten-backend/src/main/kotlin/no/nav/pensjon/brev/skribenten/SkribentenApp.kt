@@ -69,7 +69,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
             }
         }
         exception<KanIkkeReservereBrevredigeringException> { call, cause ->
-            call.respond(HttpStatusCode.Locked, cause.message)
+            call.respond(HttpStatusCode.Locked, cause.response)
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)

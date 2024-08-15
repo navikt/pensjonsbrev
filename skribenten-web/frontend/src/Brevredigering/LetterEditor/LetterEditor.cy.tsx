@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import type { BrevResponse } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
 
 import exampleLetter1Json from "./example-letter-1.json";
@@ -13,8 +14,22 @@ import { LetterEditor } from "./LetterEditor";
 const exampleLetter1 = exampleLetter1Json as EditedLetter;
 
 function EditorWithState({ initial }: { initial: EditedLetter }) {
-  const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(initial));
-  return <LetterEditor editorState={editorState} setEditorState={setEditorState} />;
+  const brevresponse: BrevResponse = {
+    info: {
+      id: 1,
+      brevkode: "BREV1",
+      opprettet: "2024-01-01",
+      sistredigert: "2024-01-01",
+      sistredigertAv: "Z123",
+      opprettetAv: "Z123",
+      status: { type: "UnderRedigering", redigeresAv: "Z123" },
+    },
+    redigertBrev: initial,
+    redigertBrevHash: "hash1",
+    saksbehandlerValg: {},
+  };
+  const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevresponse));
+  return <LetterEditor editorState={editorState} freeze={false} setEditorState={setEditorState} />;
 }
 
 describe("<LetterEditor />", () => {

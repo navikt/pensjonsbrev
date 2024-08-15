@@ -62,5 +62,5 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: cypress/screenshots
+          path: skribenten-web/frontend/cypress/screenshots
 

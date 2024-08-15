@@ -11,10 +11,9 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.ytelseFoerAvkorting
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
 data class Beregningsperiodetabell(
@@ -59,7 +58,16 @@ data class Beregningsperiodetabell(
                         cell { includePhrase(PeriodeITabell(periode.datoFOM, periode.datoTOM)) }
                         cell { includePhrase(Felles.KronerText(periode.ytelseFoerAvkorting)) }
                         cell { includePhrase(Felles.KronerText(periode.inntekt)) }
-                        cell { includePhrase(Felles.KronerText(periode.utbetaltBeloep)) }
+                        cell {
+                            includePhrase(Felles.KronerText(periode.utbetaltBeloep))
+                            showIf(periode.sanksjon) {
+                                text(
+                                    Language.Bokmal to " - sanksjon",
+                                    Language.Nynorsk to " - sanksjon",
+                                    Language.English to " - sanction",
+                                )
+                            }
+                        }
                     }
                 }
             }

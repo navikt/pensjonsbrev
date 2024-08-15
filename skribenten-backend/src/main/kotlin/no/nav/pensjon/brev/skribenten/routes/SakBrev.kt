@@ -31,43 +31,55 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
         put<Api.OppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.oppdaterBrev(call, brevId, request.saksbehandlerValg, request.redigertBrev)
-                ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev)}
+            brevredigeringService.oppdaterBrev(
+                call = call,
+                saksId = sak.saksId,
+                brevId = brevId,
+                nyeSaksbehandlerValg = request.saksbehandlerValg,
+                nyttRedigertbrev = request.redigertBrev
+            )?.onOk { brev -> call.respond(HttpStatusCode.OK, brev)}
                 ?.onError { message, statusCode ->
                     call.application.log.error("$statusCode - Feil ved oppdatering av brev ${brevId}: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
                 }
-                ?: call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
         patch<Api.DelvisOppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            brevredigeringService.delvisOppdaterBrev(brevId, request)?.also { call.respond(HttpStatusCode.OK, it) }
-                ?: call.respond(HttpStatusCode.NotFound, "Brev med id $brevId: ikke funnet")
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+
+            brevredigeringService.delvisOppdaterBrev(saksId = sak.saksId, brevId = brevId, patch = request)
+                ?.also { call.respond(HttpStatusCode.OK, it) }
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
         delete("/{brevId}") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            if (brevredigeringService.slettBrev(brevId)) {
+            if (brevredigeringService.slettBrev(sak.saksId, brevId)) {
                 call.respond(HttpStatusCode.NoContent)
             } else {
-                call.respond(HttpStatusCode.NotFound, "Brev med id $brevId: ikke funnet")
+                call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
             }
         }
 
         get("/{brevId}") {
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             val brevId = call.parameters.getOrFail<Long>("brevId")
+            val reserver = call.parameters["reserver"].toBoolean()
 
-            brevredigeringService.hentBrev(call, brevId)
+            brevredigeringService.hentBrev(call, sak.saksId, brevId, reserver)
                 ?.onOk { brev ->
                     call.respond(HttpStatusCode.OK, brev)
                 }?.onError { message, statusCode ->
                     call.application.log.error("$statusCode - Feil ved henting av brev: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
                 }
-                ?: call.respond(HttpStatusCode.NotFound, "Brev med brevid: $brevId ikke funnet")
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
         get {
@@ -82,24 +94,29 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
         // TODO: Slett når frontend er endret til å bruke get
         post("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.hentEllerOpprettPdf(call, brevId)
+            brevredigeringService.hentEllerOpprettPdf(call, sak.saksId, brevId)
                 ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.Created) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
-                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev: $brevId")
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            brevredigeringService.hentEllerOpprettPdf(call, brevId)
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+
+            brevredigeringService.hentEllerOpprettPdf(call, sak.saksId, brevId)
                 ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
-                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev: $brevId")
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
         post("/{brevId}/pdf/send") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            brevredigeringService.sendBrev(call, brevId)
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+
+            brevredigeringService.sendBrev(call = call, saksId = sak.saksId, brevId = brevId)
                 ?.onOk { call.respond(HttpStatusCode.OK, it) }
                 ?.onError { error, _ -> call.respond(HttpStatusCode.InternalServerError, error) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")

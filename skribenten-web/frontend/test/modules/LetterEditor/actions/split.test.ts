@@ -57,13 +57,13 @@ describe("LetterEditorActions.split", () => {
     test("does not split an emptyBlock", () => {
       const state = letter(paragraph(literal("")));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, 0);
-      expect(result).toBe(state);
+      expect(result.redigertBrev).toBe(state.redigertBrev);
     });
 
     test("does not split at the very beginning of block when previous is empty", () => {
       const state = letter(paragraph(literal("")), paragraph(literal("lit2")));
       const result = Actions.split(state, { blockIndex: 1, contentIndex: 0 }, 0);
-      expect(result).toBe(state);
+      expect(result.redigertBrev).toBe(state.redigertBrev);
     });
 
     test("when splitting at the very end of a block the new block and content gets no ID (new)", () => {
@@ -255,16 +255,17 @@ describe("LetterEditorActions.split", () => {
       // The following assertions also assert that we don't move focus
       // Split at the empty item
       expect(
-        Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 }, 0),
-      ).toStrictEqual(state);
+        Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 }, 0).redigertBrev,
+      ).toStrictEqual(state.redigertBrev);
       // Split before the empty item
       expect(
-        Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }, "item1".length),
-      ).toStrictEqual(state);
+        Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }, "item1".length)
+          .redigertBrev,
+      ).toStrictEqual(state.redigertBrev);
       // Split at beginning of item after empty item
       expect(
-        Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 2, itemContentIndex: 0 }, 0),
-      ).toStrictEqual(state);
+        Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 2, itemContentIndex: 0 }, 0).redigertBrev,
+      ).toStrictEqual(state.redigertBrev);
     });
 
     test("splits the last empty item as a Literal after the list in the parent block", () => {

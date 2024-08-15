@@ -77,7 +77,8 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
         brukerUnder18Aar = true,
         kunNyttRegelverk = false,
         erGjenoppretting = false,
-        harUtbetaling = true
+        harUtbetaling = true,
+        erMigrertYrkesskade = false,
     )
 }
 

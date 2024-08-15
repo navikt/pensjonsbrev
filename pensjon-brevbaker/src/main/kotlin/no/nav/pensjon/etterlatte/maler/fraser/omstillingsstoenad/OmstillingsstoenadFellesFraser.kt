@@ -128,17 +128,16 @@ object OmstillingsstoenadFellesFraser {
                 text(
                     Bokmal to "Du kan finne svar på ${Constants.OMS_URL}. På ${Constants.KONTAKT_URL} kan du " +
                             "chatte eller skrive til oss. Du kan også kontakte oss på telefon " +
-                            "+47 ${Constants.KONTAKTTELEFON_PENSJON}, hverdager 09.00-15.00. Hvis du oppgir " +
-                            "fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
+                            "${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, hverdager mellom klokken 09.00-15.00. " +
+                            "Hvis du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
                     Nynorsk to "Du kan finne svar på ${Constants.OMS_URL}. Du kan skrive til eller chatte " +
-                            "med oss på ${Constants.KONTAKT_URL}. Du kan også kontakte oss på telefon " +
-                            "+47 ${Constants.KONTAKTTELEFON_PENSJON}, kvardagar 09:00–15:00. Det vil gjere det " +
-                            "enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer.",
+                            "med oss på ${Constants.KONTAKT_URL}. Alternativt kan du ringje oss på telefon " +
+                            "${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, kvardagar mellom klokka 09.00–15.00. " +
+                            "Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer.",
                     English to "You can find answers to your questions online: ${Constants.OMS_URL}. " +
-                            "Feel free to chat with us or write to us here: ${Constants.KONTAKT_URL}. You can also contact " +
-                            "us by phone (+47 ${Constants.KONTAKTTELEFON_PENSJON}), weekdays 09:00-15:00. If you " +
-                            "provide your national identity number, we can more easily provide you with quick " +
-                            "and good help. "
+                            "Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact " +
+                            "us by phone at ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, Monday to Friday between 9:00 AM and 3:00 PM. " +
+                            "If you provide your national identity number, we can more easily provide you with quick and good help."
                 )
             }
         }
