@@ -1,8 +1,10 @@
 import { css } from "@emotion/react";
-import { Button } from "@navikt/ds-react";
+import { Button, Heading } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
+import { getSakContext } from "~/api/skribenten-api-endpoints";
 import type { SaksbehandlerValg } from "~/types/brev";
 import type { LetterModelSpecification } from "~/types/brevbakerTypes";
 
@@ -13,11 +15,26 @@ export type ModelEditorProperties = {
   defaultValues?: SaksbehandlerValg;
   disableSubmit: boolean;
   onSubmit: (saksbehandlerValg: SaksbehandlerValg) => void;
+  saksId: string;
+  vedtaksId: string | undefined;
 };
 
-export const ModelEditor = ({ brevkode, defaultValues, disableSubmit, onSubmit }: ModelEditorProperties) => {
+export const ModelEditor = ({
+  brevkode,
+  defaultValues,
+  disableSubmit,
+  onSubmit,
+  saksId,
+  vedtaksId,
+}: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
+  const brevmal = useQuery({
+    queryKey: getSakContext.queryKey(saksId, vedtaksId),
+    queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
+    select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
+  });
+  const doSubmit = (values: SaksbehandlerValg) => onSubmit(createSaksbehandlerValg(values));
 
   if (specification) {
     const saksbehandlerValgType = findSaksbehandlerValgTypeName(specification);
@@ -35,8 +52,9 @@ export const ModelEditor = ({ brevkode, defaultValues, disableSubmit, onSubmit }
                 width: 100%;
               }
             `}
-            onSubmit={methods.handleSubmit((values) => onSubmit(createSaksbehandlerValg(values)))}
+            onSubmit={methods.handleSubmit(doSubmit)}
           >
+            <Heading size="small">{brevmal.data?.name}</Heading>
             <ObjectEditor brevkode={brevkode} typeName={saksbehandlerValgType} />
             <Button loading={disableSubmit} type="submit">
               Send

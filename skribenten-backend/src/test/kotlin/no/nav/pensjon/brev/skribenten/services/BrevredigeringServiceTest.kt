@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brevbaker.api.model.*
@@ -57,12 +58,13 @@ class BrevredigeringServiceTest {
     private val letter = letter(Paragraph(1, true, listOf(Literal(1, "red pill"))))
 
     private val brevbakerMock: BrevbakerService = mockk<BrevbakerService>()
-    private val principalNavIdent = "Agent Smith"
-    private val principalNavIdent2 = "Morpheus"
+    private val principalNavIdent = NavIdent("Agent Smith")
+    private val principalNavIdent2 = NavIdent("Morpheus")
     private val principalNavEnhetId = "Nebuchadnezzar"
-    private fun callMock(ident: String = principalNavIdent) = mockk<ApplicationCall> {
+    private fun callMock(ident: NavIdent = principalNavIdent) = mockk<ApplicationCall> {
         every { principal() } returns mockk<UserPrincipal> {
-            every { navIdent } returns ident
+            every { navIdent() } returns ident
+            every { navIdent } returns ident.id
             every { fullName } returns "Laurence Fishburne"
         }
     }
@@ -104,10 +106,10 @@ class BrevredigeringServiceTest {
     }
     private val navAnsattService = mockk<NavansattService> {
         coEvery { harTilgangTilEnhet(any(), any(), any()) } returns ServiceResult.Ok(false)
-        coEvery { harTilgangTilEnhet(any(), eq(principalNavIdent), eq(principalNavEnhetId)) } returns ServiceResult.Ok(true)
-        coEvery { harTilgangTilEnhet(any(), eq(principalNavIdent2), eq(principalNavEnhetId)) } returns ServiceResult.Ok(true)
-        coEvery { hentNavansatt(any(), eq(principalNavIdent)) } returns ServiceResult.Ok(Navansatt(emptyList(), "Hugo Weaving", "Hugo", "Weaving"))
-        coEvery { hentNavansatt(any(), eq(principalNavIdent2)) } returns ServiceResult.Ok(Navansatt(emptyList(), "Laurence Fishburne", "Laurence", "Fishburne"))
+        coEvery { harTilgangTilEnhet(any(), eq(principalNavIdent.id), eq(principalNavEnhetId)) } returns ServiceResult.Ok(true)
+        coEvery { harTilgangTilEnhet(any(), eq(principalNavIdent2.id), eq(principalNavEnhetId)) } returns ServiceResult.Ok(true)
+        coEvery { hentNavansatt(any(), eq(principalNavIdent.id)) } returns ServiceResult.Ok(Navansatt(emptyList(), "Hugo Weaving", "Hugo", "Weaving"))
+        coEvery { hentNavansatt(any(), eq(principalNavIdent2.id)) } returns ServiceResult.Ok(Navansatt(emptyList(), "Laurence Fishburne", "Laurence", "Fishburne"))
     }
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerMock,
@@ -545,7 +547,7 @@ class BrevredigeringServiceTest {
                 async(Dispatchers.IO) {
                     runCatching {
                         brevredigeringService.hentBrev(
-                            call = callMock("id-$it"),
+                            call = callMock(NavIdent("id-$it")),
                             saksId = sak.saksId,
                             brevId = brev.info.id,
                             reserverForRedigering = true

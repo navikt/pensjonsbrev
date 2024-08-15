@@ -42,14 +42,20 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
                 ),
         ) {
             title {
-                textExpr(
-                    Bokmal to "Vi har mottatt søknaden din om omstillingsstønad ".expr() + mottattDato.format(),
-                    Nynorsk to "Vi har fått søknaden din om omstillingsstønad ".expr() + mottattDato.format(),
-                    English to "We received your application for adjustment allowance on ".expr() + mottattDato.format(),
+                text(
+                    Bokmal to "Vi har mottatt søknaden din om omstillingsstønad",
+                    Nynorsk to "Vi har fått søknaden din om omstillingsstønad",
+                    English to "We received your application for adjustment allowance",
                 )
             }
-
             outline {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi viser til søknaden din som vi mottok ".expr() + mottattDato.format() + ".",
+                        Nynorsk to "Vi viser til søknaden din som vi tok imot ".expr() + mottattDato.format() + ".",
+                        English to "We refer to your application that we received ".expr() + mottattDato.format() + ".",
+                    )
+                }
                 showIf(borINorgeEllerIkkeAvtaleland) {
                     title2 {
                         text(

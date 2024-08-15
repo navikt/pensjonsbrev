@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { useModelSpecification } from "~/api/brev-queries";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import { getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
+import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
 import type { FieldType } from "~/types/brevbakerTypes";
 
 const FieldEditor = ({ brevkode, field, fieldType }: { brevkode: string; field: string; fieldType: FieldType }) => {
@@ -71,7 +71,7 @@ function ToggleableObjectEditor({
   return (
     <>
       <Switch checked={open} onChange={handleToggle}>
-        {parentFieldName}
+        {convertFieldToReadableLabel(parentFieldName)}
       </Switch>
       {open && (
         <div

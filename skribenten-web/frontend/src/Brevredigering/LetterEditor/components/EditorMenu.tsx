@@ -65,8 +65,8 @@ function LagretTidspunkt({ freeze, datetime, isDirty }: { freeze: boolean; datet
     );
   } else {
     const tekst = isToday(datetime)
-      ? `Automatisk lagret kl ${formatTime(datetime)}`
-      : `Sist endret ${format(datetime, "dd.MM.yyyy HH:mm")}`;
+      ? `Lagret kl ${formatTime(datetime)}`
+      : `Lagret ${format(datetime, "dd.MM.yyyy HH:mm")}`;
 
     const ikon = isDirty ? null : <CheckmarkCircleFillIcon color="#007C2E" fontSize="1.5rem" title="vellykket-ikon" />;
 

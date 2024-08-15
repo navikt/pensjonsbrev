@@ -8,6 +8,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.*
@@ -22,11 +23,12 @@ private const val dokumentId = "5678"
 
 class LegacyBrevServiceTest {
 
-    private val principalIdent = "kulIdent1234"
+    private val principalIdent = NavIdent("kulIdent1234")
     private val principal = mockk<UserPrincipal> {
         every {
-            navIdent
+            navIdent()
         } returns principalIdent
+        every { navIdent } returns principalIdent.id
     }
     private val mockCall = mockk<ApplicationCall> {
         every { callId } returns "utrolig kul callId"
@@ -117,10 +119,10 @@ class LegacyBrevServiceTest {
     }
     private val navansattService = mockk<NavansattService> {
         coEvery {
-            hentNavansatt(any(), eq(principalIdent))
+            hentNavansatt(any(), eq(principalIdent.id))
         } returns ServiceResult.Ok(Navansatt(emptyList(), "verdens", "beste", "saksbehandler"))
-        coEvery { harTilgangTilEnhet(any(), eq(principalIdent), any()) } returns ServiceResult.Ok(false)
-        coEvery { harTilgangTilEnhet(any(), eq(principalIdent), eq(principalSinNAVEnhet.id)) } returns ServiceResult.Ok(true)
+        coEvery { harTilgangTilEnhet(any(), eq(principalIdent.id), any()) } returns ServiceResult.Ok(false)
+        coEvery { harTilgangTilEnhet(any(), eq(principalIdent.id), eq(principalSinNAVEnhet.id)) } returns ServiceResult.Ok(true)
     }
 
     private val legacyBrevService = LegacyBrevService(
@@ -134,7 +136,8 @@ class LegacyBrevServiceTest {
     fun `bestill exstream brev feiler ved manglende tilgang`() {
         runBlocking {
             val bestillBrevResult = legacyBrevService.bestillOgRedigerExstreamBrev(
-                call = mockCall, gjelderPid = "9999",
+                call = mockCall,
+                gjelderPid = "9999",
                 request = Api.BestillExstreamBrevRequest(
                     brevkode = "exstream",
                     spraak = SpraakKode.NB,

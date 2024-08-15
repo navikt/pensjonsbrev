@@ -11,6 +11,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.institusjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.ytelseFoerAvkorting
@@ -65,6 +66,13 @@ data class Beregningsperiodetabell(
                                     Language.Bokmal to " - sanksjon",
                                     Language.Nynorsk to " - sanksjon",
                                     Language.English to " - sanction",
+                                )
+                            }
+                            showIf(periode.institusjon) {
+                                text(
+                                    Language.Bokmal to " - institusjon",
+                                    Language.Nynorsk to " - institusjon",
+                                    Language.English to " - institution",
                                 )
                             }
                         }

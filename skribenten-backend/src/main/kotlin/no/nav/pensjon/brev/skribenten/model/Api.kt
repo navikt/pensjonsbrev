@@ -33,9 +33,9 @@ object Api {
 
     data class BrevInfo(
         val id: Long,
-        val opprettetAv: String,
+        val opprettetAv: NavIdent,
         val opprettet: Instant,
-        val sistredigertAv: String,
+        val sistredigertAv: NavIdent,
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbar,
         val status: BrevStatus,
@@ -49,7 +49,7 @@ object Api {
     )
     sealed class BrevStatus {
         data object Kladd : BrevStatus()
-        data class UnderRedigering(val redigeresAv: String) : BrevStatus()
+        data class UnderRedigering(val redigeresAv: NavIdent) : BrevStatus()
         data object Klar : BrevStatus()
     }
 
@@ -68,7 +68,7 @@ object Api {
         val redigertBrevHash: EditLetterHash,
     )
 
-    data class NavAnsatt(val id: String, val navn: String?)
+    data class NavAnsatt(val id: NavIdent, val navn: String?)
 
     data class SakContext(
         val sak: Pen.SakSelection,
