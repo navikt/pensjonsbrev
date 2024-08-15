@@ -1,10 +1,13 @@
 import { css } from "@emotion/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { delvisOppdaterBrev, hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
@@ -109,9 +112,13 @@ const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpne
   );
 };
 
+const validationSchema = z.object({
+  valgteBrevSomSkalSendes: z.array(z.number()).min(1, "Du må velge minst 1 brev"),
+});
+
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
-  const [valgtBrevSomSkalSendes, setValgtBrevSomSkalSendes] = useState<number[]>([]);
+  //const [valgtBrevSomSkalSendes, setValgtBrevSomSkalSendes] = useState<number[]>([]);
   const ferdigstillBrevContext = useFerdigstillResultatContext();
 
   const mutation = useMutation<BestillBrevResponse, Error, number>({
@@ -130,12 +137,20 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     return [];
   }, [alleBrevForSak.data, alleBrevForSak.isSuccess]);
 
-  useEffect(() => {
-    setValgtBrevSomSkalSendes(alleFerdigstilteBrev.map((brev) => brev.id));
-  }, [alleFerdigstilteBrev]);
+  const form = useForm<z.infer<typeof validationSchema>>({
+    defaultValues: { valgteBrevSomSkalSendes: [] },
+    resolver: zodResolver(validationSchema),
+  });
 
-  const handleMutations = async () => {
-    const brevSomSkalSendes = valgtBrevSomSkalSendes
+  useEffect(() => {
+    form.setValue(
+      "valgteBrevSomSkalSendes",
+      alleFerdigstilteBrev.map((brev) => brev.id),
+    );
+  }, [alleFerdigstilteBrev, form]);
+
+  const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
+    const brevSomSkalSendes = values.valgteBrevSomSkalSendes
       .map((brevId) => alleFerdigstilteBrev.find((brev) => brev.id === brevId))
       .filter((brev) => brev !== undefined);
 
@@ -161,7 +176,6 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
         }
       }),
     );
-
     ferdigstillBrevContext.setResultat(resultat);
     navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
   };
@@ -179,56 +193,63 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
       portal
       width={600}
     >
-      <Modal.Body>
-        <div
-          css={css`
-            margin-bottom: 1rem;
-          `}
-        >
-          <div>
-            <BodyShort>
-              Brevene du ferdigstiller og sender vil bli lagt til i brukers dokumentoversikt. Du kan ikke angre denne
-              handlingen.
-            </BodyShort>
+      <form onSubmit={form.handleSubmit(onSendValgteBrev)}>
+        <Modal.Body>
+          <div
+            css={css`
+              margin-bottom: 1rem;
+            `}
+          >
+            <div>
+              <BodyShort>
+                Brevene du ferdigstiller og sender vil bli lagt til i brukers dokumentoversikt. Du kan ikke angre denne
+                handlingen.
+              </BodyShort>
+              <br />
+              <BodyShort>Kun brev du har valgt å ferdigstille vil bli sendt.</BodyShort>
+            </div>
             <br />
-            <BodyShort>Kun brev du har valgt å ferdigstille vil bli sendt.</BodyShort>
+            <div>
+              {alleBrevForSak.isPending && <Label>Henter alle ferdigstilte brev...</Label>}
+              {alleBrevForSak.isError && (
+                <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />
+              )}
+              {alleBrevForSak.isSuccess && (
+                <Controller
+                  control={form.control}
+                  name="valgteBrevSomSkalSendes"
+                  render={({ field, fieldState }) => (
+                    <CheckboxGroup
+                      error={fieldState.error?.message}
+                      hideLegend
+                      legend="Velg brev som skal sendes"
+                      onChange={field.onChange}
+                      value={field.value}
+                    >
+                      {alleFerdigstilteBrev.map((brev) => (
+                        <Checkbox key={brev.id} value={brev.id}>
+                          {brev.brevkode}
+                        </Checkbox>
+                      ))}
+                    </CheckboxGroup>
+                  )}
+                />
+              )}
+            </div>
           </div>
-          <br />
-          <div>
-            {alleBrevForSak.isPending && <Label>Henter alle ferdigstilte brev...</Label>}
-            {alleBrevForSak.isError && (
-              <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />
-            )}
-            {alleBrevForSak.isSuccess && (
-              <div>
-                <CheckboxGroup
-                  hideLegend
-                  legend="Velg brev som skal sendes"
-                  onChange={setValgtBrevSomSkalSendes}
-                  value={valgtBrevSomSkalSendes}
-                >
-                  {alleFerdigstilteBrev.map((brev) => (
-                    <Checkbox key={brev.id} value={brev.id}>
-                      {brev.brevkode}
-                    </Checkbox>
-                  ))}
-                </CheckboxGroup>
-              </div>
-            )}
-          </div>
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <HStack gap="4">
-          <Button onClick={properties.onClose} type="button" variant="tertiary">
-            Avbryt
-          </Button>
-          {/* TODO - validering på at minst 1 brev er faktisk valgt */}
-          <Button loading={mutation.isPending} onClick={handleMutations} type="button">
-            Ja, send valgte brev
-          </Button>
-        </HStack>
-      </Modal.Footer>
+        </Modal.Body>
+        <Modal.Footer>
+          <HStack gap="4">
+            <Button onClick={properties.onClose} type="button" variant="tertiary">
+              Avbryt
+            </Button>
+
+            <Button loading={mutation.isPending} type="submit">
+              Ja, send valgte brev
+            </Button>
+          </HStack>
+        </Modal.Footer>
+      </form>
     </Modal>
   );
 };
