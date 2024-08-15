@@ -1,51 +1,88 @@
 import { css } from "@emotion/react";
 import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
-import { useMutation } from "@tanstack/react-query";
 
-import { sendBrev } from "~/api/sak-api-endpoints";
-import type { BestillBrevResponse } from "~/types/brev";
+import { ApiError } from "~/components/ApiError";
+import type { Nullable } from "~/types/Nullable";
 
+import type { FerdigstillResponse } from "./FerdigstillResultatContext";
 import Oppsummeringspar from "./Oppsummeringspar";
 
 const ResultatAccordionContentWrapper = (properties: {
   sakId: string;
-  resultat: PromiseSettledResult<BestillBrevResponse>;
+  resultat: FerdigstillResponse;
+  onPrøvIgjenClick: () => void;
+  isPending: boolean;
+  error: Nullable<Error>;
 }) => {
   return (
     <Accordion.Content>
-      <ResultatAccordionContent resultat={properties.resultat} sakId={properties.sakId} />
+      <ResultatAccordionContent
+        error={properties.error}
+        isPending={properties.isPending}
+        onPrøvIgjenClick={properties.onPrøvIgjenClick}
+        resultat={properties.resultat}
+        sakId={properties.sakId}
+      />
     </Accordion.Content>
   );
 };
 
 const ResultatAccordionContent = (properties: {
   sakId: string;
-  resultat: PromiseSettledResult<BestillBrevResponse>;
+  resultat: FerdigstillResponse;
+  onPrøvIgjenClick: () => void;
+  isPending: boolean;
+  error: Nullable<Error>;
 }) => {
   switch (properties.resultat.status) {
-    case "rejected": {
+    case "fulfilledWithError": {
+      const error = properties.resultat.error;
+
+      const correlationId = error.response?.headers["x-request-id"] ?? null;
+
       return (
-        <ResultatContentError resultat={properties.resultat} sakId={properties.sakId}>
+        <ResultatContentError
+          error={properties.error}
+          isPending={properties.isPending}
+          onPrøvIgjenClick={properties.onPrøvIgjenClick}
+          resultat={properties.resultat}
+          sakId={properties.sakId}
+        >
           <BodyShort>Brevet ble ikke sendt pga en ukjent feil. Prøv igjen.</BodyShort>
-          <BodyShort>Feilen var {JSON.stringify(properties.resultat.reason)}</BodyShort>
+          <BodyShort>
+            Feilen var {error.code} - {error.message}
+          </BodyShort>
+          <BodyShort>Id for feilsøking: {correlationId ?? "Fant ikke feilsøkings-id"}</BodyShort>
         </ResultatContentError>
       );
     }
-    case "fulfilled": {
-      if (properties.resultat.value.error != null) {
+    case "fulfilledWithSuccess": {
+      if (properties.resultat.response.error != null) {
         return (
-          <ResultatContentError resultat={properties.resultat} sakId={properties.sakId}>
+          <ResultatContentError
+            error={properties.error}
+            isPending={properties.isPending}
+            onPrøvIgjenClick={properties.onPrøvIgjenClick}
+            resultat={properties.resultat}
+            sakId={properties.sakId}
+          >
             <BodyShort>
-              Brevet ble ikke sendt pga {properties.resultat.value.error?.tekniskgrunn ?? "en ukjent teknisk grunn"}.
+              Brevet ble ikke sendt pga {properties.resultat.response.error?.tekniskgrunn ?? "en ukjent teknisk grunn"}.
               Prøv igjen.
             </BodyShort>
-            <BodyShort>{properties.resultat.value.error?.beskrivelse}</BodyShort>
+            <BodyShort>{properties.resultat.response.error?.beskrivelse}</BodyShort>
           </ResultatContentError>
         );
-      } else if (properties.resultat.value.journalpostId == null) {
+      } else if (properties.resultat.response.journalpostId == null) {
         return (
-          <ResultatContentError resultat={properties.resultat} sakId={properties.sakId}>
+          <ResultatContentError
+            error={properties.error}
+            isPending={properties.isPending}
+            onPrøvIgjenClick={properties.onPrøvIgjenClick}
+            resultat={properties.resultat}
+            sakId={properties.sakId}
+          >
             <BodyShort>Brevet ble ikke sendt pga en ukjent feil. Prøv igjen.</BodyShort>
           </ResultatContentError>
         );
@@ -54,7 +91,7 @@ const ResultatAccordionContent = (properties: {
           <VStack gap="4">
             {/* TODO <Oppsummeringspar tittel={"Mottaker"} verdi={""} /> */}
             {/* TODO <Oppsummeringspar tittel={"Distribueres via"} verdi={""} /> */}
-            <Oppsummeringspar tittel={"Journalpost ID"} verdi={properties.resultat.value.journalpostId} />
+            <Oppsummeringspar tittel={"Journalpost ID"} verdi={properties.resultat.response.journalpostId} />
           </VStack>
         );
       }
@@ -64,13 +101,12 @@ const ResultatAccordionContent = (properties: {
 
 const ResultatContentError = (properties: {
   sakId: string;
-  resultat: PromiseSettledResult<BestillBrevResponse>;
+  resultat: FerdigstillResponse;
   children: React.ReactNode;
+  onPrøvIgjenClick: () => void;
+  isPending: boolean;
+  error: Nullable<Error>;
 }) => {
-  const mutation = useMutation<BestillBrevResponse, Error, number>({
-    mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
-  });
-
   return (
     <VStack align="start" gap="3">
       <div
@@ -97,8 +133,16 @@ const ResultatContentError = (properties: {
           {properties.children}
         </div>
       </div>
-      {/* TODO - brevId */}
-      <Button onClick={() => mutation.mutate(11_111)} size="small" type="button" variant="primary-neutral">
+
+      {properties.error && <ApiError error={properties.error} title={"Klarte ikke å sende brevet"} />}
+
+      <Button
+        loading={properties.isPending}
+        onClick={properties.onPrøvIgjenClick}
+        size="small"
+        type="button"
+        variant="primary-neutral"
+      >
         Prøv igjen
       </Button>
     </VStack>

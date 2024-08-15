@@ -3,6 +3,7 @@ import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 
 import { delvisOppdaterBrev, hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
@@ -110,7 +111,7 @@ const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpne
 
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
-  const [brevSomSkalSendes, setBrevSomSkalSendes] = useState<number[]>([]);
+  const [valgtBrevSomSkalSendes, setValgtBrevSomSkalSendes] = useState<number[]>([]);
   const ferdigstillBrevContext = useFerdigstillResultatContext();
 
   const mutation = useMutation<BestillBrevResponse, Error, number>({
@@ -130,11 +131,37 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   }, [alleBrevForSak.data, alleBrevForSak.isSuccess]);
 
   useEffect(() => {
-    setBrevSomSkalSendes(alleFerdigstilteBrev.map((brev) => brev.id));
+    setValgtBrevSomSkalSendes(alleFerdigstilteBrev.map((brev) => brev.id));
   }, [alleFerdigstilteBrev]);
 
   const handleMutations = async () => {
-    const resultat = await Promise.allSettled(brevSomSkalSendes.map((brevId) => mutation.mutateAsync(brevId)));
+    const brevSomSkalSendes = valgtBrevSomSkalSendes
+      .map((brevId) => alleFerdigstilteBrev.find((brev) => brev.id === brevId))
+      .filter((brev) => brev !== undefined);
+
+    const requests = brevSomSkalSendes.map((brevInfo) =>
+      mutation.mutateAsync(brevInfo.id).then(
+        //vi har fortsatt behov for informasjon i brevet, så vi returnerer brevinfo sammen med responsen
+        (response) => ({ status: "fulfilledWithSuccess" as const, brevInfo, response }),
+        (error: AxiosError) => ({ status: "fulfilledWithError" as const, brevInfo, error }),
+      ),
+    );
+
+    const resultat = await Promise.allSettled(requests).then((result) =>
+      result.map((response) => {
+        switch (response.status) {
+          //fordi vi håndterer vanlige caser av rejected i mutation, vil resultatet 'alltid' være fulfilled
+          case "fulfilled": {
+            return response.value;
+          }
+          //en safe-guard dersom noe uventet går feil? Kan se om vi kan håndtere dette på en bedre måte
+          case "rejected": {
+            throw new Error(`Feil ved sending av minst 1 brev. Original error: ${response.reason}`);
+          }
+        }
+      }),
+    );
+
     ferdigstillBrevContext.setResultat(resultat);
     navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
   };
@@ -174,7 +201,12 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
             )}
             {alleBrevForSak.isSuccess && (
               <div>
-                <CheckboxGroup hideLegend legend="Something?" onChange={setBrevSomSkalSendes} value={brevSomSkalSendes}>
+                <CheckboxGroup
+                  hideLegend
+                  legend="Velg brev som skal sendes"
+                  onChange={setValgtBrevSomSkalSendes}
+                  value={valgtBrevSomSkalSendes}
+                >
                   {alleFerdigstilteBrev.map((brev) => (
                     <Checkbox key={brev.id} value={brev.id}>
                       {brev.brevkode}
@@ -191,6 +223,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
           <Button onClick={properties.onClose} type="button" variant="tertiary">
             Avbryt
           </Button>
+          {/* TODO - validering på at minst 1 brev er faktisk valgt */}
           <Button loading={mutation.isPending} onClick={handleMutations} type="button">
             Ja, send valgte brev
           </Button>

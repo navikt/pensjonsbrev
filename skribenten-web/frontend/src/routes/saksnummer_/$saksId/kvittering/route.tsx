@@ -1,20 +1,20 @@
 import { css } from "@emotion/react";
-import { Accordion, Button, Heading, Label, VStack } from "@navikt/ds-react";
+import { Accordion, Button, Heading, VStack } from "@navikt/ds-react";
+import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
+import { sendBrev } from "~/api/sak-api-endpoints";
 import type { BestillBrevResponse } from "~/types/brev";
 
+import type { FerdigstillResponse, FerdigstillResponser } from "./-components/FerdigstillResultatContext";
 import { useFerdigstillResultatContext } from "./-components/FerdigstillResultatContext";
 import ResultatAccordionContent from "./-components/ResultatAccordionContent";
-import ResultatTag from "./-components/ResultatTag";
+import ResultatAccordionHeader from "./-components/ResultatAccordionHeader";
 
 export const Route = createFileRoute("/saksnummer/$saksId/kvittering")({
   component: Kvittering,
 });
 
-/**
-  TODO - vil vi resette resultats contexten når dem f.eks vil lage et nytt brev?
- */
 function Kvittering() {
   const { saksId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -99,10 +99,7 @@ function Kvittering() {
   );
 }
 
-const FerdigstillingsResultat = (properties: {
-  sakId: string;
-  resultat: PromiseSettledResult<BestillBrevResponse>[];
-}) => {
+const FerdigstillingsResultat = (properties: { sakId: string; resultat: FerdigstillResponser }) => {
   return (
     <Accordion>
       {properties.resultat.map((result, index) => (
@@ -112,22 +109,40 @@ const FerdigstillingsResultat = (properties: {
   );
 };
 
-const ResultatAccordionItem = (properties: { sakId: string; resultat: PromiseSettledResult<BestillBrevResponse> }) => {
+const ResultatAccordionItem = (properties: { sakId: string; resultat: FerdigstillResponse }) => {
+  const mutation = useMutation<BestillBrevResponse, Error, number>({
+    mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
+  });
+
   return (
     <Accordion.Item>
-      <Accordion.Header>
-        <div
-          css={css`
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-          `}
-        >
-          <ResultatTag resultat={properties.resultat} />
-          <Label>Her må vi ha brevtittel</Label>
-        </div>
-      </Accordion.Header>
-      <ResultatAccordionContent resultat={properties.resultat} sakId={properties.sakId} />
+      <ResultatAccordionHeader
+        resultat={
+          mutation.isSuccess
+            ? {
+                status: "fulfilledWithSuccess",
+                brevInfo: properties.resultat.brevInfo,
+                response: mutation.data,
+              }
+            : properties.resultat
+        }
+        sakId={properties.sakId}
+      />
+      <ResultatAccordionContent
+        error={mutation.isError ? mutation.error : null}
+        isPending={mutation.isPending}
+        onPrøvIgjenClick={() => mutation.mutate(properties.resultat.brevInfo.id)}
+        resultat={
+          mutation.isSuccess
+            ? {
+                status: "fulfilledWithSuccess",
+                brevInfo: properties.resultat.brevInfo,
+                response: mutation.data,
+              }
+            : properties.resultat
+        }
+        sakId={properties.sakId}
+      />
     </Accordion.Item>
   );
 };
