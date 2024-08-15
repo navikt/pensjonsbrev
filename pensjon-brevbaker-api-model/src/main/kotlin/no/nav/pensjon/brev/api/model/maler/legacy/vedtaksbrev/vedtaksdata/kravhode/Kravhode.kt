@@ -5,4 +5,5 @@ data class Kravhode(
     val boddarbeidutland: Boolean?,
     val brukerkonvertertup: Boolean?,
     val kravarsaktype: String?,
+    val kravgjelder: String?,
 )

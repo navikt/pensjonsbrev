@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -1376,7 +1378,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
             //[TBU052V-TBU073V]
             paragraph {
                 table(header = {
-                    column {
+                    column(columnSpan = 4) {
                         text(
                             Bokmal to "Reduksjon av barnetillegg for fellesbarn før skatt ",
                             Nynorsk to "Reduksjon av barnetillegg for fellesbarn før skatt ",
@@ -1390,6 +1392,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 Bokmal to "i år",
                                 Nynorsk to "i år",
                                 English to " for this year",
+                                FontType.BOLD
                             )
                         }
 
@@ -1399,10 +1402,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 Bokmal to "for neste år",
                                 Nynorsk to "for neste år",
                                 English to " for next year",
+                                FontType.BOLD
                             )
                         }
                     }
-                    column {}
+                    column(columnSpan = 1,alignment = ColumnAlignment.RIGHT) {}
                 }) {
                     row {
                         cell {
@@ -1484,7 +1488,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                         .format(),
                                 )
                             }
-                            cell { }
+                            cell {}
                         }
                     }
 
@@ -1754,7 +1758,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
             paragraph {
                 table(
                     header = {
-                        column {
+                        column(columnSpan = 4) {
                             text (
                                 Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt ",
                                 Nynorsk to "Reduksjon av barnetillegg for særkullsbarn før skatt ",
@@ -1768,6 +1772,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     Bokmal to "i år",
                                     Nynorsk to "i år",
                                     English to "for this year",
+                                    FontType.BOLD
                                 )
                             }
 
@@ -1777,10 +1782,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     Bokmal to "for neste år",
                                     Nynorsk to "for neste år",
                                     English to "for next year",
+                                    FontType.BOLD
                                 )
                             }
                         }
-                        column {
+                        column(columnSpan = 1,alignment = ColumnAlignment.RIGHT) {
 
                         }
                     }

@@ -6,6 +6,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsS
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -38,14 +41,15 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
             paragraph {
                 table(
                     header = {
-                        column {
+                        column(columnSpan = 3) {
                             text (
                                 Bokmal to "Slik blir din utbetaling før skatt",
                                 Nynorsk to "Slik blir den månadlege utbetalinga di før skatt",
                                 English to "This is your monthly payment before tax",
+                                FontType.BOLD
                             )
                         }
-                        column {
+                        column(columnSpan = 1, ColumnAlignment.RIGHT) {
                             text(
                                 Bokmal to "",
                                 Nynorsk to "",
@@ -57,9 +61,9 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
                     row {
                         cell {
                             text (
-                                Bokmal to "Brutto beregnet uføretrygd som følge av innmeldt inntekt:",
-                                Nynorsk to "Brutto berekna uføretrygd som følgje av innmeld inntekt:",
-                                English to "Gross estimated disability benefit corresponding to a reported income:",
+                                Bokmal to "Brutto beregnet uføretrygd som følge av innmeldt inntekt",
+                                Nynorsk to "Brutto berekna uføretrygd som følgje av innmeld inntekt",
+                                English to "Gross estimated disability benefit corresponding to a reported income",
                             )
                         }
                         cell {
@@ -73,9 +77,9 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
                     row {
                         cell {
                             text (
-                                Bokmal to "- Utbetalt uføretrygd hittil i år:",
-                                Nynorsk to "- Utbetalt uføretrygd hittil i år:",
-                                English to "- Disability benefit payments so far this year:",
+                                Bokmal to "- Utbetalt uføretrygd hittil i år",
+                                Nynorsk to "- Utbetalt uføretrygd hittil i år",
+                                English to "- Disability benefit payments so far this year",
                             )
                         }
                         cell {
@@ -92,9 +96,9 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
                     row {
                         cell {
                             text (
-                                Bokmal to "= Utbetaling av uføretrygd for resterende måneder i året:",
-                                Nynorsk to "= Utbetaling av uføretrygd for resterande månader i året:",
-                                English to "= Disability benefit payments for the remaining months of the year:",
+                                Bokmal to "= Utbetaling av uføretrygd for resterende måneder i året",
+                                Nynorsk to "= Utbetaling av uføretrygd for resterande månader i året",
+                                English to "= Disability benefit payments for the remaining months of the year",
                             )
                         }
                         cell {

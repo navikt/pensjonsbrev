@@ -26,5 +26,9 @@ data class PE(
         val pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en: String,
         val pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop: Kroner,
         val pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop: Kroner,
+        val pe_ut_sum_fattnorge_fatteos: Int,
+        val pe_ut_sum_fattnorge_fatt_a10_netto: Int,
+        val pe_ut_sum_fattnorge_fattbilateral: Int,
+        val pe_ut_antallbarnserkullogfelles: Int,
     )
 }

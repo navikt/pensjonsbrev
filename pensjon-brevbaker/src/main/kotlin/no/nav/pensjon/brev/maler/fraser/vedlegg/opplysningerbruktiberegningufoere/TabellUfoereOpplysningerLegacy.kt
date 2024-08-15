@@ -1,83 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.BorMedSivilstand
-import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.beregningsdata_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.kravhode_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningufore_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.beregningvirkningdatofom_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.beregningytelseskomp_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.reduksjonsgrunnlag_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.andelytelseavoifu_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.gradertoppjustertifu_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.ReduksjonsgrunnlagSelectors.prosentsatsoifufortak_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.uforetrygdordiner_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.antallarinntektiavtaleland_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinarSelectors.antallarover1g_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.ytelsesgrunnlag_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.YtelsesgrunnlagSelectors.beregningsgrunnlagordinar_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.inntektAnnenForelder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.samletInntektBruktIAvkortning_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.inntektBruktIAvkortning_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.fellesbarn
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.fellesbarn_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.foedselsdatoPaaBarnTilleggetGjelder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.saerkullsbarn
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.InntektsAvkortingGjeldendeSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.UtenforEOSogNordenSelectors.faktiskTTBilateral
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.UtenforEOSogNordenSelectors.nevnerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.UtenforEOSogNordenSelectors.tellerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.beregningsmetode
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.faktiskTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.faktiskTTNordiskKonv
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.faktiskTTNorge
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTNorsk
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.nevnerTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.nevnerTTNordiskKonv
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.samletTTNordiskKonv
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.tellerTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.tellerTTNordiskKonv
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.utenforEOSogNorden
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.UfoeretrygdGjeldendeSelectors.beregningsgrunnlagBeloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.UfoeretrygdGjeldendeSelectors.ufoeregrad
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.UfoeretrygdGjeldendeSelectors.ufoeretidspunkt
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.beregningsgrunnlagBeloepAar_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.inntektVedSkadetidspunkt
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.skadetidspunkt
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.yrkesskadegrad
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.barnetilleggGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.beregnetUTPerManedGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.borMedSivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.brukersSivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.erUngUfoer
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.harMinsteytelse
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.inntektEtterUfoereGjeldendeBeloep
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.inntektFoerUfoereGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.inntektsAvkortingGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.trygdetidsdetaljerGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.ufoeretrygdGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.TabellufoereOpplysningerLegacyDtoSelectors.yrkesskadeGjeldende
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.model.tableFormat
+import no.nav.pensjon.brev.maler.fraser.*
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -87,23 +12,16 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 data class TabellUfoereOpplysningerLegacy(
-    val tabellUfoereOpplysningerLegacy: Expression<OpplysningerBruktIBeregningenLegacyDto.TabellufoereOpplysningerLegacyDto>,
     val pe: Expression<PE>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val inntektsgrenseErUnderTak = tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektsgrenseAar
-            .lessThan(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektstak)
-
-        val beregningufore = pe.vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe
-        val uforetrygdordiner = beregningufore.beregningytelseskomp_safe.uforetrygdordiner_safe
         paragraph {
             table(
                 header = {
-                    column(3) {
+                    column(4) {
                         text(
                             Bokmal to "Opplysning",
                             Nynorsk to "Opplysning",
@@ -111,201 +29,329 @@ data class TabellUfoereOpplysningerLegacy(
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                         )
                     }
-                    column(columnSpan = 2,alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
+                    column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
                 }
             ) {
-                row {
-                    cell {
-                        text(
-                            Bokmal to "Uføretidspunkt",
-                            Nynorsk to "Uføretidspunkt",
-                            English to "Date of disability"
-                        )
-                    }
-                    cell {
-                        val ufoeretidspunkt = tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.ufoeretidspunkt.format()
-                        textExpr(
-                            Bokmal to ufoeretidspunkt,
-                            Nynorsk to ufoeretidspunkt,
-                            English to ufoeretidspunkt
-                        )
+                //IF(isEmpty(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforetidspunkt) = false) THEN      INCLUDE ENDIF
+                ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforetidspunkt()){ uforetidspunkt ->
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Uføretidspunkt",
+                                Nynorsk to "Uføretidspunkt",
+                                English to "Date of disability",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to uforetidspunkt.format(),
+                                Nynorsk to uforetidspunkt.format(),
+                                English to uforetidspunkt.format(),
+                            )
+                        }
+
                     }
                 }
-                showIf(tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar.greaterThan(0) and not(tabellUfoereOpplysningerLegacy.harMinsteytelse)) {
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_BeregningsgrunnlagOrdinerArsbelop <> 0) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop().notEqualTo(0))){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Beregningsgrunnlag",
-                                Nynorsk to "Utrekningsgrunnlag",
-                                English to "Basis for calculation"
+                                Nynorsk to "Berekningsgrunnlag",
+                                English to "Basis for calculation",
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar))
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop()
+                                    .format() + " kr",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop()
+                                    .format() + " kr",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop()
+                                    .format() + " NOK",
+                            )
                         }
+
                     }
                 }
-                ifNotNull(tabellUfoereOpplysningerLegacy.yrkesskadeGjeldende.beregningsgrunnlagBeloepAar_safe) { beloep ->
-                    showIf(beloep.greaterThan(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Beregningsgrunnlag yrkesskade",
-                                    Nynorsk to "Utrekningsgrunnlag yrkesskade",
-                                    English to "Basis for calculation due to occupational injury"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(beloep))
-                            }
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeArsbelop > 0) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop().greaterThan(0))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Beregningsgrunnlag yrkesskade",
+                                Nynorsk to "Berekningsgrunnlag yrkesskade",
+                                English to "Basis for calculation due to occupational injury ",
+                            )
                         }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop()
+                                    .format() + " kr",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop()
+                                    .format() + " kr",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop()
+                                    .format() + " NOK",
+                            )
+                        }
+
                     }
                 }
-                showIf(tabellUfoereOpplysningerLegacy.inntektFoerUfoereGjeldende.ifuInntekt.greaterThan(0)) {
+
+                //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt) > 0) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().greaterThan(0))){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Inntekt før uførhet",
                                 Nynorsk to "Inntekt før uførleik",
-                                English to "Income prior to disability"
+                                English to "Income prior to disability",
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektFoerUfoereGjeldende.ifuInntekt))
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kr",
+                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kr",
+                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " NOK",
+                            )
                         }
+
                     }
                 }
-                ifNotNull(tabellUfoereOpplysningerLegacy.inntektEtterUfoereGjeldendeBeloep) { beloep ->
-                    showIf(beloep.greaterThan(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Inntekt etter uførhet",
-                                    Nynorsk to "Inntekt etter uførleik",
-                                    English to "Income after disability"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(beloep))
-                            }
+
+                //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUInntekt) > 0) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().greaterThan(0))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Inntekt etter uførhet",
+                                Nynorsk to "Inntekt etter uførleik",
+                                English to "Income after disability",
+                            )
                         }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().format() + " kr",
+                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().format() + " kr",
+                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().format() + " NOK",
+                            )
+                        }
+
                     }
                 }
+                //[TBU010V]
+
                 row {
                     cell {
                         text(
                             Bokmal to "Uføregrad",
                             Nynorsk to "Uføregrad",
-                            English to "Degree of disability"
+                            English to "Degree of disability",
                         )
                     }
                     cell {
-                        val ufoeregrad = tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.ufoeregrad.format()
                         textExpr(
-                            Bokmal to ufoeregrad + " %",
-                            Nynorsk to ufoeregrad + " %",
-                            English to ufoeregrad + " %"
+                            Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " %",
+                            Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " %",
+                            English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " %",
                         )
                     }
+
                 }
-                showIf(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThan(0)) {
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense > 0) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().greaterThan(0))){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Inntektsgrense",
                                 Nynorsk to "Inntektsgrense",
-                                English to "Income cap"
+                                English to "Income cap",
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektsgrenseAar))
+                            textExpr(
+                                Bokmal to pe.ut_inntektsgrense_faktisk().format() + " kr",
+                                Nynorsk to pe.ut_inntektsgrense_faktisk().format() + " kr",
+                                English to pe.ut_inntektsgrense_faktisk().format() + " NOK",
+                            )
                         }
+
                     }
                 }
-                showIf(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.forventetInntektAar.greaterThan(0)) {
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > 0) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().greaterThan(0))){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Forventet inntekt",
                                 Nynorsk to "Forventa inntekt",
-                                English to "Expected income"
+                                English to "Expected income",
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.forventetInntektAar))
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                                    .format() + " kr",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                                    .format() + " kr",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                                    .format() + " NOK",
+                            )
                         }
+
                     }
                 }
-                showIf(inntektsgrenseErUnderTak and tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.kompensasjonsgrad.greaterThan(0.0)) {
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Kompensasjonsgrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().greaterThan(0.0) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()))){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Kompensasjonsgrad",
                                 Nynorsk to "Kompensasjonsgrad",
-                                English to "Percentage of compensation"
+                                English to "Percentage of compensation",
                             )
                         }
                         cell {
-                            val kompensasjonsgrad = tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.kompensasjonsgrad.format()
                             textExpr(
-                                Bokmal to kompensasjonsgrad + " %",
-                                Nynorsk to kompensasjonsgrad + " %",
-                                English to kompensasjonsgrad + " %"
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                                    .format() + " %",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                                    .format() + " %",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                                    .format() + " %",
                             )
                         }
+
                     }
                 }
-                showIf(inntektsgrenseErUnderTak) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Inntekt som medfører at uføretrygden ikke blir utbetalt",
-                                Nynorsk to "Inntekt som fører til at uføretrygda ikkje blir utbetalt",
-                                English to "Income that will lead to no payment of your disability benefit"
+                //[TBU010V]
+
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Inntekt som medfører at uføretrygden ikke blir utbetalt",
+                            Nynorsk to "Inntekt som fører til at uføretrygda ikkje blir utbetalt",
+                            English to "Income that will lead to no payment of your disability benefit",
+                        )
+                    }
+                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
+                    cell {
+                        showIf(
+                            (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+                                .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()))
+                        ) {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format() + " kr",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format() + " kr",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format() + " NOK",
                             )
                         }
-                        cell {
-                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektstak))
-                        }
-                    }
-                }.orShow {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Inntekt som medfører at uføretrygden ikke blir utbetalt",
-                                Nynorsk to "Inntekt som fører til at uføretrygda ikkje blir utbetalt",
-                                English to "Income that will lead to no payment of your disability benefit"
+
+                        //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense >= PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
+                        showIf(
+                            (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+                                .greaterThanOrEqual(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()))
+                        ) {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format() + " kr",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format() + " kr",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format() + " NOK",
                             )
                         }
-                        cell {
-                            includePhrase(Felles.KronerText(tabellUfoereOpplysningerLegacy.inntektsAvkortingGjeldende.inntektsgrenseAar))
-                        }
                     }
+
                 }
 
-                showIf(tabellUfoereOpplysningerLegacy.harMinsteytelse) {
+                //IF( (PE_pebrevkode = "PE_UT_04_300" OR PE_pebrevkode = "PE_UT_14_300")  OR  (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget <> true)   ) THEN      INCLUDE ENDIF
+                showIf(((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode().equalTo("PE_UT_14_300")) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().notEqualTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().notEqualTo(true)))){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
-                                Bokmal to "Sivilstatus lagt til grunn i beregningen",
-                                Nynorsk to "Sivilstatus lagt til grunn i utrekninga",
-                                English to "Marital status applied to calculation"
+                                Bokmal to "Sivilstatus lagt til grunn ved beregningen",
+                                Nynorsk to "Sivilstatus lagd til grunn ved berekninga",
+                                English to "Marital status applied to calculation",
                             )
                         }
-                        cell {
-                            ifNotNull(tabellUfoereOpplysningerLegacy.borMedSivilstand){
-                                textExpr(
-                                    Bokmal to it.tableFormat(),
-                                    Nynorsk to it.tableFormat(),
-                                    English to it.tableFormat()
+
+                        cell {//IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "gift men lever adskilt" AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "gift") OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "separert bor med ektefelle") THEN      INCLUDE ENDIF
+                            showIf(
+                                ((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift men lever adskilt") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("gift")) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert bor med ektefelle"))
+                            ) {
+                                text(
+                                    Bokmal to "Gift",
+                                    Nynorsk to "Gift",
+                                    English to "Married",
                                 )
-                            }.orShowIf(tabellUfoereOpplysningerLegacy.brukersSivilstand.isOneOf(Sivilstand.ENKE)) {
+                            }
+
+                            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "registrert partner men lever adskilt" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "separert bormed partner") THEN      INCLUDE ENDIF
+                            showIf(
+                                (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("registrert partner men lever adskilt") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert bormed partner"))
+                            ) {
+                                text(
+                                    Bokmal to "Partner",
+                                    Nynorsk to "Partnar",
+                                    English to "Partnership",
+                                )
+                            }
+
+                            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "separert bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "gift ektefelle bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "registrert partner bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "separert partner bormed 3-2") THEN      INCLUDE ENDIF
+                            showIf(
+                                (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift ektefelle bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("registrert partner bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert partner bormed 3-2"))
+                            ) {
+                                text(
+                                    Bokmal to "Samboer (jf. folketrygdloven § 12-13)",
+                                    Nynorsk to "Sambuar (jf. folketrygdlova § 12-13)",
+                                    English to "Cohabitation (cf. Section 12-13 of the National Insurance Act)",
+                                )
+                            }
+
+                            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"
+                            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 1-5")) {
+                                text(
+                                    Bokmal to "Samboer (jf. folketrygdloven § 1-5)",
+                                    Nynorsk to "Sambuar (jf. folketrygdlova § 1-5)",
+                                    English to "Cohabitation (cf. Section 1-5 of the National Insurance Act)",
+                                )
+                            }
+
+                            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "enke"
+                            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("enke")) {
                                 text(
                                     Bokmal to "Enke/Enkemann",
                                     Nynorsk to "Enkje/Enkjemann",
                                     English to "Widow/widower",
                                 )
-                            }.orShow {
+                            }
+
+                            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "enslig" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "enslig separert" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "enslig separert partner"  OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "gift men lever adskilt" AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "sepr") ) THEN      INCLUDE ENDIF
+                            showIf(
+                                (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("enslig") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("enslig separert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("enslig separert partner") or (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift men lever adskilt") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("sepr")))
+                            ) {
                                 text(
                                     Bokmal to "Enslig",
                                     Nynorsk to "Einsleg",
@@ -314,395 +360,476 @@ data class TabellUfoereOpplysningerLegacy(
                             }
                         }
                     }
+                }
 
-                    ifNotNull(tabellUfoereOpplysningerLegacy.borMedSivilstand){ borMedSivilstand->
-                        showIf(borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT, BorMedSivilstand.PARTNER_LEVER_ADSKILT)) {
-                            val erGift = borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)
-                            row {
-                                cell {
-                                    textExpr(
-                                        Bokmal to "Du eller ".expr()
-                                                + ifElse(erGift, "ektefellen", "partneren") +
-                                                " er registrert med annet bosted, eller er på institusjon",
-                                        Nynorsk to "Du eller ".expr()
-                                                + ifElse(erGift, "ektefellen", "partnaren") +
-                                                " er registrert med annan bustad, eller er på institusjon",
-                                        English to "You or your ".expr()
-                                                + ifElse(erGift, "spouse", "partner") +
-                                                " have been registered as having a different address, or as living in an institution",
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        Bokmal to "Ja",
-                                        Nynorsk to "Ja",
-                                        English to "Yes",
-                                    )
-                                }
-                            }
+                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = PE_SivilstandAnvendt_registrert_partner_men_lever_adskilt) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("registrert partner men lever adskilt".expr()))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Du eller partneren er registrert med annet bosted, eller er på institusjon",
+                                Nynorsk to "Du eller partnaren er registrert med annan bustad, eller er på institusjon",
+                                English to "You have, or your partner has, been registered as having a different address, or as living in an institution",
+                            )
                         }
+                        cell {
+                            text(
+                                Bokmal to "Ja",
+                                Nynorsk to "Ja",
+                                English to "Yes",
+                            )
+                        }                    }
+                }
 
+                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = PE_SivilstandAnvendt_gift_men_lever_adskilt AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "gift") THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift men lever adskilt") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("gift"))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Du eller ektefellen er registrert med annet bosted, eller er på institusjon",
+                                Nynorsk to "Du eller ektefellen er registrert med annan bustad, eller er på institusjon",
+                                English to "You have, or your spouse has, been registered as having a different address, or as living in an institution",
+                            )
+                        }
+                        cell {
+                            text(
+                                Bokmal to "Ja",
+                                Nynorsk to "Ja",
+                                English to "Yes",
+                            )
+                        }
                     }
                 }
 
-                showIf(tabellUfoereOpplysningerLegacy.erUngUfoer) {
+                //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat) = "oppfylt") THEN      INCLUDE ENDIF
+                showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat().equalTo("oppfylt")){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Ung ufør",
                                 Nynorsk to "Ung ufør",
-                                English to "Young disabled"
+                                English to "Young disabled",
                             )
                         }
                         cell {
                             text(
                                 Bokmal to "Ja",
                                 Nynorsk to "Ja",
-                                English to "Yes"
+                                English to "Yes",
                             )
                         }
                     }
                 }
 
-                ifNotNull(tabellUfoereOpplysningerLegacy.yrkesskadeGjeldende) { yrkesskade ->
-                    showIf(yrkesskade.yrkesskadegrad.greaterThan(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Yrkesskadegrad",
-                                    Nynorsk to "Yrkesskadegrad",
-                                    English to "Degree of disability due to occupational injury"
-                                )
-                            }
-                            cell {
-                                val yrkesskadegrad = yrkesskade.yrkesskadegrad.format()
-                                textExpr(
-                                    Bokmal to yrkesskadegrad + " %",
-                                    Nynorsk to yrkesskadegrad + " %",
-                                    English to yrkesskadegrad + " %"
-                                )
-                            }
-                        }
-                    }
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad <> 0) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().notEqualTo(0))) {
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
-                                Bokmal to "Skadetidspunktet for yrkesskaden",
-                                Nynorsk to "Skadetidspunktet for yrkesskaden",
-                                English to "Date of injury"
+                                Bokmal to "Yrkesskadegrad",
+                                Nynorsk to "Yrkesskadegrad",
+                                English to "Degree of disability due to occupational injury",
                             )
                         }
                         cell {
-                            val skadetidspunkt = yrkesskade.skadetidspunkt.format()
                             textExpr(
-                                Bokmal to skadetidspunkt,
-                                Nynorsk to skadetidspunkt,
-                                English to skadetidspunkt
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " %",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " %",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " %",
                             )
                         }
                     }
-                    showIf(yrkesskade.inntektVedSkadetidspunkt.greaterThan(0)) {
+                }
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad <> 0) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().notEqualTo(0))){
+                    ifNotNull(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt()) { skadetidspunkt ->
+                        //[TBU010V]
+
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
-                                    Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
-                                    English to "Annual income at the date of injury"
+                                    Bokmal to "Skadetidspunktet for yrkesskaden",
+                                    Nynorsk to "Skadetidspunktet for yrkesskaden",
+                                    English to "Date of injury",
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(yrkesskade.inntektVedSkadetidspunkt))
+                                textExpr(
+                                    Bokmal to skadetidspunkt.format(),
+                                    Nynorsk to skadetidspunkt.format(),
+                                    English to skadetidspunkt.format(),
+                                )
                             }
                         }
                     }
                 }
 
-                val beregningsmetode = tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.beregningsmetode
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad <> 0) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().notEqualTo(0))) {
+                    //[TBU010V]
 
-                showIf(tabellUfoereOpplysningerLegacy.beregnetUTPerManedGjeldende.brukerErFlyktning) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
+                                Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
+                                English to "Annual income at the date of injury",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + " kr",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + " kr",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + " NOK",
+                            )
+                        }
+                    }
+                }
+
+                //IF(FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = true) THEN      INCLUDE ENDIF
+                showIf(pe.grunnlag_persongrunnlagsliste_brukerflyktning()) {
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Du er innvilget flyktningstatus fra UDI",
                                 Nynorsk to "Du er innvilga flyktningstatus frå UDI",
-                                English to "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)"
+                                English to "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)",
                             )
                         }
                         cell {
                             text(
                                 Bokmal to "Ja",
                                 Nynorsk to "Ja",
-                                English to "Yes"
+                                English to "Yes",
                             )
                         }
                     }
                 }
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD)) {
+
+                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd"
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Trygdetid (maksimalt 40 år)",
                                 Nynorsk to "Trygdetid (maksimalt 40 år)",
-                                English to "Insurance period (maximum 40 years)"
+                                English to "Insurance period (maximum 40 years)",
                             )
                         }
                         cell {
-                            val anvendtTT = tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.anvendtTT.format()
                             textExpr(
-                                Bokmal to anvendtTT + " år",
-                                Nynorsk to anvendtTT + " år",
-                                English to anvendtTT + " years"
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years",
                             )
                         }
                     }
                 }
 
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS, Beregningsmetode.NORDISK)) {
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos" OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk") THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk"))){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Teoretisk trygdetid i Norge og andre EØS-land som er brukt i beregningen (maksimalt 40 år)",
-                                Nynorsk to "Teoretisk trygdetid i Noreg og andre EØS-land som er brukt i utrekninga (maksimalt 40 år)",
-                                English to "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)"
+                                Nynorsk to "Teoretisk trygdetid i Noreg og andre EØS-land som er brukt i berekninga (maksimalt 40 år)",
+                                English to "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)",
                             )
                         }
-                        // Implement logic for year/years
                         cell {
-                            val anvendtTT = tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.anvendtTT.format()
                             textExpr(
-                                Bokmal to anvendtTT + " år",
-                                Nynorsk to anvendtTT + " år",
-                                English to anvendtTT + " years"
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years",
                             )
                         }
                     }
                 }
-                showIf(
-                    not(
-                        beregningsmetode.isOneOf(
-                            Beregningsmetode.EOS,
-                            Beregningsmetode.NORDISK,
-                            Beregningsmetode.FOLKETRYGD
-                        )
-                    )
-                ) {
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "eos" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "nordisk" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd") THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd"))){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Teoretisk trygdetid i Norge og andre avtaleland som er brukt i beregningen (maksimalt 40 år)",
-                                Nynorsk to "Teoretisk trygdetid i Noreg og andre avtaleland som er brukt i utrekninga (maksimalt 40 år)",
-                                English to "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)"
+                                Nynorsk to "Teoretisk trygdetid i Noreg og andre avtaleland som er brukt i berekninga (maksimalt 40 år)",
+                                English to "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)",
                             )
                         }
                         cell {
-                            val anvendtTT = tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.anvendtTT.format()
                             textExpr(
-                                Bokmal to anvendtTT + " år",
-                                Nynorsk to anvendtTT + " år",
-                                English to anvendtTT + " years"
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years",
                             )
                         }
                     }
                 }
-                ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.faktiskTTNorge) {
-                    showIf(beregningsmetode.isNotAnyOf(Beregningsmetode.FOLKETRYGD)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i Norge",
-                                    Nynorsk to "Faktisk trygdetid i Noreg",
-                                    English to "Actual insurance period in Norway"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.MaanederText(it))
-                            }
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd") THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd"))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Faktisk trygdetid i Norge",
+                                Nynorsk to "Faktisk trygdetid i Noreg",
+                                English to "Actual insurance period in Norway",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge().format() + " måneder",
+                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge().format() + " månader",
+                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge().format() + " months",
+                            )
                         }
                     }
                 }
 
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS)) {
-                    ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.faktiskTTEOS) { faktiskTTEOS ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i andre EØS-land",
-                                    Nynorsk to "Faktisk trygdetid i andre EØS-land",
-                                    English to "Actual insurance period(s) in other EEA countries"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.MaanederText(faktiskTTEOS))
-                            }
-                        }
-                    }
+                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos"
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos")){
+                    //[TBU010V]
 
-                    ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.nevnerTTEOS) { nevnerTTEOS ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
-                                    Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
-                                    English to "Actual insurance period in Norway and EEA countries (maximum 40 years)"
-                                )
-                            }
-                            cell { includePhrase(Felles.MaanederText(nevnerTTEOS)) }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Faktisk trygdetid i andre EØS-land",
+                                Nynorsk to "Faktisk trygdetid i andre EØS-land",
+                                English to "Actual insurance period(s) in other EEA countries",
+                            )
                         }
-                    }
-
-                    ifNotNull(
-                        tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.tellerTTEOS,
-                        tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.nevnerTTEOS
-                    ) { tellerTTEOS, nevnerTTEOS ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdstallet brukt i beregning av trygdetid",
-                                    Nynorsk to "Forholdstalet brukt i utrekning av trygdetid",
-                                    English to "Ratio applied in calculation of insurance period"
-                                )
-                            }
-                            cell {
-                                textExpr(
-                                    Bokmal to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
-                                    Nynorsk to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
-                                    English to tellerTTEOS.format() + " / " + nevnerTTEOS.format()
-                                )
-                            }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().format() + " måneder",
+                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().format() + " månader",
+                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().format() + " months",
+                            )
                         }
                     }
                 }
 
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
-                    ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.faktiskTTNordiskKonv) { faktiskTTNordiskKonv ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
-                                    Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
-                                    English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
-                                )
-                            }
-                            cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv)) }
-                        }
-                    }
-                }
-                ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.framtidigTTNorsk) { framtidigTTNorsk ->
-                    showIf(
-                        beregningsmetode.isOneOf(
-                            Beregningsmetode.NORDISK,
-                            Beregningsmetode.FOLKETRYGD
-                        ) and framtidigTTNorsk.lessThan(480)
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Norsk framtidig trygdetid",
-                                    Nynorsk to "Norsk framtidig trygdetid",
-                                    English to "Future insurance period in Norway"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.MaanederText(framtidigTTNorsk))
-                            }
-                        }
-                    }
-                }
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
-                    ifNotNull(
-                        tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.tellerTTNordiskKonv,
-                        tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.nevnerTTNordiskKonv
-                    ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
-                                    Nynorsk to "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid",
-                                    English to "Ratio applied in reduction of future Norwegian insurance period"
-                                )
-                            }
-                            cell {
-                                textExpr(
-                                    Bokmal to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
-                                    Nynorsk to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
-                                    English to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format()
-                                )
-                            }
-                        }
-                    }
+                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos"
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos")){
+                    //[TBU010V]
 
-                    ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.samletTTNordiskKonv) { samletTTNordiskKonv ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
-                                    Nynorsk to "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid",
-                                    English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s"
-                                )
-                            }
-                            cell { includePhrase(Felles.MaanederText(samletTTNordiskKonv)) }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
+                                Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
+                                English to "Actual insurance period in Norway and partner countries (maximum 40 years)",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.ut_sum_fattnorge_fatteos().format() + " måneder",
+                                Nynorsk to pe.ut_sum_fattnorge_fatteos().format() + " månader",
+                                English to pe.ut_sum_fattnorge_fatteos().format() + " months",
+                            )
                         }
                     }
                 }
 
-                ifNotNull(tabellUfoereOpplysningerLegacy.trygdetidsdetaljerGjeldende.utenforEOSogNorden) {
+                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos"
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos")){
+                    //[TBU010V]
 
-                    val faktiskTTBilateral = it.faktiskTTBilateral
-                    val nevnerProRata = it.nevnerProRata
-                    val tellerProRata = it.tellerProRata
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Forholdstallet brukt i beregning av trygdetid",
+                                Nynorsk to "Forholdstalet brukt ved berekning av trygdetid",
+                                English to "Ratio applied in calculation of insurance period",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellereos().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnereos().format(),
+                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellereos().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnereos().format(),
+                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellereos().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnereos().format(),
+                            )
+                        }
+                    }
+                }
 
-                    showIf(
-                        beregningsmetode.isNotAnyOf(
-                            Beregningsmetode.FOLKETRYGD,
-                            Beregningsmetode.NORDISK,
-                            Beregningsmetode.EOS
+                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk"
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk")){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
+                                Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt ved berekning av framtidig trygdetid",
+                                English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnordisk().format() + " måneder",
+                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnordisk().format() + " månader",
+                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnordisk().format() + " months",
+                            )
+                        }
+                    }
+                }
+                //Failed to convert with error: Expected token of type CLOSE_PAREN but found NUMBER
+
+                //IF(  (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd" OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk")  AND  (FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk)/12<40)  )  THEN      INCLUDE ENDIF
+
+                //[TBU010V]
+
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Norsk framtidig trygdetid",
+                            Nynorsk to "Norsk framtidig trygdetid",
+                            English to "Future insurance period in Norway",
                         )
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i annet avtaleland",
-                                    Nynorsk to "Faktisk trygdetid i anna avtaleland",
-                                    English to "Actual insurance period(s) in another partner country"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.MaanederText(faktiskTTBilateral))
-                            }
+                    }
+                    cell {
+                        textExpr(
+                            Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " måneder",
+                            Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " månader",
+                            English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " months",
+                        )
+                    }
+                }
+
+                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk"
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk")){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
+                                Nynorsk to "Forholdstalet brukt ved reduksjon av norsk framtidig trygdetid",
+                                English to "Ratio applied in reduction of future Norwegian insurance period",
+                            )
                         }
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
-                                    Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
-                                    English to "Actual insurance period in Norway and partner countries (maximum 40 years)"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.MaanederText(nevnerProRata))
-                            }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellernordisk().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnernordisk().format(),
+                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellernordisk().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnernordisk().format(),
+                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellernordisk().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnernordisk().format(),
+                            )
                         }
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
-                                    Nynorsk to "Forholdstalet brukt i utrekning av uføretrygd",
-                                    English to "Ratio applied in calculation of insurance period"
-                                )
-                            }
-                            cell {
-                                textExpr(
-                                    Bokmal to tellerProRata.format() + " / " + nevnerProRata.format(),
-                                    Nynorsk to tellerProRata.format() + " / " + nevnerProRata.format(),
-                                    English to tellerProRata.format() + " / " + nevnerProRata.format()
-                                )
-                            }
+                    }
+                }
+
+                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk"
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk")){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
+                                Nynorsk to "Samla trygdetid brukt ved berekning av uføretrygd etter reduksjon av framtidig trygdetid",
+                                English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s)",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.ut_sum_fattnorge_fatt_a10_netto().format() + " måneder",
+                                Nynorsk to pe.ut_sum_fattnorge_fatt_a10_netto().format() + " månader",
+                                English to pe.ut_sum_fattnorge_fatt_a10_netto().format() + " months",
+                            )
+                        }
+                    }
+                }
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "eos" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "nordisk") THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk"))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Faktisk trygdetid i annet avtaleland ",
+                                Nynorsk to "Faktisk trygdetid i anna avtaleland",
+                                English to "Actual insurance period(s) in another partner country",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ttutlandtrygdeavtaleliste_ttutlandtrygdeavtale_fattbilateral().format() + " måneder",
+                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ttutlandtrygdeavtaleliste_ttutlandtrygdeavtale_fattbilateral().format() + " månader",
+                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ttutlandtrygdeavtaleliste_ttutlandtrygdeavtale_fattbilateral().format() + " months",
+                            )
+                        }
+                    }
+                }
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "eos" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "nordisk") THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk"))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
+                                Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
+                                English to "Actual insurance period in Norway and partner countries (maximum 40 years)",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.ut_sum_fattnorge_fattbilateral().format() + " måneder",
+                                Nynorsk to pe.ut_sum_fattnorge_fattbilateral().format() + " månader",
+                                English to pe.ut_sum_fattnorge_fattbilateral().format() + " months",
+                            )
+                        }
+                    }
+                }
+
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "eos" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "nordisk") THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk"))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
+                                Nynorsk to "Forholdstalet brukt i berekning av uføretrygd",
+                                English to "Ratio applied in calculation of insurance",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabrokteller()
+                                    .format() + "/" + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabroknevner().format(),
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabrokteller()
+                                    .format() + "/" + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabroknevner().format(),
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabrokteller()
+                                    .format() + "/" + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabroknevner().format(),
+                            )
                         }
                     }
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksbrev_safe.vedtaksdata_safe.kravhode_safe.kravarsaktype_safe.ifNull("").equalTo("f_bh_bo_utl") and tabellUfoereOpplysningerLegacy.yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).lessThan(tabellUfoereOpplysningerLegacy.ufoeretrygdGjeldende.ufoeregrad)) {
+                showIf((pe.vedtaksdata_kravhode_kravgjelder().equalTo("f_bh_bo_utl") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()))){
                     //[TBU010V]
 
                     row {
@@ -714,20 +841,20 @@ data class TabellUfoereOpplysningerLegacy(
                             )
                         }
                         cell {
-                            //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArOver1G
-                            val antallAarOver1G =
-                                beregningufore.beregningytelseskomp_safe.uforetrygdordiner_safe.ytelsesgrunnlag_safe.beregningsgrunnlagordinar_safe.antallarover1g_safe.ifNull(0)
                             textExpr(
-                                Bokmal to antallAarOver1G.format() + " år",
-                                Nynorsk to antallAarOver1G.format() + " år",
-                                English to antallAarOver1G.format() + " years",
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g()
+                                    .format() + " år",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g()
+                                    .format() + " år",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g()
+                                    .format() + " years",
                             )
                         }
                     }
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArInntektIAvtaleland <> 0) THEN      INCLUDE ENDIF
-                showIf(uforetrygdordiner.ytelsesgrunnlag_safe.beregningsgrunnlagordinar_safe.antallarinntektiavtaleland_safe.notEqualTo(0)) {
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland().notEqualTo(0))){
                     //[TBU010V]
 
                     row {
@@ -739,172 +866,245 @@ data class TabellUfoereOpplysningerLegacy(
                             )
                         }
                         cell {
-                            //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArInntektIAvtaleland
-                            val antallAarOverInntektIAvtaleland = uforetrygdordiner.ytelsesgrunnlag_safe.beregningsgrunnlagordinar_safe.antallarinntektiavtaleland_safe.ifNull(0)
                             textExpr(
-                                Bokmal to antallAarOverInntektIAvtaleland.format() + " år",
-                                Nynorsk to antallAarOverInntektIAvtaleland.format() + " år",
-                                English to antallAarOverInntektIAvtaleland.format() + " years",
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland()
+                                    .format() + " år",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland()
+                                    .format() + " år",
+                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland()
+                                    .format() + " years",
                             )
                         }
                     }
                 }
 
-                ifNotNull(tabellUfoereOpplysningerLegacy.barnetilleggGjeldende) { barnetillegg ->
+                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
+                    //[TBU010V]
+
                     row {
                         cell {
                             text(
                                 Bokmal to "Totalt antall barn du har barnetillegg for",
-                                Nynorsk to "Totalt antall barn du har barnetillegg for",
-                                English to "Total number of children for whom you receive child supplement"
+                                Nynorsk to "Totalt tal barn du har barnetillegg for",
+                                English to "Total number of children for whom you receive child supplement",
                             )
                         }
-                        val totaltAntallBarn = barnetillegg.foedselsdatoPaaBarnTilleggetGjelder.size()
                         cell {
                             textExpr(
-                                Bokmal to totaltAntallBarn.format(),
-                                Nynorsk to totaltAntallBarn.format(),
-                                English to totaltAntallBarn.format(),
+                                Bokmal to pe.ut_antallbarnserkullogfelles().format(),
+                                Nynorsk to pe.ut_antallbarnserkullogfelles().format(),
+                                English to pe.ut_antallbarnserkullogfelles().format(),
                             )
                         }
                     }
-                    //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU > 0 AND
-                    // PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU > 95 AND
-                    // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
+                }
 
-                    val reduksjonsgrunnlag = beregningufore.reduksjonsgrunnlag_safe
-                    showIf(
-                        reduksjonsgrunnlag.gradertoppjustertifu_safe.ifNull(Kroner(0)).greaterThan(0)
-                            and reduksjonsgrunnlag.andelytelseavoifu_safe.ifNull(0.0).greaterThan(95.0)
-                            and beregningufore.beregningvirkningdatofom_safe.ifNull(LocalDate.MIN).greaterThanOrEqual(LocalDate.of(2016,1,1))){
-                        row {
-                            cell {
-                                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_ProsentsatsOIFUForTak
-                                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU
-                                val prosentSats = reduksjonsgrunnlag.prosentsatsoifufortak_safe.ifNull(0)
+                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU > 95 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
+                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().greaterThan(0) and pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu().greaterThan(95.0) and pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(2000,1,1)).greaterThanOrEqual(LocalDate.of(2016,1,1))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak().format() + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
+                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak().format() + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
+                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak().format() + " % of income before disability, adjusted for changes in the basic amount",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kr",
+                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kr",
+                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " NOK",
+                            )
+                        }
+                    }
+                }
+
+                //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Fribeløp for særkullsbarn",
+                                Nynorsk to "Fribeløp for særkullsbarn",
+                                English to "Exemption amount for children from a previous relationship",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+                                    .format() + " kr",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+                                    .format() + " kr",
+                                English to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+                                    .format() + " NOK",
+                            )
+                        }
+                    }
+                }
+
+                //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Fribeløp for fellesbarn",
+                                Nynorsk to "Fribeløp for fellesbarn",
+                                English to "Exemption amount for joint children",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                                    .format() + " kr",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                                    .format() + " kr",
+                                English to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                                    .format() + " NOK",
+                            )
+                        }
+                    }
+                }
+
+                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
+                                Nynorsk to "Inntekt for deg som er brukt i berekning av barnetillegg",
+                                English to "Your income, which is used to calculate child supplement",
+                            )
+                        }
+
+                        //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false
+                        cell {
+                            showIf(not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) {
                                 textExpr(
-                                    Bokmal to prosentSats.format() + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
-                                    Nynorsk to prosentSats.format() + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
-                                    English to prosentSats.format() + " % of income before disability, adjusted for changes in the basic amount",
+                                    Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format(),
+                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format(),
+                                    English to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format(),
                                 )
                             }
-                            cell {
-                                Felles.KronerText(reduksjonsgrunnlag.gradertoppjustertifu_safe.ifNull(Kroner(0)))
-                            }
-                        }
-                    }
-                    ifNotNull(barnetillegg.saerkullsbarn) { saerkullsbarn ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Fribeløp for særkullsbarn",
-                                    Nynorsk to "Fribeløp for særkullsbarn",
-                                    English to "Exemption amount for children from a previous relationship"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(saerkullsbarn.fribeloep))
-                            }
-                        }
-                    }
-                    ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Fribeløp for fellesbarn",
-                                    Nynorsk to "Fribeløp for fellessbarn",
-                                    English to "Exemption amount for joint children"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(fellesbarn.fribeloep))
-                            }
-                        }
-                    }
 
-                    val samletInntektBruktIAvkortningFelles =
-                        barnetillegg.fellesbarn_safe.samletInntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                    val inntektBruktIAvkortningSaerkull =
-                        barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                    showIf(samletInntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
-                                    Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
-                                    English to "Your income, which is used to calculate child supplement"
+                            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+                            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                                textExpr(
+                                    Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning().format(),
+                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format(),
+                                    English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format(),
                                 )
                             }
-                            cell {
-                                showIf(samletInntektBruktIAvkortningFelles.greaterThan(0)) {
-                                    includePhrase(Felles.KronerText(samletInntektBruktIAvkortningFelles))
-                                }.orShow {
-                                    includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
-                                }
-                            }
+                            text(
+                                Bokmal to " kr",
+                                Nynorsk to " kr",
+                                English to " NOK",
+                            )
                         }
                     }
+                }
 
-                    ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
-                                    Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
-                                    English to "Income of the other parent, which is used to calculate child supplement"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(fellesbarn.inntektAnnenForelder))
-                            }
-                        }
-                    }
+                //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                    //[TBU010V]
 
-                    val inntektstakFelles = barnetillegg.fellesbarn_safe.inntektstak_safe.ifNull(Kroner(0))
-                    val inntektstakSaerkull = barnetillegg.saerkullsbarn_safe.inntektstak_safe.ifNull(Kroner(0))
-                    showIf(inntektstakSaerkull.greaterThan(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
-                                    Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
-                                    English to "Your income which means that no child supplement is received"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(inntektstakSaerkull))
-                            }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
+                                Nynorsk to "Inntekt til annan forelder som er brukt i berekning av barnetillegg",
+                                English to "Income of the other parent, which is used to calculate child supplement",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kr",
+                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kr",
+                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " NOK",
+                            )
                         }
                     }
-                    ifNotNull(barnetillegg.fellesbarn) { fellesBarn ->
-                        showIf(fellesBarn.beloepFratrukketAnnenForeldersInntekt.greaterThan(0)) {
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Beløp som er trukket fra annen forelders inntekt (inntil 1G)",
-                                        Nynorsk to "Beløp som er trekt frå inntekta til ein annan forelder (inntil 1G)",
-                                        English to "Amount deducted from the other parent's income (up to 1G)",
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(fellesBarn.beloepFratrukketAnnenForeldersInntekt))
-                                }
-                            }
-                        }
-                    }
+                }
 
-                    showIf(inntektstakFelles.greaterThan(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
-                                    Nynorsk to "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt",
-                                    English to "Total combined income which means that no child supplement is received"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(inntektstakFelles))
-                            }
+                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbelopFratrukketAnnenForeldersInntekt > 0) THEN      INCLUDE ENDIF
+                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt().greaterThan(0)){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Beløp som er trukket fra annen forelders inntekt (inntil 1G)",
+                                Nynorsk to "Beløp som er trekt frå inntekta til ein annan forelder (inntil 1G)",
+                                English to "Amount deducted from the other parent's income (up to 1G)",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+                                    .format() + " kr",
+                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+                                    .format() + " kr",
+                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+                                    .format() + " NOK",
+                            )
+                        }
+                    }
+                }
+
+                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(2000,1,1)).greaterThanOrEqual(LocalDate.of(2016,1,1).expr())){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
+                                Nynorsk to "Samla inntekt som gjer at barnetillegget ikkje blir utbetalt",
+                                English to "Your income which means that no child supplement is received",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+                                    .format() + " kr",
+                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+                                    .format() + " kr",
+                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+                                    .format() + " NOK",
+                            )
+                        }
+                    }
+                }
+
+                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(2000,1,1)).greaterThanOrEqual(LocalDate.of(2016,1,1))){
+                    //[TBU010V]
+
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
+                                Nynorsk to "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt",
+                                English to "Total income which means that no child supplement is received",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+                                    .format() + " kr",
+                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+                                    .format() + " kr",
+                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+                                    .format() + " NOK",
+                            )
                         }
                     }
                 }

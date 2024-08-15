@@ -11,4 +11,6 @@ data class BeregningsVilkar(
     val trygdetid: Trygdetid?,
     val uforegrad: Int?,
     val virkningstidpunkt: LocalDate?,
+    val ieuinntekt: Kroner?,
+    val skadetidspunkt: LocalDate?,
 )

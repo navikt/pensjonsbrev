@@ -24,6 +24,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.Trygdetid
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.ttutlandtrygdeavtaleliste.TTUtlandTrygdeAvtale
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.ttutlandtrygdeavtaleliste.TTUtlandTrygdeAvtaleListe
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -45,6 +47,10 @@ fun createPE() =
             pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en = "spouse",
             pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop = Kroner(1058),
             pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop = Kroner(1087),
+            pe_ut_sum_fattnorge_fatteos = 10,
+            pe_ut_sum_fattnorge_fatt_a10_netto = 10,
+            pe_ut_sum_fattnorge_fattbilateral = 11,
+            pe_ut_antallbarnserkullogfelles = 12,
         ),
         pebrevkode = "PE_UT_05_100",
         personsak = PersonSak(PSfnr("01019878910"))
@@ -123,7 +129,10 @@ fun createVilkarsVedtak() =
     )
 
 fun createVilkar() =
-    Vilkar(yrkesskaderesultat = null)
+    Vilkar(
+        yrkesskaderesultat = null,
+        unguforresultat = "unguforresultat",
+    )
 
 fun createBeregningsVilkar() =
     BeregningsVilkar(
@@ -132,7 +141,9 @@ fun createBeregningsVilkar() =
         ifuinntekt = Kroner(9938),
         trygdetid = createTrygdetid(),
         uforegrad = 100,
-        virkningstidpunkt = LocalDate.of(2020,2,12)
+        virkningstidpunkt = LocalDate.of(2020, 2, 12),
+        ieuinntekt = Kroner(9939),
+        skadetidspunkt = LocalDate.of(2020,1,1),
     )
 
 fun createTrygdetid() =
@@ -140,8 +151,21 @@ fun createTrygdetid() =
         fatteos = 30,
         framtidigtteos = 31,
         framtidigttnorsk = 32,
-        redusertframtidigtrygdetid = 33,
+        redusertframtidigtrygdetid = true,
         fattnorge = 34,
+        tttellereos = 50,
+        ttnevnereos = 51,
+        ttnordisk = 52,
+        tttellernordisk = 53,
+        ttnevnernordisk = 54,
+        faTTA10Netto = 55,
+        ttutlandtrygdeavtaleliste = TTUtlandTrygdeAvtaleListe(
+            ttutlandtrygdeavtale = listOf(
+                TTUtlandTrygdeAvtale(
+                    fattbilateral = 100
+                )
+            )
+        ),
     )
 
 fun createKravhode() =
@@ -149,6 +173,7 @@ fun createKravhode() =
         boddarbeidutland = true,
         brukerkonvertertup = false,
         kravarsaktype = "endring_ifu",
+        kravgjelder = "kravgjelder",
     )
 
 fun createBeregningsData() =
@@ -177,6 +202,7 @@ fun createBeregningUfore() =
         beregningsivilstandanvendt = "bormed 1-5",
         belopokt = true,
         beregningvirkningdatofom = LocalDate.of(2020, 1, 1),
+        beregningbrukersivilstand = "gift",
     )
 
 fun createUforetrygdberegning() =
@@ -186,7 +212,11 @@ fun createUforetrygdberegning() =
         uforegrad = 100,
         yrkesskadegrad = 0,
         grunnbelop = Kroner(1010),
-        instoppholdtype = null,
+        instoppholdtype = "instoppholdtype",
+        beregningsmetode = "beregningsmetode",
+        uforetidspunkt = LocalDate.of(2020,1,1),
+        proratabrokteller = 10,
+        proratabroknevner = 11,
     )
 
 fun createReduksjonsgrunnlag() =
@@ -287,13 +317,16 @@ fun createUforetrygdOrdiner() =
 
 fun createYtelsesgrunnlag() =
     Ytelsesgrunnlag(
-        beregningsgrunnlagordinar = createBeregningsgrunnlagOrdinar()
+        beregningsgrunnlagordinar = createBeregningsgrunnlagOrdinar(),
+        beregningsgrunnlagyrkesskadearsbelop = Kroner(5810),
+        inntektvedskadetidspunktet = Kroner(1010),
     )
 
 fun createBeregningsgrunnlagOrdinar() =
     BeregningsgrunnlagOrdinar(
         antallarover1g = 10,
         antallarinntektiavtaleland = 11,
+        beregningsgrunnlagordinerarsbelop = Kroner(10589),
     )
 
 fun createAvkortningsInformasjon(): AvkortningsInformasjon =

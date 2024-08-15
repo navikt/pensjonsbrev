@@ -77,7 +77,7 @@ data class TabellUfoereOpplysninger(
         paragraph {
             table(
                 header = {
-                    column(3) {
+                    column(4) {
                         text(
                             Bokmal to "Opplysning",
                             Nynorsk to "Opplysning",
@@ -85,7 +85,7 @@ data class TabellUfoereOpplysninger(
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                         )
                     }
-                    column(columnSpan = 2,alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
+                    column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
                 }
             ) {
                 row {

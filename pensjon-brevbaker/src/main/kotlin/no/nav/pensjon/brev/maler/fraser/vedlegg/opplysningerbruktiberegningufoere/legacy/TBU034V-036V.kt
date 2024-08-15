@@ -38,13 +38,7 @@ data class TBU034V_036V(
         }
 
         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300") THEN      INCLUDE ENDIF
-        showIf(
-            (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()
-                .greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype()
-                .notEqualTo(
-                    "soknad_bt"
-                ) and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode()
-                .notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300"))) {
+        showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300"))) {
             //[TBU034V-TBU36V]
 
             title1 {
@@ -71,9 +65,7 @@ data class TBU034V_036V(
                     and pe.pebrevkode().notEqualTo("PE_UT_04_300")
                     and pe.pebrevkode().notEqualTo("PE_UT_14_300")
                     and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense()
-                .notEqualTo(
-                    60000
-                )
+                .notEqualTo(60000)
                     and (pe.pebrevkode()
                 .notEqualTo("PE_UT_04_500") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102")
                     and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))))
