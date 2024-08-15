@@ -8,11 +8,13 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable.distribusjonstype
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
@@ -109,6 +111,7 @@ class BrevredigeringService(
         transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId)?.apply {
                 patch.laastForRedigering?.also { laastForRedigering = it }
+                patch.distribusjonstype?.also { distribusjonstype = it }
             }
         }?.mapBrev()
 
@@ -266,7 +269,7 @@ class BrevredigeringService(
         }
     }
 
-    suspend fun sendBrev(call: ApplicationCall, saksId: Long, brevId: Long, distribuer: Boolean): ServiceResult<Pen.BestillBrevResponse>? {
+    suspend fun sendBrev(call: ApplicationCall, saksId: Long, brevId: Long): ServiceResult<Pen.BestillBrevResponse>? {
         val (brevredigering, document) = transaction { Brevredigering.findByIdAndSaksId(brevId, saksId).let { it to it?.document?.firstOrNull() } }
 
         return if (brevredigering != null && document != null) {
@@ -282,12 +285,14 @@ class BrevredigeringService(
                         pdf = document.pdf.bytes,
                         eksternReferanseId = "skribenten:${brevredigering.id}",
                     ),
-                    distribuer = distribuer,
+                    distribuer = brevredigering.distribusjonstype == Distribusjonstype.SENTRALPRINT,
                 )
             }.onOk {
                 if (it.journalpostId != null) {
-                    document.delete()
-                    brevredigering.delete()
+                    transaction {
+                        document.delete()
+                        brevredigering.delete()
+                    }
                 }
             }
         } else null
@@ -315,6 +320,7 @@ class BrevredigeringService(
                 redigeresAv != null -> Api.BrevStatus.UnderRedigering(redigeresAv)
                 else -> Api.BrevStatus.Kladd
             },
+            distribusjonstype = distribusjonstype,
         )
     }
 

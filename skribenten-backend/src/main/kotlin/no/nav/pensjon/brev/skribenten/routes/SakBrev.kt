@@ -114,10 +114,9 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
         post("/{brevId}/pdf/send") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val distribuer = call.parameters["distribuer"].toBoolean()
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.sendBrev(call = call, saksId = sak.saksId, brevId = brevId, distribuer = distribuer)
+            brevredigeringService.sendBrev(call = call, saksId = sak.saksId, brevId = brevId)
                 ?.onOk { call.respond(HttpStatusCode.OK, it) }
                 ?.onError { error, _ -> call.respond(HttpStatusCode.InternalServerError, error) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
