@@ -116,10 +116,10 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 text(
                     Bokmal to "Når det er gått seks måneder etter dødsfallet, er det et krav for å motta " +
                             "omstillingsstønad at du er i minst 50 prosent arbeid eller annen aktivitet med sikte på å " +
-                            "komme i arbeid. 12 måneder etter dødsfallet kan det kreves 100 prosent aktivitet.",
+                            "komme i arbeid. Når det er gått 12 måneder siden dødsfallet kan det kreves 100 prosent aktivitet.",
                     Nynorsk to "For å kunne halde fram med å få omstillingsstønad når det har gått seks månader " +
                             "sidan dødsfallet, må du vere i minst 50 prosent arbeid eller annan aktivitet med sikte på " +
-                            "å kome i arbeid. 12 månader etter dødsfallet kan det bli stilt krav om 100 prosent aktivitet.",
+                            "å kome i arbeid. Når det er gått 12 månader sidan dødsfallet kan det krevjast 100 prosent aktivitet.",
                     English to "Once six months have passed after the death, receiving an adjustment allowance is " +
                             "contingent upon working at least 50 percent work or being involved in another activity with " +
                             "the aim of finding employment. Once 12 months have passed since the death, 100 percent activity may be required.",
@@ -221,17 +221,20 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
             showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT) or not(utbetaling)) {
                 paragraph {
                     text(
-                        Bokmal to "Hvis situasjonen din er endret, må du gi oss informasjon om din nye situasjon " +
+                        Bokmal to "Er du fortsatt i mer enn 50 prosent jobb, fyller du aktivitetskravet og vil få omstillingsstønad " +
+                                "videre. Hvis situasjonen din er endret, må du gi oss informasjon om din nye situasjon " +
                                 "snarest mulig og senest innen tre uker fra datoen på dette brevet. Les mer om hvordan du kan " +
                                 "fylle aktivitetsplikten og om unntak fra aktivitetsplikten lenger ned i brevet.",
-                        Nynorsk to "Dersom situasjonen din har endra seg, må du gi oss informasjon om den nye " +
+                        Nynorsk to "Er du framleis i meir enn 50 prosent jobb, fyller du aktivitetskravet og vil få omstillingsstønad " +
+                                "vidare. Dersom situasjonen din har endra seg, må du gi oss informasjon om den nye " +
                                 "situasjonen snarast mogleg og seinast innan tre veker frå datoen på dette brevet. Lenger ned " +
                                 "i brevet kan du lese meir om korleis du kan oppfylle aktivitetsplikta, og kva som er " +
                                 "unntaka frå aktivitetsplikta.",
-                        English to "If your situation has changed, you must provide us with information about your " +
-                                "new situation as soon as possible and no later than three weeks from the date of this letter. " +
-                                "Read more about how you can comply with the activity obligation and exemption from " +
-                                "the activity obligation farther down in this letter.",
+                        English to "If you are still in more than 50 per cent work, you meet the activity requirement " +
+                                "and will continue to receive adjustment allowance. If your situation has changed, you must provide us " +
+                                "with information about your new situation as soon as possible and no later than three weeks from " +
+                                "the date of this letter. Read more about how you can comply with the activity obligation and " +
+                                "exemption from the activity obligation farther down in this letter.",
                     )
                 }
             }
