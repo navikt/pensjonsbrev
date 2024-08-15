@@ -64,13 +64,13 @@ object Felles {
             paragraph {
                 text(
                     Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på " +
-                            "${Constants.BESKJED_TIL_NAV_URL} og velge «Send beskjed til NAV». Du kan også sende " +
+                            "${Constants.BESKJED_TIL_NAV_URL}. Du kan også sende " +
                             "uttalelsen din til oss i posten. Adressen finner du på ${Constants.ETTERSENDELSE_URL}.",
                     Nynorsk to "Du kan sende svar til oss ved å logge inn på " +
-                            "${Constants.BESKJED_TIL_NAV_URL} og velje «Send beskjed til NAV». Alternativt kan du " +
+                            "${Constants.BESKJED_TIL_NAV_URL}. Alternativt kan du " +
                             "sende oss svar i posten. Adressa finn du på ${Constants.ETTERSENDELSE_URL}.",
                     English to "You can send us a statement regarding the matter by logging in to: " +
-                            "${Constants.BESKJED_TIL_NAV_URL} and selecting «Send beskjed til NAV». You can also " +
+                            "${Constants.BESKJED_TIL_NAV_URL}. You can also " +
                             "send us your statement by post. The address can be found at: ${Constants.ETTERSENDELSE_URL}.",
                 )
             }
