@@ -66,7 +66,7 @@ export type BrevInfo = {
   sistredigert: string;
   brevkode: string;
   status: BrevStatus;
-  distribusjonstype: Nullable<Distribusjonstype>;
+  distribusjonstype: Distribusjonstype;
 };
 export type BrevStatus = Kladd | UnderRedigering | Klar;
 export type Kladd = { type: "Kladd" };

@@ -203,12 +203,10 @@ const ResultatAccordionContent = (properties: {
           <VStack align={"start"} gap="4">
             {/* TODO <Oppsummeringspar tittel={"Mottaker"} verdi={""} /> */}
 
-            {properties.resultat.brevInfo.distribusjonstype && (
-              <Oppsummeringspar
-                tittel={"Distribueres via"}
-                verdi={distribusjonstypeTilText(properties.resultat.brevInfo.distribusjonstype)}
-              />
-            )}
+            <Oppsummeringspar
+              tittel={"Distribueres via"}
+              verdi={distribusjonstypeTilText(properties.resultat.brevInfo.distribusjonstype)}
+            />
             <Oppsummeringspar tittel={"Journalpost ID"} verdi={properties.resultat.response.journalpostId} />
             {properties.resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT && (
               <Button

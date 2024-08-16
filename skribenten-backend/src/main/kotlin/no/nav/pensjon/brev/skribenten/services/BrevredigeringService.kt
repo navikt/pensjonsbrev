@@ -67,6 +67,7 @@ class BrevredigeringService(
                         this.avsenderEnhetId = avsenderEnhetsId
                         this.saksbehandlerValg = saksbehandlerValg
                         laastForRedigering = false
+                        distribusjonstype = Distribusjonstype.SENTRALPRINT
                         redigeresAvNavIdent = if (reserverForRedigering) call.principal().navIdent() else null
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
