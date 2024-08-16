@@ -3,12 +3,13 @@ import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import { Accordion, BodyShort, Button, Label, Tag, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 
-import { sendBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForBrevFunction, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { BestillBrevResponse } from "~/types/brev";
+import { type BestillBrevResponse, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
 import type { FerdigstillResponse, FerdigstillResponser } from "./FerdigstillResultatContext";
+import { distribusjonstypeTilText } from "./KvitteringUtils";
 import Oppsummeringspar from "./Oppsummeringspar";
 
 const KvitterteBrev = (properties: { sakId: string; resultat: FerdigstillResponser }) => {
@@ -140,6 +141,13 @@ const ResultatAccordionContent = (properties: {
   isPending: boolean;
   error: Nullable<Error>;
 }) => {
+  const hentBrevMutation = useMutation({
+    mutationFn: () => hentPdfForBrevFunction(properties.sakId, properties.resultat.brevInfo.id),
+    onSuccess: (pdf) => {
+      window.open(URL.createObjectURL(pdf), "_blank");
+    },
+  });
+
   switch (properties.resultat.status) {
     case "fulfilledWithError": {
       const error = properties.resultat.error;
@@ -193,10 +201,26 @@ const ResultatAccordionContent = (properties: {
         );
       } else {
         return (
-          <VStack gap="4">
+          <VStack align={"start"} gap="4">
             {/* TODO <Oppsummeringspar tittel={"Mottaker"} verdi={""} /> */}
-            {/* TODO <Oppsummeringspar tittel={"Distribueres via"} verdi={""} /> */}
+
+            {properties.resultat.brevInfo.distribusjonstype && (
+              <Oppsummeringspar
+                tittel={"Distribueres via"}
+                verdi={distribusjonstypeTilText(properties.resultat.brevInfo.distribusjonstype)}
+              />
+            )}
             <Oppsummeringspar tittel={"Journalpost ID"} verdi={properties.resultat.response.journalpostId} />
+            {properties.resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT && (
+              <Button
+                loading={hentBrevMutation.isPending}
+                onClick={() => hentBrevMutation.mutate()}
+                size="small"
+                type="button"
+              >
+                Åpne brevet i ny fane
+              </Button>
+            )}
           </VStack>
         );
       }

@@ -26,9 +26,9 @@ export const hentPdfForBrev = {
   queryFn: async (saksId: string, brevId: string) => hentPdfForBrevFunction(saksId, brevId),
 };
 
-export const hentPdfForBrevFunction = async (saksId: string, brevId: string) =>
+export const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) =>
   (
-    await axios.get(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
+    await axios.get<Blob>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
       responseType: "blob",
       headers: { Accept: "application/pdf" },
     })

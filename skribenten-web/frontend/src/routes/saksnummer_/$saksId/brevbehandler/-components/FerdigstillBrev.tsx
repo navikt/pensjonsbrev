@@ -9,10 +9,10 @@ import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { delvisOppdaterBrev, hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
+import { delvisOppdaterBrev, hentAlleBrevForSak, hentPdfForBrevFunction, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BestillBrevResponse, DelvisOppdaterBrevResponse } from "~/types/brev";
-import { type BrevInfo } from "~/types/brev";
+import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import { erBrevKlar } from "~/utils/brevUtils";
 
 import { useFerdigstillResultatContext } from "../../kvittering/-components/FerdigstillResultatContext";
@@ -118,11 +118,18 @@ const validationSchema = z.object({
 
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
-  //const [valgtBrevSomSkalSendes, setValgtBrevSomSkalSendes] = useState<number[]>([]);
+
   const ferdigstillBrevContext = useFerdigstillResultatContext();
 
-  const mutation = useMutation<BestillBrevResponse, Error, number>({
+  const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
+  });
+
+  const hentBrevMutation = useMutation<Blob, Error, number>({
+    mutationFn: (brevId) => hentPdfForBrevFunction(properties.sakId, brevId),
+    onSuccess: (pdf) => {
+      window.open(URL.createObjectURL(pdf), "_blank");
+    },
   });
 
   const alleBrevForSak = useQuery({
@@ -155,7 +162,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
       .filter((brev) => brev !== undefined);
 
     const requests = brevSomSkalSendes.map((brevInfo) =>
-      mutation.mutateAsync(brevInfo.id).then(
+      bestillBrevMutation.mutateAsync(brevInfo.id).then(
         //vi har fortsatt behov for informasjon i brevet, så vi returnerer brevinfo sammen med responsen
         (response) => ({ status: "fulfilledWithSuccess" as const, brevInfo, response }),
         (error: AxiosError) => ({ status: "fulfilledWithError" as const, brevInfo, error }),
@@ -177,6 +184,15 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
       }),
     );
     ferdigstillBrevContext.setResultat(resultat);
+    const brevSomDistribueresLokalt = resultat
+      .filter((resultat) => resultat.status === "fulfilledWithSuccess")
+      .filter((sucess) => sucess.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT);
+
+    //så lenge det bare er 1 brev som distribueres lokalt, av X antall brev, vil vi åpne denne PDF'en i en ny fane.
+    if (brevSomDistribueresLokalt.length === 1) {
+      await hentBrevMutation.mutateAsync(brevSomDistribueresLokalt[0].brevInfo.id);
+    }
+
     navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
   };
 
@@ -244,7 +260,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
               Avbryt
             </Button>
 
-            <Button loading={mutation.isPending} type="submit">
+            <Button loading={bestillBrevMutation.isPending} type="submit">
               Ja, send valgte brev
             </Button>
           </HStack>
