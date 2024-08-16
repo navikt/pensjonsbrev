@@ -1,10 +1,5 @@
 import { type BrevStatus } from "~/types/brev";
 
-export enum DistribusjonsMetode {
-  Sentralprint = "Sentralprint",
-  Lokaltprint = "Lokaltprint",
-}
-
 export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus) => {
   switch (status.type) {
     case "Kladd": {

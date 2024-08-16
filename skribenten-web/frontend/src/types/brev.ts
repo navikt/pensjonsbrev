@@ -24,7 +24,8 @@ export type BrevResponse = {
 export interface DelvisOppdaterBrevRequest {
   sakId: string;
   brevId: string | number;
-  laastForRedigering: Nullable<boolean>;
+  laastForRedigering?: Nullable<boolean>;
+  distribusjonstype?: Nullable<Distribusjonstype>;
 }
 
 export interface DelvisOppdaterBrevResponse {
@@ -65,6 +66,7 @@ export type BrevInfo = {
   sistredigert: string;
   brevkode: string;
   status: BrevStatus;
+  distribusjonstype: Nullable<Distribusjonstype>;
 };
 export type BrevStatus = Kladd | UnderRedigering | Klar;
 export type Kladd = { type: "Kladd" };
@@ -75,3 +77,8 @@ export type OppdaterBrevRequest = {
   saksbehandlerValg: SaksbehandlerValg;
   redigertBrev: EditedLetter;
 };
+
+export enum Distribusjonstype {
+  SENTRALPRINT = "SENTRALPRINT",
+  LOKALPRINT = "LOKALPRINT",
+}

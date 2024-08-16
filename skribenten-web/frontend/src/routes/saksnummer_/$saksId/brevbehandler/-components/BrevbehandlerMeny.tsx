@@ -1,12 +1,26 @@
 import { css } from "@emotion/react";
-import { Accordion, Alert, BodyShort, Heading, HStack, Label, Switch, Tag, VStack } from "@navikt/ds-react";
+import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import {
+  Accordion,
+  Alert,
+  BodyShort,
+  Heading,
+  HStack,
+  Label,
+  Loader,
+  Radio,
+  RadioGroup,
+  Switch,
+  Tag,
+  VStack,
+} from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
-import { type BrevInfo } from "~/types/brev";
+import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
@@ -89,7 +103,25 @@ const BrevItem = (properties: {
 
   const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (låst) =>
-      delvisOppdaterBrev({ sakId: properties.sakId, brevId: properties.brev.id, laastForRedigering: låst }),
+      delvisOppdaterBrev({
+        sakId: properties.sakId,
+        brevId: properties.brev.id,
+        laastForRedigering: låst,
+      }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
+      );
+    },
+  });
+
+  const distribusjonstypeMutation = useMutation<DelvisOppdaterBrevResponse, Error, Distribusjonstype, unknown>({
+    mutationFn: (distribusjonstype) =>
+      delvisOppdaterBrev({
+        sakId: properties.sakId,
+        brevId: properties.brev.id,
+        distribusjonstype: distribusjonstype,
+      }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
@@ -202,17 +234,43 @@ const BrevItem = (properties: {
                 </VStack>
               )}
 
-              {/* 
-              TODO - Implementer distribusjonstype
-                Kommer dette til å kanskje gjøres på samme måte som lås? Et kall på onChangen? 
-
               {erLåst && (
-                <RadioGroup description={"Distribusjon"} legend="" size="small">
-                  <Radio value={DistribusjonsMetode.Sentralprint}>Sentralprint</Radio>
-                  <Radio value={DistribusjonsMetode.Lokaltprint}>Lokaltprint</Radio>
+                <RadioGroup
+                  description={
+                    <div
+                      css={css`
+                        display: flex;
+                        gap: 0.5rem;
+                      `}
+                    >
+                      Distribusjon
+                      <span
+                        css={css`
+                          display: flex;
+                        `}
+                      >
+                        {distribusjonstypeMutation.isPending && <Loader size="small" />}
+                        {distribusjonstypeMutation.isError && (
+                          <XMarkOctagonFillIcon
+                            css={css`
+                              align-self: center;
+                              color: var(--a-nav-red);
+                            `}
+                            title="error"
+                          />
+                        )}
+                      </span>
+                    </div>
+                  }
+                  legend=""
+                  onChange={(v) => distribusjonstypeMutation.mutate(v)}
+                  size="small"
+                  value={properties.brev.distribusjonstype}
+                >
+                  <Radio value={Distribusjonstype.SENTRALPRINT}>Sentralprint</Radio>
+                  <Radio value={Distribusjonstype.LOKALPRINT}>Lokaltprint</Radio>
                 </RadioGroup>
               )}
-              */}
             </VStack>
 
             <div>
