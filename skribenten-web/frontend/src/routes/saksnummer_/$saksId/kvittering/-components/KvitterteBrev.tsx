@@ -94,14 +94,13 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
     }
     case "fulfilledWithSuccess": {
       const tag = resultat.response.journalpostId ? (
-        /*
-                  if(lokaltprint){
-                    return <Tag variant={"info"} size="small">Sendt til lokalprint</Tag>
-                    } else {
-              */
-        //teknisk sett er den bare journalført
-        <Tag size="small" variant={"success"}>
-          Sendt til mottaker
+        <Tag
+          size="small"
+          variant={resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT ? "info" : "success"}
+        >
+          {resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT
+            ? "Sendt til lokalprint"
+            : "Sendt til mottaker"}
         </Tag>
       ) : (
         <Tag size="small" variant={"error"}>
