@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDto
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
@@ -18,7 +17,7 @@ class OpplysningerBruktIBeregningUTLegacyTest {
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
             vedleggOpplysningerBruktIBeregningUTLegacy,
-            Fixtures.create(OpplysningerBruktIBeregningenLegacyDto::class).expr(),
+            Fixtures.create(PE::class).expr(),
             languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )
         Letter(

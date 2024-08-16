@@ -3,6 +3,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_sum_fattnorge_framtidigttnorge_div_12
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
@@ -11,8 +12,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelecto
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglisteeos_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateralSelectors.trygdetidsgrunnlagbilateral_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.grunnlag_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenLegacyDtoSelectors.pe
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.TabellUfoereOpplysningerLegacy
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.legacy.*
@@ -28,7 +27,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
-    createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenLegacyDto>(
+    createAttachment<LangBokmalNynorskEnglish, PE>(
         title = newText(
             Bokmal to "Opplysninger om beregningen",
             Nynorsk to "Opplysningar om utrekninga",
@@ -36,6 +35,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         ),
         includeSakspart = false,
     ) {
+        val pe = argument
 
         title2 {
             text(

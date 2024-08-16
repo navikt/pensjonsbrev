@@ -61,9 +61,6 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() as T
             OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende::class -> createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() as T
             OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T
-            OpplysningerBruktIBeregningenLegacyDto::class -> createOpplysningerBruktIBeregningenLegacyDto() as T
-            OpplysningerBruktIBeregningenLegacyDto.OpplysningerOmMinstetilleggDto::class -> createOpplysningerOmMinstetillegg() as T
-            OpplysningerBruktIBeregningenLegacyDto.OpplysningerOmBarnetilleggDto::class -> createOpplysningerBruktIBeregningenLegacyDto_OpplysningerOmBarnetilleggDto() as T
             OpplysningerOmEtteroppgjoeretDto::class -> createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret() as T
             OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
