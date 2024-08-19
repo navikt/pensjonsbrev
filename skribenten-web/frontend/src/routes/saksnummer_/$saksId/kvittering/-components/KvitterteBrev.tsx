@@ -31,7 +31,7 @@ const KvittertBrev = (properties: { sakId: string; resultat: FerdigstillResponse
 
   return (
     <Accordion.Item>
-      <ResultatAccordionHeader
+      <KvittertBrevHeader
         resultat={
           mutation.isSuccess
             ? {
@@ -43,7 +43,7 @@ const KvittertBrev = (properties: { sakId: string; resultat: FerdigstillResponse
         }
         sakId={properties.sakId}
       />
-      <ResultatAccordionContentWrapper
+      <KvittertBrevContentWrapper
         error={mutation.isError ? mutation.error : null}
         isPending={mutation.isPending}
         onPrøvIgjenClick={() => mutation.mutate(properties.resultat.brevInfo.id)}
@@ -62,7 +62,7 @@ const KvittertBrev = (properties: { sakId: string; resultat: FerdigstillResponse
   );
 };
 
-const ResultatAccordionHeader = (properties: { sakId: string; resultat: FerdigstillResponse }) => {
+const KvittertBrevHeader = (properties: { sakId: string; resultat: FerdigstillResponse }) => {
   const { tag, tittel } = hentTagOgTittelForHeader(properties.resultat);
 
   return (
@@ -113,7 +113,7 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
   }
 };
 
-const ResultatAccordionContentWrapper = (properties: {
+const KvittertBrevContentWrapper = (properties: {
   sakId: string;
   resultat: FerdigstillResponse;
   onPrøvIgjenClick: () => void;
@@ -122,7 +122,7 @@ const ResultatAccordionContentWrapper = (properties: {
 }) => {
   return (
     <Accordion.Content>
-      <ResultatAccordionContent
+      <KvittertBrevContent
         error={properties.error}
         isPending={properties.isPending}
         onPrøvIgjenClick={properties.onPrøvIgjenClick}
@@ -133,7 +133,7 @@ const ResultatAccordionContentWrapper = (properties: {
   );
 };
 
-const ResultatAccordionContent = (properties: {
+const KvittertBrevContent = (properties: {
   sakId: string;
   resultat: FerdigstillResponse;
   onPrøvIgjenClick: () => void;
@@ -150,11 +150,10 @@ const ResultatAccordionContent = (properties: {
   switch (properties.resultat.status) {
     case "fulfilledWithError": {
       const error = properties.resultat.error;
-
       const correlationId = error.response?.headers["x-request-id"] ?? null;
 
       return (
-        <ResultatContentError
+        <KvittertBrevContentError
           error={properties.error}
           isPending={properties.isPending}
           onPrøvIgjenClick={properties.onPrøvIgjenClick}
@@ -166,13 +165,13 @@ const ResultatAccordionContent = (properties: {
             Feilen var {error.code} - {error.message}
           </BodyShort>
           <BodyShort>Id for feilsøking: {correlationId ?? "Fant ikke feilsøkings-id"}</BodyShort>
-        </ResultatContentError>
+        </KvittertBrevContentError>
       );
     }
     case "fulfilledWithSuccess": {
       if (properties.resultat.response.error != null) {
         return (
-          <ResultatContentError
+          <KvittertBrevContentError
             error={properties.error}
             isPending={properties.isPending}
             onPrøvIgjenClick={properties.onPrøvIgjenClick}
@@ -184,11 +183,11 @@ const ResultatAccordionContent = (properties: {
               Prøv igjen.
             </BodyShort>
             <BodyShort>{properties.resultat.response.error?.beskrivelse}</BodyShort>
-          </ResultatContentError>
+          </KvittertBrevContentError>
         );
       } else if (properties.resultat.response.journalpostId == null) {
         return (
-          <ResultatContentError
+          <KvittertBrevContentError
             error={properties.error}
             isPending={properties.isPending}
             onPrøvIgjenClick={properties.onPrøvIgjenClick}
@@ -196,7 +195,7 @@ const ResultatAccordionContent = (properties: {
             sakId={properties.sakId}
           >
             <BodyShort>Brevet ble ikke sendt pga en ukjent feil. Prøv igjen.</BodyShort>
-          </ResultatContentError>
+          </KvittertBrevContentError>
         );
       } else {
         return (
@@ -225,7 +224,7 @@ const ResultatAccordionContent = (properties: {
   }
 };
 
-const ResultatContentError = (properties: {
+const KvittertBrevContentError = (properties: {
   sakId: string;
   resultat: FerdigstillResponse;
   children: React.ReactNode;

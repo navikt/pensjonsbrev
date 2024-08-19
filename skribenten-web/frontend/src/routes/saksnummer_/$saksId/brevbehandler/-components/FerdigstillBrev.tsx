@@ -20,11 +20,29 @@ import { Route } from "../route";
 
 export const FerdigstillOgSendBrevButton = (properties: {
   sakId: string;
-  valgtBrev?: string;
+  valgtBrevId?: string;
   brevInfo: BrevInfo[];
   åpneFerdigstillModal: () => void;
 }) => {
-  if (!properties.valgtBrev && properties.brevInfo.some(erBrevKlar)) {
+  if (properties.valgtBrevId) {
+    const valgtBrev = properties.brevInfo.find((brev) => brev.id.toString() === properties.valgtBrevId);
+
+    //safe-guard i det tilfellet bogus id er sendt
+    if (!valgtBrev) {
+      return <BodyShort>Fant ikke brev med id {properties.valgtBrevId}</BodyShort>;
+    }
+
+    return (
+      <FerdigstillValgtBrev
+        brev={valgtBrev}
+        sakId={properties.sakId}
+        åpneFerdigstillModal={properties.åpneFerdigstillModal}
+      />
+    );
+  }
+
+  //hvis ingen spesifikk brev er valgt, og noen står klar til å sendes, vis knapp for å sende
+  if (!properties.valgtBrevId && properties.brevInfo.some(erBrevKlar)) {
     return (
       <Button onClick={properties.åpneFerdigstillModal} size="small" type="button">
         <HStack gap="2">
@@ -35,42 +53,8 @@ export const FerdigstillOgSendBrevButton = (properties: {
     );
   }
 
-  if (properties.valgtBrev && !properties.brevInfo.some((brev) => brev.id.toString() === properties.valgtBrev)) {
-    return <BodyShort>Fant ikke brev med id {properties.valgtBrev}</BodyShort>;
-  }
-
-  if (properties.valgtBrev) {
-    return (
-      <FerdigstillValgtBrevWrapper
-        brevId={properties.valgtBrev}
-        brevInfo={properties.brevInfo}
-        sakId={properties.sakId}
-        åpneFerdigstillModal={properties.åpneFerdigstillModal}
-      />
-    );
-  }
-
+  //hvis ingen brev er klare til å sendes, og ingen spesifikk brev er valgt, vis ingenting
   return null;
-};
-
-const FerdigstillValgtBrevWrapper = (properties: {
-  sakId: string;
-  brevId: string;
-  brevInfo: BrevInfo[];
-  åpneFerdigstillModal: () => void;
-}) => {
-  const valgtBrev = properties.brevInfo.find((brev) => brev.id.toString() === properties.brevId);
-  if (!valgtBrev) {
-    return <BodyShort>Fant ikke brev med id {properties.brevId}</BodyShort>;
-  }
-
-  return (
-    <FerdigstillValgtBrev
-      brev={valgtBrev}
-      sakId={properties.sakId}
-      åpneFerdigstillModal={properties.åpneFerdigstillModal}
-    />
-  );
 };
 
 const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpneFerdigstillModal: () => void }) => {
@@ -127,9 +111,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
 
   const hentBrevMutation = useMutation<Blob, Error, number>({
     mutationFn: (brevId) => hentPdfForBrevFunction(properties.sakId, brevId),
-    onSuccess: (pdf) => {
-      window.open(URL.createObjectURL(pdf), "_blank");
-    },
+    onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
   });
 
   const alleBrevForSak = useQuery({
@@ -184,11 +166,12 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
       }),
     );
     ferdigstillBrevContext.setResultat(resultat);
+
     const brevSomDistribueresLokalt = resultat
       .filter((resultat) => resultat.status === "fulfilledWithSuccess")
       .filter((sucess) => sucess.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT);
 
-    //så lenge det bare er 1 brev som distribueres lokalt, av X antall brev, vil vi åpne denne PDF'en i en ny fane.
+    //så lenge det bare er 1 brev som distribueres lokalt, av 1..n antall brev, vil vi åpne denne PDF'en i en ny fane.
     if (brevSomDistribueresLokalt.length === 1) {
       await hentBrevMutation.mutateAsync(brevSomDistribueresLokalt[0].brevInfo.id);
     }

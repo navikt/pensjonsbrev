@@ -102,7 +102,7 @@ function Brevbehandler() {
             <FerdigstillOgSendBrevButton
               brevInfo={alleBrevForSak.data}
               sakId={saksId}
-              valgtBrev={brevId}
+              valgtBrevId={brevId}
               åpneFerdigstillModal={() => setModalÅpen(true)}
             />
           )}
