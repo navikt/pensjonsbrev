@@ -29,7 +29,6 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etterbetalingOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 
 data class OmstillingsstoenadInnvilgelseDTO(
@@ -87,7 +86,6 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
         }
 
         includeAttachment(beregningAvOmstillingsstoenad, beregning)
-        includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetaling)
         includeAttachment(informasjonOmOmstillingsstoenad, beregning)
         includeAttachment(dineRettigheterOgPlikter, beregning)
     }

@@ -214,20 +214,33 @@ object OmstillingsstoenadInnvilgelseFraser {
                             "from NAV or others, such as a pension from an occupational pension scheme.",
                 )
             }
-            paragraph {
-                text(
-                    Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker. ",
-                    Nynorsk to "Dersom du har rett på etterbetaling, får du vanlegvis denne i løpet av tre veker. ",
-                    English to "If you are entitled to a back payment, you will normally receive this within three weeks. ",
-                )
-                ifNotNull(etterbetaling) {
+            ifNotNull(etterbetaling) {
+                paragraph {
                     text(
-                        Bokmal to "Du finner mer informasjon om etterbetaling i vedlegget " +
-                                "«Etterbetaling av omstillingsstønad».",
-                        Nynorsk to "Du finn meir informasjon om etterbetaling i vedlegget «Etterbetaling " +
-                                "av omstillingsstønad».",
-                        English to "You can find more information about back payments in the attachment " +
-                                "Back Payments.",
+                        Bokmal to "Du får etterbetalt stønad. Vanligvis vil du få denne i løpet av " +
+                                "tre uker. Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan " +
+                                "denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
+                        Nynorsk to "Du får etterbetalt stønad. Vanlegvis vil du få denne i løpet av " +
+                                "tre veker. Dersom Skatteetaten eller andre ordningar har krav i etterbetalinga, " +
+                                "kan ho bli forseinka. Frådrag i etterbetalinga vil gå fram av utbetalingsmeldinga. ",
+                        English to "You will receive a back payment on your allowance. You will usually " +
+                                "receive this back payment within three weeks. If the Norwegian Tax Administration " +
+                                "or other schemes are entitled to the back payment, the payment to you may be " +
+                                "delayed. Deductions from the back payment will be stated in the disbursement notice.  ",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder " +
+                                "etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
+                                "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+                        Nynorsk to "Det blir normalt sett bli trekt skatt av etterbetaling. Dersom " +
+                                "etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane til " +
+                                "Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+                        English to "Tax is usually deducted from back payments. If the back payment " +
+                                "applies to previous years, NAV will deduct the tax at the Tax Administration's " +
+                                "standard rates. You can read more about the rates here: " +
+                                "${Constants.SKATTETREKK_ETTERBETALING_URL}. ",
                     )
                 }
             }
