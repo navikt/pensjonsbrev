@@ -14,6 +14,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_ANDRE_STOENADER_URL
@@ -23,10 +24,9 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.borIutland
 
 data class OmstillingstoenadInformasjonDoedsfallDTO(
-    override val innhold: List<Element>,
     val avdoedNavn: String,
     val borIutland: Boolean,
-) : BrevDTO
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<OmstillingstoenadInformasjonDoedsfallDTO> {

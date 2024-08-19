@@ -15,16 +15,16 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTOSelectors.borIutland
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
 
 data class BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO(
-    override val innhold: List<Element>,
     val avdoedNavn: String,
     val borIutland: Boolean,
-) : BrevDTO
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : EtterlatteTemplate<BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO>, Hovedmal {
