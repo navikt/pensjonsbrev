@@ -3,9 +3,8 @@ package no.nav.pensjon.etterlatte.maler.barnepensjon.migrering
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.IntBroek
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 
 data class BarnepensjonOmregnetNyttRegelverkDTO(
     val utbetaltFoerReform: Kroner,
@@ -20,4 +19,4 @@ data class BarnepensjonOmregnetNyttRegelverkFerdigDTO(
     val etterbetaling: BarnepensjonEtterbetaling?,
     val erUnder18Aar: Boolean,
     val erBosattUtlandet: Boolean,
-) : BrevDTO
+) : FerdigstillingBrevDTO

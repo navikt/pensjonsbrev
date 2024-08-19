@@ -16,8 +16,8 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
@@ -49,7 +49,7 @@ data class TilbakekrevingBrevDTO(
     val datoTilsvarBruker: LocalDate?,
 
     val tilbakekreving: TilbakekrevingDTO
-) : BrevDTO
+) : FerdigstillingBrevDTO
 
 data class TilbakekrevingDTO(
     val fraOgMed: LocalDate,
