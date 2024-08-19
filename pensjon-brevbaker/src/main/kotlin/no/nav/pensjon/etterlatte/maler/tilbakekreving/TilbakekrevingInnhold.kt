@@ -13,7 +13,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 
-data object TilbakekrevingRedigerbartBrevDTO : RedigerbartUtfallBrevDTO
+data class TilbakekrevingRedigerbartBrevDTO(val utenVariabler: Boolean = true) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object TilbakekrevingInnhold: EtterlatteTemplate<TilbakekrevingRedigerbartBrevDTO>, Delmal {

@@ -10,7 +10,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
 
-data object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO : RedigerbartUtfallBrevDTO
+data class OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO(val utenVariabler: Boolean = true) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
