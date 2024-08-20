@@ -17,9 +17,9 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
@@ -57,7 +57,7 @@ data class OmstillingsstoenadRevurderingDTO(
     val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut
     val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
     val feilutbetaling: FeilutbetalingType
-    ): BrevDTO
+    ): FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {

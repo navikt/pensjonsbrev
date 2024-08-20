@@ -55,6 +55,7 @@ enum class EtterlatteBrevKode {
     UTSATT_KLAGEFRIST,
     KLAGE_OVERSENDELSE_BLANKETT,
     KLAGE_OVERSENDELSE_BRUKER,
+    INGEN_REDIGERBAR_DEL, // Til bruk for å modellere at brevet ikke har en redigerbar del
 }
 
 data class EtterlatteBrevRequest(val kode: EtterlatteBrevKode, val letterData: Any, val felles: Felles, val language: LanguageCode)

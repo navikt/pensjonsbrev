@@ -14,8 +14,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.bosattUtland
@@ -48,7 +48,7 @@ data class BarnepensjonInnvilgelseDTO(
     val erGjenoppretting: Boolean,
     val harUtbetaling: Boolean,
     val erMigrertYrkesskade: Boolean
-) : BrevDTO
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>, Hovedmal {

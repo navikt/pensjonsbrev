@@ -10,8 +10,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
@@ -26,7 +26,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 data class AvvistKlageFerdigDTO(
     override val innhold: List<Element>,
     val data: AvvistKlageInnholdDTO
-) : BrevDTO
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hovedmal {
