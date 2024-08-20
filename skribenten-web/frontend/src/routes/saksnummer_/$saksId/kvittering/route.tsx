@@ -53,34 +53,6 @@ function Kvittering() {
         >
           Lage nytt brev på denne brukeren
         </Button>
-        <Button
-          css={css`
-            width: fit-content;
-          `}
-          onClick={() => {
-            //hva er dokumentoversikten? Pesys? Isåfall trenger vi en eller annen url
-            console.log("åpner dokumentoversikt");
-          }}
-          size="small"
-          type="button"
-          variant="secondary"
-        >
-          Åpne dokumentoversikt
-        </Button>
-        <Button
-          css={css`
-            width: fit-content;
-          `}
-          onClick={() => {
-            //hva skal egentlig skje her?
-            console.log("avslutte brevbehandler");
-          }}
-          size="small"
-          type="button"
-          variant="secondary"
-        >
-          Avslutte brevbehandler
-        </Button>
       </VStack>
       <div
         css={css`
