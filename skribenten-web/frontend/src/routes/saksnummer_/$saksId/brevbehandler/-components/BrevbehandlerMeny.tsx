@@ -35,7 +35,7 @@ const BrevbehandlerMeny = (properties: { sakId: string; brevInfo: BrevInfo[] }) 
         padding: var(--a-spacing-4);
         border-right: 1px solid var(--a-gray-200);
       `}
-      gap="8"
+      gap="6"
     >
       <Heading level="1" size="small">
         Brevbehandler

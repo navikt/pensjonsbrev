@@ -1,9 +1,10 @@
 import { css } from "@emotion/react";
-import { BodyLong, Button, Modal } from "@navikt/ds-react";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
+import { BodyLong, Button, HStack, Label, Modal } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import React, { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 
 import { getBrev, getBrevReservasjon, hurtiglagreBrev, hurtiglagreSaksbehandlerValg } from "~/api/brev-queries";
@@ -85,7 +86,7 @@ function RedigerBrev({
   vedtaksId: string | undefined;
 }) {
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
-
+  const navigate = useNavigate({ from: Route.fullPath });
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
   const redigertBrevMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreBrev);
 
@@ -115,14 +116,16 @@ function RedigerBrev({
   }, [brev.redigertBrev, brev.redigertBrevHash, editorState.redigertBrevHash, setEditorState]);
 
   return (
-    <>
+    <div>
       <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
       <div
         css={css`
           background: var(--a-white);
           display: grid;
-          grid-template-columns: minmax(380px, 400px) 1fr;
-          flex: 1;
+          grid-template:
+            "modelEditor letterEditor" 1fr
+            "footer footer" auto / 30% 70%;
+
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
 
@@ -145,8 +148,39 @@ function RedigerBrev({
           freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
           setEditorState={setEditorState}
         />
+        <HStack
+          css={css`
+            grid-area: footer;
+            border-top: 1px solid var(--a-gray-200);
+            padding: 0.5rem 1rem;
+          `}
+          gap="2"
+          justify={"end"}
+        >
+          <Button
+            onClick={() => {
+              navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: saksId } });
+            }}
+            size="small"
+            type="button"
+            variant="tertiary"
+          >
+            Tilbake til brevvelger
+          </Button>
+          <Button
+            onClick={() => {
+              navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: saksId } });
+            }}
+            size="small"
+            type="button"
+          >
+            <HStack align={"center"} gap="2">
+              <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+            </HStack>
+          </Button>
+        </HStack>
       </div>
-    </>
+    </div>
   );
 }
 
