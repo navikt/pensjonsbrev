@@ -109,7 +109,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
   });
 
-  const hentBrevMutation = useMutation<Blob, Error, number>({
+  const hentPdfForBrev = useMutation<Blob, Error, number>({
     mutationFn: (brevId) => hentPdfForBrevFunction(properties.sakId, brevId),
     onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
   });
@@ -173,7 +173,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
 
     //så lenge det bare er 1 brev som distribueres lokalt, av 1..n antall brev, vil vi åpne denne PDF'en i en ny fane.
     if (brevSomDistribueresLokalt.length === 1) {
-      await hentBrevMutation.mutateAsync(brevSomDistribueresLokalt[0].brevInfo.id);
+      await hentPdfForBrev.mutateAsync(brevSomDistribueresLokalt[0].brevInfo.id);
     }
 
     navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
@@ -219,6 +219,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                   name="valgteBrevSomSkalSendes"
                   render={({ field, fieldState }) => (
                     <CheckboxGroup
+                      data-cy="ferdigstillbrev-valgte-brev"
                       error={fieldState.error?.message}
                       hideLegend
                       legend="Velg brev som skal sendes"

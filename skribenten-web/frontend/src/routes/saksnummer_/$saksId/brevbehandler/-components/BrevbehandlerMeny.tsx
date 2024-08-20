@@ -236,6 +236,7 @@ const BrevItem = (properties: {
 
               {erLåst && (
                 <RadioGroup
+                  data-cy="brevbehandler-distribusjonstype"
                   description={
                     <div
                       css={css`
@@ -268,7 +269,7 @@ const BrevItem = (properties: {
                   value={properties.brev.distribusjonstype}
                 >
                   <Radio value={Distribusjonstype.SENTRALPRINT}>Sentralprint</Radio>
-                  <Radio value={Distribusjonstype.LOKALPRINT}>Lokaltprint</Radio>
+                  <Radio value={Distribusjonstype.LOKALPRINT}>Lokalprint</Radio>
                 </RadioGroup>
               )}
             </VStack>
