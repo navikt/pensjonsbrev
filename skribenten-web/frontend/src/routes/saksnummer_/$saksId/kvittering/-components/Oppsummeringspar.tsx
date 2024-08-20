@@ -11,7 +11,7 @@ const Oppsummeringspar = (properties: { tittel: string; verdi: string | number }
     >
       <BodyShort
         css={css`
-          color: rgba(1, 11, 24, 0.68);
+          color: var(--a-gray-600);
         `}
       >
         {properties.tittel}

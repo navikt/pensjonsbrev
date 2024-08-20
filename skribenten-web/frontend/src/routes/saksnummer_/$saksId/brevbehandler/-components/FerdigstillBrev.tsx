@@ -141,7 +141,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
     const brevSomSkalSendes = values.valgteBrevSomSkalSendes
       .map((brevId) => alleFerdigstilteBrev.find((brev) => brev.id === brevId))
-      .filter((brev) => brev !== undefined);
+      .filter((brev): brev is BrevInfo => !!brev);
 
     const requests = brevSomSkalSendes.map((brevInfo) =>
       bestillBrevMutation.mutateAsync(brevInfo.id).then(

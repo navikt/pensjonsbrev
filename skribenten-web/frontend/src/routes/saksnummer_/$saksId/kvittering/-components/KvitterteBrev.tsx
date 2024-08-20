@@ -86,7 +86,7 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
     case "fulfilledWithError": {
       const tag = (
         <Tag size="small" variant={"error"}>
-          Brev ble ikke sendt
+          Kunne ikke sende brev
         </Tag>
       );
 
@@ -99,12 +99,12 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
           variant={resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT ? "info" : "success"}
         >
           {resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT
-            ? "Sendt til lokalprint"
+            ? "Lokalprint - sendt til joark"
             : "Sendt til mottaker"}
         </Tag>
       ) : (
         <Tag size="small" variant={"error"}>
-          Brev ble ikke sendt
+          Kunne ikke sende brev
         </Tag>
       );
 
@@ -214,7 +214,7 @@ const KvittertBrevContent = (properties: {
                 size="small"
                 type="button"
               >
-                Åpne brevet i ny fane
+                Åpne utskrivbar fil i ny fane
               </Button>
             )}
           </VStack>

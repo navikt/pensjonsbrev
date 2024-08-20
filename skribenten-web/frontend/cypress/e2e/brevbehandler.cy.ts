@@ -129,13 +129,13 @@ describe("Brevbehandler", () => {
 
     //verifisering av kvittering
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
-    cy.contains("Sendt til lokalprint").should("be.visible");
+    cy.contains("Lokalprint - sendt til joark").should("be.visible");
     cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne brevet i ny fane").should("be.visible");
+    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
   });
 
   it("kan sende flere ferdigstilte brev samtidig", () => {
@@ -167,17 +167,13 @@ describe("Brevbehandler", () => {
     cy.contains("80912").should("be.visible");
     cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
 
-    cy.contains("Sendt til lokalprint").should("be.visible");
+    cy.contains("Lokalprint - sendt til joark").should("be.visible");
     cy.contains("BREV_SOM_SENDES_SOM_LOKALPRINT").click();
-
-    //contains tar alltid den første forekomsten av teksten, så den treffer den som er over
-    //vi bruker get på classen til å finne riktig element
-    cy.get(".css-16pei6b-Oppsummeringspar").eq(2).contains("Distribueres via").should("be.visible");
+    cy.get('p:contains("Distribueres via")').eq(1).should("be.visible");
     cy.contains("Lokal print").should("be.visible");
-    // -- || --
-    cy.get(".css-16pei6b-Oppsummeringspar").eq(3).contains("Journalpost ID").should("be.visible");
+    cy.get('p:contains("Journalpost ID")').eq(1).should("be.visible");
     cy.contains("80913").should("be.visible");
-    cy.contains("Åpne brevet i ny fane").should("be.visible");
+    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
   });
 
   it("velger hvilke brev som skal sendes", () => {
@@ -266,7 +262,7 @@ describe("Brevbehandler", () => {
     cy.contains("Ja, send valgte brev").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
 
-    cy.contains("Brev ble ikke sendt").should("be.visible");
+    cy.contains("Kunne ikke sende brev").should("be.visible");
     cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
 
     cy.contains("Brevet ble ikke sendt pga Her er det en teknisk grunn. Prøv igjen.").should("be.visible");

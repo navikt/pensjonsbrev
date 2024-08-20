@@ -5,7 +5,6 @@ import {
   Alert,
   BodyShort,
   Heading,
-  HStack,
   Label,
   Loader,
   Radio,
@@ -302,7 +301,7 @@ const BrevItem = (properties: {
 };
 
 const Brevtilstand = (properties: { status: BrevStatus }) => {
-  const { variant, text, description } = brevStatusTypeToTextAndTagVariant(properties.status);
+  const { variant, text } = brevStatusTypeToTextAndTagVariant(properties.status);
 
   return (
     <Tag
@@ -312,7 +311,7 @@ const Brevtilstand = (properties: { status: BrevStatus }) => {
       size="small"
       variant={variant}
     >
-      <HStack>{description ? <BodyShort>{description}</BodyShort> : <BodyShort>{text}</BodyShort>}</HStack>
+      <BodyShort>{text}</BodyShort>
     </Tag>
   );
 };
