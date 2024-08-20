@@ -142,7 +142,6 @@ En strategi for overgangen kan se slik ut:
 
 Dette repoet inneholder forekomster av kode generert av GitHub Copilot.
 
-
 ## Troubleshooting
 
 #### Error når jeg prøver å koble meg til kubernetes cluster
