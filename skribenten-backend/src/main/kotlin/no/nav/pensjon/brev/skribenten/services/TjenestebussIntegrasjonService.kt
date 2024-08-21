@@ -6,6 +6,7 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
@@ -47,8 +48,8 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
         requestDto: FinnSamhandlerRequestDto,
     ): FinnSamhandlerResponseDto =
         tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
+            contentType(Json)
+            accept(Json)
             setBody(jacksonObjectMapper().writeValueAsString(requestDto))
         }.toServiceResult<FinnSamhandlerResponseDto>()
             .catch { message, status ->
@@ -64,12 +65,12 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
             url {
                 appendPathSegments(idTSSEkstern)
             }
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
+            contentType(Json)
+            accept(Json)
         }.toServiceResult<Samhandler>()
             .map { it.toHentSamhandlerResponseDto() }
             .catch { message, status ->
-                logger.error("Feil ved henting av samhandler adresse fra tjenestebuss-integrasjon. Status: $status Melding: $message")
+                logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
                 HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
             }
 
@@ -78,8 +79,8 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
         idTSSEkstern: String,
     ): HentSamhandlerAdresseResponseDto =
         tjenestebussIntegrasjonClient.post(call, "/hentSamhandlerAdresse") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
+            contentType(Json)
+            accept(Json)
             setBody(HentSamhandlerAdresseRequestDto(idTSSEkstern))
         }.toServiceResult<HentSamhandlerAdresseResponseDto>()
             .catch { message, status ->
