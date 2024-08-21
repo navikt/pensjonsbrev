@@ -39,7 +39,7 @@ object Api {
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbar,
         val status: BrevStatus,
-        val distribusjonstype: Distribusjonstype?
+        val distribusjonstype: Distribusjonstype
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
