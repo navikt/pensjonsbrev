@@ -23,6 +23,15 @@ class AdhocTest {
     }
 
     @Test
+    fun `testAdhocUfoeretrygdVarselOpphoerEktefelletillegg pdf`() {
+        testAdhocPdf(
+            AdhocUfoeretrygdVarselOpphoerEktefelletillegg.template,
+            pdfName = "UT_UFOERETRYGD_VARSEL_OPPHOER_EKTEFELLETILLEGG",
+            Bokmal
+        )
+    }
+
+    @Test
     fun `testAdhocGjenlevendEtter1970 pdf`() {
         testAdhocPdf(
             AdhocGjenlevendEtter1970.template,
