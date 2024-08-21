@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -50,7 +50,7 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
         samhandlerProxyClient.post(call, "/api/samhandler/finnSamhandler") {
             contentType(Json)
             accept(Json)
-            setBody(jacksonObjectMapper().writeValueAsString(lagRequest(requestDto)))
+            setBody(lagRequest(requestDto))
         }.toServiceResult<List<Samhandler>>()
             .map { it.toFinnSamhandlerResponseDto() }
             .catch { message, status ->
@@ -143,6 +143,7 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
             }
         )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class Samhandler(
         val navn: String,
         val samhandlerType: String,
