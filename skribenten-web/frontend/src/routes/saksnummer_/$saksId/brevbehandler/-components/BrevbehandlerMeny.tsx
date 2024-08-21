@@ -1,18 +1,6 @@
 import { css } from "@emotion/react";
 import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
-import {
-  Accordion,
-  Alert,
-  BodyShort,
-  Heading,
-  Label,
-  Loader,
-  Radio,
-  RadioGroup,
-  Switch,
-  Tag,
-  VStack,
-} from "@navikt/ds-react";
+import { Accordion, Alert, BodyShort, Label, Loader, Radio, RadioGroup, Switch, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
@@ -33,13 +21,8 @@ const BrevbehandlerMeny = (properties: { sakId: string; brevInfo: BrevInfo[] }) 
     <VStack
       css={css`
         padding: var(--a-spacing-4);
-        border-right: 1px solid var(--a-gray-200);
       `}
-      gap="6"
     >
-      <Heading level="1" size="small">
-        Brevbehandler
-      </Heading>
       <Saksbrev brev={properties.brevInfo} sakId={properties.sakId} />
     </VStack>
   );
@@ -78,15 +61,17 @@ const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
 
   return (
     <Accordion>
-      {properties.brev.map((brev) => (
-        <BrevItem
-          brev={brev}
-          key={brev.id}
-          onOpenChange={handleOpenChange(brev.id.toString())}
-          open={åpenBrevItem === brev.id.toString()}
-          sakId={properties.sakId}
-        />
-      ))}
+      {properties.brev
+        .toSorted((a, b) => a.id - b.id)
+        .map((brev) => (
+          <BrevItem
+            brev={brev}
+            key={brev.id}
+            onOpenChange={handleOpenChange(brev.id.toString())}
+            open={åpenBrevItem === brev.id.toString()}
+            sakId={properties.sakId}
+          />
+        ))}
     </Accordion>
   );
 };

@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { PlusIcon } from "@navikt/aksel-icons";
-import { Button, HStack, Label } from "@navikt/ds-react";
+import { Button, Heading, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -67,13 +67,30 @@ function Brevbehandler() {
           width: 1200px;
         `}
       >
-        <div>
-          {alleBrevForSak.isPending && <Label>Henter alle brev for saken...</Label>}
+        <VStack
+          css={css`
+            padding: var(--a-spacing-4);
+            border-right: 1px solid var(--a-gray-200);
+          `}
+        >
+          <Heading level="1" size="small">
+            Brevbehandler
+          </Heading>
+
+          {alleBrevForSak.isPending && (
+            <VStack
+              css={css`
+                padding: 1rem;
+              `}
+            >
+              <Skeleton height={80} variant="rectangle" width="100%" />
+            </VStack>
+          )}
           {alleBrevForSak.isError && (
             <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle brev for saken"} />
           )}
           {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} sakId={saksId} />}
-        </div>
+        </VStack>
 
         <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} sakId={saksId} />}</div>
 
