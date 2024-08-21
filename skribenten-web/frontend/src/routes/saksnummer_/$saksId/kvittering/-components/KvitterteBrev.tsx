@@ -209,7 +209,9 @@ const KvittertBrevContent = (properties: {
               verdi={distribusjonstypeTilText(properties.resultat.brevInfo.distribusjonstype)}
             />
             <Oppsummeringspar tittel={"Journalpost ID"} verdi={properties.resultat.response.journalpostId} />
-            <BodyShort>PDF'en kan hentes fra Pesys</BodyShort>
+            {properties.resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT && (
+              <BodyShort>PDF'en kan hentes fra Pesys</BodyShort>
+            )}
             {/*
 TODO - link til pdf - kan muligens hentes fra SAF
             {properties.resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT && (

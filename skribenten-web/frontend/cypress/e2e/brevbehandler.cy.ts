@@ -135,7 +135,9 @@ describe("Brevbehandler", () => {
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    //TODO - legg til når vi kan pdf
+    //cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    cy.contains("PDF'en kan hentes fra Pesys").should("be.visible");
   });
 
   it("kan sende flere ferdigstilte brev samtidig", () => {
@@ -173,7 +175,9 @@ describe("Brevbehandler", () => {
     cy.contains("Lokal print").should("be.visible");
     cy.get('p:contains("Journalpost ID")').eq(1).should("be.visible");
     cy.contains("80913").should("be.visible");
-    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    //TODO - legg til når man kan åpne pdf i ny fane
+    //cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    cy.contains("PDF'en kan hentes fra Pesys").should("be.visible");
   });
 
   it("velger hvilke brev som skal sendes", () => {
