@@ -64,8 +64,8 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
                             "allowance in the National Insurance Act – sections <riktig paragrafhenvisning>.",
                 )
             }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_4RG_UTEN_VARSEL)) {
+                includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUnder4RGUtenVarselOpphoer)
             }
         }
     }

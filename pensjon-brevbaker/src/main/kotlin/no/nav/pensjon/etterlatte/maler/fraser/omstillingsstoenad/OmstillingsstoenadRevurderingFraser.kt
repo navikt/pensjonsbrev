@@ -190,8 +190,8 @@ class OmstillingsstoenadRevurderingFraser {
                 )
             }
 
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(FeilutbetalingUtenVarselRevurdering)
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_4RG_UTEN_VARSEL)) {
+                includePhrase(FeilutbetalingUnder4RGUtenVarselRevurdering)
             }
         }
     }
@@ -255,7 +255,7 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object FeilutbetalingUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUnder4RGUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -269,6 +269,32 @@ class OmstillingsstoenadRevurderingFraser {
                             "received more than you were owed. The amount is below the lower limit for " +
                             "demanding repayment, as stated in Section 22-15(6) of the National Insurance Act, " +
                             "so no repayment will be demanded of you. ",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Feilutbetaling",
+                    Language.Nynorsk to "Feilutbetaling",
+                    Language.English to "Incorrectly paid adjustment allowance",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi stønaden din er redusert tilbake i tid, har du fått for mye " +
+                            "utbetalt. Vi oppretter en sak om mulig tilbakekreving av det du har fått for mye " +
+                            "utbetalt. Dette får du mer informasjon om i et eget brev fra oss.",
+                    Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått for " +
+                            "mykje utbetalt. Vi opprettar ei sak om mogleg tilbakekrevjing av det du har fått for " +
+                            "mykje utbetalt. Dette får du meir informasjon om i eit eige brev frå oss.",
+                    Language.English to "Because your allowance has been reduced retroactively, you received " +
+                            "more than you were owed. We will start a case to assess whether you must repay " +
+                            "adjustment allowance. You will receive more information about this in a separate " +
+                            "letter from us.",
                 )
             }
         }
@@ -299,7 +325,7 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object FeilutbetalingUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUnder4RGUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -314,6 +340,45 @@ class OmstillingsstoenadRevurderingFraser {
                             "terminated retroactively. The amount is below the lower limit for demanding repayment, " +
                             "as stated in the National Insurance Act - Section 22-15(6). So no repayment will be " +
                             "demanded of you.",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Feilutbetaling",
+                    Language.Nynorsk to "Feilutbetaling",
+                    Language.English to "Incorrectly payment",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi stønaden din er opphørt tilbake i tid, har du fått for mye " +
+                            "utbetalt. Vi oppretter en sak om mulig tilbakekreving av det du har fått for mye " +
+                            "utbetalt. Dette får du mer informasjon om i et eget brev fra oss.",
+                    Language.Nynorsk to "Ettersom stønaden din blei avvikla tilbake i tid, har du fått for " +
+                            "mykje utbetalt. Vi opprettar ei sak om mogleg tilbakekrevjing av det du har fått for " +
+                            "mykje utbetalt. Dette får du meir informasjon om i eit eige brev frå oss.",
+                    Language.English to "You have been overpaid because your Adjustment Allowance has been " +
+                            "terminated retroactively. We will start a case to assess whether you must repay " +
+                            "adjustment allowance. You will receive more information about this in a separate " +
+                            "letter from us.",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Fordi stønaden din er opphørt tilbake i tid, har du fått for mye " +
+                            "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale " +
+                            "tilbake omstillingsstønad».",
+                    Language.Nynorsk to "Ettersom omstillingsstønaden din blei avvikla tilbake i tid, har du " +
+                            "fått for mykje utbetalt. Sjå vedlegget «Førehandsvarsel om eventuell tilbakekrevjing " +
+                            "av feilutbetalt omstillingsstønad».",
+                    Language.English to "You have been overpaid because your Adjustment Allowance has been " +
+                            "terminated retroactively. See the Attachment Advance notice – we are assessing whether " +
+                            "you must repay adjustment allowance.",
                 )
             }
         }
