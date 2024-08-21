@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable.distribusjonstype
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
@@ -67,6 +66,7 @@ class BrevredigeringService(
                         this.avsenderEnhetId = avsenderEnhetsId
                         this.saksbehandlerValg = saksbehandlerValg
                         laastForRedigering = false
+                        distribusjonstype = Distribusjonstype.SENTRALPRINT
                         redigeresAvNavIdent = if (reserverForRedigering) call.principal().navIdent() else null
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
