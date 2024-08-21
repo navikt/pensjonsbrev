@@ -111,7 +111,7 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
                     navn = requestDto.navn,
                     idType = null,
                     offentligId = null,
-                    samhandlerType = null,
+                    samhandlerType = requestDto.samhandlerType.name,
                 )
             }
             is FinnSamhandlerRequestDto.Personnavn -> {
