@@ -55,6 +55,7 @@ function Kvittering() {
         </Button>
       </VStack>
       <div
+        // This is a vertical line
         css={css`
           background: var(--a-gray-200);
           width: 1px;

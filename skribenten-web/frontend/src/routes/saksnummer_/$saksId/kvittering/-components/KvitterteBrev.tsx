@@ -3,7 +3,7 @@ import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import { Accordion, BodyShort, Button, Label, Tag, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 
-import { hentPdfForBrevFunction, sendBrev } from "~/api/sak-api-endpoints";
+import { sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { type BestillBrevResponse, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
@@ -140,12 +140,14 @@ const KvittertBrevContent = (properties: {
   isPending: boolean;
   error: Nullable<Error>;
 }) => {
+  /*
   const hentBrevMutation = useMutation({
     mutationFn: () => hentPdfForBrevFunction(properties.sakId, properties.resultat.brevInfo.id),
     onSuccess: (pdf) => {
       window.open(URL.createObjectURL(pdf), "_blank");
     },
-  });
+  }); 
+  */
 
   switch (properties.resultat.status) {
     case "fulfilledWithError": {
@@ -207,6 +209,9 @@ const KvittertBrevContent = (properties: {
               verdi={distribusjonstypeTilText(properties.resultat.brevInfo.distribusjonstype)}
             />
             <Oppsummeringspar tittel={"Journalpost ID"} verdi={properties.resultat.response.journalpostId} />
+            <BodyShort>PDF'en kan hentes fra Pesys</BodyShort>
+            {/*
+TODO - link til pdf - kan muligens hentes fra SAF
             {properties.resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT && (
               <Button
                 loading={hentBrevMutation.isPending}
@@ -217,6 +222,8 @@ const KvittertBrevContent = (properties: {
                 Åpne utskrivbar fil i ny fane
               </Button>
             )}
+
+*/}
           </VStack>
         );
       }
