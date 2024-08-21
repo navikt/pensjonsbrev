@@ -332,10 +332,9 @@ class OmstillingsstoenadRevurderingFraser {
                     Language.Bokmal to "Fordi stønaden din er opphørt tilbake i tid, har du fått for mye " +
                             "utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår av " +
                             "folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt.",
-                    Language.Nynorsk to "Dersom det er feilutbetaling som ikkje skal krevjast tilbake fordi " +
-                            "omstillingsstønaden din blei avvikla tilbake i tid, har du fått for mykje utbetalt. " +
-                            "Beløpet er under den nedre grensa for tilbakekrevjing som går fram av folketrygdlova " +
-                            "§ 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
+                    Language.Nynorsk to "Fordi omstillingsstønaden din blei avvikla tilbake i tid, har du fått " +
+                            "for mykje utbetalt. Beløpet er under den nedre grensa for tilbakekrevjing som går fram " +
+                            "av folketrygdlova § 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt. ",
                     Language.English to "You have been overpaid because your Adjustmenst Allowance has been " +
                             "terminated retroactively. The amount is below the lower limit for demanding repayment, " +
                             "as stated in the National Insurance Act - Section 22-15(6). So no repayment will be " +
@@ -364,8 +363,8 @@ class OmstillingsstoenadRevurderingFraser {
                             "mykje utbetalt. Dette får du meir informasjon om i eit eige brev frå oss.",
                     Language.English to "You have been overpaid because your Adjustment Allowance has been " +
                             "terminated retroactively. We will start a case to assess whether you must repay " +
-                            "adjustment allowance. You will receive more information about this in a separate " +
-                            "letter from us.",
+                            "adjustment allowance. You will receive more information about this in a separate letter " +
+                            "from us. ",
                 )
             }
             paragraph {
