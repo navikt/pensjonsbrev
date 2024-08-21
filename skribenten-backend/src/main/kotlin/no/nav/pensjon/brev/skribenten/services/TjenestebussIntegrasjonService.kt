@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -39,7 +39,9 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
                 url(samhandlerProxyUrl)
             }
             install(ContentNegotiation) {
-                jackson()
+                jackson {
+                    disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                }
             }
         }
 
@@ -52,7 +54,12 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
             accept(Json)
             setBody(lagRequest(requestDto))
         }.toServiceResult<List<Samhandler>>()
-            .map { it.toFinnSamhandlerResponseDto() }
+            .map {
+                when (requestDto) {
+                    is FinnSamhandlerRequestDto.Organisasjonsnavn -> it.filtrerPaaInnlandUtland(call, requestDto.innlandUtland)
+                    else -> it
+                }.toFinnSamhandlerResponseDto()
+            }
             .catch { message, status ->
                 logger.error("Feil ved samhandler søk. Status: $status Melding: $message")
                 FinnSamhandlerResponseDto("Feil ved henting av samhandler")
@@ -68,7 +75,7 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
             }
             contentType(Json)
             accept(Json)
-        }.toServiceResult<Samhandler>()
+        }.toServiceResult<SamhandlerEnkel>()
             .map { it.toHentSamhandlerResponseDto() }
             .catch { message, status ->
                 logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
@@ -143,15 +150,34 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
             }
         )
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    data class Samhandler(
+    data class SamhandlerEnkel(
         val navn: String,
         val samhandlerType: String,
         val offentligId: String,
         val idType: String,
     )
 
-    private fun Samhandler.toHentSamhandlerResponseDto() =
+    data class Samhandler(
+        val navn: String,
+        val samhandlerType: String,
+        val offentligId: String,
+        val idType: String,
+        val avdelinger: List<Avdeling>,
+    )
+
+    data class Avdeling(
+        val idTSSEkstern: String,
+        val aadresse: Adresse? = null,
+        val padresse: Adresse? = null,
+        val tadresse: Adresse? = null,
+        val uadresse: Adresse? = null,
+    )
+
+    data class Adresse(
+        val land: String?,
+    )
+
+    private fun SamhandlerEnkel.toHentSamhandlerResponseDto() =
         HentSamhandlerResponseDto(
             success = HentSamhandlerResponseDto.Success(
                 navn = navn,
@@ -161,4 +187,30 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
             ),
             failure = null
         )
+
+    private suspend fun Iterable<Samhandler>.filtrerPaaInnlandUtland(call: ApplicationCall, landFilter: InnlandUtland): List<Samhandler> =
+        this.filter { samhandler ->
+            landFilter == InnlandUtland.ALLE || samhandler.avdelinger.any { avdeling2 ->
+                samhandlerProxyClient.get(call, "/api/samhandler/hentSamhandler/") {
+                    url {
+                        appendPathSegments(avdeling2.idTSSEkstern)
+                    }
+                    contentType(Json)
+                    accept(Json)
+                }.toServiceResult<Samhandler>()
+                    .catch { message, status ->
+                        throw RuntimeException("whatever")
+                    }.avdelinger.any { avdeling ->
+                        //logikken skal gjenspeile det som er i pesys
+                        //https://github.com/navikt/pesys/blob/main/pen-app/src/main/java/no/nav/pensjon/pen_app/psak2/samhandler/sokesamhandler/SokeSamhandlerController.kt#L42
+                        @Suppress("KotlinConstantConditions")
+                        when (landFilter) {
+                            InnlandUtland.INNLAND -> avdeling.uadresse?.land == "NOR" || avdeling.aadresse?.land == "NOR" || (avdeling.uadresse?.land == null && avdeling.aadresse?.land == null)
+                            InnlandUtland.UTLAND -> avdeling.uadresse?.land != "NOR" || avdeling.aadresse?.land != "NOR"
+                            InnlandUtland.ALLE -> true
+                        }
+                    }
+            }
+        }
+
 }

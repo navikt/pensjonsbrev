@@ -32,7 +32,7 @@ sealed class FinnSamhandlerRequestDto {
     ) : FinnSamhandlerRequestDto()
 
     data class Organisasjonsnavn(
-        val innlandUtland: String,
+        val innlandUtland: InnlandUtland,
         val navn: String,
         override val samhandlerType: SamhandlerTypeCode
     ) : FinnSamhandlerRequestDto()
@@ -42,6 +42,12 @@ sealed class FinnSamhandlerRequestDto {
         val etternavn: String,
         override val samhandlerType: SamhandlerTypeCode
     ) : FinnSamhandlerRequestDto()
+}
+
+enum class InnlandUtland {
+    INNLAND,
+    UTLAND,
+    ALLE;
 }
 
 enum class SamhandlerTypeCode {
