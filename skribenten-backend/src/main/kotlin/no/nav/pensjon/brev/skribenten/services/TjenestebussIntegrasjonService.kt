@@ -47,11 +47,12 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
         call: ApplicationCall,
         requestDto: FinnSamhandlerRequestDto,
     ): FinnSamhandlerResponseDto =
-        tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
+        tjenestebussIntegrasjonClient.post(call, "/api/samhandler/finnSamhandler") {
             contentType(Json)
             accept(Json)
-            setBody(jacksonObjectMapper().writeValueAsString(requestDto))
-        }.toServiceResult<FinnSamhandlerResponseDto>()
+            setBody(jacksonObjectMapper().writeValueAsString(lagRequest(requestDto)))
+        }.toServiceResult<List<Samhandler>>()
+            .map { it.toFinnSamhandlerResponseDto() }
             .catch { message, status ->
                 logger.error("Feil ved samhandler søk. Status: $status Melding: $message")
                 FinnSamhandlerResponseDto("Feil ved henting av samhandler")
@@ -94,6 +95,53 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
 
     suspend fun status(call: ApplicationCall): ServiceResult<TjenestebussStatus> =
         tjenestebussIntegrasjonClient.get(call, "/status").toServiceResult()
+
+    private fun lagRequest(requestDto: FinnSamhandlerRequestDto) =
+        when (requestDto) {
+            is FinnSamhandlerRequestDto.DirekteOppslag -> {
+                Soek(
+                    navn = null,
+                    idType = requestDto.identtype,
+                    offentligId = requestDto.id,
+                    samhandlerType = requestDto.samhandlerType.name,
+                )
+            }
+            is FinnSamhandlerRequestDto.Organisasjonsnavn -> {
+                Soek(
+                    navn = requestDto.navn,
+                    idType = null,
+                    offentligId = null,
+                    samhandlerType = null,
+                )
+            }
+            is FinnSamhandlerRequestDto.Personnavn -> {
+                Soek(
+                    "${requestDto.etternavn} ${requestDto.fornavn}",
+                    null,
+                    null,
+                    requestDto.samhandlerType.name,
+                )
+            }
+        }
+
+    data class Soek(
+        val navn: String?,
+        val idType: String?,
+        val offentligId: String?,
+        val samhandlerType: String?,
+    )
+
+    private fun List<Samhandler>.toFinnSamhandlerResponseDto() =
+        FinnSamhandlerResponseDto(
+            samhandlere = map {
+                FinnSamhandlerResponseDto.Samhandler(
+                    navn = it.navn,
+                    samhandlerType = it.samhandlerType,
+                    offentligId = it.offentligId,
+                    idType = it.idType,
+                )
+            }
+        )
 
     data class Samhandler(
         val navn: String,
