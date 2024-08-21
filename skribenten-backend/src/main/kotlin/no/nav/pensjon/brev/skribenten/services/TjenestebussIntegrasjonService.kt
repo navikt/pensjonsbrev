@@ -47,7 +47,7 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
         call: ApplicationCall,
         requestDto: FinnSamhandlerRequestDto,
     ): FinnSamhandlerResponseDto =
-        tjenestebussIntegrasjonClient.post(call, "/api/samhandler/finnSamhandler") {
+        samhandlerProxyClient.post(call, "/api/samhandler/finnSamhandler") {
             contentType(Json)
             accept(Json)
             setBody(jacksonObjectMapper().writeValueAsString(lagRequest(requestDto)))
