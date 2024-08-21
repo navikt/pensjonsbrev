@@ -27,7 +27,11 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
+            url = uri("https://maven.pkg.github.com/navikt/pensjonsbrev")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
+            }
         }
     }
     publications {
