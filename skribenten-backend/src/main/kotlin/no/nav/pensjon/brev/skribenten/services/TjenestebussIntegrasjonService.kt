@@ -51,7 +51,7 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
             contentType(Json)
             accept(Json)
             setBody(lagRequest(requestDto))
-        }.toServiceResult<List<Samhandler>>()
+        }.toServiceResult<FinnSamhandlerResponse>()
             .map { it.toFinnSamhandlerResponseDto() }
             .catch { message, status ->
                 logger.error("Feil ved samhandler søk. Status: $status Melding: $message")
@@ -131,9 +131,13 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
         val samhandlerType: String?,
     )
 
-    private fun List<Samhandler>.toFinnSamhandlerResponseDto() =
+    data class FinnSamhandlerResponse(
+        val samhandlerList: List<Samhandler>,
+    )
+
+    private fun FinnSamhandlerResponse.toFinnSamhandlerResponseDto() =
         FinnSamhandlerResponseDto(
-            samhandlere = map {
+            samhandlere = samhandlerList.map {
                 FinnSamhandlerResponseDto.Samhandler(
                     navn = it.navn,
                     samhandlerType = it.samhandlerType,
