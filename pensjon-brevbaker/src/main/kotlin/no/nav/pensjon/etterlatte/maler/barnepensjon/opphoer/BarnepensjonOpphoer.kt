@@ -16,9 +16,9 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.brukerUnder18Aar
@@ -39,7 +39,7 @@ data class BarnepensjonOpphoerDTO(
     val bosattUtland: Boolean,
     val virkningsdato: LocalDate,
     val feilutbetaling: FeilutbetalingType
-) : BrevDTO
+) : FerdigstillingBrevDTO
 @TemplateModelHelpers
 object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_OPPHOER
@@ -73,6 +73,9 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
             konverterElementerTilBrevbakerformat(innhold)
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselOpphoer)
+            }
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
             }
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)

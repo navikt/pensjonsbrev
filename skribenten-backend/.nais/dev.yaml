@@ -24,6 +24,9 @@ inboundRules:
   - application: skribenten-web
     namespace: pensjonsbrev
     cluster: dev-gcp
+  - application: azure-token-generator
+    namespace: aura
+    cluster: dev-gcp
 
 outboundRules:
   - application: pensjon-brevbaker

@@ -10,13 +10,10 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
-import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 
-data class TilbakekrevingRedigerbartBrevDTO(
-	override val innhold: List<Element> = emptyList(),
-) : BrevDTO
+data class TilbakekrevingRedigerbartBrevDTO(val utenVariabler: Boolean = true) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object TilbakekrevingInnhold: EtterlatteTemplate<TilbakekrevingRedigerbartBrevDTO>, Delmal {

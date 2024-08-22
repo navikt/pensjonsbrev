@@ -143,10 +143,12 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun sendbrev(
         call: ApplicationCall,
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
+        distribuer: Boolean,
     ): ServiceResult<Pen.BestillBrevResponse> =
         client.post(call, "brev/skribenten/sendbrev") {
             setBody(sendRedigerbartBrevRequest)
             contentType(ContentType.Application.Json)
+            url { parameters.append("distribuer", distribuer.toString()) }
         }.toServiceResult<Pen.BestillBrevResponse>(::handlePenErrorResponse)
 
 

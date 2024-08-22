@@ -12,8 +12,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Avdoed
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
@@ -29,7 +29,6 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etterbetalingOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 
 data class OmstillingsstoenadInnvilgelseDTO(
@@ -41,7 +40,7 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
     val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
-): BrevDTO
+): FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInnvilgelseDTO>, Hovedmal {
@@ -87,7 +86,6 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
         }
 
         includeAttachment(beregningAvOmstillingsstoenad, beregning)
-        includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetaling)
         includeAttachment(informasjonOmOmstillingsstoenad, beregning)
         includeAttachment(dineRettigheterOgPlikter, beregning)
     }

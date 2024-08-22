@@ -15,7 +15,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.Omstillingsstoe
 
 data class OmstillingsstoenadVarselAktivitetspliktDTO(
     override val innhold: List<Element>,
-) : BrevDTO
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<OmstillingsstoenadVarselAktivitetspliktDTO>, Hovedmal {
