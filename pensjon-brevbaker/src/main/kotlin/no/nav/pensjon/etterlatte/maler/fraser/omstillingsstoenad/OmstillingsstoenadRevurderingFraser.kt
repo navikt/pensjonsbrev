@@ -367,19 +367,6 @@ class OmstillingsstoenadRevurderingFraser {
                             "from us. ",
                 )
             }
-            paragraph {
-                text(
-                    Language.Bokmal to "Fordi stønaden din er opphørt tilbake i tid, har du fått for mye " +
-                            "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale " +
-                            "tilbake omstillingsstønad».",
-                    Language.Nynorsk to "Ettersom omstillingsstønaden din blei avvikla tilbake i tid, har du " +
-                            "fått for mykje utbetalt. Sjå vedlegget «Førehandsvarsel om eventuell tilbakekrevjing " +
-                            "av feilutbetalt omstillingsstønad».",
-                    Language.English to "You have been overpaid because your Adjustment Allowance has been " +
-                            "terminated retroactively. See the Attachment Advance notice – we are assessing whether " +
-                            "you must repay adjustment allowance.",
-                )
-            }
         }
     }
 
@@ -398,8 +385,8 @@ class OmstillingsstoenadRevurderingFraser {
                             "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale " +
                             "tilbake omstillingsstønad».",
                     Language.Nynorsk to "Ettersom omstillingsstønaden din blei avvikla tilbake i tid, har du " +
-                            "fått for mykje utbetalt. Sjå vedlegget «Førehandsvarsel om eventuell tilbakekrevjing " +
-                            "av feilutbetalt omstillingsstønad».",
+                            "fått for mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
+                            "tilbake omstillingsstønad».",
                     Language.English to "You have been overpaid because your Adjustment Allowance has been " +
                             "terminated retroactively. See the Attachment Advance notice – we are assessing whether " +
                             "you must repay adjustment allowance.",
