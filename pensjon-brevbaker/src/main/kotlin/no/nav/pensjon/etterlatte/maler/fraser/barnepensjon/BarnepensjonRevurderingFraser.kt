@@ -69,7 +69,7 @@ object BarnepensjonRevurderingFraser {
                                         "skatt.",
                                 Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før " +
                                         "skatt.",
-                                Language.English to "ou will receive NOK ".expr() + formatertBeloep + " each " +
+                                Language.English to "You will receive NOK ".expr() + formatertBeloep + " each " +
                                         "month before tax. "
                             )
                         }
