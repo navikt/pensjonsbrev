@@ -26,7 +26,7 @@ class AdhocTest {
     fun `testAdhocUfoeretrygdVarselOpphoerEktefelletillegg pdf`() {
         testAdhocPdf(
             AdhocUfoeretrygdVarselOpphoerEktefelletillegg.template,
-            pdfName = "UT_UFOERETRYGD_VARSEL_OPPHOER_EKTEFELLETILLEGG",
+            pdfName = "UT_VARSEL_OPPHOER_EKTEFELLETILLEGG",
             Bokmal
         )
     }
