@@ -211,7 +211,7 @@ object OmstillingsstoenadFellesFraser {
                             Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
                                     "fram til det har gått tre år sidan datoen for dødsfallet. Rett til omstillingsstønad fell uansett bort når du fyller 67 år.",
                             English to "You are eligible for adjustment allowance for three years from the " +
-                                    "date of the death, as long as you meet the conditions for receiving the allowance. The right to adjustment allowance ceases when you reach the age of 67. ",
+                                    "date of the death, as long as you meet the conditions for receiving the allowance. The right to adjustment allowance ceases when you reach the age of 67.",
                         )
                     }
                     paragraph {
