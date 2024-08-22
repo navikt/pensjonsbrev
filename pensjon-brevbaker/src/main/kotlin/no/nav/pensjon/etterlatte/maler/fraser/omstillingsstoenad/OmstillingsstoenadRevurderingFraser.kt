@@ -350,7 +350,7 @@ class OmstillingsstoenadRevurderingFraser {
                 text(
                     Language.Bokmal to "Feilutbetaling",
                     Language.Nynorsk to "Feilutbetaling",
-                    Language.English to "Incorrectly payment",
+                    Language.English to "Incorrectly paid adjustment allowance",
                 )
             }
             paragraph {
@@ -389,7 +389,7 @@ class OmstillingsstoenadRevurderingFraser {
                 text(
                     Language.Bokmal to "Feilutbetaling",
                     Language.Nynorsk to "Feilutbetaling",
-                    Language.English to "Incorrectly payment",
+                    Language.English to "Incorrectly paid adjustment allowance",
                 )
             }
             paragraph {
