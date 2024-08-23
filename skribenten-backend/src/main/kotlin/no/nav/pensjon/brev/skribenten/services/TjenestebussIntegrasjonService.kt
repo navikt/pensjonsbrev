@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -39,7 +39,9 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
                 url(samhandlerProxyUrl)
             }
             install(ContentNegotiation) {
-                jackson()
+                jackson {
+                    disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                }
             }
         }
 
@@ -68,7 +70,7 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
             }
             contentType(Json)
             accept(Json)
-        }.toServiceResult<Samhandler>()
+        }.toServiceResult<SamhandlerEnkel>()
             .map { it.toHentSamhandlerResponseDto() }
             .catch { message, status ->
                 logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
@@ -137,25 +139,42 @@ class TjenestebussIntegrasjonService(config: Config, configSamhandlerProxy: Conf
 
     private fun FinnSamhandlerResponse.toFinnSamhandlerResponseDto() =
         FinnSamhandlerResponseDto(
-            samhandlere = samhandlerList.map {
-                FinnSamhandlerResponseDto.Samhandler(
-                    navn = it.navn,
-                    samhandlerType = it.samhandlerType,
-                    offentligId = it.offentligId,
-                    idType = it.idType,
-                )
+            samhandlere = samhandlerList.flatMap { samhandler ->
+                samhandler.avdelinger.map { avdeling ->
+                    FinnSamhandlerResponseDto.Samhandler(
+                        navn = avdeling.avdelingNavn.takeIf { !it.isNullOrBlank() } ?: samhandler.navn,
+                        samhandlerType = samhandler.samhandlerType,
+                        offentligId = samhandler.offentligId,
+                        idType = samhandler.idType,
+                        idTSSEkstern = avdeling.idTSSEkstern
+                    )
+                }
             }
         )
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    data class Samhandler(
+    data class SamhandlerEnkel(
         val navn: String,
         val samhandlerType: String,
         val offentligId: String,
         val idType: String,
     )
 
-    private fun Samhandler.toHentSamhandlerResponseDto() =
+    data class Samhandler(
+        val navn: String,
+        val samhandlerType: String,
+        val offentligId: String,
+        val idType: String,
+        val avdelinger: List<Avdeling>,
+    )
+
+    data class Avdeling(
+        val idTSSEkstern: String,
+        val avdelingNavn: String?,
+        val avdelingType: String?,
+        val avdelingsnr: String?
+    )
+
+    private fun SamhandlerEnkel.toHentSamhandlerResponseDto() =
         HentSamhandlerResponseDto(
             success = HentSamhandlerResponseDto.Success(
                 navn = navn,
