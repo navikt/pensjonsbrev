@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { BrevResponse } from "~/types/brev";
+import { type BrevResponse, Distribusjonstype } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
 
 import exampleLetter1Json from "./example-letter-1.json";
@@ -23,6 +23,7 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
       sistredigertAv: "Z123",
       opprettetAv: "Z123",
       status: { type: "UnderRedigering", redigeresAv: "Z123" },
+      distribusjonstype: Distribusjonstype.SENTRALPRINT,
     },
     redigertBrev: initial,
     redigertBrevHash: "hash1",

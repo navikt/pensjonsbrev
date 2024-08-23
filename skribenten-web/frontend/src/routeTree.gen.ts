@@ -14,7 +14,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as SaksnummerIndexImport } from './routes/saksnummer.index'
 import { Route as SaksnummerSaksIdRouteImport } from './routes/saksnummer_/$saksId/route'
+import { Route as SaksnummerSaksIdKvitteringRouteImport } from './routes/saksnummer_/$saksId/kvittering/route'
 import { Route as SaksnummerSaksIdBrevvelgerRouteImport } from './routes/saksnummer_/$saksId/brevvelger/route'
+import { Route as SaksnummerSaksIdBrevbehandlerRouteImport } from './routes/saksnummer_/$saksId/brevbehandler/route'
 import { Route as SaksnummerSaksIdBrevIndexImport } from './routes/saksnummer_/$saksId/brev.index'
 import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_/$saksId/brev.$brevId'
 import { Route as SaksnummerSaksIdBrevvelgerTemplateIdRouteImport } from './routes/saksnummer_/$saksId/brevvelger/$templateId/route'
@@ -36,9 +38,21 @@ const SaksnummerSaksIdRouteRoute = SaksnummerSaksIdRouteImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const SaksnummerSaksIdKvitteringRouteRoute =
+  SaksnummerSaksIdKvitteringRouteImport.update({
+    path: '/kvittering',
+    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+  } as any)
+
 const SaksnummerSaksIdBrevvelgerRouteRoute =
   SaksnummerSaksIdBrevvelgerRouteImport.update({
     path: '/brevvelger',
+    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+  } as any)
+
+const SaksnummerSaksIdBrevbehandlerRouteRoute =
+  SaksnummerSaksIdBrevbehandlerRouteImport.update({
+    path: '/brevbehandler',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
 
@@ -76,8 +90,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerIndexImport
       parentRoute: typeof rootRoute
     }
+    '/saksnummer/$saksId/brevbehandler': {
+      preLoaderRoute: typeof SaksnummerSaksIdBrevbehandlerRouteImport
+      parentRoute: typeof SaksnummerSaksIdRouteImport
+    }
     '/saksnummer/$saksId/brevvelger': {
       preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerRouteImport
+      parentRoute: typeof SaksnummerSaksIdRouteImport
+    }
+    '/saksnummer/$saksId/kvittering': {
+      preLoaderRoute: typeof SaksnummerSaksIdKvitteringRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteImport
     }
     '/saksnummer/$saksId/brevvelger/$templateId': {
@@ -100,9 +122,11 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   SaksnummerSaksIdRouteRoute.addChildren([
+    SaksnummerSaksIdBrevbehandlerRouteRoute,
     SaksnummerSaksIdBrevvelgerRouteRoute.addChildren([
       SaksnummerSaksIdBrevvelgerTemplateIdRouteRoute,
     ]),
+    SaksnummerSaksIdKvitteringRouteRoute,
     SaksnummerSaksIdBrevBrevIdRoute,
     SaksnummerSaksIdBrevIndexRoute,
   ]),

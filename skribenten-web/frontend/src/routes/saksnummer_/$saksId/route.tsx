@@ -3,13 +3,14 @@ import { Bleed, CopyButton } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet } from "@tanstack/react-router";
-import React from "react";
 
 import { getFavoritter, getKontaktAdresse, getNavn, getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
+
+import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId")({
   beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
@@ -54,10 +55,10 @@ function SakBreadcrumbsPage() {
   const sakContext = Route.useLoaderData();
 
   return (
-    <>
+    <FerdigstillResultatContextProvider>
       <SakInfoBreadcrumbs sak={sakContext?.sak} />
       <Outlet />
-    </>
+    </FerdigstillResultatContextProvider>
   );
 }
 

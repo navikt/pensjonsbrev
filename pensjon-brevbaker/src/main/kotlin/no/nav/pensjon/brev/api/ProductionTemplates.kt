@@ -16,6 +16,7 @@ object ProductionTemplates {
         AdhocUfoeretrygdEtterbetalingDagpenger,
         AdhocUfoeretrygdKombiDagpenger,
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
+        AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
         OmsorgEgenAuto,
