@@ -72,14 +72,10 @@ while true; do
   fi
 done
 
-mkdir -p secrets/sts
 mkdir -p secrets/pensjonsbrev
 
-STS_USERNAME=$(vault kv get -field username serviceuser/dev/srvpensjonsbrev-esb)
-STS_PASSWORD=$(vault kv get -field password serviceuser/dev/srvpensjonsbrev-esb)
 SAMHANDLERV2_USERNAME=$(vault kv get -field SAMHANDLERV2_USERNAME kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev)
 SAMHANDLERV2_PASSWORD=$(vault kv get -field SAMHANDLERV2_PASSWORD kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev)
-jq --null-input --arg username "$STS_USERNAME" --arg password "$STS_PASSWORD" '{"STS_USERNAME": $username, "STS_PASSWORD": $password}' > secrets/sts/auth.json
 jq --null-input \
  --arg samhandlerv2_username "$SAMHANDLERV2_USERNAME" \
  --arg samhandlerv2_password "$SAMHANDLERV2_PASSWORD" \
@@ -88,7 +84,6 @@ jq --null-input \
 kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret azure-pensjonsbrev-tjenestebuss-lokal -o json | jq '.data | map_values(@base64d)' > secrets/azuread.json
 echo "Creating docker env file from secrets..."
 jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/azuread.json > secrets/docker.env
-jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/sts/auth.json >> secrets/docker.env
 jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/pensjonsbrev/auth.json >> secrets/docker.env
 echo "docker.env file created in the \"secrets\" folder."
 echo "All secrets are fetched and stored in the \"secrets\" folder."
