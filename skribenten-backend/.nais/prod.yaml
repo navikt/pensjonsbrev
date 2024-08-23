@@ -43,6 +43,7 @@ externalHosts:
   - pensjon-persondata.prod-fss-pub.nais.io
   - pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io
   - navansatt.prod-fss-pub.nais.io
+  - pensjon-samhandler-proxy.prod-fss-pub.nais.io
 
 env:
   - name: CORS_ALLOW_HOST
