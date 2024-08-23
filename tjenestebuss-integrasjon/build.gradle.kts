@@ -39,7 +39,6 @@ ktor {
 }
 
 val cxfVersion = "3.6.3"
-val esbVersion = "2023.11.01-10.31-1bc8315f412e"
 val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
 	implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
@@ -56,8 +55,6 @@ dependencies {
 	implementation("ch.qos.logback:logback-classic:$logbackVersion")
 	implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
-	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:$esbVersion")
-	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:$esbVersion")
 	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
 
 	implementation("javax.xml.ws:jaxws-api:2.3.1")
