@@ -9,19 +9,19 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 
-data class OmstillingsstoenadInntektsjusteringVarselbrevDTO (
+data class OmstillingsstoenadInntektsjusteringInfobrevDTO (
     val wip : Boolean
 )
 
 @TemplateModelHelpers
-object OmstillingsstoenadInntektsjusteringVarselbrev :
-    EtterlatteTemplate<OmstillingsstoenadInntektsjusteringVarselbrevDTO> {
+object OmstillingsstoenadInntektsjusteringInfobrev :
+    EtterlatteTemplate<OmstillingsstoenadInntektsjusteringInfobrevDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING
 
     override val template =
         createTemplate(
             name = kode.name,
-            letterDataType = OmstillingsstoenadInntektsjusteringVarselbrevDTO::class,
+            letterDataType = OmstillingsstoenadInntektsjusteringInfobrevDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(
