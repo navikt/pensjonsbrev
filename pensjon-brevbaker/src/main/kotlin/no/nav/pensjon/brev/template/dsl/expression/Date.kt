@@ -27,6 +27,20 @@ private object LocalDateSelectors {
         override val selector = LocalDate::getDayOfMonth
     }
 
+    val firstDayOfYear = object : TemplateModelSelector<LocalDate, LocalDate> {
+        override val className = "java.time.LocalDate"
+        override val propertyName = "firstDayOfYear"
+        override val propertyType = "LocalDate"
+        override val selector = {localDate: LocalDate -> localDate.withDayOfYear(1)}
+    }
+
+    val lastDayOfYear = object : TemplateModelSelector<LocalDate, LocalDate> {
+        override val className = "java.time.LocalDate"
+        override val propertyName = "lastDayOfYear"
+        override val propertyType = "LocalDate"
+        override val selector = {localDate: LocalDate -> localDate.withDayOfYear(localDate.lengthOfYear())}
+    }
+
 }
 
 val Expression<LocalDate>.year: Expression<Int>
@@ -37,3 +51,9 @@ val Expression<LocalDate>.month: Expression<Int>
 
 val Expression<LocalDate>.day: Expression<Int>
     get() = select(LocalDateSelectors.daySelector)
+
+val Expression<LocalDate>.firstDayOfYear: Expression<LocalDate>
+    get() = select(LocalDateSelectors.firstDayOfYear)
+
+val Expression<LocalDate>.lastDayOfYear: Expression<LocalDate>
+    get() = select(LocalDateSelectors.firstDayOfYear)

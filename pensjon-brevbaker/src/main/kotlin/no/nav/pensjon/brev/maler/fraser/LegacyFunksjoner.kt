@@ -92,10 +92,11 @@ fun Expression<PE>.pe_ut_tbu601v_tbu604v(): Expression.BinaryInvoke<Boolean, Boo
                     belopsendring.barnetilleggserkullyk_safe.belopgammelbtsb_safe.notEqualTo(belopsendring.barnetilleggserkullyk_safe.belopnybtsb_safe))
 }
 
-fun FUNKSJON_isEmpty(string: Expression<String>) = string.equalTo("")
 fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Expression<Boolean> =
     date.ifNull(LocalDate.of(2020, 2, 2)).month.equalTo(1) and
             date.ifNull(LocalDate.of(2020, 2, 2)).day.equalTo(1)
+
+
 
 fun Expression<PE>.ut_barnet_barna_felles(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(Language.English.expr())
@@ -164,6 +165,9 @@ fun Expression<PE>.ut_inntektsgrense_faktisk() =
 fun Expression<PE>.ut_virkningstidpunktstorreenn01012016() = vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.virkningstidpunkt_safe.ifNull(LocalDate.of(1900,1,1))
     .greaterThan(LocalDate.of(2016,1,1))
 
+fun Expression<PE>.ut_firstday(): Expression<LocalDate> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().firstDayOfYear
+fun Expression<PE>.ut_lastday(): Expression<LocalDate> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().lastDayOfYear
+
 // GENERATED
 fun Expression<PE>.inkluderopplysningerbruktiberegningen() = ((not(vedtaksdata_faktoromregnet()) and pebrevkode().notEqualTo("PE_UT_04_102")) or (pebrevkode().equalTo("PE_UT_04_102") and (vedtaksdata_beregningsdata_beregningufore_belopokt() or (vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse() and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(0)) or vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo("stdbegr_12_8_2_5")) or vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
 fun Expression<PE>.ut_etteroppgjor_bt_utbetalt(): Expression<Boolean> = not((vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) and vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))
@@ -178,3 +182,14 @@ fun Expression<PE>.ut_tbu613v(): Expression<Boolean> = (vedtaksdata_beregningsda
 fun Expression<PE>.ut_tbu613v_1_3(): Expression<Boolean> = (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().greaterThan(0) or (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0) and vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)))
 fun Expression<PE>.ut_tbu613v_4_5(): Expression<Boolean> = (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().greaterThan(0) or (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0) and vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)))
 fun Expression<PE>.ut_tbu069v(): Expression<Boolean> = ((vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and (pebrevkode().equalTo("PE_UT_04_101") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")) or pebrevkode().equalTo("PE_UT_04_114") or pebrevkode().equalTo("PE_UT_04_300") or pebrevkode().equalTo("PE_UT_14_300") or pebrevkode().equalTo("PE_UT_06_100") or pebrevkode().equalTo("PE_UT_04_103") or pebrevkode().equalTo("PE_UT_04_106") or pebrevkode().equalTo("PE_UT_04_108") or pebrevkode().equalTo("PE_UT_04_109") or pebrevkode().equalTo("PE_UT_07_200") or pebrevkode().equalTo("PE_UT_06_300")) and ut_etteroppgjor_bt_utbetalt())
+fun Expression<PE>.ut_periodetomstorrelik3112() = (vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().greaterThan(ut_firstday()) and vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodetom().equalTo(ut_lastday()))
+fun Expression<PE>.ut_periodefommindrelik0101() = (vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().lessThanOrEqual(ut_firstday()))
+fun Expression<PE>.ut_tbu4050() = (vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb() and vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggsb() and vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0) and vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().equalTo(0))
+fun Expression<PE>.ut_tbu4051() = (vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb() and vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggsb() and vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().equalTo(0) and vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
+fun Expression<PE>.ut_periodefomstorre0101periodetomlik3112() = (vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().greaterThan(ut_firstday()) and vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodetom().equalTo(ut_lastday()))
+fun Expression<PE>.ut_periodetommindre3112periodefomlik0101() = (vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodetom().lessThan(ut_lastday()) and vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().equalTo(ut_firstday()))
+fun Expression<PE>.ut_periodetommindre3112periodefomstorre0101() = (vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodetom().lessThan(ut_lastday()) and vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().greaterThan(ut_firstday()))
+fun Expression<PE>.ut_etteroppgjoravviksbeloptsbogtfbuliknull() = (vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0) or vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
+fun Expression<PE>.ut_avvikbtikkeut() = ((vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0) or vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0)) and vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().equalTo(0))
+
+
