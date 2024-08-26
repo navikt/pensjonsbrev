@@ -17,8 +17,8 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
@@ -40,7 +40,7 @@ data class KlageOversendelseBrukerDTO(
     val under18Aar: Boolean,
     val harVerge: Boolean,
     val bosattIUtlandet: Boolean
-): BrevDTO {
+): FerdigstillingBrevDTO {
     override val innhold: List<Element> = emptyList()
     val innstillingTekstLinjer = innstillingTekst.lines()
 }

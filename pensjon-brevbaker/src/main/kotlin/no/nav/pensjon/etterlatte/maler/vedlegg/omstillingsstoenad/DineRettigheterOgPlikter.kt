@@ -40,7 +40,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Du må melde fra om endringer som",
             Nynorsk to "Du må melde frå dersom",
-            English to "ou must notify NAV of any changes in your circumstances, for example if:",
+            English to "You must notify NAV of any changes in your circumstances, for example if:",
         )
         list {
             item {

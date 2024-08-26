@@ -11,9 +11,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingResultat
 import java.time.LocalDate
 import java.time.Month
 
-fun createTilbakekrevingRedigerbartBrevDTO() =  TilbakekrevingRedigerbartBrevDTO(
-	innhold = createPlaceholderForRedigerbartInnhold(),
-)
+fun createTilbakekrevingRedigerbartBrevDTO() =  TilbakekrevingRedigerbartBrevDTO()
 
 fun createTilbakekrevingFerdigDTO() =
 	TilbakekrevingBrevDTO(

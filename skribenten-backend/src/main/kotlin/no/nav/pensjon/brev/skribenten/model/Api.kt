@@ -29,7 +29,7 @@ object Api {
         val redigertBrev: Edit.Letter,
     )
 
-    data class DelvisOppdaterBrevRequest(val laastForRedigering: Boolean?)
+    data class DelvisOppdaterBrevRequest(val laastForRedigering: Boolean?, val distribusjonstype: Distribusjonstype?)
 
     data class BrevInfo(
         val id: Long,
@@ -39,6 +39,7 @@ object Api {
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbar,
         val status: BrevStatus,
+        val distribusjonstype: Distribusjonstype
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")

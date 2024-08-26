@@ -4,7 +4,6 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.*
 
 fun createOmstillingsstoenadInformasjonDoedsfallDto() =
     OmstillingstoenadInformasjonDoedsfallDTO(
-        innhold = emptyList(),
         avdoedNavn = "Ola Nordmann",
         borIutland = false
     )
