@@ -92,10 +92,11 @@ fun Expression<PE>.pe_ut_tbu601v_tbu604v(): Expression.BinaryInvoke<Boolean, Boo
                     belopsendring.barnetilleggserkullyk_safe.belopgammelbtsb_safe.notEqualTo(belopsendring.barnetilleggserkullyk_safe.belopnybtsb_safe))
 }
 
-fun FUNKSJON_isEmpty(string: Expression<String>) = string.equalTo("")
 fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Expression<Boolean> =
     date.ifNull(LocalDate.of(2020, 2, 2)).month.equalTo(1) and
             date.ifNull(LocalDate.of(2020, 2, 2)).day.equalTo(1)
+
+
 
 fun Expression<PE>.ut_barnet_barna_felles(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(Language.English.expr())

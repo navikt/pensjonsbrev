@@ -2,15 +2,21 @@
 
 package no.nav.pensjon.brev.maler.fraser.generated
 
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget
+import no.nav.pensjon.brev.maler.fraser.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.text
 
 
 data class TBU2280_Generated(
-	val barnetilleggFelles_innvilget: Expression<Boolean>,
-	val barnetilleggSerkull_innvilget: Expression<Boolean>,
+	val pe: Expression<PE>
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 		//[TBU2280NN, TBU2280, TBU2280EN]
@@ -22,7 +28,7 @@ data class TBU2280_Generated(
 			)
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-			showIf(barnetilleggSerkull_innvilget or barnetilleggFelles_innvilget){
+			showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
 				text (
 					Bokmal to "og barnetillegg ",
 					Nynorsk to "og barnetillegg ",
@@ -34,7 +40,7 @@ data class TBU2280_Generated(
 			)
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-			showIf(barnetilleggSerkull_innvilget or barnetilleggFelles_innvilget){
+			showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
 				text (
 					Bokmal to " og barnetillegg",
 					Nynorsk to " og barnetillegg",
@@ -46,7 +52,7 @@ data class TBU2280_Generated(
 			)
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-			showIf(barnetilleggSerkull_innvilget or barnetilleggFelles_innvilget){
+			showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
 				text (
 					Bokmal to " og barnetillegg",
 					Nynorsk to " og barnetillegg",
