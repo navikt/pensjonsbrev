@@ -426,7 +426,8 @@ data class OmBeregningAvBarnetillegg(
 
         val harFellesTillegg = barnetillegg.felles.notNull()
         paragraph {
-            val erflereTabellerPersonInntekt = (barnetillegg.personinntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg)
+            val erflereTabellerPersonInntekt =
+                (barnetillegg.personinntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg)
             textExpr(
                 Bokmal to ifElse(erflereTabellerPersonInntekt, "Tabellene", "Tabellen")
                         + " under viser inntektene du".expr()
@@ -617,6 +618,7 @@ data class OmBeregningAvBarnetillegg(
 }
 
 data class OmBeregningAvUfoeretrygd(
+    val barnetillegg: Expression<OpplysningerOmEtteroppgjoeretDto.Barnetillegg?>,
     val harGjenlevendeTillegg: Expression<Boolean>,
     val pensjonsgivendeInntekt: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk>,
     val periode: Expression<Year>,
@@ -626,11 +628,19 @@ data class OmBeregningAvUfoeretrygd(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             textExpr(
-                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg," og gjenlevendetillegg","")
+                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(
+                    harGjenlevendeTillegg,
+                    " og gjenlevendetillegg",
+                    ""
+                )
                         + " for ".expr() + periode.format(),
-                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg","")
+                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(
+                    harGjenlevendeTillegg,
+                    " og attlevandetillegg",
+                    ""
+                )
                         + " for ".expr() + periode.format(),
-                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg," and survivor's supplement","")
+                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "")
                         + " calculation for ".expr() + periode.format(),
             )
         }
@@ -730,9 +740,9 @@ data class OmBeregningAvUfoeretrygd(
                 }
                 item {
                     text(
-                        Bokmal to "erstatning for inntektstap (erstatningsoppgjør)",
-                        Nynorsk to "erstatning for inntektstap (erstatningsoppgjer)",
-                        English to "compensation for loss of income (compensation settlements)",
+                        Bokmal to "erstatningoppgjør for inntektstap",
+                        Nynorsk to "erstatningsoppgjer for inntektstap",
+                        English to "compensation settlement payments for loss of income",
                     )
                 }
                 item {
@@ -751,6 +761,26 @@ data class OmBeregningAvUfoeretrygd(
                 }
             }
         }
+
+        showIf(barnetillegg.felles_safe.notNull() and periode.greaterThanOrEqual(2023)) {
+            paragraph {
+                text(
+                    Bokmal to "Hva kan holdes utenfor personinntekten til den andre forelderen?",
+                    Nynorsk to "Kva kan haldast utanfor personinntekta til den andre forelderen?",
+                    English to "Income that can be excluded from the other parent's personal income?",
+                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra NAV",
+                            Nynorsk to "erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå NAV",
+                            English to "compensation settlement payments for loss of income if the other parent receives disability benefit or retirement pension from NAV",
+                        )
+                    }
+                }
+            }
+        }
+
         showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
             paragraph {
                 val erFlereTabellerPensjonsgivendeInntekt =
