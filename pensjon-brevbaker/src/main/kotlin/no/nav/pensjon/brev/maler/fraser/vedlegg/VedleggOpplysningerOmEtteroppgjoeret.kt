@@ -426,8 +426,7 @@ data class OmBeregningAvBarnetillegg(
 
         val harFellesTillegg = barnetillegg.felles.notNull()
         paragraph {
-            val erflereTabellerPersonInntekt =
-                (barnetillegg.personinntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg)
+            val erflereTabellerPersonInntekt = (barnetillegg.personinntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg)
             textExpr(
                 Bokmal to ifElse(erflereTabellerPersonInntekt, "Tabellene", "Tabellen")
                         + " under viser inntektene du".expr()
@@ -630,15 +629,11 @@ data class OmBeregningAvUfoeretrygd(
             textExpr(
                 Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(
                     harGjenlevendeTillegg,
-                    " og gjenlevendetillegg",
-                    ""
-                )
+                    " og gjenlevendetillegg", "")
                         + " for ".expr() + periode.format(),
                 Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(
                     harGjenlevendeTillegg,
-                    " og attlevandetillegg",
-                    ""
-                )
+                    " og attlevandetillegg", "")
                         + " for ".expr() + periode.format(),
                 English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "")
                         + " calculation for ".expr() + periode.format(),
