@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev
 
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.legacy.EndretUfoeretrygdPGAInntektDto
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
@@ -66,6 +68,8 @@ object Fixtures {
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             VarselSaksbehandlingstidAutoDto::class -> createVarselSaksbehandlingstidAutoDto() as T
+            EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T
+            PE::class -> createPE() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")

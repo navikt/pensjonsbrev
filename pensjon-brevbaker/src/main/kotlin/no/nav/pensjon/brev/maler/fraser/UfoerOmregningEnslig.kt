@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Institusjon
-import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDE_SKJEMA_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBarnetilleggTidligereIAar
 import no.nav.pensjon.brev.model.format
