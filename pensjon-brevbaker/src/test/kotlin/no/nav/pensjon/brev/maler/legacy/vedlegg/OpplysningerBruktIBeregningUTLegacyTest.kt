@@ -1,8 +1,7 @@
-package no.nav.pensjon.brev.maler.vedlegg
+package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
