@@ -27,7 +27,6 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
     BinaryOperation.EnumInList()
 )
 
-//Expression<kotlin.collections.List<no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Persongrunnlag>?>
 fun <T: Any> Expression<List<T>?>.getOrNull(index: Int = 0): Expression<T?> = Expression.BinaryInvoke(
     this,
     index.expr(),
