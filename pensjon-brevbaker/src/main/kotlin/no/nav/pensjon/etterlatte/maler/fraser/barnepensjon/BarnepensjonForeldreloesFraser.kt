@@ -6,14 +6,20 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
+import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
+import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriodeSelectors.foersteAvdoed
+import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriodeSelectors.senereAvdoed
+import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriodeSelectors.senereVirkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak.BegrunnelseForVedtaket
 import java.time.LocalDate
 
@@ -26,7 +32,8 @@ object BarnepensjonForeldreloesFraser {
         val flerePerioder: Expression<Boolean>,
         val harUtbetaling: Expression<Boolean>,
         val vedtattIPesys: Expression<Boolean>,
-        val erGjenoppretting: Expression<Boolean>
+        val erGjenoppretting: Expression<Boolean>,
+        val forskjelligAvdoedPeriode: Expression<ForskjelligAvdoedPeriode?>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val formatertVirkningsdato = virkningstidspunkt.format()
@@ -48,6 +55,16 @@ object BarnepensjonForeldreloesFraser {
                                 formatertVirkningsdato + " fordi begge foreldra dine er registrert død.",
                         Language.English to "We refer to the advance notice about a new children’s pension scheme. You have been granted a children's pension again from ".expr() +
                                 formatertVirkningsdato + " both your parents are registered as deceased."
+                    )
+                }.orIfNotNull(forskjelligAvdoedPeriode) { forskjelligAvdoed ->
+                    val avdoedNavn = forskjelligAvdoed.foersteAvdoed.navn
+                    val formatertDoedsdato = forskjelligAvdoed.foersteAvdoed.doedsdato.format()
+                    val senereDoedsdato = forskjelligAvdoed.senereAvdoed.doedsdato.format()
+                    val senereVirkningsdato = forskjelligAvdoed.senereVirkningsdato.format()
+                    textExpr(
+                        Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". Barnepensjon endres fra " + senereVirkningsdato + " fordi den andre forelderen din er registrert død " + senereDoedsdato + ". ",
+                        Language.Nynorsk to "Du er innvilga barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". Barnepensjonen din er endra frå " + senereVirkningsdato + " fordi begge foreldra dine er registrert som døde. ",
+                        Language.English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + ". Your children's pension will change on " + senereVirkningsdato + " because both your parents are registered as deceased. ",
                     )
                 }.orShow {
                     textExpr(

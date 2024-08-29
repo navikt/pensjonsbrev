@@ -17,7 +17,7 @@ enum class EtterbetalingPeriodeValg {
 data class OmstillingsstoenadEtterbetaling(
     val fraDato: LocalDate,
     val tilDato: LocalDate,
-    val etterbetalingsperioder: List<OmstillingsstoenadBeregningsperiode> = listOf()
+    val etterbetalingsperioder: List<OmstillingsstoenadBeregningsperiode> = listOf(),
 )
 
 data class BarnepensjonBeregning(
@@ -30,7 +30,10 @@ data class BarnepensjonBeregning(
     val bruktTrygdetid: Trygdetid, // Fra og med siste åpne periode
     val trygdetid: List<Trygdetid>,
     val erForeldreloes: Boolean = false,
-) : BrevDTO
+    val forskjelligTrygdetid: ForskjelligTrygdetid? = null,
+) : BrevDTO {
+    val harForskjelligMetode = forskjelligTrygdetid?.harForskjelligMetode == true
+}
 
 data class BarnepensjonBeregningsperiode(
     val datoFOM: LocalDate,
@@ -77,7 +80,7 @@ data class Trygdetid(
 enum class BeregningsMetode {
     NASJONAL,
     PRORATA,
-    BEST
+    BEST,
 }
 
 data class Trygdetidsperiode(
@@ -90,7 +93,7 @@ data class Trygdetidsperiode(
 
 enum class TrygdetidType {
     FREMTIDIG,
-    FAKTISK
+    FAKTISK,
 }
 
 data class Periode(
@@ -108,7 +111,26 @@ enum class FeilutbetalingType {
     FEILUTBETALING_UTEN_VARSEL,
     FEILUTBETALING_4RG_UTEN_VARSEL,
     FEILUTBETALING_MED_VARSEL,
-    INGEN_FEILUTBETALING
+    INGEN_FEILUTBETALING,
 }
 
-data class IntBroek(val teller: Int, val nevner: Int)
+data class IntBroek(
+    val teller: Int,
+    val nevner: Int,
+)
+
+data class ForskjelligTrygdetid(
+    val foersteTrygdetid: Trygdetid,
+    val foersteVirkningsdato: LocalDate,
+    val senereVirkningsdato: LocalDate,
+    val harForskjelligMetode: Boolean,
+    val erForskjellig: Boolean,
+) {
+    val tilOgIkkeMedSenereVirkningsdato: LocalDate = senereVirkningsdato.minusDays(1)
+}
+
+data class ForskjelligAvdoedPeriode(
+    val foersteAvdoed: Avdoed,
+    val senereAvdoed: Avdoed,
+    val senereVirkningsdato: LocalDate,
+)

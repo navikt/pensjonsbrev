@@ -10,9 +10,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erGjenoppretting
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.flerePerioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.forskjelligAvdoedPeriode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.sisteBeregningsperiodeBeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.sisteBeregningsperiodeDatoFom
@@ -30,6 +32,7 @@ data class BarnepensjonForeldreloesRedigerbarDTO(
     val harUtbetaling: Boolean,
     val erGjenoppretting: Boolean,
     val vedtattIPesys: Boolean,
+    val forskjelligAvdoedPeriode: ForskjelligAvdoedPeriode? = null,
 )
 
 @TemplateModelHelpers
@@ -59,7 +62,8 @@ object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
                     flerePerioder = flerePerioder,
                     harUtbetaling = harUtbetaling,
                     vedtattIPesys = vedtattIPesys,
-                    erGjenoppretting = erGjenoppretting
+                    erGjenoppretting = erGjenoppretting,
+                    forskjelligAvdoedPeriode = forskjelligAvdoedPeriode,
                 )
             )
             includePhrase(
