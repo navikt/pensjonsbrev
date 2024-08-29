@@ -124,6 +124,11 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
 
+    class GetElement<ListType> : BinaryOperation<List<ListType>?, Int, ListType?>(), StableHash by StableHash.of("BinaryOperation.GetElement") {
+        override fun apply(first: List<ListType>?, second: Int): ListType? = first?.getOrNull(second)
+    }
+
+
     class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>(), StableHash by StableHash.of("BinaryOperation.IfElse") {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
     }

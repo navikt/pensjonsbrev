@@ -20,6 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SchemaUtils.withDataBaseLock
@@ -54,7 +55,7 @@ object BrevredigeringTable : LongIdTable() {
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
-    val distribusjonstype: Column<Distribusjonstype?> = varchar("distribusjonstype", length = 50).nullable().transform(Distribusjonstype::valueOf, Distribusjonstype::name)
+    val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
     val sistRedigertAvNavIdent: Column<String> = varchar("sistRedigertAvNavIdent", length = 50)
     val opprettetAvNavIdent: Column<String> = varchar("opprettetAvNavIdent", length = 50).index()
@@ -80,6 +81,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var sistredigert by BrevredigeringTable.sistredigert
     var sistReservert by BrevredigeringTable.sistReservert
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+    val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
@@ -107,6 +109,92 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Document>(DocumentTable)
 }
 
+object MottakerTable : IdTable<Long>() {
+    override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+    val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
+    val tssId: Column<String?> = varchar("tssId", 50).nullable()
+    val navn: Column<String?> = varchar("navn", 50).nullable()
+    val postnummer: Column<String?> = varchar("postnummer", 4).nullable()
+    val poststed: Column<String?> = text("poststed").nullable()
+    val adresselinje1: Column<String?> = text("adresselinje1").nullable()
+    val adresselinje2: Column<String?> = text("adresselinje2").nullable()
+    val adresselinje3: Column<String?> = text("adresselinje3").nullable()
+    val landkode: Column<String?> = varchar("landkode", 2).nullable()
+
+    override val primaryKey: PrimaryKey = PrimaryKey(id)
+}
+
+enum class MottakerType { SAMHANDLER, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
+
+class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
+    var type by MottakerTable.type
+        private set
+    var tssId by MottakerTable.tssId
+        private set
+    var navn by MottakerTable.navn
+        private set
+    var postnummer by MottakerTable.postnummer
+        private set
+    var poststed by MottakerTable.poststed
+        private set
+    var adresselinje1 by MottakerTable.adresselinje1
+        private set
+    var adresselinje2 by MottakerTable.adresselinje2
+        private set
+    var adresselinje3 by MottakerTable.adresselinje3
+        private set
+    var landkode by MottakerTable.landkode
+        private set
+
+    fun samhandler(tssId: String) {
+        type = MottakerType.SAMHANDLER
+        this.tssId = tssId
+    }
+
+    fun norskAdresse(navn: String, postnummer: String, poststed: String, adresselinje1: String?, adresselinje2: String?, adresselinje3: String?) {
+        type = MottakerType.NORSK_ADRESSE
+        this.navn = navn
+        this.postnummer = postnummer
+        this.poststed = poststed
+        this.adresselinje1 = adresselinje1
+        this.adresselinje2 = adresselinje2
+        this.adresselinje3 = adresselinje3
+    }
+
+    fun utenlandskAdresse(
+        navn: String,
+        postnummer: String?,
+        poststed: String?,
+        adresselinje1: String,
+        adresselinje2: String?,
+        adresselinje3: String?,
+        landkode: String
+    ) {
+        type = MottakerType.UTENLANDSK_ADRESSE
+        this.navn = navn
+        this.postnummer = postnummer
+        this.poststed = poststed
+        this.adresselinje1 = adresselinje1
+        this.adresselinje2 = adresselinje2
+        this.adresselinje3 = adresselinje3
+        this.landkode = landkode
+    }
+
+    fun <T : Any> map(
+        samhandler: (tssId: String) -> T,
+        norskAdresse: (navn: String, postnummer: String, poststed: String, adresselinje1: String?, adresselinje2: String?, adresselinje3: String?) -> T,
+        utenlandskAdresse: (navn: String, postnummer: String?, poststed: String?, adresselinje1: String, adresselinje2: String?, adresselinje3: String?, landkode: String) -> T,
+    ): T {
+        return when (type) {
+            MottakerType.SAMHANDLER -> samhandler(tssId!!)
+            MottakerType.NORSK_ADRESSE -> norskAdresse(navn!!, postnummer!!, poststed!!, adresselinje1, adresselinje2, adresselinje3)
+            MottakerType.UTENLANDSK_ADRESSE -> utenlandskAdresse(navn!!, postnummer, poststed, adresselinje1!!, adresselinje2, adresselinje3, landkode!!)
+        }
+    }
+
+    companion object : LongEntityClass<Mottaker>(MottakerTable)
+}
+
 fun initDatabase(config: Config) =
     config.getConfig("database").let {
         initDatabase(createJdbcUrl(it), it.getString("username"), it.getString("password"))
@@ -124,7 +212,7 @@ fun initDatabase(jdbcUrl: String, username: String, password: String) {
     )
     transaction(database) {
         withDataBaseLock {
-            SchemaUtils.createMissingTablesAndColumns(BrevredigeringTable, DocumentTable, Favourites)
+            SchemaUtils.createMissingTablesAndColumns(BrevredigeringTable, DocumentTable, Favourites, MottakerTable)
         }
     }
 }

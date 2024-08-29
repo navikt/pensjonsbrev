@@ -53,6 +53,9 @@ object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<Barnepensjo
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselRevurdering)
             }
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselRevurdering)
+            }
         }
     }
 }

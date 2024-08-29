@@ -21,6 +21,30 @@ export type BrevResponse = {
   saksbehandlerValg: SaksbehandlerValg;
 };
 
+export interface DelvisOppdaterBrevRequest {
+  sakId: string;
+  brevId: string | number;
+  laastForRedigering?: Nullable<boolean>;
+  distribusjonstype?: Nullable<Distribusjonstype>;
+}
+
+export interface DelvisOppdaterBrevResponse {
+  info: BrevInfo;
+  redigertBrev: EditedLetter;
+  saksbehandlerValg: SaksbehandlerValg;
+}
+
+export interface BestillBrevResponse {
+  journalpostId: Nullable<number>;
+  error: Nullable<BestillBrevError>;
+}
+
+export interface BestillBrevError {
+  brevIkkeStoettet: Nullable<string>;
+  tekniskgrunn: Nullable<string>;
+  beskrivelse: Nullable<string>;
+}
+
 export type ReservasjonResponse = {
   vellykket: boolean;
   reservertAv: NavAnsatt;
@@ -42,6 +66,7 @@ export type BrevInfo = {
   sistredigert: string;
   brevkode: string;
   status: BrevStatus;
+  distribusjonstype: Distribusjonstype;
 };
 export type BrevStatus = Kladd | UnderRedigering | Klar;
 export type Kladd = { type: "Kladd" };
@@ -52,3 +77,8 @@ export type OppdaterBrevRequest = {
   saksbehandlerValg: SaksbehandlerValg;
   redigertBrev: EditedLetter;
 };
+
+export enum Distribusjonstype {
+  SENTRALPRINT = "SENTRALPRINT",
+  LOKALPRINT = "LOKALPRINT",
+}

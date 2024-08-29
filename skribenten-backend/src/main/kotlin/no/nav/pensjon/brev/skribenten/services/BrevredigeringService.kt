@@ -8,12 +8,12 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable.distribusjonstype
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Api.OverstyrtMottaker.*
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -55,6 +55,7 @@ class BrevredigeringService(
         avsenderEnhetsId: String?,
         saksbehandlerValg: BrevbakerBrevdata,
         reserverForRedigering: Boolean = false,
+        mottaker: Api.OverstyrtMottaker? = null,
     ): ServiceResult<Api.BrevResponse> =
         harTilgangTilEnhet(call, avsenderEnhetsId) {
             rendreBrev(call, brevkode, spraak, sak.saksId, saksbehandlerValg, avsenderEnhetsId, call.principal().navIdent()).map { letter ->
@@ -67,11 +68,16 @@ class BrevredigeringService(
                         this.avsenderEnhetId = avsenderEnhetsId
                         this.saksbehandlerValg = saksbehandlerValg
                         laastForRedigering = false
+                        distribusjonstype = Distribusjonstype.SENTRALPRINT
                         redigeresAvNavIdent = if (reserverForRedigering) call.principal().navIdent() else null
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         redigertBrev = letter.toEdit()
                         sistRedigertAvNavIdent = call.principal().navIdent()
+                    }.also {
+                        if (mottaker != null) {
+                            Mottaker.new(it.id.value) { oppdater(mottaker) }
+                        }
                     }.mapBrev()
                 }
             }
@@ -102,8 +108,8 @@ class BrevredigeringService(
                             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                             saksbehandlerValg = nyeSaksbehandlerValg ?: brev.saksbehandlerValg
                             sistRedigertAvNavIdent = call.principal().navIdent()
-                        }
-                    }.mapBrev()
+                        }.mapBrev()
+                    }
                 }
         }
 
@@ -112,8 +118,8 @@ class BrevredigeringService(
             Brevredigering.findByIdAndSaksId(brevId, saksId)?.apply {
                 patch.laastForRedigering?.also { laastForRedigering = it }
                 patch.distribusjonstype?.also { distribusjonstype = it }
-            }
-        }?.mapBrev()
+            }?.mapBrev()
+        }
 
     /**
      * Slett brev med id.
@@ -298,6 +304,24 @@ class BrevredigeringService(
         } else null
     }
 
+    private fun Mottaker.oppdater(mottaker: Api.OverstyrtMottaker?) = mottaker.let {
+        when (it) {
+            is NorskAdresse -> norskAdresse(it.navn, it.postnummer, it.poststed, it.adresselinje1, it.adresselinje2, it.adresselinje3)
+            is Samhandler -> samhandler(it.tssId)
+            is UtenlandskAdresse -> utenlandskAdresse(
+                it.navn,
+                it.postnummer,
+                it.poststed,
+                it.adresselinje1,
+                it.adresselinje2,
+                it.adresselinje3,
+                it.landkode
+            )
+
+            null -> delete()
+        }
+    }
+
     private fun Brevredigering.mapBrev(): Api.BrevResponse =
         Api.BrevResponse(
             info = mapBrevInfo(this),
@@ -321,6 +345,7 @@ class BrevredigeringService(
                 else -> Api.BrevStatus.Kladd
             },
             distribusjonstype = distribusjonstype,
+            mottaker = mottaker?.map(::Samhandler, ::NorskAdresse, ::UtenlandskAdresse),
         )
     }
 

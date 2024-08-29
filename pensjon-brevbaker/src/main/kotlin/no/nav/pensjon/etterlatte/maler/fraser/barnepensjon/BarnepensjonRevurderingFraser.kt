@@ -69,7 +69,7 @@ object BarnepensjonRevurderingFraser {
                                         "skatt.",
                                 Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før " +
                                         "skatt.",
-                                Language.English to "ou will receive NOK ".expr() + formatertBeloep + " each " +
+                                Language.English to "You will receive NOK ".expr() + formatertBeloep + " each " +
                                         "month before tax. "
                             )
                         }
@@ -164,26 +164,50 @@ object BarnepensjonRevurderingFraser {
                 )
             }
 
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(FeilutbetalingUtenVarselRevurdering)
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_4RG_UTEN_VARSEL)) {
+                includePhrase(FeilutbetalingUnder4RGUtenVarselRevurdering)
             }
         }
     }
 
-    object FeilutbetalingUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUnder4RGUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Language.Bokmal to "Fordi pensjonen din er opphørt tilbake i tid, har du fått for mye " +
                             "utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår av " +
                             "folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt.",
-                    Language.Nynorsk to "Dersom det er feilutbetaling som ikkje skal krevjast tilbake fordi " +
-                            "pensjonen din blei avvikla tilbake i tid, har du fått for mykje utbetalt. Beløpet er " +
-                            "under den nedre grensa for tilbakekrevjing som går fram av folketrygdlova § 22-15 " +
-                            "sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
+                    Language.Nynorsk to "Fordi pensjonen din blei avvikla tilbake i tid, har du fått for " +
+                            "mykje utbetalt. Beløpet er under den nedre grensa for tilbakekrevjing som går fram av " +
+                            "folketrygdlova § 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
                     Language.English to "You have been overpaid because your pension has been terminated " +
                             "retroactively. The amount is below the lower limit for demanding repayment, as stated " +
                             "in the National Insurance Act - Section 22-15(6). So no repayment will be demanded of you.",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Feilutbetaling",
+                    Language.Nynorsk to "Feilutbetaling",
+                    Language.English to "Incorrectly paid pension",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Siden pensjonen din er opphørt tilbake i tid, har du fått for mye " +
+                            "utbetalt. Vi oppretter en sak om mulig tilbakekreving av det du har fått for mye " +
+                            "utbetalt. Dette får du mer informasjon om i et eget brev fra oss.",
+                    Language.Nynorsk to "Ettersom pensjonen din blei avvikla tilbake i tid, har du fått for " +
+                            "mykje utbetalt. Vi opprettar ei sak om mogleg tilbakekrevjing av det du har fått for " +
+                            "mykje utbetalt. Dette får du meir informasjon om i eit eige brev frå oss.",
+                    Language.English to "You have been overpaid because your pension has been terminated " +
+                            "retroactively. We will start a case to assess whether you must repay pension. You " +
+                            "will receive more information about this in a separate letter from us.",
                 )
             }
         }
@@ -213,7 +237,7 @@ object BarnepensjonRevurderingFraser {
         }
     }
 
-    object FeilutbetalingUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUnder4RGUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -227,6 +251,32 @@ object BarnepensjonRevurderingFraser {
                             "received more than you were owed. The amount is below the lower limit for " +
                             "demanding repayment, as stated in Section 22-15(6) of the National Insurance Act, " +
                             "so no repayment will be demanded of you.",
+                )
+            }
+        }
+    }
+
+    object FeilutbetalingUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Feilutbetaling",
+                    Language.Nynorsk to "Feilutbetaling",
+                    Language.English to "Incorrectly paid pension",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Siden pensjonen din er redusert tilbake i tid, har du fått for mye " +
+                            "utbetalt. Vi oppretter en sak om mulig tilbakekreving av det du har fått for mye " +
+                            "utbetalt. Dette får du mer informasjon om i et eget brev fra oss.",
+                    Language.Nynorsk to "Fordi pensjonen din er redusert tilbake i tid, har du fått utbetalt " +
+                            "for mykje. Vi opprettar ei sak om mogleg tilbakekrevjing av det du har fått for mykje " +
+                            "utbetalt. Dette får du meir informasjon om i eit eige brev frå oss.",
+                    Language.English to "Because your pension has been reduced retroactively, you received " +
+                            "more than you were owed. We will start a case to assess whether you must repay " +
+                            "children’s pension. You will receive more information about this in a separate " +
+                            "letter from us. ",
                 )
             }
         }

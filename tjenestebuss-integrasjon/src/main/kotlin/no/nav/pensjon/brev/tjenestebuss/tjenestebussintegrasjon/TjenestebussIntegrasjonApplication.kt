@@ -16,7 +16,7 @@ fun main() {
             // resolve from secrets files when running on NAIS
             .resolveWith(getVaultSecretConfig(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
             // Resolve from secrets folder when running locally
-            .resolveLocalSecrets("sts/auth", "azuread", "pensjonsbrev")
+            .resolveLocalSecrets("azuread", "pensjonsbrev")
     embeddedServer(Netty, port = tjenestebussIntegrasjonConfig.getInt("port"), host = "0.0.0.0") {
         tjenestebussIntegrationApi(tjenestebussIntegrasjonConfig)
     }.start(wait = true)
@@ -24,7 +24,6 @@ fun main() {
 
 /**
  * Mapper innholdet i filer under /secrets/xyz/...
- * F.eks innholdet i secrets/sts/username mappes til STS_USERNAME
  */
 fun getVaultSecretConfig(): Config {
     val secrets = File("/secrets")

@@ -46,6 +46,7 @@ externalHosts:
   - pensjon-persondata-q2.dev-fss-pub.nais.io
   - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
   - navansatt.dev-fss-pub.nais.io
+  - pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io
 
 env:
   - name: CORS_ALLOW_HOST
@@ -93,6 +94,11 @@ env:
     value: "https://navansatt.dev-fss-pub.nais.io/"
   - name: NAVANSATT_SCOPE
     value: "api://dev-fss.teampensjon.navansatt/.default"
+
+  - name: SAMHANDLER_PROXY_URL
+    value: "https://pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io"
+  - name: SAMHANDLER_PROXY_SCOPE
+    value: "api://dev-fss.pensjon-q2.pensjon-samhandler-proxy-q2/.default"
 
   - name: FEATURE_brevbakerbrev
     value: "true"

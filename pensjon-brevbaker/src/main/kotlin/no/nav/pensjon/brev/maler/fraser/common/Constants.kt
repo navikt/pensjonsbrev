@@ -24,6 +24,7 @@ object Constants {
     const val NAV_KONTAKTSENTER_TELEFON_PENSJON = "55 55 33 34"
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
     const val PENSJON_ENDRING_URL = "$NAV_URL/pensjon-endring"
+    const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelop"
     const val REGULERING_ALDERSPENSJON_URL = "$NAV_URL/reguleringalderspensjon"
     const val SKATTEETATEN_URL = "skatteetaten.no"
     const val SKJEMA_URL = "$NAV_URL/skjema"

@@ -890,7 +890,16 @@ class BrevredigeringServiceTest {
         assertThat(hash2).isNotEqualTo(hash1)
     }
 
-    private suspend fun opprettBrev(call: ApplicationCall = callMock(), reserverForRedigering: Boolean = false) =
+    @Test
+    fun `kan overstyre mottaker av brev`(): Unit = runBlocking {
+        val mottaker = Api.OverstyrtMottaker.Samhandler("samhandlerId")
+        val brev = opprettBrev(mottaker = mottaker)
+
+        assertEquals(mottaker, brev.resultOrNull()?.info?.mottaker)
+        assertEquals(mottaker.tssId, transaction { Mottaker[brev.resultOrNull()!!.info.id].tssId })
+    }
+
+    private suspend fun opprettBrev(call: ApplicationCall = callMock(), reserverForRedigering: Boolean = false, mottaker: Api.OverstyrtMottaker? = null) =
         brevredigeringService.opprettBrev(
             call = call,
             sak = sak,
@@ -898,7 +907,8 @@ class BrevredigeringServiceTest {
             spraak = LanguageCode.ENGLISH,
             avsenderEnhetsId = principalNavEnhetId,
             saksbehandlerValg = GeneriskBrevData().apply { put("valg", true) },
-            reserverForRedigering = reserverForRedigering
+            reserverForRedigering = reserverForRedigering,
+            mottaker = mottaker,
         )
 
     private fun stagePdf(pdf: ByteArray) {

@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 
 import type { ItemContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { Distribusjonstype } from "~/types/brev";
 import type {
   AnyBlock,
   Content,
@@ -32,6 +33,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
         type: "UnderRedigering",
         redigeresAv: "Z993104",
       },
+      distribusjonstype: Distribusjonstype.SENTRALPRINT,
     },
     redigertBrev: {
       title: "tittel",
