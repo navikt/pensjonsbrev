@@ -17,7 +17,7 @@ fun Route.tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService: Tjenesteb
     }
     post("/hentSamhandler") {
         val requestDto = call.receive<HentSamhandlerRequestDto>()
-        call.respond(tjenestebussIntegrasjonService.hentSamhandler(call, requestDto.idTSSEkstern, requestDto.hentDetaljert))
+        call.respond(tjenestebussIntegrasjonService.hentSamhandler(call, requestDto.idTSSEkstern))
     }
     post("/hentSamhandlerAdresse") {
         val requestDto = call.receive<HentSamhandlerAdresseRequestDto>()
