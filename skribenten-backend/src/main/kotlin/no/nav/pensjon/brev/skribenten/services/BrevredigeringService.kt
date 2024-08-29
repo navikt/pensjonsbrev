@@ -108,8 +108,8 @@ class BrevredigeringService(
                             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                             saksbehandlerValg = nyeSaksbehandlerValg ?: brev.saksbehandlerValg
                             sistRedigertAvNavIdent = call.principal().navIdent()
-                        }
-                    }.mapBrev()
+                        }.mapBrev()
+                    }
                 }
         }
 
@@ -118,8 +118,8 @@ class BrevredigeringService(
             Brevredigering.findByIdAndSaksId(brevId, saksId)?.apply {
                 patch.laastForRedigering?.also { laastForRedigering = it }
                 patch.distribusjonstype?.also { distribusjonstype = it }
-            }
-        }?.mapBrev()
+            }?.mapBrev()
+        }
 
     /**
      * Slett brev med id.
