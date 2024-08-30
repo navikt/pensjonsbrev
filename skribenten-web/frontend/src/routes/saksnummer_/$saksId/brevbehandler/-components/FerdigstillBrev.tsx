@@ -115,10 +115,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const pdfForJournalpostMutation = useMutation<Blob, Error, string | number>({
     mutationFn: (journalpostId: string | number) =>
       hentPdfForJournalpostQuery.queryFn(properties.sakId, journalpostId!),
-    onSuccess: (pdf) => {
-      window.open(URL.createObjectURL(pdf), "_blank");
-      navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
-    },
+    onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
     onError: () => {
       navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
     },
@@ -183,7 +180,10 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
 
     //så lenge det bare er 1 brev som distribueres lokalt, av 1..n antall brev, vil vi åpne denne PDF'en i en ny fane.
     if (brevSomDistribueresLokalt.length === 1 && brevSomDistribueresLokalt[0].response.journalpostId !== null) {
-      await pdfForJournalpostMutation.mutateAsync(brevSomDistribueresLokalt[0].response.journalpostId);
+      await pdfForJournalpostMutation
+        .mutateAsync(brevSomDistribueresLokalt[0].response.journalpostId)
+        //cypress failer testen fordi erroren vi får tilbake er uhåndtert, selv om vi ikke vil gjøre noe spesielt om den feiler her.
+        .catch(() => void 0);
     }
 
     navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
