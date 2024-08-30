@@ -10,12 +10,7 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.formatMaanedAar
@@ -40,13 +35,13 @@ object TilbakekrevingFraser {
 
 	data class ViserTilVarselbrev(
 		val sakType: Expression<SakType>,
-		val varselVedlagt: Expression<Boolean>,
+		val varsel: Expression<TilbakekrevingVarsel>,
 		val datoVarselEllerVedtak: Expression<LocalDate>,
 		val datoTilsvarBruker: Expression<LocalDate?>
 	): OutlinePhrase<LangBokmalNynorskEnglish>() {
 		override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 			paragraph {
-				showIf(varselVedlagt) {
+				showIf(varsel.equalTo(TilbakekrevingVarsel.MED_I_ENDRINGSBREV)) {
 					textExpr(
 						Bokmal to "Vi viser til forhåndsvarselet vårt som fulgte vedtak datert ".expr() +
 								datoVarselEllerVedtak.format(),
@@ -55,7 +50,7 @@ object TilbakekrevingFraser {
 						English to "We refer to the notice attached with the decision dated ".expr() +
 								datoVarselEllerVedtak.format(),
 					)
-				}.orShow {
+				}.orShowIf(varsel.equalTo(TilbakekrevingVarsel.EGET_BREV)) {
 					textExpr(
 						Bokmal to "Vi viser til forhåndsvarselet vårt om at vi vurderer om du må betale tilbake ".expr() +
 								sakType.format() + " av " + datoVarselEllerVedtak.format(),
@@ -63,6 +58,12 @@ object TilbakekrevingFraser {
 								sakType.format() + " av " + datoVarselEllerVedtak.format(),
 						English to "We refer to the notice, where we consider claiming reimbursement of ".expr() +
 								sakType.format() + " from " + datoVarselEllerVedtak.format(),
+					)
+				}.orShowIf(varsel.equalTo(TilbakekrevingVarsel.AAPENBART_UNOEDVENDIG)) {
+					textExpr(
+						Bokmal to "Vi viser til vedtaket vårt av ".expr() + datoVarselEllerVedtak.format(),
+						Nynorsk to "Vi viser til vedtaket vårt av ".expr() + datoVarselEllerVedtak.format(),
+						English to "We refer to the decision dated ".expr() + datoVarselEllerVedtak.format(),
 					)
 				}
 				ifNotNull(datoTilsvarBruker) { datoTilsvarBruker ->
