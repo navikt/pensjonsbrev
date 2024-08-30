@@ -15,7 +15,7 @@ object TBU1092_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU1092NN, TBU1092EN, TBU1092]
 
-		paragraph {
+		title1 {
 			text (
 				Bokmal to "Begrunnelse for vedtaket",
 				Nynorsk to "Grunngiving for vedtaket",

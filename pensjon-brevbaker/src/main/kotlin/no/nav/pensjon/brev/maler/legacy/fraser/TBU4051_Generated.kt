@@ -3,17 +3,19 @@
 package no.nav.pensjon.brev.maler.fraser.generated
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.maler.fraser.ut_uforetrygdetteroppgjor_periodefom_year
-import no.nav.pensjon.brev.maler.fraser.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb
-import no.nav.pensjon.brev.maler.fraser.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb
-import no.nav.pensjon.brev.maler.fraser.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.model.*
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.maler.legacy.ut_uforetrygdetteroppgjor_periodefom_year
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 data class TBU4051_Generated(

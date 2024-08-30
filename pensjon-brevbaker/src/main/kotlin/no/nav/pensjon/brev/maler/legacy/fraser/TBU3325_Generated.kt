@@ -4,6 +4,7 @@ package no.nav.pensjon.brev.maler.fraser.generated
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.maler.fraser.*
+import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.Language.*
@@ -50,7 +51,7 @@ data class TBU3325_Generated(
 			}
 
 			//IF(Contains(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_GrunnIkkeReduksjon, "erstatning_innttap_erstoppgj") > 0) THEN      INCLUDE ENDIF
-			showIf((FUNKSJON_Contains(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon(),"erstatning_innttap_erstoppgj").greaterThan(0))){
+			showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj())){
 				text (
 					Bokmal to "Erstatning for inntektstap ved erstatningsoppgjør trekkes fra dette beløpet. ",
 					Nynorsk to "Erstatning for inntektstap ved erstatningsoppgjer blir trekt frå dette beløpet. ",
@@ -58,7 +59,7 @@ data class TBU3325_Generated(
 			}
 
 			//IF(Contains(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_GrunnIkkeReduksjon, "etterslepsinnt_avslt_akt") > 0) THEN      INCLUDE ENDIF
-			showIf((FUNKSJON_Contains(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon(),"etterslepsinnt_avslt_akt").greaterThan(0))){
+			showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt())){
 				text (
 					Bokmal to "Inntekt fra helt avsluttet arbeid eller virksomhet trekkes fra dette beløpet. ",
 					Nynorsk to "Inntekt frå heilt avslutta arbeid eller verksemd blir trekt frå dette beløpet. ",
@@ -66,7 +67,7 @@ data class TBU3325_Generated(
 			}
 
 			//IF(PE_UT_EtteroppgjorFratrekkListeBrukerEtterbetaling("etterbetaling") = true) THEN      INCLUDE ENDIF
-			showIf((FUNKSJON_PE_UT_EtteroppgjorFratrekkListeBrukerEtterbetaling("etterbetaling"))){
+			showIf((pe.ut_etteroppgjorfratrekklistebrukeretterbetaling())){
 				text (
 					Bokmal to "Etterbetaling du har fått fra NAV trekkes fra dette beløpet. ",
 					Nynorsk to "Etterbetalinga du fekk frå NAV blir trekt frå dette beløpet. ",

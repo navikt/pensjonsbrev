@@ -15,7 +15,7 @@ object TBU2366_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU2366NN, TBU2366, TBU2366EN]
 
-		paragraph {
+		title1 {
 			text (
 				Bokmal to "Du må melde fra om endringer i inntekten",
 				Nynorsk to "Du må melde frå om endringar i inntekta",

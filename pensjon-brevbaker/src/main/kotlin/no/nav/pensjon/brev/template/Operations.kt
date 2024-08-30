@@ -58,6 +58,11 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     object IsEmpty : UnaryOperation<Collection<*>, Boolean>(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
+
+    //Should be used for legacy letters only!
+    class Required <In : Any> : UnaryOperation<In?, In>(), StableHash by StableHash.of("UnaryOperation.Required") {
+        override fun apply(input: In?): In = input!!
+    }
 }
 
 abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
@@ -124,10 +129,9 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
 
-    class GetElement<ListType> : BinaryOperation<List<ListType>?, Int, ListType?>(), StableHash by StableHash.of("BinaryOperation.GetElement") {
+    class GetElementOrNull<ListType> : BinaryOperation<List<ListType>?, Int, ListType?>(), StableHash by StableHash.of("BinaryOperation.GetElementOrNull") {
         override fun apply(first: List<ListType>?, second: Int): ListType? = first?.getOrNull(second)
     }
-
 
     class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>(), StableHash by StableHash.of("BinaryOperation.IfElse") {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second

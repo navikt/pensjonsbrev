@@ -1,5 +1,5 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor
 
-data class FratrekkListe(
-    val inntektsgrunnlag: List<Inntektsgrunnlag>?,
+data class Inntektsgrunnlag(
+    val grunnikkereduksjon: String?
 )

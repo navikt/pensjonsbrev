@@ -3,7 +3,7 @@
 package no.nav.pensjon.brev.maler.fraser.generated
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.maler.fraser.ut_uforetrygdetteroppgjor_periodefom_year
+import no.nav.pensjon.brev.maler.legacy.ut_uforetrygdetteroppgjor_periodefom_year
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.Language.*

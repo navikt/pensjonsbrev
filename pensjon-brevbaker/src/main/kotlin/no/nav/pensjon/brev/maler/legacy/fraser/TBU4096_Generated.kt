@@ -3,7 +3,7 @@
 package no.nav.pensjon.brev.maler.fraser.generated
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.maler.fraser.ut_uforetrygdetteroppgjor_periodefom_year
+import no.nav.pensjon.brev.maler.legacy.ut_uforetrygdetteroppgjor_periodefom_year
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.Language.*
@@ -19,7 +19,7 @@ data class TBU4096_Generated(
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 		//[TBU4096_NN, TBU4096]
 
-		paragraph {
+		title1 {
 			text (
 				Bokmal to "For deg som har fått flere vedtak om etteroppgjør for samme år",
 				Nynorsk to "For deg som har fått fleire vedtak om etteroppgjer for same år",
