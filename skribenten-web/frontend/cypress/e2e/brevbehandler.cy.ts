@@ -92,7 +92,7 @@ describe("Brevbehandler", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (request) => {
       request.reply({ journalpostId: 80_912, error: null });
     });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", (request) => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80912", (request) => {
       request.reply({ fixture: "helloWorldPdf.txt", headers: { "content-type": "application/pdf" } });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
@@ -135,9 +135,7 @@ describe("Brevbehandler", () => {
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
-    //TODO - legg til når vi kan pdf
-    //cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
-    cy.contains("PDF'en kan hentes fra Pesys").should("be.visible");
+    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
   });
 
   it("kan sende flere ferdigstilte brev samtidig", () => {
@@ -147,7 +145,7 @@ describe("Brevbehandler", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/2/pdf/send", (request) => {
       request.reply({ journalpostId: 80_913, error: null });
     });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/2/pdf", (request) => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80913", (request) => {
       request.reply({ fixture: "helloWorldPdf.txt", headers: { "content-type": "application/pdf" } });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
@@ -175,9 +173,7 @@ describe("Brevbehandler", () => {
     cy.contains("Lokal print").should("be.visible");
     cy.get('p:contains("Journalpost ID")').eq(1).should("be.visible");
     cy.contains("80913").should("be.visible");
-    //TODO - legg til når man kan åpne pdf i ny fane
-    //cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
-    cy.contains("PDF'en kan hentes fra Pesys").should("be.visible");
+    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
   });
 
   it("velger hvilke brev som skal sendes", () => {

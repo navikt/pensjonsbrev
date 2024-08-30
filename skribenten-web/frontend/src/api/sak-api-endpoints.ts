@@ -14,7 +14,7 @@ import type {
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
 
 export const hentAlleBrevForSak = {
-  queryKey: ["hentAlleBrevForSak"],
+  queryKey: (sakId: string) => ["hentAlleBrevForSak", sakId],
   queryFn: async (saksId: string) => hentAlleBrevForSakFunction(saksId),
 };
 
@@ -47,3 +47,17 @@ export const slettBrev = async (saksId: string, brevId: string) =>
 
 export const sendBrev = async (saksId: string, brevId: string | number): Promise<BestillBrevResponse> =>
   (await axios.post<BestillBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf/send`)).data;
+
+export const hentPdfForJournalpostQuery = {
+  queryKey: (sakId: string, journalpostId: string) => ["pdfForJournalpost", sakId, journalpostId],
+  queryFn: async (sakId: string, journalpostId: string | number) =>
+    hentPdfForJournalpost({ sakId: sakId, journalpostId: journalpostId }),
+};
+
+export const hentPdfForJournalpost = async (argz: { sakId: string; journalpostId: string | number }) =>
+  (
+    await axios.get<Blob>(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.sakId}/pdf/${argz.journalpostId}`, {
+      responseType: "blob",
+      headers: { Accept: "application/pdf" },
+    })
+  ).data;

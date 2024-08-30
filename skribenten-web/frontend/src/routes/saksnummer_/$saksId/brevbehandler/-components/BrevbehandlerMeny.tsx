@@ -93,7 +93,7 @@ const BrevItem = (properties: {
         laastForRedigering: låst,
       }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
       );
     },
@@ -107,7 +107,7 @@ const BrevItem = (properties: {
         distribusjonstype: distribusjonstype,
       }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
       );
     },

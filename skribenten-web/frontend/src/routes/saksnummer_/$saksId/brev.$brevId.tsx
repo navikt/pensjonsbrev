@@ -8,6 +8,7 @@ import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 
 import { getBrev, getBrevReservasjon, hurtiglagreBrev, hurtiglagreSaksbehandlerValg } from "~/api/brev-queries";
+import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -199,6 +200,9 @@ function useHurtiglagreMutation<T>(
     },
     onSuccess: (response: BrevResponse) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
+      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
+      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brevId.toString()) });
       setEditorState((previousState) => ({
         ...previousState,
         redigertBrev: response.redigertBrev,
