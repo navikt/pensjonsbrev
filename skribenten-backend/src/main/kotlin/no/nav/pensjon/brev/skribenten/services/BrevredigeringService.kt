@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.skribenten.model.Api.OverstyrtMottaker.*
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -118,7 +117,10 @@ class BrevredigeringService(
             Brevredigering.findByIdAndSaksId(brevId, saksId)?.apply {
                 patch.laastForRedigering?.also { laastForRedigering = it }
                 patch.distribusjonstype?.also { distribusjonstype = it }
-            }?.mapBrev()
+                if (patch.mottaker != null) {
+                    mottaker?.oppdater(patch.mottaker) ?: Mottaker.new(brevId) { oppdater(patch.mottaker) }
+                }
+            }?.let { Brevredigering.reload(it, true) }?.mapBrev()
         }
 
     /**
@@ -276,28 +278,34 @@ class BrevredigeringService(
     }
 
     suspend fun sendBrev(call: ApplicationCall, saksId: Long, brevId: Long): ServiceResult<Pen.BestillBrevResponse>? {
-        val (brevredigering, document) = transaction { Brevredigering.findByIdAndSaksId(brevId, saksId).let { it to it?.document?.firstOrNull() } }
+        val brevkode = transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.takeIf { !it.document.empty() }?.brevkode }
 
-        return if (brevredigering != null && document != null) {
-            brevbakerService.getRedigerbarTemplate(call, brevredigering.brevkode).then {
+        return if (brevkode != null) {
+            brevbakerService.getRedigerbarTemplate(call, brevkode).then { template ->
+                val (request, distribusjonstype) = transaction {
+                    val brev = Brevredigering.findByIdAndSaksId(brevId, saksId)!!
+                    val document = brev.document.firstOrNull()!!
+
+                    Pen.SendRedigerbartBrevRequest(
+                        dokumentDato = document.dokumentDato,
+                        saksId = brev.saksId,
+                        enhetId = brev.avsenderEnhetId,
+                        templateDescription = template,
+                        brevkode = brev.brevkode,
+                        pdf = document.pdf.bytes,
+                        eksternReferanseId = "skribenten:${brev.id}",
+                        mottaker = brev.mottaker?.toPen(),
+                    ) to brev.distribusjonstype
+                }
                 penService.sendbrev(
                     call,
-                    SendRedigerbartBrevRequest(
-                        dokumentDato = document.dokumentDato,
-                        saksId = brevredigering.saksId,
-                        enhetId = brevredigering.avsenderEnhetId,
-                        templateDescription = it,
-                        brevkode = brevredigering.brevkode,
-                        pdf = document.pdf.bytes,
-                        eksternReferanseId = "skribenten:${brevredigering.id}",
-                    ),
-                    distribuer = brevredigering.distribusjonstype == Distribusjonstype.SENTRALPRINT,
+                    request,
+                    distribuer = distribusjonstype == Distribusjonstype.SENTRALPRINT,
                 )
             }.onOk {
                 if (it.journalpostId != null) {
                     transaction {
-                        document.delete()
-                        brevredigering.delete()
+                        Brevredigering[brevId].delete()
                     }
                 }
             }
@@ -345,11 +353,19 @@ class BrevredigeringService(
                 else -> Api.BrevStatus.Kladd
             },
             distribusjonstype = distribusjonstype,
-            mottaker = mottaker?.map(::Samhandler, ::NorskAdresse, ::UtenlandskAdresse),
+            mottaker = mottaker?.toApi(),
         )
     }
 
     private fun Brevredigering.erReservasjonUtloept(): Boolean =
         sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true
+
+    fun fjernOverstyrtMottaker(brevId: Long, saksId: Long): Boolean =
+        transaction {
+            Brevredigering.findByIdAndSaksId(brevId, saksId)
+                ?.also { it.mottaker?.delete() }
+                ?.let { true }
+                ?: false
+        }
 
 }

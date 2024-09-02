@@ -30,7 +30,11 @@ object Api {
         val redigertBrev: Edit.Letter,
     )
 
-    data class DelvisOppdaterBrevRequest(val laastForRedigering: Boolean?, val distribusjonstype: Distribusjonstype?)
+    data class DelvisOppdaterBrevRequest(
+        val laastForRedigering: Boolean? = null,
+        val distribusjonstype: Distribusjonstype? = null,
+        val mottaker: OverstyrtMottaker? = null
+    )
 
     data class BrevInfo(
         val id: Long,
