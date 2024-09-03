@@ -180,18 +180,6 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
         this.landkode = landkode
     }
 
-    fun <T : Any> map(
-        samhandler: (tssId: String) -> T,
-        norskAdresse: (navn: String, postnummer: String, poststed: String, adresselinje1: String?, adresselinje2: String?, adresselinje3: String?) -> T,
-        utenlandskAdresse: (navn: String, postnummer: String?, poststed: String?, adresselinje1: String, adresselinje2: String?, adresselinje3: String?, landkode: String) -> T,
-    ): T {
-        return when (type) {
-            MottakerType.SAMHANDLER -> samhandler(tssId!!)
-            MottakerType.NORSK_ADRESSE -> norskAdresse(navn!!, postnummer!!, poststed!!, adresselinje1, adresselinje2, adresselinje3)
-            MottakerType.UTENLANDSK_ADRESSE -> utenlandskAdresse(navn!!, postnummer, poststed, adresselinje1!!, adresselinje2, adresselinje3, landkode!!)
-        }
-    }
-
     companion object : LongEntityClass<Mottaker>(MottakerTable)
 }
 

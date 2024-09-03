@@ -67,6 +67,17 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             }
         }
 
+        delete("/{brevId}/mottaker") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+
+            if (brevredigeringService.fjernOverstyrtMottaker(brevId, sak.saksId)) {
+                call.respond(HttpStatusCode.NoContent)
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
+            }
+        }
+
         get("/{brevId}") {
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             val brevId = call.parameters.getOrFail<Long>("brevId")
