@@ -241,7 +241,7 @@ const SlettBrevModal = (properties: { sakId: string; brevId: string; åpen: bool
   const slett = useMutation({
     mutationFn: () => slettBrev(properties.sakId, properties.brevId),
     onSuccess: () => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.filter((brev) => brev.id.toString() !== properties.brevId),
       );
       navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: properties.sakId } });

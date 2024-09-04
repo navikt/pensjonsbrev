@@ -30,7 +30,7 @@ function Brevbehandler() {
   //vi henter data her istedenfor i route-loaderen fordi vi vil vise stort sett lik skjermbilde
   //Vi kan muligens gjøre en load i route-loader slik at brevene laster litt fortere
   const alleBrevForSak = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey,
+    queryKey: hentAlleBrevForSak.queryKey(saksId),
     queryFn: () => hentAlleBrevForSak.queryFn(saksId),
   });
 

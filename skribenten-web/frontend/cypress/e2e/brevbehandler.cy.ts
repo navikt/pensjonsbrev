@@ -92,7 +92,7 @@ describe("Brevbehandler", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (request) => {
       request.reply({ journalpostId: 80_912, error: null });
     });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", (request) => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80912", (request) => {
       request.reply({ fixture: "helloWorldPdf.txt", headers: { "content-type": "application/pdf" } });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
@@ -135,9 +135,67 @@ describe("Brevbehandler", () => {
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
-    //TODO - legg til når vi kan pdf
-    //cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
-    cy.contains("PDF'en kan hentes fra Pesys").should("be.visible");
+    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+  });
+
+  it("kan ferdigstille og sende brev med lokalprint selv om henting av pdf feiler", () => {
+    //ser ikke ut til å være en god måte å gi ulik respons på hvert kall, så vi må ha en teller
+    let hentBrevRequestNr = 0;
+    let patchBrevRequestNr = 0;
+    const lokalprintBrev = { ...kladdBrev, distribusjonstype: "LOKALPRINT", status: { type: "Klar" } };
+
+    const brevResponse = [kladdBrev, lokalprintBrev];
+    const patchResponse = [klarBrev, lokalprintBrev];
+
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (request) => {
+      request.reply({ journalpostId: 80_912, error: null });
+    });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
+      request.reply([brevResponse[hentBrevRequestNr++]]);
+    });
+
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80912", (request) => {
+      request.reply({ body: "simulerer en feil ved henting av pdf for journalpostId'en", statusCode: 500 });
+    });
+
+    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
+      if (patchBrevRequestNr === 0) {
+        expect(request.body).contains({ sakId: "123456", brevId: 1, laastForRedigering: true });
+      } else {
+        expect(request.body).contains({ sakId: "123456", brevId: 1, distribusjonstype: "LOKALPRINT" });
+      }
+      //er ikke interesert i innholdet i redigert brev + saksbehandlerValg
+      request.reply({ info: patchResponse[patchBrevRequestNr++], redigertBrev: {}, saksbehandlerValg: {} });
+    });
+
+    //åpner brevet
+    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    //brev med id 1
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
+
+    //verifiserer innhold før / etter lås
+    cy.contains("Fortsett redigering").should("be.visible");
+    cy.contains("Lås for redigering").click();
+    cy.contains("Fortsett redigering").should("not.exist");
+    cy.contains("Lokalprint").click();
+
+    //---- ferdigstiller brevet
+    //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
+    cy.contains("Ferdigstill brev").click("left");
+    cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
+    cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
+
+    cy.contains("Ja, send valgte brev").click();
+
+    //verifisering av kvittering
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
+    cy.contains("Lokalprint - sendt til joark").should("be.visible");
+    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Lokal print").should("be.visible");
+    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("80912").should("be.visible");
+    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
   });
 
   it("kan sende flere ferdigstilte brev samtidig", () => {
@@ -147,7 +205,7 @@ describe("Brevbehandler", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/2/pdf/send", (request) => {
       request.reply({ journalpostId: 80_913, error: null });
     });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/2/pdf", (request) => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80913", (request) => {
       request.reply({ fixture: "helloWorldPdf.txt", headers: { "content-type": "application/pdf" } });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
@@ -175,9 +233,7 @@ describe("Brevbehandler", () => {
     cy.contains("Lokal print").should("be.visible");
     cy.get('p:contains("Journalpost ID")').eq(1).should("be.visible");
     cy.contains("80913").should("be.visible");
-    //TODO - legg til når man kan åpne pdf i ny fane
-    //cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
-    cy.contains("PDF'en kan hentes fra Pesys").should("be.visible");
+    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
   });
 
   it("velger hvilke brev som skal sendes", () => {
