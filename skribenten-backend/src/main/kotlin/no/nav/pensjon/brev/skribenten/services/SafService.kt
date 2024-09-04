@@ -155,19 +155,12 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
         call: ApplicationCall,
         journalpostId: String
     ): ServiceResult<String> {
-        val dokumentInfoId = getDocumentsInJournal(call, journalpostId)
+        return getDocumentsInJournal(call, journalpostId)
             .map { it.data?.journalpost?.dokumenter?.firstOrNull()?.dokumentInfoId }
-
-        return dokumentInfoId.resultOrNull().let {
-            when (it) {
-                null -> ServiceResult.Error(
-                    "Fant ingen dokumenter for journalpostId: $journalpostId",
-                    HttpStatusCode.NotFound
-                )
-
-                else -> ServiceResult.Ok(it)
-            }
-        }
+            .nonNull(
+                "Fant ingen dokumenter for journalpostId: $journalpostId",
+                HttpStatusCode.NotFound
+            )
     }
 
     override val name = "SAF"

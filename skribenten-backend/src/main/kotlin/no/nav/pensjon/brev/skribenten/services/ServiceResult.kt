@@ -56,6 +56,11 @@ sealed class ServiceResult<Result> {
     fun resultOrNull(): Result? =
         if (this is Ok) result else null
 
+    fun nonNull(error: String, statusCode: HttpStatusCode): ServiceResult<Result & Any> = when (this) {
+        is Ok -> result?.let { Ok(result) } ?: Error(error, statusCode)
+        is Error -> Error(this.error, this.statusCode)
+    }
+
 }
 
 suspend inline fun <reified R> PipelineContext<Unit, ApplicationCall>.respondWithResult(
