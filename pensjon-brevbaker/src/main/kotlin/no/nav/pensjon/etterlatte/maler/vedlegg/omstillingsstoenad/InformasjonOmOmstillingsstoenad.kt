@@ -211,19 +211,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "reduced based on what you declare as anticipated income for the current year.",
         )
     }
-    paragraph {
-        text(
-            Bokmal to "Om du ikke oppgir annet, vil inntekten bli oppjustert ved årsskiftet for å ta hensyn " +
-                    "til generell lønnsøkning. Dette gjøres ved hjelp av faktor som er brukt i den årlige " +
-                    "oppjusteringen av grunnbeløpet.",
-            Nynorsk to "Med mindre du oppgir noko anna, vil inntekta bli oppjustert ved årsskiftet for å ta " +
-                    "omsyn til generell lønsauke. Dette blir gjort ved hjelp av faktoren som er brukt i den " +
-                    "årlege oppjusteringa av grunnbeløpet. ",
-            English to "Unless you state otherwise, your income will be adjusted upwards at the end of the " +
-                    "year to account for a general increase in wages. This is done by applying the factor used by " +
-                    "the government in the annual upward adjustment of the basic amount.",
-        )
-    }
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endretInntekt() {
