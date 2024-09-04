@@ -124,7 +124,7 @@ function RedigerBrev({
           display: grid;
           grid-template:
             "modelEditor letterEditor" 1fr
-            "footer footer" auto / 30% 70%;
+            "footer footer" var(--nav-bar-height) / 30% 70%;
 
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
@@ -144,6 +144,7 @@ function RedigerBrev({
           vedtaksId={vedtaksId}
         />
         <LetterEditor
+          editorHeight={"var(--main-page-content-height)"}
           editorState={editorState}
           freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
           setEditorState={setEditorState}

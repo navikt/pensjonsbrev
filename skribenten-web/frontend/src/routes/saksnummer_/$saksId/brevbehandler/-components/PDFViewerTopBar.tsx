@@ -166,7 +166,7 @@ const TopBarZoom = (properties: { scale: number; setScale: (n: number) => void }
     <HStack gap="2">
       <BasicPDFViewerButton
         onClick={() => {
-          if (properties.scale <= 1.3) {
+          if (properties.scale <= 1.5) {
             properties.setScale(properties.scale + 0.1);
           }
         }}

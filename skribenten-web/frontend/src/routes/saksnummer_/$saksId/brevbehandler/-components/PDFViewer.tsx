@@ -6,23 +6,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { pdfjs } from "react-pdf";
 import { Document, Page } from "react-pdf";
 
-import { usePDFViewerContext } from "./PDFViewerContext";
 import PDFViewerTopBar from "./PDFViewerTopBar";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
-/**
- * Brukt med [PDFViewerHeightContextProvider](./PDFViewerContext.tsx) for å gi en spesifikk høyden til PDFVieweren.
- * I fleste tilfeller vil vi vise PDF'en inni en scrollable div, og ikke la hele pagen være scrollable.
- * For at vi skal få det til å fungere må man bruke overflow: auto på div'en som holder PDF'en.
- * Merk at for å få det til må det settes en høyde på div'en. Denne høyden bestemmer parenten, siden den vet best i hvilken context layouten skal se ut
- *
- * Dersom man unnlater å bruke provideren og setter høyden, vil vi anta at man vil ha hele PDF'en rendret uten scrolling.
- */
-const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => {
+const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob; viewerHeight?: string }) => {
   const [scale, setScale] = useState<number>(1);
   const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(1);
-  const pdfHeightContext = usePDFViewerContext();
+
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
   const pdfContainerReference = useRef<HTMLDivElement>(null);
 
@@ -76,6 +67,8 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
     <div
       css={css`
         background: var(--a-gray-300);
+        height: ${properties.viewerHeight ? `${properties.viewerHeight}` : "auto"};
+        overflow: scroll;
       `}
     >
       <PDFViewerTopBar
@@ -89,19 +82,12 @@ const PDFViewer = (properties: { sakId: string; brevId: string; pdf: Blob }) => 
       />
       <div
         css={css`
-          /* 48px er høyden på topbaren */
-          height: ${pdfHeightContext.height ? `${pdfHeightContext.height - 48}px` : "100%"};
-          overflow: auto;
           display: flex;
           justify-content: center;
         `}
         ref={pdfContainerReference}
       >
         <Document
-          css={css`
-            background-color: var(--a-gray-300);
-            padding: 0 3rem 1rem;
-          `}
           file={properties.pdf}
           loading="Henter brev..."
           onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
