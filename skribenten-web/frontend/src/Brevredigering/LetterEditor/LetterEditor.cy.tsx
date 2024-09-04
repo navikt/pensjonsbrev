@@ -30,7 +30,7 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
     saksbehandlerValg: {},
   };
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevresponse));
-  return <LetterEditor editorState={editorState} freeze={false} setEditorState={setEditorState} />;
+  return <LetterEditor editorState={editorState} error={false} freeze={false} setEditorState={setEditorState} />;
 }
 
 describe("<LetterEditor />", () => {

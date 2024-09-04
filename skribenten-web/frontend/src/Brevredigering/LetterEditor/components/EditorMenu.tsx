@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { CheckmarkCircleFillIcon } from "@navikt/aksel-icons";
+import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Loader } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 import type { ReactNode } from "react";
@@ -12,7 +12,7 @@ import { formatTime } from "~/utils/dateUtils";
 import { applyAction } from "../lib/actions";
 
 export const EditorMenu = () => {
-  const { freeze, editorState, setEditorState } = useEditor();
+  const { freeze, error, editorState, setEditorState } = useEditor();
   const activeTypography = editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.type;
   const changeableContent = isTextContent(
     editorState.redigertBrev.blocks[editorState.focus.blockIndex].content[editorState.focus.contentIndex],
@@ -50,12 +50,27 @@ export const EditorMenu = () => {
       >
         Normal
       </SelectTypographyButton>
-      <LagretTidspunkt datetime={editorState.info.sistredigert} freeze={freeze} isDirty={editorState.isDirty} />
+      <LagretTidspunkt
+        datetime={editorState.info.sistredigert}
+        error={error}
+        freeze={freeze}
+        isDirty={editorState.isDirty}
+      />
     </div>
   );
 };
 
-function LagretTidspunkt({ freeze, datetime, isDirty }: { freeze: boolean; datetime: string; isDirty: boolean }) {
+function LagretTidspunkt({
+  freeze,
+  error,
+  datetime,
+  isDirty,
+}: {
+  freeze: boolean;
+  error: boolean;
+  datetime: string;
+  isDirty: boolean;
+}) {
   if (freeze) {
     return (
       <HStack gap="1">
@@ -64,6 +79,19 @@ function LagretTidspunkt({ freeze, datetime, isDirty }: { freeze: boolean; datet
       </HStack>
     );
   } else {
+    if (isDirty && error) {
+      const tekst = isToday(datetime)
+        ? `Klarte ikke lagre kl ${formatTime(datetime)}`
+        : `Klarte ikke lagre ${format(datetime, "dd.MM.yyyy HH:mm")}`;
+
+      return (
+        <HStack gap="1">
+          <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
+          {tekst}
+        </HStack>
+      );
+    }
+
     const tekst = isToday(datetime)
       ? `Lagret kl ${formatTime(datetime)}`
       : `Lagret ${format(datetime, "dd.MM.yyyy HH:mm")}`;

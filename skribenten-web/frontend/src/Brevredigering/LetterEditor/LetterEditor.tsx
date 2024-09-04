@@ -16,11 +16,13 @@ import type { LetterEditorState } from "./model/state";
 
 export const LetterEditor = ({
   freeze,
+  error,
   editorState,
   setEditorState,
   editorHeight,
 }: {
   freeze: boolean;
+  error: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   editorHeight?: string;
@@ -38,7 +40,7 @@ export const LetterEditor = ({
         overflow-y: auto;
       `}
     >
-      <EditorStateContext.Provider value={{ freeze, editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState }}>
         <div
           css={css`
             position: sticky;
@@ -76,10 +78,12 @@ export const LetterEditor = ({
 
 export const EditorStateContext = createContext<{
   freeze: boolean;
+  error: boolean;
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
 }>({
   freeze: false,
+  error: false,
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
 });
