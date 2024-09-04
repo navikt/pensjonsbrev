@@ -9,7 +9,7 @@ describe("Brevredigering", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", { fixture: "brevResponse.json" }).as(
       "brev",
     );
-    cy.fixture("brevResponse.json").then((brev: BrevResponse) => {
+    cy.fixture("brevResponseEtterLagring.json").then((brev: BrevResponse) => {
       brev.info.sistredigert = hurtiglagreTidspunkt;
       cy.intercept("put", "/bff/skribenten-backend/brev/1/redigertBrev", brev).as("hurtiglagreRedigertBrev");
     });
@@ -35,6 +35,7 @@ describe("Brevredigering", () => {
     cy.focused().type(" hello!");
     cy.wait("@hurtiglagreRedigertBrev");
     cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
+    cy.contains("hello!").should("exist");
   });
 
   it("Blokkerer redigering om brev er reservert av noen andre", () => {
