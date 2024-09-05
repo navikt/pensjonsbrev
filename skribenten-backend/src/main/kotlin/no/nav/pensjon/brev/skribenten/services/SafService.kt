@@ -136,16 +136,8 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
      * man kan spesifisere hvilket 'variantFormat' vi vil ha - per nå er vi bare interesert i 'ARKIV' versjonen
      */
     suspend fun hentPdfForJournalpostId(call: ApplicationCall, journalpostId: String): ServiceResult<ByteArray> =
-        hentFørsteDokumentInfoIdFraJournalpost(call, journalpostId).map { dokumentInfoId ->
-            return when (val res =
-                client.get(call = call, url = "$safRestUrl/hentdokument/$journalpostId/$dokumentInfoId/ARKIV")) {
-                is AuthorizedHttpClientResult.Error -> ServiceResult.Error(
-                    "Feil ved token-utveksling correlation_id: ${res.error.correlation_id} Description:${res.error.error_description}",
-                    HttpStatusCode.Unauthorized
-                )
-
-                is AuthorizedHttpClientResult.Response -> ServiceResult.Ok(res.response.readBytes())
-            }
+        hentFørsteDokumentInfoIdFraJournalpost(call, journalpostId).then { dokumentInfoId ->
+            client.get(call = call, url = "$safRestUrl/hentdokument/$journalpostId/$dokumentInfoId/ARKIV").toServiceResult()
         }
 
     /*
