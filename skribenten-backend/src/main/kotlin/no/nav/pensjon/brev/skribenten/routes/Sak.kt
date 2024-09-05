@@ -92,7 +92,6 @@ fun Route.sakRoute(
         }
 
         get("/pdf/{journalpostId}") {
-            val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             val journalpostId = call.parameters.getOrFail("journalpostId")
             safService.hentPdfForJournalpostId(call, journalpostId).onOk {
                 call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK)
