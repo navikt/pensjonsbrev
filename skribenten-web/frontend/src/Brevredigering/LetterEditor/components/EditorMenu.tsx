@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Loader } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
-import type { ReactNode } from "react";
+import { memo, type ReactNode, useEffect, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -60,52 +60,79 @@ export const EditorMenu = () => {
   );
 };
 
-function LagretTidspunkt({
-  freeze,
-  error,
-  datetime,
-  isDirty,
-}: {
-  freeze: boolean;
-  error: boolean;
-  datetime: string;
-  isDirty: boolean;
-}) {
-  if (freeze) {
-    return (
-      <HStack gap="1">
-        <Loader title="Lagrer..." />
-        Lagrer...
-      </HStack>
-    );
-  } else {
-    if (isDirty && error) {
-      const tekst = isToday(datetime)
-        ? `Klarte ikke lagre kl ${formatTime(datetime)}`
-        : `Klarte ikke lagre ${format(datetime, "dd.MM.yyyy HH:mm")}`;
+//delay = millisekunder
+const useTimeoutValue = (argz: { initialValue: React.ReactNode; newValue: React.ReactNode; delay: number }) => {
+  const [value, setValue] = useState(argz.initialValue);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setValue(argz.newValue);
+    }, argz.delay);
+
+    return () => {
+      return clearTimeout(timer);
+    };
+  }, [argz.delay, argz.newValue]);
+
+  return value;
+};
+
+const LagringFeilet = memo((properties: { dateTime: string }) => {
+  const ikon = useTimeoutValue({
+    initialValue: <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />,
+    newValue: null,
+    delay: 2500,
+  });
+
+  const tekst = isToday(properties.dateTime)
+    ? `Klarte ikke lagre kl ${formatTime(properties.dateTime)}`
+    : `Klarte ikke lagre ${format(properties.dateTime, "dd.MM.yyyy HH:mm")}`;
+
+  return (
+    <HStack gap="1">
+      {ikon}
+      {tekst}
+    </HStack>
+  );
+});
+
+const LagringSuccess = memo((properties: { dateTime: string }) => {
+  const ikon = useTimeoutValue({
+    initialValue: <CheckmarkCircleFillIcon color="#007C2E" fontSize="1.5rem" title="error-ikon" />,
+    newValue: null,
+    delay: 2500,
+  });
+
+  const tekst = isToday(properties.dateTime)
+    ? `Lagret kl ${formatTime(properties.dateTime)}`
+    : `Lagret ${format(properties.dateTime, "dd.MM.yyyy HH:mm")}`;
+
+  return (
+    <HStack gap="1">
+      {ikon}
+      {tekst}
+    </HStack>
+  );
+});
+
+const LagretTidspunkt = memo(
+  ({ freeze, error, datetime, isDirty }: { freeze: boolean; error: boolean; datetime: string; isDirty: boolean }) => {
+    if (freeze) {
       return (
         <HStack gap="1">
-          <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
-          {tekst}
+          <Loader title="Lagrer..." />
+          Lagrer...
         </HStack>
       );
+    } else {
+      if (isDirty && error) {
+        return <LagringFeilet dateTime={datetime} />;
+      }
+
+      return <LagringSuccess dateTime={datetime} />;
     }
-
-    const tekst = isToday(datetime)
-      ? `Lagret kl ${formatTime(datetime)}`
-      : `Lagret ${format(datetime, "dd.MM.yyyy HH:mm")}`;
-
-    const ikon = isDirty ? null : <CheckmarkCircleFillIcon color="#007C2E" fontSize="1.5rem" title="vellykket-ikon" />;
-
-    return (
-      <HStack gap="1">
-        {ikon}
-        {tekst}
-      </HStack>
-    );
-  }
-}
+  },
+);
 
 function SelectTypographyButton({
   dataCy,
