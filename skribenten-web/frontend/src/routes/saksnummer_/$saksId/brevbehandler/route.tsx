@@ -39,7 +39,6 @@ function Brevbehandler() {
       css={css`
         display: flex;
         flex: 1;
-        justify-content: center;
       `}
     >
       {modalÅpen && <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />}
@@ -49,6 +48,7 @@ function Brevbehandler() {
           grid-template:
             "meny pdf" 1fr
             "footer footer" auto / 33% 66%;
+          align-items: start;
 
           background-color: white;
           width: 1200px;
@@ -58,6 +58,8 @@ function Brevbehandler() {
           css={css`
             padding: var(--a-spacing-4);
             border-right: 1px solid var(--a-gray-200);
+            height: var(--main-page-content-height);
+            overflow-y: auto;
           `}
         >
           <Heading level="1" size="small">
