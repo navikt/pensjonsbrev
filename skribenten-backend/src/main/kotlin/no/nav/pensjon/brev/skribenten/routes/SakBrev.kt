@@ -102,17 +102,6 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             )
         }
 
-        // TODO: Slett når frontend er endret til å bruke get
-        post("/{brevId}/pdf") {
-            val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-
-            brevredigeringService.hentEllerOpprettPdf(call, sak.saksId, brevId)
-                ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.Created) }
-                ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
-                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
-        }
-
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
