@@ -77,25 +77,6 @@ const useTimeoutValue = (argz: { initialValue: React.ReactNode; newValue: React.
   return value;
 };
 
-const LagringFeilet = memo((properties: { dateTime: string }) => {
-  const ikon = useTimeoutValue({
-    initialValue: <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />,
-    newValue: null,
-    delay: 2500,
-  });
-
-  const tekst = isToday(properties.dateTime)
-    ? `Klarte ikke lagre kl ${formatTime(properties.dateTime)}`
-    : `Klarte ikke lagre ${format(properties.dateTime, "dd.MM.yyyy HH:mm")}`;
-
-  return (
-    <HStack gap="1">
-      {ikon}
-      {tekst}
-    </HStack>
-  );
-});
-
 const LagringSuccess = memo((properties: { dateTime: string }) => {
   const ikon = useTimeoutValue({
     initialValue: <CheckmarkCircleFillIcon color="#007C2E" fontSize="1.5rem" title="error-ikon" />,
@@ -126,7 +107,16 @@ const LagretTidspunkt = memo(
       );
     } else {
       if (isDirty && error) {
-        return <LagringFeilet dateTime={datetime} />;
+        const tekst = isToday(datetime)
+          ? `Klarte ikke lagre kl ${formatTime(datetime)}`
+          : `Klarte ikke lagre ${format(datetime, "dd.MM.yyyy HH:mm")}`;
+
+        return (
+          <HStack gap="1">
+            <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
+            {tekst}
+          </HStack>
+        );
       }
 
       return <LagringSuccess dateTime={datetime} />;
