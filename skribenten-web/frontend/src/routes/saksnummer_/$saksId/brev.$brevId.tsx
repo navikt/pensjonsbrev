@@ -147,6 +147,7 @@ function RedigerBrev({
         <LetterEditor
           editorHeight={"var(--main-page-content-height)"}
           editorState={editorState}
+          error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError}
           freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
           setEditorState={setEditorState}
         />
@@ -170,8 +171,13 @@ function RedigerBrev({
             Tilbake til brevvelger
           </Button>
           <Button
-            onClick={() => {
-              navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: saksId } });
+            loading={redigertBrevMutation.isPending}
+            onClick={async () => {
+              await redigertBrevMutation.mutateAsync(editorState.redigertBrev, {
+                onSuccess: () => {
+                  navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: saksId } });
+                },
+              });
             }}
             size="small"
             type="button"
