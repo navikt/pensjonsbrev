@@ -6,11 +6,10 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -148,17 +147,14 @@ object BarnepensjonInnvilgelseFraser {
                 }
             }
             paragraph {
-                textExpr(
-                    Language.Bokmal to ("Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
-                            "§§ 18-2, 18-3, 18-4, 18-5").expr() +
-                            ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
-                    Language.Nynorsk to ("Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova " +
-                            "§§ 18-2, 18-3, 18-4, 18-5").expr() +
-                            ifElse(etterbetaling, ", 22-12 og 22-13.", " og 22-12."),
-                    Language.English to ("This decision has been made pursuant to the provisions regarding " +
+                text(
+                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven " +
+                            "§§ 18-2, 18-3, 18-4, 18-5, 22-12 og 22-13.",
+                    Language.Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova " +
+                            "§§ 18-2, 18-3, 18-4, 18-5, 22-12 og 22-13.",
+                    Language.English to "This decision has been made pursuant to the provisions regarding " +
                             "children's pensions in the National Insurance Act – " +
-                            "sections 18-2, 18-3, 18-4, 18-5").expr() +
-                            ifElse(etterbetaling, ", 22-12 and 22-13.", " and 22-12."),
+                            "sections 18-2, 18-3, 18-4, 18-5, 22-12 and 22-13.",
                 )
             }
         }
