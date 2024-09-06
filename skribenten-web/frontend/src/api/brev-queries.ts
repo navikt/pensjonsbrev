@@ -44,7 +44,7 @@ export async function createBrev(saksId: string, request: OpprettBrevRequest) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`, request)).data;
 }
 
-export async function updateBrev(saksId: string, brevId: number, request: OppdaterBrevRequest) {
+export async function updateBrev(saksId: string, brevId: string | number, request: OppdaterBrevRequest) {
   return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, request)).data;
 }
 

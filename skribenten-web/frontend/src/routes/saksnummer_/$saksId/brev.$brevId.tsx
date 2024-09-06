@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { ArrowRightIcon } from "@navikt/aksel-icons";
+import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyLong, Button, HStack, Label, Modal } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -7,7 +7,13 @@ import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 
-import { getBrev, getBrevReservasjon, hurtiglagreBrev, hurtiglagreSaksbehandlerValg } from "~/api/brev-queries";
+import {
+  getBrev,
+  getBrevReservasjon,
+  hurtiglagreBrev,
+  hurtiglagreSaksbehandlerValg,
+  updateBrev,
+} from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -16,7 +22,8 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import type { BrevResponse, ReservasjonResponse } from "~/types/brev";
+import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
+import type { EditedLetter } from "~/types/brevbakerTypes";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
@@ -75,6 +82,70 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
   }
 };
 
+const TilbakestillMalModal = (properties: {
+  sakId: string;
+  brevId: number;
+  åpen: boolean;
+  onClose: () => void;
+  saksbehandlerValg: SaksbehandlerValg;
+  editedLetter: EditedLetter;
+  resetEditor: (brevResponse: BrevResponse) => void;
+}) => {
+  const queryClient = useQueryClient();
+  const tilbakestillMutation = useMutation<BrevResponse, Error>({
+    mutationFn: () =>
+      updateBrev(properties.sakId, properties.brevId, {
+        saksbehandlerValg: properties.saksbehandlerValg,
+        redigertBrev: {
+          ...properties.editedLetter,
+          blocks: [],
+          deletedBlocks: [],
+        },
+      }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(getBrev.queryKey(properties.brevId), response);
+      properties.resetEditor(response);
+      properties.onClose();
+    },
+  });
+
+  return (
+    <Modal
+      css={css`
+        border-radius: 0.25rem;
+      `}
+      header={{
+        heading: "Vil du tilbakestille brevmalen?",
+      }}
+      onClose={properties.onClose}
+      open={properties.åpen}
+      portal
+      width={600}
+    >
+      <Modal.Body>
+        <BodyLong>Innholdet du har endret eller lagt til i brevet vil bli slettet.</BodyLong>
+        <BodyLong>Du kan ikke angre denne handlingen.</BodyLong>
+      </Modal.Body>
+      <Modal.Footer>
+        <HStack gap="4">
+          <Button onClick={properties.onClose} type="button" variant="tertiary">
+            Nei, behold brevet
+          </Button>
+
+          <Button
+            loading={tilbakestillMutation.isPending}
+            onClick={() => tilbakestillMutation.mutate()}
+            type="button"
+            variant="danger"
+          >
+            Ja, tilbakestill malen
+          </Button>
+        </HStack>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
 function RedigerBrev({
   brev,
   doReload,
@@ -86,6 +157,7 @@ function RedigerBrev({
   saksId: string;
   vedtaksId: string | undefined;
 }) {
+  const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
   const navigate = useNavigate({ from: Route.fullPath });
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
@@ -119,6 +191,17 @@ function RedigerBrev({
   return (
     <div>
       <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
+      {vilTilbakestilleMal && (
+        <TilbakestillMalModal
+          brevId={brev.info.id}
+          editedLetter={brev.redigertBrev}
+          onClose={() => setVilTilbakestilleMal(false)}
+          resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
+          sakId={saksId}
+          saksbehandlerValg={brev.saksbehandlerValg}
+          åpen={vilTilbakestilleMal}
+        />
+      )}
       <div
         css={css`
           background: var(--a-white);
@@ -157,35 +240,48 @@ function RedigerBrev({
             border-top: 1px solid var(--a-gray-200);
             padding: 0.5rem 1rem;
           `}
-          gap="2"
-          justify={"end"}
+          justify={"space-between"}
         >
-          <Button
-            onClick={() => {
-              navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: saksId } });
-            }}
-            size="small"
-            type="button"
-            variant="tertiary"
-          >
-            Tilbake til brevvelger
-          </Button>
-          <Button
-            loading={redigertBrevMutation.isPending}
-            onClick={async () => {
-              await redigertBrevMutation.mutateAsync(editorState.redigertBrev, {
-                onSuccess: () => {
-                  navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: saksId } });
-                },
-              });
-            }}
-            size="small"
-            type="button"
-          >
-            <HStack align={"center"} gap="2">
-              <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+          <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
+            <HStack align={"center"} gap="1">
+              <ArrowCirclepathIcon
+                css={css`
+                  transform: scaleX(-1);
+                `}
+                fontSize="1.5rem"
+                title="Tilbakestill mall"
+              />
+              Tilbakestill malen
             </HStack>
           </Button>
+          <HStack gap="2" justify={"end"}>
+            <Button
+              onClick={() => {
+                navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: saksId } });
+              }}
+              size="small"
+              type="button"
+              variant="tertiary"
+            >
+              Tilbake til brevvelger
+            </Button>
+            <Button
+              loading={redigertBrevMutation.isPending}
+              onClick={async () => {
+                await redigertBrevMutation.mutateAsync(editorState.redigertBrev, {
+                  onSuccess: () => {
+                    navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: saksId } });
+                  },
+                });
+              }}
+              size="small"
+              type="button"
+            >
+              <HStack align={"center"} gap="2">
+                <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+              </HStack>
+            </Button>
+          </HStack>
         </HStack>
       </div>
     </div>
