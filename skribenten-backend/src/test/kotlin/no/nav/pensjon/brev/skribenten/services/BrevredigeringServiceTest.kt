@@ -960,6 +960,14 @@ class BrevredigeringServiceTest {
         }
     }
 
+    @Test
+    fun `kan endre signerende saksbehandler signatur`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        brevredigeringService.oppdaterSignatur(callMock(), brev.info.id, "en ny signatur")
+
+        assertEquals("en ny signatur", transaction { Brevredigering[brev.info.id].signaturSignerende })
+    }
+
     private suspend fun opprettBrev(call: ApplicationCall = callMock(), reserverForRedigering: Boolean = false, mottaker: Api.OverstyrtMottaker? = null) =
         brevredigeringService.opprettBrev(
             call = call,

@@ -5,13 +5,11 @@ import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.skribenten.auth.AuthorizedHttpClientResult
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
