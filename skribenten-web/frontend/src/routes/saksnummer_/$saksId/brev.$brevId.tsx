@@ -16,7 +16,7 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
+import type { BrevResponse, ReservasjonResponse } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
@@ -76,27 +76,25 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
   }
 };
 
-const TilbakestillMalModal = (properties: {
-  sakId: string;
+const TilbakestillMalModal = (props: {
   brevId: number;
   åpen: boolean;
   onClose: () => void;
-  saksbehandlerValg: SaksbehandlerValg;
   editedLetter: EditedLetter;
   resetEditor: (brevResponse: BrevResponse) => void;
 }) => {
   const queryClient = useQueryClient();
   const tilbakestillMutation = useMutation<BrevResponse, Error>({
     mutationFn: () =>
-      hurtiglagreBrev(properties.brevId, {
-        ...properties.editedLetter,
+      hurtiglagreBrev(props.brevId, {
+        ...props.editedLetter,
         blocks: [],
         deletedBlocks: [],
       }),
     onSuccess: (response) => {
-      queryClient.setQueryData(getBrev.queryKey(properties.brevId), response);
-      properties.resetEditor(response);
-      properties.onClose();
+      queryClient.setQueryData(getBrev.queryKey(props.brevId), response);
+      props.resetEditor(response);
+      props.onClose();
     },
   });
 
@@ -108,8 +106,8 @@ const TilbakestillMalModal = (properties: {
       header={{
         heading: "Vil du tilbakestille brevmalen?",
       }}
-      onClose={properties.onClose}
-      open={properties.åpen}
+      onClose={props.onClose}
+      open={props.åpen}
       portal
       width={600}
     >
@@ -119,7 +117,7 @@ const TilbakestillMalModal = (properties: {
       </Modal.Body>
       <Modal.Footer>
         <HStack gap="4">
-          <Button onClick={properties.onClose} type="button" variant="tertiary">
+          <Button onClick={props.onClose} type="button" variant="tertiary">
             Nei, behold brevet
           </Button>
 
@@ -188,8 +186,6 @@ function RedigerBrev({
           editedLetter={brev.redigertBrev}
           onClose={() => setVilTilbakestilleMal(false)}
           resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
-          sakId={saksId}
-          saksbehandlerValg={brev.saksbehandlerValg}
           åpen={vilTilbakestilleMal}
         />
       )}

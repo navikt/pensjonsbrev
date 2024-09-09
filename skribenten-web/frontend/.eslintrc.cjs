@@ -3,6 +3,7 @@ const IGNORED_UNICORN_RULES = {
   "unicorn/no-null": "off",
   "unicorn/no-useless-undefined": "off",
   "unicorn/no-array-callback-reference": "off",
+  "unicorn/prevent-abbreviations": "off"
 };
 
 // eslint-disable-next-line unicorn/prefer-module,no-undef
@@ -48,6 +49,7 @@ module.exports = {
     "@tanstack/query/exhaustive-deps": "off",
     "@typescript-eslint/consistent-type-imports": ["warn"],
     "@typescript-eslint/switch-exhaustiveness-check": "error",
+    'react/no-unused-prop-types': 'error',
     ...IGNORED_UNICORN_RULES,
   },
 };
