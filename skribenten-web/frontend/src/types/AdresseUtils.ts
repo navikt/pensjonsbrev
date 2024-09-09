@@ -8,10 +8,6 @@ export const mapEndreMottakerValueTilMottaker = (v: string | Adresse): Mottaker 
       tssId: v,
     };
   } else {
-    /* 
-        TODO - Fiks at Adresse ikke skal ha noen nullables (utenom adresselinjer)
-            Kan også forholde oss til backendens adresse typer også siden vi har disse nå
-    */
     return v.land === "NO"
       ? {
           type: "NorskAdresse",
