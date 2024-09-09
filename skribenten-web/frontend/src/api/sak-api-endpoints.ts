@@ -61,3 +61,7 @@ export const hentPdfForJournalpost = async (argz: { sakId: string; journalpostId
       headers: { Accept: "application/pdf" },
     })
   ).data;
+
+export const fjernOverstyrtMottaker = async (argz: { sakId: string; brevId: string | number }) => {
+  return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.sakId}/brev/${argz.brevId}/mottaker`)).data;
+};

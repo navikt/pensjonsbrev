@@ -19,7 +19,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
-import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
@@ -157,6 +157,15 @@ const BrevItem = (properties: {
     },
   });
 
+  const fjernMottakerMutation = useMutation<void, AxiosError>({
+    mutationFn: () => fjernOverstyrtMottaker({ sakId: properties.sakId, brevId: properties.brev.id }),
+    onSuccess: () => {
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? { ...properties.brev, mottaker: null } : brev)),
+      );
+    },
+  });
+
   const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
 
   return (
@@ -211,6 +220,31 @@ const BrevItem = (properties: {
                     </Button>
                   )}
                 </HStack>
+                {properties.brev.mottaker && (
+                  <HStack>
+                    <Button
+                      css={css`
+                        padding: 0.5rem 0;
+                      `}
+                      loading={fjernMottakerMutation.isPending}
+                      onClick={() => fjernMottakerMutation.mutate()}
+                      size="small"
+                      type="button"
+                      variant="tertiary"
+                    >
+                      Tilbakestill mottaker
+                    </Button>
+                    {fjernMottakerMutation.isError && (
+                      <XMarkOctagonFillIcon
+                        css={css`
+                          align-self: center;
+                          color: var(--a-nav-red);
+                        `}
+                        title="error"
+                      />
+                    )}
+                  </HStack>
+                )}
               </div>
 
               <Switch

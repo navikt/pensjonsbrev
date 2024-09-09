@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Modal, Tabs } from "@navikt/ds-react";
+import { Button, HStack, Modal, Tabs } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -34,6 +34,7 @@ const EndreMottaker = (properties: {
 }) => {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const navigate = useNavigate({ from: Route.fullPath });
+  const { idTSSEkstern } = Route.useSearch();
 
   return (
     <div>
@@ -65,15 +66,32 @@ const EndreMottaker = (properties: {
           åpen={modalÅpen}
         />
       )}
-      <Button
-        data-cy="toggle-endre-mottaker-modal"
-        onClick={() => setModalÅpen(true)}
-        size="small"
-        type="button"
-        variant="secondary"
-      >
-        Endre mottaker
-      </Button>
+      <HStack>
+        <Button
+          data-cy="toggle-endre-mottaker-modal"
+          onClick={() => setModalÅpen(true)}
+          size="small"
+          type="button"
+          variant="secondary"
+        >
+          Endre mottaker
+        </Button>
+        {idTSSEkstern && (
+          <Button
+            onClick={() =>
+              navigate({
+                search: (s) => ({ ...s, idTSSEkstern: undefined }),
+                replace: true,
+              })
+            }
+            size="small"
+            type="button"
+            variant="tertiary"
+          >
+            Tilbakestill mottaker
+          </Button>
+        )}
+      </HStack>
     </div>
   );
 };
