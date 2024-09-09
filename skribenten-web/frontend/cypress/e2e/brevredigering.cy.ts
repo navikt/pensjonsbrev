@@ -77,4 +77,33 @@ describe("Brevredigering", () => {
     cy.contains("Saksbehandlingstiden vår er vanligvis 10 uker.").should("not.exist");
     cy.contains("Brevet redigeres av noen andre").should("exist");
   });
+
+  it("kan tilbakestille malen", () => {
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev", {
+      fixture: "brevResponse.json",
+    });
+
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Dersom vi trenger flere opplysninger").click();
+    cy.focused().type(" hello!");
+
+    cy.contains("Tilbakestill malen").click();
+    cy.contains("Vil du tilbakestille brevmalen?").should("exist");
+    cy.contains("Innholdet du har endret eller lagt til i brevet vil bli slettet.").should("exist");
+    cy.contains("Du kan ikke angre denne handlingen.").should("exist");
+    cy.contains("Ja, tilbakestill malen").click();
+    cy.contains(" hello!").should("not.exist");
+  });
+
+  it("beholder brevet etter å ville tilbakestille", () => {
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Dersom vi trenger flere opplysninger").click();
+    cy.focused().type(" hello!");
+
+    cy.contains("Tilbakestill malen").click();
+    cy.contains("Nei, behold brevet").click();
+    cy.contains(" hello!").should("exist");
+  });
 });
