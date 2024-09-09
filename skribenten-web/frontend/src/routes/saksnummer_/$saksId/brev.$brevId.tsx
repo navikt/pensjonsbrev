@@ -7,13 +7,7 @@ import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 
-import {
-  getBrev,
-  getBrevReservasjon,
-  hurtiglagreBrev,
-  hurtiglagreSaksbehandlerValg,
-  updateBrev,
-} from "~/api/brev-queries";
+import { getBrev, getBrevReservasjon, hurtiglagreBrev, hurtiglagreSaksbehandlerValg } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -94,13 +88,10 @@ const TilbakestillMalModal = (properties: {
   const queryClient = useQueryClient();
   const tilbakestillMutation = useMutation<BrevResponse, Error>({
     mutationFn: () =>
-      updateBrev(properties.sakId, properties.brevId, {
-        saksbehandlerValg: properties.saksbehandlerValg,
-        redigertBrev: {
-          ...properties.editedLetter,
-          blocks: [],
-          deletedBlocks: [],
-        },
+      hurtiglagreBrev(properties.brevId, {
+        ...properties.editedLetter,
+        blocks: [],
+        deletedBlocks: [],
       }),
     onSuccess: (response) => {
       queryClient.setQueryData(getBrev.queryKey(properties.brevId), response);

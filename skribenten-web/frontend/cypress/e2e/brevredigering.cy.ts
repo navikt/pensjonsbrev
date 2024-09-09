@@ -79,7 +79,7 @@ describe("Brevredigering", () => {
   });
 
   it("kan tilbakestille malen", () => {
-    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1", {
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev", {
       fixture: "brevResponse.json",
     });
 
