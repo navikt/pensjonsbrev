@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Loader } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
-import { memo, type ReactNode, useEffect, useState } from "react";
+import { memo, type ReactNode, useEffect, useRef, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -63,9 +63,18 @@ export const EditorMenu = () => {
 //delay = millisekunder
 const useTimeoutValue = (argz: { initialValue: React.ReactNode; newValue: React.ReactNode; delay: number }) => {
   const [value, setValue] = useState(argz.initialValue);
+  const isMountingReference = useRef(true);
+
+  useEffect(() => {
+    isMountingReference.current = false;
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      if (isMountingReference.current) {
+        setValue(null);
+        return;
+      }
       setValue(argz.newValue);
     }, argz.delay);
 
@@ -74,7 +83,7 @@ const useTimeoutValue = (argz: { initialValue: React.ReactNode; newValue: React.
     };
   }, [argz.delay, argz.newValue]);
 
-  return value;
+  return isMountingReference.current ? null : value;
 };
 
 const LagringSuccess = memo((properties: { dateTime: string }) => {
