@@ -107,14 +107,46 @@ export const leggTilManuellSamhandlerFormDataSchema = z.object({
       }
       return refinementContext;
     }),
-  adresse: z.object({
-    navn: z.string().min(1, "Obligatorisk"),
-    linje1: z.string().min(1, "Obligatorisk"),
-    linje2: z.string(),
-    postnr: z.string().min(1, "Obligatorisk"),
-    poststed: z.string().min(1, "Obligatorisk"),
-    land: z.string().min(1, "Obligatorisk"),
-  }),
+  /**
+   * manuell adresse har 2 krav for utfylling:
+   * For norske adresser (der land er "NO") - kreves navn, postnummer, og poststed.
+   * For utenlandkse adresser (alle andre land som ikke er "NO") - kreves navn, og adresselinje1
+   */
+  adresse: z
+    .object({
+      navn: z.string().min(1, "Obligatorisk"),
+      linje1: z.string(),
+      linje2: z.string(),
+      postnr: z.string(),
+      poststed: z.string(),
+      land: z.string().min(1, "Obligatorisk"),
+    })
+    .superRefine((data, refinementContext) => {
+      if (data.land === "NO") {
+        if (data.postnr.length !== 4) {
+          refinementContext.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Postnummer må være 4 tegn",
+            path: ["postnr"],
+          });
+        }
+        if (data.poststed === "") {
+          refinementContext.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Poststed må fylles ut",
+            path: ["poststed"],
+          });
+        }
+      } else {
+        if (data.linje1 === "") {
+          refinementContext.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Adresselinje 1 må fylles ut",
+            path: ["linje1"],
+          });
+        }
+      }
+    }),
 });
 
 export const finnSamhandlerFormDataSchema = z

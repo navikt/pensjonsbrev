@@ -210,9 +210,6 @@ const BrevItem = (properties: {
                       <PencilIcon fontSize="24px" />
                     </Button>
                   )}
-
-                  {mottakerMutation.isPending && <Loader size="small" />}
-                  {mottakerMutation.isError && "Error"}
                 </HStack>
               </div>
 
