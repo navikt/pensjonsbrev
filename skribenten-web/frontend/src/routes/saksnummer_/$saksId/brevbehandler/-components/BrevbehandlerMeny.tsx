@@ -220,7 +220,7 @@ const BrevItem = (properties: {
                     </Button>
                   )}
                 </HStack>
-                {properties.brev.mottaker && (
+                {properties.brev.mottaker && !erLåst && (
                   <HStack>
                     <Button
                       css={css`
