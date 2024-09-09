@@ -61,6 +61,7 @@ const EndreMottaker = (properties: {
           }}
           onClose={() => setModalÅpen(false)}
           resetOnBekreftState={() => {}}
+          skalKunOppdatereSamhandler
           åpen={modalÅpen}
         />
       )}
@@ -95,6 +96,7 @@ export const EndreMottakerModal = (properties: {
   error: Nullable<AxiosError>;
   isPending: Nullable<boolean>;
   onClose: () => void;
+  skalKunOppdatereSamhandler?: boolean;
 }) => {
   const [tab, setTab] = useState<EndreMottakerModalTabs>("samhandler");
   const [vilAvbryte, setVilAvbryte] = useState<boolean>(false);
@@ -218,6 +220,7 @@ export const EndreMottakerModal = (properties: {
                 valgtSamhandler ? { ...form.getValues("finnSamhandler"), id: valgtSamhandler } : null
               }
               setSamhandler={(id) => setValgtSamhandler(id)}
+              skalKunOppdatereSamhandler={properties.skalKunOppdatereSamhandler}
               tab={{
                 tab: tab,
                 setTab: setTab,
@@ -245,6 +248,7 @@ const ModalTabs = (properties: {
   isPending: Nullable<boolean>;
   samhandlerValuesMedId: Nullable<SamhandlerValuesMedId>;
   manuellAdresseValues: Nullable<ManuellAdresseUtfyllingFormData>;
+  skalKunOppdatereSamhandler?: boolean;
 }) => {
   return (
     <div>
@@ -262,8 +266,10 @@ const ModalTabs = (properties: {
         <Tabs onChange={(s) => properties.tab.setTab(s as EndreMottakerModalTabs)} value={properties.tab.tab}>
           <Tabs.List>
             <Tabs.Tab label="Finn samhandler" value="samhandler" />
-            {/* Vi har enda ikke backend støtte for å legge til manuell adresse. Midlertidig har vi bare fjernet muligheten til å komme inn i formet */}
-            <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
+
+            {properties.skalKunOppdatereSamhandler ? null : (
+              <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
+            )}
           </Tabs.List>
           <div
             css={css`
