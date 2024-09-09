@@ -6,6 +6,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { getNavn } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
@@ -14,6 +15,16 @@ import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-comp
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
   component: Brevbehandler,
+  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
+    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
+
+    queryClient.prefetchQuery({
+      queryKey: getNavn.queryKey(sakContext.sak.saksId.toString()),
+      queryFn: () => getNavn.queryFn(sakContext.sak.saksId.toString()),
+    });
+
+    return sakContext;
+  },
   validateSearch: (search: Record<string, unknown>): { brevId?: string } => ({
     brevId: search.brevId?.toString(),
   }),

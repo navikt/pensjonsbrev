@@ -14,12 +14,13 @@ import {
   Tag,
   VStack,
 } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
 import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { getNavn } from "~/api/skribenten-api-endpoints";
 import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
@@ -111,8 +112,14 @@ const BrevItem = (properties: {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
 }) => {
-  const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
+  const [modalÅpen, setModalÅpen] = useState<boolean>(false);
+  const sakContext = Route.useLoaderData();
+
+  const { data: navn } = useQuery({
+    queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
+    queryFn: () => getNavn.queryFn(sakContext.sak.saksId),
+  });
 
   const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (låst) =>
@@ -204,7 +211,7 @@ const BrevItem = (properties: {
                   {properties.brev.mottaker ? (
                     <MottakerNavn mottaker={properties.brev.mottaker} />
                   ) : (
-                    <BodyShort>Bruker</BodyShort>
+                    <BodyShort>{navn ?? "Bruker"}</BodyShort>
                   )}
                   {!erLåst && (
                     <Button
