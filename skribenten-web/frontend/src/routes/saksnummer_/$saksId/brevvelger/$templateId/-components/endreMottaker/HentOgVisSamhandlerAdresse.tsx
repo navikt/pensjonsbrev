@@ -1,10 +1,12 @@
 import { Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 
 import { hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SamhandlerTypeCode } from "~/types/apiTypes";
 import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
+import type { Nullable } from "~/types/Nullable";
 
 import type { TypeMottaker } from "./EndreMottakerUtils";
 import OppsummeringAvValgtMottaker from "./OppsummeringAvValgtMottaker";
@@ -17,6 +19,8 @@ const HentOgVisSamhandlerAdresse = (properties: {
   typeMottaker: SamhandlerTypeCode | TypeMottaker;
   onTilbakeTilSøk: () => void;
   onBekreftNyMottaker: () => void;
+  error: Nullable<AxiosError>;
+  isPending: Nullable<boolean>;
   onCloseIntent: () => void;
 }) => {
   const hentSamhandlerAdresseQuery = useQuery({
@@ -52,6 +56,8 @@ const HentOgVisSamhandlerAdresse = (properties: {
           poststed: hentSamhandlerAdresseQuery.data?.poststed,
           land: hentSamhandlerAdresseQuery.data?.land,
         }}
+        error={properties.error}
+        isPending={properties.isPending}
         onAvbryt={properties.onCloseIntent}
         onBekreft={properties.onBekreftNyMottaker}
         onTilbake={{

@@ -4,6 +4,7 @@ import { Button, Modal, Tabs } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import type { AxiosError } from "axios";
 import { useCallback, useState } from "react";
 import type { Control } from "react-hook-form";
 import { useForm } from "react-hook-form";
@@ -38,6 +39,8 @@ const EndreMottaker = (properties: {
     <div>
       {modalÅpen && (
         <EndreMottakerModal
+          error={null}
+          isPending={false}
           onBekreftNyMottaker={(bekreftetMottaker) => {
             setModalÅpen(false);
             //hvis mottaker er en string, betyr det at det er en samhandler
@@ -57,6 +60,7 @@ const EndreMottaker = (properties: {
             }
           }}
           onClose={() => setModalÅpen(false)}
+          resetOnBekreftState={() => {}}
           åpen={modalÅpen}
         />
       )}
@@ -87,6 +91,9 @@ export default EndreMottaker;
 export const EndreMottakerModal = (properties: {
   åpen: boolean;
   onBekreftNyMottaker: (id: string | Adresse) => void;
+  resetOnBekreftState: () => void;
+  error: Nullable<AxiosError>;
+  isPending: Nullable<boolean>;
   onClose: () => void;
 }) => {
   const [tab, setTab] = useState<EndreMottakerModalTabs>("samhandler");
@@ -189,6 +196,7 @@ export const EndreMottakerModal = (properties: {
                 onFinnsamhandlerSubmit(values.finnSamhandler);
               } else if (tab === "manuellAdresse") {
                 setValgtSamhandler(null);
+                properties.resetOnBekreftState();
                 setTab("oppsummering");
               }
             })(event);
@@ -199,10 +207,13 @@ export const EndreMottakerModal = (properties: {
           ) : (
             <ModalTabs
               control={form.control}
+              error={properties.error}
+              isPending={properties.isPending}
               manuellAdresseValues={valgtSamhandler ? null : form.getValues("manuellAdresse")}
               onAvbrytClick={onAvbrytClick}
               onBekreftNyMottaker={properties.onBekreftNyMottaker}
               onFinnSamhandlerSubmit={finnSamhandlerMutation}
+              resetOnBekreftState={properties.resetOnBekreftState}
               samhandlerValuesMedId={
                 valgtSamhandler ? { ...form.getValues("finnSamhandler"), id: valgtSamhandler } : null
               }
@@ -229,6 +240,9 @@ const ModalTabs = (properties: {
   setSamhandler: (id: string) => void;
   onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequestDto, unknown>;
   onBekreftNyMottaker: (id: string | Adresse) => void;
+  resetOnBekreftState: () => void;
+  error: Nullable<AxiosError>;
+  isPending: Nullable<boolean>;
   samhandlerValuesMedId: Nullable<SamhandlerValuesMedId>;
   manuellAdresseValues: Nullable<ManuellAdresseUtfyllingFormData>;
 }) => {
@@ -236,6 +250,8 @@ const ModalTabs = (properties: {
     <div>
       {properties.tab.tab === "oppsummering" ? (
         <OppsummeringsTab
+          error={properties.error}
+          isPending={properties.isPending}
           manuellAdresseValues={properties.manuellAdresseValues}
           onBekreftNyMottaker={properties.onBekreftNyMottaker}
           onCloseIntent={properties.onAvbrytClick}
@@ -247,7 +263,7 @@ const ModalTabs = (properties: {
           <Tabs.List>
             <Tabs.Tab label="Finn samhandler" value="samhandler" />
             {/* Vi har enda ikke backend støtte for å legge til manuell adresse. Midlertidig har vi bare fjernet muligheten til å komme inn i formet */}
-            {/* <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" /> */}
+            <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
           </Tabs.List>
           <div
             css={css`
@@ -260,6 +276,7 @@ const ModalTabs = (properties: {
                 onCloseIntent={properties.onAvbrytClick}
                 onFinnSamhandlerSubmit={properties.onFinnSamhandlerSubmit}
                 onSamhandlerValg={(id) => {
+                  properties.resetOnBekreftState();
                   properties.setSamhandler(id);
                   properties.tab.setTab("oppsummering");
                 }}
@@ -269,7 +286,9 @@ const ModalTabs = (properties: {
               <UtfyllingAvManuellAdresseForm
                 control={properties.control}
                 onCloseIntent={properties.onAvbrytClick}
-                onSubmit={() => properties.tab.setTab("oppsummering")}
+                onSubmit={() => {
+                  properties.tab.setTab("oppsummering");
+                }}
               />
             </Tabs.Panel>
           </div>
@@ -285,6 +304,8 @@ const OppsummeringsTab = (properties: {
   samhandlerValues: Nullable<SamhandlerValuesMedId>;
   manuellAdresseValues: Nullable<ManuellAdresseUtfyllingFormData>;
   onBekreftNyMottaker: (id: string | Adresse) => void;
+  error: Nullable<AxiosError>;
+  isPending: Nullable<boolean>;
   onCloseIntent: () => void;
   onTilbake: (from: "samhandler" | "manuellAdresse") => void;
 }) => {
@@ -297,7 +318,9 @@ const OppsummeringsTab = (properties: {
   if (properties.samhandlerValues) {
     return (
       <HentOgVisSamhandlerAdresse
+        error={properties.error}
         id={properties.samhandlerValues.id}
+        isPending={properties.isPending}
         onBekreftNyMottaker={() => properties.onBekreftNyMottaker(properties.samhandlerValues!.id)}
         onCloseIntent={properties.onCloseIntent}
         onTilbakeTilSøk={() => properties.onTilbake("samhandler")}
@@ -315,6 +338,8 @@ const OppsummeringsTab = (properties: {
     return (
       <OppsummeringAvValgtMottaker
         adresse={adresse}
+        error={properties.error}
+        isPending={properties.isPending}
         onAvbryt={properties.onCloseIntent}
         onBekreft={() => properties.onBekreftNyMottaker(adresse)}
         onTilbake={{

@@ -1,12 +1,27 @@
 import { css } from "@emotion/react";
-import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
-import { Accordion, Alert, BodyShort, Label, Loader, Radio, RadioGroup, Switch, Tag, VStack } from "@navikt/ds-react";
+import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import {
+  Accordion,
+  Alert,
+  BodyShort,
+  Button,
+  HStack,
+  Label,
+  Loader,
+  Radio,
+  RadioGroup,
+  Switch,
+  Tag,
+  VStack,
+} from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
+import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
+import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
+import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevKlar } from "~/utils/brevUtils";
@@ -76,6 +91,20 @@ const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
   );
 };
 
+const MottakerNavn = (properties: { mottaker: Mottaker }) => {
+  switch (properties.mottaker.type) {
+    case "Samhandler": {
+      return <BodyShort>{properties.mottaker.tssId}</BodyShort>;
+    }
+    case "NorskAdresse": {
+      return <BodyShort>{properties.mottaker.navn}</BodyShort>;
+    }
+    case "UtenlandskAdresse": {
+      return <BodyShort>{properties.mottaker.navn}</BodyShort>;
+    }
+  }
+};
+
 const BrevItem = (properties: {
   sakId: string;
   brev: BrevInfo;
@@ -113,17 +142,34 @@ const BrevItem = (properties: {
     },
   });
 
+  const mottakerMutation = useMutation<DelvisOppdaterBrevResponse, AxiosError, Mottaker>({
+    mutationFn: (mottaker) =>
+      delvisOppdaterBrev({
+        sakId: properties.sakId,
+        brevId: properties.brev.id,
+        mottaker: mottaker,
+      }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
+      );
+      setModalÅpen(false);
+    },
+  });
+
   const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
 
   return (
     <>
       {modalÅpen && (
         <EndreMottakerModal
-          onBekreftNyMottaker={() => {
-            setModalÅpen(false);
-            //TODO - bekreft ny mottaker
+          error={mottakerMutation.error}
+          isPending={mottakerMutation.isPending}
+          onBekreftNyMottaker={(mottaker) => {
+            mottakerMutation.mutate(mapEndreMottakerValueTilMottaker(mottaker));
           }}
           onClose={() => setModalÅpen(false)}
+          resetOnBekreftState={() => mottakerMutation.reset()}
           åpen={modalÅpen}
         />
       )}
@@ -137,10 +183,6 @@ const BrevItem = (properties: {
         <Accordion.Content>
           <VStack gap="8">
             <VStack gap="4">
-              {/* 
-              TODO - Implementer endring av mottaker
-              1. Vise hvem mottakeren er. Brevet starter default til brukeren, så kan dem endre til sahmandler / manuell adresse
-              2. Gjør et kall til backend for å endre mottakeren
               <div>
                 <BodyShort
                   css={css`
@@ -149,8 +191,12 @@ const BrevItem = (properties: {
                 >
                   Mottaker
                 </BodyShort>
-                <HStack gap="2">
-                  <BodyShort>En mottaker</BodyShort>
+                <HStack align={"center"} gap="2">
+                  {properties.brev.mottaker ? (
+                    <MottakerNavn mottaker={properties.brev.mottaker} />
+                  ) : (
+                    <BodyShort>Bruker</BodyShort>
+                  )}
                   {!erLåst && (
                     <Button
                       css={css`
@@ -164,9 +210,11 @@ const BrevItem = (properties: {
                       <PencilIcon fontSize="24px" />
                     </Button>
                   )}
+
+                  {mottakerMutation.isPending && <Loader size="small" />}
+                  {mottakerMutation.isError && "Error"}
                 </HStack>
               </div>
-              */}
 
               <Switch
                 checked={erLåst}
