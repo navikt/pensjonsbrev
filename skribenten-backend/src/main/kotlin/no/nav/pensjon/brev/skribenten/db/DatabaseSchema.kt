@@ -62,6 +62,9 @@ object BrevredigeringTable : LongIdTable() {
     val opprettet: Column<Instant> = timestamp("opprettet")
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
+    val signaturSignerende: Column<String> = varchar("signaturSignerende", length = 50)
+        // TODO: Fjern når database skjema er oppdatert
+        .default("TODO")
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
@@ -80,6 +83,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
     var sistReservert by BrevredigeringTable.sistReservert
+    var signaturSignerende by BrevredigeringTable.signaturSignerende
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
 
