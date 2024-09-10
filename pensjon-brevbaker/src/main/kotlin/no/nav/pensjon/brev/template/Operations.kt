@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
+import kotlin.reflect.KClass
+import kotlin.reflect.jvm.jvmName
 
 abstract class Operation : StableHash {
     // Since most operations don't have fields, and hence can't be data classes,
@@ -144,6 +146,15 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
     data class Flip<In1, In2, Out>(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>() {
         override fun apply(first: In1, second: In2): Out = operation.apply(second, first)
         override fun stableHashCode(): Int = hashCode()
+    }
+
+    data class SafeCall<In1, In2, Out>(val operation: BinaryOperation<In1 & Any, In2 & Any, Out>) : BinaryOperation<In1, In2, Out?>() {
+        override fun apply(first: In1, second: In2): Out? =
+            if (first != null && second != null) {
+                operation.apply(first, second)
+            } else null
+
+        override fun stableHashCode(): Int = StableHash.hash(StableHash.of("BinaryOperation.SafeCall" ), operation)
     }
 
 }

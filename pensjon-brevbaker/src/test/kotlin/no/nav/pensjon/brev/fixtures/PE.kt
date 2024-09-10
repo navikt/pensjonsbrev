@@ -105,7 +105,10 @@ private fun createUforetrygdEtteroppgjorDetaljBruker() = UforetrygdEtteroppgjorD
 
 private fun createFratrekkListe() = FratrekkListe(
     inntektsgrunnlag = listOf(
-        Inntektsgrunnlag(grunnikkereduksjon = "grunnikkereduksjon")
+        Inntektsgrunnlag(
+            grunnikkereduksjon = "grunnikkereduksjon",
+            belop = Kroner(1234),
+        )
     )
 )
 
