@@ -94,7 +94,7 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
         </Tag>
       );
 
-      return { tag, tittel: resultat.brevInfo.brevkode };
+      return { tag, tittel: resultat.brevInfo.brevtittel };
     }
     case "fulfilledWithSuccess": {
       const tag = resultat.response.journalpostId ? (
@@ -112,7 +112,7 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
         </Tag>
       );
 
-      return { tag, tittel: resultat.brevInfo.brevkode };
+      return { tag, tittel: resultat.brevInfo.brevtittel };
     }
   }
 };
