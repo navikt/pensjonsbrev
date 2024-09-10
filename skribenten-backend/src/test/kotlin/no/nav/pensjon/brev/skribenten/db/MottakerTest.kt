@@ -151,6 +151,7 @@ class MottakerTest {
                 emptySet(),
             )
             sistRedigertAvNavIdent = principal
+            signaturSignerende = "en signatur"
         }
     }
 }

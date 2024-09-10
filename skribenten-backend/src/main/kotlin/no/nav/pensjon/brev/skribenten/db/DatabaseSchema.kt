@@ -63,8 +63,6 @@ object BrevredigeringTable : LongIdTable() {
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
     val signaturSignerende: Column<String> = varchar("signaturSignerende", length = 50)
-        // TODO: Fjern når database skjema er oppdatert
-        .default("TODO")
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
@@ -118,7 +116,7 @@ object MottakerTable : IdTable<Long>() {
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
     val tssId: Column<String?> = varchar("tssId", 50).nullable()
     val navn: Column<String?> = varchar("navn", 50).nullable()
-    val postnummer: Column<String?> = varchar("postnummer", 4).nullable()
+    val postnummer: Column<String?> = varchar("postnummer", 50).nullable()
     val poststed: Column<String?> = text("poststed").nullable()
     val adresselinje1: Column<String?> = text("adresselinje1").nullable()
     val adresselinje2: Column<String?> = text("adresselinje2").nullable()

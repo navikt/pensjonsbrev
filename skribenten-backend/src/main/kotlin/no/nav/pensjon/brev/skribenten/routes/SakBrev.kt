@@ -51,7 +51,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.delvisOppdaterBrev(saksId = sak.saksId, brevId = brevId, patch = request)
+            brevredigeringService.delvisOppdaterBrev(call = call, saksId = sak.saksId, brevId = brevId, patch = request)
                 ?.also { call.respond(HttpStatusCode.OK, it) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
@@ -98,7 +98,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
             call.respond(
                 HttpStatusCode.OK,
-                brevredigeringService.hentBrevForSak(sak.saksId)
+                brevredigeringService.hentBrevForSak(call, sak.saksId)
             )
         }
 
