@@ -18,6 +18,7 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
     info: {
       id: 1,
       brevkode: "BREV1",
+      brevtittel: "Brev 1",
       opprettet: "2024-01-01",
       sistredigert: "2024-01-01",
       sistredigertAv: "Z123",

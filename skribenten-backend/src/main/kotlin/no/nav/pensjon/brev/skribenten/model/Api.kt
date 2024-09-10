@@ -43,6 +43,7 @@ object Api {
         val sistredigertAv: NavIdent,
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbar,
+        val brevtittel: String,
         val status: BrevStatus,
         val distribusjonstype: Distribusjonstype,
         val mottaker: OverstyrtMottaker?,

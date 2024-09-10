@@ -131,7 +131,7 @@ const BrevItem = (properties: {
         <Accordion.Header>
           <VStack gap="2">
             <Brevtilstand status={properties.brev.status} />
-            <Label size="small">{properties.brev.brevkode}</Label>
+            <Label size="small">{properties.brev.brevtittel}</Label>
           </VStack>
         </Accordion.Header>
         <Accordion.Content>

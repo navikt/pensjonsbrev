@@ -6,6 +6,7 @@ describe("Brevbehandler", () => {
     sistredigertAv: "Ola Nordmann",
     sistredigert: "2021-09-01T12:00:00",
     brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+    brevtittel: "Informasjon om saksbehandlingstid",
     status: { type: "Kladd" },
     distribusjonstype: "SENTRALPRINT",
   };
@@ -15,6 +16,7 @@ describe("Brevbehandler", () => {
   const brevSomSendesSomLokalPrint = {
     ...klarBrev,
     brevkode: "BREV_SOM_SENDES_SOM_LOKALPRINT",
+    brevtittel: "Brev som sendes som lokalprint",
     id: 2,
     distribusjonstype: "LOKALPRINT",
     status: { type: "Klar" },
@@ -51,7 +53,7 @@ describe("Brevbehandler", () => {
     });
 
     //åpner brevet
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     //brev med id 1
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
 
@@ -73,7 +75,7 @@ describe("Brevbehandler", () => {
     //verifisering av kvittering
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
@@ -109,7 +111,7 @@ describe("Brevbehandler", () => {
     });
 
     //åpner brevet
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     //brev med id 1
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
 
@@ -130,7 +132,7 @@ describe("Brevbehandler", () => {
     //verifisering av kvittering
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
@@ -169,7 +171,7 @@ describe("Brevbehandler", () => {
     });
 
     //åpner brevet
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     //brev med id 1
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
 
@@ -190,7 +192,7 @@ describe("Brevbehandler", () => {
     //verifisering av kvittering
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
@@ -220,15 +222,15 @@ describe("Brevbehandler", () => {
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
 
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
 
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains("BREV_SOM_SENDES_SOM_LOKALPRINT").click();
+    cy.contains(brevSomSendesSomLokalPrint.brevtittel).click();
     cy.get('p:contains("Distribueres via")').eq(1).should("be.visible");
     cy.contains("Lokal print").should("be.visible");
     cy.get('p:contains("Journalpost ID")').eq(1).should("be.visible");
@@ -252,14 +254,14 @@ describe("Brevbehandler", () => {
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
 
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
 
     cy.contains("Sendt til lokalprint").should("not.exist");
-    cy.contains("BREV_SOM_SENDES_SOM_LOKALPRINT").should("not.exist");
+    cy.contains(brevSomSendesSomLokalPrint.brevtittel).should("not.exist");
   });
 
   it("viser pdf når er brev er valgt", () => {
@@ -270,7 +272,7 @@ describe("Brevbehandler", () => {
       request.reply([kladdBrev]);
     });
 
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
     cy.contains("Hello World").should("be.visible");
   });
@@ -286,7 +288,7 @@ describe("Brevbehandler", () => {
       request.reply({});
     });
 
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
     cy.contains("Slett").click();
     cy.contains("Vil du slette brevet?").should("be.visible");
@@ -323,7 +325,7 @@ describe("Brevbehandler", () => {
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
 
     cy.contains("Kunne ikke sende brev").should("be.visible");
-    cy.contains("INFORMASJON_OM_SAKSBEHANDLINGSTID").click();
+    cy.contains(kladdBrev.brevtittel).click();
 
     cy.contains("Brevet ble ikke sendt pga Her er det en teknisk grunn. Prøv igjen.").should("be.visible");
     cy.contains(

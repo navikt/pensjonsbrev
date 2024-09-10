@@ -238,7 +238,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                     >
                       {alleFerdigstilteBrev.map((brev) => (
                         <Checkbox key={brev.id} value={brev.id}>
-                          {brev.brevkode}
+                          {brev.brevtittel}
                         </Checkbox>
                       ))}
                     </CheckboxGroup>

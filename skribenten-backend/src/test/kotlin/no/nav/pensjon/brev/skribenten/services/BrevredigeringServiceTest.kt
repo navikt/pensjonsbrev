@@ -185,7 +185,7 @@ class BrevredigeringServiceTest {
                 any()
             )
         } returns ServiceResult.Ok(letter)
-        coEvery { brevbakerMock.getRedigerbarTemplate(any(), any()) } returns ServiceResult.Ok(templateDescription)
+        coEvery { brevbakerMock.getRedigerbarTemplate(any(), any()) } returns templateDescription
         stagePdf(stagetPDF)
     }
 
@@ -262,6 +262,7 @@ class BrevredigeringServiceTest {
         ).isNull()
         assertThat(
             brevredigeringService.delvisOppdaterBrev(
+                call = callMock(),
                 saksId = sak.saksId + 1,
                 brevId = brev.info.id,
                 patch = Api.DelvisOppdaterBrevRequest(laastForRedigering = true)
@@ -592,6 +593,7 @@ class BrevredigeringServiceTest {
     fun `status er Klar om brev er laast`(): Unit = runBlocking {
         val brev = opprettBrev().resultOrNull()!!
         val oppdatert = brevredigeringService.delvisOppdaterBrev(
+            call = callMock(),
             saksId = sak.saksId,
             brevId = brev.info.id,
             patch = Api.DelvisOppdaterBrevRequest(laastForRedigering = true)
@@ -609,7 +611,7 @@ class BrevredigeringServiceTest {
         val mockedBrevbaker = mockk<BrevbakerService> {
             coEvery { renderPdf(any(), any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
             coEvery { renderMarkup(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
-            coEvery { getRedigerbarTemplate(any(), any()) } returns ServiceResult.Ok(templateDescription)
+            coEvery { getRedigerbarTemplate(any(), any()) } returns templateDescription
         }
         val service = brevredigeringService(penService = mockedPenService, brevbakerMock = mockedBrevbaker)
 
@@ -624,6 +626,7 @@ class BrevredigeringServiceTest {
         ).resultOrNull()!!
 
         service.delvisOppdaterBrev(
+            call = callMock(),
             saksId = sak.saksId,
             brevId = brev.info.id,
             patch = Api.DelvisOppdaterBrevRequest(
@@ -672,7 +675,7 @@ class BrevredigeringServiceTest {
         val mockedBrevbaker = mockk<BrevbakerService> {
             coEvery { renderPdf(any(), any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
             coEvery { renderMarkup(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
-            coEvery { getRedigerbarTemplate(any(), any()) } returns ServiceResult.Ok(templateDescription)
+            coEvery { getRedigerbarTemplate(any(), any()) } returns templateDescription
         }
         val service = brevredigeringService(penService = mockedPenService, brevbakerMock = mockedBrevbaker)
 
@@ -687,6 +690,7 @@ class BrevredigeringServiceTest {
         ).resultOrNull()!!
 
         service.delvisOppdaterBrev(
+            call = callMock(),
             saksId = sak.saksId,
             brevId = brev.info.id,
             patch = Api.DelvisOppdaterBrevRequest(
@@ -917,7 +921,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(mottaker = Api.OverstyrtMottaker.Samhandler("1")).resultOrNull()!!
         val nyMottaker = Api.OverstyrtMottaker.NorskAdresse("a", "b", "c", "d", "e", "f")
 
-        val oppdatert = brevredigeringService.delvisOppdaterBrev(sak.saksId, brev.info.id, Api.DelvisOppdaterBrevRequest(mottaker = nyMottaker))
+        val oppdatert = brevredigeringService.delvisOppdaterBrev(callMock(), sak.saksId, brev.info.id, Api.DelvisOppdaterBrevRequest(mottaker = nyMottaker))
         assertEquals(nyMottaker, oppdatert?.info?.mottaker)
         assertEquals(nyMottaker, transaction { Brevredigering[brev.info.id].mottaker?.toApi() })
     }
@@ -927,7 +931,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
         val nyMottaker = Api.OverstyrtMottaker.UtenlandskAdresse("a", "b", "c", "d", "e", "f", "g")
 
-        val oppdatert = brevredigeringService.delvisOppdaterBrev(sak.saksId, brev.info.id, Api.DelvisOppdaterBrevRequest(mottaker = nyMottaker))
+        val oppdatert = brevredigeringService.delvisOppdaterBrev(callMock(), sak.saksId, brev.info.id, Api.DelvisOppdaterBrevRequest(mottaker = nyMottaker))
         assertEquals(nyMottaker, transaction { Brevredigering[brev.info.id].mottaker?.toApi() })
         assertEquals(nyMottaker, oppdatert?.info?.mottaker)
     }

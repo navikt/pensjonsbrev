@@ -29,6 +29,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       sistredigertAv: "Z993104",
       sistredigert: "2024-07-26T14:15:57.173Z",
       brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+      brevtittel: "Informasjon om saksbehandlingstid",
       status: {
         type: "UnderRedigering",
         redigeresAv: "Z993104",
