@@ -35,6 +35,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
         redigeresAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
       },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
+      mottaker: null,
     },
     redigertBrev: {
       title: "tittel",

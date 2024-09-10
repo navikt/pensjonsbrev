@@ -25,6 +25,7 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
       opprettetAv: { id: "Z123", navn: "Z entotre" },
       status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
+      mottaker: null,
     },
     redigertBrev: initial,
     redigertBrevHash: "hash1",
