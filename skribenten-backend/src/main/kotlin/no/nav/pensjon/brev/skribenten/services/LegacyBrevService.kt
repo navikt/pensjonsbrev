@@ -48,7 +48,7 @@ class LegacyBrevService(
     ): Api.BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
-        val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent).resultOrNull()
+        val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent)
 
         return if (brevtittel.isNullOrBlank()) {
             Api.BestillOgRedigerBrevResponse(failureType = EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
@@ -83,7 +83,7 @@ class LegacyBrevService(
         saksId: Long,
     ): Api.BestillOgRedigerBrevResponse = coroutineScope {
         val brevMetadataDeffered = async { brevmetadataService.getMal(request.brevkode) }
-        val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent).resultOrNull()
+        val navansatt = navansattService.hentNavansatt(call, call.principal().navIdent)
         val brevMetadata = brevMetadataDeffered.await()
 
         if (navansatt == null) {

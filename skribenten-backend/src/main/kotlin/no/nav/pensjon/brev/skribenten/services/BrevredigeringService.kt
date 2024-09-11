@@ -60,43 +60,42 @@ class BrevredigeringService(
         mottaker: Api.OverstyrtMottaker? = null,
     ): ServiceResult<Api.BrevResponse> =
         harTilgangTilEnhet(call, avsenderEnhetsId) {
-            navansattService.hentNavansatt(call, call.principal().navIdent).then { signerendeSaksbehandler ->
-                rendreBrev(
-                    call = call,
-                    brevkode = brevkode,
-                    spraak = spraak,
-                    saksId = sak.saksId,
-                    saksbehandlerValg = saksbehandlerValg,
-                    avsenderEnhetsId = avsenderEnhetsId,
-                    signaturSignerende = signerendeSaksbehandler.navn,
-                ).map { letter ->
-                    val template = brevbakerService.getRedigerbarTemplate(call, brevkode)
+            val signerendeSaksbehandler = navansattService.hentNavansatt(call, call.principal().navIdent)?.navn ?: call.principal().fullName
 
-                    transaction {
-                        Brevredigering.new {
-                            saksId = sak.saksId
-                            opprettetAvNavIdent = call.principal().navIdent()
-                            this.brevkode = brevkode
-                            this.spraak = spraak
-                            this.avsenderEnhetId = avsenderEnhetsId
-                            this.saksbehandlerValg = saksbehandlerValg
-                            laastForRedigering = false
-                            distribusjonstype = Distribusjonstype.SENTRALPRINT
-                            redigeresAvNavIdent = if (reserverForRedigering) call.principal().navIdent() else null
-                            opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                            sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                            redigertBrev = letter.toEdit()
-                            sistRedigertAvNavIdent = call.principal().navIdent()
-                            signaturSignerende = signerendeSaksbehandler.navn
-                        }.also {
-                            if (mottaker != null) {
-                                Mottaker.new(it.id.value) { oppdater(mottaker) }
-                            }
-                        }.mapBrev(template)
-                    }
-                }
+            rendreBrev(
+                call = call,
+                brevkode = brevkode,
+                spraak = spraak,
+                saksId = sak.saksId,
+                saksbehandlerValg = saksbehandlerValg,
+                avsenderEnhetsId = avsenderEnhetsId,
+                signaturSignerende = signerendeSaksbehandler,
+            ).map { letter ->
+                val template = brevbakerService.getRedigerbarTemplate(call, brevkode)
+
+                transaction {
+                    Brevredigering.new {
+                        saksId = sak.saksId
+                        opprettetAvNavIdent = call.principal().navIdent()
+                        this.brevkode = brevkode
+                        this.spraak = spraak
+                        this.avsenderEnhetId = avsenderEnhetsId
+                        this.saksbehandlerValg = saksbehandlerValg
+                        laastForRedigering = false
+                        distribusjonstype = Distribusjonstype.SENTRALPRINT
+                        redigeresAvNavIdent = if (reserverForRedigering) call.principal().navIdent() else null
+                        opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+                        sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+                        redigertBrev = letter.toEdit()
+                        sistRedigertAvNavIdent = call.principal().navIdent()
+                        signaturSignerende = signerendeSaksbehandler
+                    }.also {
+                        if (mottaker != null) {
+                            Mottaker.new(it.id.value) { oppdater(mottaker) }
+                        }
+                    }.mapBrev(template)
+                }.oppdaterMedAnsattNavn(call)
             }
-
         }
 
     suspend fun oppdaterBrev(
@@ -126,7 +125,7 @@ class BrevredigeringService(
                             saksbehandlerValg = nyeSaksbehandlerValg ?: brev.saksbehandlerValg
                             sistRedigertAvNavIdent = call.principal().navIdent()
                         }.mapBrev(template)
-                    }
+                    }.oppdaterMedAnsattNavn(call)
                 }
         }
 
@@ -139,7 +138,7 @@ class BrevredigeringService(
                     mottaker?.oppdater(patch.mottaker) ?: Mottaker.new(brevId) { oppdater(patch.mottaker) }
                 }
             }?.also { Brevredigering.reload(it, true) }?.let {
-                it.mapBrev(brevbakerService.getRedigerbarTemplate(call, it.brevkode))
+                it.mapBrev(brevbakerService.getRedigerbarTemplate(call, it.brevkode)).oppdaterMedAnsattNavn(call)
             }
         }
 
@@ -162,7 +161,7 @@ class BrevredigeringService(
                             redigertBrev = it
                             this.signaturSignerende = signaturSignerende
                         }.mapBrev(template)
-                    }
+                    }.oppdaterMedAnsattNavn(call)
                 }
         }
 
@@ -196,17 +195,20 @@ class BrevredigeringService(
                 ).map { brev.redigertBrev.updateEditedLetter(it) }
                     .map {
                         val template = brevbakerService.getRedigerbarTemplate(call, brev.brevkode)
-                        transaction { brev.apply { redigertBrev = it }.mapBrev(template) }
+                        transaction { brev.apply { redigertBrev = it }.mapBrev(template) }.oppdaterMedAnsattNavn(call)
                     }
             }
         } else {
             val template = transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.brevkode }?.let { brevbakerService.getRedigerbarTemplate(call, it) }
-            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.mapBrev(template) }?.let { Ok(it) }
+            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.mapBrev(template) }?.let { Ok(it.oppdaterMedAnsattNavn(call)) }
         }
 
     suspend fun hentBrevForSak(call: ApplicationCall, saksId: Long): List<Api.BrevInfo> =
         newSuspendedTransaction {
-            Brevredigering.find { BrevredigeringTable.saksId eq saksId }.map { mapBrevInfo(it, brevbakerService.getRedigerbarTemplate(call, it.brevkode)) }
+            Brevredigering.find { BrevredigeringTable.saksId eq saksId }.map {
+                mapBrevInfo(it, brevbakerService.getRedigerbarTemplate(call, it.brevkode))
+                    .oppdaterMedAnsattNavn(call )
+            }
         }
 
     suspend fun fornyReservasjon(call: ApplicationCall, brevId: Long): Api.ReservasjonResponse? =
@@ -236,8 +238,7 @@ class BrevredigeringService(
                 message = "Brev er allerede reservert av: ${brev.redigeresAvNavIdent}",
                 response = Api.ReservasjonResponse(
                     vellykket = false,
-                    reservertAv = brev.redigeresAvNavIdent!!
-                        .let { Api.NavAnsatt(id = it, navn = navansattService.hentNavansatt(call, ansattId = it.id).resultOrNull()?.navn) },
+                    reservertAv = brev.redigeresAvNavIdent!!.let { Api.NavAnsatt(id = it, navn = navansattService.hentNavansatt(call, it.id)?.navn) },
                     timestamp = brev.sistReservert ?: Instant.now(),
                     expiresIn = RESERVASJON_TIMEOUT,
                     redigertBrevHash = brev.redigertBrevHash,
@@ -255,10 +256,10 @@ class BrevredigeringService(
         signaturSignerende: String,
         attesterendeSaksbehandler: NavIdent? = null,
     ): ServiceResult<LetterMarkup> = coroutineScope {
-        val attesterendeNavn = async { attesterendeSaksbehandler?.let { navansattService.hentNavansatt(call, it.id) } ?: Ok(null) }
+        val signaturAttesterende = async { attesterendeSaksbehandler?.let { navansattService.hentNavansatt(call, it.id) } }
 
         penService.hentPesysBrevdata(call = call, saksId = saksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
-            .then(attesterendeNavn.await()) { pesysData, attesterende ->
+            .then { pesysData ->
                 brevbakerService.renderMarkup(
                     call = call,
                     brevkode = brevkode,
@@ -267,7 +268,7 @@ class BrevredigeringService(
                         pesysData = pesysData.brevdata,
                         saksbehandlerValg = saksbehandlerValg,
                     ),
-                    felles = pesysData.felles.copy(signerendeSaksbehandlere = SignerendeSaksbehandlere(signaturSignerende, attesterende?.navn))
+                    felles = pesysData.felles.copy(signerendeSaksbehandlere = SignerendeSaksbehandlere(signaturSignerende, signaturAttesterende.await()?.navn))
                 )
             }
     }
@@ -403,21 +404,35 @@ class BrevredigeringService(
         val redigeresAv = if (erReservasjonUtloept()) null else redigeresAvNavIdent
         Api.BrevInfo(
             id = id.value,
-            opprettetAv = opprettetAvNavIdent,
+            opprettetAv = Api.NavAnsatt(opprettetAvNavIdent, null),
             opprettet = opprettet,
-            sistredigertAv = sistRedigertAvNavIdent,
+            sistredigertAv = Api.NavAnsatt(sistRedigertAvNavIdent, null),
             sistredigert = sistredigert,
             brevkode = brevkode,
             brevtittel = template?.metadata?.displayTitle ?: brevkode.name,
             status = when {
                 laastForRedigering -> Api.BrevStatus.Klar
-                redigeresAv != null -> Api.BrevStatus.UnderRedigering(redigeresAv)
+                redigeresAv != null -> Api.BrevStatus.UnderRedigering(Api.NavAnsatt(redigeresAv, null))
                 else -> Api.BrevStatus.Kladd
             },
             distribusjonstype = distribusjonstype,
             mottaker = mottaker?.toApi(),
         )
     }
+
+    private suspend fun Api.BrevResponse.oppdaterMedAnsattNavn(call: ApplicationCall): Api.BrevResponse =
+        copy(info = info.oppdaterMedAnsattNavn(call))
+
+    private suspend fun Api.BrevInfo.oppdaterMedAnsattNavn(call: ApplicationCall): Api.BrevInfo =
+        copy(
+            opprettetAv = opprettetAv.oppdaterMedNavn(call),
+            sistredigertAv = sistredigertAv.oppdaterMedNavn(call),
+            status = if (status is Api.BrevStatus.UnderRedigering) {
+                Api.BrevStatus.UnderRedigering(status.redigeresAv.oppdaterMedNavn(call))
+            } else status
+        )
+    private suspend fun Api.NavAnsatt.oppdaterMedNavn(call: ApplicationCall): Api.NavAnsatt =
+        Api.NavAnsatt(id, navansattService.hentNavansatt(call, id.id)?.navn)
 
     private fun Brevredigering.erReservasjonUtloept(): Boolean =
         sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true

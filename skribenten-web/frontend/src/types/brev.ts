@@ -55,14 +55,14 @@ export type ReservasjonResponse = {
 
 export type NavAnsatt = {
   id: string;
-  navn: string;
+  navn: string | null;
 };
 
 export type BrevInfo = {
   id: number;
-  opprettetAv: string;
+  opprettetAv: NavAnsatt;
   opprettet: string;
-  sistredigertAv: string;
+  sistredigertAv: NavAnsatt;
   sistredigert: string;
   brevkode: string;
   brevtittel: string;
@@ -71,7 +71,7 @@ export type BrevInfo = {
 };
 export type BrevStatus = Kladd | UnderRedigering | Klar;
 export type Kladd = { type: "Kladd" };
-export type UnderRedigering = { type: "UnderRedigering"; redigeresAv: string };
+export type UnderRedigering = { type: "UnderRedigering"; redigeresAv: NavAnsatt };
 export type Klar = { type: "Klar" };
 
 export type OppdaterBrevRequest = {

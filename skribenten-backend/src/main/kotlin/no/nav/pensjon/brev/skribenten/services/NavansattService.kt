@@ -8,10 +8,13 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
+import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import org.slf4j.LoggerFactory
 
 class NavansattService(config: Config, authService: AzureADService) : ServiceStatus {
+    private val logger = LoggerFactory.getLogger(NavansattService::class.java)
 
     private val navansattUrl = config.getString("url")
     private val navansattScope = config.getString("scope")
@@ -36,9 +39,13 @@ class NavansattService(config: Config, authService: AzureADService) : ServiceSta
         hentNavAnsattEnhetListe(call, ansattId)
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
-    suspend fun hentNavansatt(call: ApplicationCall, ansattId: String): ServiceResult<Navansatt> {
-        return client.get(call, "/navansatt/$ansattId").toServiceResult<Navansatt>()
-    }
+    private val navansattCache = Cache<String, Navansatt>()
+    suspend fun hentNavansatt(call: ApplicationCall, ansattId: String): Navansatt? =
+        navansattCache.cached(ansattId) {
+            client.get(call, "/navansatt/$ansattId").toServiceResult<Navansatt>()
+                .onError { error, statusCode -> logger.error("Fant ikke navansatt $ansattId: $statusCode - $error") }
+                .resultOrNull()
+        }
 
     override val name = "Nav Ansatt"
 
