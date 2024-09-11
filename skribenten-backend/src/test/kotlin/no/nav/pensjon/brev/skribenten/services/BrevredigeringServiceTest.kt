@@ -174,7 +174,7 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerMock,
         penService = penService,
         navansattService = navansattService,
-        samhandlerService = mockk(),
+        samhandlerService = samhandlerService,
     )
 
     @BeforeEach
