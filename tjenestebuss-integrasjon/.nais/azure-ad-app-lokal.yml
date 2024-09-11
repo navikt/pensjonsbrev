@@ -27,6 +27,6 @@ spec:
     - application: azure-token-generator
       cluster: dev-gcp
       namespace: aura
-    - application: skribenten-backend-lokal
+    - application: skribenten-backend
       cluster: dev-gcp
       namespace: pensjonsbrev

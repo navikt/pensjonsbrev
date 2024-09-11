@@ -25,9 +25,6 @@ preAuthorized:
   - name: locust
     namespace: pensjonsbrev
     cluster: dev-gcp
-  - name: skribenten-backend-lokal
-    namespace: pensjonsbrev
-    cluster: dev-gcp
   - name: skribenten-backend
     namespace: pensjonsbrev
     cluster: dev-gcp
