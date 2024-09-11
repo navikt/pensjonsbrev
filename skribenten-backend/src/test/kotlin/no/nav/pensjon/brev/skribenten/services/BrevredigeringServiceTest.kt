@@ -76,7 +76,9 @@ class BrevredigeringServiceTest {
 
     private val brevbakerMock: BrevbakerService = mockk<BrevbakerService>()
     private val principalNavIdent = NavIdent("Agent Smith")
+    private val principalNavn = "Hugo Weaving"
     private val principalNavIdent2 = NavIdent("Morpheus")
+    private val principalNavn2 = "Laurence Fishburne"
     private val principalNavEnhetId = "Nebuchadnezzar"
     private fun callMock(ident: NavIdent = principalNavIdent) = mockk<ApplicationCall> {
         every { principal() } returns mockk<UserPrincipal> {
@@ -140,21 +142,18 @@ class BrevredigeringServiceTest {
                 eq(principalNavEnhetId)
             )
         } returns ServiceResult.Ok(true)
-        coEvery { hentNavansatt(any(), eq(principalNavIdent.id)) } returns ServiceResult.Ok(
-            Navansatt(
-                emptyList(),
-                "Hugo Weaving",
-                "Hugo",
-                "Weaving"
-            )
+        coEvery { hentNavansatt(any(), any()) } returns null
+        coEvery { hentNavansatt(any(), eq(principalNavIdent.id)) } returns Navansatt(
+            emptyList(),
+            principalNavn,
+            "Hugo",
+            "Weaving"
         )
-        coEvery { hentNavansatt(any(), eq(principalNavIdent2.id)) } returns ServiceResult.Ok(
-            Navansatt(
-                emptyList(),
-                "Laurence Fishburne",
-                "Laurence",
-                "Fishburne"
-            )
+        coEvery { hentNavansatt(any(), eq(principalNavIdent2.id)) } returns Navansatt(
+            emptyList(),
+            principalNavn2,
+            "Laurence",
+            "Fishburne"
         )
     }
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
@@ -730,7 +729,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `status er UnderRedigering om brev ikke er laast og er reservert for redigering`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
-        assertThat(brev.info.status).isEqualTo(Api.BrevStatus.UnderRedigering(principalNavIdent))
+        assertThat(brev.info.status).isEqualTo(Api.BrevStatus.UnderRedigering(Api.NavAnsatt(principalNavIdent, principalNavn)))
     }
 
     @Test
@@ -738,7 +737,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
 
         assertThat(brev.info.status).isInstanceOfSatisfying<Api.BrevStatus.UnderRedigering> {
-            assertThat(it.redigeresAv).isEqualTo(principalNavIdent)
+            assertThat(it.redigeresAv).isEqualTo(Api.NavAnsatt(principalNavIdent, principalNavn))
         }
         assertThat(transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }).isEqualTo(principalNavIdent)
     }
@@ -758,7 +757,7 @@ class BrevredigeringServiceTest {
         )
             ?.resultOrNull()!!
         assertThat(hentetBrev.info.status).isInstanceOfSatisfying<Api.BrevStatus.UnderRedigering> {
-            assertThat(it.redigeresAv).isEqualTo(principalNavIdent)
+            assertThat(it.redigeresAv).isEqualTo(Api.NavAnsatt(principalNavIdent, principalNavn))
         }
         assertThat(transaction { Brevredigering[hentetBrev.info.id].redigeresAvNavIdent }).isEqualTo(principalNavIdent)
     }
@@ -820,7 +819,7 @@ class BrevredigeringServiceTest {
                 condition("Feilende hentBrev med reservasjon") { it.isFailure })
             assertThat(awaited).allMatch {
                 it.isFailure || it.getOrNull()?.resultOrNull()?.info?.status == Api.BrevStatus.UnderRedigering(
-                    redigeresFaktiskAv
+                    Api.NavAnsatt(redigeresFaktiskAv, null)
                 )
             }
         }
@@ -864,7 +863,7 @@ class BrevredigeringServiceTest {
             reserverForRedigering = true
         )?.resultOrNull()!!
         assertThat(hentetBrevMedReservasjon.info.status).isInstanceOfSatisfying<Api.BrevStatus.UnderRedigering> {
-            assertThat(it.redigeresAv).isEqualTo(principalNavIdent2)
+            assertThat(it.redigeresAv).isEqualTo(Api.NavAnsatt(principalNavIdent2, principalNavn2))
         }
     }
 

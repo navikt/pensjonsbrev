@@ -268,7 +268,7 @@ const BrevItem = (properties: {
                 {isDateToday(properties.brev.sistredigert)
                   ? formatStringDateWithTime(properties.brev.sistredigert)
                   : formatStringDate(properties.brev.sistredigert)}{" "}
-                av {properties.brev.sistredigertAv}
+                av {properties.brev.sistredigertAv.navn ?? properties.brev.sistredigertAv.id}
               </BodyShort>
               <BodyShort
                 css={css`

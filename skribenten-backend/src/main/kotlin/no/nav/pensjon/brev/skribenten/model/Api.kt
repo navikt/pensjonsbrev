@@ -38,9 +38,9 @@ object Api {
 
     data class BrevInfo(
         val id: Long,
-        val opprettetAv: NavIdent,
+        val opprettetAv: NavAnsatt,
         val opprettet: Instant,
-        val sistredigertAv: NavIdent,
+        val sistredigertAv: NavAnsatt,
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbar,
         val brevtittel: String,
@@ -57,7 +57,7 @@ object Api {
     )
     sealed class BrevStatus {
         data object Kladd : BrevStatus()
-        data class UnderRedigering(val redigeresAv: NavIdent) : BrevStatus()
+        data class UnderRedigering(val redigeresAv: NavAnsatt) : BrevStatus()
         data object Klar : BrevStatus()
     }
 
