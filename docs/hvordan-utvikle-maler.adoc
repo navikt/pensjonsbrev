@@ -9,8 +9,9 @@ DSL'en er utviklet for å kun inneholde de elementene vi trenger for å represen
 
 Vi har bevisst utelatt funksjonalitet som ikke direkte har med visningslogikk å gjøre, f. eks aritmetiske operasjoner for tall.
 
-Mal-språket er laget spesielt for å ikke klare å lage tekniske feil i løsningen ved bestilling av ett brev, og at tekniske feil ikke fører til feil i innholdet.
-Om du definerer en god informasjons-modell for brevmalen kan du også enklere unngå funksjonelle feil.
+Mal-spåket er laget spesifikt for å gjøre det mindre sannsynlig at man implementerer tekniske feil i maler og at disse fører til at et brev produserers med uheldige feil og mangler. Dette inkluderer blant null-safety, slik at det ikke er mulig å bruke nullable inndata på en måte hvor man risikerer NPE eller at teksten "null" havner i produserte brev.
+
+Informasjonsmodellen bør ta hensyn til virkelighetsbildet når det gjelder hvordan data er knyttet sammen og nullabillity. For eksempel om det ikke gir mening å ha verdi A uten verdi B så bør det vurderes om disse skal grupperes sammen (i en nøstet data-klasse). Om brevet krever en verdi C så bør den vær non-nullable slik at brevproduksjonen kan feile allerede der hvor man populerer opp informasjonsmodellen.
 
 Denne guiden er laget for å komme i gang med mal-utvikling, men inneholder ikke en komplett liste over funksjonalitet.
 
@@ -33,7 +34,7 @@ paragraph {
         FontType.BOLD // Optional siste parameter fontType. Default er plain. [PLAIN, BOLD, ITALIC]
     )
 
-    // etterfølgende tekst i samme paragraph vil henge sammen men foregående.
+    // etterfølgende tekst i samme paragraph vil "henge" sammen med foregående. Det er altså opp til brev-rendering-motoren å bestemme hvordan tekst skal flytte på tverrs av linjer og sider.
     text(...)
 
     textExpr()
@@ -131,11 +132,11 @@ paragraph {
 ----
 // Tar inn Expression<Boolean>, ofte som ett logisk uttrykk på samme måte som man skrive vanlige IF i kotlin
 showIf(/*logikk*/) {
-
-}.orShowIf{
-
+    ...
+}.orShowIf(/*logikk*/){
+    ...
 }.orShow{
-
+    ...
 }
 ----
 
@@ -156,12 +157,12 @@ ifNotNull(a) { kroner ->
 ----
 Lignende logikk kan brukes nesten over alt innenfor outline. F.eks rundt rader i tabeller, hele tabeller, hele avsnitt, punkter i en liste, osv sov
 
-== Logiske uttrykk
+== Boolske uttrykk
 For å bygge opp visnings-logikk i malene må vi kunne utføre enkle logiske uttrykk i brev.
 Uttrykkene må også evalueres under bruk av malen, og ikke når malen lages ved oppstart ved hjelp av Expressions
 
-=== &&, ||
-Fungerer likt som & og || i kotlin, men opererer på expressions.
+=== and, or
+Fungerer likt som && og || i kotlin, men opererer på expressions.
 F.eks:
 [%nowrap, kotlin, ]
 ----
@@ -176,7 +177,7 @@ showIf(a and (b or c)) {
 }
 ----
 
-=== >, <, >=, <=
+=== Sammenligning
 Fungerer likt som i kotlin.
 [%nowrap, kotlin, ]
 ----
@@ -221,7 +222,7 @@ forEach(trygdetid) { tt ->
 }
 ----
 == IfElse
-ifElse brukes litt tilsvarende shortIf. Brukes ofte til å velge mellom to ord basert på en boolean.
+ifElse brukes litt tilsvarende tertiært uttrykk(short if). Brukes ofte til å velge mellom to ord basert på en boolean.
 
 I eksempelet under slipper man da å lage flere showif og textExpr for å
 [%nowrap, kotlin, ]
@@ -374,7 +375,7 @@ data class DuFaarUtbetalt(
 ----
 
 Det finnes 3 typer fraser, hvor de kan bli inkludert ulike steder:
-TextOnlyPhrase er ren tekst, og kan f.eks brukes inne i celler og lister.
+TextOnlyPhrase er ren tekst, og kan brukes alle steder text(...) og textExpr(...) kan brukes.
 ParagraphPhrase kan inneholde elementer som kan brukes inne i ett avsnitt. F.eks tabeller, tekster, lister osv.
 OutlinePhrase kan inneholde elementer som kan skrives i outline. F.eks title1, title2, paragraph.
 
@@ -438,7 +439,7 @@ er om det at vedlegget vises henger sammen med at vi har dataene. Da kan vi ogs�
 == Eksempel på en enkel mal
 [%nowrap, kotlin, ]
 ----
-@TemplateModelHelpers // Annotasjon som gjør at malen blir plukket opp av en kode-generator. Kode-generatoren brukes bare for å lage utility-funksjoner så vi slipper å være så verbose i brevmalen
+@TemplateModelHelpers // Annotasjon som gjør at malen blir plukket opp av en kode-generator. Det vil da genereres extension functions og properties basert på data-klassen som er angitt for malen som gir deg lett tilgang til feltene i en dataklasse i scopet til malen.
 object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
     override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO // Brevkode som identifiserer dette brevet. Defineres i API-model (enum)
 
