@@ -7,7 +7,7 @@
 Brevbakeren inneholder brevmaler i form av vår egen Kotlin DSL(Domain specific language)
 DSL'en er utviklet for å kun inneholde de elementene vi trenger for å representere innholdet i brev i nav.
 
-Vi har med vilje utelatt enkelt funksjonalitet som ganging og deling ettersom vi mener at forretningslogikk bør holdes utenfor brevmaler.
+Vi har bevisst utelatt funksjonalitet som ikke direkte har med visningslogikk å gjøre, f. eks aritmetiske operasjoner for tall.
 
 Mal-språket er laget spesielt for å ikke klare å lage tekniske feil i løsningen ved bestilling av ett brev, og at tekniske feil ikke fører til feil i innholdet.
 Om du definerer en god informasjons-modell for brevmalen kan du også enklere unngå funksjonelle feil.
