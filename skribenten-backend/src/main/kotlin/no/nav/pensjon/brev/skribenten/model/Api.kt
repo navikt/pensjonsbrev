@@ -68,7 +68,7 @@ object Api {
         JsonSubTypes.Type(OverstyrtMottaker.UtenlandskAdresse::class, name = "UtenlandskAdresse"),
     )
     sealed class OverstyrtMottaker {
-        data class Samhandler(val tssId: String) : OverstyrtMottaker()
+        data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker()
         data class NorskAdresse(
             val navn: String,
             val postnummer: String,

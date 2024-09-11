@@ -156,20 +156,25 @@ class BrevredigeringServiceTest {
             "Fishburne"
         )
     }
+    private val samhandlerService = mockk<SamhandlerService>()
+
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerMock,
         penService = penService,
         navansattService = navAnsattService,
+        samhandlerService = samhandlerService,
     )
 
     private fun brevredigeringService(
         brevbakerMock: BrevbakerService = this.brevbakerMock,
         penService: PenService = this.penService,
-        navansattService: NavansattService = this.navAnsattService
+        navansattService: NavansattService = this.navAnsattService,
+        samhandlerService: SamhandlerService = this.samhandlerService,
     ): BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerMock,
         penService = penService,
         navansattService = navansattService,
+        samhandlerService = mockk(),
     )
 
     @BeforeEach
@@ -897,16 +902,19 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan overstyre mottaker av brev`(): Unit = runBlocking {
-        val mottaker = Api.OverstyrtMottaker.Samhandler("samhandlerId")
+        coEvery { samhandlerService.hentSamhandlerNavn(any(), eq("samhandlerId")) } returns "hei"
+
+        val mottaker = Api.OverstyrtMottaker.Samhandler("samhandlerId", null)
         val brev = opprettBrev(mottaker = mottaker)
 
-        assertEquals(mottaker, brev.resultOrNull()?.info?.mottaker)
+        assertEquals(mottaker.copy(navn = "hei"), brev.resultOrNull()?.info?.mottaker)
         assertEquals(mottaker.tssId, transaction { Mottaker[brev.resultOrNull()!!.info.id].tssId })
     }
 
     @Test
     fun `kan fjerne overstyrt mottaker av brev`(): Unit = runBlocking {
-        val mottaker = Api.OverstyrtMottaker.Samhandler("samhandlerId")
+        coEvery { samhandlerService.hentSamhandlerNavn(any(), eq("samhandlerId")) } returns "hei"
+        val mottaker = Api.OverstyrtMottaker.Samhandler("samhandlerId", null)
         val brev = opprettBrev(mottaker = mottaker).resultOrNull()!!
         assertTrue(brevredigeringService.fjernOverstyrtMottaker(brev.info.id, sak.saksId))
 
@@ -917,7 +925,9 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
-        val brev = opprettBrev(mottaker = Api.OverstyrtMottaker.Samhandler("1")).resultOrNull()!!
+        coEvery { samhandlerService.hentSamhandlerNavn(any(), eq("1")) } returns "Samhandler En"
+
+        val brev = opprettBrev(mottaker = Api.OverstyrtMottaker.Samhandler("1", null)).resultOrNull()!!
         val nyMottaker = Api.OverstyrtMottaker.NorskAdresse("a", "b", "c", "d", "e", "f")
 
         val oppdatert = brevredigeringService.delvisOppdaterBrev(callMock(), sak.saksId, brev.info.id, Api.DelvisOppdaterBrevRequest(mottaker = nyMottaker))
@@ -937,7 +947,9 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `brev distribueres til annen mottaker`(): Unit = runBlocking {
-        val mottaker = Api.OverstyrtMottaker.Samhandler("987")
+        coEvery { samhandlerService.hentSamhandlerNavn(any(), eq("987")) } returns "Ni Åtte Syv"
+
+        val mottaker = Api.OverstyrtMottaker.Samhandler("987", null)
         val brev = opprettBrev(mottaker = mottaker).resultOrNull()!!
 
         brevredigeringService.hentEllerOpprettPdf(callMock(), sak.saksId, brev.info.id)

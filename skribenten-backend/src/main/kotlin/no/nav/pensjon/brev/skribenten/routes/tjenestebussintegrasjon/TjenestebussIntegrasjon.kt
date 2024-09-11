@@ -7,17 +7,18 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerRequestDto
+import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import no.nav.pensjon.brev.skribenten.services.TjenestebussIntegrasjonService
 
-fun Route.tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService: TjenestebussIntegrasjonService) {
+fun Route.tjenestebussIntegrasjonRoute(samhandlerService: SamhandlerService, tjenestebussIntegrasjonService: TjenestebussIntegrasjonService) {
 
     post("/finnSamhandler") {
         val requestDto = call.receive<FinnSamhandlerRequestDto>()
-        call.respond(tjenestebussIntegrasjonService.finnSamhandler(call, requestDto))
+        call.respond(samhandlerService.finnSamhandler(call, requestDto))
     }
     post("/hentSamhandler") {
         val requestDto = call.receive<HentSamhandlerRequestDto>()
-        call.respond(tjenestebussIntegrasjonService.hentSamhandler(call, requestDto.idTSSEkstern))
+        call.respond(samhandlerService.hentSamhandler(call, requestDto.idTSSEkstern))
     }
     post("/hentSamhandlerAdresse") {
         val requestDto = call.receive<HentSamhandlerAdresseRequestDto>()
