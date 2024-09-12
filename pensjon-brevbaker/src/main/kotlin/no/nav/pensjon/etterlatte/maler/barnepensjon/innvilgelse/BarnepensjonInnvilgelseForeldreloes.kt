@@ -92,7 +92,7 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
             konverterElementerTilBrevbakerformat(innhold)
 
             showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, brukerUnder18Aar))
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, bosattUtland))
             }
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
