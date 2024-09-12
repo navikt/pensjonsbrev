@@ -207,6 +207,7 @@ function RedigerBrev({
         `}
       >
         <ModelEditor
+          brevId={brev.info.id}
           brevkode={brev.info.brevkode}
           defaultValues={brev.saksbehandlerValg}
           disableSubmit={saksbehandlerValgMutation.isPending}

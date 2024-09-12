@@ -7,6 +7,7 @@ import { useModelSpecification } from "~/api/brev-queries";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import type { SaksbehandlerValg } from "~/types/brev";
 import type { LetterModelSpecification } from "~/types/brevbakerTypes";
+import type { Nullable } from "~/types/Nullable";
 
 import { ObjectEditor } from "./components/ObjectEditor";
 
@@ -17,6 +18,7 @@ export type ModelEditorProperties = {
   onSubmit: (saksbehandlerValg: SaksbehandlerValg) => void;
   saksId: string;
   vedtaksId: string | undefined;
+  brevId: Nullable<string | number>;
 };
 
 export const ModelEditor = ({
@@ -26,6 +28,7 @@ export const ModelEditor = ({
   onSubmit,
   saksId,
   vedtaksId,
+  brevId,
 }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
@@ -55,10 +58,16 @@ export const ModelEditor = ({
             onSubmit={methods.handleSubmit(doSubmit)}
           >
             <Heading size="small">{brevmal.data?.name}</Heading>
-            <ObjectEditor brevkode={brevkode} typeName={saksbehandlerValgType} />
-            <Button loading={disableSubmit} type="submit">
-              Send
-            </Button>
+            <ObjectEditor
+              brevkode={brevkode}
+              submitOnChange={brevId ? onSubmit : undefined}
+              typeName={saksbehandlerValgType}
+            />
+            {!brevId && (
+              <Button loading={disableSubmit} type="submit">
+                Opprett brev
+              </Button>
+            )}
           </form>
         </FormProvider>
       </>

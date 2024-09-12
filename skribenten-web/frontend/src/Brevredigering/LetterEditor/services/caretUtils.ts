@@ -1,3 +1,5 @@
+import { off } from "node:process";
+
 import { inRange, minBy } from "lodash";
 
 type Coordinates = {
@@ -11,8 +13,11 @@ type Coordinates = {
  */
 export function getCursorOffset() {
   const selection = window.getSelection();
-  const range = selection?.getRangeAt(0);
-  return range?.collapsed ? range.startOffset : -1;
+  if ((selection?.rangeCount ?? 0) > 0) {
+    const range = selection?.getRangeAt(0);
+    return range?.collapsed ? range.startOffset : -1;
+  }
+  return -1;
 }
 /**
  * Focus cursor at the given offset in the node.
@@ -21,13 +26,15 @@ export function getCursorOffset() {
  * @param offset the offset in the node
  */
 export function focusAtOffset(node: ChildNode, offset: number) {
-  const range = document.createRange();
-  range.setStart(node, offset);
-  range.collapse();
+  if (offset >= 0) {
+    const range = document.createRange();
+    range.setStart(node, offset);
+    range.collapse();
 
-  const selection = window.getSelection();
-  selection?.removeAllRanges();
-  selection?.addRange(range);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }
 }
 
 export function areAnyContentEditableSiblingsPlacedLower(element: HTMLSpanElement) {
