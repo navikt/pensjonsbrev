@@ -309,7 +309,7 @@ object BarnepensjonFellesFraser {
                         Nynorsk to
                             "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at du har gitt beskjed om det. " +
                             "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig " +
-                            "busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}",
+                            "busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
                         English to
                             "Children’s pension is taxable; however, we do not deduct tax if you do not notify us to do so. " +
                             "The Tax Administration will respond to any queries regarding tax on pensions for those " +
@@ -322,7 +322,7 @@ object BarnepensjonFellesFraser {
                         Bokmal to
                             "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK}.",
                         Nynorsk to
-                            "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK}",
+                            "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK}.",
                         English to
                             "Read more about tax deductions at ${Constants.BP_SKATTETREKK}.",
                     )
