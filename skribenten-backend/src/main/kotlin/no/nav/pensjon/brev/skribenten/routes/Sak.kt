@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.skribenten.routes
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -17,7 +19,8 @@ fun Route.sakRoute(
     pensjonPersonDataService: PensjonPersonDataService,
     krrService: KrrService,
     brevmalService: BrevmalService,
-    brevredigeringService: BrevredigeringService
+    brevredigeringService: BrevredigeringService,
+    safService: SafService,
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang(pdlService, penService))
@@ -87,6 +90,16 @@ fun Route.sakRoute(
             val sak = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
             call.respond(krrService.getPreferredLocale(call, sak.foedselsnr))
         }
+
+        get("/pdf/{journalpostId}") {
+            val journalpostId = call.parameters.getOrFail("journalpostId")
+            safService.hentPdfForJournalpostId(call, journalpostId).onOk {
+                call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK)
+            }.onError { message, _ ->
+                call.respond(HttpStatusCode.InternalServerError, message)
+            }
+        }
+
         sakBrev(brevredigeringService)
     }
 }

@@ -120,7 +120,7 @@ class LegacyBrevServiceTest {
     private val navansattService = mockk<NavansattService> {
         coEvery {
             hentNavansatt(any(), eq(principalIdent.id))
-        } returns ServiceResult.Ok(Navansatt(emptyList(), "verdens", "beste", "saksbehandler"))
+        } returns Navansatt(emptyList(), "verdens", "beste", "saksbehandler")
         coEvery { harTilgangTilEnhet(any(), eq(principalIdent.id), any()) } returns ServiceResult.Ok(false)
         coEvery { harTilgangTilEnhet(any(), eq(principalIdent.id), eq(principalSinNAVEnhet.id)) } returns ServiceResult.Ok(true)
     }

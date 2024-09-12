@@ -24,14 +24,15 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
     isDirty: false,
     info: {
       id: 1,
-      opprettetAv: "Z993104",
+      opprettetAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
       opprettet: "2024-07-24T09:23:21.381Z",
-      sistredigertAv: "Z993104",
+      sistredigertAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
       sistredigert: "2024-07-26T14:15:57.173Z",
       brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+      brevtittel: "Informasjon om saksbehandlingstid",
       status: {
         type: "UnderRedigering",
-        redigeresAv: "Z993104",
+        redigeresAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
       },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
     },

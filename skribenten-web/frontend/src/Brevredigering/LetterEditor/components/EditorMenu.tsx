@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
-import { CheckmarkCircleFillIcon } from "@navikt/aksel-icons";
+import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Loader } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
-import type { ReactNode } from "react";
+import { memo, type ReactNode, useEffect, useRef, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -12,7 +12,7 @@ import { formatTime } from "~/utils/dateUtils";
 import { applyAction } from "../lib/actions";
 
 export const EditorMenu = () => {
-  const { freeze, editorState, setEditorState } = useEditor();
+  const { freeze, error, editorState, setEditorState } = useEditor();
   const activeTypography = editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.type;
   const changeableContent = isTextContent(
     editorState.redigertBrev.blocks[editorState.focus.blockIndex].content[editorState.focus.contentIndex],
@@ -50,34 +50,88 @@ export const EditorMenu = () => {
       >
         Normal
       </SelectTypographyButton>
-      <LagretTidspunkt datetime={editorState.info.sistredigert} freeze={freeze} isDirty={editorState.isDirty} />
+      <LagretTidspunkt
+        datetime={editorState.info.sistredigert}
+        error={error}
+        freeze={freeze}
+        isDirty={editorState.isDirty}
+      />
     </div>
   );
 };
 
-function LagretTidspunkt({ freeze, datetime, isDirty }: { freeze: boolean; datetime: string; isDirty: boolean }) {
-  if (freeze) {
-    return (
-      <HStack gap="1">
-        <Loader title="Lagrer..." />
-        Lagrer...
-      </HStack>
-    );
-  } else {
-    const tekst = isToday(datetime)
-      ? `Lagret kl ${formatTime(datetime)}`
-      : `Lagret ${format(datetime, "dd.MM.yyyy HH:mm")}`;
+//delay = millisekunder
+const useTimeoutValue = (argz: { initialValue: React.ReactNode; newValue: React.ReactNode; delay: number }) => {
+  const [value, setValue] = useState(argz.initialValue);
+  const isMountingReference = useRef(true);
 
-    const ikon = isDirty ? null : <CheckmarkCircleFillIcon color="#007C2E" fontSize="1.5rem" title="vellykket-ikon" />;
+  useEffect(() => {
+    isMountingReference.current = false;
+  }, []);
 
-    return (
-      <HStack gap="1">
-        {ikon}
-        {tekst}
-      </HStack>
-    );
-  }
-}
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isMountingReference.current) {
+        setValue(null);
+        return;
+      }
+      setValue(argz.newValue);
+    }, argz.delay);
+
+    return () => {
+      return clearTimeout(timer);
+    };
+  }, [argz.delay, argz.newValue]);
+
+  return isMountingReference.current ? null : value;
+};
+
+const LagringSuccess = memo((properties: { dateTime: string }) => {
+  const ikon = useTimeoutValue({
+    initialValue: <CheckmarkCircleFillIcon color="#007C2E" fontSize="1.5rem" title="error-ikon" />,
+    newValue: null,
+    delay: 2500,
+  });
+
+  const tekst = isToday(properties.dateTime)
+    ? `Lagret kl ${formatTime(properties.dateTime)}`
+    : `Lagret ${format(properties.dateTime, "dd.MM.yyyy HH:mm")}`;
+
+  return (
+    <HStack gap="1">
+      {ikon}
+      {tekst}
+    </HStack>
+  );
+});
+
+const LagretTidspunkt = memo(
+  ({ freeze, error, datetime, isDirty }: { freeze: boolean; error: boolean; datetime: string; isDirty: boolean }) => {
+    if (freeze) {
+      return (
+        <HStack gap="1">
+          <Loader title="Lagrer..." />
+          Lagrer...
+        </HStack>
+      );
+    } else {
+      if (isDirty && error) {
+        const tekst = isToday(datetime)
+          ? `Klarte ikke lagre kl ${formatTime(datetime)}`
+          : `Klarte ikke lagre ${format(datetime, "dd.MM.yyyy HH:mm")}`;
+
+        return (
+          <HStack gap="1">
+            <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
+            {tekst}
+          </HStack>
+        );
+      }
+
+      return <LagringSuccess dateTime={datetime} />;
+    }
+  },
+);
 
 function SelectTypographyButton({
   dataCy,

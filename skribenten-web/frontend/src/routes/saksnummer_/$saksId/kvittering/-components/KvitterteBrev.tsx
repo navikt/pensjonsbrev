@@ -3,12 +3,16 @@ import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import { Accordion, BodyShort, Button, Label, Tag, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 
-import { sendBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForJournalpostQuery, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { type BestillBrevResponse, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
-import type { FerdigstillResponse, FerdigstillResponser } from "./FerdigstillResultatContext";
+import type {
+  FerdigstillResponse,
+  FerdigstillResponser,
+  FerdigstillSuccessResponse,
+} from "./FerdigstillResultatContext";
 import { distribusjonstypeTilText } from "./KvitteringUtils";
 import Oppsummeringspar from "./Oppsummeringspar";
 
@@ -90,7 +94,7 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
         </Tag>
       );
 
-      return { tag, tittel: resultat.brevInfo.brevkode };
+      return { tag, tittel: resultat.brevInfo.brevtittel };
     }
     case "fulfilledWithSuccess": {
       const tag = resultat.response.journalpostId ? (
@@ -108,7 +112,7 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
         </Tag>
       );
 
-      return { tag, tittel: resultat.brevInfo.brevkode };
+      return { tag, tittel: resultat.brevInfo.brevtittel };
     }
   }
 };
@@ -140,15 +144,6 @@ const KvittertBrevContent = (properties: {
   isPending: boolean;
   error: Nullable<Error>;
 }) => {
-  /*
-  const hentBrevMutation = useMutation({
-    mutationFn: () => hentPdfForBrevFunction(properties.sakId, properties.resultat.brevInfo.id),
-    onSuccess: (pdf) => {
-      window.open(URL.createObjectURL(pdf), "_blank");
-    },
-  }); 
-  */
-
   switch (properties.resultat.status) {
     case "fulfilledWithError": {
       const error = properties.resultat.error;
@@ -200,37 +195,42 @@ const KvittertBrevContent = (properties: {
           </KvittertBrevContentError>
         );
       } else {
-        return (
-          <VStack align={"start"} gap="4">
-            {/* TODO <Oppsummeringspar tittel={"Mottaker"} verdi={""} /> */}
-
-            <Oppsummeringspar
-              tittel={"Distribueres via"}
-              verdi={distribusjonstypeTilText(properties.resultat.brevInfo.distribusjonstype)}
-            />
-            <Oppsummeringspar tittel={"Journalpost ID"} verdi={properties.resultat.response.journalpostId} />
-            {properties.resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT && (
-              <BodyShort>PDF'en kan hentes fra Pesys</BodyShort>
-            )}
-            {/*
-TODO - link til pdf - kan muligens hentes fra SAF
-            {properties.resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT && (
-              <Button
-                loading={hentBrevMutation.isPending}
-                onClick={() => hentBrevMutation.mutate()}
-                size="small"
-                type="button"
-              >
-                Åpne utskrivbar fil i ny fane
-              </Button>
-            )}
-
-*/}
-          </VStack>
-        );
+        return <KvittertBrevContentSuccess resultat={properties.resultat} sakId={properties.sakId} />;
       }
     }
   }
+};
+
+const KvittertBrevContentSuccess = (properties: { sakId: string; resultat: FerdigstillSuccessResponse }) => {
+  const pdfForJournalpost = useMutation<Blob, Error>({
+    /* den er brukt i contexten av at journalpostId'en er sjekket til å være not null */
+    mutationFn: () => hentPdfForJournalpostQuery.queryFn(properties.sakId, properties.resultat.response.journalpostId!),
+    onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
+  });
+
+  return (
+    <VStack align={"start"} gap="4">
+      {/* TODO <Oppsummeringspar tittel={"Mottaker"} verdi={""} /> */}
+
+      <Oppsummeringspar
+        tittel={"Distribueres via"}
+        verdi={distribusjonstypeTilText(properties.resultat.brevInfo.distribusjonstype)}
+      />
+      {/* den er brukt i contexten av at journalpostId'en er sjekket til å være not null */}
+      <Oppsummeringspar tittel={"Journalpost ID"} verdi={properties.resultat.response.journalpostId!} />
+      {properties.resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT && (
+        <Button
+          loading={pdfForJournalpost.isPending}
+          onClick={() => pdfForJournalpost.mutate()}
+          size="small"
+          type="button"
+        >
+          Åpne utskrivbar fil i ny fane
+        </Button>
+      )}
+      {pdfForJournalpost.isError && <ApiError error={pdfForJournalpost.error} title={"Klarte ikke å hente PDF"} />}
+    </VStack>
+  );
 };
 
 const KvittertBrevContentError = (properties: {

@@ -18,11 +18,12 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
     info: {
       id: 1,
       brevkode: "BREV1",
+      brevtittel: "Brev 1",
       opprettet: "2024-01-01",
       sistredigert: "2024-01-01",
-      sistredigertAv: "Z123",
-      opprettetAv: "Z123",
-      status: { type: "UnderRedigering", redigeresAv: "Z123" },
+      sistredigertAv: { id: "Z123", navn: "Z entotre" },
+      opprettetAv: { id: "Z123", navn: "Z entotre" },
+      status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
     },
     redigertBrev: initial,
@@ -30,7 +31,7 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
     saksbehandlerValg: {},
   };
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevresponse));
-  return <LetterEditor editorState={editorState} freeze={false} setEditorState={setEditorState} />;
+  return <LetterEditor editorState={editorState} error={false} freeze={false} setEditorState={setEditorState} />;
 }
 
 describe("<LetterEditor />", () => {

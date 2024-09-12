@@ -10,7 +10,7 @@ export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus) => {
     }
 
     case "UnderRedigering": {
-      return { variant: "neutral" as const, text: `Redigeres av ${status.redigeresAv}` };
+      return { variant: "neutral" as const, text: `Redigeres av ${status.redigeresAv.navn}` };
     }
   }
 };

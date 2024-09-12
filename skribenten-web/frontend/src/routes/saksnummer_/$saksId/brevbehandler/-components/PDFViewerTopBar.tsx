@@ -166,7 +166,7 @@ const TopBarZoom = (properties: { scale: number; setScale: (n: number) => void }
     <HStack gap="2">
       <BasicPDFViewerButton
         onClick={() => {
-          if (properties.scale <= 1.3) {
+          if (properties.scale <= 1.5) {
             properties.setScale(properties.scale + 0.1);
           }
         }}
@@ -241,7 +241,7 @@ const SlettBrevModal = (properties: { sakId: string; brevId: string; åpen: bool
   const slett = useMutation({
     mutationFn: () => slettBrev(properties.sakId, properties.brevId),
     onSuccess: () => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.filter((brev) => brev.id.toString() !== properties.brevId),
       );
       navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: properties.sakId } });

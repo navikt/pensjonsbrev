@@ -34,8 +34,9 @@ enum class JournalpostLoadingResult {
     ERROR, NOT_READY, READY
 }
 
-class SafService(config: Config, authService: AzureADService): ServiceStatus {
+class SafService(config: Config, authService: AzureADService) : ServiceStatus {
     private val safUrl = config.getString("url")
+    private val safRestUrl = config.getString("rest_url")
     private val safScope = config.getString("scope")
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -90,12 +91,15 @@ class SafService(config: Config, authService: AzureADService): ServiceStatus {
                     logger.error("Tom response ved henting av jouranlpoststatus fra SAF.  JournalpostId: $journalpostId")
                     JournalpostLoadingResult.ERROR
                 }
-            }.catch{ message, status ->
+            }.catch { message, status ->
                 logger.error("Feil ved henting a journalstatus fra SAF. JournalpostId: $journalpostId, Status: $status, Melding: $message")
                 JournalpostLoadingResult.ERROR
             }
 
-    suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): JournalpostLoadingResult =
+    suspend fun waitForJournalpostStatusUnderArbeid(
+        call: ApplicationCall,
+        journalpostId: String
+    ): JournalpostLoadingResult =
         withTimeoutOrNull(TIMEOUT.seconds) {
             for (i in 1..TIMEOUT) {
                 delay(1000)
@@ -107,7 +111,7 @@ class SafService(config: Config, authService: AzureADService): ServiceStatus {
                 }
             }
             return@withTimeoutOrNull JournalpostLoadingResult.NOT_READY
-        }?: JournalpostLoadingResult.NOT_READY
+        } ?: JournalpostLoadingResult.NOT_READY
 
     private suspend fun getDocumentsInJournal(call: ApplicationCall, journalpostId: String) =
         client.post(call, "") {
@@ -120,8 +124,34 @@ class SafService(config: Config, authService: AzureADService): ServiceStatus {
             )
         }.toServiceResult<HentDokumenterResponse>()
 
-    suspend fun getFirstDocumentInJournal(call: ApplicationCall, journalpostId: String): ServiceResult<HentDokumenterResponse> =
+    suspend fun getFirstDocumentInJournal(
+        call: ApplicationCall,
+        journalpostId: String
+    ): ServiceResult<HentDokumenterResponse> =
         getDocumentsInJournal(call, journalpostId)
+
+    /*
+     * man kan spesifisere hvilket 'variantFormat' vi vil ha - per nå er vi bare interesert i 'ARKIV' versjonen
+     */
+    suspend fun hentPdfForJournalpostId(call: ApplicationCall, journalpostId: String): ServiceResult<ByteArray> =
+        hentFørsteDokumentInfoIdFraJournalpost(call, journalpostId).then { dokumentInfoId ->
+            client.get(call = call, url = "$safRestUrl/hentdokument/$journalpostId/$dokumentInfoId/ARKIV").toServiceResult()
+        }
+
+    /*
+     *  Vi sender 1 dokument per journalpost
+     */
+    private suspend fun hentFørsteDokumentInfoIdFraJournalpost(
+        call: ApplicationCall,
+        journalpostId: String
+    ): ServiceResult<String> {
+        return getDocumentsInJournal(call, journalpostId)
+            .map { it.data?.journalpost?.dokumenter?.firstOrNull()?.dokumentInfoId }
+            .nonNull(
+                "Fant ingen dokumenter for journalpostId: $journalpostId",
+                HttpStatusCode.NotFound
+            )
+    }
 
     override val name = "SAF"
     override suspend fun ping(call: ApplicationCall) =

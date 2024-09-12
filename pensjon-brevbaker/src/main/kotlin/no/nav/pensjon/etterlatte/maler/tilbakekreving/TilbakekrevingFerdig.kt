@@ -1,14 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -31,7 +25,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelec
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.sakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.tilbakekreving
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.varselVedlagt
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.varsel
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.skalTilbakekreve
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
@@ -44,7 +38,7 @@ data class TilbakekrevingBrevDTO(
     val brukerNavn: String,
     val doedsbo: Boolean,
 
-    val varselVedlagt: Boolean,
+    val varsel: TilbakekrevingVarsel,
     val datoVarselEllerVedtak: LocalDate,
     val datoTilsvarBruker: LocalDate?,
 
@@ -74,6 +68,12 @@ data class TilbakekrevingBeloeper(
     val renteTillegg: Kroner,
     val sumNettoRenter: Kroner
 )
+
+enum class TilbakekrevingVarsel {
+    EGET_BREV,
+    MED_I_ENDRINGSBREV,
+    AAPENBART_UNOEDVENDIG,
+}
 
 @TemplateModelHelpers
 object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal {
@@ -121,7 +121,7 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedma
                 includePhrase(
                     TilbakekrevingFraser.ViserTilVarselbrev(
                         sakType,
-                        varselVedlagt,
+                        varsel,
                         datoVarselEllerVedtak,
                         datoTilsvarBruker
                     )

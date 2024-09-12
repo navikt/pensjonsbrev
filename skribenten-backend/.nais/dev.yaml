@@ -74,6 +74,8 @@ env:
     value: "https://saf-q2.dev-fss-pub.nais.io/graphql"
   - name: SAF_SCOPE
     value: "api://dev-fss.teamdokumenthandtering.saf/.default"
+  - name: SAF_REST_URL
+    value: "https://saf-q2.dev-fss-pub.nais.io/rest"
 
   - name: KRR_URL
     value: "http://digdir-krr-proxy.team-rocket"

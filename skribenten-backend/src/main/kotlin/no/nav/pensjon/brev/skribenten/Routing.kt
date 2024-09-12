@@ -51,7 +51,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 krrService,
                 brevmalService,
                 brevredigeringService,
-
+                safService,
             )
             brev(brevredigeringService)
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)

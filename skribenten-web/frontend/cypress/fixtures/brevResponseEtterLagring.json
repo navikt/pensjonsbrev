@@ -1,0 +1,199 @@
+{
+  "info": {
+    "id": 1,
+    "opprettetAv": "Z993104",
+    "opprettet": "2024-07-24T09:23:21.381Z",
+    "sistredigertAv": "Z993104",
+    "sistredigert": "2024-07-26T14:15:57.173Z",
+    "brevkode": "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+    "status": {
+      "type": "UnderRedigering",
+      "redigeresAv": "Z993104"
+    }
+  },
+  "redigertBrev": {
+    "title": "Informasjon om saksbehandlingstiden vår",
+    "sakspart": {
+      "gjelderNavn": "Tydelig Bakke",
+      "gjelderFoedselsnummer": "09417320595",
+      "saksnummer": "22972355",
+      "dokumentDato": "30.07.2024"
+    },
+    "blocks": [
+      {
+        "id": -2030215963,
+        "editable": true,
+        "content": [
+          {
+            "id": 2054713812,
+            "text": "Vi har ",
+            "editedText": null,
+            "type": "LITERAL"
+          },
+          {
+            "id": -694080035,
+            "text": "24. juli 2024",
+            "type": "VARIABLE"
+          },
+          {
+            "id": -1820992704,
+            "text": " mottatt søknaden din om ",
+            "editedText": null,
+            "type": "LITERAL"
+          },
+          {
+            "id": -726051414,
+            "text": "alderspensjon",
+            "type": "VARIABLE"
+          },
+          {
+            "id": 1962386266,
+            "text": " fra trygdemyndighetene i ",
+            "editedText": null,
+            "type": "LITERAL"
+          },
+          {
+            "id": -1660311050,
+            "text": "Spania",
+            "type": "VARIABLE"
+          },
+          {
+            "id": 46,
+            "text": ".",
+            "editedText": null,
+            "type": "LITERAL"
+          },
+          {
+            "id": -1894607013,
+            "items": [
+              {
+                "id": -503413477,
+                "content": [
+                  {
+                    "id": -503413508,
+                    "text": "punkt 1 - TODO fjern punktliste",
+                    "editedText": null,
+                    "type": "LITERAL"
+                  }
+                ]
+              },
+              {
+                "id": 886663488,
+                "content": [
+                  {
+                    "id": 886663457,
+                    "text": "punkt 2 - TODO fjern punktliste",
+                    "editedText": null,
+                    "type": "LITERAL"
+                  }
+                ]
+              },
+              {
+                "id": -867386911,
+                "content": [
+                  {
+                    "id": -867386942,
+                    "text": "punkt 3 - TODO fjern punktliste",
+                    "editedText": null,
+                    "type": "LITERAL"
+                  }
+                ]
+              }
+            ],
+            "deletedItems": [],
+            "type": "ITEM_LIST"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "type": "PARAGRAPH"
+      },
+      {
+        "id": 822540105,
+        "editable": true,
+        "content": [
+          {
+            "id": -1505022304,
+            "text": "Saksbehandlingstiden vår er vanligvis ",
+            "editedText": null,
+            "type": "LITERAL"
+          },
+          {
+            "id": 1834595758,
+            "text": "10",
+            "type": "VARIABLE"
+          },
+          {
+            "id": 1027473067,
+            "text": " uker.",
+            "editedText": " uker.  ",
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "type": "PARAGRAPH"
+      },
+      {
+        "id": -1153661566,
+        "editable": true,
+        "content": [
+          {
+            "id": -1153661597,
+            "text": "Dersom vi trenger flere opplysninger fra deg, vil du høre fra oss. hello!",
+            "editedText": null,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "type": "PARAGRAPH"
+      },
+      {
+        "id": 1767516329,
+        "editable": true,
+        "content": [
+          {
+            "id": 1767516298,
+            "text": "Meld fra om endringer",
+            "editedText": null,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "type": "TITLE1"
+      },
+      {
+        "id": 173660319,
+        "editable": true,
+        "content": [
+          {
+            "id": 173660288,
+            "text": "Du må melde fra til oss med en gang hvis det skjer endringer som kan ha betydning for saken din, for eksempel ved endring av sivilstand eller ved flytting.",
+            "editedText": null,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "type": "PARAGRAPH"
+      }
+    ],
+    "signatur": {
+      "hilsenTekst": "Med vennlig hilsen",
+      "saksbehandlerRolleTekst": "Saksbehandler",
+      "saksbehandlerNavn": "",
+      "attesterendeSaksbehandlerNavn": "",
+      "navAvsenderEnhet": "NAV Oslo"
+    },
+    "deletedBlocks": []
+  },
+  "redigertBrevHash": "6ec343b903f4c46c902027608968abd6c3494dabb94977639a02c7a297df5ece",
+  "saksbehandlerValg": {
+    "mottattSoeknad": "2024-07-24",
+    "ytelse": "alderspensjon",
+    "land": "Spania",
+    "svartidUker": "10"
+  }
+}

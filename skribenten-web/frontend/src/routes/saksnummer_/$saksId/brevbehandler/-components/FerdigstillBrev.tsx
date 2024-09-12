@@ -9,12 +9,16 @@ import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { delvisOppdaterBrev, hentAlleBrevForSak, hentPdfForBrevFunction, sendBrev } from "~/api/sak-api-endpoints";
+import { delvisOppdaterBrev, hentAlleBrevForSak, hentPdfForJournalpostQuery, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BestillBrevResponse, DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import { erBrevKlar } from "~/utils/brevUtils";
 
+import type {
+  FerdigstillResponser,
+  FerdigstillSuccessResponse,
+} from "../../kvittering/-components/FerdigstillResultatContext";
 import { useFerdigstillResultatContext } from "../../kvittering/-components/FerdigstillResultatContext";
 import { Route } from "../route";
 
@@ -64,7 +68,7 @@ const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpne
     mutationFn: (låst) =>
       delvisOppdaterBrev({ sakId: properties.sakId, brevId: properties.brev.id, laastForRedigering: låst }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey, (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
       );
       properties.åpneFerdigstillModal();
@@ -108,14 +112,17 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
   });
-
-  const hentPdfForBrev = useMutation<Blob, Error, number>({
-    mutationFn: (brevId) => hentPdfForBrevFunction(properties.sakId, brevId),
+  const pdfForJournalpostMutation = useMutation<Blob, Error, string | number>({
+    mutationFn: (journalpostId: string | number) =>
+      hentPdfForJournalpostQuery.queryFn(properties.sakId, journalpostId!),
     onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
+    onError: () => {
+      navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
+    },
   });
 
   const alleBrevForSak = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey,
+    queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
     queryFn: () => hentAlleBrevForSak.queryFn(properties.sakId),
   });
 
@@ -151,7 +158,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
       ),
     );
 
-    const resultat = await Promise.allSettled(requests).then((result) =>
+    const resultat: FerdigstillResponser = await Promise.allSettled(requests).then((result) =>
       result.map((response) => {
         switch (response.status) {
           //fordi vi håndterer vanlige caser av rejected i mutation, vil resultatet 'alltid' være fulfilled
@@ -168,12 +175,15 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     ferdigstillBrevContext.setResultat(resultat);
 
     const brevSomDistribueresLokalt = resultat
-      .filter((resultat) => resultat.status === "fulfilledWithSuccess")
-      .filter((sucess) => sucess.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT);
+      .filter((resultat): resultat is FerdigstillSuccessResponse => resultat.status === "fulfilledWithSuccess")
+      .filter((success) => success.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT);
 
     //så lenge det bare er 1 brev som distribueres lokalt, av 1..n antall brev, vil vi åpne denne PDF'en i en ny fane.
-    if (brevSomDistribueresLokalt.length === 1) {
-      await hentPdfForBrev.mutateAsync(brevSomDistribueresLokalt[0].brevInfo.id);
+    if (brevSomDistribueresLokalt.length === 1 && brevSomDistribueresLokalt[0].response.journalpostId !== null) {
+      await pdfForJournalpostMutation
+        .mutateAsync(brevSomDistribueresLokalt[0].response.journalpostId)
+        //cypress failer testen fordi erroren vi får tilbake er uhåndtert, selv om vi ikke vil gjøre noe spesielt om den feiler her.
+        .catch(() => void 0);
     }
 
     navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
@@ -228,7 +238,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                     >
                       {alleFerdigstilteBrev.map((brev) => (
                         <Checkbox key={brev.id} value={brev.id}>
-                          {brev.brevkode}
+                          {brev.brevtittel}
                         </Checkbox>
                       ))}
                     </CheckboxGroup>
@@ -244,7 +254,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
               Avbryt
             </Button>
 
-            <Button loading={bestillBrevMutation.isPending} type="submit">
+            <Button loading={bestillBrevMutation.isPending || pdfForJournalpostMutation.isPending} type="submit">
               Ja, send valgte brev
             </Button>
           </HStack>

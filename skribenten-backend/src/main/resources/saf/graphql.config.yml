@@ -1,0 +1,10 @@
+schema: schema.graphql
+documents: '**/*.graphqls'
+include: ["./**"]
+extensions:
+  endpoints:
+    One:
+      url: https://saf.dev.intern.nav.no/graphql
+      dev-client-id: dev-fss.teamdokumenthandtering.saf
+      headers:
+        Authorization: bearer <mitt-token>

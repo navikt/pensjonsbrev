@@ -51,7 +51,7 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
-            brevredigeringService.delvisOppdaterBrev(saksId = sak.saksId, brevId = brevId, patch = request)
+            brevredigeringService.delvisOppdaterBrev(call = call, saksId = sak.saksId, brevId = brevId, patch = request)
                 ?.also { call.respond(HttpStatusCode.OK, it) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
@@ -61,6 +61,17 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
             if (brevredigeringService.slettBrev(sak.saksId, brevId)) {
+                call.respond(HttpStatusCode.NoContent)
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
+            }
+        }
+
+        delete("/{brevId}/mottaker") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+
+            if (brevredigeringService.fjernOverstyrtMottaker(brevId, sak.saksId)) {
                 call.respond(HttpStatusCode.NoContent)
             } else {
                 call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
@@ -87,19 +98,8 @@ fun Route.sakBrev(brevredigeringService: BrevredigeringService) =
 
             call.respond(
                 HttpStatusCode.OK,
-                brevredigeringService.hentBrevForSak(sak.saksId)
+                brevredigeringService.hentBrevForSak(call, sak.saksId)
             )
-        }
-
-        // TODO: Slett når frontend er endret til å bruke get
-        post("/{brevId}/pdf") {
-            val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
-
-            brevredigeringService.hentEllerOpprettPdf(call, sak.saksId, brevId)
-                ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.Created) }
-                ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
-                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
         get("/{brevId}/pdf") {

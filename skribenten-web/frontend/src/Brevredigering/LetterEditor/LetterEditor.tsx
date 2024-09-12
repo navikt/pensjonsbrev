@@ -16,12 +16,16 @@ import type { LetterEditorState } from "./model/state";
 
 export const LetterEditor = ({
   freeze,
+  error,
   editorState,
   setEditorState,
+  editorHeight,
 }: {
   freeze: boolean;
+  error: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
+  editorHeight?: string;
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
@@ -32,10 +36,20 @@ export const LetterEditor = ({
         display: flex;
         flex-direction: column;
         align-items: center;
+        height: ${editorHeight ?? "auto"};
+        overflow-y: auto;
       `}
     >
-      <EditorStateContext.Provider value={{ freeze, editorState, setEditorState }}>
-        <EditorMenu />
+      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState }}>
+        <div
+          css={css`
+            position: sticky;
+            top: 0;
+            width: 100%;
+          `}
+        >
+          <EditorMenu />
+        </div>
         <div className="editor">
           <SakspartView sakspart={letter.sakspart} />
           <Heading
@@ -64,10 +78,12 @@ export const LetterEditor = ({
 
 export const EditorStateContext = createContext<{
   freeze: boolean;
+  error: boolean;
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
 }>({
   freeze: false,
+  error: false,
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
 });

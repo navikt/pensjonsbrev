@@ -35,7 +35,7 @@ function setup() {
   return {
     user: userEvent.setup(),
     ...render(
-      <EditorStateContext.Provider value={{ freeze: false, editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze: false, error: false, editorState, setEditorState }}>
         <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
       </EditorStateContext.Provider>,
     ),
@@ -66,7 +66,9 @@ function setupComplex() {
   return {
     user: userEvent.setup(),
     ...render(
-      <EditorStateContext.Provider value={{ freeze: false, editorState: complexEditorState, setEditorState }}>
+      <EditorStateContext.Provider
+        value={{ freeze: false, error: false, editorState: complexEditorState, setEditorState }}
+      >
         {complexEditorState.redigertBrev.blocks.map((block, blockIndex) => (
           <div className={block.type} key={blockIndex}>
             <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />

@@ -28,7 +28,12 @@ export const BrevForhåndsvisning = (properties: { sakId: string; brevId: string
       )}
       {hentPdfQuery.isError && <ApiError error={hentPdfQuery.error} title={"Kunne ikke hente PDF"} />}
       {hentPdfQuery.isSuccess && (
-        <PDFViewer brevId={properties.brevId} pdf={hentPdfQuery.data} sakId={properties.sakId} />
+        <PDFViewer
+          brevId={properties.brevId}
+          pdf={hentPdfQuery.data}
+          sakId={properties.sakId}
+          viewerHeight={"var(--main-page-content-height)"}
+        />
       )}
     </VStack>
   );

@@ -22,6 +22,7 @@ object Api {
         val avsenderEnhetsId: String?,
         val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean?,
+        val mottaker: OverstyrtMottaker?,
     )
 
     data class OppdaterBrevRequest(
@@ -29,17 +30,23 @@ object Api {
         val redigertBrev: Edit.Letter,
     )
 
-    data class DelvisOppdaterBrevRequest(val laastForRedigering: Boolean?, val distribusjonstype: Distribusjonstype?)
+    data class DelvisOppdaterBrevRequest(
+        val laastForRedigering: Boolean? = null,
+        val distribusjonstype: Distribusjonstype? = null,
+        val mottaker: OverstyrtMottaker? = null
+    )
 
     data class BrevInfo(
         val id: Long,
-        val opprettetAv: NavIdent,
+        val opprettetAv: NavAnsatt,
         val opprettet: Instant,
-        val sistredigertAv: NavIdent,
+        val sistredigertAv: NavAnsatt,
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbar,
+        val brevtittel: String,
         val status: BrevStatus,
-        val distribusjonstype: Distribusjonstype
+        val distribusjonstype: Distribusjonstype,
+        val mottaker: OverstyrtMottaker?,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -50,8 +57,37 @@ object Api {
     )
     sealed class BrevStatus {
         data object Kladd : BrevStatus()
-        data class UnderRedigering(val redigeresAv: NavIdent) : BrevStatus()
+        data class UnderRedigering(val redigeresAv: NavAnsatt) : BrevStatus()
         data object Klar : BrevStatus()
+    }
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(OverstyrtMottaker.Samhandler::class, name = "Samhandler"),
+        JsonSubTypes.Type(OverstyrtMottaker.NorskAdresse::class, name = "NorskAdresse"),
+        JsonSubTypes.Type(OverstyrtMottaker.UtenlandskAdresse::class, name = "UtenlandskAdresse"),
+    )
+    sealed class OverstyrtMottaker {
+        data class Samhandler(val tssId: String) : OverstyrtMottaker()
+        data class NorskAdresse(
+            val navn: String,
+            val postnummer: String,
+            val poststed: String,
+            val adresselinje1: String?,
+            val adresselinje2: String?,
+            val adresselinje3: String?
+        ) : OverstyrtMottaker()
+
+        // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
+        data class UtenlandskAdresse(
+            val navn: String,
+            val postnummer: String?,
+            val poststed: String?,
+            val adresselinje1: String,
+            val adresselinje2: String?,
+            val adresselinje3: String?,
+            val landkode: String,
+        ) : OverstyrtMottaker()
     }
 
     data class BrevResponse(
@@ -92,6 +128,7 @@ object Api {
         val brevtittel: String? = null,
         val enhetsId: String,
     )
+
     data class BestillEblankettRequest(
         val brevkode: String,
         val landkode: String,

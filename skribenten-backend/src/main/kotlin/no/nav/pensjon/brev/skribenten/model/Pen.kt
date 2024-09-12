@@ -102,6 +102,7 @@ object Pen {
         val enhetId: String?,
         val pdf: ByteArray,
         val eksternReferanseId: String,
+        val mottaker: Mottaker?
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -116,6 +117,7 @@ object Pen {
             if (enhetId != other.enhetId) return false
             if (!pdf.contentEquals(other.pdf)) return false
             if (eksternReferanseId != other.eksternReferanseId) return false
+            if (mottaker != other.mottaker) return false
 
             return true
         }
@@ -128,7 +130,15 @@ object Pen {
             result = 31 * result + enhetId.hashCode()
             result = 31 * result + pdf.contentHashCode()
             result = 31 * result + eksternReferanseId.hashCode()
+            result = 31 * result + mottaker.hashCode()
             return result
+        }
+
+        data class Mottaker(val type: Type, val tssId: String? = null, val norskAdresse: NorskAdresse? = null, val utenlandskAdresse: UtenlandsAdresse? = null) {
+            enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
+            data class NorskAdresse(val navn: String, val postnummer: String, val poststed: String, val adresselinje1: String?, val adresselinje2: String?, val adresselinje3: String?)
+            // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
+            data class UtenlandsAdresse(val navn: String, val landkode: String, val postnummer: String?, val poststed: String?, val adresselinje1: String, val adresselinje2: String?, val adresselinje3: String?)
         }
     }
 

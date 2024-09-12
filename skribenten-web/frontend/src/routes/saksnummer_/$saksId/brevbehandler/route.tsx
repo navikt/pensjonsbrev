@@ -3,7 +3,7 @@ import { PlusIcon } from "@navikt/aksel-icons";
 import { Button, Heading, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
@@ -11,16 +11,9 @@ import { ApiError } from "~/components/ApiError";
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import { BrevForhåndsvisning } from "./-components/BrevForhåndsvisning";
 import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-components/FerdigstillBrev";
-import { PDFViewerContextProvider, usePDFViewerContext } from "./-components/PDFViewerContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
-  component: () => (
-    //Fordi høyden til routen som viser PDF'en ikke er helt fastsatt på forhånd, anser vi denne routen som direkte parenten av PDF-vieweren, som da får bestemme PDF-viewerens høyde
-    //Dette funker, men er ikke så stor fan av hvordan den er løst. Se om vi kan gjøre dette på en bedre måte når vi får tid.
-    <PDFViewerContextProvider>
-      <Brevbehandler />
-    </PDFViewerContextProvider>
-  ),
+  component: Brevbehandler,
   validateSearch: (search: Record<string, unknown>): { brevId?: string } => ({
     brevId: search.brevId?.toString(),
   }),
@@ -33,17 +26,11 @@ function Brevbehandler() {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
 
   const brevPdfContainerReference = useRef<HTMLDivElement>(null);
-  const pdfHeightContext = usePDFViewerContext();
-
-  //TODO - et lite problem er dersom dem resizer vinduet etter at PDF'en er lastet inn, så vil høyden være feil
-  useEffect(() => {
-    pdfHeightContext.setHeight(brevPdfContainerReference?.current?.getBoundingClientRect().height ?? null);
-  }, [brevPdfContainerReference, pdfHeightContext]);
 
   //vi henter data her istedenfor i route-loaderen fordi vi vil vise stort sett lik skjermbilde
   //Vi kan muligens gjøre en load i route-loader slik at brevene laster litt fortere
   const alleBrevForSak = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey,
+    queryKey: hentAlleBrevForSak.queryKey(saksId),
     queryFn: () => hentAlleBrevForSak.queryFn(saksId),
   });
 
@@ -52,7 +39,6 @@ function Brevbehandler() {
       css={css`
         display: flex;
         flex: 1;
-        justify-content: center;
       `}
     >
       {modalÅpen && <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />}
@@ -62,6 +48,7 @@ function Brevbehandler() {
           grid-template:
             "meny pdf" 1fr
             "footer footer" auto / 33% 66%;
+          align-items: start;
 
           background-color: white;
           width: 1200px;
@@ -71,6 +58,8 @@ function Brevbehandler() {
           css={css`
             padding: var(--a-spacing-4);
             border-right: 1px solid var(--a-gray-200);
+            height: var(--main-page-content-height);
+            overflow-y: auto;
           `}
         >
           <Heading level="1" size="small">
