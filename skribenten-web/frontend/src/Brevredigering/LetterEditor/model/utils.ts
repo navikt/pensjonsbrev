@@ -7,7 +7,7 @@ import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 import { MergeTarget } from "../actions/merge";
 import type { ContentGroup } from "./state";
 
-export function isTextContent(content: Content): content is TextContent {
+export function isTextContent(content?: Content | null): content is TextContent {
   return content?.type === LITERAL || content?.type === VARIABLE;
 }
 
