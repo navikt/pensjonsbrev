@@ -23,7 +23,6 @@ describe("Brevredigering", () => {
     cy.viewport(1200, 1400);
   });
 
-  /*
   it("Åpne brevredigering", () => {
     cy.visit("/saksnummer/123456/brev/1");
     cy.contains("Saksbehandlingstiden vår er vanligvis 10 uker.").should("exist");
@@ -106,11 +105,11 @@ describe("Brevredigering", () => {
     cy.contains("Tilbakestill malen").click();
     cy.contains("Nei, behold brevet").click();
     cy.contains(" hello!").should("exist");
-  });*/
+  });
 
   describe("autolagring", () => {
-    /*it("lagrer endring av dato-felt automatisk", () => {
-     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+    it("lagrer endring av dato-felt automatisk", () => {
+      cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
         req.reply({
           info: {
             id: 1,
@@ -320,8 +319,8 @@ describe("Brevredigering", () => {
       cy.getDataCy("datepicker-editor").click().clear().type("10.09.2024");
       cy.wait("@autoLagring");
       cy.contains("10 September 2024").should("exist");
-      cy.contains("Lagret kl 15:13").should("exist");
-    });*/
+      cy.contains("Lagret 12.09.2024 15:13").should("exist");
+    });
 
     it("lagrer endring av tekst-felt automatisk", () => {
       cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
@@ -533,8 +532,28 @@ describe("Brevredigering", () => {
       //TODO - se om vi kan få .clear() til å fungere
       cy.contains("Ytelse").click().type("{selectall}{backspace}{selectall}{backspace}").type("Supplerende stønad");
       cy.wait("@autoLagring");
-      cy.contains("Lagret kl 15:13").should("exist");
+      cy.contains("Lagret 12.09.2024 15:13").should("exist");
       cy.contains(" Supplerende stønad").should("exist");
+    });
+
+    it("autolagrer ikke før alle avhengige felter er utfylt", () => {
+      cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", {
+        fixture: "saksbehandlerValgResponse.json",
+      }).as("autoLagring");
+
+      cy.visit("/saksnummer/123456/brev/1");
+      cy.contains("Lagret 26.07.2024 ").should("exist");
+      cy.contains("Saksbehandlingstiden vår er vanligvis 10 uker.").should("exist");
+      cy.contains("Inkluder venter svar afp").click();
+      cy.getDataCy("datepicker-editor").eq(1).should("have.value", "");
+      cy.getDataCy("datepicker-editor").eq(1).click().clear().type("10.09.2024");
+      cy.wait(4000);
+      //verifiserer at autolagring ikke har skjedd enda
+      cy.get("@autoLagring.all").then((interceptions) => {
+        expect(interceptions).to.have.length(0);
+      });
+      cy.contains("Uttak alderspensjon prosent").click().type("55");
+      cy.contains("Your accumulated pension capital").should("exist");
     });
   });
 });
