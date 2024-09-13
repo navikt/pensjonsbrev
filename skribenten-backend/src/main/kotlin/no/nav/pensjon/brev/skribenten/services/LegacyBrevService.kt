@@ -153,7 +153,7 @@ class LegacyBrevService(
                     innhold = brevtittel,                                   // Visningsnavn
                     kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),
                     saksid = saksId.toString(),
-                    saksbehandlernavn = saksbehandler.navn,
+                    saksbehandlernavn = saksbehandler.fornavn + " " + saksbehandler.etternavn,
                     saksbehandlerid = call.principal().navIdent,
                     kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
                     land = landkode.takeIf { isEblankett },

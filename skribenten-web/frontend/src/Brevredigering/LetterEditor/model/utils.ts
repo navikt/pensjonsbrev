@@ -8,7 +8,7 @@ import { MergeTarget } from "../actions/merge";
 import type { ContentGroup } from "./state";
 
 export function isTextContent(content?: Content | null): content is TextContent {
-  return content !== null && content !== undefined && (content.type === LITERAL || content.type === VARIABLE);
+  return content?.type === LITERAL || content?.type === VARIABLE;
 }
 
 export function getMergeIds(sourceId: number, target: MergeTarget): [number, number] {
