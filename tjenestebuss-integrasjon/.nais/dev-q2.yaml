@@ -20,9 +20,6 @@ inboundRules:
   - application: skribenten-backend
     namespace: pensjonsbrev
     cluster: dev-gcp
-  - application: skribenten-backend-lokal
-    namespace: pensjonsbrev
-    cluster: dev-gcp
 
 externalHosts:
   - login.microsoftonline.com

@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 
 fun Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
-    MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(tssId!!)
+    MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(tssId!!, null)
     MottakerType.NORSK_ADRESSE -> Api.OverstyrtMottaker.NorskAdresse(navn!!, postnummer!!, poststed!!, adresselinje1, adresselinje2, adresselinje3)
     MottakerType.UTENLANDSK_ADRESSE -> Api.OverstyrtMottaker.UtenlandskAdresse(
         navn!!,

@@ -44,6 +44,7 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val penService: PenService,
     private val navansattService: NavansattService,
+    private val samhandlerService: SamhandlerService,
 ) {
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
@@ -94,7 +95,7 @@ class BrevredigeringService(
                             Mottaker.new(it.id.value) { oppdater(mottaker) }
                         }
                     }.mapBrev(template)
-                }.oppdaterMedAnsattNavn(call)
+                }.oppdaterMedEksternData(call)
             }
         }
 
@@ -125,7 +126,7 @@ class BrevredigeringService(
                             saksbehandlerValg = nyeSaksbehandlerValg ?: brev.saksbehandlerValg
                             sistRedigertAvNavIdent = call.principal().navIdent()
                         }.mapBrev(template)
-                    }.oppdaterMedAnsattNavn(call)
+                    }.oppdaterMedEksternData(call)
                 }
         }
 
@@ -138,7 +139,7 @@ class BrevredigeringService(
                     mottaker?.oppdater(patch.mottaker) ?: Mottaker.new(brevId) { oppdater(patch.mottaker) }
                 }
             }?.also { Brevredigering.reload(it, true) }?.let {
-                it.mapBrev(brevbakerService.getRedigerbarTemplate(call, it.brevkode)).oppdaterMedAnsattNavn(call)
+                it.mapBrev(brevbakerService.getRedigerbarTemplate(call, it.brevkode)).oppdaterMedEksternData(call)
             }
         }
 
@@ -161,7 +162,7 @@ class BrevredigeringService(
                             redigertBrev = it
                             this.signaturSignerende = signaturSignerende
                         }.mapBrev(template)
-                    }.oppdaterMedAnsattNavn(call)
+                    }.oppdaterMedEksternData(call)
                 }
         }
 
@@ -195,19 +196,19 @@ class BrevredigeringService(
                 ).map { brev.redigertBrev.updateEditedLetter(it) }
                     .map {
                         val template = brevbakerService.getRedigerbarTemplate(call, brev.brevkode)
-                        transaction { brev.apply { redigertBrev = it }.mapBrev(template) }.oppdaterMedAnsattNavn(call)
+                        transaction { brev.apply { redigertBrev = it }.mapBrev(template) }.oppdaterMedEksternData(call)
                     }
             }
         } else {
             val template = transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.brevkode }?.let { brevbakerService.getRedigerbarTemplate(call, it) }
-            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.mapBrev(template) }?.let { Ok(it.oppdaterMedAnsattNavn(call)) }
+            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.mapBrev(template) }?.let { Ok(it.oppdaterMedEksternData(call)) }
         }
 
     suspend fun hentBrevForSak(call: ApplicationCall, saksId: Long): List<Api.BrevInfo> =
         newSuspendedTransaction {
             Brevredigering.find { BrevredigeringTable.saksId eq saksId }.map {
                 mapBrevInfo(it, brevbakerService.getRedigerbarTemplate(call, it.brevkode))
-                    .oppdaterMedAnsattNavn(call )
+                    .oppdaterMedEksternData(call )
             }
         }
 
@@ -420,17 +421,19 @@ class BrevredigeringService(
         )
     }
 
-    private suspend fun Api.BrevResponse.oppdaterMedAnsattNavn(call: ApplicationCall): Api.BrevResponse =
-        copy(info = info.oppdaterMedAnsattNavn(call))
+    private suspend fun Api.BrevResponse.oppdaterMedEksternData(call: ApplicationCall): Api.BrevResponse =
+        copy(info = info.oppdaterMedEksternData(call))
 
-    private suspend fun Api.BrevInfo.oppdaterMedAnsattNavn(call: ApplicationCall): Api.BrevInfo =
+    private suspend fun Api.BrevInfo.oppdaterMedEksternData(call: ApplicationCall): Api.BrevInfo =
         copy(
             opprettetAv = opprettetAv.oppdaterMedNavn(call),
             sistredigertAv = sistredigertAv.oppdaterMedNavn(call),
             status = if (status is Api.BrevStatus.UnderRedigering) {
                 Api.BrevStatus.UnderRedigering(status.redigeresAv.oppdaterMedNavn(call))
-            } else status
+            } else status,
+            mottaker = if (mottaker is Samhandler) mottaker.copy(navn = samhandlerService.hentSamhandlerNavn(call, mottaker.tssId)) else mottaker,
         )
+
     private suspend fun Api.NavAnsatt.oppdaterMedNavn(call: ApplicationCall): Api.NavAnsatt =
         Api.NavAnsatt(id, navansattService.hentNavansatt(call, id.id)?.navn)
 
