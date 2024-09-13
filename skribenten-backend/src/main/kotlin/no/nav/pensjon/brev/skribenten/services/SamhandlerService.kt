@@ -72,7 +72,7 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
         hentSamhandler(call, idTSSEkstern).success?.navn
     }
 
-    override val name = "Tjenestebuss-integrasjon"
+    override val name = "SamhandlerService"
     override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
         samhandlerProxyClient.get(call, "/api/samhandler/ping").toServiceResult<String>().map { true }
 
