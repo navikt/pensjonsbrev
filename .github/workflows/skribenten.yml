@@ -73,7 +73,7 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:skribenten-backend"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "skribenten-backend/.nais/nais.yaml"
+          "RESOURCE": "skribenten-backend/.nais/unleash-api-token-dev-q2.yaml,skribenten-backend/.nais/nais.yaml"
           "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
           "VARS": "skribenten-backend/.nais/dev.yaml"
 
@@ -93,6 +93,6 @@ jobs:
         env:
           "ENVIRONMENT": "prod-gcp:skribenten-backend"
           "CLUSTER": "prod-gcp"
-          "RESOURCE": "skribenten-backend/.nais/nais.yaml"
+          "RESOURCE": "skribenten-backend/.nais/unleash-api-token-prod.yaml,skribenten-backend/.nais/nais.yaml"
           "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
           "VARS": "skribenten-backend/.nais/prod.yaml"
