@@ -116,7 +116,7 @@ describe("Brevredigering", () => {
             opprettetAv: "Z990297",
             opprettet: "2024-09-10T11:16:53.128Z",
             sistredigertAv: "Z990297",
-            sistredigert: "2024-09-12T13:13:43.667Z",
+            sistredigert: hurtiglagreTidspunkt,
             brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
             status: {
               type: "UnderRedigering",
@@ -319,7 +319,7 @@ describe("Brevredigering", () => {
       cy.getDataCy("datepicker-editor").click().clear().type("10.09.2024");
       cy.wait("@autoLagring");
       cy.contains("10 September 2024").should("exist");
-      cy.contains("Lagret 12.09.2024 15:13").should("exist");
+      cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
     });
 
     it("lagrer endring av tekst-felt automatisk", () => {
@@ -330,7 +330,7 @@ describe("Brevredigering", () => {
             opprettetAv: "Z990297",
             opprettet: "2024-09-10T11:16:53.128Z",
             sistredigertAv: "Z990297",
-            sistredigert: "2024-09-12T13:13:43.667Z",
+            sistredigert: hurtiglagreTidspunkt,
             brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
             status: {
               type: "UnderRedigering",
@@ -532,7 +532,7 @@ describe("Brevredigering", () => {
       //TODO - se om vi kan få .clear() til å fungere
       cy.contains("Ytelse").click().type("{selectall}{backspace}{selectall}{backspace}").type("Supplerende stønad");
       cy.wait("@autoLagring");
-      cy.contains("Lagret 12.09.2024 15:13").should("exist");
+      cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
       cy.contains(" Supplerende stønad").should("exist");
     });
 
