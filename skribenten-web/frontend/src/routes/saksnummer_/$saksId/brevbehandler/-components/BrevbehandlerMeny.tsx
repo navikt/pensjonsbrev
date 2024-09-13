@@ -32,21 +32,21 @@ import { EndreMottakerModal } from "../../brevvelger/$templateId/-components/end
 import { brevStatusTypeToTextAndTagVariant } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
-const BrevbehandlerMeny = (properties: { sakId: string; brevInfo: BrevInfo[] }) => {
+const BrevbehandlerMeny = (properties: { saksId: string; brevInfo: BrevInfo[] }) => {
   return (
     <VStack
       css={css`
         padding: var(--a-spacing-4);
       `}
     >
-      <Saksbrev brev={properties.brevInfo} sakId={properties.sakId} />
+      <Saksbrev brev={properties.brevInfo} saksId={properties.saksId} />
     </VStack>
   );
 };
 
 export default BrevbehandlerMeny;
 
-const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
+const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
   const { brevId } = Route.useSearch();
   const [åpenBrevItem, setÅpenBrevItem] = useState<Nullable<string>>(brevId ?? null);
   const navigate = useNavigate({ from: Route.fullPath });
@@ -57,14 +57,14 @@ const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
     if (isOpen) {
       navigate({
         to: "/saksnummer/$saksId/brevbehandler",
-        params: { saksId: properties.sakId },
+        params: { saksId: properties.saksId },
         search: (s) => ({ ...s, brevId: brevId.toString() }),
         replace: true,
       });
     } else {
       navigate({
         to: "/saksnummer/$saksId/brevbehandler",
-        params: { saksId: properties.sakId },
+        params: { saksId: properties.saksId },
         search: (s) => ({ ...s, brevId: undefined }),
         replace: true,
       });
@@ -85,7 +85,7 @@ const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
             key={brev.id}
             onOpenChange={handleOpenChange(brev.id.toString())}
             open={åpenBrevItem === brev.id.toString()}
-            sakId={properties.sakId}
+            saksId={properties.saksId}
           />
         ))}
     </Accordion>
@@ -95,7 +95,7 @@ const Saksbrev = (properties: { sakId: string; brev: BrevInfo[] }) => {
 const MottakerNavn = (properties: { mottaker: Mottaker }) => {
   switch (properties.mottaker.type) {
     case "Samhandler": {
-      return <BodyShort>{properties.mottaker.tssId}</BodyShort>;
+      return <BodyShort>{properties.mottaker.navn ?? `Fant ikke navn for ${properties.mottaker.tssId}`}</BodyShort>;
     }
     case "NorskAdresse": {
       return <BodyShort>{properties.mottaker.navn}</BodyShort>;
@@ -107,7 +107,7 @@ const MottakerNavn = (properties: { mottaker: Mottaker }) => {
 };
 
 const BrevItem = (properties: {
-  sakId: string;
+  saksId: string;
   brev: BrevInfo;
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
@@ -124,12 +124,12 @@ const BrevItem = (properties: {
   const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (låst) =>
       delvisOppdaterBrev({
-        sakId: properties.sakId,
+        saksId: properties.saksId,
         brevId: properties.brev.id,
         laastForRedigering: låst,
       }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
       );
     },
@@ -138,12 +138,12 @@ const BrevItem = (properties: {
   const distribusjonstypeMutation = useMutation<DelvisOppdaterBrevResponse, Error, Distribusjonstype, unknown>({
     mutationFn: (distribusjonstype) =>
       delvisOppdaterBrev({
-        sakId: properties.sakId,
+        saksId: properties.saksId,
         brevId: properties.brev.id,
         distribusjonstype: distribusjonstype,
       }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
       );
     },
@@ -152,12 +152,12 @@ const BrevItem = (properties: {
   const mottakerMutation = useMutation<DelvisOppdaterBrevResponse, AxiosError, Mottaker>({
     mutationFn: (mottaker) =>
       delvisOppdaterBrev({
-        sakId: properties.sakId,
+        saksId: properties.saksId,
         brevId: properties.brev.id,
         mottaker: mottaker,
       }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
       );
       setModalÅpen(false);
@@ -165,9 +165,9 @@ const BrevItem = (properties: {
   });
 
   const fjernMottakerMutation = useMutation<void, AxiosError>({
-    mutationFn: () => fjernOverstyrtMottaker({ sakId: properties.sakId, brevId: properties.brev.id }),
+    mutationFn: () => fjernOverstyrtMottaker({ saksId: properties.saksId, brevId: properties.brev.id }),
     onSuccess: () => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? { ...properties.brev, mottaker: null } : brev)),
       );
     },
@@ -296,7 +296,7 @@ const BrevItem = (properties: {
                       border-color: #23262a;
                       box-shadow: inset 0 0 0 2px #23262a;
                     `}
-                    params={{ saksId: properties.sakId, brevId: properties.brev.id }}
+                    params={{ saksId: properties.saksId, brevId: properties.brev.id }}
                     to="/saksnummer/$saksId/brev/$brevId"
                   >
                     Fortsett redigering

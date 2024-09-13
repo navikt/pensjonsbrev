@@ -89,7 +89,7 @@ function Brevbehandler() {
           {alleBrevForSak.isError && (
             <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle brev for saken"} />
           )}
-          {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} sakId={saksId} />}
+          {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} saksId={saksId} />}
         </VStack>
 
         <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} sakId={saksId} />}</div>

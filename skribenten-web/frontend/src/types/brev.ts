@@ -22,7 +22,7 @@ export type BrevResponse = {
 };
 
 export interface DelvisOppdaterBrevRequest {
-  sakId: string;
+  saksId: string;
   brevId: string | number;
   laastForRedigering?: Nullable<boolean>;
   distribusjonstype?: Nullable<Distribusjonstype>;
@@ -91,6 +91,7 @@ export type Mottaker = Samhandler | NorskAdresse | UtenlandskAdresse;
 export interface Samhandler {
   type: "Samhandler";
   tssId: string;
+  navn: Nullable<string>;
 }
 
 export interface NorskAdresse {
