@@ -15,7 +15,7 @@ export const EditorMenu = () => {
   const { freeze, error, editorState, setEditorState } = useEditor();
   const activeTypography = editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.type;
   const changeableContent = isTextContent(
-    editorState.redigertBrev.blocks[editorState.focus.blockIndex].content[editorState.focus.contentIndex],
+    editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.content?.[editorState.focus.contentIndex],
   );
 
   return (
