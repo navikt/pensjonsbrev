@@ -6,6 +6,7 @@ export const mapEndreMottakerValueTilMottaker = (v: string | Adresse): Mottaker 
     return {
       type: "Samhandler",
       tssId: v,
+      navn: null,
     };
   } else {
     return v.land === "NO"
