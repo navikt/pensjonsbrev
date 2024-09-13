@@ -19,10 +19,7 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
     } else if (clipboard.types.includes("text/plain")) {
       insertTextInLetter(draft, literalIndex, offset, clipboard.getData("text/plain"));
     } else {
-      log(
-        "unsupported clipboard datatype(s) - " +
-          clipboard.types.reduce((acc, current) => acc + (acc.length > 0 ? ", " : "") + current, ""),
-      );
+      log("unsupported clipboard datatype(s) - " + JSON.stringify(clipboard.types));
     }
   });
 

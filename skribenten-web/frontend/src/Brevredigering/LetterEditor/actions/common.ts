@@ -79,7 +79,7 @@ export function newLiteral(text: string): LiteralValue {
   return { type: LITERAL, id: null, text: "", editedText: text };
 }
 
-export function newItem(text: string | LiteralValue): Item {
+export function newItem(text: string): Item {
   return { id: null, content: [newLiteral(text)] };
 }
 
