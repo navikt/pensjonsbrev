@@ -66,7 +66,7 @@ const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpne
 
   const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (låst) =>
-      delvisOppdaterBrev({ sakId: properties.sakId, brevId: properties.brev.id, laastForRedigering: låst }),
+      delvisOppdaterBrev({ saksId: properties.sakId, brevId: properties.brev.id, laastForRedigering: låst }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),

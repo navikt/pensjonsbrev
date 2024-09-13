@@ -2,7 +2,9 @@ import { css } from "@emotion/react";
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { PencilIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Table, VStack } from "@navikt/ds-react";
+import type { AxiosError } from "axios";
 
+import { ApiError } from "~/components/ApiError";
 import type { Adresse } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 import { capitalizeString } from "~/utils/stringUtils";
@@ -30,6 +32,8 @@ const OppsummeringAvValgtMottaker = (properties: {
   adresse: Adresse;
   onAvbryt: () => void;
   onBekreft: () => void;
+  error: Nullable<AxiosError>;
+  isPending: Nullable<boolean>;
   onTilbake: {
     plassering: "top" | "bottom";
     fn: () => void;
@@ -53,10 +57,17 @@ const OppsummeringAvValgtMottaker = (properties: {
         <Button onClick={properties.onAvbryt} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>
-        <Button data-cy="bekreft-ny-mottaker" onClick={properties.onBekreft} size="small" type="button">
+        <Button
+          data-cy="bekreft-ny-mottaker"
+          loading={properties.isPending ?? false}
+          onClick={properties.onBekreft}
+          size="small"
+          type="button"
+        >
           Bekreft ny mottaker
         </Button>
       </HStack>
+      {properties.error && <ApiError error={properties.error} title={"En feil skjedde"} />}
     </VStack>
   );
 };

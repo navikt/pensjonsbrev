@@ -37,7 +37,7 @@ export const hentPdfForBrevFunction = async (saksId: string, brevId: string | nu
 export const delvisOppdaterBrev = async (argz: DelvisOppdaterBrevRequest) =>
   (
     await axios.patch<DelvisOppdaterBrevResponse>(
-      `${SKRIBENTEN_API_BASE_PATH}/sak/${argz.sakId}/brev/${argz.brevId}`,
+      `${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}`,
       argz,
     )
   ).data;
@@ -61,3 +61,7 @@ export const hentPdfForJournalpost = async (argz: { sakId: string; journalpostId
       headers: { Accept: "application/pdf" },
     })
   ).data;
+
+export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: string | number }) => {
+  return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}/mottaker`)).data;
+};
