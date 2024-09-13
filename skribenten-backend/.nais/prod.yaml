@@ -44,6 +44,7 @@ externalHosts:
   - pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io
   - navansatt.prod-fss-pub.nais.io
   - pensjon-samhandler-proxy.prod-fss-pub.nais.io
+  - teampensjon-unleash-api.nav.cloud.nais.io
 
 env:
   - name: CORS_ALLOW_HOST

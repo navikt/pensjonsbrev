@@ -7,7 +7,7 @@ function validateApp() {
     local name=$(dirname "$app")
     echo "$(basename "$name"):"
 
-    local envs=$(find "$app" -type f \( -iname \*.yaml -o -iname \*.yml \) -not -iname \*azure\* -not -iname nais.yaml)
+    local envs=$(find "$app" -type f \( -iname \*.yaml -o -iname \*.yml \) -not -iname \*azure\* -not -iname nais.yaml -not -iname unleash\*)
 
     for env in $envs ; do
       local result
