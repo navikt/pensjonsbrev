@@ -5,9 +5,13 @@ import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { convertFieldToReadableLabel } from "~/Brevredigering/ModelEditor/components/utils";
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
 import type { SaksbehandlerValg } from "~/types/brev";
-import type { TScalar } from "~/types/brevbakerTypes";
+import type { FieldType, TScalar } from "~/types/brevbakerTypes";
 import { formatDateWithoutTimezone, parseDate } from "~/utils/dateUtils";
 
+/**
+ * Componenten har mulighet til å autolagre endringer i feltet etter en gitt timeout dersom onSubmit sendes med.
+ * Ellers, kan den også brukes som et vanlig tekst felt.
+ */
 const AutoSavingTextField = (props: {
   field: string;
   fieldType: TScalar;
@@ -15,24 +19,41 @@ const AutoSavingTextField = (props: {
   step?: number;
   timeoutTimer: number;
   onSubmit?: (valg: SaksbehandlerValg) => void;
+  siblings: {
+    name: string;
+    siblingType: FieldType;
+    parentFieldName: string | undefined;
+  }[];
 }) => {
-  const { register, getFieldState, watch, reset } = useFormContext();
+  const { register, getFieldState, watch, reset, formState } = useFormContext();
 
   const registerProperties = register(props.field, { required: props.fieldType.nullable ? false : "Må oppgis" });
-  const fieldState = getFieldState(registerProperties.name);
+  const fieldState = getFieldState(registerProperties.name, formState);
   const watchedValue = watch(registerProperties.name);
 
+  /**
+   * useEffekten er brukt kun i forbindelse med autolagring
+   * Merk at noen felter er avhengig av at andre felter er fyllt ut, før vi prøver å gjøre et kall til backend
+   */
   useEffect(() => {
     if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
       const timeout = setTimeout(() => {
-        props.onSubmit!({ ...watch(), [props.field]: watchedValue });
-        //dette burde vi egentlig bare gjøre ved en OK respons?
-        reset({ ...watch(), [props.field]: watchedValue });
+        const areRequiredSiblingsFilled = props.siblings.every((sibling) => {
+          const siblingName = sibling.parentFieldName ? `${sibling.parentFieldName}.${sibling.name}` : sibling.name;
+          const siblingValue = watch(siblingName);
+          return sibling.siblingType.nullable ? true : !!siblingValue;
+        });
+
+        if (areRequiredSiblingsFilled) {
+          props.onSubmit!({ ...watch(), [props.field]: watchedValue });
+          //dette burde vi egentlig bare gjøre ved en OK respons?
+          reset({ ...watch(), [props.field]: watchedValue });
+        }
       }, props.timeoutTimer);
 
       return () => clearTimeout(timeout);
     }
-  }, [fieldState.isDirty, watchedValue, watch, props.timeoutTimer, props.onSubmit, props.field, reset]);
+  }, [fieldState.isDirty, watchedValue, watch, props.timeoutTimer, props.onSubmit, props.field, reset, props.siblings]);
 
   const commonTextFieldProperties = {
     ...registerProperties,
@@ -49,10 +70,16 @@ export const ScalarEditor = ({
   fieldType,
   field,
   submitOnChange,
+  siblings,
 }: {
   field: string;
   fieldType: TScalar;
   submitOnChange?: (valg: SaksbehandlerValg) => void;
+  siblings: {
+    name: string;
+    siblingType: FieldType;
+    parentFieldName: string | undefined;
+  }[];
 }) => {
   switch (fieldType.kind) {
     case "NUMBER": {
@@ -61,6 +88,7 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
+          siblings={siblings}
           step={1}
           timeoutTimer={2000}
           type={"number"}
@@ -73,6 +101,7 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
+          siblings={siblings}
           step={0.1}
           timeoutTimer={3000}
           type="number"
@@ -85,6 +114,7 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
+          siblings={siblings}
           timeoutTimer={3000}
           type="text"
         />
@@ -95,34 +125,61 @@ export const ScalarEditor = ({
       return <Checkbox>{convertFieldToReadableLabel(field)}</Checkbox>;
     }
     case "DATE": {
-      return <ControlledDatePicker field={field} onSubmit={submitOnChange} />;
+      return <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} siblings={siblings} />;
     }
   }
 };
 
-const ControlledDatePicker = (props: { field: string; onSubmit?: (v: SaksbehandlerValg) => void }) => {
+/**
+ * Componenten har mulighet til å autolagre endringer i feltet etter en gitt timeout dersom onSubmit sendes med.
+ * Ellers, kan den også brukes som et vanlig tekst felt.
+ */
+const ControlledDatePicker = (props: {
+  field: string;
+  fieldType: TScalar;
+  onSubmit?: (v: SaksbehandlerValg) => void;
+  siblings: {
+    name: string;
+    siblingType: FieldType;
+    parentFieldName: string | undefined;
+  }[];
+}) => {
   const {
     control,
     getFieldState,
-    getValues,
+    watch,
     reset,
     formState: { defaultValues },
+    register,
   } = useFormContext();
 
+  register(props.field, { required: props.fieldType.nullable ? false : "Må oppgis" });
   const watchedValue = useWatch({ name: props.field, control: control });
   const fieldState = getFieldState(props.field);
 
+  /**
+   * useEffekten er brukt kun i forbindelse med autolagring
+   * Merk at noen felter er avhengig av at andre felter er fyllt ut, før vi prøver å gjøre et kall til backend
+   */
   useEffect(() => {
     if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
       const timeout = setTimeout(() => {
-        props.onSubmit!({ ...getValues(), [props.field]: watchedValue });
-        //dette burde vi egentlig bare gjøre ved en OK respons?
-        reset({ ...getValues(), [props.field]: watchedValue });
+        const areRequiredSiblingsFilled = props.siblings.every((sibling) => {
+          const siblingName = sibling.parentFieldName ? `${sibling.parentFieldName}.${sibling.name}` : sibling.name;
+          const siblingValue = watch(siblingName);
+          return sibling.siblingType.nullable ? true : !!siblingValue;
+        });
+
+        if (areRequiredSiblingsFilled) {
+          props.onSubmit!({ ...watch(), [props.field]: watchedValue });
+          //dette burde vi egentlig bare gjøre ved en OK respons?
+          reset({ ...watch(), [props.field]: watchedValue });
+        }
       }, 500);
 
       return () => clearTimeout(timeout);
     }
-  }, [fieldState.isDirty, watchedValue, getValues, props.onSubmit, props.field, reset]);
+  }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, props.field, reset, props.siblings]);
 
   return (
     <Controller
@@ -132,7 +189,7 @@ const ControlledDatePicker = (props: { field: string; onSubmit?: (v: Saksbehandl
         <DatePickerEditor
           defaultValue={defaultValues?.[props.field]}
           error={fieldState.error?.message}
-          field={props.field}
+          label={convertFieldToReadableLabel(props.field)}
           onChange={field.onChange}
         />
       )}
@@ -141,13 +198,13 @@ const ControlledDatePicker = (props: { field: string; onSubmit?: (v: Saksbehandl
 };
 
 function DatePickerEditor({
-  field,
   error,
   defaultValue,
   onChange,
+  label,
 }: {
-  field: string;
   error?: string;
+  label: string;
   defaultValue?: string;
   onChange: (newDate: string) => void;
 }) {
@@ -165,7 +222,7 @@ function DatePickerEditor({
           data-cy="datepicker-editor"
           {...datepicker.inputProps}
           error={error}
-          label={convertFieldToReadableLabel(field)}
+          label={label}
           size="small"
         />
       </DatePicker>

@@ -15,11 +15,17 @@ const FieldEditor = ({
   field,
   fieldType,
   submitOnChange,
+  siblings,
 }: {
   brevkode: string;
   field: string;
   fieldType: FieldType;
   submitOnChange?: (valg: SaksbehandlerValg) => void;
+  siblings: {
+    name: string;
+    siblingType: FieldType;
+    parentFieldName: string | undefined;
+  }[];
 }) => {
   switch (fieldType.type) {
     case "object": {
@@ -40,7 +46,7 @@ const FieldEditor = ({
       );
     }
     case "scalar": {
-      return <ScalarEditor field={field} fieldType={fieldType} submitOnChange={submitOnChange} />;
+      return <ScalarEditor field={field} fieldType={fieldType} siblings={siblings} submitOnChange={submitOnChange} />;
     }
     case "array": {
       return <div>ARRAY TODO</div>;
@@ -61,16 +67,26 @@ export type ObjectEditorProperties = {
 export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
   const objectTypeSpecification = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
+  const selfAndSiblings = Object.entries(objectTypeSpecification ?? {});
+
   return (
     <>
       {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
         const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
+        const siblings = selfAndSiblings
+          .filter((sibling) => sibling[0] !== field)
+          .map(([sibling, siblingType]) => ({
+            name: sibling,
+            siblingType: siblingType,
+            parentFieldName: parentFieldName,
+          }));
         return (
           <FieldEditor
             brevkode={brevkode}
             field={fieldName}
             fieldType={fieldType}
             key={field}
+            siblings={siblings}
             submitOnChange={submitOnChange}
           />
         );
