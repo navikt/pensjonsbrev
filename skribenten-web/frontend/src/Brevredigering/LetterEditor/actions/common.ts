@@ -1,13 +1,22 @@
 import type { Draft } from "immer";
 
 import type { BrevResponse } from "~/types/brev";
-import type { Content, Identifiable, LiteralValue, VariableValue } from "~/types/brevbakerTypes";
+import type {
+  Content,
+  Identifiable,
+  Item,
+  ItemList,
+  LiteralValue,
+  ParagraphBlock,
+  VariableValue,
+} from "~/types/brevbakerTypes";
+import { PARAGRAPH } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { LetterEditorState } from "../model/state";
 
 export function cleanseText(text: string): string {
-  return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ");
+  return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
 }
 
 export function isEditableContent(content: Content | undefined | null): boolean {
@@ -54,4 +63,26 @@ export function deleteElements(
   for (const toDelete of contentToDelete) {
     deleteElement(toDelete, verifyNotPresent, deleted);
   }
+}
+
+export function newParagraph(...content: Content[]): ParagraphBlock {
+  return {
+    type: PARAGRAPH,
+    id: null,
+    editable: true,
+    deletedContent: [],
+    content,
+  };
+}
+
+export function newLiteral(text: string): LiteralValue {
+  return { type: LITERAL, id: null, text: "", editedText: text };
+}
+
+export function newItem(text: string): Item {
+  return { id: null, content: [newLiteral(text)] };
+}
+
+export function newItemList(...items: Item[]): ItemList {
+  return { id: null, type: "ITEM_LIST", items, deletedItems: [] };
 }

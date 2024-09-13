@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import type { LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
+import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -232,6 +233,17 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    // TODO: for debugging frem til vi er ferdig å teste liming
+    logPastedClipboard(event.clipboardData);
+
+    const offset = getCursorOffset();
+    if (offset >= 0) {
+      applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
+    }
+  };
+
   return (
     <span
       // NOTE: ideally this would be "plaintext-only", and it works in practice.
@@ -275,6 +287,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           handleArrowUp(event);
         }
       }}
+      onPaste={handlePaste}
       ref={contentEditableReference}
     />
   );

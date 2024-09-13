@@ -79,8 +79,7 @@ export type VariableValue = {
 };
 
 export const ITEM_LIST = "ITEM_LIST";
-export type ItemList = {
-  readonly id: number;
+export type ItemList = Identifiable & {
   readonly type: typeof ITEM_LIST;
   readonly items: Item[];
   readonly deletedItems: number[];
