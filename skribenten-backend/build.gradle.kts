@@ -57,6 +57,7 @@ sourceSets {
 }
 
 dependencies {
+    // Ktor
     implementation("io.ktor:ktor-client-auth:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
@@ -73,6 +74,7 @@ dependencies {
     implementation("io.ktor:ktor-server-caching-headers:$ktorVersion")
     implementation("io.ktor:ktor-server-request-validation:$ktorVersion")
 
+    // Exposed
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
@@ -81,6 +83,10 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.2")
     implementation("com.zaxxer:HikariCP:5.1.0")
 
+    // Unleash
+    implementation("io.getunleash:unleash-client-java:9.2.4")
+
+    // Domenemodell
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 
     // Logging

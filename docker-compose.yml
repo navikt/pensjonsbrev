@@ -35,7 +35,9 @@ services:
       - "5017:5007"
     env_file:
       - ./skribenten-backend/secrets/azuread.env
+      - ./skribenten-backend/secrets/unleash.env
     environment:
+      - NAIS_APP_NAME=skribenten-backend
       - BREVBAKER_SCOPE=api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default
       - BREVBAKER_URL=http://pensjon-brevbaker:8080
       - BREVMETADATA_URL=https://pensjon-brevmetadata-q2.intern.dev.nav.no
@@ -68,7 +70,6 @@ services:
       - AD_GROUP_Fortrolig_Adresse=ea930b6b-9397-44d9-b9e6-f4cf527a632a
       - AD_GROUP_Strengt_Fortrolig_Adresse=5ef775f2-61f8-4283-bf3d-8d03f428aa14
       - AD_GROUP_EndreStrengtFortroligUtland=fc792042-93d8-4d5e-a501-55c45c03c576
-      - FEATURE_brevbakerbrev=true
 
   skribenten-backend-db:
     profiles:
