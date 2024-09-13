@@ -70,7 +70,7 @@ export const getBrevReservasjon = {
           throw error;
         }
       });
-    return { ...response.data, timestamp: "lol" };
+    return response.data;
   },
 };
 

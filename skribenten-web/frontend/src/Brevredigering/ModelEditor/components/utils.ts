@@ -1,4 +1,7 @@
 import { capitalize, startCase } from "lodash";
+
+import type { FieldType } from "~/types/brevbakerTypes";
+
 export function convertFieldToReadableLabel(field: string) {
   const lastFragment = field.split(".").at(-1);
   return capitalize(startCase(lastFragment));
@@ -15,4 +18,10 @@ export function getFieldDefaultValue(defaults: { [x: string]: any } | undefined,
     return getFieldDefaultValue(defaults[fieldName.slice(0, dotIndex)], fieldName.slice(dotIndex + 1));
   }
   return defaults[fieldName];
+}
+
+export interface FieldSpecificaitonSibling {
+  name: string;
+  type: FieldType;
+  parentFieldName: string | undefined;
 }

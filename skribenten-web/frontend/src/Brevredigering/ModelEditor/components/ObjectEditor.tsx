@@ -6,6 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { useModelSpecification } from "~/api/brev-queries";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
+import type { FieldSpecificaitonSibling } from "~/Brevredigering/ModelEditor/components/utils";
 import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
 import type { SaksbehandlerValg } from "~/types/brev";
 import type { FieldType } from "~/types/brevbakerTypes";
@@ -21,11 +22,7 @@ const FieldEditor = ({
   field: string;
   fieldType: FieldType;
   submitOnChange?: (valg: SaksbehandlerValg) => void;
-  siblings: {
-    name: string;
-    siblingType: FieldType;
-    parentFieldName: string | undefined;
-  }[];
+  siblings: FieldSpecificaitonSibling[];
 }) => {
   switch (fieldType.type) {
     case "object": {
@@ -67,26 +64,27 @@ export type ObjectEditorProperties = {
 export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
   const objectTypeSpecification = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
-  const selfAndSiblings = Object.entries(objectTypeSpecification ?? {});
+  const fieldsInSpecification = Object.entries(objectTypeSpecification ?? {});
 
   return (
     <>
       {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
         const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
-        const siblings = selfAndSiblings
+        const siblingFields = fieldsInSpecification
           .filter((sibling) => sibling[0] !== field)
           .map(([sibling, siblingType]) => ({
             name: sibling,
-            siblingType: siblingType,
+            type: siblingType,
             parentFieldName: parentFieldName,
           }));
+
         return (
           <FieldEditor
             brevkode={brevkode}
             field={fieldName}
             fieldType={fieldType}
             key={field}
-            siblings={siblings}
+            siblings={siblingFields}
             submitOnChange={submitOnChange}
           />
         );
