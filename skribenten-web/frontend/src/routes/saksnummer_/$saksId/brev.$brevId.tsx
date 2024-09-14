@@ -222,10 +222,14 @@ function RedigerBrev({
         <ModelEditor
           brevId={brev.info.id}
           brevkode={brev.info.brevkode}
-          defaultValues={brev.saksbehandlerValg}
+          defaultValues={{
+            ...brev.saksbehandlerValg,
+            signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
+          }}
           disableSubmit={saksbehandlerValgMutation.isPending}
           onSubmit={saksbehandlerValgMutation.mutate}
           saksId={saksId}
+          setEditorState={setEditorState}
           vedtaksId={vedtaksId}
         />
         <LetterEditor

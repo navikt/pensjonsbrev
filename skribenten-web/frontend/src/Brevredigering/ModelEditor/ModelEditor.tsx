@@ -1,25 +1,29 @@
 import { css } from "@emotion/react";
 import { Button, Heading } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { useModelSpecification } from "~/api/brev-queries";
+import { getBrev, oppdaterSignatur, useModelSpecification } from "~/api/brev-queries";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
-import type { SaksbehandlerValg } from "~/types/brev";
+import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
 import type { LetterModelSpecification } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
+import type { LetterEditorState } from "../LetterEditor/model/state";
 import { ObjectEditor } from "./components/ObjectEditor";
+import { AutoSavingTextField } from "./components/ScalarEditor";
 
 export type ModelEditorProperties = {
   brevkode: string;
-  defaultValues?: SaksbehandlerValg;
+  defaultValues?: SaksbehandlerValg & { signatur: string };
   disableSubmit: boolean;
   onSubmit: (saksbehandlerValg: SaksbehandlerValg) => void;
   saksId: string;
   vedtaksId: string | undefined;
   brevId: Nullable<string | number>;
+  setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
 };
 
 export const ModelEditor = ({
@@ -39,10 +43,18 @@ export const ModelEditor = ({
     queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
   });
+  const queryClient = useQueryClient();
   const doSubmit = (values: SaksbehandlerValg) => onSubmit(createSaksbehandlerValg(values));
   const requestSubmit = useCallback(() => {
     formRef.current?.requestSubmit();
   }, [formRef]);
+
+  const signaturMutation = useMutation<BrevResponse, Error, { brevId: string | number; signatur: string }>({
+    mutationFn: async (o) => oppdaterSignatur(o),
+    onSuccess: (response) => {
+      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+    },
+  });
 
   if (specification) {
     const saksbehandlerValgType = findSaksbehandlerValgTypeName(specification);
@@ -68,6 +80,28 @@ export const ModelEditor = ({
               brevkode={brevkode}
               submitOnChange={brevId ? requestSubmit : undefined}
               typeName={saksbehandlerValgType}
+            />
+            <AutoSavingTextField
+              field={"signatur"}
+              fieldType={{
+                type: "scalar",
+                nullable: false,
+                kind: "STRING",
+              }}
+              /*
+                TODO: per nå så gir onSubmit'en oss saksbehandlerValg tilbake hele tiden.
+                      Hvis vi har lyst til at den skal være mer generell, burde den kanskje bare returnere sin input, 
+                      så får componenten som brukere den håndtere resten
+               */
+              onSubmit={() => {
+                const signatur = methods.watch("signatur");
+                if (signatur && brevId) {
+                  signaturMutation.mutate({ brevId, signatur });
+                }
+              }}
+              siblings={[]}
+              timeoutTimer={3000}
+              type={"text"}
             />
             {!brevId && (
               <Button loading={disableSubmit} type="submit">
