@@ -1,13 +1,13 @@
 import { css } from "@emotion/react";
 import { Button, Heading } from "@navikt/ds-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getBrev, oppdaterSignatur, useModelSpecification } from "~/api/brev-queries";
+import { useModelSpecification } from "~/api/brev-queries";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
-import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
+import type { SaksbehandlerValg } from "~/types/brev";
 import type { LetterModelSpecification } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
@@ -22,8 +22,9 @@ export type ModelEditorProperties = {
   onSubmit: (saksbehandlerValg: SaksbehandlerValg) => void;
   saksId: string;
   vedtaksId: string | undefined;
-  brevId: Nullable<string | number>;
+  brevId: Nullable<number>;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
+  signaturOnSubmit: (signatur: string) => void;
 };
 
 export const ModelEditor = ({
@@ -34,6 +35,7 @@ export const ModelEditor = ({
   saksId,
   vedtaksId,
   brevId,
+  signaturOnSubmit,
 }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
@@ -43,18 +45,10 @@ export const ModelEditor = ({
     queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
   });
-  const queryClient = useQueryClient();
   const doSubmit = (values: SaksbehandlerValg) => onSubmit(createSaksbehandlerValg(values));
   const requestSubmit = useCallback(() => {
     formRef.current?.requestSubmit();
   }, [formRef]);
-
-  const signaturMutation = useMutation<BrevResponse, Error, { brevId: string | number; signatur: string }>({
-    mutationFn: async (o) => oppdaterSignatur(o),
-    onSuccess: (response) => {
-      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
-    },
-  });
 
   if (specification) {
     const saksbehandlerValgType = findSaksbehandlerValgTypeName(specification);
@@ -95,8 +89,8 @@ export const ModelEditor = ({
                */
               onSubmit={() => {
                 const signatur = methods.watch("signatur");
-                if (signatur && brevId) {
-                  signaturMutation.mutate({ brevId, signatur });
+                if (signatur) {
+                  signaturOnSubmit(signatur);
                 }
               }}
               siblings={[]}

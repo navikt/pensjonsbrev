@@ -7,7 +7,13 @@ import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 
-import { getBrev, getBrevReservasjon, hurtiglagreBrev, hurtiglagreSaksbehandlerValg } from "~/api/brev-queries";
+import {
+  getBrev,
+  getBrevReservasjon,
+  hurtiglagreBrev,
+  hurtiglagreSaksbehandlerValg,
+  oppdaterSignatur,
+} from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -156,6 +162,7 @@ function RedigerBrev({
   });
 
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
+  const signaturMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSignatur);
   const redigertBrevMutation = useHurtiglagreMutation(
     brev.info.id,
     setEditorState,
@@ -230,6 +237,7 @@ function RedigerBrev({
           onSubmit={saksbehandlerValgMutation.mutate}
           saksId={saksId}
           setEditorState={setEditorState}
+          signaturOnSubmit={signaturMutation.mutate}
           vedtaksId={vedtaksId}
         />
         <LetterEditor
