@@ -66,19 +66,6 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                         English to "We received your application for ".expr() + ytelse + " from the Norwegian National Insurance Scheme on " + mottattDato + ".",
                     )
                 }
-
-                // TODO: Midlertidig liste slik at frontend har noe å eksperimentere med
-                list {
-                    item {
-                        text(Bokmal to "punkt 1 - TODO fjern punktliste", Nynorsk to "punkt 1 - TODO fjern punktliste", English to "item 1 - TODO remove itemlist")
-                    }
-                    item {
-                        text(Bokmal to "punkt 2 - TODO fjern punktliste", Nynorsk to "punkt 2 - TODO fjern punktliste", English to "item 2 - TODO remove itemlist")
-                    }
-                    item {
-                        text(Bokmal to "punkt 3 - TODO fjern punktliste", Nynorsk to "punkt 3 - TODO fjern punktliste", English to "item 3 - TODO remove itemlist")
-                    }
-                }
             }
             ifNotNull(saksbehandlerValg.inkluderVenterSvarAFP) {
                 val prosent = it.uttakAlderspensjonProsent.format()

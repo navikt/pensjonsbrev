@@ -22,6 +22,7 @@ object Brevkode {
 
     enum class Redigerbar {
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
+        UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
         ;
     }
 }
