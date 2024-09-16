@@ -29,6 +29,8 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
     val brevredigeringService = BrevredigeringService(brevbakerService, penService, navansattService, samhandlerService)
 
+    Features.initUnleash(servicesConfig.getConfig("unleash"))
+
 
     routing {
         healthRoute()

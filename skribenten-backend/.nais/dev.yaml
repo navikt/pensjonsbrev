@@ -102,6 +102,3 @@ env:
     value: "https://pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io"
   - name: SAMHANDLER_PROXY_SCOPE
     value: "api://dev-fss.pensjon-q2.pensjon-samhandler-proxy-q2/.default"
-
-  - name: FEATURE_brevbakerbrev
-    value: "true"
