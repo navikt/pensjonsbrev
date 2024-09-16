@@ -13,6 +13,7 @@ const Saksbehandler = ({ rolleTekst, navn }: { rolleTekst: string; navn?: string
         css={css`
           margin-bottom: var(--a-spacing-1);
         `}
+        data-cy="brev-editor-saksbehandler-input"
         hideLabel
         label=""
         readOnly
