@@ -108,9 +108,9 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
         ),
         etterbetaling = BarnepensjonEtterbetaling(
             inneholderKrav = true,
-            frivilligSkattetrekk = true,
             etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
         ),
+        frivilligSkattetrekk = true,
         brukerUnder18Aar = true,
         bosattUtland = false,
         kunNyttRegelverk = false,
@@ -124,7 +124,6 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
 fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderingRedigerbartUtfallDTO(
     etterbetaling = BarnepensjonEtterbetaling(
         inneholderKrav = true,
-        frivilligSkattetrekk = true,
         etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
     ),
     harUtbetaling = false,

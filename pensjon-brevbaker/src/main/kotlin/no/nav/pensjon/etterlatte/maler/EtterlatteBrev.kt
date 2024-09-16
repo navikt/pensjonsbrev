@@ -5,7 +5,6 @@ import java.time.LocalDate
 
 data class BarnepensjonEtterbetaling(
     val inneholderKrav: Boolean?,
-    val frivilligSkattetrekk: Boolean?,
     val etterbetalingPeriodeValg: EtterbetalingPeriodeValg?,
 )
 
