@@ -93,7 +93,6 @@ export const ModelEditor = ({
                   signaturOnSubmit(signatur);
                 }
               }}
-              siblings={[]}
               timeoutTimer={3000}
               type={"text"}
             />
