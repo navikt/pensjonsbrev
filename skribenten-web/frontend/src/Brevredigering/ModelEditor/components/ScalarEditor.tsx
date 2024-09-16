@@ -2,7 +2,6 @@ import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react
 import { useEffect } from "react";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
-import type { FieldSpecificaitonSibling } from "~/Brevredigering/ModelEditor/components/utils";
 import { convertFieldToReadableLabel } from "~/Brevredigering/ModelEditor/components/utils";
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
 import type { SaksbehandlerValg } from "~/types/brev";
@@ -13,12 +12,10 @@ export const ScalarEditor = ({
   fieldType,
   field,
   submitOnChange,
-  siblings,
 }: {
   field: string;
   fieldType: TScalar;
   submitOnChange?: (valg: SaksbehandlerValg) => void;
-  siblings: FieldSpecificaitonSibling[];
 }) => {
   switch (fieldType.kind) {
     case "NUMBER": {
@@ -27,7 +24,6 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
-          siblings={siblings}
           step={1}
           timeoutTimer={2000}
           type={"number"}
@@ -40,7 +36,6 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
-          siblings={siblings}
           step={0.1}
           timeoutTimer={3000}
           type="number"
@@ -53,7 +48,6 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
-          siblings={siblings}
           timeoutTimer={3000}
           type="text"
         />
@@ -64,7 +58,7 @@ export const ScalarEditor = ({
       return <Checkbox>{convertFieldToReadableLabel(field)}</Checkbox>;
     }
     case "DATE": {
-      return <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} siblings={siblings} />;
+      return <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} />;
     }
   }
 };
@@ -80,7 +74,6 @@ const AutoSavingTextField = (props: {
   step?: number;
   timeoutTimer: number;
   onSubmit?: (valg: SaksbehandlerValg) => void;
-  siblings: FieldSpecificaitonSibling[];
 }) => {
   const { register, getFieldState, watch, reset, formState } = useFormContext();
 
@@ -95,25 +88,17 @@ const AutoSavingTextField = (props: {
   useEffect(() => {
     if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
       const timeout = setTimeout(() => {
-        const areRequiredSiblingsFilled = props.siblings.every((sibling) => {
-          const siblingName = sibling.parentFieldName ? `${sibling.parentFieldName}.${sibling.name}` : sibling.name;
-          const siblingValue = watch(siblingName);
-          return sibling.type.nullable ? true : !!siblingValue;
-        });
-
-        if (areRequiredSiblingsFilled) {
-          props.onSubmit!({ ...watch(), [props.field]: watchedValue });
-          /* 
+        props.onSubmit!({ ...watch(), [props.field]: watchedValue });
+        /* 
             Vi burde kanskje bare gjøre en resett dersom onSubmiten gir en OK? 
             Det vil nok kreve en del koding for det
           */
-          reset({ ...watch(), [props.field]: watchedValue });
-        }
+        reset({ ...watch(), [props.field]: watchedValue });
       }, props.timeoutTimer);
 
       return () => clearTimeout(timeout);
     }
-  }, [fieldState.isDirty, watchedValue, watch, props.timeoutTimer, props.onSubmit, props.field, reset, props.siblings]);
+  }, [fieldState.isDirty, watchedValue, watch, props.timeoutTimer, props.onSubmit, props.field, reset]);
 
   const commonTextFieldProperties = {
     ...registerProperties,
@@ -134,7 +119,6 @@ const ControlledDatePicker = (props: {
   field: string;
   fieldType: TScalar;
   onSubmit?: (v: SaksbehandlerValg) => void;
-  siblings: FieldSpecificaitonSibling[];
 }) => {
   const {
     control,
@@ -156,25 +140,17 @@ const ControlledDatePicker = (props: {
   useEffect(() => {
     if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
       const timeout = setTimeout(() => {
-        const areRequiredSiblingsFilled = props.siblings.every((sibling) => {
-          const siblingName = sibling.parentFieldName ? `${sibling.parentFieldName}.${sibling.name}` : sibling.name;
-          const siblingValue = watch(siblingName);
-          return sibling.type.nullable ? true : !!siblingValue;
-        });
-
-        if (areRequiredSiblingsFilled) {
-          props.onSubmit!({ ...watch(), [props.field]: watchedValue });
-          /* 
+        props.onSubmit!({ ...watch(), [props.field]: watchedValue });
+        /* 
             Vi burde kanskje bare gjøre en resett dersom onSubmiten gir en OK? 
             Det vil nok kreve en del koding for det
           */
-          reset({ ...watch(), [props.field]: watchedValue });
-        }
+        reset({ ...watch(), [props.field]: watchedValue });
       }, 500);
 
       return () => clearTimeout(timeout);
     }
-  }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, props.field, reset, props.siblings]);
+  }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, props.field, reset]);
 
   return (
     <Controller

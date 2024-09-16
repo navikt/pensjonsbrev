@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import { Button, Heading } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
+import { useCallback, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
@@ -32,12 +33,16 @@ export const ModelEditor = ({
 }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
+  const formRef = useRef<HTMLFormElement>(null);
   const brevmal = useQuery({
     queryKey: getSakContext.queryKey(saksId, vedtaksId),
     queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
   });
   const doSubmit = (values: SaksbehandlerValg) => onSubmit(createSaksbehandlerValg(values));
+  const requestSubmit = useCallback(() => {
+    formRef.current?.requestSubmit();
+  }, [formRef]);
 
   if (specification) {
     const saksbehandlerValgType = findSaksbehandlerValgTypeName(specification);
@@ -56,11 +61,12 @@ export const ModelEditor = ({
               }
             `}
             onSubmit={methods.handleSubmit(doSubmit)}
+            ref={formRef}
           >
             <Heading size="small">{brevmal.data?.name}</Heading>
             <ObjectEditor
               brevkode={brevkode}
-              submitOnChange={brevId ? onSubmit : undefined}
+              submitOnChange={brevId ? requestSubmit : undefined}
               typeName={saksbehandlerValgType}
             />
             {!brevId && (

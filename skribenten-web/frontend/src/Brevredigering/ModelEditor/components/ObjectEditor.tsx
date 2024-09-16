@@ -6,7 +6,6 @@ import { useFormContext } from "react-hook-form";
 import { useModelSpecification } from "~/api/brev-queries";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import type { FieldSpecificaitonSibling } from "~/Brevredigering/ModelEditor/components/utils";
 import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
 import type { SaksbehandlerValg } from "~/types/brev";
 import type { FieldType } from "~/types/brevbakerTypes";
@@ -16,13 +15,11 @@ const FieldEditor = ({
   field,
   fieldType,
   submitOnChange,
-  siblings,
 }: {
   brevkode: string;
   field: string;
   fieldType: FieldType;
   submitOnChange?: (valg: SaksbehandlerValg) => void;
-  siblings: FieldSpecificaitonSibling[];
 }) => {
   switch (fieldType.type) {
     case "object": {
@@ -43,7 +40,7 @@ const FieldEditor = ({
       );
     }
     case "scalar": {
-      return <ScalarEditor field={field} fieldType={fieldType} siblings={siblings} submitOnChange={submitOnChange} />;
+      return <ScalarEditor field={field} fieldType={fieldType} submitOnChange={submitOnChange} />;
     }
     case "array": {
       return <div>ARRAY TODO</div>;
@@ -64,19 +61,10 @@ export type ObjectEditorProperties = {
 export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
   const objectTypeSpecification = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
-  const fieldsInSpecification = Object.entries(objectTypeSpecification ?? {});
-
   return (
     <>
       {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
         const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
-        const siblingFields = fieldsInSpecification
-          .filter((sibling) => sibling[0] !== field)
-          .map(([sibling, siblingType]) => ({
-            name: sibling,
-            type: siblingType,
-            parentFieldName: parentFieldName,
-          }));
 
         return (
           <FieldEditor
@@ -84,7 +72,6 @@ export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChan
             field={fieldName}
             fieldType={fieldType}
             key={field}
-            siblings={siblingFields}
             submitOnChange={submitOnChange}
           />
         );
