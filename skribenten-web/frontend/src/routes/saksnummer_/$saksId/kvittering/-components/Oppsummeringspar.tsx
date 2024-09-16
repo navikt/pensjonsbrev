@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
-import { BodyShort } from "@navikt/ds-react";
+import { BodyShort, Label } from "@navikt/ds-react";
 
-const Oppsummeringspar = (properties: { tittel: string; verdi: string | number }) => {
+const Oppsummeringspar = (properties: { tittel: string; verdi: string | number; boldedTitle: boolean }) => {
   return (
     <div
       css={css`
@@ -9,13 +9,18 @@ const Oppsummeringspar = (properties: { tittel: string; verdi: string | number }
         flex-direction: column;
       `}
     >
-      <BodyShort
-        css={css`
-          color: var(--a-gray-600);
-        `}
-      >
-        {properties.tittel}
-      </BodyShort>
+      {properties.boldedTitle ? (
+        <Label>{properties.tittel}</Label>
+      ) : (
+        <BodyShort
+          css={css`
+            color: var(--a-gray-600);
+          `}
+        >
+          {properties.tittel}
+        </BodyShort>
+      )}
+
       <BodyShort>{properties.verdi}</BodyShort>
     </div>
   );

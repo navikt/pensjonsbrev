@@ -42,7 +42,7 @@ export const delvisOppdaterBrev = async (argz: DelvisOppdaterBrevRequest) =>
     )
   ).data;
 
-export const slettBrev = async (saksId: string, brevId: string) =>
+export const slettBrev = async (saksId: string, brevId: string | number) =>
   (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`)).data;
 
 export const sendBrev = async (saksId: string, brevId: string | number): Promise<BestillBrevResponse> =>

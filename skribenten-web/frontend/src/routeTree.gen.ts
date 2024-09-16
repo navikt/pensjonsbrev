@@ -20,6 +20,7 @@ import { Route as SaksnummerSaksIdBrevbehandlerRouteImport } from './routes/saks
 import { Route as SaksnummerSaksIdBrevIndexImport } from './routes/saksnummer_/$saksId/brev.index'
 import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_/$saksId/brev.$brevId'
 import { Route as SaksnummerSaksIdBrevvelgerTemplateIdRouteImport } from './routes/saksnummer_/$saksId/brevvelger/$templateId/route'
+import { Route as SaksnummerSaksIdBrevvelgerKladdBrevIdImport } from './routes/saksnummer_/$saksId/brevvelger/kladd.$brevId'
 
 // Create/Update Routes
 
@@ -74,6 +75,12 @@ const SaksnummerSaksIdBrevvelgerTemplateIdRouteRoute =
     getParentRoute: () => SaksnummerSaksIdBrevvelgerRouteRoute,
   } as any)
 
+const SaksnummerSaksIdBrevvelgerKladdBrevIdRoute =
+  SaksnummerSaksIdBrevvelgerKladdBrevIdImport.update({
+    path: '/kladd/$brevId',
+    getParentRoute: () => SaksnummerSaksIdBrevvelgerRouteRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -114,6 +121,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdBrevIndexImport
       parentRoute: typeof SaksnummerSaksIdRouteImport
     }
+    '/saksnummer/$saksId/brevvelger/kladd/$brevId': {
+      preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerKladdBrevIdImport
+      parentRoute: typeof SaksnummerSaksIdBrevvelgerRouteImport
+    }
   }
 }
 
@@ -125,6 +136,7 @@ export const routeTree = rootRoute.addChildren([
     SaksnummerSaksIdBrevbehandlerRouteRoute,
     SaksnummerSaksIdBrevvelgerRouteRoute.addChildren([
       SaksnummerSaksIdBrevvelgerTemplateIdRouteRoute,
+      SaksnummerSaksIdBrevvelgerKladdBrevIdRoute,
     ]),
     SaksnummerSaksIdKvitteringRouteRoute,
     SaksnummerSaksIdBrevBrevIdRoute,

@@ -20,6 +20,7 @@ const PDFViewerTopBar = (properties: {
   currentPageNumber: number;
   setCurrentPageNumber: (n: number) => void;
 }) => {
+  const navigate = useNavigate({ from: Route.fullPath });
   return (
     <HStack
       align="center"
@@ -39,7 +40,14 @@ const PDFViewerTopBar = (properties: {
         />
         <TopBarZoom scale={properties.scale} setScale={properties.setScale} />
       </HStack>
-      <SlettBrev brevId={properties.brevId} sakId={properties.sakId} />
+      <SlettBrev
+        brevId={properties.brevId}
+        buttonText="Slett"
+        onSlettSuccess={() =>
+          navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: properties.sakId } })
+        }
+        sakId={properties.sakId}
+      />
     </HStack>
   );
 };
@@ -212,7 +220,18 @@ const BasicPDFViewerButton = (properties: {
   );
 };
 
-const SlettBrev = (properties: { sakId: string; brevId: string }) => {
+export const SlettBrev = (properties: {
+  sakId: string;
+  brevId: string | number;
+  buttonText: string;
+  onSlettSuccess: () => void;
+  modalTexts?: {
+    heading?: string;
+    body?: string;
+    buttonYes?: string;
+    buttonNo?: string;
+  };
+}) => {
   const [vilSletteBrev, setVilSletteBrev] = useState(false);
 
   return (
@@ -221,22 +240,35 @@ const SlettBrev = (properties: { sakId: string; brevId: string }) => {
         <SlettBrevModal
           brevId={properties.brevId}
           onClose={() => setVilSletteBrev(false)}
+          onSlettSuccess={properties.onSlettSuccess}
           sakId={properties.sakId}
+          texts={properties.modalTexts}
           åpen={vilSletteBrev}
         />
       )}
       <Button onClick={() => setVilSletteBrev(true)} size="small" type="button" variant="danger">
-        <HStack gap="1">
-          <TrashIcon fontSize="1.5rem" title="slett-ikon" /> <BodyShort>Slett</BodyShort>
+        <HStack align={"center"} gap="1">
+          <TrashIcon fontSize="1.5rem" title="slett-ikon" /> {properties.buttonText}
         </HStack>
       </Button>
     </div>
   );
 };
 
-const SlettBrevModal = (properties: { sakId: string; brevId: string; åpen: boolean; onClose: () => void }) => {
+const SlettBrevModal = (properties: {
+  sakId: string;
+  brevId: string | number;
+  åpen: boolean;
+  onClose: () => void;
+  onSlettSuccess: () => void;
+  texts?: {
+    heading?: string;
+    body?: string;
+    buttonYes?: string;
+    buttonNo?: string;
+  };
+}) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate({ from: Route.fullPath });
 
   const slett = useMutation({
     mutationFn: () => slettBrev(properties.sakId, properties.brevId),
@@ -244,28 +276,30 @@ const SlettBrevModal = (properties: { sakId: string; brevId: string; åpen: bool
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.filter((brev) => brev.id.toString() !== properties.brevId),
       );
-      navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: properties.sakId } });
+      properties.onSlettSuccess();
     },
   });
 
   return (
     <Modal
-      header={{ heading: "Vil du slette brevet?" }}
+      header={{ heading: properties.texts?.heading ?? "Vil du slette brevet?" }}
       onClose={properties.onClose}
       open={properties.åpen}
       portal
       width={450}
     >
       <Modal.Body>
-        <BodyShort>Brevet vil bli slettet, og du kan ikke angre denne handlingen.</BodyShort>
+        <BodyShort>
+          {properties.texts?.body ?? "Brevet vil bli slettet, og du kan ikke angre denne handlingen."}
+        </BodyShort>
       </Modal.Body>
       <Modal.Footer>
         <HStack gap="4">
           <Button onClick={properties.onClose} type="button" variant="tertiary">
-            Nei, behold brevet
+            {properties.texts?.buttonNo ?? "Nei, behold brevet"}
           </Button>
           <Button loading={slett.isPending} onClick={() => slett.mutate()} type="button" variant="danger">
-            Ja, slett brevet
+            {properties.texts?.buttonYes ?? "Ja, slett brevet"}
           </Button>
         </HStack>
       </Modal.Footer>
