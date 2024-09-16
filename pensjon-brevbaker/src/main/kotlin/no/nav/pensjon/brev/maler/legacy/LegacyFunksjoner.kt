@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 
@@ -164,6 +165,12 @@ fun Expression<PE>.ut_inntektsgrense_faktisk() =
 //ENDIF
 fun Expression<PE>.ut_virkningstidpunktstorreenn01012016() = vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.virkningstidpunkt_safe
     .legacyGreaterThan(LocalDate.of(2016,1,1))
+
+fun Expression<PE>.ut_periodefomstorre0101() = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().legacyGreaterThan(ut_firstday())
+
+fun Expression<PE>.ut_periodetommindre3112() = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodetom().legacyLessThan(ut_lastday())
+
+fun Expression<PE>.ut_sum_inntekterbt_totalbeloput(): Expression<Kroner> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterbt().ifNull(Kroner(0)) + vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().ifNull(Kroner(0))
 
 // Defaulter faktisk til 2014!?
 fun Expression<PE>.ut_firstday(): Expression<LocalDate?> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().ifNull(LocalDate.of(2014,10,14)).firstDayOfYear

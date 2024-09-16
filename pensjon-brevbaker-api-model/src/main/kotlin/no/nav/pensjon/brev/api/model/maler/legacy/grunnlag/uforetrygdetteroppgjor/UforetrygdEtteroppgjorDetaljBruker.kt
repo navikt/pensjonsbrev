@@ -4,6 +4,8 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class UforetrygdEtteroppgjorDetaljBruker(
     val fratrekkliste: FratrekkListe?,
+    val inntektliste: InntektListe?,
     val sumfratrekkut: Kroner?,
+    val suminntekterbt: Kroner?,
     val suminntekterut: Kroner?,
 )
