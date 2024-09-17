@@ -3,19 +3,24 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.Config
 import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
+import io.getunleash.UnleashContext
 import io.getunleash.util.UnleashConfig
-import kotlin.reflect.KProperty
+import io.ktor.server.application.*
+
+private const val unleashTogglePrefix = "pensjonsbrev.skribenten."
+
+data class UnleashToggle(val name: String) {
+    fun isEnabled(call: ApplicationCall) = Features.isEnabled(this, call)
+}
 
 object Features {
-    val brevbakerbrev: Boolean by UnleashToggle()
+    val brevbakerbrev = UnleashToggle("brevbakerbrev")
 
-    var unleash: Unleash? = null
-        private set
+    private var unleash: Unleash? = null
+    private val overrides = mutableMapOf<String, Boolean>()
 
-    private val _overrides = mutableMapOf<String, Boolean>()
-    val overrides: Map<String, Boolean> = _overrides
     fun override(key: String, value: Boolean) {
-        _overrides[key] = value
+        overrides[key] = value
     }
 
     fun initUnleash(config: Config) {
@@ -27,22 +32,12 @@ object Features {
                 .apiKey(config.getString("apiToken")).build()
         )
     }
-}
 
-private class EnvironmentToggle {
-    fun isEnabled(property: KProperty<*>): Boolean =
-        System.getenv().getOrDefault("FEATURE_${property.name}", "false").toBoolean()
+    fun isEnabled(toggle: UnleashToggle, call: ApplicationCall? = null): Boolean =
+        overrides[toggle.name]
+            ?: unleash?.isEnabled(unleashTogglePrefix + toggle.name, context(call))
+            ?: false
 
-    operator fun getValue(thisRef: Features, property: KProperty<*>): Boolean =
-        thisRef.overrides[property.name] ?: isEnabled(property)
-}
-
-private const val unleashTogglePrefix = "pensjonsbrev.skribenten."
-
-private class UnleashToggle {
-    fun isEnabled(thisRef: Features, property: KProperty<*>): Boolean? =
-        thisRef.unleash?.isEnabled(unleashTogglePrefix + property.name)
-
-    operator fun getValue(thisRef: Features, property: KProperty<*>): Boolean =
-        thisRef.overrides[property.name] ?: isEnabled(thisRef, property) ?: false
+    private fun context(call: ApplicationCall?): UnleashContext =
+        call?.let { UnleashContext.builder().userId(it.principal().navIdent).build() } ?: UnleashContext.builder().build()
 }
