@@ -3,10 +3,10 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattSøknad
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.søknadOversendesTilUtlandet
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
-import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattSøknad
-import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.søknadOversendesTilUtlandet
-import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
