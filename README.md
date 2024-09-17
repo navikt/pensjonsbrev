@@ -14,7 +14,7 @@ Bruk følgende for å bygge og kjøre:
 Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fortsatt pga en bug i docker-compose generere tomme env files for skribenten:
 ```bash
 (mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff)
-(touch skribenten-backend/secrets/azuread.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env)
+(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env)
 ```
 ```bash
 docker-compose up -d --build
