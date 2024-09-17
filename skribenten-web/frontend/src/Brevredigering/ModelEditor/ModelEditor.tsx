@@ -86,21 +86,7 @@ export const ModelEditor = ({
                 nullable: false,
                 kind: "STRING",
               }}
-              /*
-                TODO: per nå så gir onSubmit'en oss saksbehandlerValg tilbake hele tiden.
-                      Hvis vi har lyst til at den skal være mer generell, burde den kanskje bare returnere sin input, 
-                      så får componenten som brukere den håndtere resten
-               */
-              onSubmit={
-                brevId
-                  ? () => {
-                      const signatur = methods.watch("signatur");
-                      if (signatur) {
-                        doSubmit({ ...methods.getValues(), signatur });
-                      }
-                    }
-                  : undefined
-              }
+              onSubmit={brevId ? requestSubmit : undefined}
               timeoutTimer={3000}
               type={"text"}
             />
