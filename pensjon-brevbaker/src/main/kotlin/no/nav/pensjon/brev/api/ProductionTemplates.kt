@@ -21,6 +21,7 @@ object ProductionTemplates {
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
         EndretUfoeretrygdPGAInntekt,
+        FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
         OmsorgEgenAuto,
         OpphoerBarnetilleggAuto,

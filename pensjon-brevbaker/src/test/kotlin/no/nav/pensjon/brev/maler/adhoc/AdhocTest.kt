@@ -86,4 +86,15 @@ class AdhocTest {
             English
         )
     }
+
+    @Test
+    fun `testAdhocFeilUtsendingAvGjenlevenderett pdf`() {
+        testAdhocPdf(
+            FeilUtsendingAvGjenlevenderett.template,
+            pdfName = "PE_ADHOC_2024_FEIL_INFOBREV_AP_SENDT_BRUKER",
+            Bokmal,
+            Nynorsk,
+            English
+        )
+    }
 }
