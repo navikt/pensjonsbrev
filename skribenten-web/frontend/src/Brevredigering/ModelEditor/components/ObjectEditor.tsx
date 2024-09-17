@@ -96,7 +96,10 @@ function ToggleableObjectEditor({
     if (open) {
       unregister(parentFieldName, { keepDefaultValue: true });
     }
-    submitOnChange?.();
+    //TODO - kaller på timeout for å sørge for at requestSubmit blir kalt etter at the togglebare feltene er blitt registert
+    setTimeout(() => {
+      submitOnChange?.();
+    }, 500);
     setOpen(!open);
   };
 
