@@ -49,7 +49,6 @@ export interface BestillBrevError {
 export type ReservasjonResponse = {
   vellykket: boolean;
   reservertAv: NavAnsatt;
-  timestamp: string;
   expiresIn: string;
   redigertBrevHash: string;
 };

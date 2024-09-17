@@ -1,4 +1,5 @@
 import { capitalize, startCase } from "lodash";
+
 export function convertFieldToReadableLabel(field: string) {
   const lastFragment = field.split(".").at(-1);
   return capitalize(startCase(lastFragment));

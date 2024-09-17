@@ -1,82 +1,189 @@
 import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react";
-import { Controller, get, useFormContext } from "react-hook-form";
+import { useEffect } from "react";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
 import type { TScalar } from "~/types/brevbakerTypes";
 import { formatDateWithoutTimezone, parseDate } from "~/utils/dateUtils";
 
-export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: TScalar }) => {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext();
-
-  const potentialError = get(errors, field)?.message?.toString();
-  const registerProperties = register(field, { required: fieldType.nullable ? false : "Må oppgis" });
-
-  const commonTextFieldProperties = {
-    ...registerProperties,
-    autoComplete: "off",
-    error: potentialError,
-    label: convertFieldToReadableLabel(field),
-    size: "small" as const,
-  };
-
+export const ScalarEditor = ({
+  fieldType,
+  field,
+  submitOnChange,
+}: {
+  field: string;
+  fieldType: TScalar;
+  submitOnChange?: () => void;
+}) => {
   switch (fieldType.kind) {
     case "NUMBER": {
-      return <TextField {...commonTextFieldProperties} step={1} type="number" />;
+      return (
+        <AutoSavingTextField
+          field={field}
+          fieldType={fieldType}
+          onSubmit={submitOnChange}
+          step={1}
+          timeoutTimer={2000}
+          type={"number"}
+        />
+      );
     }
     case "DOUBLE": {
-      return <TextField {...commonTextFieldProperties} step={0.1} type="number" />;
+      return (
+        <AutoSavingTextField
+          field={field}
+          fieldType={fieldType}
+          onSubmit={submitOnChange}
+          step={0.1}
+          timeoutTimer={3000}
+          type="number"
+        />
+      );
     }
     case "STRING": {
-      return <TextField {...commonTextFieldProperties} type="text" />;
+      return (
+        <AutoSavingTextField
+          field={field}
+          fieldType={fieldType}
+          onSubmit={submitOnChange}
+          timeoutTimer={3000}
+          type="text"
+        />
+      );
     }
     case "BOOLEAN": {
       // TODO: reimplement when an example template exists
       return <Checkbox>{convertFieldToReadableLabel(field)}</Checkbox>;
     }
     case "DATE": {
-      return <ControlledDatePicker field={field} />;
+      return <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} />;
     }
   }
 };
 
-function ControlledDatePicker({ field }: { field: string }) {
-  const { control } = useFormContext();
+/**
+ * Componenten har mulighet til å autolagre endringer i feltet etter en gitt timeout dersom onSubmit sendes med.
+ * Ellers, kan den også brukes som et vanlig tekst felt.
+ */
+const AutoSavingTextField = (props: {
+  field: string;
+  fieldType: TScalar;
+  type: "number" | "text";
+  step?: number;
+  timeoutTimer: number;
+  onSubmit?: () => void;
+}) => {
+  const { register, getFieldState, watch, reset, formState } = useFormContext();
+
+  const registerProperties = register(props.field, { required: props.fieldType.nullable ? false : "Må oppgis" });
+  const fieldState = getFieldState(registerProperties.name, formState);
+  const watchedValue = watch(registerProperties.name);
+
+  /**
+   * useEffekten er brukt kun i forbindelse med autolagring
+   * Merk at noen felter er avhengig av at andre felter er fyllt ut, før vi prøver å gjøre et kall til backend
+   */
+  useEffect(() => {
+    if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
+      const timeout = setTimeout(() => {
+        props.onSubmit!();
+      }, props.timeoutTimer);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [fieldState.isDirty, watchedValue, watch, props.timeoutTimer, props.onSubmit, props.field, reset]);
+
+  const commonTextFieldProperties = {
+    ...registerProperties,
+    autoComplete: "off",
+    error: fieldState.error?.message,
+    label: convertFieldToReadableLabel(props.field),
+    size: "small" as const,
+  };
+
+  return <TextField {...commonTextFieldProperties} step={props.step} type={props.type} />;
+};
+
+/**
+ * Componenten har mulighet til å autolagre endringer i feltet etter en gitt timeout dersom onSubmit sendes med.
+ * Ellers, kan den også brukes som et vanlig tekst felt.
+ */
+const ControlledDatePicker = (props: { field: string; fieldType: TScalar; onSubmit?: () => void }) => {
+  const {
+    control,
+    getFieldState,
+    watch,
+    reset,
+    formState: { defaultValues },
+    register,
+  } = useFormContext();
+
+  register(props.field, { required: props.fieldType.nullable ? false : "Må oppgis" });
+  const watchedValue = useWatch({ name: props.field, control: control });
+  const fieldState = getFieldState(props.field);
+
+  /**
+   * useEffekten er brukt kun i forbindelse med autolagring
+   * Merk at noen felter er avhengig av at andre felter er fyllt ut, før vi prøver å gjøre et kall til backend
+   */
+  useEffect(() => {
+    if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
+      const timeout = setTimeout(() => {
+        props.onSubmit!();
+      }, 500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, props.field, reset]);
+
+  const defaultValue = getFieldDefaultValue(defaultValues, props.field);
+
   return (
     <Controller
       control={control}
-      name={field}
-      render={({ field: { onChange } }) => <DatePickerEditor field={field} onChange={onChange} />}
+      name={props.field}
+      render={({ field, fieldState }) => (
+        <DatePickerEditor
+          defaultValue={defaultValue}
+          error={fieldState.error?.message}
+          label={convertFieldToReadableLabel(props.field)}
+          onChange={field.onChange}
+        />
+      )}
     />
   );
-}
-function DatePickerEditor({ field, onChange }: { field: string; onChange: (newDate: string) => void }) {
-  const {
-    formState: { errors, defaultValues },
-  } = useFormContext();
-  // For some reason form defaultValues does not work with datepicker, and we have to pick it ourselves
-  const defaultValue = getFieldDefaultValue(defaultValues, field);
+};
 
+/**
+ * en basic datepicker som tar hånd om setup.
+ */
+function DatePickerEditor({
+  error,
+  defaultValue,
+  onChange,
+  label,
+}: {
+  error?: string;
+  label: string;
+  defaultValue?: string;
+  onChange: (newDate: string) => void;
+}) {
   const datepicker = useDatepicker({
-    inputFormat: "yyyy-MM-dd",
     defaultSelected: defaultValue ? parseDate(defaultValue) : undefined,
     onDateChange: (date) => {
       onChange(date ? formatDateWithoutTimezone(date) : "");
     },
   });
 
-  const potentialError = get(errors, field)?.message?.toString();
-
   return (
     <FullWidthDatePickerWrapper>
       <DatePicker {...datepicker.datepickerProps}>
         <DatePicker.Input
+          data-cy="datepicker-editor"
           {...datepicker.inputProps}
-          error={potentialError}
-          label={convertFieldToReadableLabel(field)}
+          error={error}
+          label={label}
           size="small"
         />
       </DatePicker>
