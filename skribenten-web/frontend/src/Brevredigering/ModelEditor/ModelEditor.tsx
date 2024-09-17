@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import { Button, Heading } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -11,7 +10,6 @@ import type { SaksbehandlerValg } from "~/types/brev";
 import type { LetterModelSpecification } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import type { LetterEditorState } from "../LetterEditor/model/state";
 import { ObjectEditor } from "./components/ObjectEditor";
 import { AutoSavingTextField } from "./components/ScalarEditor";
 
@@ -19,12 +17,10 @@ export type ModelEditorProperties = {
   brevkode: string;
   defaultValues?: SaksbehandlerValg & { signatur: string };
   disableSubmit: boolean;
-  onSubmit: (saksbehandlerValg: SaksbehandlerValg) => void;
+  onSubmit: (saksbehandlerValg: SaksbehandlerValg, signatur: string) => void;
   saksId: string;
   vedtaksId: string | undefined;
   brevId: Nullable<number>;
-  setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
-  signaturOnSubmit: (signatur: string) => void;
 };
 
 export const ModelEditor = ({
@@ -35,7 +31,6 @@ export const ModelEditor = ({
   saksId,
   vedtaksId,
   brevId,
-  signaturOnSubmit,
 }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
@@ -45,7 +40,16 @@ export const ModelEditor = ({
     queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
   });
-  const doSubmit = (values: SaksbehandlerValg) => onSubmit(createSaksbehandlerValg(values));
+  //ved å ha 1 onSubmit, er det lettere for parent å håndtere sine onsubmits uten å måtte skille
+  //på om det er i context autolagring eller ikke.
+  //problemet som har oppstått nå, er at om du endrer på signatur/saksbehandler valg, trigger det on submit på begge.
+  //dersom du endrer signatur & skasbhenadlervalg veldig fort, vil brev editoren henge 1 state back, men fikser seg etter det blir gjort en ny
+  //lagring, eller refresh.
+  //Kanskje vi burde se på signatur og saksbehandlervalg som 'brevinnhold metadata', og ha 1 endepunkt for det.
+  const doSubmit = (values: SaksbehandlerValg & { signatur: string }) => {
+    return onSubmit(createSaksbehandlerValg(values), values.signatur);
+  };
+
   const requestSubmit = useCallback(() => {
     formRef.current?.requestSubmit();
   }, [formRef]);
@@ -87,12 +91,16 @@ export const ModelEditor = ({
                       Hvis vi har lyst til at den skal være mer generell, burde den kanskje bare returnere sin input, 
                       så får componenten som brukere den håndtere resten
                */
-              onSubmit={() => {
-                const signatur = methods.watch("signatur");
-                if (signatur) {
-                  signaturOnSubmit(signatur);
-                }
-              }}
+              onSubmit={
+                brevId
+                  ? () => {
+                      const signatur = methods.watch("signatur");
+                      if (signatur) {
+                        doSubmit({ ...methods.getValues(), signatur });
+                      }
+                    }
+                  : undefined
+              }
               timeoutTimer={3000}
               type={"text"}
             />

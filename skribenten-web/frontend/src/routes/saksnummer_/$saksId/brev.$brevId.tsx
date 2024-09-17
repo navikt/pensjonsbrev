@@ -22,7 +22,7 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import type { BrevResponse, ReservasjonResponse } from "~/types/brev";
+import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
@@ -172,6 +172,11 @@ function RedigerBrev({
     },
   );
 
+  const onSubmit = (saksbehandlerValg: SaksbehandlerValg, signatur: string) => {
+    saksbehandlerValgMutation.mutate(saksbehandlerValg);
+    signaturMutation.mutate(signatur);
+  };
+
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
     queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
@@ -234,10 +239,8 @@ function RedigerBrev({
             signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
           }}
           disableSubmit={saksbehandlerValgMutation.isPending}
-          onSubmit={saksbehandlerValgMutation.mutate}
+          onSubmit={onSubmit}
           saksId={saksId}
-          setEditorState={setEditorState}
-          signaturOnSubmit={signaturMutation.mutate}
           vedtaksId={vedtaksId}
         />
         <LetterEditor
