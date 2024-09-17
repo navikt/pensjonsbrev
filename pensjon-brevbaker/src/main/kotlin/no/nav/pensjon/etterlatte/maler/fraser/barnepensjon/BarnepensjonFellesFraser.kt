@@ -317,7 +317,7 @@ object BarnepensjonFellesFraser {
                         text(
                             Bokmal to
                                 "For å unngå eventuell restskatt, anbefaler vi å legge til et frivillig skattetrekk " +
-                                "på barnepensjonen. Ta kontakt med skatteetaten dersom du har spørsmål om skattetrekk.",
+                                "på barnepensjonen. Ta kontakt med Skatteetaten dersom du har spørsmål om skattetrekk.",
                             Nynorsk to
                                 "Vi anbefaler deg å leggje inn eit frivillig skattetrekk på barnepensjonen for å " +
                                 "unngå restskatt. Ta kontakt med Skatteetaten dersom du har spørsmål om skattetrekk.",
