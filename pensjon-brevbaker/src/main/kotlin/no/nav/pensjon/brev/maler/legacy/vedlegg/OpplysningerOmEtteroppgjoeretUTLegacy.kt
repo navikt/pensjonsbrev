@@ -6,10 +6,12 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjo
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.registerkilde_safe
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.PE_UT_Etteroppgjor_DetaljBruker_InntektListe_RegisterKildeKode
+import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.ut_periodefomstorre0101
 import no.nav.pensjon.brev.maler.legacy.ut_periodetommindre3112
 import no.nav.pensjon.brev.maler.legacy.ut_sum_inntekterbt_totalbeloput
 import no.nav.pensjon.brev.maler.legacy.ut_uforetrygdetteroppgjor_periodefom_year
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_inntektliste_inntektsgrunnlag
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut
@@ -31,6 +33,9 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_inntekttype
+import vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop
+import kotlin.and
 import kotlin.text.Typography.paragraph
 
 @TemplateModelHelpers
@@ -277,8 +282,19 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
     }
 
 
-    //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
+//IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
     showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().notEqualTo(0)) and FUNKSJON_Count(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_inntekttype()).notEqualTo(0)){
+        //[Text 2, Text 3, Text]
+
+        title1 {
+            text (
+                Bokmal to "Beløp som er trukket fra inntekten din",
+                Nynorsk to "Beløp som er trekt frå inntekta di",
+            )
+        }
+    }
+    //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
+    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().notEqualTo(0)) and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag().isNotEmpty()){
         //[Table 3, Table 4, Table 5]
 
         paragraph {
@@ -376,6 +392,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
             }
         }
     }
+
+    /*
     //[Text, Text 2, Text 3]
 
 
@@ -712,12 +730,6 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
         }
     }
 
-    paragraph {
-        text (
-            Bokmal to "Beløp som er trukket fra inntekten din",
-            Nynorsk to "Beløp som er trekt frå inntekta di",
-        )
-    }
     //[Text, Text 2]
 
     paragraph {
@@ -728,7 +740,7 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
     }
 
     //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
-    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().notEqualTo(0)) and FUNKSJON_Count(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_inntekttype()).notEqualTo(0)){
+    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().notEqualTo(0)) and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag().isNotEmpty()){
         //[Table 4, Table 5, Table 6]
 
         paragraph {
@@ -823,7 +835,7 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
     }
 
     //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
-    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().notEqualTo(0)) and FUNKSJON_Count(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_inntekttype()).notEqualTo(0)){
+    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().notEqualTo(0)) and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag().isNotEmpty()){
         //[Table 4, Table 5, Table 6]
 
         paragraph {
