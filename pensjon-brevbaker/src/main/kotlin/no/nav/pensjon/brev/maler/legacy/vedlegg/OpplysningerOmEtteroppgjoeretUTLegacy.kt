@@ -2,27 +2,46 @@ package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.belop_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.grunnikkereduksjon_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.inntekttype_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.registerkilde_safe
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_GrunnIkkeReduksjonKode
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_InntektTypeKode
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_RegisterKildeKode
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.PE_UT_Etteroppgjor_DetaljBruker_InntektListe_RegisterKildeKode
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.TabellInntektenDin
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.TabellTrukketFraInntekt
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.ut_periodefomstorre0101
 import no.nav.pensjon.brev.maler.legacy.ut_periodetommindre3112
 import no.nav.pensjon.brev.maler.legacy.ut_sum_inntekterbt_totalbeloput
 import no.nav.pensjon.brev.maler.legacy.ut_uforetrygdetteroppgjor_periodefom_year
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_inntektliste_inntektsgrunnlag
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.Language.*
@@ -32,10 +51,16 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_inntekttype
+import vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag_inntekttype
 import vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop
+import vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb
+import vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb
+import vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput
 import kotlin.and
+import kotlin.or
 import kotlin.text.Typography.paragraph
 
 @TemplateModelHelpers
@@ -98,10 +123,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
             )
 
             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
-            showIf(
-                (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
-            ) {
+            showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0)
+                    or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))) {
                 text(
                     Bokmal to " og barnetillegg",
                     Nynorsk to " og barnetillegg",
@@ -114,288 +137,108 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
         }
     }
 
-    //[Text 2, Text 3, Text 4]
-    title1 {
-        text (
-            Bokmal to "Inntekten din",
-            Nynorsk to "Inntekta di",
-        )
-    }
+    includePhrase(TabellInntektenDin(pe))
+    includePhrase(TabellTrukketFraInntekt(pe))
 
-    //IF((PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0))  THEN      INCLUDE ENDIF
-    showIf(pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)) {
-        //[Table 3, Table 4, Table 5]
+    //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
+    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)) and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag().isNotEmpty()){
+        //[Text 3, Text 4, Text 2]
+        title1 {
+            text(
+                Bokmal to "Inntekten til annen forelder",
+                Nynorsk to "Inntekta til den andre forelderen",
+            )
+        }
+
         paragraph {
-            table(
-                header = {
-                    column {
-                        text(
-                            Bokmal to "Inntektstyper",
-                            Nynorsk to "Inntektstypar",
-                        )
-                    }
-
-                    column {
-                        text(
-                            Bokmal to "Mottatt av",
-                            Nynorsk to "Motteken av",
-                        )
-                    }
-                    column {
-                        text(
-                            Bokmal to "Registrert inntekt",
-                            Nynorsk to "Registrert inntekt",
-                        )
-                    }
+            table(header = {
+                column {
+                    text(
+                        Bokmal to "Inntektstyper",
+                        Nynorsk to "Inntektstypar",
+                    )
                 }
-            ) {
-                forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_inntektliste_inntektsgrunnlag()) { inntektsgrunnlag ->
-                    //IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' ) ) THEN      INCLUDE ENDIF
-                    showIf(
-                        inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar")
-                                or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl")
-                                or inntektsgrunnlag.inntekttype_safe.equalTo("rap_arb")
-                    ) {
-                        //[Table 3, Table 4, Table 5]
-                        row {
-                            cell {
-                                includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode(inntektsgrunnlag.inntekttype_safe))
-                            }
-                            cell {
-                                includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_RegisterKildeKode(inntektsgrunnlag.registerkilde_safe))
-                            }
-                            cell {
-                                textExpr(
-                                    Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format() + " kr",
-                                    Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format() + " kr",
-                                )
-                            }
-                        }
-                    }
+                column {
+                    text(
+                        Bokmal to "Mottatt av",
+                        Nynorsk to "Motteken av",
+                    )
                 }
+                column {
+                    text(
+                        Bokmal to "Registrert inntekt",
+                        Nynorsk to "Registrert inntekt",
+                    )
+                }
+            }) {
 
-                //PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_SumInntekterUT = 0
-                showIf(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().equalTo(0)){
-                    //[Table 3, Table 4, Table 5]
+                forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag()) { inntektsGrunnlag ->
+                    //IF(( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'forpenutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
+                    showIf(((inntektsGrunnlag.inntekttype_safe.equalTo("rap_nar")
+                            or inntektsGrunnlag.inntekttype_safe.equalTo("forintutl")
+                            or inntektsGrunnlag.inntekttype_safe.equalTo("rap_arb")
+                            or inntektsGrunnlag.inntekttype_safe.equalTo("rap_and")
+                            or inntektsGrunnlag.inntekttype_safe.equalTo("forpenutl")
+                            or inntektsGrunnlag.inntekttype_safe.equalTo("ikke_red")))){
+                        //[Table 10, Table 12]
 
-                    row {
-                        cell {}
-                        cell {}
-                        cell {
-                            text (
-                                Bokmal to "Skatteetaten opplyser at du ikke hadde pensjonsgivende inntekt",
-                                Nynorsk to "Skatteetaten opplyser at du ikkje hadde pensjonsgivande inntekt",
+                        paragraph {
+                            textExpr (
+                                Bokmal to pe.ut_etteroppgjor_detaljeps_inntektliste_inntekttypekode(),
+                                Nynorsk to pe.ut_etteroppgjor_detaljeps_inntektliste_inntekttypekode(),
+                            )
+                            textExpr (
+                                Bokmal to pe.ut_etteroppgjor_detaljeps_inntektliste_registerkildekode(),
+                                Nynorsk to pe.ut_etteroppgjor_detaljeps_inntektliste_registerkildekode(),
+                            )
+                            textExpr (
+                                Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag_belop().format() + " kr",
+                                Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag_belop().format() + " kr",
                             )
                         }
                     }
                 }
                 row {
                     cell {
-                        text (
-                            Bokmal to "Sum pensjonsgivende inntekt",
-                            Nynorsk to "Sum pensjonsgivande inntekt",
-                            BOLD
-                        )
+
                     }
-                    cell {}
                     cell {
-                        textExpr (
-                            Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + " kr",
-                            Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + " kr",
-                            BOLD
-                        )
+
+                    }
+                    cell {
+
                     }
                 }
 
-                forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_inntektliste_inntektsgrunnlag()) { inntektsgrunnlag ->
-                    //IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' ) ) THEN      INCLUDE ENDIF
-                    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0)
-                            or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
-                            and (inntektsgrunnlag.inntekttype_safe.equalTo("rap_and") or inntektsgrunnlag.inntekttype_safe.equalTo("forpenutl"))
-                    ) {
-                        //[Table 3, Table 4, Table 5]
-                        row {
-                            cell {
-                                includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode(inntektsgrunnlag.inntekttype_safe))
-                            }
-                            cell {
-                                includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_RegisterKildeKode(inntektsgrunnlag.registerkilde_safe))
-                            }
-                            cell {
-                                textExpr(
-                                    Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format() + " kr",
-                                    Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format() + " kr",
-                                )
-                            }
-                        }
+                row {
+                    cell {
+
+                    }
+                    cell {
+
+                    }
+                    cell {
+
                     }
                 }
-
-                //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
-                showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))){
-                    //[Table 3, Table 4, Table 5]
-
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Uføretrygd",
-                                Nynorsk to "Uføretrygd",
-                            )
-                        }
-                        cell {
-                            text(
-                                Bokmal to "Beregnet av NAV",
-                                Nynorsk to "Berekna av NAV",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format() + " kr",
-                                Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format() + " kr",
-                            )
-                        }
-                    }
-                }
-
-                //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
-                showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))){
-                    //[Table 3, Table 4, Table 5]
-
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Sum personinntekt",
-                                Nynorsk to "Sum personinntekt",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to pe.ut_sum_inntekterbt_totalbeloput().format() + " kr",
-                                Nynorsk to pe.ut_sum_inntekterbt_totalbeloput().format() + " kr",
-                            )
-                        }
-                    }
-                }
-
             }
         }
-    }
 
-
-//IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
-    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().notEqualTo(0)) and FUNKSJON_Count(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_inntekttype()).notEqualTo(0)){
-        //[Text 2, Text 3, Text]
-
-        title1 {
-            text (
-                Bokmal to "Beløp som er trukket fra inntekten din",
-                Nynorsk to "Beløp som er trekt frå inntekta di",
-            )
-        }
-    }
-    //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
-    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().notEqualTo(0)) and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag().isNotEmpty()){
-        //[Table 3, Table 4, Table 5]
+        //[Table 10, Table 12]
 
         paragraph {
             text (
-                Bokmal to "Inntektstype",
-                Nynorsk to "Inntektstype",
-            )
-            text (
-                Bokmal to "Årsak til at inntekt er trukket fra",
-                Nynorsk to "Årsak til at inntekt er trekt frå",
-            )
-            text (
-                Bokmal to "Mottatt av",
-                Nynorsk to "Motteken av",
-            )
-            text (
-                Bokmal to "Beløp",
-                Nynorsk to "Beløp",
-            )
-        }
-
-        //IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
-        showIf(((FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("rap_nar") or FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("forintutl") or FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("rap_arb") or FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("ikke_red")))){
-            //[Table 3, Table 4, Table 5]
-
-            paragraph {
-                textExpr (
-                    Bokmal to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_inntekttypekode(),
-                    Nynorsk to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_inntekttypekode(),
-                )
-                textExpr (
-                    Bokmal to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_grunnikkereduksjonkode(),
-                    Nynorsk to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_grunnikkereduksjonkode(),
-                )
-                textExpr (
-                    Bokmal to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_registerkildekode(),
-                    Nynorsk to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_registerkildekode(),
-                )
-                textExpr (
-                    Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_belop().format() + " kr",
-                    Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_belop().format() + " kr",
-                )
-            }
-        }
-        //[Table 3, Table 4, Table 5]
-
-        paragraph {
-            text (
-                Bokmal to "Inntekt trukket fra pensjonsgivende inntekt",
-                Nynorsk to "Inntekt trekt frå pensjonsgivende inntekt",
+                Bokmal to "Sum personinntekt",
+                Nynorsk to "Sum personinntekt",
             )
             textExpr (
-                Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut().format() + " kr",
-                Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut().format() + " kr",
+                Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt().format() + " kr",
+                Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt().format() + " kr",
             )
         }
-
-        //IF((PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) AND( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forpenutl'  ) ) THEN      INCLUDE ENDIF
-        showIf(((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)) and (FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("rap_and") or FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("forpenutl")))){
-            //[Table 3, Table 4, Table 5]
-
-            paragraph {
-                textExpr (
-                    Bokmal to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_inntekttypekode(),
-                    Nynorsk to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_inntekttypekode(),
-                )
-                textExpr (
-                    Bokmal to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_grunnikkereduksjonkode(),
-                    Nynorsk to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_grunnikkereduksjonkode(),
-                )
-                textExpr (
-                    Bokmal to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_registerkildekode(),
-                    Nynorsk to pe.ut_etteroppgjor_detaljbruker_fratrekkliste_registerkildekode(),
-                )
-                textExpr (
-                    Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_belop().format() + " kr",
-                    Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_belop().format() + " kr",
-                )
-            }
-        }
-
-        //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
-        showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))){
-            //[Table 3, Table 4, Table 5]
-
-            paragraph {
-                text (
-                    Bokmal to "Inntekt trukket fra personinntekt",
-                    Nynorsk to "Inntekt trekt frå personinntekt",
-                )
-                textExpr (
-                    Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt().format() + " kr",
-                    Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt().format() + " kr",
-                )
-            }
-        }
     }
-
+}
     /*
-    //[Text, Text 2, Text 3]
-
 
 
     //IF( PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "tilbakekr"  AND  (PE_pebrevkode = "PE_UT_23_001"  OR  PE_pebrevkode = "PE_UT_04_402")  ) THEN      INCLUDE ENDIF
@@ -448,8 +291,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
                 )
             }
             textExpr (
-                Bokmal to " Inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel:Utbetalte feriepenger for et arbeidsforhold som er avsluttetInntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomhetenProduksjonstillegg og andre overføringer til gårdbrukereHadde du en slik inntekt i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ", må du dokumentere dette innen 3 uker fra " + pe.datecurrent_formatert().format() + ". Du trenger ikke sende inn ny dokumentasjon om vi allerede har trukket dette fra. Inntekter som er trukket fra ser du i tabellen ovenfor.",
-                Nynorsk to " inntekt frå arbeid eller verksemd som blei heilt avslutta før du fekk innvilga uføretrygd, for eksempel:utbetalte feriepengar for et arbeidsforhold som er avsluttainntekter frå sal av produksjonsmiddel i samband med at verksemda blei avsluttaproduksjonstillegg og andre overføringar til gardbrukararHadde du ei slik inntekt i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ", må du dokumentere dette innan tre veker frå " + pe.datecurrent_formatert().format() + ". Du treng ikkje sende inn ny dokumentasjon om vi allereie har trekt dette frå. Inntekter som er trekte frå, ser du i tabellen ovanfor.",
+                Bokmal to " Inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel:Utbetalte feriepenger for et arbeidsforhold som er avsluttetInntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomhetenProduksjonstillegg og andre overføringer til gårdbrukereHadde du en slik inntekt i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ", må du dokumentere dette innen 3 uker fra " + felles.dokumentDato.format() + ". Du trenger ikke sende inn ny dokumentasjon om vi allerede har trukket dette fra. Inntekter som er trukket fra ser du i tabellen ovenfor.",
+                Nynorsk to " inntekt frå arbeid eller verksemd som blei heilt avslutta før du fekk innvilga uføretrygd, for eksempel:utbetalte feriepengar for et arbeidsforhold som er avsluttainntekter frå sal av produksjonsmiddel i samband med at verksemda blei avsluttaproduksjonstillegg og andre overføringar til gardbrukararHadde du ei slik inntekt i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ", må du dokumentere dette innan tre veker frå " + felles.dokumentDato.format() + ". Du treng ikkje sende inn ny dokumentasjon om vi allereie har trekt dette frå. Inntekter som er trekte frå, ser du i tabellen ovanfor.",
             )
         }
     }
@@ -574,8 +417,6 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
         }
     }
 
-
-    /*
 
 
     //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF
@@ -2107,57 +1948,6 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
         )
     }
 
-    //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
-    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)) and FUNKSJON_Count(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag_inntekttype()).notEqualTo(0)){
-        //[Table 10, Table 12]
-
-        paragraph {
-            text (
-                Bokmal to "Inntektstyper",
-                Nynorsk to "Inntektstypar",
-            )
-            text (
-                Bokmal to "Mottatt av",
-                Nynorsk to "Motteken av",
-            )
-            text (
-                Bokmal to "Registrert inntekt",
-                Nynorsk to "Registrert inntekt",
-            )
-        }
-
-        //IF(( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'forpenutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
-        showIf(((FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("rap_nar") or FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("forintutl") or FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("rap_arb") or FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("rap_and") or FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("forpenutl") or FUNKSJON_PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(sys_tablerow()).equalTo("ikke_red")))){
-            //[Table 10, Table 12]
-
-            paragraph {
-                textExpr (
-                    Bokmal to pe.ut_etteroppgjor_detaljeps_inntektliste_inntekttypekode(),
-                    Nynorsk to pe.ut_etteroppgjor_detaljeps_inntektliste_inntekttypekode(),
-                )
-                textExpr (
-                    Bokmal to pe.ut_etteroppgjor_detaljeps_inntektliste_registerkildekode(),
-                    Nynorsk to pe.ut_etteroppgjor_detaljeps_inntektliste_registerkildekode(),
-                )
-                textExpr (
-                    Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag_belop().format() + " kr",
-                    Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag_belop().format() + " kr",
-                )
-            }
-        }
-        //[Table 10, Table 12]
-
-        paragraph {
-            text (
-                Bokmal to "Sum personinntekt",
-                Nynorsk to "Sum personinntekt",
-            )
-            textExpr (
-                Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt().format() + " kr",
-                Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt().format() + " kr",
-            )
-        }
-    }
     //[Text 4, TBU705V_Overskrift]
 
     paragraph {
@@ -2243,3 +2033,5 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
         }
     }
 }
+
+     */

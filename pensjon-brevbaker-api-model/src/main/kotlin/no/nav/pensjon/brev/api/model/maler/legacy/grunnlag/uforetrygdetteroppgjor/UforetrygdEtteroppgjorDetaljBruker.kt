@@ -6,6 +6,7 @@ data class UforetrygdEtteroppgjorDetaljBruker(
     val fratrekkliste: FratrekkListe?,
     val inntektliste: InntektListe?,
     val sumfratrekkut: Kroner?,
+    val sumfratrekkbt: Kroner?,
     val suminntekterbt: Kroner?,
     val suminntekterut: Kroner?,
 )

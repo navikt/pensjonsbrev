@@ -43,15 +43,18 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjo
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.fratrekkliste_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.inntektliste
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.inntektliste_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.sumfratrekkbt_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.sumfratrekkut_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.suminntekterbt_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.suminntekterut_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPSSelectors.inntektliste_safe as eps_inntektliste_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.barnetilleggfb_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.barnetilleggsb_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.periodefom_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.periodetom_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.uforetrygdetteroppgjordetaljbruker
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.uforetrygdetteroppgjordetaljbruker_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.uforetrygdetteroppgjordetaljeps_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.grunnlag_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.beregningsdata_safe
@@ -707,3 +710,10 @@ fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppg
 
 fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag(): Expression<List<Inntektsgrunnlag>> =
     vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljbruker_safe.fratrekkliste_safe.fratrekk_inntektsgrunnlag_safe.ifNull(emptyList())
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt(): Expression<Kroner> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljbruker_safe.sumfratrekkbt_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag() =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljeps_safe.eps_inntektliste_safe.inntektsgrunnlag_safe.ifNull(emptyList())
+
