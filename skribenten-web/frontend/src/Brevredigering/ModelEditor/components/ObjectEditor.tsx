@@ -7,7 +7,6 @@ import { useModelSpecification } from "~/api/brev-queries";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
-import type { SaksbehandlerValg } from "~/types/brev";
 import type { FieldType } from "~/types/brevbakerTypes";
 
 const FieldEditor = ({
@@ -19,7 +18,7 @@ const FieldEditor = ({
   brevkode: string;
   field: string;
   fieldType: FieldType;
-  submitOnChange?: (valg: SaksbehandlerValg) => void;
+  submitOnChange?: () => void;
 }) => {
   switch (fieldType.type) {
     case "object": {
@@ -55,7 +54,7 @@ export type ObjectEditorProperties = {
   brevkode: string;
   typeName: string;
   parentFieldName?: string;
-  submitOnChange?: (valg: SaksbehandlerValg) => void;
+  submitOnChange?: () => void;
 };
 
 export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
@@ -97,6 +96,7 @@ function ToggleableObjectEditor({
     if (open) {
       unregister(parentFieldName, { keepDefaultValue: true });
     }
+    submitOnChange?.();
     setOpen(!open);
   };
 

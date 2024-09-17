@@ -4,7 +4,6 @@ import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { convertFieldToReadableLabel } from "~/Brevredigering/ModelEditor/components/utils";
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
-import type { SaksbehandlerValg } from "~/types/brev";
 import type { TScalar } from "~/types/brevbakerTypes";
 import { formatDateWithoutTimezone, parseDate } from "~/utils/dateUtils";
 
@@ -15,7 +14,7 @@ export const ScalarEditor = ({
 }: {
   field: string;
   fieldType: TScalar;
-  submitOnChange?: (valg: SaksbehandlerValg) => void;
+  submitOnChange?: () => void;
 }) => {
   switch (fieldType.kind) {
     case "NUMBER": {
@@ -73,7 +72,7 @@ const AutoSavingTextField = (props: {
   type: "number" | "text";
   step?: number;
   timeoutTimer: number;
-  onSubmit?: (valg: SaksbehandlerValg) => void;
+  onSubmit?: () => void;
 }) => {
   const { register, getFieldState, watch, reset, formState } = useFormContext();
 
@@ -88,12 +87,7 @@ const AutoSavingTextField = (props: {
   useEffect(() => {
     if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
       const timeout = setTimeout(() => {
-        props.onSubmit!({ ...watch(), [props.field]: watchedValue });
-        /* 
-            Vi burde kanskje bare gjøre en resett dersom onSubmiten gir en OK? 
-            Det vil nok kreve en del koding for det
-          */
-        reset({ ...watch(), [props.field]: watchedValue });
+        props.onSubmit!();
       }, props.timeoutTimer);
 
       return () => clearTimeout(timeout);
@@ -115,11 +109,7 @@ const AutoSavingTextField = (props: {
  * Componenten har mulighet til å autolagre endringer i feltet etter en gitt timeout dersom onSubmit sendes med.
  * Ellers, kan den også brukes som et vanlig tekst felt.
  */
-const ControlledDatePicker = (props: {
-  field: string;
-  fieldType: TScalar;
-  onSubmit?: (v: SaksbehandlerValg) => void;
-}) => {
+const ControlledDatePicker = (props: { field: string; fieldType: TScalar; onSubmit?: () => void }) => {
   const {
     control,
     getFieldState,
@@ -140,12 +130,7 @@ const ControlledDatePicker = (props: {
   useEffect(() => {
     if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
       const timeout = setTimeout(() => {
-        props.onSubmit!({ ...watch(), [props.field]: watchedValue });
-        /* 
-            Vi burde kanskje bare gjøre en resett dersom onSubmiten gir en OK? 
-            Det vil nok kreve en del koding for det
-          */
-        reset({ ...watch(), [props.field]: watchedValue });
+        props.onSubmit!();
       }, 500);
 
       return () => clearTimeout(timeout);
