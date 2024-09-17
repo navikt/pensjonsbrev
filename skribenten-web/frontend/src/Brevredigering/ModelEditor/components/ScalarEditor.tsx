@@ -2,7 +2,7 @@ import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react
 import { useEffect } from "react";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
-import { convertFieldToReadableLabel } from "~/Brevredigering/ModelEditor/components/utils";
+import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
 import type { TScalar } from "~/types/brevbakerTypes";
 import { formatDateWithoutTimezone, parseDate } from "~/utils/dateUtils";
@@ -137,13 +137,15 @@ const ControlledDatePicker = (props: { field: string; fieldType: TScalar; onSubm
     }
   }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, props.field, reset]);
 
+  const defaultValue = getFieldDefaultValue(defaultValues, props.field);
+
   return (
     <Controller
       control={control}
       name={props.field}
       render={({ field, fieldState }) => (
         <DatePickerEditor
-          defaultValue={defaultValues?.[props.field]}
+          defaultValue={defaultValue}
           error={fieldState.error?.message}
           label={convertFieldToReadableLabel(props.field)}
           onChange={field.onChange}
