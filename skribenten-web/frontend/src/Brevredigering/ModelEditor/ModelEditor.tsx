@@ -43,12 +43,7 @@ export const ModelEditor = ({
     queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
   });
-  //ved å ha 1 onSubmit, er det lettere for parent å håndtere sine onsubmits uten å måtte skille
-  //på om det er i context autolagring eller ikke.
-  //problemet som har oppstått nå, er at om du endrer på signatur/saksbehandler valg, trigger det on submit på begge.
-  //dersom du endrer signatur & skasbhenadlervalg veldig fort, vil brev editoren henge 1 state back, men fikser seg etter det blir gjort en ny
-  //lagring, eller refresh.
-  //Kanskje vi burde se på signatur og saksbehandlervalg som 'brevinnhold metadata', og ha 1 endepunkt for det.
+
   const doSubmit = (values: SaksbehandlerValg & { signatur: string }) => {
     return onSubmit(createSaksbehandlerValg(values), values.signatur);
   };
