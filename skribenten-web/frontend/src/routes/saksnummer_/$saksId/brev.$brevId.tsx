@@ -173,8 +173,11 @@ function RedigerBrev({
   );
 
   const onSubmit = (saksbehandlerValg: SaksbehandlerValg, signatur: string) => {
-    saksbehandlerValgMutation.mutate(saksbehandlerValg);
-    signaturMutation.mutate(signatur);
+    saksbehandlerValgMutation.mutate(saksbehandlerValg, {
+      onSuccess: () => {
+        signaturMutation.mutate(signatur);
+      },
+    });
   };
 
   const reservasjonQuery = useQuery({
