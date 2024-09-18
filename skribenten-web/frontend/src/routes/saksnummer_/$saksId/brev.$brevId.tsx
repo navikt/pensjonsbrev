@@ -244,6 +244,7 @@ function RedigerBrev({
           disableSubmit={saksbehandlerValgMutation.isPending}
           onSubmit={onSubmit}
           saksId={saksId}
+          showSignaturField
           vedtaksId={vedtaksId}
         />
         <LetterEditor

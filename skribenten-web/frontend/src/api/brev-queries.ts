@@ -61,7 +61,7 @@ export async function hurtiglagreSaksbehandlerValg(brevId: number, saksbehandler
 export const oppdaterSignatur = async (brevId: number | string, signatur: string) =>
   (
     await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/signatur`, signatur, {
-      //sendes som form-data hvis man ikke setter content-type til application/json
+      //sendes som form-data hvis man ikke setter content-type til text/plain
       headers: { "Content-Type": "text/plain" },
     })
   ).data;

@@ -1,10 +1,9 @@
 import { css } from "@emotion/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
 import { z } from "zod";
 
-import { createBrev, getBrev, oppdaterSignatur } from "~/api/brev-queries";
+import { createBrev, getBrev } from "~/api/brev-queries";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { SpraakKode } from "~/types/apiTypes";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
@@ -27,37 +26,8 @@ export const Route = createFileRoute("/saksnummer/$saksId/brev/")({
 
 function OpprettBrevPage() {
   const { saksId } = Route.useParams();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate({ from: Route.fullPath });
   const { brevkode, spraak, enhetsId } = Route.useSearch();
-  const signaturMutation = useMutation<BrevResponse, AxiosError, { brevId: string; signatur: string }>({
-    mutationFn: (args) => oppdaterSignatur(args.brevId, args.signatur),
-  });
   const createBrevMutation = useCreateLetterMutation(saksId, brevkode, spraak, enhetsId);
-
-  const handleOnSubmit = (saksbehandlerValg: SaksbehandlerValg, signatur: string) => {
-    createBrevMutation.mutate(
-      { saksbehandlerValg },
-      {
-        onSuccess: async (createBrevResponse) => {
-          queryClient.setQueryData(getBrev.queryKey(createBrevResponse.info.id), createBrevResponse);
-          await signaturMutation.mutateAsync(
-            { brevId: createBrevResponse.info.id.toString(), signatur },
-            {
-              onSuccess: (signaturResponse) => {
-                queryClient.setQueryData(getBrev.queryKey(signaturResponse.info.id), signaturResponse);
-              },
-            },
-          );
-
-          return navigate({
-            to: "/saksnummer/$saksId/brev/$brevId",
-            params: { brevId: createBrevResponse.info.id },
-          });
-        },
-      },
-    );
-  };
 
   return (
     <div
@@ -79,7 +49,7 @@ function OpprettBrevPage() {
         brevId={null}
         brevkode={brevkode}
         disableSubmit={createBrevMutation.isPending || createBrevMutation.isSuccess}
-        onSubmit={handleOnSubmit}
+        onSubmit={(saksbehandlerValg) => createBrevMutation.mutate({ saksbehandlerValg })}
         saksId={saksId}
         vedtaksId={undefined}
       />
@@ -88,6 +58,8 @@ function OpprettBrevPage() {
 }
 
 function useCreateLetterMutation(saksId: string, brevkode: string, språk: SpraakKode, enhetsId: Nullable<string>) {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate({ from: Route.fullPath });
   return useMutation<BrevResponse, Error, { saksbehandlerValg: SaksbehandlerValg }>({
     mutationFn: async (values) =>
       createBrev(saksId, {
@@ -96,5 +68,12 @@ function useCreateLetterMutation(saksId: string, brevkode: string, språk: Spraa
         avsenderEnhetsId: enhetsId,
         saksbehandlerValg: values.saksbehandlerValg,
       }),
+    onSuccess: async (response) => {
+      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+      return navigate({
+        to: "/saksnummer/$saksId/brev/$brevId",
+        params: { brevId: response.info.id },
+      });
+    },
   });
 }

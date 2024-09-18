@@ -21,6 +21,8 @@ export type ModelEditorProperties = {
   saksId: string;
   vedtaksId: string | undefined;
   brevId: Nullable<number>;
+  //TODO -
+  showSignaturField?: boolean;
 };
 
 export const ModelEditor = ({
@@ -31,6 +33,7 @@ export const ModelEditor = ({
   saksId,
   vedtaksId,
   brevId,
+  showSignaturField,
 }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
@@ -79,17 +82,19 @@ export const ModelEditor = ({
               submitOnChange={brevId ? requestSubmit : undefined}
               typeName={saksbehandlerValgType}
             />
-            <AutoSavingTextField
-              field={"signatur"}
-              fieldType={{
-                type: "scalar",
-                nullable: false,
-                kind: "STRING",
-              }}
-              onSubmit={brevId ? requestSubmit : undefined}
-              timeoutTimer={3000}
-              type={"text"}
-            />
+            {showSignaturField && (
+              <AutoSavingTextField
+                field={"signatur"}
+                fieldType={{
+                  type: "scalar",
+                  nullable: false,
+                  kind: "STRING",
+                }}
+                onSubmit={brevId ? requestSubmit : undefined}
+                timeoutTimer={3000}
+                type={"text"}
+              />
+            )}
             {!brevId && (
               <Button loading={disableSubmit} type="submit">
                 Opprett brev
