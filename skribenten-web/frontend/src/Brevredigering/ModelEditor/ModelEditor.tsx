@@ -21,7 +21,10 @@ export type ModelEditorProperties = {
   saksId: string;
   vedtaksId: string | undefined;
   brevId: Nullable<number>;
-  //TODO -
+  //TODO - ModelEditor skal i utgangspunktet kun være for SaksbehandlerValg.
+  // designet skal ha signatur felt på 'samme sted', altså med editoren.
+  //Den skal ikke brukes ved opprettelse av brev, men kun når man redigerer brevet. Derfor
+  //gjør vi en enkel fiks for å skjule signatur feltet ved opprettelse av brev.
   showSignaturField?: boolean;
 };
 
