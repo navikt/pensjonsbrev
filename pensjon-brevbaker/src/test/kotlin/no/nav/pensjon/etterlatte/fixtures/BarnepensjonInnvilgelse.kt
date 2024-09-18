@@ -70,9 +70,9 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
         ),
         etterbetaling = BarnepensjonEtterbetaling(
             inneholderKrav = true,
-            frivilligSkattetrekk = true,
             etterbetalingPeriodeValg = EtterbetalingPeriodeValg.UNDER_3_MND,
         ),
+        frivilligSkattetrekk = true,
         bosattUtland = true,
         brukerUnder18Aar = true,
         kunNyttRegelverk = false,

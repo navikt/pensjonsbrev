@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.etterbetalingPeriodeValg_safe
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.frivilligSkattetrekk_safe
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.inneholderKrav_safe
 import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
@@ -190,6 +189,7 @@ object BarnepensjonFellesFraser {
 
     data class UtbetalingAvBarnepensjon(
         val etterbetaling: Expression<BarnepensjonEtterbetaling?>,
+        val frivilligSkattetrekk: Expression<Boolean>,
         val bosattUtland: Expression<Boolean>,
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -248,7 +248,7 @@ object BarnepensjonFellesFraser {
                         )
                     }
                 }
-                showIf(etterbetaling.frivilligSkattetrekk_safe.equalTo(true)) {
+                showIf(frivilligSkattetrekk.equalTo(true)) {
                     paragraph {
                         text(
                             Bokmal to
@@ -295,6 +295,36 @@ object BarnepensjonFellesFraser {
                                     "This ensures that your tax payment is correct and minimises the risk of back taxes.",
                             )
                         }
+                    }
+                }
+            }.orShow {
+                showIf(frivilligSkattetrekk.equalTo(true)) {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                "Du har oppgitt frivillig skattetrekk på barnepensjonen. Dette videreføres " +
+                                "inntil du melder fra om endring.",
+                            Nynorsk to
+                                "Du har oppgitt frivillig skattetrekk på barnepensjonen. Dette vert vidareført inntil " +
+                                "du melde frå om endring.",
+                            English to
+                                "You have registered a voluntary tax deduction on your children’s pension. " +
+                                "This will continue until you notify us the change.",
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                "For å unngå eventuell restskatt, anbefaler vi å legge til et frivillig skattetrekk " +
+                                "på barnepensjonen. Ta kontakt med Skatteetaten dersom du har spørsmål om skattetrekk.",
+                            Nynorsk to
+                                "Vi anbefaler deg å leggje inn eit frivillig skattetrekk på barnepensjonen for å " +
+                                "unngå restskatt. Ta kontakt med Skatteetaten dersom du har spørsmål om skattetrekk.",
+                            English to
+                                "To avoid any underpaid tax, we recommend adding a voluntary tax deduction to the " +
+                                "children's pension. Contact the Tax Administration if you have questions about tax deductions.",
+                        )
                     }
                 }
             }
