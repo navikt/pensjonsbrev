@@ -8,6 +8,7 @@ export type OpprettBrevRequest = {
   spraak: SpraakKode;
   avsenderEnhetsId: Nullable<string>;
   saksbehandlerValg: SaksbehandlerValg;
+  mottaker: Nullable<Mottaker>;
 };
 
 export type SaksbehandlerValg = {

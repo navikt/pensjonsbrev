@@ -9,6 +9,8 @@ import { SpraakKode } from "~/types/apiTypes";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
+import { useMottakerContext } from "./brevvelger/$templateId/-components/MottakerContext";
+
 export const Route = createFileRoute("/saksnummer/$saksId/brev/")({
   validateSearch: (
     search: Record<string, unknown>,
@@ -60,6 +62,8 @@ function OpprettBrevPage() {
 function useCreateLetterMutation(saksId: string, brevkode: string, språk: SpraakKode, enhetsId: Nullable<string>) {
   const navigate = useNavigate({ from: Route.fullPath });
   const queryClient = useQueryClient();
+  const { mottaker, setMottaker } = useMottakerContext();
+
   return useMutation<BrevResponse, Error, { saksbehandlerValg: SaksbehandlerValg }>({
     mutationFn: async (values) =>
       createBrev(saksId, {
@@ -67,9 +71,11 @@ function useCreateLetterMutation(saksId: string, brevkode: string, språk: Spraa
         spraak: språk,
         avsenderEnhetsId: enhetsId,
         saksbehandlerValg: values.saksbehandlerValg,
+        mottaker: mottaker,
       }),
     onSuccess: async (response) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+      setMottaker(null);
       return navigate({
         to: "/saksnummer/$saksId/brev/$brevId",
         params: { brevId: response.info.id },
