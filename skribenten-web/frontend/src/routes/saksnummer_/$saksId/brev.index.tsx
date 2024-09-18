@@ -58,8 +58,8 @@ function OpprettBrevPage() {
 }
 
 function useCreateLetterMutation(saksId: string, brevkode: string, språk: SpraakKode, enhetsId: Nullable<string>) {
-  const queryClient = useQueryClient();
   const navigate = useNavigate({ from: Route.fullPath });
+  const queryClient = useQueryClient();
   return useMutation<BrevResponse, Error, { saksbehandlerValg: SaksbehandlerValg }>({
     mutationFn: async (values) =>
       createBrev(saksId, {
