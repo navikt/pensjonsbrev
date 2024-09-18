@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { BodyShort, Label } from "@navikt/ds-react";
 
-const Oppsummeringspar = (properties: { tittel: string; verdi: string | number; boldedTitle: boolean }) => {
+const Oppsummeringspar = (properties: { tittel: string; verdi: string | number; boldedTitle?: boolean }) => {
   return (
     <div
       css={css`
