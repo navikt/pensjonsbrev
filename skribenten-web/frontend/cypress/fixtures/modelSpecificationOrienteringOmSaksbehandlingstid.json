@@ -1,0 +1,30 @@
+{
+    "types": {
+        "no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto": {
+            "saksbehandlerValg": {
+                "type": "object",
+                "nullable": false,
+                "typeName": "no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto.SaksbehandlerValg"
+            },
+            "pesysData": {
+                "type": "object",
+                "nullable": false,
+                "typeName": "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata"
+            }
+        },
+        "no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto.SaksbehandlerValg": {
+            "mottattSøknad": {
+                "type": "scalar",
+                "nullable": false,
+                "kind": "DATE"
+            },
+            "søknadOversendesTilUtlandet": {
+                "type": "scalar",
+                "nullable": false,
+                "kind": "BOOLEAN"
+            }
+        },
+        "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata": {}
+    },
+    "letterModelTypeName": "no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto"
+}

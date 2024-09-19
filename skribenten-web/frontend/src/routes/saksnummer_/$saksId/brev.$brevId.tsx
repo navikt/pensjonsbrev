@@ -156,7 +156,14 @@ function RedigerBrev({
   });
 
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
-  const redigertBrevMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreBrev);
+  const redigertBrevMutation = useHurtiglagreMutation(
+    brev.info.id,
+    setEditorState,
+    (brevId, editedLetter: EditedLetter) => {
+      applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
+      return hurtiglagreBrev(brevId, editedLetter);
+    },
+  );
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
@@ -291,10 +298,7 @@ function useHurtiglagreMutation<T>(
   const queryClient = useQueryClient();
 
   return useMutation<BrevResponse, AxiosError, T>({
-    mutationFn: async (saksbehandlerValg) => {
-      applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
-      return mutationFunction(brevId, saksbehandlerValg);
-    },
+    mutationFn: async (body) => mutationFunction(brevId, body),
     onSuccess: (response: BrevResponse) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data

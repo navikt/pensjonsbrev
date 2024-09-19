@@ -1,4 +1,4 @@
-import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react";
+import { DatePicker, Switch, TextField, useDatepicker } from "@navikt/ds-react";
 import { useEffect } from "react";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
@@ -53,13 +53,35 @@ export const ScalarEditor = ({
       );
     }
     case "BOOLEAN": {
-      // TODO: reimplement when an example template exists
-      return <Checkbox>{convertFieldToReadableLabel(field)}</Checkbox>;
+      return <SwitchField field={field} fieldType={fieldType} onSubmit={submitOnChange} />;
     }
     case "DATE": {
       return <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} />;
     }
   }
+};
+
+const SwitchField = (props: { field: string; fieldType: TScalar; onSubmit?: () => void }) => {
+  return (
+    <div>
+      <Controller
+        defaultValue={false}
+        name={props.field}
+        render={({ field }) => (
+          <Switch
+            {...field}
+            checked={field.value}
+            onChange={(v) => {
+              field.onChange(v.target.checked);
+              props.onSubmit?.();
+            }}
+          >
+            {convertFieldToReadableLabel(props.field)}
+          </Switch>
+        )}
+      />
+    </div>
+  );
 };
 
 /**
@@ -74,7 +96,7 @@ const AutoSavingTextField = (props: {
   timeoutTimer: number;
   onSubmit?: () => void;
 }) => {
-  const { register, getFieldState, watch, reset, formState } = useFormContext();
+  const { register, getFieldState, watch, formState } = useFormContext();
 
   const registerProperties = register(props.field, { required: props.fieldType.nullable ? false : "Må oppgis" });
   const fieldState = getFieldState(registerProperties.name, formState);
@@ -92,7 +114,7 @@ const AutoSavingTextField = (props: {
 
       return () => clearTimeout(timeout);
     }
-  }, [fieldState.isDirty, watchedValue, watch, props.timeoutTimer, props.onSubmit, props.field, reset]);
+  }, [fieldState.isDirty, watchedValue, watch, props.timeoutTimer, props.onSubmit, props.field]);
 
   const commonTextFieldProperties = {
     ...registerProperties,
@@ -114,7 +136,6 @@ const ControlledDatePicker = (props: { field: string; fieldType: TScalar; onSubm
     control,
     getFieldState,
     watch,
-    reset,
     formState: { defaultValues },
     register,
   } = useFormContext();
@@ -135,7 +156,7 @@ const ControlledDatePicker = (props: { field: string; fieldType: TScalar; onSubm
 
       return () => clearTimeout(timeout);
     }
-  }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, props.field, reset]);
+  }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, props.field]);
 
   const defaultValue = getFieldDefaultValue(defaultValues, props.field);
 

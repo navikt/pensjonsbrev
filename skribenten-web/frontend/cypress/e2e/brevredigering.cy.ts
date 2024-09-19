@@ -555,5 +555,31 @@ describe("Brevredigering", () => {
       cy.contains("Uttak alderspensjon prosent").click().type("55");
       cy.contains("Your accumulated pension capital").should("exist");
     });
+
+    it("autolagring av boolean felter", () => {
+      cy.fixture("modelSpecificationOrienteringOmSaksbehandlingstid.json").then((modelSpecification) => {
+        cy.intercept(
+          "GET",
+          "/bff/skribenten-backend/brevmal/UT_ORIENTERING_OM_SAKSBEHANDLINGSTID/modelSpecification",
+          (req) => req.reply(modelSpecification),
+        );
+      });
+
+      cy.fixture("orienteringOmSaksbehandlingstidResponse.json").then((response) => {
+        cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (req) => req.reply(response));
+      });
+
+      cy.fixture("orienteringOmSaksbehandlingstidResponseMedSoknadOversendesTilUtlandet.json").then((response) => {
+        cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+          req.reply(response);
+        }).as("autoLagring");
+      });
+
+      cy.visit("/saksnummer/123456/brev/1");
+      cy.contains("Søknaden din vil også bli oversendt utlandet fordi").should("not.exist");
+      cy.contains("Soknad oversendes til utlandet").click();
+      cy.wait("@autoLagring");
+      cy.contains("Søknaden din vil også bli oversendt utlandet fordi").should("exist");
+    });
   });
 });
