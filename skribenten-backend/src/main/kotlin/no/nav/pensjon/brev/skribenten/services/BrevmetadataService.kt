@@ -22,11 +22,10 @@ import org.slf4j.LoggerFactory
 
 class BrevmetadataService(
     config: Config,
-    clientEngine: HttpClientEngine = CIO.create(),
 ) : ServiceStatus {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
-    private val httpClient = HttpClient(clientEngine) {
+    private val httpClient = HttpClient(CIO) {
         defaultRequest {
             url(brevmetadataUrl)
         }

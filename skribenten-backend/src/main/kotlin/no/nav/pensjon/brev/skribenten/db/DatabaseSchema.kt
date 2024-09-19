@@ -130,57 +130,14 @@ enum class MottakerType { SAMHANDLER, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
 
 class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
     var type by MottakerTable.type
-        private set
     var tssId by MottakerTable.tssId
-        private set
     var navn by MottakerTable.navn
-        private set
     var postnummer by MottakerTable.postnummer
-        private set
     var poststed by MottakerTable.poststed
-        private set
     var adresselinje1 by MottakerTable.adresselinje1
-        private set
     var adresselinje2 by MottakerTable.adresselinje2
-        private set
     var adresselinje3 by MottakerTable.adresselinje3
-        private set
     var landkode by MottakerTable.landkode
-        private set
-
-    fun samhandler(tssId: String) {
-        type = MottakerType.SAMHANDLER
-        this.tssId = tssId
-    }
-
-    fun norskAdresse(navn: String, postnummer: String, poststed: String, adresselinje1: String?, adresselinje2: String?, adresselinje3: String?) {
-        type = MottakerType.NORSK_ADRESSE
-        this.navn = navn
-        this.postnummer = postnummer
-        this.poststed = poststed
-        this.adresselinje1 = adresselinje1
-        this.adresselinje2 = adresselinje2
-        this.adresselinje3 = adresselinje3
-    }
-
-    fun utenlandskAdresse(
-        navn: String,
-        postnummer: String?,
-        poststed: String?,
-        adresselinje1: String,
-        adresselinje2: String?,
-        adresselinje3: String?,
-        landkode: String
-    ) {
-        type = MottakerType.UTENLANDSK_ADRESSE
-        this.navn = navn
-        this.postnummer = postnummer
-        this.poststed = poststed
-        this.adresselinje1 = adresselinje1
-        this.adresselinje2 = adresselinje2
-        this.adresselinje3 = adresselinje3
-        this.landkode = landkode
-    }
 
     companion object : LongEntityClass<Mottaker>(MottakerTable)
 }

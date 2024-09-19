@@ -27,7 +27,10 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val navansattService = NavansattService(servicesConfig.getConfig("navansatt"), authService)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
-    val brevredigeringService = BrevredigeringService(brevbakerService, penService, navansattService, samhandlerService)
+    val norg2Service = Norg2Service(servicesConfig.getConfig("norg2"))
+    val brevredigeringService =
+        BrevredigeringService(brevbakerService, navansattService, penService)
+    val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
@@ -53,16 +56,17 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             brevmal(brevbakerService)
             kodeverkRoute(penService)
             sakRoute(
-                penService,
-                legacyBrevService,
-                pdlService,
-                pensjonPersonDataService,
-                krrService,
+                dto2ApiService,
                 brevmalService,
                 brevredigeringService,
+                krrService,
+                legacyBrevService,
+                pdlService,
+                penService,
+                pensjonPersonDataService,
                 safService,
             )
-            brev(brevredigeringService)
+            brev(brevredigeringService, dto2ApiService)
             tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
             meRoute(navansattService)
         }

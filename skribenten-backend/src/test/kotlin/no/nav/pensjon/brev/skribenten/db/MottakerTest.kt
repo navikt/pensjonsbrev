@@ -39,7 +39,8 @@ class MottakerTest {
         val brevredigering = createBrevredigering()
         transaction {
             Mottaker.new(brevredigering.id.value) {
-                samhandler("12345")
+                type = MottakerType.SAMHANDLER
+                tssId = "12345"
             }
         }
         val mottaker = transaction { Mottaker[brevredigering.id] }
@@ -48,71 +49,20 @@ class MottakerTest {
     }
 
     @Test
-    fun `kan sette norsk adresse for brevredigering`() {
-        val brevredigering = createBrevredigering()
-        transaction {
-            Mottaker.new(brevredigering.id.value) {
-                norskAdresse("a", "b", "c", "d", "e", "f")
-            }
-        }
-        val mottaker = transaction { Mottaker[brevredigering.id] }
-        assertEquals(MottakerType.NORSK_ADRESSE, mottaker.type)
-        assertEquals("a", mottaker.navn)
-        assertEquals("b", mottaker.postnummer)
-        assertEquals("c", mottaker.poststed)
-        assertEquals("d", mottaker.adresselinje1)
-        assertEquals("e", mottaker.adresselinje2)
-        assertEquals("f", mottaker.adresselinje3)
-    }
-
-    @Test
-    fun `kan sette utenlandsk adresse for brevredigering`() {
-        val brevredigering = createBrevredigering()
-        transaction {
-            Mottaker.new(brevredigering.id.value) {
-                utenlandskAdresse("a", "b", "c", "d", "e", "f", "g")
-            }
-        }
-        val mottaker = transaction { Mottaker[brevredigering.id] }
-        assertEquals(MottakerType.UTENLANDSK_ADRESSE, mottaker.type)
-        assertEquals("a", mottaker.navn)
-        assertEquals("b", mottaker.postnummer)
-        assertEquals("c", mottaker.poststed)
-        assertEquals("d", mottaker.adresselinje1)
-        assertEquals("e", mottaker.adresselinje2)
-        assertEquals("f", mottaker.adresselinje3)
-        assertEquals("g", mottaker.landkode)
-    }
-
-    @Test
     fun `kan ikke sette flere mottakere for brevredigering`() {
         val brevredigering = createBrevredigering()
         assertThrows<ExposedSQLException> {
             transaction {
                 Mottaker.new(brevredigering.id.value) {
-                    samhandler("12345")
+                    type = MottakerType.SAMHANDLER
+                    tssId = "12345"
                 }
                 Mottaker.new(brevredigering.id.value) {
-                    samhandler("12345")
+                    type = MottakerType.SAMHANDLER
+                    tssId = "123456"
                 }
             }
         }
-    }
-
-    @Test
-    fun `kan endre mottaker type for brevredigering`() {
-        val brevredigering = createBrevredigering()
-        transaction {
-            Mottaker.new(brevredigering.id.value) {
-                norskAdresse("a", "b", "c", "d", "e", "f")
-            }
-        }
-        transaction {
-            Mottaker[brevredigering.id].samhandler("123456")
-        }
-        val mottaker = transaction { Mottaker[brevredigering.id] }
-        assertEquals(MottakerType.SAMHANDLER, mottaker.type)
-        assertEquals("123456", mottaker.tssId)
     }
 
     @Test
@@ -120,10 +70,11 @@ class MottakerTest {
         val brevredigeringId = createBrevredigering().id.value
         transaction {
             Mottaker.new(brevredigeringId) {
-                samhandler("12345")
+                type = MottakerType.SAMHANDLER
+                tssId = "12345"
             }
         }
-        transaction { Brevredigering[brevredigeringId].mottaker?.samhandler("abc") }
+        transaction { Brevredigering[brevredigeringId].mottaker?.tssId = "abc" }
         val mottaker = transaction { Mottaker[brevredigeringId] }
 
         assertEquals(MottakerType.SAMHANDLER, mottaker.type)
