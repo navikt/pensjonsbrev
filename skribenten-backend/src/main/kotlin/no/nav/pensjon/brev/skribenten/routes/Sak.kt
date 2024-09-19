@@ -13,13 +13,14 @@ import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
-    penService: PenService,
-    legacyBrevService: LegacyBrevService,
-    pdlService: PdlService,
-    pensjonPersonDataService: PensjonPersonDataService,
-    krrService: KrrService,
+    apiService: ApiService,
     brevmalService: BrevmalService,
     brevredigeringService: BrevredigeringService,
+    krrService: KrrService,
+    legacyBrevService: LegacyBrevService,
+    pdlService: PdlService,
+    penService: PenService,
+    pensjonPersonDataService: PensjonPersonDataService,
     safService: SafService,
 ) {
     route("/sak/{saksId}") {
@@ -100,6 +101,6 @@ fun Route.sakRoute(
             }
         }
 
-        sakBrev(brevredigeringService)
+        sakBrev(apiService, brevredigeringService)
     }
 }

@@ -7,15 +7,26 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.ktor.util.pipeline.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.services.ApiService
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("no.nav.brev.skribenten.routes.Brev")
 
-fun Route.brev(brevredigeringService: BrevredigeringService) {
+fun Route.brev(brevredigeringService: BrevredigeringService, apiService: ApiService) {
+
+    suspend fun PipelineContext<Unit, ApplicationCall>.respond(brevResponse: ServiceResult<Dto.Brevredigering>?) =
+        brevResponse?.map { apiService.toApi(call, it) }
+            ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev) }
+            ?.onError { message, statusCode ->
+                logger.error("$statusCode - Feil ved oppdatering av brev: $message")
+                call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
+            }
+            ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
+
     route("/brev") {
         put<Edit.Letter>("/{brevId}/redigertBrev") { request ->
             respond(
@@ -57,11 +68,3 @@ fun Route.brev(brevredigeringService: BrevredigeringService) {
         }
     }
 }
-
-private suspend fun PipelineContext<Unit, ApplicationCall>.respond(brevResponse: ServiceResult<Api.BrevResponse>?) =
-    brevResponse?.onOk { brev -> call.respond(HttpStatusCode.OK, brev) }
-        ?.onError { message, statusCode ->
-            logger.error("$statusCode - Feil ved oppdatering av brev: $message")
-            call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
-        }
-        ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
