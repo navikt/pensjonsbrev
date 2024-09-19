@@ -142,8 +142,8 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier), beregning)
-        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier), innhold)
+        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier.equals(true)), beregning)
+        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier.equals(true)), innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
         includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }

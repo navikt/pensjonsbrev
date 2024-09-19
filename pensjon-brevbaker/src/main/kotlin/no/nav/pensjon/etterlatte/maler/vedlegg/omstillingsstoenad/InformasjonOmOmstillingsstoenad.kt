@@ -18,7 +18,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 
 fun informasjonOmOmstillingsstoenad(
-    tidligereFamiliepleier: Expression<Boolean>,
+    tidligereFamiliepleier: Boolean,
 ): AttachmentTemplate<LangBokmalNynorskEnglish, Any> {
     return createAttachment(
         title = newText(
@@ -28,7 +28,7 @@ fun informasjonOmOmstillingsstoenad(
         ),
         includeSakspart = false,
     ) {
-        aktivitet(tidligereFamiliepleier)
+        aktivitet(tidligereFamiliepleier.expr())
         hvisDuIkkeFyllerAktivitetsplikten()
         inntektOgOmstillingsstoenad()
         endretInntekt()

@@ -49,7 +49,7 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 fun beregningAvOmstillingsstoenad (
-    tidligereFamiliepleier: Expression<Boolean>,
+    tidligereFamiliepleier: Boolean,
 ): AttachmentTemplate<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning> {
     return createAttachment(
         title = newText(
@@ -59,9 +59,9 @@ fun beregningAvOmstillingsstoenad (
         ),
         includeSakspart = false
     ) {
-        beregning(tidligereFamiliepleier)
-        trygdetid(trygdetid, tidligereFamiliepleier)
-        perioderMedRegistrertTrygdetid(trygdetid, tidligereFamiliepleier)
+        beregning(tidligereFamiliepleier.expr())
+        trygdetid(trygdetid, tidligereFamiliepleier.expr())
+        perioderMedRegistrertTrygdetid(trygdetid, tidligereFamiliepleier.expr())
         meldFraTilNav()
     }
 }

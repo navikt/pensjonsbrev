@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -87,8 +88,8 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier), beregning)
-        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier), innhold)
+        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier.equals(true)), beregning)
+        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier.equals(true)), innhold)
         includeAttachment(dineRettigheterOgPlikter, beregning)
     }
 
