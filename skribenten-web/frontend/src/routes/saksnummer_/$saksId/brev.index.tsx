@@ -28,6 +28,7 @@ function OpprettBrevPage() {
   const { saksId } = Route.useParams();
   const { brevkode, spraak, enhetsId } = Route.useSearch();
   const createBrevMutation = useCreateLetterMutation(saksId, brevkode, spraak, enhetsId);
+
   return (
     <div
       css={css`

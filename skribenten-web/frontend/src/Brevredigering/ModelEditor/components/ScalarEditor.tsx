@@ -88,7 +88,7 @@ const SwitchField = (props: { field: string; fieldType: TScalar; onSubmit?: () =
  * Componenten har mulighet til å autolagre endringer i feltet etter en gitt timeout dersom onSubmit sendes med.
  * Ellers, kan den også brukes som et vanlig tekst felt.
  */
-const AutoSavingTextField = (props: {
+export const AutoSavingTextField = (props: {
   field: string;
   fieldType: TScalar;
   type: "number" | "text";

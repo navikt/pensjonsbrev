@@ -7,7 +7,13 @@ import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 
-import { getBrev, getBrevReservasjon, hurtiglagreBrev, hurtiglagreSaksbehandlerValg } from "~/api/brev-queries";
+import {
+  getBrev,
+  getBrevReservasjon,
+  hurtiglagreBrev,
+  hurtiglagreSaksbehandlerValg,
+  oppdaterSignatur,
+} from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -16,7 +22,7 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import type { BrevResponse, ReservasjonResponse } from "~/types/brev";
+import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
@@ -156,6 +162,7 @@ function RedigerBrev({
   });
 
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
+  const signaturMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSignatur);
   const redigertBrevMutation = useHurtiglagreMutation(
     brev.info.id,
     setEditorState,
@@ -164,6 +171,14 @@ function RedigerBrev({
       return hurtiglagreBrev(brevId, editedLetter);
     },
   );
+
+  const onSubmit = (saksbehandlerValg: SaksbehandlerValg, signatur: string) => {
+    saksbehandlerValgMutation.mutate(saksbehandlerValg, {
+      onSuccess: () => {
+        signaturMutation.mutate(signatur);
+      },
+    });
+  };
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
@@ -222,10 +237,14 @@ function RedigerBrev({
         <ModelEditor
           brevId={brev.info.id}
           brevkode={brev.info.brevkode}
-          defaultValues={brev.saksbehandlerValg}
+          defaultValues={{
+            ...brev.saksbehandlerValg,
+            signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
+          }}
           disableSubmit={saksbehandlerValgMutation.isPending}
-          onSubmit={saksbehandlerValgMutation.mutate}
+          onSubmit={onSubmit}
           saksId={saksId}
+          showSignaturField
           vedtaksId={vedtaksId}
         />
         <LetterEditor
