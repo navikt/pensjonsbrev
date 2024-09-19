@@ -48,7 +48,8 @@ export const ModelEditor = ({
   });
 
   const doSubmit = (values: SaksbehandlerValg & { signatur: string }) => {
-    return onSubmit(createSaksbehandlerValg(values), values.signatur);
+    const { signatur, ...saksbehandlerValg } = values;
+    return onSubmit(createSaksbehandlerValg(saksbehandlerValg), signatur);
   };
 
   const requestSubmit = useCallback(() => {

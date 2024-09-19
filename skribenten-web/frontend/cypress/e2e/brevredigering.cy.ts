@@ -110,6 +110,12 @@ describe("Brevredigering", () => {
   describe("autolagring", () => {
     it("lagrer endring av dato-felt automatisk", () => {
       cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+        expect(req.body).contains({
+          mottattSoeknad: "2024-09-10",
+          ytelse: "alderspensjon",
+          land: "Spania",
+          svartidUker: "10",
+        });
         req.reply({
           info: {
             id: 1,
@@ -324,6 +330,12 @@ describe("Brevredigering", () => {
 
     it("lagrer endring av tekst-felt automatisk", () => {
       cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+        expect(req.body).contains({
+          mottattSoeknad: "2024-07-24",
+          ytelse: "Supplerende stønad",
+          land: "Spania",
+          svartidUker: "10",
+        });
         req.reply({
           info: {
             id: 1,
@@ -537,9 +549,21 @@ describe("Brevredigering", () => {
     });
 
     it("autolagrer ikke før alle avhengige felter er utfylt", () => {
-      cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", {
-        fixture: "saksbehandlerValgResponse.json",
-      }).as("autoLagring");
+      cy.fixture("saksbehandlerValgResponse.json").then((saksbehandlerValgResponse) => {
+        cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+          expect(req.body).deep.equal({
+            mottattSoeknad: "2024-07-24",
+            ytelse: "alderspensjon",
+            land: "Spania",
+            svartidUker: "10",
+            inkluderVenterSvarAFP: {
+              uttakAlderspensjonProsent: "55",
+              uttaksDato: "2024-09-10",
+            },
+          });
+          req.reply(saksbehandlerValgResponse);
+        }).as("autoLagring");
+      });
 
       cy.visit("/saksnummer/123456/brev/1");
       cy.contains("Lagret 26.07.2024 ").should("exist");
@@ -759,9 +783,16 @@ describe("Brevredigering", () => {
         },
       };
       cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+        expect(req.body).contains({
+          mottattSoeknad: "2024-07-24",
+          ytelse: "alderspensjon",
+          land: "Spania",
+          svartidUker: "10",
+        });
         req.reply(brevResponse);
       }).as("saksbehandlerValg");
       cy.intercept("PUT", "/bff/skribenten-backend/brev/1/signatur", (req) => {
+        expect(req.body).contains("Saksbehandler navn");
         req.reply(brevResponse);
       }).as("autoLagring");
 
