@@ -27,6 +27,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.omsRettUtenTidsbegrensning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
@@ -40,6 +41,7 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
     val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
+    val tidligereFamiliepleier: Boolean = false,
 ): FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -66,17 +68,17 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
         }
 
         outline {
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling))
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier))
 
             konverterElementerTilBrevbakerformat(innhold)
 
             showIf(harUtbetaling) {
                 includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
             }
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad)
-            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, omsRettUtenTidsbegrensning))
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad(tidligereFamiliepleier))
+            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, omsRettUtenTidsbegrensning, tidligereFamiliepleier))
             showIf(omsRettUtenTidsbegrensning.not()) {
-                includePhrase(OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(innvilgetMindreEnnFireMndEtterDoedsfall))
+                includePhrase(OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(innvilgetMindreEnnFireMndEtterDoedsfall, tidligereFamiliepleier))
             }
             includePhrase(OmstillingsstoenadFellesFraser.Inntektsendring)
             includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
@@ -85,8 +87,8 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(beregningAvOmstillingsstoenad, beregning)
-        includeAttachment(informasjonOmOmstillingsstoenad, beregning)
+        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier), beregning)
+        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier), innhold)
         includeAttachment(dineRettigheterOgPlikter, beregning)
     }
 

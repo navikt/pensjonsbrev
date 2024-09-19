@@ -4,6 +4,9 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -395,28 +398,37 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object Aktivitetsplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class Aktivitetsplikt(
+        val tidligereFamiliepleier: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Du må være i aktivitet fra seks måneder etter dødsfallet",
-                    Language.Nynorsk to "Du må vere i aktivitet når det har gått seks månader sidan dødsfallet",
-                    Language.English to "You are obligated to be active starting six months after the death",
+                    Bokmal to "Du må være i aktivitet fra seks måneder etter " +
+                            ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet"),
+                    Nynorsk to "Du må vere i aktivitet når det har gått seks månader sidan " +
+                            ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet"),
+                    English to "You are obligated to be active starting six months after the " +
+                            ifElse(tidligereFamiliepleier, "after care period ended", "death"),
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Når det er gått seks måneder etter dødsfallet er du pliktig til å være " +
-                            "i minst 50 prosent aktivitet for å motta omstillingsstønad. Les mer om aktivitetsplikt " +
-                            "og hva denne innebærer i vedlegget «Informasjon til deg som mottar omstillingsstønad».",
+                    Language.Bokmal to "Når det er gått seks måneder etter " +
+                            ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
+                            " er du pliktig til å være i minst 50 prosent aktivitet for å motta omstillingsstønad. Les " +
+                            "mer om aktivitetsplikt og hva denne innebærer i vedlegget " +
+                            "«Informasjon til deg som mottar omstillingsstønad».",
                     Language.Nynorsk to "For at du skal kunne halde fram med å få omstillingsstønad når det " +
-                            "har gått seks månader sidan dødsfallet, må du vere i minst 50 prosent aktivitet. I " +
-                            "vedlegget «Informasjon til deg som får omstillingsstønad» kan du lese meir om " +
-                            "aktivitetsplikta og kva denne inneber. ",
-                    Language.English to "Once six months have passed since the death, you are obligated to be " +
-                            "active at least 50 percent to receive the adjustment allowance. Read more about the " +
-                            "activity obligation and what this involves in the attachment Information for " +
-                            "Adjustment Allowance Recipients.",
+                            "har gått seks månader sidan " +
+                            ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet") +
+                            ", må du vere i minst 50 prosent aktivitet. I vedlegget «Informasjon til deg som får " +
+                            "omstillingsstønad» kan du lese meir om aktivitetsplikta og kva denne inneber.",
+                    Language.English to "Once six months have passed since the " +
+                            ifElse(tidligereFamiliepleier, "care period ended", "death") +
+                            ", you are obligated to be active at least 50 percent to receive the adjustment allowance. " +
+                            "Read more about the activity obligation and what this involves in the attachment " +
+                            "Information for Adjustment Allowance Recipients.",
                 )
             }
         }
