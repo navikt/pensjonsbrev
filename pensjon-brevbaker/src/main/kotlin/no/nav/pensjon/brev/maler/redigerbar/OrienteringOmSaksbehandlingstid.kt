@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattSøknad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.søknadOversendesTilUtlandet
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattSoeknad
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.soeknadOversendesTilUtlandet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -50,7 +50,7 @@ object OrienteringOmSaksbehandlingstid : RedigerbarTemplate<OrienteringOmSaksbeh
             //[PE_UP_07_105_TB3018-3021,TB124]
 
             paragraph {
-                val mottattDato = saksbehandlerValg.mottattSøknad.format()
+                val mottattDato = saksbehandlerValg.mottattSoeknad.format()
                 textExpr(
                     Bokmal to "Vi har ".expr() + mottattDato + " mottatt søknaden din om uføretrygd.",
                     Nynorsk to "Vi har ".expr() + mottattDato + " mottatt søknaden din om uførepensjon.",
@@ -71,7 +71,7 @@ object OrienteringOmSaksbehandlingstid : RedigerbarTemplate<OrienteringOmSaksbeh
                 )
             }
 
-            showIf(saksbehandlerValg.søknadOversendesTilUtlandet) {
+            showIf(saksbehandlerValg.soeknadOversendesTilUtlandet) {
                 paragraph {
                     text(
                         Bokmal to "Søknaden din vil også bli oversendt utlandet fordi du har opplyst at du har bodd/arbeidet i et land Norge har trygdeavtale med.",
