@@ -113,6 +113,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
         innvilgetMindreEnnFireMndEtterDoedsfall = true,
         lavEllerIngenInntekt = true,
         harUtbetaling = true,
+        tidligereFamiliepleier = false,
     )
 
 fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =

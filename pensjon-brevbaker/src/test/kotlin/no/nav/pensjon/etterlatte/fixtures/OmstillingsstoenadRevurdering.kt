@@ -95,7 +95,8 @@ fun createOmstillingsstoenadRevurderingDTO() =
         harFlereUtbetalingsperioder = true,
         lavEllerIngenInntekt = false,
         harUtbetaling = true,
-        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
+        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
+        tidligereFamiliepleier = false,
     )
 
 fun createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() =
