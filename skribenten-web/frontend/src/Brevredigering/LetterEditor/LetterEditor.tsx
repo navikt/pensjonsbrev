@@ -2,7 +2,6 @@ import "./editor.css";
 
 import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
-import { useSearch } from "@tanstack/react-router";
 import type { Dispatch, SetStateAction } from "react";
 import { createContext, useContext } from "react";
 
@@ -21,20 +20,17 @@ export const LetterEditor = ({
   editorState,
   setEditorState,
   editorHeight,
+  showDebug,
 }: {
   freeze: boolean;
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   editorHeight?: string;
+  showDebug: boolean;
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
-
-  const showDebug = useSearch({
-    strict: false,
-    select: (search: { debug?: string | boolean }) => search["debug"] === "true" || search["debug"] === true,
-  });
 
   return (
     <div
