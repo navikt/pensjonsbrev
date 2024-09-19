@@ -1,4 +1,4 @@
-import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react";
+import { DatePicker, Switch, TextField, useDatepicker } from "@navikt/ds-react";
 import { useEffect } from "react";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
@@ -53,7 +53,7 @@ export const ScalarEditor = ({
       );
     }
     case "BOOLEAN": {
-      return <CheckboxField field={field} fieldType={fieldType} onSubmit={submitOnChange} />;
+      return <SwitchField field={field} fieldType={fieldType} onSubmit={submitOnChange} />;
     }
     case "DATE": {
       return <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} />;
@@ -61,14 +61,14 @@ export const ScalarEditor = ({
   }
 };
 
-const CheckboxField = (props: { field: string; fieldType: TScalar; onSubmit?: () => void }) => {
+const SwitchField = (props: { field: string; fieldType: TScalar; onSubmit?: () => void }) => {
   return (
     <div>
       <Controller
         defaultValue={false}
         name={props.field}
         render={({ field }) => (
-          <Checkbox
+          <Switch
             {...field}
             checked={field.value}
             onChange={(v) => {
@@ -77,7 +77,7 @@ const CheckboxField = (props: { field: string; fieldType: TScalar; onSubmit?: ()
             }}
           >
             {convertFieldToReadableLabel(props.field)}
-          </Checkbox>
+          </Switch>
         )}
       />
     </div>
