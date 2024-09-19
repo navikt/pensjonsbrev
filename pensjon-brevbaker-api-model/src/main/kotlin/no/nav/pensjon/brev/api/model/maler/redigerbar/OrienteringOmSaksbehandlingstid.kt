@@ -9,5 +9,5 @@ data class OrienteringOmSaksbehandlingstidDto(
     override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: EmptyBrevdata,
 ) : RedigerbarBrevdata<OrienteringOmSaksbehandlingstidDto.SaksbehandlerValg, EmptyBrevdata> {
-    data class SaksbehandlerValg(val mottattSøknad: LocalDate, val søknadOversendesTilUtlandet: Boolean): BrevbakerBrevdata
+    data class SaksbehandlerValg(val mottattSoeknad: LocalDate, val soeknadOversendesTilUtlandet: Boolean): BrevbakerBrevdata
 }
