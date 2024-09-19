@@ -24,7 +24,7 @@ class ApiServiceTest {
     private val navansattService = mockk<NavansattService>()
     private val norg2Service = mockk<Norg2Service>()
     private val samhandlerService = mockk<SamhandlerService>()
-    private val apiService = ApiService(
+    private val dto2ApiService = Dto2ApiService(
         brevbakerService = mockk {
             coEvery { getRedigerbarTemplate(any(), eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)) } returns TemplateDescription(
                 name = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name,
@@ -54,13 +54,13 @@ class ApiServiceTest {
     @Test
     fun `status er kladd om brev ikke er laast og ikke redigeres`(): Unit = runBlocking {
         val brev = createBrev(redigeresAv = null, laastForRedigering = false)
-        assertThat(apiService.toApi(mockCall, brev).status).isEqualTo(Api.BrevStatus.Kladd)
+        assertThat(dto2ApiService.toApi(mockCall, brev).status).isEqualTo(Api.BrevStatus.Kladd)
     }
 
     @Test
     fun `status er Klar om brev er laast`(): Unit = runBlocking {
         val brev = createBrev(laastForRedigering = true)
-        assertThat(apiService.toApi(mockCall, brev).status).isEqualTo(Api.BrevStatus.Klar)
+        assertThat(dto2ApiService.toApi(mockCall, brev).status).isEqualTo(Api.BrevStatus.Klar)
     }
 
     @Test
@@ -68,7 +68,7 @@ class ApiServiceTest {
         val redigeresAv = NavIdent("Z99")
         val brev = createBrev(redigeresAv = redigeresAv, laastForRedigering = false)
         stageAnsatt(redigeresAv, "Annen", "Saksbehandler")
-        assertThat(apiService.toApi(mockCall, brev).status).isEqualTo(
+        assertThat(dto2ApiService.toApi(mockCall, brev).status).isEqualTo(
             Api.BrevStatus.UnderRedigering(
                 Api.NavAnsatt(
                     redigeresAv ,
@@ -85,7 +85,7 @@ class ApiServiceTest {
         stageAnsatt(opprettetAv, "Opprettet", "Av")
         stageAnsatt(sistredigertAv, "Sist Redigert", "Av")
 
-        val result = apiService.toApi(mockCall, createBrev(opprettetAv = opprettetAv, sistredigertAv = sistredigertAv))
+        val result = dto2ApiService.toApi(mockCall, createBrev(opprettetAv = opprettetAv, sistredigertAv = sistredigertAv))
 
         assertThat(result.opprettetAv).isEqualTo(Api.NavAnsatt(opprettetAv, "Opprettet Av"))
         assertThat(result.sistredigertAv).isEqualTo(Api.NavAnsatt(sistredigertAv, "Sist Redigert Av"))
@@ -94,21 +94,21 @@ class ApiServiceTest {
     @Test
     fun `henter brevtittel fra brevbaker`(): Unit = runBlocking {
         val brev = createBrev()
-        assertThat(apiService.toApi(mockCall, brev).brevtittel).isEqualTo("Informasjon om saksbehandlingstid")
+        assertThat(dto2ApiService.toApi(mockCall, brev).brevtittel).isEqualTo("Informasjon om saksbehandlingstid")
     }
 
     @Test
-    fun `henter navn på avsenderEnhet`(): Unit = runBlocking {
+    fun `henter navn paa avsenderEnhet`(): Unit = runBlocking {
         val brev = createBrev(avsenderEnhetId = "1234")
         coEvery { norg2Service.getEnhet(any(), eq("1234")) } returns NAVEnhet("1234", "En kul enhet")
-        assertThat(apiService.toApi(mockCall, brev).avsenderEnhet).isEqualTo(NAVEnhet("1234", "En kul enhet"))
+        assertThat(dto2ApiService.toApi(mockCall, brev).avsenderEnhet).isEqualTo(NAVEnhet("1234", "En kul enhet"))
     }
 
     @Test
     fun `henter navn paa samhandler mottaker`(): Unit = runBlocking {
         val brev = createBrev(mottaker = Dto.Mottaker.samhandler("tss123"))
         coEvery { samhandlerService.hentSamhandlerNavn(any(), eq("tss123")) } returns "Verdens kuleste samhandler"
-        assertThat(apiService.toApi(mockCall, brev).mottaker).isEqualTo(Api.OverstyrtMottaker.Samhandler("tss123", "Verdens kuleste samhandler"))
+        assertThat(dto2ApiService.toApi(mockCall, brev).mottaker).isEqualTo(Api.OverstyrtMottaker.Samhandler("tss123", "Verdens kuleste samhandler"))
     }
 
     private fun createBrev(

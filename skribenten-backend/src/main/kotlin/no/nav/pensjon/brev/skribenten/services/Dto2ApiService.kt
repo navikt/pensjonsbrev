@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-class ApiService(
+class Dto2ApiService(
     private val brevbakerService: BrevbakerService,
     private val navansattService: NavansattService,
     private val norg2Service: Norg2Service,

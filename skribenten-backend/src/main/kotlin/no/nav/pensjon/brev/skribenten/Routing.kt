@@ -30,7 +30,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val norg2Service = Norg2Service(servicesConfig.getConfig("norg2"))
     val brevredigeringService =
         BrevredigeringService(brevbakerService, navansattService, penService)
-    val apiService = ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
+    val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
@@ -56,7 +56,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             brevmal(brevbakerService)
             kodeverkRoute(penService)
             sakRoute(
-                apiService,
+                dto2ApiService,
                 brevmalService,
                 brevredigeringService,
                 krrService,
@@ -66,7 +66,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 pensjonPersonDataService,
                 safService,
             )
-            brev(brevredigeringService, apiService)
+            brev(brevredigeringService, dto2ApiService)
             tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
             meRoute(navansattService)
         }

@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
-import no.nav.pensjon.brev.skribenten.services.ApiService
+import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("no.nav.brev.skribenten.routes.SakBrev")
 
-fun Route.sakBrev(apiService: ApiService, brevredigeringService: BrevredigeringService) =
+fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: BrevredigeringService) =
     route("/brev") {
 
         post<Api.OpprettBrevRequest> { request ->
@@ -28,7 +28,7 @@ fun Route.sakBrev(apiService: ApiService, brevredigeringService: BrevredigeringS
 
             brevredigeringService.opprettBrev(call, sak, request.brevkode, spraak, avsenderEnhetsId, request.saksbehandlerValg, true, request.mottaker?.toDto())
                 .onOk { brev ->
-                    call.respond(HttpStatusCode.Created, apiService.toApi(call, brev))
+                    call.respond(HttpStatusCode.Created, dto2ApiService.toApi(call, brev))
                 }.onError { message, statusCode ->
                     logger.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
@@ -45,7 +45,7 @@ fun Route.sakBrev(apiService: ApiService, brevredigeringService: BrevredigeringS
                 brevId = brevId,
                 nyeSaksbehandlerValg = request.saksbehandlerValg,
                 nyttRedigertbrev = request.redigertBrev
-            )?.onOk { brev -> call.respond(HttpStatusCode.OK, apiService.toApi(call, brev)) }
+            )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(call, brev)) }
                 ?.onError { message, statusCode ->
                     logger.error("$statusCode - Feil ved oppdatering av brev ${brevId}: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
@@ -63,7 +63,7 @@ fun Route.sakBrev(apiService: ApiService, brevredigeringService: BrevredigeringS
                 laastForRedigering = request.laastForRedigering,
                 distribusjonstype = request.distribusjonstype,
                 mottaker = request.mottaker?.toDto(),
-            )?.also { call.respond(HttpStatusCode.OK, apiService.toApi(call, it)) }
+            )?.also { call.respond(HttpStatusCode.OK, dto2ApiService.toApi(call, it)) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
@@ -96,7 +96,7 @@ fun Route.sakBrev(apiService: ApiService, brevredigeringService: BrevredigeringS
 
             brevredigeringService.hentBrev(call, sak.saksId, brevId, reserver)
                 ?.onOk { brev ->
-                    call.respond(HttpStatusCode.OK, apiService.toApi(call, brev))
+                    call.respond(HttpStatusCode.OK, dto2ApiService.toApi(call, brev))
                 }?.onError { message, statusCode ->
                     call.application.log.error("$statusCode - Feil ved henting av brev: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
@@ -109,7 +109,7 @@ fun Route.sakBrev(apiService: ApiService, brevredigeringService: BrevredigeringS
 
             call.respond(
                 HttpStatusCode.OK,
-                brevredigeringService.hentBrevForSak(sak.saksId).map { apiService.toApi(call, it) }
+                brevredigeringService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(call, it) }
             )
         }
 

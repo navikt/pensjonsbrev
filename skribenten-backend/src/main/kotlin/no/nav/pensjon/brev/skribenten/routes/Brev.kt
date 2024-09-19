@@ -9,17 +9,17 @@ import io.ktor.util.pipeline.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
-import no.nav.pensjon.brev.skribenten.services.ApiService
+import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("no.nav.brev.skribenten.routes.Brev")
 
-fun Route.brev(brevredigeringService: BrevredigeringService, apiService: ApiService) {
+fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto2ApiService) {
 
     suspend fun PipelineContext<Unit, ApplicationCall>.respond(brevResponse: ServiceResult<Dto.Brevredigering>?) =
-        brevResponse?.map { apiService.toApi(call, it) }
+        brevResponse?.map { dto2ApiService.toApi(call, it) }
             ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev) }
             ?.onError { message, statusCode ->
                 logger.error("$statusCode - Feil ved oppdatering av brev: $message")
