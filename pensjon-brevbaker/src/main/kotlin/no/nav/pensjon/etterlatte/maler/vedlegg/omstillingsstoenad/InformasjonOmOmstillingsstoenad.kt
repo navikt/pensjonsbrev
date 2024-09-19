@@ -8,9 +8,12 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 
@@ -47,17 +50,17 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.aktivitet(
         )
     }
     paragraph {
-        text(
-            Bokmal to "Når det er gått seks måneder etter " +
+        textExpr(
+            Bokmal to "Når det er gått seks måneder etter ".expr() +
                     ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
                     " er det et krav for å motta omstillingsstønad at du er i minst 50 prosent arbeid eller annen " +
                     "aktivitet med sikte på å komme i arbeid. Etter et år kan det forventes at du er i 100 prosent aktivitet. " +
                     "Dette kalles for aktivitetsplikt.",
-            Nynorsk to "or å kunne halde fram med å få omstillingsstønad når det har gått seks månader sidan " +
+            Nynorsk to "or å kunne halde fram med å få omstillingsstønad når det har gått seks månader sidan ".expr() +
                     ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet") +
                     ", må du vere i minst 50 prosent arbeid eller annan aktivitet med sikte på å kome i arbeid. Etter " +
                     "eitt år er det forventa at du er i 100 prosent aktivitet. Dette blir kalla aktivitetsplikt.",
-            English to "Once six months have passed after the " +
+            English to "Once six months have passed after the ".expr() +
                     ifElse(tidligereFamiliepleier, "care period ended", "death") +
                     ", receiving adjustment allowance is contingent upon working at least 50 percent or involved in " +
                     "another activity with the aim of finding employment. After one year, you will be expected to be " +

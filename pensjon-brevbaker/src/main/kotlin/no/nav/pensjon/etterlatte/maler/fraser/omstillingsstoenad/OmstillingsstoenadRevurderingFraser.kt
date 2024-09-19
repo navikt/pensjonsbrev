@@ -403,28 +403,28 @@ class OmstillingsstoenadRevurderingFraser {
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
-                text(
-                    Bokmal to "Du må være i aktivitet fra seks måneder etter " +
+                textExpr(
+                    Bokmal to "Du må være i aktivitet fra seks måneder etter ".expr() +
                             ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet"),
-                    Nynorsk to "Du må vere i aktivitet når det har gått seks månader sidan " +
+                    Nynorsk to "Du må vere i aktivitet når det har gått seks månader sidan ".expr() +
                             ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet"),
-                    English to "You are obligated to be active starting six months after the " +
+                    English to "You are obligated to be active starting six months after the ".expr() +
                             ifElse(tidligereFamiliepleier, "after care period ended", "death"),
                 )
             }
             paragraph {
-                text(
-                    Language.Bokmal to "Når det er gått seks måneder etter " +
+                textExpr(
+                    Language.Bokmal to "Når det er gått seks måneder etter ".expr() +
                             ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
                             " er du pliktig til å være i minst 50 prosent aktivitet for å motta omstillingsstønad. Les " +
                             "mer om aktivitetsplikt og hva denne innebærer i vedlegget " +
                             "«Informasjon til deg som mottar omstillingsstønad».",
-                    Language.Nynorsk to "For at du skal kunne halde fram med å få omstillingsstønad når det " +
+                    Language.Nynorsk to "For at du skal kunne halde fram med å få omstillingsstønad når det ".expr() +
                             "har gått seks månader sidan " +
                             ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet") +
                             ", må du vere i minst 50 prosent aktivitet. I vedlegget «Informasjon til deg som får " +
                             "omstillingsstønad» kan du lese meir om aktivitetsplikta og kva denne inneber.",
-                    Language.English to "Once six months have passed since the " +
+                    Language.English to "Once six months have passed since the ".expr() +
                             ifElse(tidligereFamiliepleier, "care period ended", "death") +
                             ", you are obligated to be active at least 50 percent to receive the adjustment allowance. " +
                             "Read more about the activity obligation and what this involves in the attachment " +

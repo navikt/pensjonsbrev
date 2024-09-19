@@ -90,14 +90,14 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         )
     }
     paragraph {
-        text(
-            Bokmal to "For at du skal få full stønad må " +
+        textExpr(
+            Bokmal to "For at du skal få full stønad må ".expr() +
                     ifElse(tidligereFamiliepleier, "trygdetiden din", "avødes trygdetid") +
                     " være minst 40 år. Er trygdetiden mindre enn 40 år vil stønaden avkortes.",
-            Nynorsk to "For at du skal få full stønad må " +
+            Nynorsk to "For at du skal få full stønad må ".expr() +
                     ifElse(tidligereFamiliepleier, "du", "avdøde") +
                     " ha hatt ei trygdetid på minst 40 år. Dersom trygdetida er mindre enn 40 år, blir stønaden avkorta.",
-            English to "To receive the maximum allowance, " +
+            English to "To receive the maximum allowance, ".expr() +
                     ifElse(
                         tidligereFamiliepleier,
                         "your period of national insurance coverage",
@@ -315,14 +315,14 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
 
     showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.NASJONAL)) {
         paragraph {
-            text(
-                Bokmal to "Trygdetiden tilsvarer det antall år " +
+            textExpr(
+                Bokmal to "Trygdetiden tilsvarer det antall år ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde ") +
                         " har vært medlem i folketrygden etter fylte 16 år.",
-                Nynorsk to "Trygdetida svarer til talet på år "+
+                Nynorsk to "Trygdetida svarer til talet på år ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         "avdøde var medlem i folketrygda etter fylte 16 år.",
-                English to "Contribution time is the number of years " +
+                English to "Contribution time is the number of years ".expr() +
                         ifElse(tidligereFamiliepleier, "you", "the deceased") +
                         " has been a member of the Norwegian National Insurance Scheme after reaching the age of 16.",
             )
@@ -373,20 +373,20 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
         }
         showIf(trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden) {
             paragraph {
-                text(
-                    Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig " +
+                textExpr(
+                    Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig ".expr() +
                             "trygdetid. Siden " + ifElse(tidligereFamiliepleier, "du", "avdøde") +
                             " har vært medlem i folketrygden i mindre enn 4/5 av tiden mellom fylte 16 år og " +
                             ifElse(tidligereFamiliepleier, "til pleieforholdet opphørte", "dødsfallstidspunktet") +
                             " (opptjeningstiden), blir framtidig trygdetid redusert til 40 år minus 4/5 av opptjeningstiden. " +
                             "Dette er mindre enn det tabellen viser.",
-                    Nynorsk to "Tabellen under «Periodar med registrert trygdetid» viser full framtidig " +
+                    Nynorsk to "Tabellen under «Periodar med registrert trygdetid» viser full framtidig ".expr() +
                             "trygdetid. Ettersom " + ifElse(tidligereFamiliepleier, "du", "avdøde") +
                             "avdøde var medlem av folketrygda i mindre enn 4/5 av tida mellom fylte 16 år og fram til " +
                             ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "sin død") +
                             " (oppteningstid), blir framtidig trygdetid redusert til 40 år minus 4/5 av oppteningstida. " +
                             "Dette er mindre enn det tabellen viser.",
-                    English to "The table in “Periods with Registered Contribution Time” shows the entire " +
+                    English to "The table in “Periods with Registered Contribution Time” shows the entire ".expr() +
                             "future contribution time. Since " +
                             ifElse(tidligereFamiliepleier, "you", "the deceased") +
                             " has been a member of the National Insurance Scheme for less than 4/5 of the time between " +
@@ -400,14 +400,14 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
     }
     showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.PRORATA)) {
         paragraph {
-            text(
-                Bokmal to "For å få full omstillingsstønad må " +
+            textExpr(
+                Bokmal to "For å få full omstillingsstønad må ".expr() +
                         ifElse(tidligereFamiliepleier, "trygdetiden din", "avdødes trygdetid") +
                         " være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.",
-                Nynorsk to "For at du skal kunne få full omstillingsstønad, må den utrekna trygdetida " +
+                Nynorsk to "For at du skal kunne få full omstillingsstønad, må den utrekna trygdetida ".expr() +
                         ifElse(tidligereFamiliepleier, "di", "til avdøde") +
                         " vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i utrekninga.",
-                English to "To be entitled to full adjustment allowance, " +
+                English to "To be entitled to full adjustment allowance, ".expr() +
                         ifElse(tidligereFamiliepleier, "you", "the deceased") +
                         " must have accumulated at least 40 years of contribution time. Contribution time above 40 years " +
                         "of coverage is not included in the calculation.",
@@ -461,15 +461,15 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
     }
     showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.BEST)) {
         paragraph {
-            text(
-                Bokmal to "For å få full omstillingsstønad må " +
+            textExpr(
+                Bokmal to "For å få full omstillingsstønad må ".expr() +
                         ifElse(tidligereFamiliepleier, "din", "avdøde") +
                         " trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. " +
                         "Når grunnlag for omstillingsstønaden er oppfylt etter nasjonale regler, og " +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " også har opptjening av medlemsperioder i land som Norge har trygdeavtale med, skal trygdetid gis " +
                         "etter den beste beregningen av kun nasjonal opptjening og av sammenlagt opptjening i Norge og avtaleland.",
-                Nynorsk to "For at du skal kunne få full omstillingsstønad, må den utrekna trygdetida " +
+                Nynorsk to "For at du skal kunne få full omstillingsstønad, må den utrekna trygdetida ".expr() +
                         ifElse(tidligereFamiliepleier, "di", "til avdøde") +
                         " vere minst 40 år. Trygdetid over 40 år blir ikkje teken med i utrekninga. Når " +
                         "grunnlaget for stønad er oppfylt etter nasjonale reglar, og " +
@@ -477,7 +477,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         " også har opptening av medlemsperiodar i land som Noreg har trygdeavtale med, skal det bli gitt " +
                         "trygdetid etter gunstigaste utrekning: anten berre nasjonal opptening eller samanlagd opptening " +
                         "i Noreg og avtaleland.",
-                English to "To be entitled to full adjustment allowance, " +
+                English to "To be entitled to full adjustment allowance, ".expr() +
                         ifElse(tidligereFamiliepleier, "you", "the deceased") +
                         " must have accumulated at least 40 years of contribution time. Contribution time above 40 years " +
                         "of coverage is not included in the calculation. When the basis for the allowance is met according " +
@@ -490,8 +490,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
             )
         }
         paragraph {
-            text(
-                Bokmal to "Ved nasjonal beregning av trygdetid tilsvarer denne det antall år " +
+            textExpr(
+                Bokmal to "Ved nasjonal beregning av trygdetid tilsvarer denne det antall år ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " har vært medlem i folketrygden etter fylte 16 år. " +
                         ifElse(
@@ -499,7 +499,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                             "I tillegg blir det  vanligvis beregnet framtidig trygdetid fra pleieforholdet opphørte fram til og med det året du fyller 66 år.",
                             "Når avdøde var under 67 år ved dødsfallet blir det vanligvis beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år."
                         ),
-                Nynorsk to "Ved nasjonal utrekning av trygdetida vil denne svare til talet på år " +
+                Nynorsk to "Ved nasjonal utrekning av trygdetida vil denne svare til talet på år ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " var medlem i folketrygda etter fylte 16 år. " +
                         ifElse(
@@ -507,7 +507,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                             "I tillegg blir det vanlegvis rekna ut framtidig trygdetid frå pleieforholdet opphøyrde fram til og med det året du fyller 66 år.",
                             "Dersom personen døydde før fylte 67 år, blir det vanlegvis rekna ut framtidig trygdetid fram til og med det året vedkomande ville ha fylt 66 år."
                         ),
-                English to "For calculating national contribution time, this equals the number of years " +
+                English to "For calculating national contribution time, this equals the number of years ".expr() +
                         ifElse(tidligereFamiliepleier, "you", "the deceased") +
                         " has been a member of the Norwegian National Insurance Scheme after reaching the age of 16. " +
                         ifElse(
@@ -518,8 +518,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
             )
         }
         paragraph {
-            text(
-                Bokmal to "Ved sammenlegging av " +
+            textExpr(
+                Bokmal to "Ved sammenlegging av ".expr() +
                         ifElse(tidligereFamiliepleier, "din", "avdødes") +
                         " opptjeningstid i Norge og andre EØS/avtale-land er trygdetiden beregnet etter " +
                         ifElse(tidligereFamiliepleier, "din", "avdødes") +
@@ -527,7 +527,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         ifElse(tidligereFamiliepleier, "din", "avdødes") +
                         " samlede opptjeningstid med et forholdstall, som angir forholdet mellom faktisk opptjeningstid " +
                         "i Norge og samlet faktisk opptjeningstid i Norge og andre EØS-land.",
-                Nynorsk to "Dersom ein legg saman oppteningstida som " +
+                Nynorsk to "Dersom ein legg saman oppteningstida som ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " hadde i Noreg og andre EØS-/avtaleland, blir trygdetida rekna ut etter den samla oppteningstida til " +
                         ifElse(tidligereFamiliepleier, "deg", "avdøde") +
@@ -535,7 +535,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         ifElse(tidligereFamiliepleier, "deg", "avdøde") +
                         " gonga med eit forholdstal som angir forholdet mellom faktisk oppteningstid i Noreg og samla " +
                         "faktisk oppteningstid i Noreg og andre EØS-land.",
-                English to "For comparing " +
+                English to "For comparing ".expr() +
                         ifElse(tidligereFamiliepleier, "your", "the deceased's") +
                         " contribution time in Norway with other EEA/agreement countries, the contribution time is " +
                         "calculated according to " +
@@ -602,16 +602,16 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
 
     showIf(trygdetid.beregningsMetodeAnvendt.equalTo(BeregningsMetode.NASJONAL)){
         paragraph {
-            text(
-                Bokmal to "Tabellen viser perioder " +
+            textExpr(
+                Bokmal to "Tabellen viser perioder ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " har vært medlem av folketrygden, og registrert " +
                         "fremtidig trygdetid.",
-                Nynorsk to "Tabellen viser periodar " +
+                Nynorsk to "Tabellen viser periodar ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " har vore medlem av folketrygda og registrert " +
                         "framtidig trygdetid. ",
-                English to "The table shows the periods in which " +
+                English to "The table shows the periods in which ".expr() +
                         ifElse(tidligereFamiliepleier, "you", "the deceased") +
                         " was a member of the National Insurance Scheme, and registered future contribution time.",
             )
@@ -619,18 +619,18 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
         includePhrase(Trygdetidstabell(trygdetid.trygdetidsperioder))
     }.orShowIf(trygdetid.beregningsMetodeAnvendt.equalTo(BeregningsMetode.PRORATA)) {
         paragraph {
-            text(
-                Bokmal to "Tabellen viser perioder " +
+            textExpr(
+                Bokmal to "Tabellen viser perioder ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " har vært medlem av folketrygden og medlemsperioder " +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " har hatt i land som Norge har trygdeavtale med, som er tatt med i beregningen.",
-                Nynorsk to "Tabellen viser periodar " +
+                Nynorsk to "Tabellen viser periodar ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " har vore medlem av folketrygda og medlemsperiodar " +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
                         " har hatt i land som Noreg har trygdeavtale med, som er tekne med i utrekninga.",
-                English to "The table shows periods in which " +
+                English to "The table shows periods in which ".expr() +
                         ifElse(tidligereFamiliepleier, "you", "the deceased") +
                         " was a member of the National Insurance Scheme and member periods which " +
                         ifElse(tidligereFamiliepleier, "you", "the deceased") +

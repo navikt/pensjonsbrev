@@ -341,16 +341,16 @@ object OmstillingsstoenadInnvilgelseFraser {
                 )
             }
             paragraph {
-                text(
-                    Bokmal to "Formålet med omstillingsstønaden er å sikre deg inntekt og gi hjelp " +
+                textExpr(
+                    Bokmal to "Formålet med omstillingsstønaden er å sikre deg inntekt og gi hjelp ".expr() +
                             "til selvhjelp, slik at du etter en omstillingsperiode etter" +
                             ifElse(tidligereFamiliepleier, "at pleieforholdet opphørte,", "dødsfallet") +
                             " kan bli i stand til å forsørge deg selv ved eget arbeid.",
-                    Nynorsk to "Føremålet med omstillingsstønaden er å sikre deg inntekt og gi " +
+                    Nynorsk to "Føremålet med omstillingsstønaden er å sikre deg inntekt og gi ".expr() +
                             "hjelp til sjølvhjelp, slik at du etter ein omstillingsperiode etter " +
                             ifElse(tidligereFamiliepleier, "at pleieforholdet opphøyrde", "dødsfallet") +
                             " kan bli i stand til å forsørgje deg sjølv gjennom eige arbeid.",
-                    English to "The purpose of adjustment allowance is to " +
+                    English to "The purpose of adjustment allowance is to ".expr() +
                             ifElse(
                                 tidligereFamiliepleier,
                                 "secure your income and provide help for self-help, so that after a transition " +
@@ -371,32 +371,32 @@ object OmstillingsstoenadInnvilgelseFraser {
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
-                text(
-                    Bokmal to "Du må være i aktivitet fra seks måneder etter " +
+                textExpr(
+                    Bokmal to "Du må være i aktivitet fra seks måneder etter ".expr() +
                             ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet"),
-                    Nynorsk to "Du må vere i aktivitet når det har gått seks månader sidan " +
+                    Nynorsk to "Du må vere i aktivitet når det har gått seks månader sidan ".expr() +
                             ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet"),
-                    English to "You are obligated to be active starting six months after the " +
+                    English to "You are obligated to be active starting six months after the ".expr() +
                             ifElse(tidligereFamiliepleier, "after care period ended", "death"),
                 )
             }
             paragraph {
-                text(
-                    Bokmal to "Det første halvåret etter " +
+                textExpr(
+                    Bokmal to "Det første halvåret etter ".expr() +
                             ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
                             " stilles det ikke krav til at du er i " +
                             "arbeid eller arbeidsrettet aktivitet. Etter seks måneder er det et vilkår for å " +
                             "fortsatt ha rett til omstillingsstønad at du er i minst 50 prosent aktivitet. " +
                             "Dette kalles aktivitetsplikt. Les mer om aktivitetsplikt og hva denne innebærer i vedlegget " +
                             "«Informasjon til deg som mottar omstillingsstønad».",
-                    Nynorsk to "Det første halvåret etter " +
+                    Nynorsk to "Det første halvåret etter ".expr() +
                             ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet") +
                             " blir det ikkje stilt krav til at du er i " +
                             "arbeid eller arbeidsretta aktivitet. For at du framleis skal ha rett på " +
                             "omstillingsstønad etter seks månader, må du vere i minst 50 prosent aktivitet. " +
                             "Dette blir kalla aktivitetsplikt.  I vedlegget «Informasjon til deg som får " +
                             "omstillingsstønad» kan du lese meir om aktivitetsplikta og kva denne inneber.",
-                    English to "There is no obligation to work or employment-related activities for the first " +
+                    English to "There is no obligation to work or employment-related activities for the first ".expr() +
                             "six months after the " +
                             ifElse(tidligereFamiliepleier, "care period ended", "death") +
                             ". After six months have passed, one condition for continuing " +
@@ -408,16 +408,14 @@ object OmstillingsstoenadInnvilgelseFraser {
 
             showIf(innvilgetMindreEnnFireMndEtterDoedsfall) {
                 paragraph {
-                    text(
-                        Bokmal to "Vi sender deg et eget informasjonsbrev om at du må være i aktivitet når det " +
+                    textExpr(
+                        Bokmal to "Vi sender deg et eget informasjonsbrev om at du må være i aktivitet når det ".expr() +
                                 "nærmer seg seks måneder etter " +
-                                ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
-                                ".",
-                        Nynorsk to "Vi sender deg eit eige informasjonsbrev om at du må vere i aktivitet når " +
+                                ifElse(tidligereFamiliepleier, "pleieforholdet opphørte.", "dødsfallet."),
+                        Nynorsk to "Vi sender deg eit eige informasjonsbrev om at du må vere i aktivitet når ".expr() +
                                 "det nærmar seg seks månader sidan " +
-                                ifElse(tidligereFamiliepleier, "pleieforholdet vart avslutta", "dødsfallet") +
-                                ".",
-                        English to "We will send you a separate letter to inform you of your activity " +
+                                ifElse(tidligereFamiliepleier, "pleieforholdet vart avslutta.", "dødsfallet."),
+                        English to "We will send you a separate letter to inform you of your activity ".expr() +
                                 "obligation near the end of the six-month period.",
                     )
                 }
