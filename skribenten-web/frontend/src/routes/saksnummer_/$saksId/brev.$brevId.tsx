@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyLong, Button, HStack, Label, Modal } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
@@ -148,7 +148,13 @@ function RedigerBrev({
 }) {
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
+
   const navigate = useNavigate({ from: Route.fullPath });
+  const showDebug = useSearch({
+    strict: false,
+    select: (search: { debug?: string | boolean }) => search?.["debug"] === "true" || search?.["debug"] === true,
+  });
+
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
   const redigertBrevMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreBrev);
 
@@ -221,6 +227,7 @@ function RedigerBrev({
           error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError}
           freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
           setEditorState={setEditorState}
+          showDebug={showDebug}
         />
         <HStack
           css={css`
