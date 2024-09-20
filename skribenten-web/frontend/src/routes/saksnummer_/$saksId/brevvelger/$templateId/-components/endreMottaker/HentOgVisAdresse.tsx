@@ -6,6 +6,7 @@ import { getKontaktAdresse, getNavn, hentSamhandlerAdresse } from "~/api/skriben
 import { ApiError } from "~/components/ApiError";
 import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
 import { getAdresseTypeName } from "~/types/nameMappings";
+import { capitalizeString } from "~/utils/stringUtils";
 
 import { Route } from "../../route";
 import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";
@@ -85,12 +86,14 @@ const ValgtKontaktAdresseOppsummering = (properties: { adresse: KontaktAdresseRe
 
   return (
     <div>
-      <div>
-        {navn} ({getAdresseTypeName(properties.adresse.type)})
-      </div>
+      <BodyShort size="small">
+        {navn ? capitalizeString(navn) : undefined} ({getAdresseTypeName(properties.adresse.type)})
+      </BodyShort>
       <VStack gap="0">
         {properties.adresse.adresselinjer.map((linje) => (
-          <span key={linje}>{linje}</span>
+          <BodyShort key={linje} size="small">
+            {capitalizeString(linje)}
+          </BodyShort>
         ))}
       </VStack>
     </div>
@@ -100,12 +103,12 @@ const ValgtKontaktAdresseOppsummering = (properties: { adresse: KontaktAdresseRe
 const ValgtAdresseOppsummering = (properties: { adresse: Adresse; erSamhandler: boolean }) => {
   return (
     <div>
-      <BodyShort>
+      <BodyShort size="small">
         {properties.adresse.navn} {properties.erSamhandler && "(Samhandler)"}
       </BodyShort>
       <VStack gap="0">
-        <BodyShort>{properties.adresse.linje1}</BodyShort>
-        <BodyShort>
+        <BodyShort size="small">{properties.adresse.linje1}</BodyShort>
+        <BodyShort size="small">
           {properties.adresse.postnr} {properties.adresse.poststed}{" "}
           {properties.adresse.land === "NOR" ? "" : `, ${properties.adresse.land}`}
         </BodyShort>

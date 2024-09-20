@@ -98,64 +98,70 @@ const Brevmal = (props: { saksId: string; brev: BrevInfo; letterMetadata: Letter
       `}
     >
       <VStack gap="4">
-        <SlettBrev
-          brevId={props.brev.id}
-          buttonText="Slett kladd"
-          modalTexts={{
-            heading: "Vil du slette kladden?",
-            body: "Kladden vil bli slettet, og du kan ikke angre denne handlingen.",
-            buttonYes: "Ja, slett kladden",
-            buttonNo: "Nei, behold kladden",
-          }}
-          onSlettSuccess={() => navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: props.saksId } })}
-          sakId={props.saksId}
-        />
+        <VStack gap="4">
+          <SlettBrev
+            brevId={props.brev.id}
+            buttonText="Slett kladd"
+            modalTexts={{
+              heading: "Vil du slette kladden?",
+              body: "Kladden vil bli slettet, og du kan ikke angre denne handlingen.",
+              buttonYes: "Ja, slett kladden",
+              buttonNo: "Nei, behold kladden",
+            }}
+            onSlettSuccess={() => navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: props.saksId } })}
+            sakId={props.saksId}
+          />
 
-        <Heading size="small">{props.brev.brevtittel}</Heading>
-        <BrevTags letterMetadata={props.letterMetadata} />
-        <Divider />
-
-        <VStack gap="2">
-          <VStack>
-            <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
-
-            {modalÅpen && (
-              <EndreMottakerModal
-                error={mottakerMutation.error}
-                isPending={mottakerMutation.isPending}
-                onBekreftNyMottaker={(mottaker) => {
-                  mottakerMutation.mutate(mapEndreMottakerValueTilMottaker(mottaker));
-                }}
-                onClose={() => setModalÅpen(false)}
-                resetOnBekreftState={() => mottakerMutation.reset()}
-                åpen={modalÅpen}
-              />
-            )}
-          </VStack>
-          <HStack>
-            <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
-              Endre mottaker
-            </Button>
-            {props.brev.mottaker !== null && (
-              <Button
-                loading={fjernMottakerMutation.isPending}
-                onClick={() => fjernMottakerMutation.mutate()}
-                size="small"
-                type="button"
-                variant="tertiary"
-              >
-                Tilbakestill mottaker
-              </Button>
-            )}
-          </HStack>
+          <div>
+            <Heading size="small">{props.brev.brevtittel}</Heading>
+            <BrevTags letterMetadata={props.letterMetadata} />
+          </div>
         </VStack>
 
-        <Oppsummeringspar
-          boldedTitle
-          tittel={"Avsenderenhet"}
-          verdi={props.brev.avsenderEnhet?.navn ?? "Enhet er ikke registrert i brevet"}
-        />
-        <Oppsummeringspar boldedTitle tittel={"Språk"} verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
+        <Divider />
+
+        <VStack gap="8">
+          <VStack gap="2">
+            <VStack>
+              <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
+
+              {modalÅpen && (
+                <EndreMottakerModal
+                  error={mottakerMutation.error}
+                  isPending={mottakerMutation.isPending}
+                  onBekreftNyMottaker={(mottaker) => {
+                    mottakerMutation.mutate(mapEndreMottakerValueTilMottaker(mottaker));
+                  }}
+                  onClose={() => setModalÅpen(false)}
+                  resetOnBekreftState={() => mottakerMutation.reset()}
+                  åpen={modalÅpen}
+                />
+              )}
+            </VStack>
+            <HStack>
+              <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
+                Endre mottaker
+              </Button>
+              {props.brev.mottaker !== null && (
+                <Button
+                  loading={fjernMottakerMutation.isPending}
+                  onClick={() => fjernMottakerMutation.mutate()}
+                  size="small"
+                  type="button"
+                  variant="tertiary"
+                >
+                  Tilbakestill mottaker
+                </Button>
+              )}
+            </HStack>
+          </VStack>
+          <Oppsummeringspar
+            boldedTitle
+            tittel={"Avsenderenhet"}
+            verdi={props.brev.avsenderEnhet?.navn ?? "Enhet er ikke registrert i brevet"}
+          />
+          <Oppsummeringspar boldedTitle tittel={"Språk"} verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
+        </VStack>
       </VStack>
 
       <HStack justify={"end"}>

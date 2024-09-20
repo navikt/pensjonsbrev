@@ -27,6 +27,7 @@ import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
+import { capitalizeString } from "~/utils/stringUtils";
 
 import { EndreMottakerModal } from "../../brevvelger/$templateId/-components/endreMottaker/EndreMottaker";
 import { brevStatusTypeToTextAndTagVariant } from "../-BrevbehandlerUtils";
@@ -211,7 +212,7 @@ const BrevItem = (properties: {
                   {properties.brev.mottaker ? (
                     <MottakerNavn mottaker={properties.brev.mottaker} />
                   ) : (
-                    <BodyShort>{navn ?? "Bruker"}</BodyShort>
+                    <BodyShort>{navn ? capitalizeString(navn) : "Bruker"}</BodyShort>
                   )}
                   {!erLåst && (
                     <Button

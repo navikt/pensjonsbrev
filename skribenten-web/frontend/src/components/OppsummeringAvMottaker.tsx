@@ -18,14 +18,14 @@ const OppsummeringAvMottaker = (props: { saksId: string; mottaker: Nullable<Mott
   return (
     <VStack>
       {props.withTitle && <Label size="small">Mottaker</Label>}
-      <BodyShort>{props.mottaker.navn}</BodyShort>
-      {props.mottaker.adresselinje1 && <BodyShort>{props.mottaker.adresselinje1}</BodyShort>}
-      {props.mottaker.adresselinje2 && <BodyShort>{props.mottaker.adresselinje2}</BodyShort>}
-      {props.mottaker.adresselinje3 && <BodyShort>{props.mottaker.adresselinje3}</BodyShort>}
-      <BodyShort>
+      <BodyShort size="small">{props.mottaker.navn}</BodyShort>
+      {props.mottaker.adresselinje1 && <BodyShort size="small">{props.mottaker.adresselinje1}</BodyShort>}
+      {props.mottaker.adresselinje2 && <BodyShort size="small">{props.mottaker.adresselinje2}</BodyShort>}
+      {props.mottaker.adresselinje3 && <BodyShort size="small">{props.mottaker.adresselinje3}</BodyShort>}
+      <BodyShort size="small">
         {props.mottaker.postnummer} {props.mottaker.poststed}
       </BodyShort>
-      {props.mottaker.type === "UtenlandskAdresse" && <BodyShort>{props.mottaker.landkode}</BodyShort>}
+      {props.mottaker.type === "UtenlandskAdresse" && <BodyShort size="small">{props.mottaker.landkode}</BodyShort>}
     </VStack>
   );
 };
