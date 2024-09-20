@@ -152,7 +152,7 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                       brev.id.toString() === brevId
                         ? css`
                             color: var(--a-text-on-action);
-                            background-color: var(--a-surface-action-active);
+                            background-color: var(--a-surface-action-selected-hover);
                           `
                         : undefined
                     }
@@ -214,7 +214,7 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                         template.id === templateId
                           ? css`
                               color: var(--a-text-on-action);
-                              background-color: var(--a-surface-action-active);
+                              background-color: var(--a-surface-action-selected-hover);
                             `
                           : undefined
                       }
