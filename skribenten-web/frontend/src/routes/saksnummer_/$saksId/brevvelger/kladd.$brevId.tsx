@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading, HStack, Loader, Tag, VStack } from "@navikt/ds-react";
+import { BodyShort, Button, Heading, HStack, Loader, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -11,13 +11,14 @@ import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
-import { BrevSystem, type LetterMetadata } from "~/types/apiTypes";
+import { type LetterMetadata } from "~/types/apiTypes";
 import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import { SlettBrev } from "../brevbehandler/-components/PDFViewerTopBar";
 import Oppsummeringspar from "../kvittering/-components/Oppsummeringspar";
 import { EndreMottakerModal } from "./$templateId/-components/endreMottaker/EndreMottaker";
+import { LetterTemplateTags } from "./$templateId/-components/LetterTemplate";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/kladd/$brevId")({
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
@@ -114,7 +115,7 @@ const Brevmal = (props: { saksId: string; brev: BrevInfo; letterMetadata: Letter
 
           <div>
             <Heading size="small">{props.brev.brevtittel}</Heading>
-            <BrevTags letterMetadata={props.letterMetadata} />
+            <LetterTemplateTags letterTemplate={props.letterMetadata} />
           </div>
         </VStack>
 
@@ -195,35 +196,3 @@ const Brevmal = (props: { saksId: string; brev: BrevInfo; letterMetadata: Letter
     </div>
   );
 };
-
-const BrevsystemTag = (props: { letterMetadata: LetterMetadata }) => {
-  switch (props.letterMetadata.brevsystem) {
-    case BrevSystem.Exstream: {
-      return (
-        <Tag size="small" variant="alt1-moderate">
-          Exstream
-        </Tag>
-      );
-    }
-    case BrevSystem.DokSys: {
-      return (
-        <Tag size="small" variant="alt3-moderate">
-          Doksys
-        </Tag>
-      );
-    }
-    case BrevSystem.Brevbaker: {
-      return (
-        <Tag size="small" variant="alt2-moderate">
-          Brevbaker
-        </Tag>
-      );
-    }
-  }
-};
-
-const BrevTags = (props: { letterMetadata: LetterMetadata }) => (
-  <HStack gap="2">
-    <BrevsystemTag letterMetadata={props.letterMetadata} />
-  </HStack>
-);

@@ -23,7 +23,7 @@ export default function LetterTemplateHeading({ letterTemplate }: { letterTempla
   );
 }
 
-function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+export function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
     <div>
       {(() => {
