@@ -43,7 +43,7 @@ export function BrevvelgerPage() {
           flex: 1;
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-6);
+          padding: var(--a-spacing-4);
         }
 
         > :nth-of-type(2) {
