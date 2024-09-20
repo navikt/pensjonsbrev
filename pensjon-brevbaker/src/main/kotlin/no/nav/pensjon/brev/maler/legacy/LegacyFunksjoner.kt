@@ -99,6 +99,11 @@ fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Exp
             date.ifNull(LocalDate.of(2020, 2, 2)).day.equalTo(1)
 
 
+// TODO kjør hypotese-test på denne
+fun FUNKSJON_Year(date: Expression<LocalDate?>): Expression<Int> =
+    date.ifNull(LocalDate.of(1000,1,1)).year
+
+
 
 fun Expression<PE>.ut_barnet_barna_felles(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(Language.English.expr())
@@ -200,5 +205,5 @@ fun Expression<PE>.ut_periodetommindre3112periodefomlik0101(): Expression<Boolea
 fun Expression<PE>.ut_periodetommindre3112periodefomstorre0101(): Expression<Boolean> = (vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodetom().legacyLessThan(ut_lastday()) and vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().legacyGreaterThan(ut_firstday()))
 fun Expression<PE>.ut_etteroppgjoravviksbeloptsbogtfbuliknull(): Expression<Boolean> = (vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0) or vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
 fun Expression<PE>.ut_avvikbtikkeut(): Expression<Boolean> = ((vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0) or vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0)) and vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().equalTo(0))
-
+fun Expression<PE>.inkludervedleggopplysningerometteroppgjoeret() = not(pebrevkode().equalTo("PE_UT_04_401") and (vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("ikke_avvik") or vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("etterbet_tolgr") or vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("tilbakekr_tolgr")))
 

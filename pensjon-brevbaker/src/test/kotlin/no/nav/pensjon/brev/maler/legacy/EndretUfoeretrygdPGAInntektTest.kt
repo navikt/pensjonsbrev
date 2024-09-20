@@ -16,7 +16,7 @@ class EndretUfoeretrygdPGAInntektTest {
     @Test
     fun testPdf() {
         Letter(
-            EndretUfoeretrygdPGAInntekt.template,
+            EndretUfoeretrygdPGAInntektLegacy.template,
             Fixtures.create<EndretUfoeretrygdPGAInntektDto>(),
             Language.Nynorsk,
             Fixtures.fellesAuto
@@ -26,7 +26,7 @@ class EndretUfoeretrygdPGAInntektTest {
     @Test
     fun testHtml() {
         Letter(
-            EndretUfoeretrygdPGAInntekt.template,
+            EndretUfoeretrygdPGAInntektLegacy.template,
             Fixtures.create<EndretUfoeretrygdPGAInntektDto>(),
             Language.Nynorsk,
             Fixtures.fellesAuto

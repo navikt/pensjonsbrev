@@ -16,7 +16,7 @@ class EtteroppgjoerEtterbetalingAutoTest {
     @Test
     fun testPdf() {
         Letter(
-            EtteroppgjoerEtterbetalingAuto.template,
+            EtteroppgjoerEtterbetalingAutoLegacy.template,
             Fixtures.create<EtteroppgjoerEtterbetalingAutoDto>(),
             Language.Nynorsk,
             Fixtures.fellesAuto
@@ -26,7 +26,7 @@ class EtteroppgjoerEtterbetalingAutoTest {
     @Test
     fun testHtml() {
         Letter(
-            EtteroppgjoerEtterbetalingAuto.template,
+            EtteroppgjoerEtterbetalingAutoLegacy.template,
             Fixtures.create<EtteroppgjoerEtterbetalingAutoDto>(),
             Language.Nynorsk,
             Fixtures.fellesAuto

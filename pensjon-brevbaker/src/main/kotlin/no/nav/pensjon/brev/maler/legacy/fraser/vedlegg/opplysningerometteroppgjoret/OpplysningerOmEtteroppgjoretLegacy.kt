@@ -682,19 +682,19 @@ value =returnVal*/
 
                 paragraph {
                     table(header = {
-                        column{
+                        column( columnSpan = 3 ){
                             text (
                                 Bokmal to "Type stønad",
                                 Nynorsk to "Type stønad",
                             )
                         }
-                        column{
+                        column (alignment = RIGHT, columnSpan = 3){
                             text (
                                 Bokmal to "Dette skulle du ha fått ut fra inntektsopplysninger fra Skatteetaten",
                                 Nynorsk to "Dette skulle du ha fått ut frå inntektsopplysningar frå Skatteetaten",
                             )
                         }
-                        column{
+                        column (alignment = RIGHT, columnSpan = 2 ){
                             text (
                                 Bokmal to "Dette fikk du i ",
                                 Nynorsk to "Dette fekk du i ",
@@ -724,7 +724,7 @@ value =returnVal*/
                                 )
                             }
                         }
-                        column{
+                        column( alignment = RIGHT, columnSpan = 2){
                             text (
                                 Bokmal to "Beløp du har fått for mye eller for lite",
                                 Nynorsk to "Beløp du har fått for mykje eller for lite",
@@ -1234,6 +1234,7 @@ value =returnVal*/
                                         Nynorsk to "Sum personinntekt",
                                     )
                                 }
+                                cell {}
                                 cell {
                                     textExpr(
                                         Bokmal to pe.ut_sum_inntekterbt_totalbeloput().format() + " kr",

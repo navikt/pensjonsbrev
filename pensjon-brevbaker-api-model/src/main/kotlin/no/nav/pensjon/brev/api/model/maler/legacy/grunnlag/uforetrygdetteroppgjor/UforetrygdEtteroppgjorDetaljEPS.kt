@@ -6,4 +6,5 @@ data class UforetrygdEtteroppgjorDetaljEPS(
     val inntektliste: InntektListe?,
     val fratrekkListe: FratrekkListe?,
     val suminntekterbt: Kroner?,
+    val sumfratrekkbt: Kroner?,
 )

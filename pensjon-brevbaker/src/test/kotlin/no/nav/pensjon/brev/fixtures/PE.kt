@@ -10,9 +10,11 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbil
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNor
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.FratrekkListe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektListe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjor
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBruker
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPS
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PSfnr
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
@@ -62,6 +64,7 @@ fun createPE() =
             fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt = true,
             fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj = true,
             pe_ut_etteroppgjorfratrekklistebrukeretterbetaling = true,
+            pe_ut_inntekt_trukket_fra_personinntekt = Kroner(1088),
         ),
         pebrevkode = "PE_UT_05_100",
         personsak = PersonSak(PSfnr("01019878910"))
@@ -92,24 +95,47 @@ fun createUforetrygdEtteroppgjor(): UforetrygdEtteroppgjor =
     UforetrygdEtteroppgjor(
         barnetilleggfb = true,
         barnetilleggsb = true,
-        periodefom = LocalDate.of(2020,1,1),
-        periodetom = LocalDate.of(2020,1,1),
-        uforetrygdetteroppgjordetaljbruker = createUforetrygdEtteroppgjorDetaljBruker()
+        periodefom = LocalDate.of(2020, 1, 1),
+        periodetom = LocalDate.of(2020, 1, 1),
+        uforetrygdetteroppgjordetaljbruker = createUforetrygdEtteroppgjorDetaljBruker(),
+        uforetrygdetteroppgjordetaljeps = createUforetrygdEtteroppgjorDetaljEps()
     )
 
 private fun createUforetrygdEtteroppgjorDetaljBruker() = UforetrygdEtteroppgjorDetaljBruker(
     fratrekkliste = createFratrekkListe(),
     sumfratrekkut = Kroner(22),
-    suminntekterut = Kroner(23)
+    suminntekterut = Kroner(23),
+    inntektliste = createInntektsListe(),
+    suminntekterbt = Kroner(12),
+    sumfratrekkbt = Kroner(14)
+)
+
+private fun createInntektsListe() =
+    InntektListe(
+        inntektsgrunnlag = listOf(
+            createInntektsgrunnlag()
+        )
+    )
+
+private fun createUforetrygdEtteroppgjorDetaljEps() = UforetrygdEtteroppgjorDetaljEPS(
+
+    inntektliste = createInntektsListe(),
+    fratrekkListe = createFratrekkListe(),
+    suminntekterbt = Kroner(11),
+    sumfratrekkbt = Kroner(13)
 )
 
 private fun createFratrekkListe() = FratrekkListe(
     inntektsgrunnlag = listOf(
-        Inntektsgrunnlag(
-            grunnikkereduksjon = "grunnikkereduksjon",
-            belop = Kroner(1234),
-        )
+        createInntektsgrunnlag()
     )
+)
+
+private fun createInntektsgrunnlag(): Inntektsgrunnlag = Inntektsgrunnlag(
+    grunnikkereduksjon = "grunnikkereduksjon",
+    belop = Kroner(1234),
+    inntekttype = "inntekttype",
+    registerkilde = "registerkilde"
 )
 
 fun createTrygdetidsgrunnlagListeBilateral() =
