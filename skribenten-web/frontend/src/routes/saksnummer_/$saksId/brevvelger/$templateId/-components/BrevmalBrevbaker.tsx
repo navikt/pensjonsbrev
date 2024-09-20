@@ -58,7 +58,7 @@ const BrevmalBrevbaker = (properties: {
             });
           })}
         >
-          <VStack gap="10">
+          <VStack gap="8">
             <VStack gap="2">
               <VStack>
                 <OppsummeringAvMottaker mottaker={mottaker} saksId={saksId} withTitle />
