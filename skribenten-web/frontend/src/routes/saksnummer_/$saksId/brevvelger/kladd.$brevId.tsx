@@ -13,6 +13,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import { BrevSystem, type LetterMetadata } from "~/types/apiTypes";
 import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
+import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import { SlettBrev } from "../brevbehandler/-components/PDFViewerTopBar";
 import Oppsummeringspar from "../kvittering/-components/Oppsummeringspar";
@@ -149,8 +150,12 @@ const Brevmal = (props: { saksId: string; brev: BrevInfo; letterMetadata: Letter
           </HStack>
         </VStack>
 
-        <Oppsummeringspar boldedTitle tittel={"Avsenderenhet"} verdi={"TODO"} />
-        <Oppsummeringspar boldedTitle tittel={"Språk"} verdi={"TODO"} />
+        <Oppsummeringspar
+          boldedTitle
+          tittel={"Avsenderenhet"}
+          verdi={props.brev.avsenderEnhet?.navn ?? "Enhet er ikke registrert i brevet"}
+        />
+        <Oppsummeringspar boldedTitle tittel={"Språk"} verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
       </VStack>
 
       <HStack justify={"end"}>
