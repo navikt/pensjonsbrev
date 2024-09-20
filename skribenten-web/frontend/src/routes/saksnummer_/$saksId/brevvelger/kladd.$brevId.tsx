@@ -218,9 +218,6 @@ const BrevsystemTag = (props: { letterMetadata: LetterMetadata }) => {
 
 const BrevTags = (props: { letterMetadata: LetterMetadata }) => (
   <HStack gap="2">
-    <Tag size="small" variant="warning">
-      Kladd
-    </Tag>
     <BrevsystemTag letterMetadata={props.letterMetadata} />
   </HStack>
 );
