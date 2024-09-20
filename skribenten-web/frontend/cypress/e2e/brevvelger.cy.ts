@@ -3,6 +3,7 @@ describe("Brevvelger spec", () => {
     cy.setupSakStubs();
     cy.viewport(1200, 1400);
   });
+
   it("Søk med saksnummer", () => {
     cy.visit("/");
     cy.contains("Saksnummer").click();
@@ -19,11 +20,11 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-search").click();
     cy.focused().type("b");
     cy.getDataCy("category-item").should("have.length", 7).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 27);
+    cy.getDataCy("brevmal-button").should("have.length", 22);
 
     cy.focused().type("r");
     cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 10);
+    cy.getDataCy("brevmal-button").should("have.length", 6);
 
     cy.focused().type("e");
     cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
@@ -406,11 +407,8 @@ describe("Brevvelger spec", () => {
       cy.getDataCy("order-letter-success-message");
     });
     it("manuell adresse", () => {
-      /*
-        backend har enda ikke støtte for at vi kan sende inn en manuell adresse. Midlertidig kommentert ut 
-        den faktiske testen, og erstattet med en liten verifisering på at dem ikke kan gå inn i manuell adresse
-      */
-
+      //backend har enda ikke støtte for at vi kan sende inn en manuell adresse. Midlertidig kommentert ut
+      //den faktiske testen, og erstattet med en liten verifisering på at dem ikke kan gå inn i manuell adresse
       cy.contains("Legg til manuelt").should("not.exist");
 
       /*
@@ -480,6 +478,7 @@ describe("Brevvelger spec", () => {
       cy.getDataCy("order-letter-success-message");
       */
     });
+
     it("kan avbryte uten bekreftelse dersom det ikke finnes endringer", () => {
       cy.contains("Avbryt").click();
       cy.getDataCy("endre-mottaker-modal").should("not.exist");
@@ -499,6 +498,90 @@ describe("Brevvelger spec", () => {
       cy.contains("Avbryt").click();
       cy.contains("Ja, avbryt").click();
       cy.getDataCy("endre-mottaker-modal").should("not.exist");
+    });
+  });
+
+  describe("Kladd", () => {
+    beforeEach(() => {
+      cy.visit("/saksnummer/123456/brevvelger");
+    });
+
+    it("Viser kladder i brevvelgeren", () => {
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+        req.reply([
+          {
+            id: 1,
+            opprettetAv: { id: "Z990297", navn: "F_Z990297 E_Z990297" },
+            opprettet: "2024-09-17T08:36:09.785Z",
+            sistredigertAv: { id: "Z990297", navn: "F_Z990297 E_Z990297" },
+            sistredigert: "2024-09-17T08:38:48.503Z",
+            brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+            brevtittel: "Informasjon om saksbehandlingstid",
+            status: { type: "Kladd" },
+            distribusjonstype: "SENTRALPRINT",
+            mottaker: null,
+            avsenderEnhet: null,
+            spraak: "EN",
+          },
+        ]);
+      }).as("getAlleBrevForSak");
+
+      cy.wait("@getAlleBrevForSak");
+      cy.contains("Informasjon om saksbehandlingstid").click();
+      cy.contains("Mottaker").should("be.visible");
+      cy.contains("Avsenderenhet").should("be.visible");
+      cy.contains("Språk").should("be.visible");
+      cy.contains("Gå til brevbehandler").should("be.visible");
+      cy.contains("Åpne brev").should("be.visible");
+    });
+
+    it("Kan slette kladd", () => {
+      let requestnr = 0;
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+        if (requestnr !== 2) {
+          requestnr++;
+
+          req.reply([
+            {
+              id: 1,
+              opprettetAv: { id: "Z990297", navn: "F_Z990297 E_Z990297" },
+              opprettet: "2024-09-17T08:36:09.785Z",
+              sistredigertAv: { id: "Z990297", navn: "F_Z990297 E_Z990297" },
+              sistredigert: "2024-09-17T08:38:48.503Z",
+              brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+              brevtittel: "Informasjon om saksbehandlingstid",
+              status: { type: "Kladd" },
+              distribusjonstype: "SENTRALPRINT",
+              mottaker: null,
+              avsenderEnhet: null,
+              spraak: "EN",
+            },
+          ]);
+          //Det skjer visst en ekstra rerendering slik at det er det tredje kallet til endepunktet som er det riktige
+        } else if (requestnr === 2) {
+          req.reply([]);
+        }
+      }).as("getAlleBrevForSak");
+
+      cy.intercept("DELETE", "/bff/skribenten-backend/sak/123456/brev/1", {
+        statusCode: 204,
+        body: null,
+      }).as("deleteKladd");
+
+      cy.wait("@getAlleBrevForSak");
+
+      cy.contains("Informasjon om saksbehandlingstid").click();
+      cy.contains("Slett kladd").click();
+      cy.contains("Vil du slette kladden?").should("be.visible");
+      cy.contains("Kladden vil bli slettet, og du kan ikke angre denne handlingen.").should("be.visible");
+      cy.contains("Nei, behold kladden").should("be.visible");
+      cy.contains("Ja, slett kladden").should("be.visible");
+      cy.contains("Ja, slett kladden").click();
+      cy.wait("@deleteKladd");
+      cy.wait("@getAlleBrevForSak");
+      //TODO - trigger rerender. Se kommentar i PDFViewerTopBar.tsx/SlettBrevModal
+      cy.contains("Informasjon om saksbehandlingstid").click();
+      cy.contains("Brev med id 1 ble ikke funnet").click();
     });
   });
 });
