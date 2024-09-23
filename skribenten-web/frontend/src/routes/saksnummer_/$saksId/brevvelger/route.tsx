@@ -43,7 +43,7 @@ export function BrevvelgerPage() {
           flex: 1;
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-4);
+          padding: var(--a-spacing-6);
         }
 
         > :nth-of-type(2) {
@@ -51,7 +51,7 @@ export function BrevvelgerPage() {
           min-width: 336px;
           max-width: 388px;
           border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-4);
+          padding: var(--a-spacing-6);
           flex: 1;
         }
       `}

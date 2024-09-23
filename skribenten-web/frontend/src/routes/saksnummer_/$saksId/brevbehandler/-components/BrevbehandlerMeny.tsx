@@ -32,11 +32,7 @@ import { Route } from "../route";
 
 const BrevbehandlerMeny = (properties: { saksId: string; brevInfo: BrevInfo[] }) => {
   return (
-    <VStack
-      css={css`
-        padding: var(--a-spacing-4);
-      `}
-    >
+    <VStack>
       <Saksbrev brev={properties.brevInfo} saksId={properties.saksId} />
     </VStack>
   );
