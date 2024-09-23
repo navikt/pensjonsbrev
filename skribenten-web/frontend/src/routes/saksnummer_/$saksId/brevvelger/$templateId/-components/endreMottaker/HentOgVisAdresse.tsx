@@ -6,7 +6,7 @@ import { getKontaktAdresse, getNavn, hentSamhandlerAdresse } from "~/api/skriben
 import { ApiError } from "~/components/ApiError";
 import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
 import { getAdresseTypeName } from "~/types/nameMappings";
-import { capitalizeString } from "~/utils/stringUtils";
+import { humanizeName } from "~/utils/stringUtils";
 
 import { Route } from "../../route";
 import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";
@@ -87,12 +87,12 @@ const ValgtKontaktAdresseOppsummering = (properties: { adresse: KontaktAdresseRe
   return (
     <div>
       <BodyShort size="small">
-        {navn ? capitalizeString(navn) : undefined} ({getAdresseTypeName(properties.adresse.type)})
+        {navn ? humanizeName(navn) : undefined} ({getAdresseTypeName(properties.adresse.type)})
       </BodyShort>
       <VStack gap="0">
         {properties.adresse.adresselinjer.map((linje) => (
           <BodyShort key={linje} size="small">
-            {capitalizeString(linje)}
+            {humanizeName(linje)}
           </BodyShort>
         ))}
       </VStack>
