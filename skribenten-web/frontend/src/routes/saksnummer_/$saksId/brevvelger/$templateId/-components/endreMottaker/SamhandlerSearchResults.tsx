@@ -5,7 +5,7 @@ import { sortBy } from "lodash";
 import { useState } from "react";
 
 import type { Samhandler } from "~/types/apiTypes";
-import { capitalizeString } from "~/utils/stringUtils";
+import { humanizeName } from "~/utils/stringUtils";
 
 export function SamhandlerSearchResults({
   samhandlere,
@@ -57,7 +57,7 @@ export function SamhandlerSearchResults({
                   `}
                   scope="row"
                 >
-                  {capitalizeString(samhandler.navn)}
+                  {humanizeName(samhandler.navn)}
                 </Table.DataCell>
                 <Table.DataCell align="right">
                   <Button

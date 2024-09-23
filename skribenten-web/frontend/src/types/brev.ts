@@ -8,6 +8,7 @@ export type OpprettBrevRequest = {
   spraak: SpraakKode;
   avsenderEnhetsId: Nullable<string>;
   saksbehandlerValg: SaksbehandlerValg;
+  mottaker: Nullable<Mottaker>;
 };
 
 export type SaksbehandlerValg = {
@@ -69,6 +70,8 @@ export type BrevInfo = {
   status: BrevStatus;
   distribusjonstype: Distribusjonstype;
   mottaker: Nullable<Mottaker>;
+  avsenderEnhet: Nullable<NAVEnhet>;
+  spraak: SpraakKode;
 };
 export type BrevStatus = Kladd | UnderRedigering | Klar;
 export type Kladd = { type: "Kladd" };
@@ -112,4 +115,9 @@ export interface UtenlandskAdresse {
   adresselinje2: Nullable<string>;
   adresselinje3: Nullable<string>;
   landkode: string;
+}
+
+export interface NAVEnhet {
+  id: string;
+  navn: string;
 }

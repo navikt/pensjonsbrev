@@ -3,6 +3,7 @@ describe("Brevvelger spec", () => {
     cy.setupSakStubs();
     cy.viewport(1200, 1400);
   });
+
   it("Søk med saksnummer", () => {
     cy.visit("/");
     cy.contains("Saksnummer").click();
@@ -19,11 +20,11 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-search").click();
     cy.focused().type("b");
     cy.getDataCy("category-item").should("have.length", 7).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 27);
+    cy.getDataCy("brevmal-button").should("have.length", 22);
 
     cy.focused().type("r");
     cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 10);
+    cy.getDataCy("brevmal-button").should("have.length", 6);
 
     cy.focused().type("e");
     cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
@@ -206,6 +207,7 @@ describe("Brevvelger spec", () => {
     );
     cy.getDataCy("order-letter-success-message");
   });
+
   describe("Endrer på mottaker", () => {
     beforeEach(() => {
       cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", (request) => {
@@ -231,14 +233,6 @@ describe("Brevvelger spec", () => {
           cy.stub(window, "open").as("window-open");
         },
       });
-
-      //søker opp og velger brevet vi vil ha
-      cy.getDataCy("brevmal-search").click().type("brev fra nav");
-      cy.getDataCy("brevmal-button").click();
-
-      //åpner endre mottaker modal, og verifiserer at søk button ikke vises
-      cy.getDataCy("toggle-endre-mottaker-modal").click();
-      cy.get("[data-cy=endre-mottaker-søk-button]").should("not.exist");
     });
 
     it("søk med direkte oppslag", () => {
@@ -269,6 +263,14 @@ describe("Brevvelger spec", () => {
         });
         request.reply({ fixture: "bestillBrevExstream.json" });
       }).as("Brev fra nav - exstream");
+
+      //søker opp og velger brevet vi vil ha
+      cy.getDataCy("brevmal-search").click().type("brev fra nav");
+      cy.getDataCy("brevmal-button").click();
+
+      //åpner endre mottaker modal, og verifiserer at søk button ikke vises
+      cy.getDataCy("toggle-endre-mottaker-modal").click();
+      cy.get("[data-cy=endre-mottaker-søk-button]").should("not.exist");
 
       //velger direkte oppslag, og fyller ut resten av form
       cy.getDataCy("endre-mottaker-søketype-select").select("Direkte oppslag");
@@ -317,6 +319,14 @@ describe("Brevvelger spec", () => {
         });
         request.reply({ fixture: "finnSamhandler.json" });
       }).as("finnSamhandler");
+
+      //søker opp og velger brevet vi vil ha
+      cy.getDataCy("brevmal-search").click().type("brev fra nav");
+      cy.getDataCy("brevmal-button").click();
+
+      //åpner endre mottaker modal, og verifiserer at søk button ikke vises
+      cy.getDataCy("toggle-endre-mottaker-modal").click();
+      cy.get("[data-cy=endre-mottaker-søk-button]").should("not.exist");
 
       //velger organisasjonsnavn, og fyller ut resten av form
       cy.getDataCy("endre-mottaker-søketype-select").select("Organisasjonsnavn");
@@ -367,6 +377,14 @@ describe("Brevvelger spec", () => {
         request.reply({ fixture: "finnSamhandler.json" });
       }).as("finnSamhandler");
 
+      //søker opp og velger brevet vi vil ha
+      cy.getDataCy("brevmal-search").click().type("brev fra nav");
+      cy.getDataCy("brevmal-button").click();
+
+      //åpner endre mottaker modal, og verifiserer at søk button ikke vises
+      cy.getDataCy("toggle-endre-mottaker-modal").click();
+      cy.get("[data-cy=endre-mottaker-søk-button]").should("not.exist");
+
       //velger personnavn, og fyller ut resten av form
       cy.getDataCy("endre-mottaker-søketype-select").select("Personnavn");
       cy.getDataCy("endre-mottaker-søk-button").should("be.visible");
@@ -405,28 +423,7 @@ describe("Brevvelger spec", () => {
       );
       cy.getDataCy("order-letter-success-message");
     });
-    it("manuell adresse", () => {
-      /*
-        backend har enda ikke støtte for at vi kan sende inn en manuell adresse. Midlertidig kommentert ut 
-        den faktiske testen, og erstattet med en liten verifisering på at dem ikke kan gå inn i manuell adresse
-      */
-
-      cy.contains("Legg til manuelt").should("not.exist");
-
-      /*
-      cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream", (request) => {
-        expect(request.body).to.deep.equal({
-          brevkode: "PE_IY_05_300",
-          idTSSEkstern: null,
-          spraak: "NB",
-          isSensitive: false,
-          brevtittel: "Du får innvilget stønad av noe",
-          enhetsId: "4405",
-          vedtaksId: null,
-        });
-        request.reply({ fixture: "bestillBrevExstream.json" });
-      }).as("Brev fra nav - exstream");
-
+    it("kan legge inn manuell adresse for brevbaker brev", () => {
       cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
         request.reply({ fixture: "land.json" });
       }).as("Land fra backend");
@@ -438,16 +435,10 @@ describe("Brevvelger spec", () => {
       });
 
       //søker opp og velger brevet vi vil ha
-      cy.getDataCy("brevmal-search").click().type("brev fra nav");
-      cy.getDataCy("brevmal-button").click();
-
-      //åpner endre mottaker modal, søker og velger samhandler
-      cy.getDataCy("toggle-endre-mottaker-modal").click();
-
-      //går inn i manuell adresse utfyllingsformen
+      cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
+      cy.get('p:contains("Informasjon om saksbehandlingstid")').eq(1).click();
+      cy.contains("Endre mottaker").click();
       cy.contains("Legg til manuelt").click();
-
-      //Fyller ut formen
       cy.getDataCy("endre-mottaker-mottaker-type").select("Privatperson");
       cy.contains("Navn").click().type("Fornavn Etternavnsen");
       cy.contains("Adresselinje 1").click().type("Adresselinjen 1");
@@ -456,7 +447,6 @@ describe("Brevvelger spec", () => {
       cy.contains("Land *").click().type("Sver{enter}");
       cy.contains("Gå videre").click();
 
-      //asserter oppsummering viser riktig info
       cy.contains("Privatperson").should("be.visible");
       cy.contains("Fornavn Etternavnsen").should("be.visible");
       cy.contains("Adresselinjen").should("be.visible");
@@ -465,26 +455,34 @@ describe("Brevvelger spec", () => {
       cy.contains("Se").should("be.visible");
       cy.getDataCy("bekreft-ny-mottaker").click();
 
-      //fyller ut resten av inputtene
-      cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
-      cy.getDataCy("brev-title-textfield").click().type("Du får innvilget stønad av noe");
-      cy.getDataCy("språk-velger-select").should("have.value", "NB");
-      cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
-
-      //bestiller brev
-      cy.getDataCy("order-letter").click();
-      cy.get("@window-open").should(
-        "have.been.calledOnceWithExactly",
-        "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
-      );
-      cy.getDataCy("order-letter-success-message");
-      */
+      cy.contains("Fornavn Etternavnsen").should("be.visible");
+      cy.contains("Adresselinjen").should("be.visible");
+      cy.contains("0000").should("be.visible");
+      cy.contains("Poststedet").should("be.visible");
+      cy.contains("SE").should("be.visible");
+      cy.contains("Tilbakestill mottaker").should("be.visible");
     });
+    it("kan ikke legge inn manuell adresse for exstream brev", () => {
+      cy.getDataCy("brevmal-search").click().type("brev fra nav");
+      cy.getDataCy("brevmal-button").click();
+
+      cy.getDataCy("toggle-endre-mottaker-modal").click();
+      cy.contains("Legg til manuelt").should("not.exist");
+    });
+
     it("kan avbryte uten bekreftelse dersom det ikke finnes endringer", () => {
+      cy.getDataCy("brevmal-search").click().type("brev fra nav");
+      cy.getDataCy("brevmal-button").click();
+      cy.getDataCy("toggle-endre-mottaker-modal").click();
+      cy.get("[data-cy=endre-mottaker-søk-button]").should("not.exist");
       cy.contains("Avbryt").click();
       cy.getDataCy("endre-mottaker-modal").should("not.exist");
     });
     it("må bekrefte avbrytelse dersom det finnes endringer", () => {
+      cy.getDataCy("brevmal-search").click().type("brev fra nav");
+      cy.getDataCy("brevmal-button").click();
+      cy.getDataCy("toggle-endre-mottaker-modal").click();
+      cy.get("[data-cy=endre-mottaker-søk-button]").should("not.exist");
       cy.getDataCy("endre-mottaker-søketype-select").select("Direkte oppslag");
       cy.contains("Avbryt").click();
 
@@ -499,6 +497,90 @@ describe("Brevvelger spec", () => {
       cy.contains("Avbryt").click();
       cy.contains("Ja, avbryt").click();
       cy.getDataCy("endre-mottaker-modal").should("not.exist");
+    });
+  });
+
+  describe("Kladd", () => {
+    beforeEach(() => {
+      cy.visit("/saksnummer/123456/brevvelger");
+    });
+
+    it("Viser kladder i brevvelgeren", () => {
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+        req.reply([
+          {
+            id: 1,
+            opprettetAv: { id: "Z990297", navn: "F_Z990297 E_Z990297" },
+            opprettet: "2024-09-17T08:36:09.785Z",
+            sistredigertAv: { id: "Z990297", navn: "F_Z990297 E_Z990297" },
+            sistredigert: "2024-09-17T08:38:48.503Z",
+            brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+            brevtittel: "Informasjon om saksbehandlingstid",
+            status: { type: "Kladd" },
+            distribusjonstype: "SENTRALPRINT",
+            mottaker: null,
+            avsenderEnhet: null,
+            spraak: "EN",
+          },
+        ]);
+      }).as("getAlleBrevForSak");
+
+      cy.wait("@getAlleBrevForSak");
+      cy.contains("Informasjon om saksbehandlingstid").click();
+      cy.contains("Mottaker").should("be.visible");
+      cy.contains("Avsenderenhet").should("be.visible");
+      cy.contains("Språk").should("be.visible");
+      cy.contains("Gå til brevbehandler").should("be.visible");
+      cy.contains("Åpne brev").should("be.visible");
+    });
+
+    it("Kan slette kladd", () => {
+      let requestnr = 0;
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+        if (requestnr !== 2) {
+          requestnr++;
+
+          req.reply([
+            {
+              id: 1,
+              opprettetAv: { id: "Z990297", navn: "F_Z990297 E_Z990297" },
+              opprettet: "2024-09-17T08:36:09.785Z",
+              sistredigertAv: { id: "Z990297", navn: "F_Z990297 E_Z990297" },
+              sistredigert: "2024-09-17T08:38:48.503Z",
+              brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+              brevtittel: "Informasjon om saksbehandlingstid",
+              status: { type: "Kladd" },
+              distribusjonstype: "SENTRALPRINT",
+              mottaker: null,
+              avsenderEnhet: null,
+              spraak: "EN",
+            },
+          ]);
+          //Det skjer visst en ekstra rerendering slik at det er det tredje kallet til endepunktet som er det riktige
+        } else if (requestnr === 2) {
+          req.reply([]);
+        }
+      }).as("getAlleBrevForSak");
+
+      cy.intercept("DELETE", "/bff/skribenten-backend/sak/123456/brev/1", {
+        statusCode: 204,
+        body: null,
+      }).as("deleteKladd");
+
+      cy.wait("@getAlleBrevForSak");
+
+      cy.contains("Informasjon om saksbehandlingstid").click();
+      cy.contains("Slett kladd").click();
+      cy.contains("Vil du slette kladden?").should("be.visible");
+      cy.contains("Kladden vil bli slettet, og du kan ikke angre denne handlingen.").should("be.visible");
+      cy.contains("Nei, behold kladden").should("be.visible");
+      cy.contains("Ja, slett kladden").should("be.visible");
+      cy.contains("Ja, slett kladden").click();
+      cy.wait("@deleteKladd");
+      cy.wait("@getAlleBrevForSak");
+      //TODO - trigger rerender. Se kommentar i PDFViewerTopBar.tsx/SlettBrevModal
+      cy.contains("Informasjon om saksbehandlingstid").click();
+      cy.contains("Brev med id 1 ble ikke funnet").click();
     });
   });
 });

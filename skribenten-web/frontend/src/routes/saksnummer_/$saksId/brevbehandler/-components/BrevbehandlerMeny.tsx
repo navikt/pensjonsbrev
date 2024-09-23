@@ -1,10 +1,9 @@
 import { css } from "@emotion/react";
-import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
   Accordion,
   Alert,
   BodyShort,
-  Button,
   HStack,
   Label,
   Loader,
@@ -16,19 +15,18 @@ import {
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
-import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getNavn } from "~/api/skribenten-api-endpoints";
-import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
+import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
+import { humanizeName } from "~/utils/stringUtils";
 
-import { EndreMottakerModal } from "../../brevvelger/$templateId/-components/endreMottaker/EndreMottaker";
 import { brevStatusTypeToTextAndTagVariant } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
@@ -113,7 +111,6 @@ const BrevItem = (properties: {
   onOpenChange: (isOpen: boolean) => void;
 }) => {
   const queryClient = useQueryClient();
-  const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const sakContext = Route.useLoaderData();
 
   const { data: navn } = useQuery({
@@ -149,46 +146,10 @@ const BrevItem = (properties: {
     },
   });
 
-  const mottakerMutation = useMutation<DelvisOppdaterBrevResponse, AxiosError, Mottaker>({
-    mutationFn: (mottaker) =>
-      delvisOppdaterBrev({
-        saksId: properties.saksId,
-        brevId: properties.brev.id,
-        mottaker: mottaker,
-      }),
-    onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
-      );
-      setModalÅpen(false);
-    },
-  });
-
-  const fjernMottakerMutation = useMutation<void, AxiosError>({
-    mutationFn: () => fjernOverstyrtMottaker({ saksId: properties.saksId, brevId: properties.brev.id }),
-    onSuccess: () => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? { ...properties.brev, mottaker: null } : brev)),
-      );
-    },
-  });
-
   const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
 
   return (
     <>
-      {modalÅpen && (
-        <EndreMottakerModal
-          error={mottakerMutation.error}
-          isPending={mottakerMutation.isPending}
-          onBekreftNyMottaker={(mottaker) => {
-            mottakerMutation.mutate(mapEndreMottakerValueTilMottaker(mottaker));
-          }}
-          onClose={() => setModalÅpen(false)}
-          resetOnBekreftState={() => mottakerMutation.reset()}
-          åpen={modalÅpen}
-        />
-      )}
       <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
         <Accordion.Header>
           <VStack gap="2">
@@ -199,60 +160,32 @@ const BrevItem = (properties: {
         <Accordion.Content>
           <VStack gap="8">
             <VStack gap="4">
-              <div>
-                <BodyShort
-                  css={css`
-                    color: var(--a-grayalpha-700);
-                  `}
-                >
-                  Mottaker
-                </BodyShort>
-                <HStack align={"center"} gap="2">
-                  {properties.brev.mottaker ? (
-                    <MottakerNavn mottaker={properties.brev.mottaker} />
-                  ) : (
-                    <BodyShort>{navn ?? "Bruker"}</BodyShort>
-                  )}
-                  {!erLåst && (
-                    <Button
+              <EndreMottakerMedOppsummeringOgApiHåndtering
+                brev={properties.brev}
+                endreAsIcon
+                kanTilbakestilleMottaker={!erLåst}
+                overrideOppsummering={(edit) => (
+                  <div>
+                    <BodyShort
                       css={css`
-                        padding: 0;
+                        color: var(--a-grayalpha-700);
                       `}
-                      onClick={() => setModalÅpen(true)}
-                      size="small"
-                      type="button"
-                      variant="tertiary"
                     >
-                      <PencilIcon fontSize="24px" />
-                    </Button>
-                  )}
-                </HStack>
-                {properties.brev.mottaker && !erLåst && (
-                  <HStack>
-                    <Button
-                      css={css`
-                        padding: 0.5rem 0;
-                      `}
-                      loading={fjernMottakerMutation.isPending}
-                      onClick={() => fjernMottakerMutation.mutate()}
-                      size="small"
-                      type="button"
-                      variant="tertiary"
-                    >
-                      Tilbakestill mottaker
-                    </Button>
-                    {fjernMottakerMutation.isError && (
-                      <XMarkOctagonFillIcon
-                        css={css`
-                          align-self: center;
-                          color: var(--a-nav-red);
-                        `}
-                        title="error"
-                      />
+                      Mottaker
+                    </BodyShort>
+                    {properties.brev.mottaker ? (
+                      <HStack align={"center"} gap="2">
+                        <MottakerNavn mottaker={properties.brev.mottaker} /> {edit}
+                      </HStack>
+                    ) : (
+                      <HStack align={"center"} gap="2">
+                        <BodyShort>{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {edit}
+                      </HStack>
                     )}
-                  </HStack>
+                  </div>
                 )}
-              </div>
+                saksId={properties.saksId}
+              />
 
               <Switch
                 checked={erLåst}

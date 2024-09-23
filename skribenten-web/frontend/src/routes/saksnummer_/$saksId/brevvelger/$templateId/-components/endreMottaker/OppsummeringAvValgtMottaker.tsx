@@ -7,7 +7,7 @@ import type { AxiosError } from "axios";
 import { ApiError } from "~/components/ApiError";
 import type { Adresse } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
-import { capitalizeString } from "~/utils/stringUtils";
+import { humanizeName } from "~/utils/stringUtils";
 
 const BackButton = (properties: { icon: React.ReactNode; text: string; onClick: () => void }) => {
   return (
@@ -99,7 +99,7 @@ function InversedTableRow({ label, value }: { label: string; value: Nullable<str
   return (
     <Table.Row>
       <Table.HeaderCell scope="row">{label}</Table.HeaderCell>
-      <Table.DataCell>{capitalizeString(value)}</Table.DataCell>
+      <Table.DataCell>{humanizeName(value)}</Table.DataCell>
     </Table.Row>
   );
 }
