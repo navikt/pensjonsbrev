@@ -13,7 +13,7 @@ import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
-import { erBrevKladd } from "~/utils/brevUtils";
+import { erBrevKladdEllerUnderRedigering } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
@@ -128,7 +128,7 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
         indent={false}
         size="small"
       >
-        {alleSaksbrevQuery.isSuccess && alleSaksbrevQuery.data.some(erBrevKladd) && (
+        {alleSaksbrevQuery.isSuccess && alleSaksbrevQuery.data.some(erBrevKladdEllerUnderRedigering) && (
           <Accordion.Item defaultOpen>
             <Accordion.Header
               css={css`
@@ -145,7 +145,7 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                   flex-direction: column;
                 `}
               >
-                {alleSaksbrevQuery.data.filter(erBrevKladd).map((brev) => (
+                {alleSaksbrevQuery.data.filter(erBrevKladdEllerUnderRedigering).map((brev) => (
                   <BrevmalButton
                     description={`Opprettet ${formatStringDate(brev.opprettet)}`}
                     extraStyles={
