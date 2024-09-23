@@ -88,6 +88,18 @@ class AdhocTest {
     }
 
     @Test
+    fun `testAdhocAlderspensjonFraFolketrygden 2 pdf`() {
+        testAdhocPdf(
+            AdhocAlderspensjonFraFolketrygden2.template,
+            pdfName = "PE_AP_ADHOC_2024_GJR_AP_MNTINDV_2",
+            Bokmal,
+            Nynorsk,
+            English
+        )
+    }
+
+
+    @Test
     fun `testAdhocFeilUtsendingAvGjenlevenderett pdf`() {
         testAdhocPdf(
             FeilUtsendingAvGjenlevenderett.template,
