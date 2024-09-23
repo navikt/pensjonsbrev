@@ -141,8 +141,8 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis avdøde tidligere har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
-                        Nynorsk to "Viss avdøde tidlegare har budd eller jobba i utlandet, kan dette verke inn på kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Dette betyr at du kan ha rettar også frå andre land. Vi kan hjelpe deg å sende søknad til land som Noreg har trygdeavtale med.",
+                        Bokmal to "Hvis avdøde tidligere har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får utbetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
+                        Nynorsk to "Viss avdøde tidlegare har budd eller jobba i utlandet, kan dette verke inn på kor mykje du får utbetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Dette betyr at du kan ha rettar også frå andre land. Vi kan hjelpe deg å sende søknad til land som Noreg har trygdeavtale med.",
                         English to "If the deceased previously lived or worked abroad, this could affect the amount you receive. Norway practices social security coordination with a number of countries through the EEA and other agreements. This means you may also have accumulated rights in other countries. We can help you prepare applications to countries Norway has social security agreements with.",
                     )
                 }
