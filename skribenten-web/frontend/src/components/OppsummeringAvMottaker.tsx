@@ -22,9 +22,11 @@ const OppsummeringAvMottaker = (props: { saksId: string; mottaker: Nullable<Mott
       {props.mottaker.adresselinje1 && <BodyShort size="small">{props.mottaker.adresselinje1}</BodyShort>}
       {props.mottaker.adresselinje2 && <BodyShort size="small">{props.mottaker.adresselinje2}</BodyShort>}
       {props.mottaker.adresselinje3 && <BodyShort size="small">{props.mottaker.adresselinje3}</BodyShort>}
-      <BodyShort size="small">
-        {props.mottaker.postnummer} {props.mottaker.poststed}
-      </BodyShort>
+      {(props.mottaker.postnummer || props.mottaker.poststed) && (
+        <BodyShort size="small">
+          {props.mottaker.postnummer ?? ""} {props.mottaker.poststed ?? ""}
+        </BodyShort>
+      )}
       {props.mottaker.type === "UtenlandskAdresse" && <BodyShort size="small">{props.mottaker.landkode}</BodyShort>}
     </VStack>
   );

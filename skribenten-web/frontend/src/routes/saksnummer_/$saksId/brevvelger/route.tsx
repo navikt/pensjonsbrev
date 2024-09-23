@@ -228,7 +228,7 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                       }}
                       title={
                         <HStack align="center" gap="2">
-                          <BrevSystemIcon brevsystem={template.brevsystem} /> {template.name}
+                          <BrevSystemIcon brevsystem={template.brevsystem} /> <BodyShort>{template.name}</BodyShort>
                         </HStack>
                       }
                     />
