@@ -10,12 +10,12 @@ import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
+import { SlettBrev } from "~/components/SlettBrev";
 import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import { type LetterMetadata } from "~/types/apiTypes";
 import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
-import { SlettBrev } from "../brevbehandler/-components/PDFViewerTopBar";
 import Oppsummeringspar from "../kvittering/-components/Oppsummeringspar";
 import { EndreMottakerModal } from "./$templateId/-components/endreMottaker/EndreMottaker";
 import { LetterTemplateTags } from "./$templateId/-components/LetterTemplate";
