@@ -44,6 +44,8 @@ externalHosts:
   - pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io
   - navansatt.prod-fss-pub.nais.io
   - pensjon-samhandler-proxy.prod-fss-pub.nais.io
+  - teampensjon-unleash-api.nav.cloud.nais.io
+  - norg2.intern.nav.no
 
 env:
   - name: CORS_ALLOW_HOST
@@ -98,3 +100,6 @@ env:
     value: "https://pensjon-samhandler-proxy.prod-fss-pub.nais.io"
   - name: SAMHANDLER_PROXY_SCOPE
     value: "api://prod-fss.pensjondeployer.pensjon-samhandler-proxy/.default"
+
+  - name: NORG2_URL
+    value: "https://norg2.intern.nav.no/norg2"

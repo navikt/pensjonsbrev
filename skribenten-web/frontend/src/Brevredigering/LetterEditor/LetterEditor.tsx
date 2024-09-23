@@ -20,12 +20,14 @@ export const LetterEditor = ({
   editorState,
   setEditorState,
   editorHeight,
+  showDebug,
 }: {
   freeze: boolean;
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   editorHeight?: string;
+  showDebug: boolean;
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
@@ -70,7 +72,7 @@ export const LetterEditor = ({
           </div>
           <SignaturView signatur={letter.signatur} />
         </div>
-        <DebugPanel />
+        {showDebug && <DebugPanel />}
       </EditorStateContext.Provider>
     </div>
   );

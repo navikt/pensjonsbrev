@@ -1,22 +1,31 @@
 import { css } from "@emotion/react";
 import { Button, Heading } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
+import { useCallback, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import type { SaksbehandlerValg } from "~/types/brev";
 import type { LetterModelSpecification } from "~/types/brevbakerTypes";
+import type { Nullable } from "~/types/Nullable";
 
 import { ObjectEditor } from "./components/ObjectEditor";
+import { AutoSavingTextField } from "./components/ScalarEditor";
 
 export type ModelEditorProperties = {
   brevkode: string;
-  defaultValues?: SaksbehandlerValg;
+  defaultValues?: SaksbehandlerValg & { signatur: string };
   disableSubmit: boolean;
-  onSubmit: (saksbehandlerValg: SaksbehandlerValg) => void;
+  onSubmit: (saksbehandlerValg: SaksbehandlerValg, signatur: string) => void;
   saksId: string;
   vedtaksId: string | undefined;
+  brevId: Nullable<number>;
+  //TODO - ModelEditor skal i utgangspunktet kun være for SaksbehandlerValg.
+  // designet skal ha signatur felt på 'samme sted', altså med editoren.
+  //Den skal ikke brukes ved opprettelse av brev, men kun når man redigerer brevet. Derfor
+  //gjør vi en enkel fiks for å skjule signatur feltet ved opprettelse av brev.
+  showSignaturField?: boolean;
 };
 
 export const ModelEditor = ({
@@ -26,15 +35,26 @@ export const ModelEditor = ({
   onSubmit,
   saksId,
   vedtaksId,
+  brevId,
+  showSignaturField,
 }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
+  const formRef = useRef<HTMLFormElement>(null);
   const brevmal = useQuery({
     queryKey: getSakContext.queryKey(saksId, vedtaksId),
     queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
   });
-  const doSubmit = (values: SaksbehandlerValg) => onSubmit(createSaksbehandlerValg(values));
+
+  const doSubmit = (values: SaksbehandlerValg & { signatur: string }) => {
+    const { signatur, ...saksbehandlerValg } = values;
+    return onSubmit(createSaksbehandlerValg(saksbehandlerValg), signatur);
+  };
+
+  const requestSubmit = useCallback(() => {
+    formRef.current?.requestSubmit();
+  }, [formRef]);
 
   if (specification) {
     const saksbehandlerValgType = findSaksbehandlerValgTypeName(specification);
@@ -53,12 +73,32 @@ export const ModelEditor = ({
               }
             `}
             onSubmit={methods.handleSubmit(doSubmit)}
+            ref={formRef}
           >
             <Heading size="small">{brevmal.data?.name}</Heading>
-            <ObjectEditor brevkode={brevkode} typeName={saksbehandlerValgType} />
-            <Button loading={disableSubmit} type="submit">
-              Send
-            </Button>
+            <ObjectEditor
+              brevkode={brevkode}
+              submitOnChange={brevId ? requestSubmit : undefined}
+              typeName={saksbehandlerValgType}
+            />
+            {showSignaturField && (
+              <AutoSavingTextField
+                field={"signatur"}
+                fieldType={{
+                  type: "scalar",
+                  nullable: false,
+                  kind: "STRING",
+                }}
+                onSubmit={brevId ? requestSubmit : undefined}
+                timeoutTimer={3000}
+                type={"text"}
+              />
+            )}
+            {!brevId && (
+              <Button loading={disableSubmit} type="submit">
+                Opprett brev
+              </Button>
+            )}
           </form>
         </FormProvider>
       </>

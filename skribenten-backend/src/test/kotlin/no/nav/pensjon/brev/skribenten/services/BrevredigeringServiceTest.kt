@@ -11,16 +11,13 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.isInstanceOf
 import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
-import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.principal
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
@@ -40,6 +37,7 @@ import java.util.*
 import java.util.function.Predicate
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 class BrevredigeringServiceTest {
     private class GeneriskBrevData : LinkedHashMap<String, Any>(), BrevbakerBrevdata
@@ -156,20 +154,25 @@ class BrevredigeringServiceTest {
             "Fishburne"
         )
     }
+    private val samhandlerService = mockk<SamhandlerService>()
+    private val norg2Service = mockk<Norg2Service> {
+        coEvery { getEnhet(any(), eq(principalNavEnhetId)) } returns NAVEnhet(principalNavEnhetId, principalNavEnhetId + "navn")
+    }
+
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerMock,
-        penService = penService,
         navansattService = navAnsattService,
+        penService = penService,
     )
 
     private fun brevredigeringService(
         brevbakerMock: BrevbakerService = this.brevbakerMock,
         penService: PenService = this.penService,
-        navansattService: NavansattService = this.navAnsattService
+        navansattService: NavansattService = this.navAnsattService,
     ): BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerMock,
-        penService = penService,
         navansattService = navansattService,
+        penService = penService,
     )
 
     @BeforeEach
@@ -219,16 +222,17 @@ class BrevredigeringServiceTest {
         clearMocks()
 
         assertEquals(
-            brev,
+            brev.copy(info = brev.info.copy(sistReservert = null)),
             brevredigeringService.hentBrev(
                 call = callMock(),
                 saksId = sak.saksId,
                 brevId = brev.info.id,
-                reserverForRedigering = true
-            )?.resultOrNull()
+                reserverForRedigering = true,
+            )?.resultOrNull()?.let { it.copy(info = it.info.copy(sistReservert = null)) }
         )
         assertEquals(brev.info.brevkode, Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)
         assertEquals(brev.redigertBrev, letter.toEdit())
+
         coVerify {
             brevbakerMock.renderMarkup(
                 any(),
@@ -261,10 +265,9 @@ class BrevredigeringServiceTest {
         ).isNull()
         assertThat(
             brevredigeringService.delvisOppdaterBrev(
-                call = callMock(),
                 saksId = sak.saksId + 1,
                 brevId = brev.info.id,
-                patch = Api.DelvisOppdaterBrevRequest(laastForRedigering = true)
+                laastForRedigering = true,
             )
         ).isNull()
         assertThat(
@@ -583,24 +586,6 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `status er kladd om brev ikke er laast og ikke redigeres`(): Unit = runBlocking {
-        val brev = opprettBrev().resultOrNull()!!
-        assertThat(brev.info.status).isEqualTo(Api.BrevStatus.Kladd)
-    }
-
-    @Test
-    fun `status er Klar om brev er laast`(): Unit = runBlocking {
-        val brev = opprettBrev().resultOrNull()!!
-        val oppdatert = brevredigeringService.delvisOppdaterBrev(
-            call = callMock(),
-            saksId = sak.saksId,
-            brevId = brev.info.id,
-            patch = Api.DelvisOppdaterBrevRequest(laastForRedigering = true)
-        )
-        assertThat(oppdatert?.info?.status).isEqualTo(Api.BrevStatus.Klar)
-    }
-
-    @Test
     fun `distribuerer brev`(): Unit = runBlocking {
         val caller = callMock()
         val mockedPenService = mockk<PenService> {
@@ -625,13 +610,10 @@ class BrevredigeringServiceTest {
         ).resultOrNull()!!
 
         service.delvisOppdaterBrev(
-            call = callMock(),
             saksId = sak.saksId,
             brevId = brev.info.id,
-            patch = Api.DelvisOppdaterBrevRequest(
-                laastForRedigering = true,
-                distribusjonstype = Distribusjonstype.SENTRALPRINT
-            )
+            laastForRedigering = true,
+            distribusjonstype = Distribusjonstype.SENTRALPRINT
         )
         service.hentEllerOpprettPdf(caller, sak.saksId, brev.info.id)!!
         service.sendBrev(caller, sak.saksId, brev.info.id)
@@ -689,13 +671,10 @@ class BrevredigeringServiceTest {
         ).resultOrNull()!!
 
         service.delvisOppdaterBrev(
-            call = callMock(),
             saksId = sak.saksId,
             brevId = brev.info.id,
-            patch = Api.DelvisOppdaterBrevRequest(
-                laastForRedigering = true,
-                distribusjonstype = Distribusjonstype.LOKALPRINT
-            )
+            laastForRedigering = true,
+            distribusjonstype = Distribusjonstype.LOKALPRINT,
         )
         service.hentEllerOpprettPdf(caller, sak.saksId, brev.info.id)!!
         service.sendBrev(caller, sak.saksId, brev.info.id)
@@ -727,18 +706,11 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `status er UnderRedigering om brev ikke er laast og er reservert for redigering`(): Unit = runBlocking {
-        val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
-        assertThat(brev.info.status).isEqualTo(Api.BrevStatus.UnderRedigering(Api.NavAnsatt(principalNavIdent, principalNavn)))
-    }
-
-    @Test
     fun `brev kan reserveres for redigering gjennom opprett brev`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
 
-        assertThat(brev.info.status).isInstanceOfSatisfying<Api.BrevStatus.UnderRedigering> {
-            assertThat(it.redigeresAv).isEqualTo(Api.NavAnsatt(principalNavIdent, principalNavn))
-        }
+        assertThat(brev.info.redigeresAv).isEqualTo(principalNavIdent)
+        assertThat(brev.info.sistReservert).isBetween(Instant.now() - 10.minutes.toJavaDuration(), Instant.now())
         assertThat(transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }).isEqualTo(principalNavIdent)
     }
 
@@ -746,20 +718,18 @@ class BrevredigeringServiceTest {
     fun `brev kan reserveres for redigering gjennom hent brev`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = false).resultOrNull()!!
 
-        assertThat(brev.info.status).isInstanceOf<Api.BrevStatus.Kladd>()
-        assertThat(transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }).isNull()
+        assertThat(brev.info.laastForRedigering).isFalse()
+        assertThat(brev.info.redigeresAv).isNull()
 
         val hentetBrev = brevredigeringService.hentBrev(
             call = callMock(),
             saksId = sak.saksId,
             brevId = brev.info.id,
             reserverForRedigering = true
-        )
-            ?.resultOrNull()!!
-        assertThat(hentetBrev.info.status).isInstanceOfSatisfying<Api.BrevStatus.UnderRedigering> {
-            assertThat(it.redigeresAv).isEqualTo(Api.NavAnsatt(principalNavIdent, principalNavn))
-        }
-        assertThat(transaction { Brevredigering[hentetBrev.info.id].redigeresAvNavIdent }).isEqualTo(principalNavIdent)
+        )?.resultOrNull()!!
+
+        assertThat(hentetBrev.info.laastForRedigering).isFalse()
+        assertThat(hentetBrev.info.redigeresAv).isEqualTo(principalNavIdent)
     }
 
     @Test
@@ -818,9 +788,7 @@ class BrevredigeringServiceTest {
                 awaited.size - 1,
                 condition("Feilende hentBrev med reservasjon") { it.isFailure })
             assertThat(awaited).allMatch {
-                it.isFailure || it.getOrNull()?.resultOrNull()?.info?.status == Api.BrevStatus.UnderRedigering(
-                    Api.NavAnsatt(redigeresFaktiskAv, null)
-                )
+                it.isFailure || it.getOrNull()?.resultOrNull()?.info?.redigeresAv == redigeresFaktiskAv
             }
         }
     }
@@ -848,13 +816,13 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
 
         transaction {
-            Brevredigering[brev.info.id].sistReservert =
-                Instant.now().minus(BrevredigeringService.RESERVASJON_TIMEOUT.plusSeconds(1))
+            Brevredigering[brev.info.id].sistReservert = Instant.now() - RESERVASJON_TIMEOUT - 1.seconds.toJavaDuration()
         }
 
         val hentetBrev = brevredigeringService.hentBrev(call = callMock(), saksId = sak.saksId, brevId = brev.info.id)
             ?.resultOrNull()!!
-        assertThat(hentetBrev.info.status).isInstanceOf<Api.BrevStatus.Kladd>()
+
+        assertThat(hentetBrev.info.redigeresAv).isNull()
 
         val hentetBrevMedReservasjon = brevredigeringService.hentBrev(
             call = callMock(principalNavIdent2),
@@ -862,9 +830,7 @@ class BrevredigeringServiceTest {
             brevId = brev.info.id,
             reserverForRedigering = true
         )?.resultOrNull()!!
-        assertThat(hentetBrevMedReservasjon.info.status).isInstanceOfSatisfying<Api.BrevStatus.UnderRedigering> {
-            assertThat(it.redigeresAv).isEqualTo(Api.NavAnsatt(principalNavIdent2, principalNavn2))
-        }
+        assertThat(hentetBrevMedReservasjon.info.redigeresAv).isEqualTo(principalNavIdent2)
     }
 
     @Test
@@ -897,7 +863,9 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan overstyre mottaker av brev`(): Unit = runBlocking {
-        val mottaker = Api.OverstyrtMottaker.Samhandler("samhandlerId")
+        coEvery { samhandlerService.hentSamhandlerNavn(any(), eq("samhandlerId")) } returns "hei"
+
+        val mottaker = Dto.Mottaker.samhandler("samhandlerId")
         val brev = opprettBrev(mottaker = mottaker)
 
         assertEquals(mottaker, brev.resultOrNull()?.info?.mottaker)
@@ -906,7 +874,8 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan fjerne overstyrt mottaker av brev`(): Unit = runBlocking {
-        val mottaker = Api.OverstyrtMottaker.Samhandler("samhandlerId")
+        coEvery { samhandlerService.hentSamhandlerNavn(any(), eq("samhandlerId")) } returns "hei"
+        val mottaker = Dto.Mottaker.samhandler("samhandlerId")
         val brev = opprettBrev(mottaker = mottaker).resultOrNull()!!
         assertTrue(brevredigeringService.fjernOverstyrtMottaker(brev.info.id, sak.saksId))
 
@@ -917,27 +886,29 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
-        val brev = opprettBrev(mottaker = Api.OverstyrtMottaker.Samhandler("1")).resultOrNull()!!
-        val nyMottaker = Api.OverstyrtMottaker.NorskAdresse("a", "b", "c", "d", "e", "f")
+        coEvery { samhandlerService.hentSamhandlerNavn(any(), eq("1")) } returns "Samhandler En"
 
-        val oppdatert = brevredigeringService.delvisOppdaterBrev(callMock(), sak.saksId, brev.info.id, Api.DelvisOppdaterBrevRequest(mottaker = nyMottaker))
+        val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrNull()!!
+        val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f")
+
+        val oppdatert = brevredigeringService.delvisOppdaterBrev(sak.saksId, brev.info.id, mottaker = nyMottaker)
         assertEquals(nyMottaker, oppdatert?.info?.mottaker)
-        assertEquals(nyMottaker, transaction { Brevredigering[brev.info.id].mottaker?.toApi() })
     }
 
     @Test
     fun `kan sette annen mottaker for eksisterende brev`(): Unit = runBlocking {
         val brev = opprettBrev().resultOrNull()!!
-        val nyMottaker = Api.OverstyrtMottaker.UtenlandskAdresse("a", "b", "c", "d", "e", "f", "g")
+        val nyMottaker = Dto.Mottaker.utenlandskAdresse("a", "b", "c", "d", "e", "f", "g")
 
-        val oppdatert = brevredigeringService.delvisOppdaterBrev(callMock(), sak.saksId, brev.info.id, Api.DelvisOppdaterBrevRequest(mottaker = nyMottaker))
-        assertEquals(nyMottaker, transaction { Brevredigering[brev.info.id].mottaker?.toApi() })
+        val oppdatert = brevredigeringService.delvisOppdaterBrev(sak.saksId, brev.info.id, mottaker = nyMottaker)
         assertEquals(nyMottaker, oppdatert?.info?.mottaker)
     }
 
     @Test
     fun `brev distribueres til annen mottaker`(): Unit = runBlocking {
-        val mottaker = Api.OverstyrtMottaker.Samhandler("987")
+        coEvery { samhandlerService.hentSamhandlerNavn(any(), eq("987")) } returns "Ni Åtte Syv"
+
+        val mottaker = Dto.Mottaker.samhandler("987")
         val brev = opprettBrev(mottaker = mottaker).resultOrNull()!!
 
         brevredigeringService.hentEllerOpprettPdf(callMock(), sak.saksId, brev.info.id)
@@ -971,7 +942,7 @@ class BrevredigeringServiceTest {
         assertEquals("en ny signatur", transaction { Brevredigering[brev.info.id].signaturSignerende })
     }
 
-    private suspend fun opprettBrev(call: ApplicationCall = callMock(), reserverForRedigering: Boolean = false, mottaker: Api.OverstyrtMottaker? = null) =
+    private suspend fun opprettBrev(call: ApplicationCall = callMock(), reserverForRedigering: Boolean = false, mottaker: Dto.Mottaker? = null) =
         brevredigeringService.opprettBrev(
             call = call,
             sak = sak,

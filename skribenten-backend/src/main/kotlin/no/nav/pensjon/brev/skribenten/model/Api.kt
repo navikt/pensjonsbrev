@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.LetterMetadata
+import no.nav.pensjon.brev.skribenten.services.NAVEnhet
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import java.time.Duration
 import java.time.Instant
@@ -47,6 +48,8 @@ object Api {
         val status: BrevStatus,
         val distribusjonstype: Distribusjonstype,
         val mottaker: OverstyrtMottaker?,
+        val avsenderEnhet: NAVEnhet?,
+        val spraak: SpraakKode,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -68,7 +71,7 @@ object Api {
         JsonSubTypes.Type(OverstyrtMottaker.UtenlandskAdresse::class, name = "UtenlandskAdresse"),
     )
     sealed class OverstyrtMottaker {
-        data class Samhandler(val tssId: String) : OverstyrtMottaker()
+        data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker()
         data class NorskAdresse(
             val navn: String,
             val postnummer: String,

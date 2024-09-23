@@ -47,7 +47,7 @@ describe("Brevbehandler", () => {
     });
 
     cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      expect(request.body).contains({ sakId: "123456", brevId: 1, laastForRedigering: true });
+      expect(request.body).contains({ saksId: "123456", brevId: 1, laastForRedigering: true });
       //er ikke interesert i innholdet i redigert brev + saksbehandlerValg
       request.reply({ info: klarBrev, redigertBrev: {}, saksbehandlerValg: {} });
     });
@@ -102,9 +102,9 @@ describe("Brevbehandler", () => {
     });
     cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
       if (patchBrevRequestNr === 0) {
-        expect(request.body).contains({ sakId: "123456", brevId: 1, laastForRedigering: true });
+        expect(request.body).contains({ saksId: "123456", brevId: 1, laastForRedigering: true });
       } else {
-        expect(request.body).contains({ sakId: "123456", brevId: 1, distribusjonstype: "LOKALPRINT" });
+        expect(request.body).contains({ saksId: "123456", brevId: 1, distribusjonstype: "LOKALPRINT" });
       }
       //er ikke interesert i innholdet i redigert brev + saksbehandlerValg
       request.reply({ info: patchResponse[patchBrevRequestNr++], redigertBrev: {}, saksbehandlerValg: {} });
@@ -162,9 +162,9 @@ describe("Brevbehandler", () => {
 
     cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
       if (patchBrevRequestNr === 0) {
-        expect(request.body).contains({ sakId: "123456", brevId: 1, laastForRedigering: true });
+        expect(request.body).contains({ saksId: "123456", brevId: 1, laastForRedigering: true });
       } else {
-        expect(request.body).contains({ sakId: "123456", brevId: 1, distribusjonstype: "LOKALPRINT" });
+        expect(request.body).contains({ saksId: "123456", brevId: 1, distribusjonstype: "LOKALPRINT" });
       }
       //er ikke interesert i innholdet i redigert brev + saksbehandlerValg
       request.reply({ info: patchResponse[patchBrevRequestNr++], redigertBrev: {}, saksbehandlerValg: {} });

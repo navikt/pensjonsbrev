@@ -33,6 +33,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erOmgjoering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.frivilligSkattetrekk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.harFlereUtbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.innhold
@@ -53,19 +54,20 @@ import java.time.LocalDate
 
 data class BarnepensjonRevurderingDTO(
     override val innhold: List<Element>,
-    val innholdForhaandsvarsel: List<Element>,
-    val erEndret: Boolean,
-    val erOmgjoering: Boolean,
-    val datoVedtakOmgjoering: LocalDate?,
     val beregning: BarnepensjonBeregning,
-    val etterbetaling: BarnepensjonEtterbetaling?,
-    val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
-    val kunNyttRegelverk: Boolean,
+    val brukerUnder18Aar: Boolean,
+    val datoVedtakOmgjoering: LocalDate?,
+    val erEndret: Boolean,
+    val erMigrertYrkesskade: Boolean,
+    val erOmgjoering: Boolean,
+    val etterbetaling: BarnepensjonEtterbetaling?,
+    val feilutbetaling: FeilutbetalingType,
+    val frivilligSkattetrekk: Boolean,
     val harFlereUtbetalingsperioder: Boolean,
     val harUtbetaling: Boolean,
-    val feilutbetaling: FeilutbetalingType,
-    val erMigrertYrkesskade: Boolean,
+    val innholdForhaandsvarsel: List<Element>,
+    val kunNyttRegelverk: Boolean,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -132,7 +134,7 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
             konverterElementerTilBrevbakerformat(innhold)
 
             showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, brukerUnder18Aar))
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, frivilligSkattetrekk, bosattUtland))
             }
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)

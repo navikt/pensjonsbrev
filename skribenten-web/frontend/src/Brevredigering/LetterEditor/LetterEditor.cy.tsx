@@ -25,13 +25,22 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
       opprettetAv: { id: "Z123", navn: "Z entotre" },
       status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
+      mottaker: null,
     },
     redigertBrev: initial,
     redigertBrevHash: "hash1",
     saksbehandlerValg: {},
   };
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevresponse));
-  return <LetterEditor editorState={editorState} error={false} freeze={false} setEditorState={setEditorState} />;
+  return (
+    <LetterEditor
+      editorState={editorState}
+      error={false}
+      freeze={false}
+      setEditorState={setEditorState}
+      showDebug={false}
+    />
+  );
 }
 
 describe("<LetterEditor />", () => {

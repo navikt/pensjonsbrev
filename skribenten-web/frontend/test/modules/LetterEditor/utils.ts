@@ -35,6 +35,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
         redigeresAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
       },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
+      mottaker: null,
     },
     redigertBrev: {
       title: "tittel",
@@ -129,14 +130,14 @@ export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex>
   if (id.contentIndex == null) {
     return block as T;
   } else {
-    const content = block.content[id.contentIndex];
+    const content = block?.content?.[id.contentIndex];
 
     if (id.itemIndex == null) {
       return content as T;
     } else {
-      const item = (content as ItemList).items[id.itemIndex];
+      const item = (content as ItemList)?.items?.[id.itemIndex];
 
-      return id.itemContentIndex == null ? (item as T) : (item.content[id.itemContentIndex] as T);
+      return id.itemContentIndex == null ? (item as T) : (item?.content?.[id.itemContentIndex] as T);
     }
   }
 }

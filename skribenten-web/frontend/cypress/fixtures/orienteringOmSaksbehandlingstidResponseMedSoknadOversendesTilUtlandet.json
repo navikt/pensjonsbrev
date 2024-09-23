@@ -1,0 +1,181 @@
+{
+    "info": {
+        "id": 1,
+        "opprettetAv": {
+            "id": "Z990297",
+            "navn": "F_Z990297 E_Z990297"
+        },
+        "opprettet": "2024-09-19T10:01:01.732Z",
+        "sistredigertAv": {
+            "id": "Z990297",
+            "navn": "F_Z990297 E_Z990297"
+        },
+        "sistredigert": "2024-09-19T13:38:12.943Z",
+        "brevkode": "UT_ORIENTERING_OM_SAKSBEHANDLINGSTID",
+        "brevtittel": "Orientering om saksbehandlingstid (uføretrygd)",
+        "status": {
+            "type": "UnderRedigering",
+            "redigeresAv": {
+                "id": "Z990297",
+                "navn": "F_Z990297 E_Z990297"
+            }
+        },
+        "distribusjonstype": "SENTRALPRINT",
+        "mottaker": null
+    },
+    "redigertBrev": {
+        "title": "Orientering om svartid",
+        "sakspart": {
+            "gjelderNavn": "TRYGG ANBEFALING",
+            "gjelderFoedselsnummer": "21418744917",
+            "saksnummer": "22981081",
+            "dokumentDato": "19.09.2024"
+        },
+        "blocks": [
+            {
+                "id": 281872350,
+                "editable": true,
+                "content": [
+                    {
+                        "id": 2054713812,
+                        "text": "Vi har ",
+                        "editedText": null,
+                        "type": "LITERAL"
+                    },
+                    {
+                        "id": 2330245,
+                        "text": "21. september 2024",
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": -135432816,
+                        "text": " mottatt søknaden din om uføretrygd.",
+                        "editedText": null,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": -577326519,
+                "editable": true,
+                "content": [
+                    {
+                        "id": -577326550,
+                        "text": "Søknaden vil bli behandlet så snart som mulig og senest innen 4 måneder. ",
+                        "editedText": null,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": -819768801,
+                "editable": true,
+                "content": [
+                    {
+                        "id": -819768832,
+                        "text": "Hvis søknaden ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss. ",
+                        "editedText": null,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": 178449568,
+                "editable": true,
+                "content": [
+                    {
+                        "id": 178449537,
+                        "text": "Søknaden din vil også bli oversendt utlandet fordi du har opplyst at du har bodd/arbeidet i et land Norge har trygdeavtale med.",
+                        "editedText": null,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": -453054677,
+                "editable": true,
+                "content": [
+                    {
+                        "id": -453054708,
+                        "text": "Meld fra om endringer",
+                        "editedText": null,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "TITLE1"
+            },
+            {
+                "id": -233482564,
+                "editable": true,
+                "content": [
+                    {
+                        "id": -233482595,
+                        "text": "Vi ber om at du holder oss orientert om forhold som kan ha betydning for avgjørelsen av søknaden din. Det kan være endringer i medisinske forhold, arbeid, inntekt, sivilstand og lignende. ",
+                        "editedText": null,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": 1969093275,
+                "editable": true,
+                "content": [
+                    {
+                        "id": 1969093244,
+                        "text": "Har du spørsmål?",
+                        "editedText": null,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "TITLE1"
+            },
+            {
+                "id": -1822255816,
+                "editable": true,
+                "content": [
+                    {
+                        "id": -1822255847,
+                        "text": "Du finner mer informasjon på nav.no/uforetrygd. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09:00-15:00.",
+                        "editedText": null,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            }
+        ],
+        "signatur": {
+            "hilsenTekst": "Med vennlig hilsen",
+            "saksbehandlerRolleTekst": "Saksbehandler",
+            "saksbehandlerNavn": "F_Z990297 E_Z990297",
+            "attesterendeSaksbehandlerNavn": "",
+            "navAvsenderEnhet": "NAV Arbeid og ytelser Sørlandet"
+        },
+        "deletedBlocks": []
+    },
+    "redigertBrevHash": "4d8522c09cbe90e019f3049aee22ebc50d8e30bea3c6619e950d41fc19501bee",
+    "saksbehandlerValg": {
+        "mottattSøknad": "2024-09-21",
+        "søknadOversendesTilUtlandet": true
+    }
+}

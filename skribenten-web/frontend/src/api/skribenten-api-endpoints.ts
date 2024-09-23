@@ -92,7 +92,8 @@ export const getSakContext = {
 
 export const getNavn = {
   queryKey: navnKeys.saksId,
-  queryFn: async (saksId: string) => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/navn`)).data,
+  queryFn: async (saksId: string | number) =>
+    (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/navn`)).data,
 };
 
 export const getPreferredLanguage = {

@@ -123,7 +123,7 @@ class BrevmalService(
 
     // TODO: Filtrere brevmaler som er relevante
     private suspend fun hentBrevakerMaler(call: ApplicationCall): List<LetterMetadata> =
-        if (Features.brevbakerbrev) {
+        if (Features.brevbakerbrev.isEnabled(call)) {
             brevbakerService.getTemplates(call)
                 .map { result -> result.map { it.toMetadata() } }
                 .catch { message, statusCode ->

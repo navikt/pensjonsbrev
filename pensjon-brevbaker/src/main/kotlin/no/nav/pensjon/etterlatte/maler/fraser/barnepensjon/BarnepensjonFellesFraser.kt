@@ -8,11 +8,11 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.etterbetalingPeriodeValg_safe
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.frivilligSkattetrekk_safe
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.inneholderKrav_safe
 import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
@@ -189,8 +189,9 @@ object BarnepensjonFellesFraser {
 
     data class UtbetalingAvBarnepensjon(
         val etterbetaling: Expression<BarnepensjonEtterbetaling?>,
-        val brukerUnder18Aar: Expression<Boolean>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        val frivilligSkattetrekk: Expression<Boolean>,
+        val bosattUtland: Expression<Boolean>,
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -206,13 +207,24 @@ object BarnepensjonFellesFraser {
                     English to "The pension is paid by the 20th of each month. You can find payout dates online: ${Constants.Engelsk.UTBETALINGSDATOER_URL}.",
                 )
             }
-            paragraph {
-                text(
-                    Bokmal to "Barnepensjon er skattepliktig, men ikke trekkpliktig.",
-                    Nynorsk to "Barnepensjon er skattepliktig, men ikkje trekkpliktig.",
-                    English to "Child pension is taxable, but not subject to withholding tax.",
-                )
+
+            showIf(bosattUtland.not()) {
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt " +
+                            "beskjed om det. Du kan legge til et frivillig skattetrekk som en prosentandel av pensjonen " +
+                            "eller som et fast beløp. Dette sikrer at skatten blir riktig og gir mindre risiko for restskatt.",
+                        Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt av beløpet utan at " +
+                            "det er avtalt. Du kan leggje til eit frivillig skattetrekk anten som prosentdel av pensjonen " +
+                            "eller som fast beløp. Dette sikrar at skatten blir rett, og gir mindre risiko for restskatt.",
+                        English to "A children’s pension is taxable, but we do not deduction tax from the amount unless " +
+                            "we have agreed with you to do so. You can add a voluntary tax deduction as a percentage of " +
+                            "your pension or as a fixed amount. This ensures that your tax payment is correct, " +
+                            "and it minimises the risk of back taxes.",
+                    )
+                }
             }
+
             showIf(etterbetaling.notNull()) {
                 paragraph {
                     text(
@@ -236,7 +248,7 @@ object BarnepensjonFellesFraser {
                         )
                     }
                 }
-                showIf(etterbetaling.frivilligSkattetrekk_safe.equalTo(true)) {
+                showIf(frivilligSkattetrekk.equalTo(true)) {
                     paragraph {
                         text(
                             Bokmal to
@@ -285,33 +297,64 @@ object BarnepensjonFellesFraser {
                         }
                     }
                 }
+            }.orShow {
+                showIf(frivilligSkattetrekk.equalTo(true)) {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                "Du har oppgitt frivillig skattetrekk på barnepensjonen. Dette videreføres " +
+                                "inntil du melder fra om endring.",
+                            Nynorsk to
+                                "Du har oppgitt frivillig skattetrekk på barnepensjonen. Dette vert vidareført inntil " +
+                                "du melde frå om endring.",
+                            English to
+                                "You have registered a voluntary tax deduction on your children’s pension. " +
+                                "This will continue until you notify us the change.",
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                "For å unngå eventuell restskatt, anbefaler vi å legge til et frivillig skattetrekk " +
+                                "på barnepensjonen. Ta kontakt med Skatteetaten dersom du har spørsmål om skattetrekk.",
+                            Nynorsk to
+                                "Vi anbefaler deg å leggje inn eit frivillig skattetrekk på barnepensjonen for å " +
+                                "unngå restskatt. Ta kontakt med Skatteetaten dersom du har spørsmål om skattetrekk.",
+                            English to
+                                "To avoid any underpaid tax, we recommend adding a voluntary tax deduction to the " +
+                                "children's pension. Contact the Tax Administration if you have questions about tax deductions.",
+                        )
+                    }
+                }
             }
-            showIf(brukerUnder18Aar) {
+
+            showIf(bosattUtland) {
                 paragraph {
                     text(
                         Bokmal to
-                            "Du kan lese mer om frivillig skattetrekk og skatt i vedlegget " +
-                            "“Informasjon til deg som handler på vegne av barnet”.",
+                            "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. " +
+                            "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikke er skattemessig " +
+                            "bosatt i Norge. Les mer om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
                         Nynorsk to
-                            "Du kan lese meir om frivillig skattetrekk og skatt i vedlegget " +
-                            "«Informasjon til deg som handlar på vegner av barnet». ",
+                            "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at du har gitt beskjed om det. " +
+                            "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig " +
+                            "busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
                         English to
-                            "You can read more about voluntary withholding tax and tax in the appendix, " +
-                            "Information for those acting on Behalf of the Child.",
+                            "Children’s pension is taxable; however, we do not deduct tax if you do not notify us to do so. " +
+                            "The Tax Administration will respond to any queries regarding tax on pensions for those " +
+                            "who are resident in Norway for tax purposes. Read more about tax at: ${Constants.SKATTETREKK_KILDESKATT_URL}.",
                     )
                 }
             } orShow {
                 paragraph {
                     text(
                         Bokmal to
-                            "Du kan lese mer om frivillig skattetrekk og skatt i vedlegget " +
-                            "“Informasjon til deg som mottar barnepensjon”.",
+                            "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK}.",
                         Nynorsk to
-                            "Du kan lese meir om skattetrekk i vedlegget " +
-                            "«Informasjon til deg som får barnepensjon».",
+                            "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK}.",
                         English to
-                            "You can read more about voluntary withholding tax and tax in the appendix, " +
-                            "Information to recipients of children’s pensions.",
+                            "Read more about tax deductions at ${Constants.BP_SKATTETREKK}.",
                     )
                 }
             }

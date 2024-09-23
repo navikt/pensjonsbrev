@@ -1,21 +1,43 @@
 package no.nav.pensjon.brev.skribenten
 
-import kotlin.reflect.KProperty
+import com.typesafe.config.Config
+import io.getunleash.DefaultUnleash
+import io.getunleash.Unleash
+import io.getunleash.UnleashContext
+import io.getunleash.util.UnleashConfig
+import io.ktor.server.application.*
 
-object Features {
-    val brevbakerbrev: Boolean by EnvironmentToggle()
+private const val unleashTogglePrefix = "pensjonsbrev.skribenten."
 
-    private val _overrides = mutableMapOf<String, Boolean>()
-    val overrides: Map<String, Boolean> = _overrides
-    fun override(key: String, value: Boolean) {
-        _overrides[key] = value
-    }
+data class UnleashToggle(val name: String) {
+    fun isEnabled(call: ApplicationCall) = Features.isEnabled(this, call)
 }
 
-private class EnvironmentToggle {
-    fun isEnabled(property: KProperty<*>): Boolean =
-        System.getenv().getOrDefault("FEATURE_${property.name}", "false").toBoolean()
+object Features {
+    val brevbakerbrev = UnleashToggle("brevbakerbrev")
 
-    operator fun getValue(thisRef: Features, property: KProperty<*>): Boolean =
-        thisRef.overrides[property.name] ?: isEnabled(property)
+    private var unleash: Unleash? = null
+    private val overrides = mutableMapOf<String, Boolean>()
+
+    fun override(key: String, value: Boolean) {
+        overrides[key] = value
+    }
+
+    fun initUnleash(config: Config) {
+        unleash = DefaultUnleash(
+            UnleashConfig.builder()
+                .appName(config.getString("appName"))
+                .environment(config.getString("environment"))
+                .unleashAPI(config.getString("host") + "/api")
+                .apiKey(config.getString("apiToken")).build()
+        )
+    }
+
+    fun isEnabled(toggle: UnleashToggle, call: ApplicationCall? = null): Boolean =
+        overrides[toggle.name]
+            ?: unleash?.isEnabled(unleashTogglePrefix + toggle.name, context(call))
+            ?: false
+
+    private fun context(call: ApplicationCall?): UnleashContext =
+        call?.let { UnleashContext.builder().userId(it.principal().navIdent).build() } ?: UnleashContext.builder().build()
 }

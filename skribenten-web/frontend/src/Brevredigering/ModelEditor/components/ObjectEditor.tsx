@@ -9,17 +9,37 @@ import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEdit
 import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
 import type { FieldType } from "~/types/brevbakerTypes";
 
-const FieldEditor = ({ brevkode, field, fieldType }: { brevkode: string; field: string; fieldType: FieldType }) => {
+const FieldEditor = ({
+  brevkode,
+  field,
+  fieldType,
+  submitOnChange,
+}: {
+  brevkode: string;
+  field: string;
+  fieldType: FieldType;
+  submitOnChange?: () => void;
+}) => {
   switch (fieldType.type) {
     case "object": {
       return fieldType.nullable ? (
-        <ToggleableObjectEditor brevkode={brevkode} parentFieldName={field} typeName={fieldType.typeName} />
+        <ToggleableObjectEditor
+          brevkode={brevkode}
+          parentFieldName={field}
+          submitOnChange={submitOnChange}
+          typeName={fieldType.typeName}
+        />
       ) : (
-        <ObjectEditor brevkode={brevkode} parentFieldName={field} typeName={fieldType.typeName} />
+        <ObjectEditor
+          brevkode={brevkode}
+          parentFieldName={field}
+          submitOnChange={submitOnChange}
+          typeName={fieldType.typeName}
+        />
       );
     }
     case "scalar": {
-      return <ScalarEditor field={field} fieldType={fieldType} />;
+      return <ScalarEditor field={field} fieldType={fieldType} submitOnChange={submitOnChange} />;
     }
     case "array": {
       return <div>ARRAY TODO</div>;
@@ -34,16 +54,26 @@ export type ObjectEditorProperties = {
   brevkode: string;
   typeName: string;
   parentFieldName?: string;
+  submitOnChange?: () => void;
 };
 
-export const ObjectEditor = ({ brevkode, typeName, parentFieldName }: ObjectEditorProperties) => {
+export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
   const objectTypeSpecification = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
   return (
     <>
       {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
         const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
-        return <FieldEditor brevkode={brevkode} field={fieldName} fieldType={fieldType} key={field} />;
+
+        return (
+          <FieldEditor
+            brevkode={brevkode}
+            field={fieldName}
+            fieldType={fieldType}
+            key={field}
+            submitOnChange={submitOnChange}
+          />
+        );
       })}
     </>
   );
@@ -53,6 +83,7 @@ function ToggleableObjectEditor({
   brevkode,
   parentFieldName,
   typeName,
+  submitOnChange,
 }: ObjectEditorProperties & { parentFieldName: string }) {
   const {
     formState: { defaultValues },
@@ -65,6 +96,10 @@ function ToggleableObjectEditor({
     if (open) {
       unregister(parentFieldName, { keepDefaultValue: true });
     }
+    //TODO - kaller på timeout for å sørge for at requestSubmit blir kalt etter at the togglebare feltene er blitt registert
+    setTimeout(() => {
+      submitOnChange?.();
+    }, 500);
     setOpen(!open);
   };
 
@@ -83,7 +118,12 @@ function ToggleableObjectEditor({
             }
           `}
         >
-          <ObjectEditor brevkode={brevkode} parentFieldName={parentFieldName} typeName={typeName} />
+          <ObjectEditor
+            brevkode={brevkode}
+            parentFieldName={parentFieldName}
+            submitOnChange={submitOnChange}
+            typeName={typeName}
+          />
         </div>
       )}
     </>

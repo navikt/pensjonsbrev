@@ -2,12 +2,18 @@ import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyLong, Button, HStack, Label, Modal } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 
-import { getBrev, getBrevReservasjon, hurtiglagreBrev, hurtiglagreSaksbehandlerValg } from "~/api/brev-queries";
+import {
+  getBrev,
+  getBrevReservasjon,
+  hurtiglagreBrev,
+  hurtiglagreSaksbehandlerValg,
+  oppdaterSignatur,
+} from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -16,7 +22,7 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import type { BrevResponse, ReservasjonResponse } from "~/types/brev";
+import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
@@ -148,9 +154,31 @@ function RedigerBrev({
 }) {
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
+
   const navigate = useNavigate({ from: Route.fullPath });
+  const showDebug = useSearch({
+    strict: false,
+    select: (search: { debug?: string | boolean }) => search?.["debug"] === "true" || search?.["debug"] === true,
+  });
+
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
-  const redigertBrevMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreBrev);
+  const signaturMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSignatur);
+  const redigertBrevMutation = useHurtiglagreMutation(
+    brev.info.id,
+    setEditorState,
+    (brevId, editedLetter: EditedLetter) => {
+      applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
+      return hurtiglagreBrev(brevId, editedLetter);
+    },
+  );
+
+  const onSubmit = (saksbehandlerValg: SaksbehandlerValg, signatur: string) => {
+    saksbehandlerValgMutation.mutate(saksbehandlerValg, {
+      onSuccess: () => {
+        signaturMutation.mutate(signatur);
+      },
+    });
+  };
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
@@ -207,11 +235,16 @@ function RedigerBrev({
         `}
       >
         <ModelEditor
+          brevId={brev.info.id}
           brevkode={brev.info.brevkode}
-          defaultValues={brev.saksbehandlerValg}
+          defaultValues={{
+            ...brev.saksbehandlerValg,
+            signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
+          }}
           disableSubmit={saksbehandlerValgMutation.isPending}
-          onSubmit={saksbehandlerValgMutation.mutate}
+          onSubmit={onSubmit}
           saksId={saksId}
+          showSignaturField
           vedtaksId={vedtaksId}
         />
         <LetterEditor
@@ -220,6 +253,7 @@ function RedigerBrev({
           error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError}
           freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
           setEditorState={setEditorState}
+          showDebug={showDebug}
         />
         <HStack
           css={css`
@@ -283,10 +317,7 @@ function useHurtiglagreMutation<T>(
   const queryClient = useQueryClient();
 
   return useMutation<BrevResponse, AxiosError, T>({
-    mutationFn: async (saksbehandlerValg) => {
-      applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
-      return mutationFunction(brevId, saksbehandlerValg);
-    },
+    mutationFn: async (body) => mutationFunction(brevId, body),
     onSuccess: (response: BrevResponse) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data

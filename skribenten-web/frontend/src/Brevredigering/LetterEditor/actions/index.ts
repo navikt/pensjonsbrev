@@ -1,4 +1,5 @@
 import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
+import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
 
 import { create } from "./common";
 import { merge } from "./merge";
@@ -10,6 +11,7 @@ const Actions = {
   create,
   cursorPosition,
   merge,
+  paste,
   split,
   switchTypography,
   updateContentText,

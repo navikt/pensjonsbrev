@@ -81,3 +81,5 @@ spec:
       - name: AD_GROUP_{{g.name}}
         value: {{g.id}}
     {{/each}}
+  envFrom:
+    - secret: "{{ app-name }}-unleash-api-token"

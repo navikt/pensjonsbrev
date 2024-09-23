@@ -22,10 +22,11 @@ export type BrevResponse = {
 };
 
 export interface DelvisOppdaterBrevRequest {
-  sakId: string;
+  saksId: string;
   brevId: string | number;
   laastForRedigering?: Nullable<boolean>;
   distribusjonstype?: Nullable<Distribusjonstype>;
+  mottaker?: Nullable<Mottaker>;
 }
 
 export interface DelvisOppdaterBrevResponse {
@@ -48,7 +49,6 @@ export interface BestillBrevError {
 export type ReservasjonResponse = {
   vellykket: boolean;
   reservertAv: NavAnsatt;
-  timestamp: string;
   expiresIn: string;
   redigertBrevHash: string;
 };
@@ -68,6 +68,7 @@ export type BrevInfo = {
   brevtittel: string;
   status: BrevStatus;
   distribusjonstype: Distribusjonstype;
+  mottaker: Nullable<Mottaker>;
 };
 export type BrevStatus = Kladd | UnderRedigering | Klar;
 export type Kladd = { type: "Kladd" };
@@ -82,4 +83,33 @@ export type OppdaterBrevRequest = {
 export enum Distribusjonstype {
   SENTRALPRINT = "SENTRALPRINT",
   LOKALPRINT = "LOKALPRINT",
+}
+
+export type Mottaker = Samhandler | NorskAdresse | UtenlandskAdresse;
+
+export interface Samhandler {
+  type: "Samhandler";
+  tssId: string;
+  navn: Nullable<string>;
+}
+
+export interface NorskAdresse {
+  type: "NorskAdresse";
+  navn: string;
+  postnummer: string;
+  poststed: string;
+  adresselinje1: Nullable<string>;
+  adresselinje2: Nullable<string>;
+  adresselinje3: Nullable<string>;
+}
+
+export interface UtenlandskAdresse {
+  type: "UtenlandskAdresse";
+  navn: string;
+  postnummer: Nullable<string>;
+  poststed: Nullable<string>;
+  adresselinje1: string;
+  adresselinje2: Nullable<string>;
+  adresselinje3: Nullable<string>;
+  landkode: string;
 }
