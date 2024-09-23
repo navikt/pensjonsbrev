@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon
 
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -72,11 +73,12 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                title2 {
+                paragraph {
                     text(
                         Bokmal to "Hva betyr de nye reglene?",
                         Nynorsk to "Kva betyr dei nye reglane?",
                         English to "What do these new rules entail?",
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
                 paragraph {
@@ -97,11 +99,12 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                         }
                     }
                 }
-                title2 {
+                paragraph {
                     text(
                         Bokmal to "Hvordan søker du?",
                         Nynorsk to "Korleis søkjer du?",
                         English to "How to apply",
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
                 showIf(borIutland.not()) {
@@ -132,11 +135,12 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     }
                 }
 
-                title2 {
+                paragraph {
                     text(
                         Bokmal to "Rettigheter hvis avdøde har bodd eller arbeidet i utlandet",
                         Nynorsk to "Rettar dersom avdøde har budd eller jobba i utlandet",
                         English to "Rights if the deceased has lived or worked abroad",
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
                 paragraph {
@@ -147,11 +151,12 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                title2 {
+                paragraph {
                     text(
                         Bokmal to "Andre pensjonsordninger",
                         Nynorsk to "Andre pensjonsordningar",
                         English to "Other pension schemes",
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
                 paragraph {
@@ -162,7 +167,7 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(Expression.Literal(false), borIutland))
+                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaalDoedsfallMellomAttenOgTjue(Expression.Literal(false), borIutland))
             }
         }
 }
