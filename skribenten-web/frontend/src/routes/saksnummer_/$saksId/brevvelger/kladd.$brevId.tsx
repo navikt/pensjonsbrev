@@ -9,6 +9,7 @@ import { useState } from "react";
 import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
+import LetterTemplateTags from "~/components/LetterTemplateTags";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { SlettBrev } from "~/components/SlettBrev";
 import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
@@ -18,7 +19,6 @@ import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import Oppsummeringspar from "../kvittering/-components/Oppsummeringspar";
 import { EndreMottakerModal } from "./$templateId/-components/endreMottaker/EndreMottaker";
-import { LetterTemplateTags } from "./$templateId/-components/LetterTemplate";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/kladd/$brevId")({
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
