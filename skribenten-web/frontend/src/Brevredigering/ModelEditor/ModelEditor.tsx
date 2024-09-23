@@ -63,10 +63,9 @@ export const ModelEditor = ({
         <FormProvider {...methods}>
           <form
             css={css`
-              padding: var(--a-spacing-6) var(--a-spacing-4);
               display: flex;
               flex-direction: column;
-              gap: var(--a-spacing-4);
+              gap: var(--a-spacing-6);
 
               > {
                 width: 100%;

@@ -67,11 +67,12 @@ function Brevbehandler() {
       >
         <VStack
           css={css`
-            padding: var(--a-spacing-4);
+            padding: var(--a-spacing-6);
             border-right: 1px solid var(--a-gray-200);
             height: var(--main-page-content-height);
             overflow-y: auto;
           `}
+          gap="3"
         >
           <Heading level="1" size="small">
             Brevbehandler
