@@ -93,7 +93,7 @@ const Brevmal = (props: { saksId: string; brev: BrevInfo; letterMetadata: Letter
         <Divider />
 
         <VStack gap="8">
-          <EndreMottakerMedOppsummeringOgApiHåndtering brev={props.brev} saksId={props.saksId} />
+          <EndreMottakerMedOppsummeringOgApiHåndtering brev={props.brev} saksId={props.saksId} withOppsummeringTitle />
           <Oppsummeringspar
             boldedTitle
             tittel={"Avsenderenhet"}
