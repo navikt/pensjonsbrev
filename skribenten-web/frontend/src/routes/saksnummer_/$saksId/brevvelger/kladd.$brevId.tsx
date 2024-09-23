@@ -31,9 +31,10 @@ function KladdBrev() {
   const brevQuery = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(saksId.toString()),
     queryFn: () => hentAlleBrevForSak.queryFn(saksId.toString()),
+    select: (data) => data?.find((b) => b.id.toString() === brevId),
   });
 
-  const brev = brevQuery.data?.find((b) => b.id.toString() === brevId) ?? undefined;
+  const brev = brevQuery.data;
   const brevExists = brev !== undefined;
   const letterMetadataForBrev = brevExists ? letterTemplates.find((l) => l.id === brev!.brevkode) : undefined;
 
