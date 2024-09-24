@@ -80,7 +80,7 @@ export default function BrevmalForDoksys({
             ),
           )}
         >
-          <VStack gap="10">
+          <VStack gap="8">
             <SelectEnhet />
             <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
           </VStack>

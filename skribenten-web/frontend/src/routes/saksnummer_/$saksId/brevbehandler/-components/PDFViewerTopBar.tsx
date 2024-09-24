@@ -1,13 +1,11 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
-import { ChevronDownIcon, ChevronUpIcon, TrashIcon, ZoomMinusIcon, ZoomPlusIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, HStack, Modal, TextField } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChevronDownIcon, ChevronUpIcon, ZoomMinusIcon, ZoomPlusIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, HStack, TextField } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 
-import { hentAlleBrevForSak, slettBrev } from "~/api/sak-api-endpoints";
-import type { BrevInfo } from "~/types/brev";
+import { SlettBrev } from "~/components/SlettBrev";
 
 import { Route } from "../route";
 
@@ -20,6 +18,7 @@ const PDFViewerTopBar = (properties: {
   currentPageNumber: number;
   setCurrentPageNumber: (n: number) => void;
 }) => {
+  const navigate = useNavigate({ from: Route.fullPath });
   return (
     <HStack
       align="center"
@@ -39,7 +38,14 @@ const PDFViewerTopBar = (properties: {
         />
         <TopBarZoom scale={properties.scale} setScale={properties.setScale} />
       </HStack>
-      <SlettBrev brevId={properties.brevId} sakId={properties.sakId} />
+      <SlettBrev
+        brevId={properties.brevId}
+        buttonText="Slett"
+        onSlettSuccess={() =>
+          navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: properties.sakId } })
+        }
+        sakId={properties.sakId}
+      />
     </HStack>
   );
 };
@@ -209,66 +215,5 @@ const BasicPDFViewerButton = (properties: {
     >
       {properties.children}
     </Button>
-  );
-};
-
-const SlettBrev = (properties: { sakId: string; brevId: string }) => {
-  const [vilSletteBrev, setVilSletteBrev] = useState(false);
-
-  return (
-    <div>
-      {vilSletteBrev && (
-        <SlettBrevModal
-          brevId={properties.brevId}
-          onClose={() => setVilSletteBrev(false)}
-          sakId={properties.sakId}
-          åpen={vilSletteBrev}
-        />
-      )}
-      <Button onClick={() => setVilSletteBrev(true)} size="small" type="button" variant="danger">
-        <HStack gap="1">
-          <TrashIcon fontSize="1.5rem" title="slett-ikon" /> <BodyShort>Slett</BodyShort>
-        </HStack>
-      </Button>
-    </div>
-  );
-};
-
-const SlettBrevModal = (properties: { sakId: string; brevId: string; åpen: boolean; onClose: () => void }) => {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate({ from: Route.fullPath });
-
-  const slett = useMutation({
-    mutationFn: () => slettBrev(properties.sakId, properties.brevId),
-    onSuccess: () => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.filter((brev) => brev.id.toString() !== properties.brevId),
-      );
-      navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: properties.sakId } });
-    },
-  });
-
-  return (
-    <Modal
-      header={{ heading: "Vil du slette brevet?" }}
-      onClose={properties.onClose}
-      open={properties.åpen}
-      portal
-      width={450}
-    >
-      <Modal.Body>
-        <BodyShort>Brevet vil bli slettet, og du kan ikke angre denne handlingen.</BodyShort>
-      </Modal.Body>
-      <Modal.Footer>
-        <HStack gap="4">
-          <Button onClick={properties.onClose} type="button" variant="tertiary">
-            Nei, behold brevet
-          </Button>
-          <Button loading={slett.isPending} onClick={() => slett.mutate()} type="button" variant="danger">
-            Ja, slett brevet
-          </Button>
-        </HStack>
-      </Modal.Footer>
-    </Modal>
   );
 };

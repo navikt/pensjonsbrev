@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 
 import type { ItemContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { SpraakKode } from "~/types/apiTypes";
 import { Distribusjonstype } from "~/types/brev";
 import type {
   AnyBlock,
@@ -36,6 +37,8 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
       mottaker: null,
+      avsenderEnhet: null,
+      spraak: SpraakKode.Bokmaal,
     },
     redigertBrev: {
       title: "tittel",

@@ -1,17 +1,21 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Button, VStack } from "@navikt/ds-react";
+import { Button, HStack, VStack } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import { Divider } from "~/components/Divider";
+import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
+import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 
 import { Route } from "../route";
-import HentOgVisAdresse from "./endreMottaker/HentOgVisAdresse";
+import { EndreMottakerModal } from "./endreMottaker/EndreMottaker";
 import LetterTemplateHeading from "./LetterTemplate";
+import { useMottakerContext } from "./MottakerContext";
 import SelectEnhet from "./SelectEnhet";
 import SelectLanguage from "./SelectLanguage";
 import type { brevmalBrevbakerFormSchema } from "./TemplateUtils";
@@ -29,6 +33,8 @@ const BrevmalBrevbaker = (properties: {
 }) => {
   const { saksId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
+  const [modalÅpen, setModalÅpen] = useState<boolean>(false);
+  const { mottaker, setMottaker } = useMottakerContext();
 
   const form = useForm<z.infer<typeof brevmalBrevbakerFormSchema>>({
     defaultValues: properties.defaultValues,
@@ -52,8 +58,36 @@ const BrevmalBrevbaker = (properties: {
             });
           })}
         >
-          <VStack gap="10">
-            <HentOgVisAdresse sakId={saksId} />
+          <VStack gap="8">
+            <VStack gap="2">
+              <VStack>
+                <OppsummeringAvMottaker mottaker={mottaker} saksId={saksId} withTitle />
+
+                {modalÅpen && (
+                  <EndreMottakerModal
+                    error={null}
+                    isPending={null}
+                    onBekreftNyMottaker={(mottaker) => {
+                      setMottaker(mapEndreMottakerValueTilMottaker(mottaker));
+                      setModalÅpen(false);
+                    }}
+                    onClose={() => setModalÅpen(false)}
+                    resetOnBekreftState={() => setMottaker(null)}
+                    åpen={modalÅpen}
+                  />
+                )}
+              </VStack>
+              <HStack>
+                <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
+                  Endre mottaker
+                </Button>
+                {mottaker !== null && (
+                  <Button onClick={() => setMottaker(null)} size="small" type="button" variant="tertiary">
+                    Tilbakestill mottaker
+                  </Button>
+                )}
+              </HStack>
+            </VStack>
             <SelectLanguage
               preferredLanguage={properties.preferredLanguage}
               sorterteSpråk={properties.displayLanguages}

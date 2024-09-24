@@ -10,6 +10,7 @@ import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 
+import { MottakerContextProvider } from "./brevvelger/$templateId/-components/MottakerContext";
 import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId")({
@@ -56,8 +57,10 @@ function SakBreadcrumbsPage() {
 
   return (
     <FerdigstillResultatContextProvider>
-      <SakInfoBreadcrumbs sak={sakContext?.sak} />
-      <Outlet />
+      <MottakerContextProvider>
+        <SakInfoBreadcrumbs sak={sakContext?.sak} />
+        <Outlet />
+      </MottakerContextProvider>
     </FerdigstillResultatContextProvider>
   );
 }
