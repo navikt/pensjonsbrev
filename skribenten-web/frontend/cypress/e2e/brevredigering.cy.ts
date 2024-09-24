@@ -798,14 +798,14 @@ describe("Brevredigering", () => {
 
       cy.visit("/saksnummer/123456/brev/1");
       cy.contains("Lagret 26.07.2024 ").should("exist");
-      cy.getDataCy("brev-editor-saksbehandler-input").should("have.value", "Sak S. Behandler");
+      cy.getDataCy("brev-editor-saksbehandler").should("have.text", "Sak S. Behandler");
       cy.contains("Signatur").click().type("{selectall}{backspace}").type("Saksbehandler navn");
-      cy.getDataCy("brev-editor-saksbehandler-input").should("have.value", "Sak S. Behandler");
+      cy.getDataCy("brev-editor-saksbehandler").should("have.text", "Sak S. Behandler");
       cy.wait(4000);
       cy.get("@autoLagring.all").then((interceptions) => {
         expect(interceptions).to.have.length(1);
       });
-      cy.getDataCy("brev-editor-saksbehandler-input").should("have.value", "Saksbehandler navn");
+      cy.getDataCy("brev-editor-saksbehandler").should("have.text", "Saksbehandler navn");
     });
 
     it("autolagring av boolean felter", () => {
