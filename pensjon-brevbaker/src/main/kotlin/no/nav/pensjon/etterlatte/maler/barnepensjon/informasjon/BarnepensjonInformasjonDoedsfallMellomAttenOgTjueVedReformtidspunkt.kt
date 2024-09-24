@@ -1,6 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon
 
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -73,38 +72,32 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                paragraph {
+                title2 {
                     text(
                         Bokmal to "Hva betyr de nye reglene?",
                         Nynorsk to "Kva betyr dei nye reglane?",
                         English to "What do these new rules entail?",
-                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
                 paragraph {
-                    list {
-                        item {
-                            text(
-                                Bokmal to "Du kan få barnepensjon til du blir 20 år. Tidligere hovedregel var 18 år.",
-                                Nynorsk to "Du kan få barnepensjon til du fyller 20 år. Tidlegare var grensa normalt 18 år.",
-                                English to "Children’s pension can now be granted up to age 20. Previously, the benefit was granted up to age 18.",
-                            )
-                        }
-                        item {
-                            text(
-                                Bokmal to "Du må som hovedregel være medlem i folketrygden.",
-                                Nynorsk to "Du må som hovudregel vere medlem i folketrygda.",
-                                English to "Normally, you must be a member of the Norwegian National Insurance scheme.",
-                            )
-                        }
-                    }
+                    text(
+                        Bokmal to "• Du kan få barnepensjon til du blir 20 år. Tidligere hovedregel var 18 år.",
+                        Nynorsk to "• Du kan få barnepensjon til du fyller 20 år. Tidlegare var grensa normalt 18 år.",
+                        English to "• Children’s pension can now be granted up to age 20. Previously, the benefit was granted up to age 18.",
+                    )
+                    newline()
+                    text(
+                        Bokmal to "• Du må som hovedregel være medlem i folketrygden.",
+                        Nynorsk to "• Du må som hovudregel vere medlem i folketrygda.",
+                        English to "• Normally, you must be a member of the Norwegian National Insurance scheme.",
+                    )
                 }
-                paragraph {
+
+                title2 {
                     text(
                         Bokmal to "Hvordan søker du?",
                         Nynorsk to "Korleis søkjer du?",
                         English to "How to apply",
-                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
                 showIf(borIutland.not()) {
@@ -135,12 +128,11 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     }
                 }
 
-                paragraph {
+                title2 {
                     text(
                         Bokmal to "Rettigheter hvis avdøde har bodd eller arbeidet i utlandet",
                         Nynorsk to "Rettar dersom avdøde har budd eller jobba i utlandet",
                         English to "Rights if the deceased has lived or worked abroad",
-                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
                 paragraph {
@@ -151,12 +143,11 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                paragraph {
+                title2 {
                     text(
                         Bokmal to "Andre pensjonsordninger",
                         Nynorsk to "Andre pensjonsordningar",
                         English to "Other pension schemes",
-                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
                 paragraph {
@@ -167,7 +158,7 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaalDoedsfallMellomAttenOgTjue(Expression.Literal(false), borIutland))
+                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(Expression.Literal(false), borIutland))
             }
         }
 }
