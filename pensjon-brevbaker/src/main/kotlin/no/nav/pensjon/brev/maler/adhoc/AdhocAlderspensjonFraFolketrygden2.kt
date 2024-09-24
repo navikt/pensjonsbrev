@@ -111,9 +111,9 @@ object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner mer informasjon på nav.no/reguleringalderspensjon. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager kl. 09:00-15:00.",
-                    Nynorsk to "Du finn meir informasjon på nav.no/reguleringalderspensjon. På nav.no/kontakt kan du chatte eller skrive til oss. Viss du ikkje finner svar på nav.no, kan du ringje oss på telefon 55 55 33 34, kvardagar kl. 09:00-15:00.",
-                    English to "You can find more information at nav.no/reguleringalderspensjon. At nav.no/kontakt, you can chat or write to us. If you do not find the answer at nav.no, you can call us at: +47 55 55 33 34, weekdays 09:00-15:00.",
+                    Bokmal to "Du finner mer informasjon på nav.no/reguleringalderspensjon . På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager kl. 09:00-15:00.",
+                    Nynorsk to "Du finn meir informasjon på nav.no/reguleringalderspensjon . På nav.no/kontakt kan du chatte eller skrive til oss. Viss du ikkje finner svar på nav.no, kan du ringje oss på telefon 55 55 33 34, kvardagar kl. 09:00-15:00.",
+                    English to "You can find more information at nav.no/reguleringalderspensjon . At nav.no/kontakt, you can chat or write to us. If you do not find the answer at nav.no, you can call us at: +47 55 55 33 34, weekdays 09:00-15:00.",
                 )
             }
 
