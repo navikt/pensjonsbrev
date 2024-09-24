@@ -155,7 +155,6 @@ export const EndreMottakerModal = (properties: {
   };
 
   const defaultManuellAdresse: ManuellAdresseUtfyllingFormData = {
-    typeMottaker: null,
     adresse: {
       navn: "",
       linje1: "",
@@ -348,7 +347,7 @@ const OppsummeringsTab = (properties: {
         onBekreftNyMottaker={() => properties.onBekreftNyMottaker(properties.samhandlerValues!.id)}
         onCloseIntent={properties.onCloseIntent}
         onTilbakeTilSøk={() => properties.onTilbake("samhandler")}
-        typeMottaker={properties.samhandlerValues!.samhandlerType!}
+        samhandlerType={properties.samhandlerValues!.samhandlerType!}
       />
     );
   }
@@ -370,7 +369,7 @@ const OppsummeringsTab = (properties: {
           fn: () => properties.onTilbake("manuellAdresse"),
           plassering: "top",
         }}
-        type={properties.manuellAdresseValues.typeMottaker!}
+        samhandlerType={null}
       />
     );
   }

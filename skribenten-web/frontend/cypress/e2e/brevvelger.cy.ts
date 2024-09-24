@@ -439,7 +439,6 @@ describe("Brevvelger spec", () => {
       cy.get('p:contains("Informasjon om saksbehandlingstid")').eq(1).click();
       cy.contains("Endre mottaker").click();
       cy.contains("Legg til manuelt").click();
-      cy.getDataCy("endre-mottaker-mottaker-type").select("Privatperson");
       cy.contains("Navn").click().type("Fornavn Etternavnsen");
       cy.contains("Adresselinje 1").click().type("Adresselinjen 1");
       cy.contains("Postnummer").click().type("0000");
@@ -447,7 +446,6 @@ describe("Brevvelger spec", () => {
       cy.contains("Land *").click().type("Sver{enter}");
       cy.contains("Gå videre").click();
 
-      cy.contains("Privatperson").should("be.visible");
       cy.contains("Fornavn Etternavnsen").should("be.visible");
       cy.contains("Adresselinjen").should("be.visible");
       cy.contains("0000").should("be.visible");

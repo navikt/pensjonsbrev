@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, HStack, Link, Select, TextField, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
@@ -9,7 +9,6 @@ import { hentLandForManuellUtfyllingAvAdresse } from "~/api/skribenten-api-endpo
 import { BasicSelect, SelectLayoutWrapper } from "~/components/select/CustomSelectComponents";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
-import { TypeMottaker } from "./EndreMottakerUtils";
 
 const UtfyllingAvManuellAdresseForm = (properties: {
   control: Control<CombinedFormData>;
@@ -39,29 +38,6 @@ const UtfyllingAvManuellAdresseForm = (properties: {
             brev skal sendes til utenlandsk adresse, fullmektig, verge eller dødsbo.
           </BodyShort>
         </Alert>
-
-        <Controller
-          control={properties.control}
-          name="manuellAdresse.typeMottaker"
-          render={({ field, fieldState }) => (
-            <Select
-              data-cy="endre-mottaker-mottaker-type"
-              description="Privatperson, samhandler, institusjon, offentlig"
-              label="Type mottaker"
-              {...field}
-              error={fieldState.error?.message}
-              value={field.value ?? ""}
-            >
-              <option disabled value="">
-                Velg
-              </option>
-              <option value={TypeMottaker.PrivatPerson}>Privatperson</option>
-              <option value={TypeMottaker.Samhandler}>Samhandler</option>
-              <option value={TypeMottaker.Institusjon}>Institusjon</option>
-              <option value={TypeMottaker.Offentlig}>Offentlig</option>
-            </Select>
-          )}
-        />
 
         <Controller
           control={properties.control}

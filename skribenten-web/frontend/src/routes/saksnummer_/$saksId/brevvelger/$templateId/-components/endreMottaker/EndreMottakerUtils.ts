@@ -87,26 +87,7 @@ export enum InnOgUtland {
   ALLE = "ALLE",
 }
 
-export enum TypeMottaker {
-  PrivatPerson = "PrivatPerson",
-  Samhandler = "Samhandler",
-  Institusjon = "Institusjon",
-  Offentlig = "Offentlig",
-}
-
 export const leggTilManuellSamhandlerFormDataSchema = z.object({
-  typeMottaker: z
-    .nativeEnum(TypeMottaker)
-    .nullable()
-    .superRefine((data, refinementContext) => {
-      if (data === null) {
-        refinementContext.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Feltet må fylles ut",
-        });
-      }
-      return refinementContext;
-    }),
   /**
    * manuell adresse har 2 krav for utfylling:
    * For norske adresser (der land er "NO") - kreves navn, postnummer, og poststed.
