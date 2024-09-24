@@ -171,11 +171,11 @@ const BrevItem = (properties: {
                     </BodyShort>
                     {properties.brev.mottaker ? (
                       <HStack align={"center"} gap="2">
-                        <MottakerNavn mottaker={properties.brev.mottaker} /> {edit}
+                        <MottakerNavn mottaker={properties.brev.mottaker} /> {!erLåst && edit}
                       </HStack>
                     ) : (
                       <HStack align={"center"} gap="2">
-                        <BodyShort>{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {edit}
+                        <BodyShort>{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {!erLåst && edit}
                       </HStack>
                     )}
                   </div>
