@@ -11,7 +11,9 @@ describe("Brevredigering", () => {
     );
     cy.fixture("brevResponseEtterLagring.json").then((brev: BrevResponse) => {
       brev.info.sistredigert = hurtiglagreTidspunkt;
-      cy.intercept("put", "/bff/skribenten-backend/brev/1/redigertBrev", brev).as("hurtiglagreRedigertBrev");
+      cy.intercept("put", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", brev).as(
+        "hurtiglagreRedigertBrev",
+      );
     });
     cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
       fixture: "modelSpecification.json",
@@ -79,7 +81,7 @@ describe("Brevredigering", () => {
   });
 
   it("kan tilbakestille malen", () => {
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev", {
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", {
       fixture: "brevResponse.json",
     });
 
