@@ -73,22 +73,20 @@ export const ObjectEditor = ({
 
   return (
     <>
-      {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
-        const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
-
-        if (showOnlyRequiredFields && isFieldNullableOrBoolean(fieldType)) {
-          return null;
-        }
-        return (
-          <FieldEditor
-            brevkode={brevkode}
-            field={fieldName}
-            fieldType={fieldType}
-            key={field}
-            submitOnChange={submitOnChange}
-          />
-        );
-      })}
+      {Object.entries(objectTypeSpecification ?? {})
+        .filter(([, fieldType]) => (showOnlyRequiredFields ? !isFieldNullableOrBoolean(fieldType) : true))
+        .map(([field, fieldType]) => {
+          const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
+          return (
+            <FieldEditor
+              brevkode={brevkode}
+              field={fieldName}
+              fieldType={fieldType}
+              key={field}
+              submitOnChange={submitOnChange}
+            />
+          );
+        })}
     </>
   );
 };
