@@ -29,6 +29,7 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
 
     route("/brev") {
         put<Edit.Letter>("/{brevId}/redigertBrev") { request ->
+            val frigiReservasjon = call.parameters["frigiReservasjon"].toBoolean()
             respond(
                 brevredigeringService.oppdaterBrev(
                     call = call,
@@ -36,11 +37,13 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
+                    frigiReservasjon = frigiReservasjon,
                 )
             )
         }
 
         put<SaksbehandlerValg>("/{brevId}/saksbehandlerValg") { request ->
+            val frigiReservasjon = call.parameters["frigiReservasjon"].toBoolean()
             respond(
                 brevredigeringService.oppdaterBrev(
                     call = call,
@@ -48,6 +51,7 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     nyeSaksbehandlerValg = request,
                     nyttRedigertbrev = null,
+                    frigiReservasjon = frigiReservasjon,
                 )
             )
         }

@@ -26,6 +26,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import org.apache.commons.codec.binary.Hex
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Condition
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
@@ -847,6 +848,40 @@ class BrevredigeringServiceTest {
     }
 
     @Test
+    fun `brev reservasjon kan frigis ved oppdatering`() = runBlocking {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
+        assertThat(brev.info.redigeresAv).isEqualTo(principalNavIdent)
+
+        val oppdatertBrev = brevredigeringService.oppdaterBrev(
+            call = callMock(),
+            saksId = brev.info.saksId,
+            brevId = brev.info.id,
+            nyeSaksbehandlerValg = brev.saksbehandlerValg,
+            nyttRedigertbrev = null,
+            frigiReservasjon = true,
+        )?.resultOrNull()
+
+        assertThat(oppdatertBrev?.info?.redigeresAv).isNull()
+    }
+
+    @Test
+    fun `brev reservasjon frigis ikke ved oppdatering`() = runBlocking {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
+        assertThat(brev.info.redigeresAv).isEqualTo(principalNavIdent)
+
+        val oppdatertBrev = brevredigeringService.oppdaterBrev(
+            call = callMock(),
+            saksId = brev.info.saksId,
+            brevId = brev.info.id,
+            nyeSaksbehandlerValg = brev.saksbehandlerValg,
+            nyttRedigertbrev = null,
+            frigiReservasjon = false,
+        )?.resultOrNull()
+
+        assertThat(oppdatertBrev?.info?.redigeresAv).isEqualTo(principalNavIdent)
+    }
+
+    @Test
     fun `oppdatering av redigertBrev endrer ogsaa redigertBrevHash`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
         val hash1 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
@@ -969,7 +1004,7 @@ class BrevredigeringServiceTest {
         )
     }
 
-    private fun <T> condition(description: String, predicate: Predicate<T>): org.assertj.core.api.Condition<T> =
-        org.assertj.core.api.Condition(predicate, description)
+    private fun <T> condition(description: String, predicate: Predicate<T>): Condition<T> =
+        Condition(predicate, description)
 }
 

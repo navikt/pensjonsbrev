@@ -99,6 +99,7 @@ class BrevredigeringService(
         brevId: Long,
         nyeSaksbehandlerValg: BrevbakerBrevdata?,
         nyttRedigertbrev: Edit.Letter?,
+        frigiReservasjon: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(call = call, brevId = brevId, saksId = saksId) { brev ->
             rendreBrev(
@@ -116,6 +117,9 @@ class BrevredigeringService(
                             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                             saksbehandlerValg = nyeSaksbehandlerValg ?: brev.saksbehandlerValg
                             sistRedigertAvNavIdent = call.principal().navIdent()
+                            if (frigiReservasjon){
+                                redigeresAvNavIdent = null
+                            }
                         }.toDto()
                     }
                 }

@@ -48,8 +48,13 @@ export async function updateBrev(saksId: string, brevId: string | number, reques
   return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, request)).data;
 }
 
-export async function hurtiglagreBrev(brevId: number, redigertBrev: EditedLetter) {
-  return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/redigertBrev`, redigertBrev)).data;
+export async function hurtiglagreBrev(brevId: number, redigertBrev: EditedLetter, frigiReservasjon?: boolean) {
+  return (
+    await axios.put<BrevResponse>(
+      `${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/redigertBrev?frigiReservasjon=${frigiReservasjon === true}`,
+      redigertBrev,
+    )
+  ).data;
 }
 
 export async function hurtiglagreSaksbehandlerValg(brevId: number, saksbehandlerValg: SaksbehandlerValg) {
