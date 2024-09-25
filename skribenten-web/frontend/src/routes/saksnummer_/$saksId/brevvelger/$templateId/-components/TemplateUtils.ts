@@ -130,7 +130,9 @@ export const brevmalBrevbakerFormSchema = z.object({
 
 //regel er at hvis brukerens foretrukne språk er tilgjengelig, og malen støtter det, skal den være valgt, ellers skal den første språkkoden i malen være valgt
 export const hentDefaultValueForSpråk = (preferredLanguage: Nullable<SpraakKode>, tilgjengeligeSpråk: SpraakKode[]) => {
-  return preferredLanguage && tilgjengeligeSpråk.includes(preferredLanguage)
-    ? preferredLanguage
-    : tilgjengeligeSpråk[0];
+  if (preferredLanguage && tilgjengeligeSpråk.includes(preferredLanguage)) {
+    return preferredLanguage;
+  } else {
+    return tilgjengeligeSpråk.includes(SpraakKode.Bokmaal) ? SpraakKode.Bokmaal : tilgjengeligeSpråk[0];
+  }
 };

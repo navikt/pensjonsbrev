@@ -65,8 +65,8 @@ export type PreferredLanguage = {
 };
 
 export enum SpraakKode {
-  Engelsk = "EN",
   Bokmaal = "NB",
+  Engelsk = "EN",
   Nynorsk = "NN",
 }
 
