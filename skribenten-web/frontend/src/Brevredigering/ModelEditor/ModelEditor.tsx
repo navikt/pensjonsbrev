@@ -93,7 +93,7 @@ export const ModelEditor = ({
                   kind: "STRING",
                 }}
                 onSubmit={brevId ? requestSubmit : undefined}
-                timeoutTimer={3000}
+                timeoutTimer={2500}
                 type={"text"}
               />
             )}
