@@ -56,7 +56,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.aktivitet(
                     " er det et krav for å motta omstillingsstønad at du er i minst 50 prosent arbeid eller annen " +
                     "aktivitet med sikte på å komme i arbeid. Etter et år kan det forventes at du er i 100 prosent aktivitet. " +
                     "Dette kalles for aktivitetsplikt.",
-            Nynorsk to "or å kunne halde fram med å få omstillingsstønad når det har gått seks månader sidan ".expr() +
+            Nynorsk to "For å kunne halde fram med å få omstillingsstønad når det har gått seks månader sidan ".expr() +
                     ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet") +
                     ", må du vere i minst 50 prosent arbeid eller annan aktivitet med sikte på å kome i arbeid. Etter " +
                     "eitt år er det forventa at du er i 100 prosent aktivitet. Dette blir kalla aktivitetsplikt.",
