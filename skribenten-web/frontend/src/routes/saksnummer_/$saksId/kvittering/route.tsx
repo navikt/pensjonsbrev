@@ -39,6 +39,7 @@ function Kvittering() {
           onClick={() => navigate({ to: "/saksnummer" })}
           size="small"
           type="button"
+          variant="secondary"
         >
           Åpne annen sak
         </Button>
@@ -51,7 +52,18 @@ function Kvittering() {
           type="button"
           variant="secondary"
         >
-          Lage nytt brev på denne brukeren
+          Lage nytt brev på denne saken
+        </Button>
+        <Button
+          css={css`
+            width: fit-content;
+          `}
+          onClick={() => navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId } })}
+          size="small"
+          type="button"
+          variant="secondary"
+        >
+          Gå til brevbehandler
         </Button>
       </VStack>
       <div
