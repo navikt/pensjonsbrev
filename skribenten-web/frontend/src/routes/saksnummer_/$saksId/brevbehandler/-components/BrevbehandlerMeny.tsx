@@ -29,7 +29,7 @@ import { erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
-import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn } from "../-BrevbehandlerUtils";
+import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrevmeny } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
 const BrevbehandlerMeny = (properties: { saksId: string; brevInfo: BrevInfo[] }) => {
@@ -73,17 +73,15 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
 
   return (
     <Accordion>
-      {properties.brev
-        .toSorted((a, b) => a.id - b.id)
-        .map((brev) => (
-          <BrevItem
-            brev={brev}
-            key={brev.id}
-            onOpenChange={handleOpenChange(brev.id.toString())}
-            open={åpenBrevItem === brev.id.toString()}
-            saksId={properties.saksId}
-          />
-        ))}
+      {sortBrevmeny(properties.brev).map((brev) => (
+        <BrevItem
+          brev={brev}
+          key={brev.id}
+          onOpenChange={handleOpenChange(brev.id.toString())}
+          open={åpenBrevItem === brev.id.toString()}
+          saksId={properties.saksId}
+        />
+      ))}
     </Accordion>
   );
 };

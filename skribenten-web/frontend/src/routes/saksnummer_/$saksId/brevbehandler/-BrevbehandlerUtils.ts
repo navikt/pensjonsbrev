@@ -1,4 +1,5 @@
 import type { UserInfo } from "~/api/bff-endpoints";
+import type { BrevInfo } from "~/types/brev";
 import { type BrevStatus, type NavAnsatt } from "~/types/brev";
 
 export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeBruker?: UserInfo) => {
@@ -22,3 +23,14 @@ export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeB
 export const forkortetSaksbehandlernavn = (navAnsatt: NavAnsatt, gjeldendeBruker?: UserInfo) => {
   return navAnsatt.id === gjeldendeBruker?.navident ? "deg" : navAnsatt.navn ?? navAnsatt.id;
 };
+
+const sorteringsRekkefølge = { Kladd: 1, UnderRedigering: 2, Klar: 3 };
+
+export const sortBrevmeny = (brev: BrevInfo[]): BrevInfo[] =>
+  brev.toSorted((a, b) => {
+    if (sorteringsRekkefølge[a.status.type] !== sorteringsRekkefølge[b.status.type]) {
+      return sorteringsRekkefølge[a.status.type] - sorteringsRekkefølge[b.status.type];
+    }
+
+    return new Date(a.sistredigert).getTime() - new Date(b.sistredigert).getTime();
+  });
