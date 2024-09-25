@@ -111,175 +111,6 @@ describe("Brevredigering", () => {
 
   describe("autolagring", () => {
     it("lagrer endring av dato-felt automatisk", () => {
-      const brevResponse = nyBrevResponse({
-        info: nyBrevInfo({
-          sistredigert: hurtiglagreTidspunkt,
-        }),
-        saksbehandlerValg: {
-          mottattSoeknad: "2024-09-10",
-          ytelse: "Supplerende stønad",
-          land: "Spania",
-          svartidUker: "3",
-        },
-        redigertBrev: nyRedigertBrev({
-          blocks: [
-            {
-              id: -2_030_215_963,
-              editable: true,
-              content: [
-                {
-                  id: 1_507_865_607,
-                  text: "We received your application for ",
-                  editedText: "Wae received your application for ",
-                  type: "LITERAL",
-                },
-                {
-                  id: -726_051_414,
-                  text: "Supplerende stønad",
-                  type: "VARIABLE",
-                },
-                {
-                  id: -142_236_915,
-                  text: " from the National Insurance authorities in ",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-                {
-                  id: -1_660_311_050,
-                  text: "Spania",
-                  type: "VARIABLE",
-                },
-                {
-                  id: 1_063_425,
-                  text: " on ",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-                {
-                  id: -694_080_035,
-                  text: "10 September 2024",
-                  type: "VARIABLE",
-                },
-                {
-                  id: 46,
-                  text: ".",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-                {
-                  id: -1_894_607_013,
-                  items: [
-                    {
-                      id: -503_413_477,
-                      content: [
-                        {
-                          id: -503_413_508,
-                          text: "item 1 - TODO remove itemlist",
-                          editedText: "item 1 - TODO remove itemlist hei hei",
-                          type: "LITERAL",
-                        },
-                      ],
-                    },
-                    {
-                      id: 886_663_488,
-                      content: [
-                        {
-                          id: 886_663_457,
-                          text: "item 2 - TODO remove itemlist",
-                          editedText: null,
-                          type: "LITERAL",
-                        },
-                      ],
-                    },
-                    {
-                      id: -867_386_911,
-                      content: [
-                        {
-                          id: -867_386_942,
-                          text: "item 3 - TODO remove itemlist",
-                          editedText: null,
-                          type: "LITERAL",
-                        },
-                      ],
-                    },
-                  ],
-                  deletedItems: [],
-                  type: "ITEM_LIST",
-                },
-              ],
-              deletedContent: [],
-              type: "PARAGRAPH",
-            },
-            {
-              id: 822_540_105,
-              editable: true,
-              content: [
-                {
-                  id: -1_114_690_237,
-                  text: "Our processing time for this type of application is usually ",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-                {
-                  id: 1_834_595_758,
-                  text: "3",
-                  type: "VARIABLE",
-                },
-                {
-                  id: 1_838_606_639,
-                  text: " weeks.",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-              ],
-              deletedContent: [],
-              type: "PARAGRAPH",
-            },
-            {
-              id: -1_153_661_566,
-              editable: true,
-              content: [
-                {
-                  id: -1_153_661_597,
-                  text: "We will contact you if we need you to provide more information.",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-              ],
-              deletedContent: [],
-              type: "PARAGRAPH",
-            },
-            {
-              id: 1_767_516_329,
-              editable: true,
-              content: [
-                {
-                  id: 1_767_516_298,
-                  text: "Duty to report changes",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-              ],
-              deletedContent: [],
-              type: "TITLE1",
-            },
-            {
-              id: 173_660_319,
-              editable: true,
-              content: [
-                {
-                  id: 173_660_288,
-                  text: "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move.",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-              ],
-              deletedContent: [],
-              type: "PARAGRAPH",
-            },
-          ],
-        }),
-      });
       cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
         expect(req.body).contains({
           mottattSoeknad: "2024-09-10",
@@ -287,7 +118,177 @@ describe("Brevredigering", () => {
           land: "Spania",
           svartidUker: "10",
         });
-        req.reply(brevResponse);
+        req.reply(
+          nyBrevResponse({
+            info: nyBrevInfo({
+              sistredigert: hurtiglagreTidspunkt,
+            }),
+            saksbehandlerValg: {
+              mottattSoeknad: "2024-09-10",
+              ytelse: "Supplerende stønad",
+              land: "Spania",
+              svartidUker: "3",
+            },
+            redigertBrev: nyRedigertBrev({
+              blocks: [
+                {
+                  id: -2_030_215_963,
+                  editable: true,
+                  content: [
+                    {
+                      id: 1_507_865_607,
+                      text: "We received your application for ",
+                      editedText: "Wae received your application for ",
+                      type: "LITERAL",
+                    },
+                    {
+                      id: -726_051_414,
+                      text: "Supplerende stønad",
+                      type: "VARIABLE",
+                    },
+                    {
+                      id: -142_236_915,
+                      text: " from the National Insurance authorities in ",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                    {
+                      id: -1_660_311_050,
+                      text: "Spania",
+                      type: "VARIABLE",
+                    },
+                    {
+                      id: 1_063_425,
+                      text: " on ",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                    {
+                      id: -694_080_035,
+                      text: "10 September 2024",
+                      type: "VARIABLE",
+                    },
+                    {
+                      id: 46,
+                      text: ".",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                    {
+                      id: -1_894_607_013,
+                      items: [
+                        {
+                          id: -503_413_477,
+                          content: [
+                            {
+                              id: -503_413_508,
+                              text: "item 1 - TODO remove itemlist",
+                              editedText: "item 1 - TODO remove itemlist hei hei",
+                              type: "LITERAL",
+                            },
+                          ],
+                        },
+                        {
+                          id: 886_663_488,
+                          content: [
+                            {
+                              id: 886_663_457,
+                              text: "item 2 - TODO remove itemlist",
+                              editedText: null,
+                              type: "LITERAL",
+                            },
+                          ],
+                        },
+                        {
+                          id: -867_386_911,
+                          content: [
+                            {
+                              id: -867_386_942,
+                              text: "item 3 - TODO remove itemlist",
+                              editedText: null,
+                              type: "LITERAL",
+                            },
+                          ],
+                        },
+                      ],
+                      deletedItems: [],
+                      type: "ITEM_LIST",
+                    },
+                  ],
+                  deletedContent: [],
+                  type: "PARAGRAPH",
+                },
+                {
+                  id: 822_540_105,
+                  editable: true,
+                  content: [
+                    {
+                      id: -1_114_690_237,
+                      text: "Our processing time for this type of application is usually ",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                    {
+                      id: 1_834_595_758,
+                      text: "3",
+                      type: "VARIABLE",
+                    },
+                    {
+                      id: 1_838_606_639,
+                      text: " weeks.",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                  ],
+                  deletedContent: [],
+                  type: "PARAGRAPH",
+                },
+                {
+                  id: -1_153_661_566,
+                  editable: true,
+                  content: [
+                    {
+                      id: -1_153_661_597,
+                      text: "We will contact you if we need you to provide more information.",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                  ],
+                  deletedContent: [],
+                  type: "PARAGRAPH",
+                },
+                {
+                  id: 1_767_516_329,
+                  editable: true,
+                  content: [
+                    {
+                      id: 1_767_516_298,
+                      text: "Duty to report changes",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                  ],
+                  deletedContent: [],
+                  type: "TITLE1",
+                },
+                {
+                  id: 173_660_319,
+                  editable: true,
+                  content: [
+                    {
+                      id: 173_660_288,
+                      text: "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move.",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                  ],
+                  deletedContent: [],
+                  type: "PARAGRAPH",
+                },
+              ],
+            }),
+          }),
+        );
       }).as("autoLagring");
 
       cy.visit("/saksnummer/123456/brev/1");
@@ -300,180 +301,6 @@ describe("Brevredigering", () => {
     });
 
     it("lagrer endring av tekst-felt automatisk", () => {
-      const brevResponse = nyBrevResponse({
-        info: nyBrevInfo({
-          sistredigert: hurtiglagreTidspunkt,
-        }),
-        redigertBrev: nyRedigertBrev({
-          blocks: [
-            {
-              id: -2_030_215_963,
-              editable: true,
-              content: [
-                {
-                  id: 1_507_865_607,
-                  text: "We received your application for ",
-                  editedText: "Wae received your application for ",
-                  type: "LITERAL",
-                },
-                {
-                  id: -726_051_414,
-                  text: "Supplerende stønad",
-                  type: "VARIABLE",
-                },
-                {
-                  id: -142_236_915,
-                  text: " from the National Insurance authorities in ",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-                {
-                  id: -1_660_311_050,
-                  text: "Spania",
-                  type: "VARIABLE",
-                },
-                {
-                  id: 1_063_425,
-                  text: " on ",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-                {
-                  id: -694_080_035,
-                  text: "10 September 2024",
-                  type: "VARIABLE",
-                },
-                {
-                  id: 46,
-                  text: ".",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-                {
-                  id: -1_894_607_013,
-                  items: [
-                    {
-                      id: -503_413_477,
-                      content: [
-                        {
-                          id: -503_413_508,
-                          text: "item 1 - TODO remove itemlist",
-                          editedText: "item 1 - TODO remove itemlist hei hei",
-                          type: "LITERAL",
-                        },
-                      ],
-                    },
-                    {
-                      id: 886_663_488,
-                      content: [
-                        {
-                          id: 886_663_457,
-                          text: "item 2 - TODO remove itemlist",
-                          editedText: null,
-                          type: "LITERAL",
-                        },
-                      ],
-                    },
-                    {
-                      id: -867_386_911,
-                      content: [
-                        {
-                          id: -867_386_942,
-                          text: "item 3 - TODO remove itemlist",
-                          editedText: null,
-                          type: "LITERAL",
-                        },
-                      ],
-                    },
-                  ],
-                  deletedItems: [],
-                  type: "ITEM_LIST",
-                },
-              ],
-              deletedContent: [],
-
-              type: "PARAGRAPH",
-            },
-            {
-              id: 822_540_105,
-              editable: true,
-              content: [
-                {
-                  id: -1_114_690_237,
-                  text: "Our processing time for this type of application is usually ",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-                {
-                  id: 1_834_595_758,
-                  text: "3",
-                  type: "VARIABLE",
-                },
-                {
-                  id: 1_838_606_639,
-                  text: " weeks.",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-              ],
-              deletedContent: [],
-
-              type: "PARAGRAPH",
-            },
-            {
-              id: -1_153_661_566,
-              editable: true,
-              content: [
-                {
-                  id: -1_153_661_597,
-                  text: "We will contact you if we need you to provide more information.",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-              ],
-              deletedContent: [],
-
-              type: "PARAGRAPH",
-            },
-            {
-              id: 1_767_516_329,
-              editable: true,
-              content: [
-                {
-                  id: 1_767_516_298,
-                  text: "Duty to report changes",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-              ],
-              deletedContent: [],
-
-              type: "TITLE1",
-            },
-            {
-              id: 173_660_319,
-              editable: true,
-              content: [
-                {
-                  id: 173_660_288,
-                  text: "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move.",
-                  editedText: null,
-                  type: "LITERAL",
-                },
-              ],
-              deletedContent: [],
-
-              type: "PARAGRAPH",
-            },
-          ],
-        }),
-        saksbehandlerValg: {
-          mottattSoeknad: "2024-09-10",
-          ytelse: "Supplerende stønad",
-          land: "Spania",
-          svartidUker: "3",
-        },
-      });
       cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
         expect(req.body).contains({
           mottattSoeknad: "2024-07-24",
@@ -481,7 +308,182 @@ describe("Brevredigering", () => {
           land: "Spania",
           svartidUker: "10",
         });
-        req.reply(brevResponse);
+        req.reply(
+          nyBrevResponse({
+            info: nyBrevInfo({
+              sistredigert: hurtiglagreTidspunkt,
+            }),
+            redigertBrev: nyRedigertBrev({
+              blocks: [
+                {
+                  id: -2_030_215_963,
+                  editable: true,
+                  content: [
+                    {
+                      id: 1_507_865_607,
+                      text: "We received your application for ",
+                      editedText: "Wae received your application for ",
+                      type: "LITERAL",
+                    },
+                    {
+                      id: -726_051_414,
+                      text: "Supplerende stønad",
+                      type: "VARIABLE",
+                    },
+                    {
+                      id: -142_236_915,
+                      text: " from the National Insurance authorities in ",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                    {
+                      id: -1_660_311_050,
+                      text: "Spania",
+                      type: "VARIABLE",
+                    },
+                    {
+                      id: 1_063_425,
+                      text: " on ",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                    {
+                      id: -694_080_035,
+                      text: "10 September 2024",
+                      type: "VARIABLE",
+                    },
+                    {
+                      id: 46,
+                      text: ".",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                    {
+                      id: -1_894_607_013,
+                      items: [
+                        {
+                          id: -503_413_477,
+                          content: [
+                            {
+                              id: -503_413_508,
+                              text: "item 1 - TODO remove itemlist",
+                              editedText: "item 1 - TODO remove itemlist hei hei",
+                              type: "LITERAL",
+                            },
+                          ],
+                        },
+                        {
+                          id: 886_663_488,
+                          content: [
+                            {
+                              id: 886_663_457,
+                              text: "item 2 - TODO remove itemlist",
+                              editedText: null,
+                              type: "LITERAL",
+                            },
+                          ],
+                        },
+                        {
+                          id: -867_386_911,
+                          content: [
+                            {
+                              id: -867_386_942,
+                              text: "item 3 - TODO remove itemlist",
+                              editedText: null,
+                              type: "LITERAL",
+                            },
+                          ],
+                        },
+                      ],
+                      deletedItems: [],
+                      type: "ITEM_LIST",
+                    },
+                  ],
+                  deletedContent: [],
+
+                  type: "PARAGRAPH",
+                },
+                {
+                  id: 822_540_105,
+                  editable: true,
+                  content: [
+                    {
+                      id: -1_114_690_237,
+                      text: "Our processing time for this type of application is usually ",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                    {
+                      id: 1_834_595_758,
+                      text: "3",
+                      type: "VARIABLE",
+                    },
+                    {
+                      id: 1_838_606_639,
+                      text: " weeks.",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                  ],
+                  deletedContent: [],
+
+                  type: "PARAGRAPH",
+                },
+                {
+                  id: -1_153_661_566,
+                  editable: true,
+                  content: [
+                    {
+                      id: -1_153_661_597,
+                      text: "We will contact you if we need you to provide more information.",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                  ],
+                  deletedContent: [],
+
+                  type: "PARAGRAPH",
+                },
+                {
+                  id: 1_767_516_329,
+                  editable: true,
+                  content: [
+                    {
+                      id: 1_767_516_298,
+                      text: "Duty to report changes",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                  ],
+                  deletedContent: [],
+
+                  type: "TITLE1",
+                },
+                {
+                  id: 173_660_319,
+                  editable: true,
+                  content: [
+                    {
+                      id: 173_660_288,
+                      text: "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move.",
+                      editedText: null,
+                      type: "LITERAL",
+                    },
+                  ],
+                  deletedContent: [],
+
+                  type: "PARAGRAPH",
+                },
+              ],
+            }),
+            saksbehandlerValg: {
+              mottattSoeknad: "2024-09-10",
+              ytelse: "Supplerende stønad",
+              land: "Spania",
+              svartidUker: "3",
+            },
+          }),
+        );
       }).as("autoLagring");
 
       cy.visit("/saksnummer/123456/brev/1");
