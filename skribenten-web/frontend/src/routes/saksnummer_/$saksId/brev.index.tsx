@@ -53,6 +53,7 @@ function OpprettBrevPage() {
         disableSubmit={createBrevMutation.isPending || createBrevMutation.isSuccess}
         onSubmit={(saksbehandlerValg) => createBrevMutation.mutate({ saksbehandlerValg })}
         saksId={saksId}
+        showOnlyRequiredFields
         vedtaksId={undefined}
       />
     </div>

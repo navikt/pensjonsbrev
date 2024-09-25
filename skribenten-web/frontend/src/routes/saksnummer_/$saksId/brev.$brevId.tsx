@@ -244,14 +244,13 @@ function RedigerBrev({
           disableSubmit={saksbehandlerValgMutation.isPending}
           onSubmit={onSubmit}
           saksId={saksId}
-          showSignaturField
           vedtaksId={vedtaksId}
         />
         <LetterEditor
           editorHeight={"var(--main-page-content-height)"}
           editorState={editorState}
-          error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError}
-          freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
+          error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError || signaturMutation.isError}
+          freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending}
           setEditorState={setEditorState}
           showDebug={showDebug}
         />

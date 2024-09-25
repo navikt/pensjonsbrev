@@ -21,11 +21,7 @@ export type ModelEditorProperties = {
   saksId: string;
   vedtaksId: string | undefined;
   brevId: Nullable<number>;
-  //TODO - ModelEditor skal i utgangspunktet kun være for SaksbehandlerValg.
-  // designet skal ha signatur felt på 'samme sted', altså med editoren.
-  //Den skal ikke brukes ved opprettelse av brev, men kun når man redigerer brevet. Derfor
-  //gjør vi en enkel fiks for å skjule signatur feltet ved opprettelse av brev.
-  showSignaturField?: boolean;
+  showOnlyRequiredFields?: boolean;
 };
 
 export const ModelEditor = ({
@@ -36,7 +32,7 @@ export const ModelEditor = ({
   saksId,
   vedtaksId,
   brevId,
-  showSignaturField,
+  showOnlyRequiredFields,
 }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
@@ -58,6 +54,7 @@ export const ModelEditor = ({
 
   if (specification) {
     const saksbehandlerValgType = findSaksbehandlerValgTypeName(specification);
+
     return (
       <>
         <FormProvider {...methods}>
@@ -77,10 +74,17 @@ export const ModelEditor = ({
             <Heading size="small">{brevmal.data?.name}</Heading>
             <ObjectEditor
               brevkode={brevkode}
+              showOnlyRequiredFields={showOnlyRequiredFields}
               submitOnChange={brevId ? requestSubmit : undefined}
               typeName={saksbehandlerValgType}
             />
-            {showSignaturField && (
+            {/*
+              //TODO - ModelEditor skal i utgangspunktet kun være for SaksbehandlerValg.
+              // designet skal ha signatur felt på 'samme sted', altså med editoren.
+              //Den skal ikke brukes ved opprettelse av brev, men kun når man redigerer brevet. Derfor
+              //gjør vi en enkel fiks for å skjule signatur feltet ved opprettelse av brev.
+              */}
+            {!showOnlyRequiredFields && (
               <AutoSavingTextField
                 field={"signatur"}
                 fieldType={{
