@@ -81,15 +81,9 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                 }
                 paragraph {
                     text(
-                        Bokmal to "• Du kan få barnepensjon til du blir 20 år. Tidligere hovedregel var 18 år.",
-                        Nynorsk to "• Du kan få barnepensjon til du fyller 20 år. Tidlegare var grensa normalt 18 år.",
-                        English to "• Children’s pension can now be granted up to age 20. Previously, the benefit was granted up to age 18.",
-                    )
-                    newline()
-                    text(
-                        Bokmal to "• Du må som hovedregel være medlem i folketrygden.",
-                        Nynorsk to "• Du må som hovudregel vere medlem i folketrygda.",
-                        English to "• Normally, you must be a member of the Norwegian National Insurance scheme.",
+                        Bokmal to "Du kan få barnepensjon til du blir 20 år. Tidligere hovedregel var 18 år. I tillegg må du som hovedregel være medlem i folketrygden.",
+                        Nynorsk to "Du kan få barnepensjon til du fyller 20 år. Tidlegare var grensa normalt 18 år. I tillegg må du som hovudregel vere medlem i folketrygda.",
+                        English to "Children’s pension can now be granted up to age 20. Previously, the benefit was granted up to age 18. Normally, you must be a member of the Norwegian National Insurance scheme.",
                     )
                 }
 
