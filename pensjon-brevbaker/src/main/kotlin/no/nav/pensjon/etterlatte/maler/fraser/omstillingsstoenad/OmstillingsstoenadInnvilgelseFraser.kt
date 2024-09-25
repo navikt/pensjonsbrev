@@ -343,7 +343,7 @@ object OmstillingsstoenadInnvilgelseFraser {
             paragraph {
                 textExpr(
                     Bokmal to "Formålet med omstillingsstønaden er å sikre deg inntekt og gi hjelp ".expr() +
-                            "til selvhjelp, slik at du etter en omstillingsperiode etter" +
+                            "til selvhjelp, slik at du etter en omstillingsperiode etter " +
                             ifElse(tidligereFamiliepleier, "at pleieforholdet opphørte,", "dødsfallet") +
                             " kan bli i stand til å forsørge deg selv ved eget arbeid.",
                     Nynorsk to "Føremålet med omstillingsstønaden er å sikre deg inntekt og gi ".expr() +
