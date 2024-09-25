@@ -166,9 +166,9 @@ function RedigerBrev({
   const redigertBrevMutation = useHurtiglagreMutation(
     brev.info.id,
     setEditorState,
-    (brevId, editedLetter: EditedLetter) => {
+    (brevId, args: { redigertBrev: EditedLetter; frigiReservasjon?: boolean }) => {
       applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
-      return hurtiglagreBrev(brevId, editedLetter);
+      return hurtiglagreBrev(brevId, args.redigertBrev, args.frigiReservasjon);
     },
   );
 
@@ -189,7 +189,7 @@ function RedigerBrev({
   useEffect(() => {
     const timoutId = setTimeout(() => {
       if (editorState.isDirty) {
-        redigertBrevMutation.mutate(editorState.redigertBrev);
+        redigertBrevMutation.mutate({ redigertBrev: editorState.redigertBrev });
       }
     }, 5000);
     return () => clearTimeout(timoutId);
@@ -270,7 +270,7 @@ function RedigerBrev({
                   transform: scaleX(-1);
                 `}
                 fontSize="1.5rem"
-                title="Tilbakestill mall"
+                title="Tilbakestill mal"
               />
               Tilbakestill malen
             </HStack>
@@ -287,13 +287,20 @@ function RedigerBrev({
               Tilbake til brevvelger
             </Button>
             <Button
-              loading={redigertBrevMutation.isPending}
+              loading={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
               onClick={async () => {
-                await redigertBrevMutation.mutateAsync(editorState.redigertBrev, {
-                  onSuccess: () => {
-                    navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: saksId } });
+                await redigertBrevMutation.mutateAsync(
+                  { redigertBrev: editorState.redigertBrev, frigiReservasjon: true },
+                  {
+                    onSuccess: () => {
+                      navigate({
+                        to: "/saksnummer/$saksId/brevbehandler",
+                        params: { saksId },
+                        search: { brevId: brev.info.id.toString() },
+                      });
+                    },
                   },
-                });
+                );
               }}
               size="small"
               type="button"
