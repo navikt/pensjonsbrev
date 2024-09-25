@@ -10,7 +10,7 @@ describe("Kvittering", () => {
     cy.url().should("eq", "http://localhost:5173/saksnummer");
   });
   it("lager nytt brev for bruker", () => {
-    cy.get("button").contains("Lage nytt brev på denne brukeren").click();
+    cy.get("button").contains("Lage nytt brev på denne saken").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevvelger");
   });
 });
