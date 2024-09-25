@@ -88,11 +88,11 @@ const BrevmalBrevbaker = (properties: {
                 )}
               </HStack>
             </VStack>
+            <SelectEnhet />
             <SelectLanguage
               preferredLanguage={properties.preferredLanguage}
               sorterteSpråk={properties.displayLanguages}
             />
-            <SelectEnhet />
           </VStack>
           <Button
             css={css`
