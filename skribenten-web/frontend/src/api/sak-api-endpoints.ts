@@ -28,11 +28,19 @@ export const hentPdfForBrev = {
 
 export const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) =>
   (
-    await axios.get<Blob>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
-      responseType: "blob",
-      headers: { Accept: "application/pdf" },
-    })
-  ).data;
+    await axios
+      .get<Blob>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
+        responseType: "blob",
+        headers: { Accept: "application/pdf" },
+      })
+      .catch((error) => {
+        if (error?.response?.status === 404) {
+          return null;
+        } else {
+          throw error;
+        }
+      })
+  )?.data ?? null;
 
 export const delvisOppdaterBrev = async (argz: DelvisOppdaterBrevRequest) =>
   (

@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import { Label, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 
 import { hentPdfForBrev, hentPdfForBrevFunction } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
@@ -9,7 +8,7 @@ import { ApiError } from "~/components/ApiError";
 import PDFViewer from "../-components/PDFViewer";
 
 export const BrevForhåndsvisning = (properties: { sakId: string; brevId: string }) => {
-  const hentPdfQuery = useQuery<Blob, AxiosError>({
+  const hentPdfQuery = useQuery({
     queryKey: hentPdfForBrev.queryKey(properties.brevId),
     queryFn: () => hentPdfForBrevFunction(properties.sakId, properties.brevId),
   });
@@ -27,10 +26,8 @@ export const BrevForhåndsvisning = (properties: { sakId: string; brevId: string
           <Label>Henter brev...</Label>
         </VStack>
       )}
-      {hentPdfQuery.isError && hentPdfQuery.error?.status === 404 && (
-        <ApiError error={hentPdfQuery.error} title={"Kunne ikke hente PDF"} />
-      )}
-      {hentPdfQuery.isSuccess && (
+      {hentPdfQuery.isError && <ApiError error={hentPdfQuery.error} title={"Kunne ikke hente PDF"} />}
+      {hentPdfQuery.isSuccess && hentPdfQuery.data !== null && (
         <PDFViewer
           brevId={properties.brevId}
           pdf={hentPdfQuery.data}
