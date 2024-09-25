@@ -22,7 +22,7 @@ object Constants {
     const val BP_SKATTETREKK = "$NAV_URL/barnepensjon#skattetrekk"
     const val SKATTETREKK_ETTERBETALING_URL = "$NAV_URL/skattetrekk#etterbetaling"
     const val SKATTETREKK_KILDESKATT_URL = "$NAV_URL/skattetrekk#kildeskatt"
-    const val OMS_ETTEROPPGJOER_URL = "$NAV_URL/omstillingsstonad#etteroppgjør"
+    const val OMS_ETTEROPPGJOER_URL = "$NAV_URL/omstillingsstonad#etteroppgjor"
     const val OMS_HVORLENGE_URL = "$NAV_URL/omstillingsstonad#hvor-lenge"
     const val OMS_AKTIVITET_URL = "$NAV_URL/omstillingsstonad#aktivitet"
     const val OMS_ANDRE_STOENADER_URL = "$NAV_URL/omstillingsstonad#andre-stonader"
