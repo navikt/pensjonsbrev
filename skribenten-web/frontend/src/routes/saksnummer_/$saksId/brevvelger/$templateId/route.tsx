@@ -8,6 +8,7 @@ import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
+import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import BrevmalBrevbaker from "./-components/BrevmalBrevbaker";
 import BrevmalForDoksys from "./-components/BrevmalDoksys";
@@ -94,7 +95,7 @@ function Brevmal({
     Samtidig, er det behov å bruke denne for å sjekke hva defaultValue skal være
     */
   const displayLanguages = useMemo(() => {
-    return letterTemplate.spraak.toSorted();
+    return letterTemplate.spraak.toSorted((a, b) => SPRAAK_ENUM_TO_TEXT[a].localeCompare(SPRAAK_ENUM_TO_TEXT[b]));
   }, [letterTemplate.spraak]);
 
   const defaultValues = useMemo(() => {
