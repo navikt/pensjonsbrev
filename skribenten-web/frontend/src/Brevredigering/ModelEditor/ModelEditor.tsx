@@ -25,7 +25,7 @@ export type ModelEditorProperties = {
   // designet skal ha signatur felt på 'samme sted', altså med editoren.
   //Den skal ikke brukes ved opprettelse av brev, men kun når man redigerer brevet. Derfor
   //gjør vi en enkel fiks for å skjule signatur feltet ved opprettelse av brev.
-  showSignaturField?: boolean;
+  onlyRequiredFields?: boolean;
 };
 
 export const ModelEditor = ({
@@ -36,7 +36,7 @@ export const ModelEditor = ({
   saksId,
   vedtaksId,
   brevId,
-  showSignaturField,
+  onlyRequiredFields,
 }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
@@ -58,6 +58,7 @@ export const ModelEditor = ({
 
   if (specification) {
     const saksbehandlerValgType = findSaksbehandlerValgTypeName(specification);
+
     return (
       <>
         <FormProvider {...methods}>
@@ -77,10 +78,11 @@ export const ModelEditor = ({
             <Heading size="small">{brevmal.data?.name}</Heading>
             <ObjectEditor
               brevkode={brevkode}
+              onlyRequiredFields={onlyRequiredFields}
               submitOnChange={brevId ? requestSubmit : undefined}
               typeName={saksbehandlerValgType}
             />
-            {showSignaturField && (
+            {!onlyRequiredFields && (
               <AutoSavingTextField
                 field={"signatur"}
                 fieldType={{

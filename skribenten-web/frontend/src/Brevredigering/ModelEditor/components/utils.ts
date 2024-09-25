@@ -1,5 +1,7 @@
 import { capitalize, startCase } from "lodash";
 
+import type { FieldType } from "~/types/brevbakerTypes";
+
 export function convertFieldToReadableLabel(field: string) {
   const lastFragment = field.split(".").at(-1);
   return capitalize(startCase(lastFragment));
@@ -17,3 +19,7 @@ export function getFieldDefaultValue(defaults: { [x: string]: any } | undefined,
   }
   return defaults[fieldName];
 }
+
+export const isBooleanField = (fieldType: FieldType) => fieldType.type === "scalar" && fieldType.kind === "BOOLEAN";
+
+export const isFieldNullableOrBoolean = (fieldType: FieldType) => fieldType.nullable || isBooleanField(fieldType);

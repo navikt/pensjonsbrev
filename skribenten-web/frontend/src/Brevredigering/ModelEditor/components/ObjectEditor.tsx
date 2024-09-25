@@ -6,7 +6,11 @@ import { useFormContext } from "react-hook-form";
 import { useModelSpecification } from "~/api/brev-queries";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
+import {
+  convertFieldToReadableLabel,
+  getFieldDefaultValue,
+  isFieldNullableOrBoolean,
+} from "~/Brevredigering/ModelEditor/components/utils";
 import type { FieldType } from "~/types/brevbakerTypes";
 
 const FieldEditor = ({
@@ -55,9 +59,16 @@ export type ObjectEditorProperties = {
   typeName: string;
   parentFieldName?: string;
   submitOnChange?: () => void;
+  onlyRequiredFields?: boolean;
 };
 
-export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
+export const ObjectEditor = ({
+  brevkode,
+  typeName,
+  parentFieldName,
+  submitOnChange,
+  onlyRequiredFields,
+}: ObjectEditorProperties) => {
   const objectTypeSpecification = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
   return (
@@ -65,6 +76,9 @@ export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChan
       {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
         const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
 
+        if (onlyRequiredFields && isFieldNullableOrBoolean(fieldType)) {
+          return null;
+        }
         return (
           <FieldEditor
             brevkode={brevkode}
@@ -84,6 +98,7 @@ function ToggleableObjectEditor({
   parentFieldName,
   typeName,
   submitOnChange,
+  onlyRequiredFields,
 }: ObjectEditorProperties & { parentFieldName: string }) {
   const {
     formState: { defaultValues },
@@ -120,6 +135,7 @@ function ToggleableObjectEditor({
         >
           <ObjectEditor
             brevkode={brevkode}
+            onlyRequiredFields={onlyRequiredFields}
             parentFieldName={parentFieldName}
             submitOnChange={submitOnChange}
             typeName={typeName}
