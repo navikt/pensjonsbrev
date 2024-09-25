@@ -102,7 +102,7 @@ describe("Brevvelger spec", () => {
 
   it("Bestill Doksys brev", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/doksys", (request) => {
-      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "EN", enhetsId: "4405" });
+      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "NB", enhetsId: "4405" });
       request.reply({ fixture: "bestillBrevDoksys.json" });
     }).as("bestill doksys");
 
