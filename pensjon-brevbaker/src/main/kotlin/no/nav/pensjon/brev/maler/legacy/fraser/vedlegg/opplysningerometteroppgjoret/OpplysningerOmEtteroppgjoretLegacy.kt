@@ -682,19 +682,19 @@ value =returnVal*/
 
                 paragraph {
                     table(header = {
-                        column( columnSpan = 3 ){
+                        column( columnSpan = 5 ){
                             text (
                                 Bokmal to "Type stønad",
                                 Nynorsk to "Type stønad",
                             )
                         }
-                        column (alignment = RIGHT, columnSpan = 3){
+                        column (alignment = RIGHT, columnSpan = 6){
                             text (
                                 Bokmal to "Dette skulle du ha fått ut fra inntektsopplysninger fra Skatteetaten",
                                 Nynorsk to "Dette skulle du ha fått ut frå inntektsopplysningar frå Skatteetaten",
                             )
                         }
-                        column (alignment = RIGHT, columnSpan = 2 ){
+                        column (alignment = RIGHT, columnSpan = 4 ){
                             text (
                                 Bokmal to "Dette fikk du i ",
                                 Nynorsk to "Dette fekk du i ",
@@ -724,7 +724,7 @@ value =returnVal*/
                                 )
                             }
                         }
-                        column( alignment = RIGHT, columnSpan = 2){
+                        column( alignment = RIGHT, columnSpan = 4){
                             text (
                                 Bokmal to "Beløp du har fått for mye eller for lite",
                                 Nynorsk to "Beløp du har fått for mykje eller for lite",
@@ -831,40 +831,57 @@ value =returnVal*/
                                 }
                             }
                         }
+                        //PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "tilbakekr"
+                        showIf(pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("tilbakekr")){
+                            //[Table 6, Table 7, Table 5]
 
-                    }
-                }
+                            row {
+                                cell {
+                                    textExpr (
+                                        Bokmal to "Beløpet du har fått for mye i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ":",
+                                        Nynorsk to "Beløpet du har fått for mykje i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ":",
+                                        BOLD
+                                    )
+                                }
+                                cell {  }
+                                cell {  }
+                                cell {
+                                    textExpr(
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
+                                        BOLD
+                                    )
+                                }
+                            }
+                        }
 
+                        //PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "etterbet"
+                        showIf(pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("etterbet")){
+                            //[Table 6, Table 7, Table 5]
 
-                //PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "tilbakekr"
-                showIf(pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("tilbakekr")){
-                    //[Table 6, Table 7, Table 5]
-
-                    paragraph {
-                        textExpr (
-                            Bokmal to "Beløpet du har fått for mye i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ":" + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
-                            Nynorsk to "Beløpet du har fått for mykje i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ":" + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
-                            BOLD
-                        )
-                    }
-                }
-
-                //PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "etterbet"
-                showIf(pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("etterbet")){
-                    //[Table 6, Table 7, Table 5]
-
-                    paragraph {
-                        textExpr (
-                            Bokmal to "Beløpet du har fått for lite i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ":" + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
-                            Nynorsk to "Beløpet du har fått for lite i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ":" + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
-                            BOLD
-                        )
+                            row {
+                                cell {
+                                    textExpr (
+                                        Bokmal to "Beløpet du har fått for lite i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ":",
+                                        Nynorsk to "Beløpet du har fått for lite i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ":",
+                                        BOLD
+                                    )
+                                }
+                                cell {  }
+                                cell {  }
+                                cell {
+                                    textExpr(
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
+                                        BOLD
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
-
         }
-
     }
 
     data class TabellBeloepFratrukketInntektAnnenForelder(
@@ -883,25 +900,25 @@ value =returnVal*/
                 }
                 paragraph {
                     table(header = {
-                        column {
+                        column(columnSpan = 3) {
                             text(
                                 Bokmal to "Fradragstype",
                                 Nynorsk to "Frådragstype",
                             )
                         }
-                        column {
+                        column(columnSpan = 5) {
                             text(
                                 Bokmal to "Årsak til at inntekt er trukket fra",
                                 Nynorsk to "Årsak til at inntekt er trekt frå",
                             )
                         }
-                        column {
+                        column(columnSpan = 2) {
                             text(
                                 Bokmal to "Mottatt av",
                                 Nynorsk to "Motteken av",
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(columnSpan = 2 ,alignment = RIGHT) {
                             text(
                                 Bokmal to "Beløp",
                                 Nynorsk to "Beløp",
@@ -1001,19 +1018,19 @@ value =returnVal*/
 
                 paragraph {
                     table(header = {
-                        column {
+                        column(columnSpan = 3) {
                             text(
                                 Bokmal to "Inntektstyper",
                                 Nynorsk to "Inntektstypar",
                             )
                         }
-                        column {
+                        column(columnSpan = 3) {
                             text(
                                 Bokmal to "Mottatt av",
                                 Nynorsk to "Motteken av",
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(columnSpan = 2, alignment = RIGHT) {
                             text(
                                 Bokmal to "Registrert inntekt",
                                 Nynorsk to "Registrert inntekt",
@@ -1094,20 +1111,20 @@ value =returnVal*/
                 paragraph {
                     table(
                         header = {
-                            column {
+                            column(columnSpan = 3) {
                                 text(
                                     Bokmal to "Inntektstyper",
                                     Nynorsk to "Inntektstypar",
                                 )
                             }
 
-                            column {
+                            column(columnSpan = 3) {
                                 text(
                                     Bokmal to "Mottatt av",
                                     Nynorsk to "Motteken av",
                                 )
                             }
-                            column(alignment = RIGHT) {
+                            column(columnSpan = 2, alignment = RIGHT) {
                                 text(
                                     Bokmal to "Registrert inntekt",
                                     Nynorsk to "Registrert inntekt",
@@ -1232,6 +1249,7 @@ value =returnVal*/
                                     text(
                                         Bokmal to "Sum personinntekt",
                                         Nynorsk to "Sum personinntekt",
+                                        BOLD
                                     )
                                 }
                                 cell {}
@@ -1239,6 +1257,7 @@ value =returnVal*/
                                     textExpr(
                                         Bokmal to pe.ut_sum_inntekterbt_totalbeloput().format() + " kr",
                                         Nynorsk to pe.ut_sum_inntekterbt_totalbeloput().format() + " kr",
+                                        BOLD
                                     )
                                 }
                             }

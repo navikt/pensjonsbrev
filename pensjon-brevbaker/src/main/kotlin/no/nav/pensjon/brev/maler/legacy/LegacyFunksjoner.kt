@@ -99,9 +99,8 @@ fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Exp
             date.ifNull(LocalDate.of(2020, 2, 2)).day.equalTo(1)
 
 
-// TODO kjør hypotese-test på denne
 fun FUNKSJON_Year(date: Expression<LocalDate?>): Expression<Int> =
-    date.ifNull(LocalDate.of(1000,1,1)).year
+    date.ifNull(LocalDate.of(1000,1,1)).year // I exstream er Year(null) = 1000
 
 
 
