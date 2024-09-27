@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 
 import { getEnheter } from "~/api/skribenten-api-endpoints";
 
-import { Route } from "../route";
+import { Route } from "../../../route";
 
 function SelectEnhet() {
   const enheterQuery = useQuery(getEnheter);

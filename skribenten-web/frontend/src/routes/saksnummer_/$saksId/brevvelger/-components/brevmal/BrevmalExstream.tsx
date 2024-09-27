@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -12,14 +12,14 @@ import type { SpraakKode } from "~/types/apiTypes";
 import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import { Route } from "../route";
-import BestillOgRedigerButton from "./BestillOgRedigerButton";
-import EndreMottaker from "./endreMottaker/EndreMottaker";
-import HentOgVisAdresse from "./endreMottaker/HentOgVisAdresse";
-import LetterTemplateHeading from "./LetterTemplate";
-import SelectEnhet from "./SelectEnhet";
-import SelectLanguage from "./SelectLanguage";
-import SelectSensitivity from "./SelectSensitivity";
+import { Route } from "../../route";
+import EndreMottaker from "../endreMottaker/EndreMottaker";
+import HentOgVisAdresse from "../endreMottaker/HentOgVisAdresse";
+import BrevmalFormWrapper, { OrderLetterResult, useSubmitBrevmalButton } from "./components/BrevmalFormWrapper";
+import LetterTemplateHeading from "./components/LetterTemplate";
+import SelectEnhet from "./components/SelectEnhet";
+import SelectLanguage from "./components/SelectLanguage";
+import SelectSensitivity from "./components/SelectSensitivity";
 import { byggExstreamOnSubmitRequest, createValidationSchema } from "./TemplateUtils";
 
 export default function BrevmalForExstream({
@@ -27,6 +27,9 @@ export default function BrevmalForExstream({
   preferredLanguage,
   displayLanguages,
   defaultValues,
+  templateId,
+  saksId,
+  setNestebutton,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: Nullable<SpraakKode>;
@@ -37,10 +40,12 @@ export default function BrevmalForExstream({
     spraak: SpraakKode;
     enhetsId: string;
   };
+  templateId: string;
+  saksId: string;
+  setNestebutton: (el: React.ReactNode) => void;
 }) {
-  const { templateId, saksId } = Route.useParams();
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
-
+  const formRef = useRef<HTMLFormElement>(null);
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
     onSuccess: (callbackUrl) => {
@@ -49,6 +54,12 @@ export default function BrevmalForExstream({
   });
 
   const validationSchema = createValidationSchema(letterTemplate);
+
+  useSubmitBrevmalButton({
+    onClick: () => formRef.current?.requestSubmit(),
+    onMount: setNestebutton,
+    status: orderLetterMutation.status,
+  });
 
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,
@@ -61,14 +72,15 @@ export default function BrevmalForExstream({
     //ved template endring vil vi resette formet - men beholde preferredLanguage hvis den finnes
     resetForm(defaultValues);
     resetMutation();
-  }, [templateId, defaultValues, resetMutation, resetForm]);
+  }, [templateId, defaultValues, resetForm, resetMutation]);
 
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Divider />
       <FormProvider {...methods}>
-        <form
+        <BrevmalFormWrapper
+          formRef={formRef}
           onSubmit={methods.handleSubmit((submittedValues) =>
             orderLetterMutation.mutate(
               byggExstreamOnSubmitRequest({
@@ -85,36 +97,34 @@ export default function BrevmalForExstream({
             ),
           )}
         >
-          <VStack gap="8">
-            {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
-            {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && (
-              <VStack gap="2">
-                <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} showMottakerTitle />
-                <EndreMottaker />
-              </VStack>
-            )}
+          {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
+          {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && (
+            <VStack gap="2">
+              <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} showMottakerTitle />
+              <EndreMottaker />
+            </VStack>
+          )}
 
-            <SelectEnhet />
-            {letterTemplate.redigerbarBrevtittel && (
-              <TextField
-                {...methods.register("brevtittel")}
-                autoComplete="on"
-                data-cy="brev-title-textfield"
-                description="Gi brevet en kort og forklarende tittel."
-                error={methods.formState.errors.brevtittel?.message}
-                label="Endre tittel"
-                size="small"
-              />
-            )}
-            {/* Utfylling av språk vil vi ikke gjøre dersom templaten er 'Notat' */}
-            {letterTemplate.id !== "PE_IY_03_156" && (
-              <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
-            )}
-            <SelectSensitivity />
-          </VStack>
+          <SelectEnhet />
+          {letterTemplate.redigerbarBrevtittel && (
+            <TextField
+              {...methods.register("brevtittel")}
+              autoComplete="on"
+              data-cy="brev-title-textfield"
+              description="Gi brevet en kort og forklarende tittel."
+              error={methods.formState.errors.brevtittel?.message}
+              label="Endre tittel"
+              size="small"
+            />
+          )}
+          {/* Utfylling av språk vil vi ikke gjøre dersom templaten er 'Notat' */}
+          {letterTemplate.id !== "PE_IY_03_156" && (
+            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
+          )}
+          <SelectSensitivity />
+        </BrevmalFormWrapper>
 
-          <BestillOgRedigerButton orderMutation={orderLetterMutation} />
-        </form>
+        <OrderLetterResult data={orderLetterMutation.data} error={orderLetterMutation.error} />
       </FormProvider>
     </>
   );

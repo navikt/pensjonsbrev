@@ -1,8 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -10,12 +9,12 @@ import { orderDoksysLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/types/apiTypes";
 
-import { Route } from "../route";
-import BestillOgRedigerButton from "./BestillOgRedigerButton";
-import HentOgVisAdresse from "./endreMottaker/HentOgVisAdresse";
-import LetterTemplateHeading from "./LetterTemplate";
-import SelectEnhet from "./SelectEnhet";
-import SelectLanguage from "./SelectLanguage";
+import { Route } from "../../route";
+import HentOgVisAdresse from "../endreMottaker/HentOgVisAdresse";
+import BrevmalFormWrapper, { OrderLetterResult, useSubmitBrevmalButton } from "./components/BrevmalFormWrapper";
+import LetterTemplateHeading from "./components/LetterTemplate";
+import SelectEnhet from "./components/SelectEnhet";
+import SelectLanguage from "./components/SelectLanguage";
 import { byggDoksysOnSubmitRequest, createValidationSchema } from "./TemplateUtils";
 
 export default function BrevmalForDoksys({
@@ -23,6 +22,9 @@ export default function BrevmalForDoksys({
   preferredLanguage,
   displayLanguages,
   defaultValues,
+  templateId,
+  saksId,
+  setNestebutton,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: SpraakKode | null;
@@ -33,10 +35,12 @@ export default function BrevmalForDoksys({
     spraak: SpraakKode;
     enhetsId: string;
   };
+  templateId: string;
+  saksId: string;
+  setNestebutton: (el: React.ReactNode) => void;
 }) {
-  const { templateId, saksId } = Route.useParams();
+  const formRef = useRef<HTMLFormElement>(null);
   const { vedtaksId } = Route.useSearch();
-
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderDoksysLetterRequest>({
     mutationFn: (payload) => orderDoksysLetter(saksId, payload),
     onSuccess: (callbackUrl) => {
@@ -45,6 +49,12 @@ export default function BrevmalForDoksys({
   });
 
   const validationSchema = createValidationSchema(letterTemplate);
+
+  useSubmitBrevmalButton({
+    onClick: () => formRef.current?.requestSubmit(),
+    onMount: setNestebutton,
+    status: orderLetterMutation.status,
+  });
 
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,
@@ -64,7 +74,8 @@ export default function BrevmalForDoksys({
       <Divider />
       <HentOgVisAdresse sakId={saksId} showMottakerTitle />
       <FormProvider {...methods}>
-        <form
+        <BrevmalFormWrapper
+          formRef={formRef}
           onSubmit={methods.handleSubmit((submittedValues) =>
             orderLetterMutation.mutate(
               byggDoksysOnSubmitRequest({
@@ -80,13 +91,10 @@ export default function BrevmalForDoksys({
             ),
           )}
         >
-          <VStack gap="8">
-            <SelectEnhet />
-            <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
-          </VStack>
-
-          <BestillOgRedigerButton orderMutation={orderLetterMutation} />
-        </form>
+          <SelectEnhet />
+          <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
+        </BrevmalFormWrapper>
+        <OrderLetterResult data={orderLetterMutation.data} error={orderLetterMutation.error} />
       </FormProvider>
     </>
   );

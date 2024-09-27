@@ -9,7 +9,7 @@ import { SpraakKode } from "~/types/apiTypes";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
-import { useMottakerContext } from "./brevvelger/$templateId/-components/MottakerContext";
+import { useMottakerContext } from "./brevvelger/-components/endreMottaker/MottakerContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/")({
   validateSearch: (
