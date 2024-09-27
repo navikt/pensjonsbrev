@@ -73,17 +73,11 @@ object OmstillingsstoenadInnvilgelseFraser {
                     paragraph {
                         textExpr(
                             Bokmal to "Du får ".expr() + utbetaltBeloep.format() +
-                                    " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() +
-                                    ". Se utbetalingsbeløp for tidligere perioder i vedlegget " +
-                                    "«Etterbetaling av omstillingsstønad».",
+                                    " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ".",
                             Nynorsk to "Du får ".expr() + utbetaltBeloep.format() + " kroner kvar månad før " +
-                                    "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". " +
-                                    "Utbetalte beløp for tidlegare periodar står i vedlegget " +
-                                    "«Etterbetaling av omstillingsstønad».",
+                                    "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". ",
                             English to "You will receive NOK ".expr() + utbetaltBeloep.format() + " each " +
-                                    "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ". " +
-                                    "See the payment amount for previous periods in the attachment " +
-                                    "Back Payments."
+                                    "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ". ",
                         )
                     }
                 }.orShow {
