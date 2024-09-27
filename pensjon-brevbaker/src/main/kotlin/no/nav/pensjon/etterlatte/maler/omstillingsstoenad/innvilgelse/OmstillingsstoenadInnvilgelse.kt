@@ -94,6 +94,4 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
 
         includeAttachment(dineRettigheterOgPlikter, beregning)
     }
-
-
 }
