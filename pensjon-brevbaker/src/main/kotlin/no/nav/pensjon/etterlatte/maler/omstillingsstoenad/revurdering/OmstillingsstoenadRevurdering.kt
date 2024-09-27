@@ -140,10 +140,15 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
             includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
             includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
+
         }
 
-        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier.equals(true)), beregning)
-        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier.equals(true)), innhold)
+        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = true), beregning, tidligereFamiliepleier)
+        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = false), beregning, tidligereFamiliepleier.not())
+
+        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = true), innhold, tidligereFamiliepleier)
+        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = false), innhold, tidligereFamiliepleier.not())
+
         includeAttachment(dineRettigheterOgPlikter, innhold)
         includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }

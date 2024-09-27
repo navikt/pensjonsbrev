@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -87,9 +86,12 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
             includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
+        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = true), beregning, tidligereFamiliepleier)
+        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = false), beregning, tidligereFamiliepleier.not())
 
-        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier.equals(true)), beregning)
-        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier.equals(true)), innhold)
+        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = true), innhold, tidligereFamiliepleier)
+        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = false), innhold, tidligereFamiliepleier.not())
+
         includeAttachment(dineRettigheterOgPlikter, beregning)
     }
 
