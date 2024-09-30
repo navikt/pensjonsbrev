@@ -36,6 +36,8 @@ interface Brevkode {
         PE_VARSEL_OM_MULIG_AVSLAG,
         UT_AVSLAG_UFOERETRYGD,
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
+        PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER,
+        PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER,
         ;
 
         override fun kode(): String = this.name
