@@ -1,6 +1,6 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
-import { Accordion, Alert, BodyShort, Button, Heading, HStack, Search, VStack } from "@navikt/ds-react";
+import { Accordion, Alert, BodyShort, Button, Heading, HStack, Label, Search, VStack } from "@navikt/ds-react";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -209,7 +209,9 @@ function Brevmaler({
                 justify-content: space-between;
               `}
             >
-              <HStack gap="2">Kladder</HStack>
+              <HStack gap="2">
+                <Label size="small">Kladder</Label>
+              </HStack>
             </Accordion.Header>
             <Accordion.Content>
               <div
@@ -241,7 +243,7 @@ function Brevmaler({
                         <BrevSystemIcon
                           brevsystem={letterTemplates.find((template) => template.id === brev.brevkode)?.brevsystem}
                         />
-                        {brev.brevtittel}
+                        <BodyShort size="small">{brev.brevtittel}</BodyShort>
                       </HStack>
                     }
                   />
@@ -271,7 +273,7 @@ function Brevmaler({
                   justify-content: space-between;
                 `}
               >
-                {type}
+                <Label size="small">{type}</Label>
               </Accordion.Header>
               <Accordion.Content>
                 <div
@@ -299,7 +301,8 @@ function Brevmaler({
                       }}
                       title={
                         <HStack align="center" gap="2">
-                          <BrevSystemIcon brevsystem={template.brevsystem} /> <BodyShort>{template.name}</BodyShort>
+                          <BrevSystemIcon brevsystem={template.brevsystem} />{" "}
+                          <BodyShort size="small">{template.name}</BodyShort>
                         </HStack>
                       }
                     />
@@ -364,12 +367,13 @@ const BrevmalButton = (props: {
       variant="tertiary"
     >
       <HStack justify={"space-between"}>
-        <div>{props.title}</div>
+        {props.title}
         {props.description && (
           <BodyShort
             css={css`
               color: var(--a-gray-600);
             `}
+            size="small"
           >
             {props.description}
           </BodyShort>

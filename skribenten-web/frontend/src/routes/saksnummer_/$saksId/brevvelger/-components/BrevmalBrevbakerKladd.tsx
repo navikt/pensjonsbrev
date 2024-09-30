@@ -112,10 +112,11 @@ const Brevmal = (props: {
           <EndreMottakerMedOppsummeringOgApiHåndtering brev={props.brev} saksId={props.saksId} withOppsummeringTitle />
           <Oppsummeringspar
             boldedTitle
+            size="small"
             tittel={"Avsenderenhet"}
             verdi={props.brev.avsenderEnhet?.navn ?? "Enhet er ikke registrert i brevet"}
           />
-          <Oppsummeringspar boldedTitle tittel={"Språk"} verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
+          <Oppsummeringspar boldedTitle size="small" tittel={"Språk"} verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
         </VStack>
       </VStack>
     </div>
