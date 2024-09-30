@@ -6,6 +6,8 @@ import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntekt
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.redigerbar.InnhentningDokumentasjonFraBruker
+import no.nav.pensjon.brev.maler.redigerbar.InnhentningOpplysningerFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -34,5 +36,7 @@ object ProductionTemplates {
     val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         InformasjonOmSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
+        InnhentningOpplysningerFraBruker,
+        InnhentningDokumentasjonFraBruker,
     )
 }
