@@ -576,9 +576,7 @@ describe("Brevvelger spec", () => {
       cy.contains("Ja, slett kladden").click();
       cy.wait("@deleteKladd");
       cy.wait("@getAlleBrevForSak");
-      //TODO - trigger rerender. Se kommentar i PDFViewerTopBar.tsx/SlettBrevModal
-      cy.contains("Informasjon om saksbehandlingstid").click();
-      cy.contains("Brev med id 1 ble ikke funnet").click();
+      cy.contains("Informasjon om saksbehandlingstid").should("not.be.visible");
     });
   });
 });

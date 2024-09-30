@@ -55,7 +55,7 @@ describe("Brevbehandler", () => {
     //åpner brevet
     cy.contains(kladdBrev.brevtittel).click();
     //brev med id 1
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
 
     //verifiserer innhold før / etter lås
     cy.contains("Fortsett redigering").should("be.visible");
@@ -112,8 +112,7 @@ describe("Brevbehandler", () => {
 
     //åpner brevet
     cy.contains(kladdBrev.brevtittel).click();
-    //brev med id 1
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
 
     //verifiserer innhold før / etter lås
     cy.contains("Fortsett redigering").should("be.visible");
@@ -173,7 +172,7 @@ describe("Brevbehandler", () => {
     //åpner brevet
     cy.contains(kladdBrev.brevtittel).click();
     //brev med id 1
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
 
     //verifiserer innhold før / etter lås
     cy.contains("Fortsett redigering").should("be.visible");
@@ -273,7 +272,7 @@ describe("Brevbehandler", () => {
     });
 
     cy.contains(kladdBrev.brevtittel).click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
     cy.contains("Hello World").should("be.visible");
   });
 
@@ -289,7 +288,7 @@ describe("Brevbehandler", () => {
     });
 
     cy.contains(kladdBrev.brevtittel).click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=%221%22");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
     cy.contains("Slett").click();
     cy.contains("Vil du slette brevet?").should("be.visible");
     cy.contains("Ja, slett brevet").click();
