@@ -100,8 +100,8 @@ class ApiServiceTest {
     @Test
     fun `henter navn paa avsenderEnhet`(): Unit = runBlocking {
         val brev = createBrev(avsenderEnhetId = "1234")
-        coEvery { norg2Service.getEnhet(any(), eq("1234")) } returns NAVEnhet("1234", "En kul enhet")
-        assertThat(dto2ApiService.toApi(mockCall, brev).avsenderEnhet).isEqualTo(NAVEnhet("1234", "En kul enhet"))
+        coEvery { norg2Service.getEnhet(any(), eq("1234")) } returns NavEnhet("1234", "En kul enhet")
+        assertThat(dto2ApiService.toApi(mockCall, brev).avsenderEnhet).isEqualTo(NavEnhet("1234", "En kul enhet"))
     }
 
     @Test
