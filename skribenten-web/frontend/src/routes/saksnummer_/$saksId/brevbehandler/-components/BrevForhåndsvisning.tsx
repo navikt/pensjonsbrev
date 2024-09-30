@@ -7,7 +7,7 @@ import { ApiError } from "~/components/ApiError";
 
 import PDFViewer from "../-components/PDFViewer";
 
-export const BrevForhåndsvisning = (properties: { sakId: string; brevId: string }) => {
+export const BrevForhåndsvisning = (properties: { sakId: string; brevId: number }) => {
   const hentPdfQuery = useQuery({
     queryKey: hentPdfForBrev.queryKey(properties.brevId),
     queryFn: () => hentPdfForBrevFunction(properties.sakId, properties.brevId),

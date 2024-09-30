@@ -22,8 +22,8 @@ const hentAlleBrevForSakFunction = async (saksId: string) =>
   (await axios.get<BrevInfo[]>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`)).data;
 
 export const hentPdfForBrev = {
-  queryKey: (brevId: string) => ["hentPdfForBrev", brevId],
-  queryFn: async (saksId: string, brevId: string) => hentPdfForBrevFunction(saksId, brevId),
+  queryKey: (brevId: number) => ["hentPdfForBrev", brevId],
+  queryFn: async (saksId: string, brevId: number) => hentPdfForBrevFunction(saksId, brevId),
 };
 
 export const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) =>

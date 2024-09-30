@@ -11,7 +11,7 @@ import { Route } from "../route";
 
 const PDFViewerTopBar = (properties: {
   sakId: string;
-  brevId: string;
+  brevId: number;
   totalNumberOfPages: number;
   scale: number;
   setScale: (n: number) => void;

@@ -44,17 +44,17 @@ export default BrevbehandlerMeny;
 
 const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
   const { brevId } = Route.useSearch();
-  const [åpenBrevItem, setÅpenBrevItem] = useState<Nullable<string>>(brevId ?? null);
+  const [åpenBrevItem, setÅpenBrevItem] = useState<Nullable<number>>(brevId ?? null);
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const handleOpenChange = (brevId: string) => (isOpen: boolean) => {
+  const handleOpenChange = (brevId: number) => (isOpen: boolean) => {
     setÅpenBrevItem(isOpen ? brevId : null);
 
     if (isOpen) {
       navigate({
         to: "/saksnummer/$saksId/brevbehandler",
         params: { saksId: properties.saksId },
-        search: (s) => ({ ...s, brevId: brevId.toString() }),
+        search: (s) => ({ ...s, brevId: brevId }),
         replace: true,
       });
     } else {
@@ -77,8 +77,8 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
         <BrevItem
           brev={brev}
           key={brev.id}
-          onOpenChange={handleOpenChange(brev.id.toString())}
-          open={åpenBrevItem === brev.id.toString()}
+          onOpenChange={handleOpenChange(brev.id)}
+          open={åpenBrevItem === brev.id}
           saksId={properties.saksId}
         />
       ))}
