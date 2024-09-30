@@ -43,6 +43,7 @@ export function SamhandlerTypeSelect({
 
   const currentOption = options.find((option) => option.value === value);
 
+  //TODO - bruk aksels combobox istedenfor med size small
   return (
     <SelectLayoutWrapper description={description} error={error} htmlFor="samhandlerType" label="Samhandlertype">
       <BasicSelect

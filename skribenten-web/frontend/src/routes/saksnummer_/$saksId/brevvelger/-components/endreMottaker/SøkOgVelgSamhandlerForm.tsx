@@ -36,6 +36,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
               id={field.name}
               label="Søketype"
               {...field}
+              size="small"
               value={field.value ?? ""}
             >
               <option disabled value={""}>
@@ -87,6 +88,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
           align-self: flex-end;
         `}
         onClick={properties.onCloseIntent}
+        size="small"
         type="button"
         variant="tertiary"
       >
@@ -123,6 +125,7 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormDat
             id={field.name}
             label="Identtype"
             {...field}
+            size="small"
             value={field.value ?? ""}
           >
             <option value="">Klikk for å velge identtype</option>
@@ -139,7 +142,7 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormDat
         control={properties.control}
         name="finnSamhandler.direkteOppslag.id"
         render={({ field, fieldState }) => (
-          <TextField {...field} error={fieldState.error?.message} label="ID" value={field.value ?? ""} />
+          <TextField {...field} error={fieldState.error?.message} label="ID" size="small" value={field.value ?? ""} />
         )}
       />
     </VStack>
@@ -158,6 +161,7 @@ const SamhandlerOrganisasjonsnavn = (properties: { control: Control<CombinedForm
             label="Inn-/utland"
             {...field}
             error={fieldState.error?.message}
+            size="small"
             value={field.value ?? ""}
           >
             <option value={InnOgUtland.INNLAND}>Innland</option>
@@ -177,7 +181,7 @@ const SamhandlerOrganisasjonsnavn = (properties: { control: Control<CombinedForm
         control={properties.control}
         name="finnSamhandler.organisasjonsnavn.navn"
         render={({ field, fieldState }) => (
-          <TextField label="Navn" {...field} error={fieldState.error?.message} value={field.value ?? ""} />
+          <TextField label="Navn" {...field} error={fieldState.error?.message} size="small" value={field.value ?? ""} />
         )}
       />
     </VStack>
@@ -198,14 +202,26 @@ const SamhandlerPersonnavn = (properties: { control: Control<CombinedFormData> }
         control={properties.control}
         name="finnSamhandler.personnavn.fornavn"
         render={({ field, fieldState }) => (
-          <TextField label="Fornavn" {...field} error={fieldState.error?.message} value={field.value ?? ""} />
+          <TextField
+            label="Fornavn"
+            {...field}
+            error={fieldState.error?.message}
+            size="small"
+            value={field.value ?? ""}
+          />
         )}
       />
       <Controller
         control={properties.control}
         name="finnSamhandler.personnavn.etternavn"
         render={({ field, fieldState }) => (
-          <TextField label="Etternavn" {...field} error={fieldState.error?.message} value={field.value ?? ""} />
+          <TextField
+            label="Etternavn"
+            {...field}
+            error={fieldState.error?.message}
+            size="small"
+            value={field.value ?? ""}
+          />
         )}
       />
     </VStack>

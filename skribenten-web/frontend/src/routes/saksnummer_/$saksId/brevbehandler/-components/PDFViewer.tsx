@@ -70,6 +70,7 @@ const PDFViewer = (properties: { sakId: string; brevId: number; pdf: Blob; viewe
         height: ${properties.viewerHeight ? `${properties.viewerHeight}` : "auto"};
         overflow: scroll;
       `}
+      ref={pdfContainerReference}
     >
       <PDFViewerTopBar
         brevId={properties.brevId}
@@ -85,7 +86,6 @@ const PDFViewer = (properties: { sakId: string; brevId: number; pdf: Blob; viewe
           display: flex;
           justify-content: center;
         `}
-        ref={pdfContainerReference}
       >
         <Document
           file={properties.pdf}

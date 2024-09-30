@@ -23,7 +23,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   return (
     <VStack gap="6">
       <VStack gap="4">
-        <Alert variant="warning">
+        <Alert size="small" variant="warning">
           <Heading size="xsmall">Manuell adresseendringsrutine</Heading>
           <Link
             href="https://navno.sharepoint.com/sites/fag-og-ytelser-pensjon-alderspensjon/SitePages/Maler/Mal-for-rutiner.aspx "
@@ -32,7 +32,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
             Les rutinen for endring av adresse her {<ExternalLinkIcon />}
           </Link>
         </Alert>
-        <Alert variant="info">
+        <Alert size="small" variant="info">
           <BodyShort>
             Brev sendes til brukers folkeregistrerte adresse eller annen foretrukken kanal. Legg til mottaker dersom
             brev skal sendes til utenlandsk adresse, fullmektig, verge eller dødsbo.
@@ -42,14 +42,16 @@ const UtfyllingAvManuellAdresseForm = (properties: {
         <Controller
           control={properties.control}
           name="manuellAdresse.adresse.navn"
-          render={({ field, fieldState }) => <TextField label="Navn" {...field} error={fieldState.error?.message} />}
+          render={({ field, fieldState }) => (
+            <TextField label="Navn" {...field} error={fieldState.error?.message} size="small" />
+          )}
         />
 
         <Controller
           control={properties.control}
           name="manuellAdresse.adresse.linje1"
           render={({ field, fieldState }) => (
-            <TextField label="Adresselinje 1" {...field} error={fieldState.error?.message} />
+            <TextField label="Adresselinje 1" {...field} error={fieldState.error?.message} size="small" />
           )}
         />
 
@@ -57,7 +59,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           control={properties.control}
           name="manuellAdresse.adresse.linje2"
           render={({ field, fieldState }) => (
-            <TextField label="Adresselinje 2" {...field} error={fieldState.error?.message} />
+            <TextField label="Adresselinje 2" {...field} error={fieldState.error?.message} size="small" />
           )}
         />
 
@@ -73,6 +75,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                 label="Postnummer"
                 {...field}
                 error={fieldState.error?.message}
+                size="small"
               />
             )}
           />
@@ -87,6 +90,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                 label="Poststed"
                 {...field}
                 error={fieldState.error?.message}
+                size="small"
               />
             )}
           />
@@ -107,6 +111,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
 
                 return (
                   <>
+                    {/* TODO - bruk aksels combobox med size small */}
                     <SelectLayoutWrapper error={fieldState?.error} htmlFor="endre-mottaker-land-select" label="Land *">
                       <BasicSelect
                         inputId="endre-mottaker-land-select"

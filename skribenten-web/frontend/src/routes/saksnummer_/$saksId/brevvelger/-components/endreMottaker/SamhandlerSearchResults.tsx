@@ -63,7 +63,7 @@ export function SamhandlerSearchResults({
                   <Button
                     data-cy="velg-samhandler"
                     onClick={() => onSelect(samhandler.idTSSEkstern)}
-                    size="small"
+                    size="xsmall"
                     type="button"
                     variant="secondary-neutral"
                   >
