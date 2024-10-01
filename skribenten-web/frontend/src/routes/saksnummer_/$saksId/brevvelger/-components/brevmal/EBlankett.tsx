@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { BodyShort, TextField } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -10,8 +10,9 @@ import { orderEblankett } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderEblankettRequest } from "~/types/apiTypes";
 
+import type { SubmitBrevmalButtonOptions } from "../../route";
 import { Route } from "../../route";
-import BrevmalFormWrapper, { OrderLetterResult, useSubmitBrevmalButton } from "./components/BrevmalFormWrapper";
+import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectAvtaleland from "./components/SelectAvtaleland";
 import SelectEnhet from "./components/SelectEnhet";
@@ -27,10 +28,10 @@ const eblankettValidationSchema = z.object({
 
 export default function Eblankett({
   letterTemplate,
-  setNestebutton,
+  setSubmitBrevmalButtonOptions,
 }: {
   letterTemplate: LetterMetadata;
-  setNestebutton: (el: React.ReactNode) => void;
+  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
 }) {
   const { saksId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
@@ -51,12 +52,12 @@ export default function Eblankett({
     },
   });
 
-  useSubmitBrevmalButton({
-    onClick: () => formRef.current?.requestSubmit(),
-    onMount: setNestebutton,
-    status: orderEblankettMutation.status,
-  });
-
+  useEffect(() => {
+    setSubmitBrevmalButtonOptions({
+      onClick: () => formRef.current?.requestSubmit(),
+      status: orderEblankettMutation.status,
+    });
+  }, [setSubmitBrevmalButtonOptions, orderEblankettMutation.status]);
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />

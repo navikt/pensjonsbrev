@@ -1,5 +1,6 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { Accordion, Alert, BodyShort, Button, Heading, HStack, Label, Search, VStack } from "@navikt/ds-react";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
@@ -15,7 +16,6 @@ import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
 import type { BrevInfo } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 
@@ -40,11 +40,16 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   component: BrevvelgerPage,
 });
 
+export type SubmitBrevmalButtonOptions = {
+  status: "error" | "idle" | "pending" | "success" | null;
+  onClick: () => void;
+} | null;
+
 export function BrevvelgerPage() {
   const { brevId, templateId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const { saksId, letterTemplates } = Route.useLoaderData();
-  const [nesteButton, setNesteButton] = useState<Nullable<React.ReactNode>>(null);
+  const [submitBrevmalButtonOptions, setSubmitBrevmalButtonOptions] = useState<SubmitBrevmalButtonOptions>(null);
 
   const alleSaksbrevQuery = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(saksId.toString()),
@@ -94,7 +99,7 @@ export function BrevvelgerPage() {
               <TemplateLoader
                 letterTemplate={letterTemplates.find((template) => template.id === templateId)!}
                 saksId={saksId}
-                setNestebutton={setNesteButton}
+                setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions}
                 templateId={templateId}
               />
             )}
@@ -103,7 +108,7 @@ export function BrevvelgerPage() {
                 brevId={brevId}
                 letterTemplates={letterTemplates}
                 saksId={saksId.toString()}
-                setNestebutton={setNesteButton}
+                setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions}
               />
             )}
           </div>
@@ -132,7 +137,22 @@ export function BrevvelgerPage() {
             ? `Du har ${antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
             : "Gå til brevbehandler"}
         </Button>
-        {nesteButton}
+        {submitBrevmalButtonOptions && (
+          <Button
+            css={css`
+              width: fit-content;
+            `}
+            data-cy="order-letter"
+            icon={<ArrowRightIcon />}
+            iconPosition="right"
+            loading={submitBrevmalButtonOptions.status === "pending"}
+            onClick={submitBrevmalButtonOptions.onClick}
+            size="small"
+            variant="primary"
+          >
+            Åpne brev
+          </Button>
+        )}
       </HStack>
     </div>
   );

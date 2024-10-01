@@ -1,8 +1,6 @@
 import { css } from "@emotion/react";
-import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Alert, Button, Heading, Link } from "@navikt/ds-react";
+import { Alert, Heading, Link } from "@navikt/ds-react";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo } from "react";
 
 import { ApiError } from "~/components/ApiError";
 
@@ -56,39 +54,4 @@ export const OrderLetterResult = (props: {
       )}
     </div>
   );
-};
-
-export const useSubmitBrevmalButton = (args: {
-  onClick: () => void;
-  onMount: (el: React.ReactNode) => void;
-  status: "error" | "pending" | "idle" | "success" | null;
-}) => {
-  const submitButton = useMemo(() => {
-    return (
-      <Button
-        css={css`
-          width: fit-content;
-        `}
-        data-cy="order-letter"
-        icon={<ArrowRightIcon />}
-        iconPosition="right"
-        loading={args.status === "pending"}
-        onClick={args.onClick}
-        size="small"
-        type="submit"
-        variant="primary"
-      >
-        Åpne brev
-      </Button>
-    );
-    // https://github.com/TanStack/query/issues/1858
-    // useMutation returnerer ny objekt for hver render, selv om vi er bare interessert i en liten del av det som har endret seg
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [args.status]);
-
-  useEffect(() => {
-    args.onMount(submitButton);
-  }, [submitButton, args]);
-
-  return submitButton;
 };

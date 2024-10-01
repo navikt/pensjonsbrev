@@ -8,6 +8,7 @@ import type { SpraakKode } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
+import type { SubmitBrevmalButtonOptions } from "../route";
 import BrevmalBrevbaker from "./brevmal/BrevmalBrevbaker";
 import BrevmalForDoksys from "./brevmal/BrevmalDoksys";
 import BrevmalForExstream from "./brevmal/BrevmalExstream";
@@ -19,7 +20,7 @@ export const TemplateLoader = (props: {
   saksId: number;
   templateId: string;
   letterTemplate: LetterMetadata;
-  setNestebutton: (el: React.ReactNode) => void;
+  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
 }) => {
   const preferredLanguage =
     useQuery({
@@ -40,7 +41,7 @@ export const TemplateLoader = (props: {
         letterTemplate={props.letterTemplate}
         preferredLanguage={preferredLanguage}
         saksId={props.saksId.toString()}
-        setNestebutton={props.setNestebutton}
+        setSubmitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
         templateId={props.templateId}
       />
     </div>
@@ -52,13 +53,13 @@ function Brevmal({
   preferredLanguage,
   saksId,
   templateId,
-  setNestebutton,
+  setSubmitBrevmalButtonOptions,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: SpraakKode | null;
   saksId: string;
   templateId: string;
-  setNestebutton: (el: React.ReactNode) => void;
+  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
 }) {
   /*
     språk i brevene kan komme i forskjellige rekkefølge, siden de også har forskjellige verdier.
@@ -79,7 +80,7 @@ function Brevmal({
   }, [preferredLanguage, displayLanguages]);
 
   if (letterTemplate.dokumentkategoriCode === "E_BLANKETT") {
-    return <Eblankett letterTemplate={letterTemplate} setNestebutton={setNestebutton} />;
+    return <Eblankett letterTemplate={letterTemplate} setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions} />;
   }
 
   switch (letterTemplate.brevsystem) {
@@ -91,7 +92,7 @@ function Brevmal({
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
           saksId={saksId}
-          setNestebutton={setNestebutton}
+          setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions}
           templateId={templateId}
         />
       );
@@ -104,7 +105,7 @@ function Brevmal({
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
           saksId={saksId}
-          setNestebutton={setNestebutton}
+          setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions}
           templateId={templateId}
         />
       );
@@ -117,7 +118,7 @@ function Brevmal({
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
           saksId={saksId}
-          setNestebutton={setNestebutton}
+          setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions}
         />
       );
     }

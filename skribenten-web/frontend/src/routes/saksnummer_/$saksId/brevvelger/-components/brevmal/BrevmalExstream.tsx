@@ -12,10 +12,11 @@ import type { SpraakKode } from "~/types/apiTypes";
 import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 
+import type { SubmitBrevmalButtonOptions } from "../../route";
 import { Route } from "../../route";
 import EndreMottaker from "../endreMottaker/EndreMottaker";
 import HentOgVisAdresse from "../endreMottaker/HentOgVisAdresse";
-import BrevmalFormWrapper, { OrderLetterResult, useSubmitBrevmalButton } from "./components/BrevmalFormWrapper";
+import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
 import SelectLanguage from "./components/SelectLanguage";
@@ -29,7 +30,7 @@ export default function BrevmalForExstream({
   defaultValues,
   templateId,
   saksId,
-  setNestebutton,
+  setSubmitBrevmalButtonOptions,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: Nullable<SpraakKode>;
@@ -42,7 +43,7 @@ export default function BrevmalForExstream({
   };
   templateId: string;
   saksId: string;
-  setNestebutton: (el: React.ReactNode) => void;
+  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
 }) {
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
   const formRef = useRef<HTMLFormElement>(null);
@@ -55,11 +56,12 @@ export default function BrevmalForExstream({
 
   const validationSchema = createValidationSchema(letterTemplate);
 
-  useSubmitBrevmalButton({
-    onClick: () => formRef.current?.requestSubmit(),
-    onMount: setNestebutton,
-    status: orderLetterMutation.status,
-  });
+  useEffect(() => {
+    setSubmitBrevmalButtonOptions({
+      onClick: () => formRef.current?.requestSubmit(),
+      status: orderLetterMutation.status,
+    });
+  }, [setSubmitBrevmalButtonOptions, orderLetterMutation.status]);
 
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,

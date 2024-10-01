@@ -9,9 +9,10 @@ import { orderDoksysLetter } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/types/apiTypes";
 
+import type { SubmitBrevmalButtonOptions } from "../../route";
 import { Route } from "../../route";
 import HentOgVisAdresse from "../endreMottaker/HentOgVisAdresse";
-import BrevmalFormWrapper, { OrderLetterResult, useSubmitBrevmalButton } from "./components/BrevmalFormWrapper";
+import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
 import SelectLanguage from "./components/SelectLanguage";
@@ -24,7 +25,7 @@ export default function BrevmalForDoksys({
   defaultValues,
   templateId,
   saksId,
-  setNestebutton,
+  setSubmitBrevmalButtonOptions,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: SpraakKode | null;
@@ -37,7 +38,7 @@ export default function BrevmalForDoksys({
   };
   templateId: string;
   saksId: string;
-  setNestebutton: (el: React.ReactNode) => void;
+  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const { vedtaksId } = Route.useSearch();
@@ -50,11 +51,12 @@ export default function BrevmalForDoksys({
 
   const validationSchema = createValidationSchema(letterTemplate);
 
-  useSubmitBrevmalButton({
-    onClick: () => formRef.current?.requestSubmit(),
-    onMount: setNestebutton,
-    status: orderLetterMutation.status,
-  });
+  useEffect(() => {
+    setSubmitBrevmalButtonOptions({
+      onClick: () => formRef.current?.requestSubmit(),
+      status: orderLetterMutation.status,
+    });
+  }, [setSubmitBrevmalButtonOptions, orderLetterMutation.status]);
 
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,

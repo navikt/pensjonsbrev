@@ -1,6 +1,6 @@
 import { Button, HStack, VStack } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -11,9 +11,10 @@ import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 
 import { Route } from "../../../route";
+import type { SubmitBrevmalButtonOptions } from "../../route";
 import { EndreMottakerModal } from "../endreMottaker/EndreMottaker";
 import { useMottakerContext } from "../endreMottaker/MottakerContext";
-import BrevmalFormWrapper, { useSubmitBrevmalButton } from "./components/BrevmalFormWrapper";
+import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
 import SelectLanguage from "./components/SelectLanguage";
@@ -30,7 +31,7 @@ const BrevmalBrevbaker = (properties: {
     enhetsId: string;
   };
   saksId: string;
-  setNestebutton: (el: React.ReactNode) => void;
+  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
 }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
@@ -41,11 +42,12 @@ const BrevmalBrevbaker = (properties: {
     defaultValues: properties.defaultValues,
   });
 
-  useSubmitBrevmalButton({
-    onClick: () => formRef.current?.requestSubmit(),
-    onMount: properties.setNestebutton,
-    status: null,
-  });
+  useEffect(() => {
+    properties.setSubmitBrevmalButtonOptions({
+      onClick: () => formRef.current?.requestSubmit(),
+      status: null,
+    });
+  }, [properties]);
 
   return (
     <>
