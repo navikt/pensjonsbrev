@@ -205,7 +205,7 @@ object OmstillingsstoenadFellesFraser {
                                 "fyller 67 år. ",
                         English to "If any of the rules for exemption from the duration of allowance apply to ".expr() +
                                 "you, because you had a low income or no income in the last five years before the " +
-                                ifElse(tidligereFamiliepleier, "care period ended,", " date of the death") +
+                                ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
                                 ". You are eligible for the adjustment allowance until you turn " +
                                 "67 as long as you meet the conditions.",
                     )
@@ -222,7 +222,7 @@ object OmstillingsstoenadFellesFraser {
                                     ifElse(tidligereFamiliepleier, "siden pleieforholdet opphørte", "for dødsfallet") +
                                     ". Rett til omstillingsstønad fell uansett bort når du fyller 67 år.",
                             English to "You are eligible for adjustment allowance for three years from the ".expr() +
-                                    ifElse(tidligereFamiliepleier, "care period ended,", " date of the death") +
+                                    ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
                                     ", as long as you meet the conditions for receiving the allowance. " +
                                     "The right to adjustment allowance ceases when you reach the age of 67.",
                         )
@@ -249,7 +249,7 @@ object OmstillingsstoenadFellesFraser {
                                     ". Dersom inntekta di skulle endre seg, kan " +
                                     "dette gjere at du likevel får utbetalt stønad i denne perioden.",
                             English to "You are eligible for adjustment allowance for three years from the ".expr() +
-                                    ifElse(tidligereFamiliepleier, "care period ended,", " date of the death") +
+                                    ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
                                     ", as long as you meet the conditions for receiving the allowance. " +
                                     "Changes to your income may make you eligible for allowance in this period. ",
                         )
