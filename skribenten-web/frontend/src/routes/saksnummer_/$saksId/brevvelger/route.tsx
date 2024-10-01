@@ -19,7 +19,7 @@ import type { BrevInfo } from "~/types/brev";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 
-import BrevmalPanel from "./-components/SidePanelPicker";
+import BrevmalPanel from "./-components/BrevmalPanel";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   validateSearch: (

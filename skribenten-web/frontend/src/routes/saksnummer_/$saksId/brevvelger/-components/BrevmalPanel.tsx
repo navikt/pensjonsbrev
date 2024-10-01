@@ -25,21 +25,32 @@ const BrevmalPanel = (props: {
             padding: var(--a-spacing-6);
           `}
         >
-          {props.templateId && (
+          {props.templateId && props.brevId ? (
             <TemplateLoader
               letterTemplate={props.letterTemplates.find((template) => template.id === props.templateId)!}
               saksId={props.saksId}
               setSubmitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
               templateId={props.templateId}
             />
-          )}
-          {props.brevId && (
-            <BrevmalBrevbakerKladd
-              brevId={props.brevId}
-              letterTemplates={props.letterTemplates}
-              saksId={props.saksId.toString()}
-              setSubmitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
-            />
+          ) : (
+            <>
+              {props.templateId && (
+                <TemplateLoader
+                  letterTemplate={props.letterTemplates.find((template) => template.id === props.templateId)!}
+                  saksId={props.saksId}
+                  setSubmitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
+                  templateId={props.templateId}
+                />
+              )}
+              {props.brevId && (
+                <BrevmalBrevbakerKladd
+                  brevId={props.brevId}
+                  letterTemplates={props.letterTemplates}
+                  saksId={props.saksId.toString()}
+                  setSubmitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
+                />
+              )}
+            </>
           )}
         </div>
       )}
