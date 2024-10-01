@@ -1,12 +1,11 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
 import { hentLandForManuellUtfyllingAvAdresse } from "~/api/skribenten-api-endpoints";
-import { BasicSelect, SelectLayoutWrapper } from "~/components/select/CustomSelectComponents";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
 
@@ -108,25 +107,20 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                 const options = hentLand.data
                   .toSorted((a, b) => (a.navn > b.navn ? 1 : -1))
                   .map((land) => ({ label: land.navn, value: land.kode }));
-
                 return (
-                  <>
-                    {/* TODO - bruk aksels combobox med size small */}
-                    <SelectLayoutWrapper error={fieldState?.error} htmlFor="endre-mottaker-land-select" label="Land *">
-                      <BasicSelect
-                        inputId="endre-mottaker-land-select"
-                        {...field}
-                        css={css`
-                          align-self: flex-start;
-                          width: 60%;
-                        `}
-                        isClearable={false}
-                        onChange={(option) => field.onChange(option?.value)}
-                        options={options}
-                        value={options.find((option) => option.value === field.value) ?? null}
-                      />
-                    </SelectLayoutWrapper>
-                  </>
+                  <UNSAFE_Combobox
+                    css={css`
+                      align-self: flex-start;
+                      width: 60%;
+                    `}
+                    size="small"
+                    {...field}
+                    error={fieldState.error?.message}
+                    label="Land *"
+                    onToggleSelected={(option) => field.onChange(option)}
+                    options={options}
+                    ref={field.ref}
+                  />
                 );
               }}
             />
