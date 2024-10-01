@@ -107,19 +107,29 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                 const options = hentLand.data
                   .toSorted((a, b) => (a.navn > b.navn ? 1 : -1))
                   .map((land) => ({ label: land.navn, value: land.kode }));
+
                 return (
                   <UNSAFE_Combobox
                     css={css`
                       align-self: flex-start;
                       width: 60%;
+
+                      //siden input feltet er nederts på modalen, vil det å åpne den tvinge en scroll på modalen
+                      //vi setter den derfor til å åpne oppover
+                      .navds-combobox__list {
+                        bottom: 100%;
+                        top: auto;
+                      }
                     `}
-                    size="small"
-                    {...field}
                     error={fieldState.error?.message}
                     label="Land *"
-                    onToggleSelected={(option) => field.onChange(option)}
+                    onToggleSelected={(option) => {
+                      field.onChange(option);
+                    }}
                     options={options}
-                    ref={field.ref}
+                    selectedOptions={options.filter((option) => option.value === field.value) ?? undefined}
+                    shouldAutocomplete
+                    size="small"
                   />
                 );
               }}

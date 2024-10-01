@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { UNSAFE_Combobox } from "@navikt/ds-react";
 import { type FieldError } from "react-hook-form";
 
@@ -15,16 +16,21 @@ export const SamhandlerTypeSelect = ({
   value: string;
 }) => {
   const options = Object.entries(SAMHANDLER_ENUM_TO_TEXT).map(([value, label]) => ({ label, value }));
-  const optionLabels = options.map((o) => o.label);
 
   return (
     <UNSAFE_Combobox
+      //begrenser høyden så en ikke faller utenfor modalen og forårsaker scrolling
+      css={css`
+        .navds-combobox__list {
+          max-height: 200px;
+        }
+      `}
       description={description}
       error={error?.message}
       label="Samhandlertype"
       onToggleSelected={(option) => onChange(option)}
-      options={optionLabels}
-      selectedOptions={[value]}
+      options={options}
+      selectedOptions={options.filter((option) => option.value === value) ?? undefined}
       shouldAutocomplete
       size="small"
     />
