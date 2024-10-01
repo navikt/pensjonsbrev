@@ -24,6 +24,9 @@ data class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecifica
         data class Object(override val nullable: Boolean, val typeName: String) : FieldType() {
             override val type = "object"
         }
+
+        @Suppress("EnumEntryName")
+        enum class Type { scalar, enum, array, `object` }
     }
 }
 
