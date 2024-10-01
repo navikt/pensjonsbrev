@@ -66,9 +66,9 @@ function Brevmal({
     Dette er for at alle language-inputtene skal ha samme rekkefølge.
     Samtidig, er det behov å bruke denne for å sjekke hva defaultValue skal være
     */
-  const displayLanguages = useMemo(() => {
-    return letterTemplate.spraak.toSorted((a, b) => SPRAAK_ENUM_TO_TEXT[a].localeCompare(SPRAAK_ENUM_TO_TEXT[b]));
-  }, [letterTemplate.spraak]);
+  const displayLanguages = letterTemplate.spraak.toSorted((a, b) =>
+    SPRAAK_ENUM_TO_TEXT[a].localeCompare(SPRAAK_ENUM_TO_TEXT[b]),
+  );
 
   const defaultValues = useMemo(() => {
     return {

@@ -47,7 +47,7 @@ const BrevmalBrevbaker = (properties: {
       onClick: () => formRef.current?.requestSubmit(),
       status: null,
     });
-  }, [properties]);
+  }, [properties.setSubmitBrevmalButtonOptions]);
 
   return (
     <>

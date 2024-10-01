@@ -19,8 +19,7 @@ import type { BrevInfo } from "~/types/brev";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 
-import { BrevmalBrevbakerKladd } from "./-components/BrevmalBrevbakerKladd";
-import { TemplateLoader } from "./-components/TemplateLoader";
+import BrevmalPanel from "./-components/SidePanelPicker";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   validateSearch: (
@@ -56,8 +55,8 @@ export function BrevvelgerPage() {
     queryFn: () => hentAlleBrevForSak.queryFn(saksId.toString()),
   });
 
-  const harBrevKlarTilSending = alleSaksbrevQuery.isSuccess && alleSaksbrevQuery.data.some(erBrevKlar);
-  const antallBrevKlarTilSending = harBrevKlarTilSending ? alleSaksbrevQuery.data.filter(erBrevKlar).length : 0;
+  const antallBrevKlarTilSending = alleSaksbrevQuery.data?.filter(erBrevKlar)?.length ?? 0;
+  const harBrevKlarTilSending = antallBrevKlarTilSending > 0;
 
   return (
     <div
@@ -86,33 +85,13 @@ export function BrevvelgerPage() {
         >
           <Brevmaler alleSaksbrev={alleSaksbrevQuery} letterTemplates={letterTemplates} />
         </div>
-        {(templateId || brevId) && (
-          <div
-            css={css`
-              display: flex;
-              width: 389px;
-              border-right: 1px solid var(--a-gray-200);
-              padding: var(--a-spacing-6);
-            `}
-          >
-            {templateId && (
-              <TemplateLoader
-                letterTemplate={letterTemplates.find((template) => template.id === templateId)!}
-                saksId={saksId}
-                setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions}
-                templateId={templateId}
-              />
-            )}
-            {brevId && (
-              <BrevmalBrevbakerKladd
-                brevId={brevId}
-                letterTemplates={letterTemplates}
-                saksId={saksId.toString()}
-                setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions}
-              />
-            )}
-          </div>
-        )}
+        <BrevmalPanel
+          brevId={brevId}
+          letterTemplates={letterTemplates}
+          saksId={saksId}
+          setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions}
+          templateId={templateId}
+        />
       </div>
 
       <HStack

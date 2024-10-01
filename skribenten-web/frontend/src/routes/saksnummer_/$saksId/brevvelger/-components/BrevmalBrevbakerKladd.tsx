@@ -2,6 +2,7 @@ import { css } from "@emotion/react";
 import { BodyShort, Heading, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
@@ -37,15 +38,15 @@ export const BrevmalBrevbakerKladd = (props: {
     <div>
       {brevQuery.isPending && <Loader />}
       {brevQuery.isError && <ApiError error={brevQuery.error} title="Klarte ikke hente brev" />}
+      {brevQuery.isSuccess && !brevExists && <BrevIkkeFunnet brevId={props.brevId} />}
       {brevQuery.isSuccess && brevExists && (
         <Brevmal
-          brev={brev!}
-          letterMetadata={letterMetadataForBrev!}
+          brev={brev}
+          letterMetadata={letterMetadataForBrev}
           saksId={props.saksId}
           submitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
         />
       )}
-      {brevQuery.isSuccess && !brevExists && <BrevIkkeFunnet brevId={props.brevId} />}
     </div>
   );
 };
@@ -61,20 +62,22 @@ const BrevIkkeFunnet = (props: { brevId: string }) => {
 const Brevmal = (props: {
   saksId: string;
   brev: BrevInfo;
-  letterMetadata: LetterMetadata;
+  letterMetadata?: LetterMetadata;
   submitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
 }) => {
   const navigate = useNavigate({ from: Route.fullPath });
 
-  props.submitBrevmalButtonOptions({
-    onClick: () => {
-      navigate({
-        to: "/saksnummer/$saksId/brev/$brevId",
-        params: { saksId: props.saksId, brevId: props.brev.id },
-      });
-    },
-    status: null,
-  });
+  useEffect(() => {
+    props.submitBrevmalButtonOptions({
+      onClick: () => {
+        navigate({
+          to: "/saksnummer/$saksId/brev/$brevId",
+          params: { saksId: props.saksId, brevId: props.brev.id },
+        });
+      },
+      status: null,
+    });
+  }, [props.submitBrevmalButtonOptions]);
 
   return (
     <div
@@ -101,7 +104,11 @@ const Brevmal = (props: {
 
           <div>
             <Heading size="small">{props.brev.brevtittel}</Heading>
-            <LetterTemplateTags letterTemplate={props.letterMetadata} />
+            {props.letterMetadata ? (
+              <LetterTemplateTags letterTemplate={props.letterMetadata} />
+            ) : (
+              <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
+            )}
           </div>
         </VStack>
 
