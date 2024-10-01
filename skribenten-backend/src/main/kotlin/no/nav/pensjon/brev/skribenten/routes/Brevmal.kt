@@ -15,7 +15,7 @@ fun Route.brevmal(brevbakerService: BrevbakerService) {
     get("/brevmal/{brevkode}/modelSpecification") {
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
         brevbakerService.getModelSpecification(call, brevkode)
-            .onOk { call.respondText(it, ContentType.Application.Json) }
+            .onOk { call.respond(it) }
             .onError { message, status ->
                 logger.error("Feil ved henting av modelSpecification for ${brevkode.name}: Status:$status Melding: $message ")
                 call.respond(status, message)

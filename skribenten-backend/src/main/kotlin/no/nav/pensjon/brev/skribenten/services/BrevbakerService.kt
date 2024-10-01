@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.slf4j.LoggerFactory
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
@@ -50,7 +51,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
      *
      * Returns a string because Skribenten-backend doesn't really care about the content.
      */
-    suspend fun getModelSpecification(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
+    suspend fun getModelSpecification(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<TemplateModelSpecification> =
         client.get(call, "/templates/redigerbar/${brevkode.name}/modelSpecification").toServiceResult()
 
     suspend fun renderMarkup(

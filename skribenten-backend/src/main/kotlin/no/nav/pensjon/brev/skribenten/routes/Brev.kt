@@ -18,7 +18,7 @@ private val logger = LoggerFactory.getLogger("no.nav.brev.skribenten.routes.Brev
 
 fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto2ApiService) {
 
-    suspend fun PipelineContext<Unit, ApplicationCall>.respond(brevResponse: ServiceResult<Dto.Brevredigering>?) =
+    suspend fun PipelineContext<Unit, ApplicationCall>.respond(brevResponse: ServiceResult<Dto.Brevredigering>?) {
         brevResponse?.map { dto2ApiService.toApi(call, it) }
             ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev) }
             ?.onError { message, statusCode ->
@@ -26,6 +26,7 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
                 call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
             }
             ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
+    }
 
     route("/brev") {
         put<Edit.Letter>("/{brevId}/redigertBrev") { request ->
@@ -69,6 +70,11 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
             brevredigeringService.fornyReservasjon(call, brevId)
                 ?.also { call.respond(it) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
+        }
+
+        post("/{brevId}/tilbakestill") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            respond(brevredigeringService.tilbakestill(call, brevId))
         }
     }
 }

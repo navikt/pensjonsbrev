@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -49,7 +50,7 @@ class BrevredigeringService(
         brevkode: Brevkode.Redigerbar,
         spraak: LanguageCode,
         avsenderEnhetsId: String?,
-        saksbehandlerValg: BrevbakerBrevdata,
+        saksbehandlerValg: SaksbehandlerValg,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
     ): ServiceResult<Dto.Brevredigering> =
@@ -97,7 +98,7 @@ class BrevredigeringService(
         call: ApplicationCall,
         saksId: Long?,
         brevId: Long,
-        nyeSaksbehandlerValg: BrevbakerBrevdata?,
+        nyeSaksbehandlerValg: SaksbehandlerValg?,
         nyttRedigertbrev: Edit.Letter?,
         frigiReservasjon: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
@@ -111,18 +112,18 @@ class BrevredigeringService(
                 avsenderEnhetsId = brev.info.avsenderEnhetId,
                 signaturSignerende = brev.info.signaturSignerende,
             ).map { rendretBrev ->
-                    transaction {
-                        Brevredigering[brevId].apply {
-                            redigertBrev = (nyttRedigertbrev ?: brev.redigertBrev).updateEditedLetter(rendretBrev)
-                            sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                            saksbehandlerValg = nyeSaksbehandlerValg ?: brev.saksbehandlerValg
-                            sistRedigertAvNavIdent = call.principal().navIdent()
-                            if (frigiReservasjon){
-                                redigeresAvNavIdent = null
-                            }
-                        }.toDto()
-                    }
+                transaction {
+                    Brevredigering[brevId].apply {
+                        redigertBrev = (nyttRedigertbrev ?: brev.redigertBrev).updateEditedLetter(rendretBrev)
+                        sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+                        saksbehandlerValg = nyeSaksbehandlerValg ?: brev.saksbehandlerValg
+                        sistRedigertAvNavIdent = call.principal().navIdent()
+                        if (frigiReservasjon) {
+                            redigeresAvNavIdent = null
+                        }
+                    }.toDto()
                 }
+            }
         }
 
     fun delvisOppdaterBrev(
@@ -151,13 +152,13 @@ class BrevredigeringService(
                 avsenderEnhetsId = brev.info.avsenderEnhetId,
                 signaturSignerende = signaturSignerende,
             ).map { rendretBrev ->
-                    transaction {
-                        Brevredigering[brevId].apply {
-                            redigertBrev = brev.redigertBrev.updateEditedLetter(rendretBrev)
-                            this.signaturSignerende = signaturSignerende
-                        }.toDto()
-                    }
+                transaction {
+                    Brevredigering[brevId].apply {
+                        redigertBrev = brev.redigertBrev.updateEditedLetter(rendretBrev)
+                        this.signaturSignerende = signaturSignerende
+                    }.toDto()
                 }
+            }
         }
 
     /**
@@ -188,10 +189,10 @@ class BrevredigeringService(
                     avsenderEnhetsId = brev.info.avsenderEnhetId,
                     signaturSignerende = brev.info.signaturSignerende,
                 ).map { rendretBrev ->
-                        transaction {
-                            Brevredigering[brevId].apply { redigertBrev = brev.redigertBrev.updateEditedLetter(rendretBrev) }.toDto()
-                        }
+                    transaction {
+                        Brevredigering[brevId].apply { redigertBrev = brev.redigertBrev.updateEditedLetter(rendretBrev) }.toDto()
                     }
+                }
             }
         } else {
             transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.toDto() }
@@ -216,7 +217,9 @@ class BrevredigeringService(
         }
 
     suspend fun hentEllerOpprettPdf(call: ApplicationCall, saksId: Long, brevId: Long): ServiceResult<ByteArray>? {
-        val (brevredigering, document) = transaction { Brevredigering.findByIdAndSaksId(brevId, saksId).let { it?.toDto() to it?.document?.firstOrNull()?.toDto() } }
+        val (brevredigering, document) = transaction {
+            Brevredigering.findByIdAndSaksId(brevId, saksId).let { it?.toDto() to it?.document?.firstOrNull()?.toDto() }
+        }
 
         return brevredigering?.let {
             val currentHash = brevredigering.redigertBrevHash
@@ -270,6 +273,30 @@ class BrevredigeringService(
     fun fjernOverstyrtMottaker(brevId: Long, saksId: Long): Boolean =
         transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId)?.also { it.mottaker?.delete() } != null
+        }
+
+    suspend fun tilbakestill(call: ApplicationCall, brevId: Long): ServiceResult<Dto.Brevredigering>? =
+        hentBrevMedReservasjon(call = call, brevId = brevId) { brev ->
+            brevbakerService.getModelSpecification(call, brev.info.brevkode)
+                .map { brev.saksbehandlerValg.tilbakestill(it) }
+                .then { tilbakestiltValg ->
+                    rendreBrev(
+                        call = call,
+                        brevkode = brev.info.brevkode,
+                        spraak = brev.info.spraak,
+                        saksId = brev.info.saksId,
+                        saksbehandlerValg = tilbakestiltValg,
+                        avsenderEnhetsId = brev.info.avsenderEnhetId,
+                        signaturSignerende = brev.info.signaturSignerende,
+                    ).map { rendretBrev ->
+                        transaction {
+                            Brevredigering[brevId].apply {
+                                saksbehandlerValg = tilbakestiltValg
+                                redigertBrev = rendretBrev.toEdit()
+                            }.toDto()
+                        }
+                    }
+                }
         }
 
     private suspend fun <T> hentBrevMedReservasjon(call: ApplicationCall, brevId: Long, saksId: Long? = null, block: suspend (Dto.Brevredigering) -> T): T? =
@@ -443,3 +470,22 @@ class BrevredigeringService(
         )
 }
 
+private fun SaksbehandlerValg.tilbakestill(modelSpec: TemplateModelSpecification): SaksbehandlerValg {
+    val saksbehandlerValgSpec = modelSpec.types[modelSpec.letterModelTypeName]?.get("saksbehandlerValg")
+        ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
+        ?.let { modelSpec.types[it] }
+
+    return if (saksbehandlerValgSpec != null) {
+        SaksbehandlerValg().apply {
+            putAll(this@tilbakestill)
+            saksbehandlerValgSpec.entries.forEach {
+                val fieldType = it.value
+                if (fieldType.nullable) {
+                    remove(it.key)
+                } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
+                    put(it.key, false)
+                }
+            }
+        }
+    } else this
+}

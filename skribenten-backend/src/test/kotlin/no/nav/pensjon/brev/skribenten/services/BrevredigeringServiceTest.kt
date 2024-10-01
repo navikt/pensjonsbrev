@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
@@ -24,6 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Lit
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.apache.commons.codec.binary.Hex
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Condition
@@ -39,10 +41,10 @@ import java.util.function.Predicate
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
+import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
 class BrevredigeringServiceTest {
-    private class GeneriskBrevData : LinkedHashMap<String, Any>(), BrevbakerBrevdata
-
     private val postgres = PostgreSQLContainer("postgres:15-alpine")
 
     @BeforeAll
@@ -156,9 +158,6 @@ class BrevredigeringServiceTest {
         )
     }
     private val samhandlerService = mockk<SamhandlerService>()
-    private val norg2Service = mockk<Norg2Service> {
-        coEvery { getEnhet(any(), eq(principalNavEnhetId)) } returns NAVEnhet(principalNavEnhetId, principalNavEnhetId + "navn")
-    }
 
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerMock,
@@ -198,8 +197,8 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `can create and fetch brevredigering`() = runBlocking {
-        val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
+    fun `can create and fetch brevredigering`(): Unit = runBlocking {
+        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val brev =
             brevredigeringService.opprettBrev(
                 call = callMock(),
@@ -293,7 +292,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `cannot create brevredigering for a NavEnhet without access to it`(): Unit = runBlocking {
-        val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
+        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val result = brevredigeringService.opprettBrev(
             callMock(),
             sak,
@@ -308,8 +307,8 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `can update brevredigering`() = runBlocking {
-        val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
+    fun `can update brevredigering`(): Unit = runBlocking {
+        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val original =
             brevredigeringService.opprettBrev(
                 call = callMock(),
@@ -323,7 +322,7 @@ class BrevredigeringServiceTest {
 
         clearMocks()
 
-        val nyeValg = GeneriskBrevData().apply { put("valg2", true) }
+        val nyeValg = Api.GeneriskBrevdata().apply { put("valg2", true) }
         val oppdatert = brevredigeringService.oppdaterBrev(
             call = callMock(),
             saksId = sak.saksId,
@@ -351,8 +350,8 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `updates redigertBrev with fresh rendering from brevbaker`() = runBlocking {
-        val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
+    fun `updates redigertBrev with fresh rendering from brevbaker`(): Unit = runBlocking {
+        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val original =
             brevredigeringService.opprettBrev(
                 callMock(),
@@ -363,7 +362,7 @@ class BrevredigeringServiceTest {
                 saksbehandlerValg
             ).resultOrNull()!!
 
-        val nyeValg = GeneriskBrevData().apply { put("valg2", true) }
+        val nyeValg = Api.GeneriskBrevdata().apply { put("valg2", true) }
         val freshRender = letter.copy(blocks = letter.blocks + Paragraph(2, true, listOf(Variable(21, "ny paragraph"))))
         coEvery {
             brevbakerMock.renderMarkup(
@@ -389,8 +388,8 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `cannot update non-existing brevredigering`() = runBlocking {
-        val saksbehandlerValg = GeneriskBrevData().apply { put("valg1", true) }
+    fun `cannot update non-existing brevredigering`(): Unit = runBlocking {
+        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val oppdatert =
             brevredigeringService.oppdaterBrev(
                 call = callMock(),
@@ -405,7 +404,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `does not wait for brevbaker before answering with brevredigering does not exist`(): Unit = runBlocking {
-        val saksbehandlerValg = GeneriskBrevData().apply {
+        val saksbehandlerValg = Api.GeneriskBrevdata().apply {
             put("valg1", true)
             put("noe unikt", UUID.randomUUID())
         }
@@ -606,7 +605,7 @@ class BrevredigeringServiceTest {
             brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
             spraak = LanguageCode.ENGLISH,
             avsenderEnhetsId = null,
-            saksbehandlerValg = GeneriskBrevData().apply { put("valg", true) },
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             reserverForRedigering = false
         ).resultOrNull()!!
 
@@ -667,7 +666,7 @@ class BrevredigeringServiceTest {
             brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
             spraak = LanguageCode.ENGLISH,
             avsenderEnhetsId = null,
-            saksbehandlerValg = GeneriskBrevData().apply { put("valg", true) },
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             reserverForRedigering = false
         ).resultOrNull()!!
 
@@ -848,7 +847,7 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `brev reservasjon kan frigis ved oppdatering`() = runBlocking {
+    fun `brev reservasjon kan frigis ved oppdatering`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
         assertThat(brev.info.redigeresAv).isEqualTo(principalNavIdent)
 
@@ -865,7 +864,7 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `brev reservasjon frigis ikke ved oppdatering`() = runBlocking {
+    fun `brev reservasjon frigis ikke ved oppdatering`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
         assertThat(brev.info.redigeresAv).isEqualTo(principalNavIdent)
 
@@ -977,14 +976,67 @@ class BrevredigeringServiceTest {
         assertEquals("en ny signatur", transaction { Brevredigering[brev.info.id].signaturSignerende })
     }
 
-    private suspend fun opprettBrev(call: ApplicationCall = callMock(), reserverForRedigering: Boolean = false, mottaker: Dto.Mottaker? = null) =
+    @Test
+    fun `kan tilbakestille brev`(): Unit = runBlocking {
+        val brev = opprettBrev(saksbehandlerValg = Api.GeneriskBrevdata().apply {
+            put("ytelse", "uføre")
+            put("inkluderAfpTekst", false)
+        }).resultOrNull()!!
+
+        brevredigeringService.oppdaterBrev(
+            call = callMock(),
+            saksId = brev.info.saksId,
+            brevId = brev.info.id,
+            nyeSaksbehandlerValg = Api.GeneriskBrevdata().apply {
+                put("ytelse", "uføre")
+                put("inkluderAfpTekst", true)
+                put("land", "Spania")
+            },
+            nyttRedigertbrev = brev.redigertBrev.copy(
+                blocks = brev.redigertBrev.blocks + E_Paragraph(
+                    null,
+                    true,
+                    listOf(E_Literal(null, "", "and blue pill"))
+                )
+            ),
+            frigiReservasjon = false,
+        )?.resultOrNull()!!
+
+        coEvery { brevbakerMock.getModelSpecification(any(), eq(brev.info.brevkode)) } returns ServiceResult.Ok(TemplateModelSpecification(
+            types = mapOf(
+                "BrevData1" to mapOf(
+                    "saksbehandlerValg" to FieldType.Object(false, "SaksbehandlerValg1"),
+                ),
+                "SaksbehandlerValg1" to mapOf(
+                    "ytelse" to FieldType.Scalar(false, FieldType.Scalar.Kind.STRING),
+                    "land" to FieldType.Scalar(true, FieldType.Scalar.Kind.STRING),
+                    "inkluderAfpTekst" to FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN),
+                ),
+            ),
+            letterModelTypeName = "BrevData1",
+        ))
+
+        val tilbakestilt = brevredigeringService.tilbakestill(callMock(), brev.info.id)?.resultOrNull()!!
+        assertThat(tilbakestilt.redigertBrev).isEqualTo(letter.toEdit())
+        assertThat(tilbakestilt.saksbehandlerValg).isEqualTo(Api.GeneriskBrevdata().apply {
+            put("ytelse", "uføre")
+            put("inkluderAfpTekst", false)
+        })
+    }
+
+    private suspend fun opprettBrev(
+        call: ApplicationCall = callMock(),
+        reserverForRedigering: Boolean = false,
+        mottaker: Dto.Mottaker? = null,
+        saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
+    ) =
         brevredigeringService.opprettBrev(
             call = call,
             sak = sak,
             brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
             spraak = LanguageCode.ENGLISH,
             avsenderEnhetsId = principalNavEnhetId,
-            saksbehandlerValg = GeneriskBrevData().apply { put("valg", true) },
+            saksbehandlerValg = saksbehandlerValg,
             reserverForRedigering = reserverForRedigering,
             mottaker = mottaker,
         )
