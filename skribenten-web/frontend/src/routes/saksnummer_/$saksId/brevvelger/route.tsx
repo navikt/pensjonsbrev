@@ -107,7 +107,7 @@ const BrevvelgerFooter = (props: {
   const navigate = useNavigate({ from: Route.fullPath });
   const harBrevKlarTilSending = props.antallBrevKlarTilSending > 0;
   const mutationState = useMutationState({ filters: { mutationKey: ["OPEN_LETTER"] } });
-  console.log("mutationState", mutationState[0]?.status);
+
   return (
     <HStack
       css={css`
