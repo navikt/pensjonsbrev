@@ -10,8 +10,6 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
 
 
 data class TBU4025_Generated(

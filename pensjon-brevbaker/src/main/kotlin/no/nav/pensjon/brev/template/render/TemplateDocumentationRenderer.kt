@@ -252,12 +252,6 @@ object TemplateDocumentationRenderer {
                 operator = Operation(text = "isEmpty", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value)
             )
-
-            is UnaryOperation.Required<*> -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation(text = "required", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
-            )
-
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =

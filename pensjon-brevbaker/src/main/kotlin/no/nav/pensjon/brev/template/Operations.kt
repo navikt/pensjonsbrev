@@ -3,8 +3,6 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
-import kotlin.reflect.KClass
-import kotlin.reflect.jvm.jvmName
 
 abstract class Operation : StableHash {
     // Since most operations don't have fields, and hence can't be data classes,
@@ -59,11 +57,6 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
     object IsEmpty : UnaryOperation<Collection<*>, Boolean>(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
-    }
-
-    //Should be used for legacy letters only!
-    class Required <In : Any> : UnaryOperation<In?, In>(), StableHash by StableHash.of("UnaryOperation.Required") {
-        override fun apply(input: In?): In = input!!
     }
 }
 
