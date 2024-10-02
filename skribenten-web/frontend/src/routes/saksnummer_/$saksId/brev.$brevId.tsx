@@ -4,7 +4,7 @@ import { BodyLong, Button, HStack, Label, Modal } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 
 import {
@@ -13,6 +13,7 @@ import {
   hurtiglagreBrev,
   hurtiglagreSaksbehandlerValg,
   oppdaterSignatur,
+  tilbakestillBrev,
 } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -86,17 +87,11 @@ const TilbakestillMalModal = (props: {
   brevId: number;
   åpen: boolean;
   onClose: () => void;
-  editedLetter: EditedLetter;
   resetEditor: (brevResponse: BrevResponse) => void;
 }) => {
   const queryClient = useQueryClient();
   const tilbakestillMutation = useMutation<BrevResponse, Error>({
-    mutationFn: () =>
-      hurtiglagreBrev(props.brevId, {
-        ...props.editedLetter,
-        blocks: [],
-        deletedBlocks: [],
-      }),
+    mutationFn: () => tilbakestillBrev(props.brevId),
     onSuccess: (response) => {
       queryClient.setQueryData(getBrev.queryKey(props.brevId), response);
       props.resetEditor(response);
@@ -205,13 +200,20 @@ function RedigerBrev({
     }
   }, [brev.redigertBrev, brev.redigertBrevHash, editorState.redigertBrevHash, setEditorState]);
 
+  const defaultValuesModelEditor = useMemo(
+    () => ({
+      ...brev.saksbehandlerValg,
+      signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
+    }),
+    [brev.redigertBrev.signatur.saksbehandlerNavn, brev.saksbehandlerValg],
+  );
+
   return (
     <div>
       <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
       {vilTilbakestilleMal && (
         <TilbakestillMalModal
           brevId={brev.info.id}
-          editedLetter={brev.redigertBrev}
           onClose={() => setVilTilbakestilleMal(false)}
           resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
           åpen={vilTilbakestilleMal}
@@ -237,10 +239,7 @@ function RedigerBrev({
         <ModelEditor
           brevId={brev.info.id}
           brevkode={brev.info.brevkode}
-          defaultValues={{
-            ...brev.saksbehandlerValg,
-            signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
-          }}
+          defaultValues={defaultValuesModelEditor}
           disableSubmit={saksbehandlerValgMutation.isPending}
           onSubmit={onSubmit}
           saksId={saksId}

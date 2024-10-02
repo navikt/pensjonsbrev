@@ -3,7 +3,7 @@ import { Button, Heading } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import type { Draft } from "immer";
 import { produce } from "immer";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
@@ -44,6 +44,10 @@ export const ModelEditor = ({
     queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
   });
+
+  useEffect(() => {
+    methods.reset(defaultValues);
+  }, [defaultValues, methods]);
 
   const requestSubmit = useCallback(() => {
     formRef.current?.requestSubmit();

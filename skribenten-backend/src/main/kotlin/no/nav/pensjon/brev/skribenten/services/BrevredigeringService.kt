@@ -481,7 +481,7 @@ private fun SaksbehandlerValg.tilbakestill(modelSpec: TemplateModelSpecification
             saksbehandlerValgSpec.entries.forEach {
                 val fieldType = it.value
                 if (fieldType.nullable) {
-                    remove(it.key)
+                    put(it.key, null)
                 } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
                     put(it.key, false)
                 }

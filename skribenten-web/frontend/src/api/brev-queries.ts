@@ -71,6 +71,10 @@ export const oppdaterSignatur = async (brevId: number | string, signatur: string
     })
   ).data;
 
+export async function tilbakestillBrev(brevId: number) {
+  return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/tilbakestill`)).data;
+}
+
 export const getBrevReservasjon = {
   querykey: brevKeys.reservasjon,
   queryFn: async (brevId: number) => {
