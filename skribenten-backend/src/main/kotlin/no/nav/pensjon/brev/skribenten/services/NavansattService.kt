@@ -31,8 +31,8 @@ class NavansattService(config: Config, authService: AzureADService) : ServiceSta
         }
     }
 
-    suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult<List<NAVEnhet>> {
-        return client.get(call, "navansatt/$ansattId/enheter").toServiceResult<List<NAVEnhet>>()
+    suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
+        return client.get(call, "navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
     }
 
     suspend fun harTilgangTilEnhet(call: ApplicationCall, ansattId: String, enhetsId: String): ServiceResult<Boolean> =
@@ -55,7 +55,7 @@ class NavansattService(config: Config, authService: AzureADService) : ServiceSta
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class NAVEnhet(
+data class NAVAnsattEnhet(
     val id: String,
     val navn: String,
 )
@@ -67,3 +67,5 @@ data class Navansatt(
     val fornavn: String,
     val etternavn: String,
 )
+
+

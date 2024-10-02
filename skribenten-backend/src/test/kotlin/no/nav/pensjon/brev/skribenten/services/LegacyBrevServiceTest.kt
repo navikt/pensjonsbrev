@@ -34,7 +34,7 @@ class LegacyBrevServiceTest {
         every { callId } returns "utrolig kul callId"
         every { principal() } returns principal
     }
-    private val principalSinNAVEnhet = NAVEnhet("1111", "NAV Ozzzlo")
+    private val principalSinNAVEnhet = NAVAnsattEnhet("1111", "NAV Ozzzlo")
 
 
     private val exstreamBrevMetadata = BrevdataDto(

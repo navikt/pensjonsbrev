@@ -13,12 +13,14 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.callId
 import org.slf4j.LoggerFactory
 
-class Norg2Service(config: Config) {
+// docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
+class Norg2Service(val config: Config) {
     private val logger = LoggerFactory.getLogger(Norg2Service::class.java)
+    private val norgUrl = config.getString("url")
 
     private val client = HttpClient(CIO) {
         defaultRequest {
-            url(config.getString("url"))
+            url(norgUrl)
         }
         install(ContentNegotiation) {
             jackson {
@@ -27,13 +29,19 @@ class Norg2Service(config: Config) {
         }
     }
 
-    private val enhetCache = Cache<String, NAVEnhet>()
+    private val enhetCache = Cache<String, NavEnhet>()
     suspend fun getEnhet(call: ApplicationCall, enhetId: String) =
         enhetCache.cached(enhetId) {
-            client.get("/api/v1/enhet/$enhetId") {
+            //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
+            client.get("api/v1/enhet/$enhetId") {
                 headers { callId(call) }
-            }.toServiceResult<NAVEnhet>()
+            }.toServiceResult<NavEnhet>()
                 .onError { error, statusCode -> logger.error("Fant ikke NAV Enhet $enhetId: $statusCode - $error") }
                 .resultOrNull()
         }
 }
+
+data class NavEnhet(
+    val enhetNr:String,
+    val navn: String
+)
