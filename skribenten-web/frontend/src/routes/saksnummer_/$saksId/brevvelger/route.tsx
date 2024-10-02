@@ -10,7 +10,7 @@ import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritter } from "~/api/skribenten-api-endpoints";
+import { getFavoritter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -106,7 +106,7 @@ const BrevvelgerFooter = (props: {
 }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const harBrevKlarTilSending = props.antallBrevKlarTilSending > 0;
-  const mutationState = useMutationState({ filters: { mutationKey: ["OPEN_LETTER"] } });
+  const mutationState = useMutationState({ filters: { mutationKey: orderLetterKeys.all } });
 
   return (
     <HStack
