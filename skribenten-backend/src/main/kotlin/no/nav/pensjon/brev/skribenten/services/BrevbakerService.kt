@@ -50,8 +50,6 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
 
     /**
      * Get model specification for a template.
-     *
-     * Returns a string because Skribenten-backend doesn't really care about the content.
      */
     suspend fun getModelSpecification(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<TemplateModelSpecification> =
         client.get(call, "/templates/redigerbar/${brevkode.name}/modelSpecification").toServiceResult()
