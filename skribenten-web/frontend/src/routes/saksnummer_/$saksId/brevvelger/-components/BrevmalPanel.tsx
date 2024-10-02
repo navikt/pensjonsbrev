@@ -12,6 +12,7 @@ const BrevmalPanel = (props: {
   brevId?: string;
   letterTemplates: LetterMetadata[];
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
+  enhetsId: string;
 }) => {
   return (
     <div>
@@ -26,6 +27,7 @@ const BrevmalPanel = (props: {
         >
           {props.templateId ? (
             <TemplateLoader
+              enhetsId={props.enhetsId}
               letterTemplate={props.letterTemplates.find((template) => template.id === props.templateId)!}
               saksId={props.saksId}
               setOnFormSubmitClick={props.setOnFormSubmitClick}

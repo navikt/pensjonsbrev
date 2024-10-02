@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -20,6 +21,7 @@ export const TemplateLoader = (props: {
   templateId: string;
   letterTemplate: LetterMetadata;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
+  enhetsId: string;
 }) => {
   const preferredLanguage =
     useQuery({
@@ -37,6 +39,7 @@ export const TemplateLoader = (props: {
     >
       <FavoriteButton templateId={props.templateId} />
       <Brevmal
+        enhetsId={props.enhetsId}
         letterTemplate={props.letterTemplate}
         preferredLanguage={preferredLanguage}
         saksId={props.saksId.toString()}
@@ -53,11 +56,13 @@ function Brevmal({
   saksId,
   templateId,
   setOnFormSubmitClick,
+  enhetsId,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: SpraakKode | null;
   saksId: string;
   templateId: string;
+  enhetsId: string;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
   /*
@@ -69,12 +74,14 @@ function Brevmal({
     SPRAAK_ENUM_TO_TEXT[a].localeCompare(SPRAAK_ENUM_TO_TEXT[b]),
   );
 
-  const defaultValues = {
-    isSensitive: undefined,
-    brevtittel: "",
-    spraak: hentDefaultValueForSpråk(preferredLanguage, displayLanguages),
-    enhetsId: "",
-  };
+  const defaultValues = useMemo(() => {
+    return {
+      isSensitive: undefined,
+      brevtittel: "",
+      spraak: hentDefaultValueForSpråk(preferredLanguage, displayLanguages),
+      enhetsId: enhetsId,
+    };
+  }, [displayLanguages, preferredLanguage, enhetsId]);
 
   if (letterTemplate.dokumentkategoriCode === "E_BLANKETT") {
     return <Eblankett letterTemplate={letterTemplate} setOnFormSubmitClick={setOnFormSubmitClick} />;

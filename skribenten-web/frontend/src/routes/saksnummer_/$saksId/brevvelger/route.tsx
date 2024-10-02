@@ -45,7 +45,7 @@ export interface SubmitTemplateOptions {
 }
 
 export function BrevvelgerPage() {
-  const { brevId, templateId } = Route.useSearch();
+  const { brevId, templateId, enhetsId } = Route.useSearch();
   const { saksId, letterTemplates } = Route.useLoaderData();
   const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
@@ -83,6 +83,7 @@ export function BrevvelgerPage() {
         </div>
         <BrevmalPanel
           brevId={brevId}
+          enhetsId={enhetsId ?? ""}
           letterTemplates={letterTemplates}
           saksId={saksId}
           setOnFormSubmitClick={setOnSubmitClick}
@@ -106,7 +107,7 @@ const BrevvelgerFooter = (props: {
   const navigate = useNavigate({ from: Route.fullPath });
   const harBrevKlarTilSending = props.antallBrevKlarTilSending > 0;
   const mutationState = useMutationState({ filters: { mutationKey: ["OPEN_LETTER"] } });
-
+  console.log("mutationState", mutationState[0]?.status);
   return (
     <HStack
       css={css`
