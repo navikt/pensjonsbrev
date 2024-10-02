@@ -298,7 +298,7 @@ function RedigerBrev({
                       navigate({
                         to: "/saksnummer/$saksId/brevbehandler",
                         params: { saksId },
-                        search: { brevId: brev.info.id.toString() },
+                        search: { brevId: brev.info.id },
                       });
                     },
                   },
@@ -331,7 +331,7 @@ function useHurtiglagreMutation<T>(
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
       //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brevId.toString()) });
+      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
       setEditorState((previousState) => ({
         ...previousState,
         redigertBrev: response.redigertBrev,

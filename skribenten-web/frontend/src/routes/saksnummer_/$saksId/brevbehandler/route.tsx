@@ -4,6 +4,7 @@ import { Button, Heading, HStack, Label, Skeleton, VStack } from "@navikt/ds-rea
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
+import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getNavn } from "~/api/skribenten-api-endpoints";
@@ -25,8 +26,8 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
 
     return sakContext;
   },
-  validateSearch: (search: Record<string, unknown>): { brevId?: string } => ({
-    brevId: search.brevId?.toString(),
+  validateSearch: (search: Record<string, unknown>): { brevId?: number } => ({
+    brevId: search.brevId ? z.number().parse(search.brevId) : undefined,
   }),
 });
 
