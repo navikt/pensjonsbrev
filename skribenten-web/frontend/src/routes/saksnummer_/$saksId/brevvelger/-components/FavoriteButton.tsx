@@ -5,14 +5,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { addFavoritt, deleteFavoritt, getFavoritter } from "~/api/skribenten-api-endpoints";
 
-import { Route } from "../route";
-
-export default function FavoriteButton() {
-  const { templateId } = Route.useParams();
+export default function FavoriteButton(props: { templateId: string }) {
   const queryClient = useQueryClient();
   const isFavoritt = useQuery({
     ...getFavoritter,
-    select: (favoritter) => favoritter.includes(templateId),
+    select: (favoritter) => favoritter.includes(props.templateId),
   }).data;
 
   const toggleFavoritesMutation = useMutation<unknown, unknown, string>({
@@ -28,7 +25,7 @@ export default function FavoriteButton() {
         `}
         data-cy="remove-favorite-button"
         icon={<StarFillIcon aria-hidden />}
-        onClick={() => toggleFavoritesMutation.mutate(templateId)}
+        onClick={() => toggleFavoritesMutation.mutate(props.templateId)}
         size="small"
         variant="secondary"
       >
@@ -44,7 +41,7 @@ export default function FavoriteButton() {
       `}
       data-cy="add-favorite-button"
       icon={<StarIcon aria-hidden />}
-      onClick={() => toggleFavoritesMutation.mutate(templateId)}
+      onClick={() => toggleFavoritesMutation.mutate(props.templateId)}
       size="small"
       variant="secondary-neutral"
     >

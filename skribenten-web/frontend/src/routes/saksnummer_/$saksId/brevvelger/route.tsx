@@ -1,22 +1,36 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
-import { Accordion, Alert, BodyShort, Button, Heading, HStack, Search, VStack } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
+import { Accordion, Alert, BodyShort, Button, Heading, HStack, Label, Search, VStack } from "@navikt/ds-react";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useMutationState, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritter } from "~/api/skribenten-api-endpoints";
+import { getFavoritter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
-import { erBrevKladdEllerUnderRedigering } from "~/utils/brevUtils";
+import type { BrevInfo } from "~/types/brev";
+import type { Nullable } from "~/types/Nullable";
+import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 
+import BrevmalPanel from "./-components/BrevmalPanel";
+
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { idTSSEkstern?: string; brevId?: string; templateId?: string; enhetsId?: string } => ({
+    idTSSEkstern: search.idTSSEkstern?.toString(),
+    brevId: search.brevId?.toString(),
+    templateId: search.templateId?.toString(),
+    enhetsId: search.enhetsId?.toString(),
+  }),
   loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
@@ -26,49 +40,127 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   component: BrevvelgerPage,
 });
 
+export interface SubmitTemplateOptions {
+  onClick: () => void;
+}
+
 export function BrevvelgerPage() {
+  const { brevId, templateId, enhetsId } = Route.useSearch();
   const { saksId, letterTemplates } = Route.useLoaderData();
+  const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
+
+  const alleSaksbrevQuery = useQuery({
+    queryKey: hentAlleBrevForSak.queryKey(saksId.toString()),
+    queryFn: () => hentAlleBrevForSak.queryFn(saksId.toString()),
+  });
 
   return (
     <div
       css={css`
         display: flex;
-        flex: 1;
-        justify-content: center;
-
-        > :first-of-type {
-          background: white;
-          min-width: 432px;
-          max-width: 720px;
-          flex: 1;
-          border-left: 1px solid var(--a-gray-200);
-          border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-6);
-        }
-
-        > :nth-of-type(2) {
-          background: white;
-          min-width: 336px;
-          max-width: 388px;
-          border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-6);
-          flex: 1;
-        }
+        flex-direction: column;
+        align-self: center;
+        background-color: white;
       `}
     >
-      <Brevmaler letterTemplates={letterTemplates ?? []} saksId={saksId} />
-      <Outlet />
+      <div
+        css={css`
+          display: flex;
+          background-color: white;
+          height: var(--main-page-content-height);
+        `}
+      >
+        <div
+          css={css`
+            width: 720px;
+            border-left: 1px solid var(--a-gray-200);
+            border-right: 1px solid var(--a-gray-200);
+            padding: var(--a-spacing-6);
+            overflow-y: scroll;
+          `}
+        >
+          <Brevmaler alleSaksbrev={alleSaksbrevQuery} letterTemplates={letterTemplates} />
+        </div>
+        <BrevmalPanel
+          brevId={brevId}
+          enhetsId={enhetsId ?? ""}
+          letterTemplates={letterTemplates}
+          saksId={saksId}
+          setOnFormSubmitClick={setOnSubmitClick}
+          templateId={templateId}
+        />
+      </div>
+      <BrevvelgerFooter
+        antallBrevKlarTilSending={alleSaksbrevQuery.data?.filter(erBrevKlar)?.length ?? 0}
+        onSubmitClick={onSubmitClick}
+        saksId={saksId}
+      />
     </div>
   );
 }
 
-function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplates: LetterMetadata[] }) {
+const BrevvelgerFooter = (props: {
+  saksId: number;
+  antallBrevKlarTilSending: number;
+  onSubmitClick: Nullable<SubmitTemplateOptions>;
+}) => {
+  const navigate = useNavigate({ from: Route.fullPath });
+  const harBrevKlarTilSending = props.antallBrevKlarTilSending > 0;
+  const mutationState = useMutationState({ filters: { mutationKey: orderLetterKeys.all } });
+
+  return (
+    <HStack
+      css={css`
+        padding: 8px 12px;
+        border-top: 1px solid var(--a-gray-200);
+      `}
+      justify={"end"}
+    >
+      <Button
+        onClick={() => {
+          navigate({
+            to: "/saksnummer/$saksId/brevbehandler",
+            params: { saksId: props.saksId.toString() },
+          });
+        }}
+        size="small"
+        type="button"
+        variant="tertiary"
+      >
+        {harBrevKlarTilSending
+          ? `Du har ${props.antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
+          : "Gå til brevbehandler"}
+      </Button>
+      {props.onSubmitClick && (
+        <Button
+          css={css`
+            width: fit-content;
+          `}
+          data-cy="order-letter"
+          icon={<ArrowRightIcon />}
+          iconPosition="right"
+          loading={mutationState.at(-1)?.status === "pending"}
+          onClick={props.onSubmitClick.onClick}
+          size="small"
+          variant="primary"
+        >
+          Åpne brev
+        </Button>
+      )}
+    </HStack>
+  );
+};
+
+function Brevmaler({
+  letterTemplates,
+  alleSaksbrev,
+}: {
+  letterTemplates: LetterMetadata[];
+  alleSaksbrev: UseQueryResult<BrevInfo[], Error>;
+}) {
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
-
-  //dette funker som vist https://tanstack.com/router/latest/docs/framework/react/guide/path-params#path-params-outside-of-routes
-  const { templateId, brevId } = useParams({ strict: false }) as { templateId?: string; brevId?: string };
+  const { templateId, brevId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
-
   const favoritter = useQuery(getFavoritter).data ?? [];
 
   const brevmalerMatchingSearchTerm = sortBy(
@@ -96,11 +188,6 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
     eblanketter.length > 0 ? ["E-blanketter"] : [],
   ].flat();
 
-  const alleSaksbrevQuery = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey(saksId.toString()),
-    queryFn: () => hentAlleBrevForSak.queryFn(saksId.toString()),
-  });
-
   return (
     <VStack gap="6">
       <Heading level="1" size="small">
@@ -117,7 +204,6 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
       />
       <Accordion
         css={css`
-          max-height: calc(100vh - var(--header-height) - var(--breadcrumbs-height) - 180px);
           overflow-y: scroll;
 
           .navds-accordion__content {
@@ -128,7 +214,7 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
         indent={false}
         size="small"
       >
-        {alleSaksbrevQuery.isSuccess && alleSaksbrevQuery.data.some(erBrevKladdEllerUnderRedigering) && (
+        {alleSaksbrev.isSuccess && alleSaksbrev.data.some(erBrevKladdEllerUnderRedigering) && (
           <Accordion.Item defaultOpen>
             <Accordion.Header
               css={css`
@@ -136,7 +222,9 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                 justify-content: space-between;
               `}
             >
-              <HStack gap="2">Kladder</HStack>
+              <HStack gap="2">
+                <Label size="small">Kladder</Label>
+              </HStack>
             </Accordion.Header>
             <Accordion.Content>
               <div
@@ -145,7 +233,7 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                   flex-direction: column;
                 `}
               >
-                {alleSaksbrevQuery.data.filter(erBrevKladdEllerUnderRedigering).map((brev) => (
+                {alleSaksbrev.data.filter(erBrevKladdEllerUnderRedigering).map((brev) => (
                   <BrevmalButton
                     description={`Opprettet ${formatStringDate(brev.opprettet)}`}
                     extraStyles={
@@ -159,9 +247,8 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                     key={brev.id}
                     onClick={() => {
                       navigate({
-                        to: "/saksnummer/$saksId/brevvelger/kladd/$brevId",
-                        params: { saksId: saksId.toString(), brevId: brev.id.toString() },
-                        search: (s) => s,
+                        to: "/saksnummer/$saksId/brevvelger",
+                        search: (s) => ({ ...s, brevId: brev.id.toString(), templateId: undefined }),
                       });
                     }}
                     title={
@@ -169,7 +256,7 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                         <BrevSystemIcon
                           brevsystem={letterTemplates.find((template) => template.id === brev.brevkode)?.brevsystem}
                         />
-                        {brev.brevtittel}
+                        <BodyShort size="small">{brev.brevtittel}</BodyShort>
                       </HStack>
                     }
                   />
@@ -199,7 +286,7 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                   justify-content: space-between;
                 `}
               >
-                {type}
+                <Label size="small">{type}</Label>
               </Accordion.Header>
               <Accordion.Content>
                 <div
@@ -221,14 +308,14 @@ function Brevmaler({ saksId, letterTemplates }: { saksId: number; letterTemplate
                       key={template.id}
                       onClick={() => {
                         navigate({
-                          to: "/saksnummer/$saksId/brevvelger/$templateId",
-                          params: { templateId: template.id },
-                          search: (s) => s,
+                          to: "/saksnummer/$saksId/brevvelger",
+                          search: (s) => ({ ...s, templateId: template.id, brevId: undefined }),
                         });
                       }}
                       title={
                         <HStack align="center" gap="2">
-                          <BrevSystemIcon brevsystem={template.brevsystem} /> <BodyShort>{template.name}</BodyShort>
+                          <BrevSystemIcon brevsystem={template.brevsystem} />{" "}
+                          <BodyShort size="small">{template.name}</BodyShort>
                         </HStack>
                       }
                     />
@@ -282,7 +369,7 @@ const BrevmalButton = (props: {
             text-overflow: ellipsis;
           }
 
-          > :first-child {
+          > :first-of-type {
             width: 100%;
           }
         `,
@@ -293,12 +380,13 @@ const BrevmalButton = (props: {
       variant="tertiary"
     >
       <HStack justify={"space-between"}>
-        <div>{props.title}</div>
+        {props.title}
         {props.description && (
           <BodyShort
             css={css`
               color: var(--a-gray-600);
             `}
+            size="small"
           >
             {props.description}
           </BodyShort>

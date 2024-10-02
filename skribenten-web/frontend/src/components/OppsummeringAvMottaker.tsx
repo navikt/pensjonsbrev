@@ -1,6 +1,6 @@
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 
-import HentOgVisAdresse from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/endreMottaker/HentOgVisAdresse";
+import HentOgVisAdresse from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/HentOgVisAdresse";
 import type { Mottaker } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 

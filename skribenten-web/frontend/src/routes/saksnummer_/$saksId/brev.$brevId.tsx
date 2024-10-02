@@ -276,7 +276,11 @@ function RedigerBrev({
           <HStack gap="2" justify={"end"}>
             <Button
               onClick={() => {
-                navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: saksId } });
+                navigate({
+                  to: "/saksnummer/$saksId/brevvelger",
+                  params: { saksId: saksId },
+                  search: (s) => ({ ...s, brevId: brev.info.id.toString() }),
+                });
               }}
               size="small"
               type="button"

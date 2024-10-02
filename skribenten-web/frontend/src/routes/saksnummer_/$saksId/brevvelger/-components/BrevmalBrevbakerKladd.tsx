@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
-import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading, HStack, Loader, VStack } from "@navikt/ds-react";
+import { BodyShort, Heading, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
@@ -14,41 +14,42 @@ import { type LetterMetadata } from "~/types/apiTypes";
 import type { BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
-import Oppsummeringspar from "../kvittering/-components/Oppsummeringspar";
+import Oppsummeringspar from "../../kvittering/-components/Oppsummeringspar";
+import type { SubmitTemplateOptions } from "../route";
+import { Route } from "../route";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brevvelger/kladd/$brevId")({
-  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
-    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
-    return { letterTemplates: sakContext.brevMetadata };
-  },
-  component: KladdBrev,
-});
-
-function KladdBrev() {
-  const { saksId, brevId } = Route.useParams();
-  const { letterTemplates } = Route.useLoaderData();
-
+export const BrevmalBrevbakerKladd = (props: {
+  saksId: string;
+  brevId: string;
+  letterTemplates: LetterMetadata[];
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
+}) => {
   const brevQuery = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey(saksId.toString()),
-    queryFn: () => hentAlleBrevForSak.queryFn(saksId.toString()),
-    select: (data) => data?.find((b) => b.id.toString() === brevId),
+    queryKey: hentAlleBrevForSak.queryKey(props.saksId.toString()),
+    queryFn: () => hentAlleBrevForSak.queryFn(props.saksId.toString()),
+    select: (data) => data?.find((b) => b.id.toString() === props.brevId),
   });
 
   const brev = brevQuery.data;
   const brevExists = brev !== undefined;
-  const letterMetadataForBrev = brevExists ? letterTemplates.find((l) => l.id === brev!.brevkode) : undefined;
+  const letterMetadataForBrev = brevExists ? props.letterTemplates.find((l) => l.id === brev!.brevkode) : undefined;
 
   return (
     <div>
       {brevQuery.isPending && <Loader />}
       {brevQuery.isError && <ApiError error={brevQuery.error} title="Klarte ikke hente brev" />}
+      {brevQuery.isSuccess && !brevExists && <BrevIkkeFunnet brevId={props.brevId} />}
       {brevQuery.isSuccess && brevExists && (
-        <Brevmal brev={brev!} letterMetadata={letterMetadataForBrev!} saksId={saksId} />
+        <Brevmal
+          brev={brev}
+          letterMetadata={letterMetadataForBrev}
+          saksId={props.saksId}
+          setOnFormSubmitClick={props.setOnFormSubmitClick}
+        />
       )}
-      {brevQuery.isSuccess && !brevExists && <BrevIkkeFunnet brevId={brevId} />}
     </div>
   );
-}
+};
 
 const BrevIkkeFunnet = (props: { brevId: string }) => {
   return (
@@ -58,8 +59,24 @@ const BrevIkkeFunnet = (props: { brevId: string }) => {
   );
 };
 
-const Brevmal = (props: { saksId: string; brev: BrevInfo; letterMetadata: LetterMetadata }) => {
+const Brevmal = (props: {
+  saksId: string;
+  brev: BrevInfo;
+  letterMetadata?: LetterMetadata;
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
+}) => {
   const navigate = useNavigate({ from: Route.fullPath });
+
+  useEffect(() => {
+    props.setOnFormSubmitClick({
+      onClick: () => {
+        navigate({
+          to: "/saksnummer/$saksId/brev/$brevId",
+          params: { saksId: props.saksId, brevId: props.brev.id },
+        });
+      },
+    });
+  }, [props.setOnFormSubmitClick]);
 
   return (
     <div
@@ -86,7 +103,11 @@ const Brevmal = (props: { saksId: string; brev: BrevInfo; letterMetadata: Letter
 
           <div>
             <Heading size="small">{props.brev.brevtittel}</Heading>
-            <LetterTemplateTags letterTemplate={props.letterMetadata} />
+            {props.letterMetadata ? (
+              <LetterTemplateTags letterTemplate={props.letterMetadata} />
+            ) : (
+              <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
+            )}
           </div>
         </VStack>
 
@@ -96,41 +117,13 @@ const Brevmal = (props: { saksId: string; brev: BrevInfo; letterMetadata: Letter
           <EndreMottakerMedOppsummeringOgApiHåndtering brev={props.brev} saksId={props.saksId} withOppsummeringTitle />
           <Oppsummeringspar
             boldedTitle
+            size="small"
             tittel={"Avsenderenhet"}
             verdi={props.brev.avsenderEnhet?.navn ?? "Enhet er ikke registrert i brevet"}
           />
-          <Oppsummeringspar boldedTitle tittel={"Språk"} verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
+          <Oppsummeringspar boldedTitle size="small" tittel={"Språk"} verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
         </VStack>
       </VStack>
-
-      <HStack justify={"end"}>
-        <Button
-          onClick={() => {
-            navigate({
-              to: "/saksnummer/$saksId/brevbehandler",
-              params: { saksId: props.saksId },
-            });
-          }}
-          size="small"
-          type="button"
-          variant="tertiary"
-        >
-          Gå til brevbehandler
-        </Button>
-        <Button size="small">
-          <HStack
-            align={"center"}
-            onClick={() => {
-              navigate({
-                to: "/saksnummer/$saksId/brev/$brevId",
-                params: { saksId: props.saksId, brevId: props.brev.id },
-              });
-            }}
-          >
-            Åpne brev <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
-          </HStack>
-        </Button>
-      </HStack>
     </div>
   );
 };

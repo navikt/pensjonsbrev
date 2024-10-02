@@ -2,7 +2,7 @@ import type {
   Identtype,
   InnOgUtland,
   Søketype,
-} from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/endreMottaker/EndreMottakerUtils";
+} from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/EndreMottakerUtils";
 
 import type { Nullable } from "./Nullable";
 

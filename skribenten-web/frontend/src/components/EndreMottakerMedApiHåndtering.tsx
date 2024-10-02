@@ -6,7 +6,7 @@ import type { AxiosError } from "axios";
 import { useState } from "react";
 
 import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { EndreMottakerModal } from "~/routes/saksnummer_/$saksId/brevvelger/$templateId/-components/endreMottaker/EndreMottaker";
+import { EndreMottakerModal } from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/EndreMottaker";
 import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 
