@@ -102,7 +102,7 @@ describe("Brevvelger spec", () => {
 
   it("Bestill Doksys brev", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/doksys", (request) => {
-      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "EN", enhetsId: "4405" });
+      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "NB", enhetsId: "4405" });
       request.reply({ fixture: "bestillBrevDoksys.json" });
     }).as("bestill doksys");
 
@@ -439,7 +439,6 @@ describe("Brevvelger spec", () => {
       cy.get('p:contains("Informasjon om saksbehandlingstid")').eq(1).click();
       cy.contains("Endre mottaker").click();
       cy.contains("Legg til manuelt").click();
-      cy.getDataCy("endre-mottaker-mottaker-type").select("Privatperson");
       cy.contains("Navn").click().type("Fornavn Etternavnsen");
       cy.contains("Adresselinje 1").click().type("Adresselinjen 1");
       cy.contains("Postnummer").click().type("0000");
@@ -447,7 +446,6 @@ describe("Brevvelger spec", () => {
       cy.contains("Land *").click().type("Sver{enter}");
       cy.contains("Gå videre").click();
 
-      cy.contains("Privatperson").should("be.visible");
       cy.contains("Fornavn Etternavnsen").should("be.visible");
       cy.contains("Adresselinjen").should("be.visible");
       cy.contains("0000").should("be.visible");

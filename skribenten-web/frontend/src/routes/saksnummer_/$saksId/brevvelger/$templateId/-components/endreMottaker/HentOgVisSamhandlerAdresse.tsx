@@ -8,7 +8,6 @@ import type { SamhandlerTypeCode } from "~/types/apiTypes";
 import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 import type { Nullable } from "~/types/Nullable";
 
-import type { TypeMottaker } from "./EndreMottakerUtils";
 import OppsummeringAvValgtMottaker from "./OppsummeringAvValgtMottaker";
 
 /**
@@ -16,7 +15,7 @@ import OppsummeringAvValgtMottaker from "./OppsummeringAvValgtMottaker";
  */
 const HentOgVisSamhandlerAdresse = (properties: {
   id: string;
-  typeMottaker: SamhandlerTypeCode | TypeMottaker;
+  samhandlerType: SamhandlerTypeCode;
   onTilbakeTilSøk: () => void;
   onBekreftNyMottaker: () => void;
   error: Nullable<AxiosError>;
@@ -64,7 +63,7 @@ const HentOgVisSamhandlerAdresse = (properties: {
           fn: properties.onTilbakeTilSøk,
           plassering: "bottom",
         }}
-        type={SAMHANDLER_ENUM_TO_TEXT[properties.typeMottaker as SamhandlerTypeCode]}
+        samhandlerType={SAMHANDLER_ENUM_TO_TEXT[properties.samhandlerType]}
       />
     </VStack>
   );

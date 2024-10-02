@@ -17,9 +17,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
+import type { UserInfo } from "~/api/bff-endpoints";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getNavn } from "~/api/skribenten-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
+import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
@@ -27,7 +29,7 @@ import { erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
-import { brevStatusTypeToTextAndTagVariant } from "../-BrevbehandlerUtils";
+import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrevmeny } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
 const BrevbehandlerMeny = (properties: { saksId: string; brevInfo: BrevInfo[] }) => {
@@ -71,17 +73,15 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
 
   return (
     <Accordion>
-      {properties.brev
-        .toSorted((a, b) => a.id - b.id)
-        .map((brev) => (
-          <BrevItem
-            brev={brev}
-            key={brev.id}
-            onOpenChange={handleOpenChange(brev.id.toString())}
-            open={åpenBrevItem === brev.id.toString()}
-            saksId={properties.saksId}
-          />
-        ))}
+      {sortBrevmeny(properties.brev).map((brev) => (
+        <BrevItem
+          brev={brev}
+          key={brev.id}
+          onOpenChange={handleOpenChange(brev.id.toString())}
+          open={åpenBrevItem === brev.id.toString()}
+          saksId={properties.saksId}
+        />
+      ))}
     </Accordion>
   );
 };
@@ -108,6 +108,7 @@ const BrevItem = (properties: {
 }) => {
   const queryClient = useQueryClient();
   const sakContext = Route.useLoaderData();
+  const gjeldendeBruker = useUserInfo();
 
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
@@ -149,7 +150,7 @@ const BrevItem = (properties: {
       <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
         <Accordion.Header>
           <VStack gap="2">
-            <Brevtilstand status={properties.brev.status} />
+            <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
             <Label size="small">{properties.brev.brevtittel}</Label>
           </VStack>
         </Accordion.Header>
@@ -171,11 +172,11 @@ const BrevItem = (properties: {
                     </BodyShort>
                     {properties.brev.mottaker ? (
                       <HStack align={"center"} gap="2">
-                        <MottakerNavn mottaker={properties.brev.mottaker} /> {edit}
+                        <MottakerNavn mottaker={properties.brev.mottaker} /> {!erLåst && edit}
                       </HStack>
                     ) : (
                       <HStack align={"center"} gap="2">
-                        <BodyShort>{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {edit}
+                        <BodyShort>{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {!erLåst && edit}
                       </HStack>
                     )}
                   </div>
@@ -283,7 +284,7 @@ const BrevItem = (properties: {
                 {isDateToday(properties.brev.sistredigert)
                   ? formatStringDateWithTime(properties.brev.sistredigert)
                   : formatStringDate(properties.brev.sistredigert)}{" "}
-                av {properties.brev.sistredigertAv.navn ?? properties.brev.sistredigertAv.id}
+                av {forkortetSaksbehandlernavn(properties.brev.sistredigertAv, gjeldendeBruker)}
               </BodyShort>
               <BodyShort
                 css={css`
@@ -300,8 +301,8 @@ const BrevItem = (properties: {
   );
 };
 
-const Brevtilstand = (properties: { status: BrevStatus }) => {
-  const { variant, text } = brevStatusTypeToTextAndTagVariant(properties.status);
+const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjeldendeBruker?: UserInfo }) => {
+  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
 
   return (
     <Tag

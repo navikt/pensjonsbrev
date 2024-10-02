@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.BinaryOperation.Documentation
 import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invoke.Operation
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 object TemplateDocumentationRenderer {
 

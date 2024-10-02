@@ -1,43 +1,24 @@
 package no.nav.pensjon.brev.template
 
-import com.fasterxml.jackson.annotation.*
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import kotlin.reflect.*
 import kotlin.reflect.full.primaryConstructor
 
-data class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>, val letterModelTypeName: String?)
+class TemplateModelSpecificationError(msg: String) : Error(msg)
 
-typealias ObjectTypeSpecification = Map<String, FieldType>
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes(
-    JsonSubTypes.Type(FieldType.Scalar::class, name = "scalar"),
-    JsonSubTypes.Type(FieldType.Enum::class, name = "enum"),
-    JsonSubTypes.Type(FieldType.Array::class, name = "array"),
-    JsonSubTypes.Type(FieldType.Object::class, name = "object"),
-)
-sealed class FieldType {
-    data class Scalar(val nullable: Boolean, val kind: Kind) : FieldType() {
-        enum class Kind { NUMBER, DOUBLE, STRING, BOOLEAN, DATE }
-    }
-
-    data class Enum(val nullable: Boolean, val values: Set<String>) : FieldType()
-    data class Array(val nullable: Boolean, val items: FieldType) : FieldType()
-    data class Object(val nullable: Boolean, val typeName: String) : FieldType()
-}
-
-class LetterModelSpecificationError(msg: String) : Error(msg)
-
-class LetterModelSpecificationFactory(val from: KClass<*>) {
+class TemplateModelSpecificationFactory(val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     fun build(): TemplateModelSpecification =
         if (from.objectInstance == Unit || from.objectInstance == EmptyBrevdata) {
             TemplateModelSpecification(emptyMap(), null)
         } else if (from.primaryConstructor == null) {
-            throw LetterModelSpecificationError("Cannot create specification of class without primary constructor: ${from.qualifiedName}")
+            throw TemplateModelSpecificationError("Cannot create specification of class without primary constructor: ${from.qualifiedName}")
         } else if (!(from.isData || from.isValue)) {
-            throw LetterModelSpecificationError("Cannot create specification from a regular class: must be data or value class")
+            throw TemplateModelSpecificationError("Cannot create specification from a regular class: must be data or value class")
         } else {
             val objectTypes = mutableMapOf(from.qualifiedName!! to createObjectTypeSpecification(from))
 
@@ -63,13 +44,13 @@ class LetterModelSpecificationFactory(val from: KClass<*>) {
         return spec
     }
 
-    fun validateTypes(spec: TemplateModelSpecification, path: List<String>, type: ObjectTypeSpecification) {
+    private fun validateTypes(spec: TemplateModelSpecification, path: List<String>, type: ObjectTypeSpecification) {
         type.values.forEach {
             if (it is FieldType.Object) {
                 if (path.contains(it.typeName)) {
-                    throw LetterModelSpecificationError("Recursive types not supported: ${it.typeName}")
+                    throw TemplateModelSpecificationError("Recursive types not supported: ${it.typeName}")
                 } else if (!spec.types.containsKey(it.typeName)) {
-                    throw LetterModelSpecificationError("TemplateModelSpecification is incomplete: ${it.typeName} is missing")
+                    throw TemplateModelSpecificationError("TemplateModelSpecification is incomplete: ${it.typeName} is missing")
                 } else {
                     validateTypes(spec, path + it.typeName, spec.types[it.typeName]!!)
                 }
@@ -116,12 +97,12 @@ class LetterModelSpecificationFactory(val from: KClass<*>) {
                     } else if (theClassifier.java.isEnum) {
                         FieldType.Enum(isMarkedNullable, theClassifier.java.enumConstants.map { it.toString() }.toSet())
                     } else {
-                        throw LetterModelSpecificationError("Don't know how to handle type: $qname")
+                        throw TemplateModelSpecificationError("Don't know how to handle type: $qname")
                     }
                 }
             }
         } else {
-            throw LetterModelSpecificationError("Unable to create FieldType of: $this")
+            throw TemplateModelSpecificationError("Unable to create FieldType of: $this")
         }
     }
 }

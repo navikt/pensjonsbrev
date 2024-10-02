@@ -28,7 +28,7 @@ const BackButton = (properties: { icon: React.ReactNode; text: string; onClick: 
 };
 
 const OppsummeringAvValgtMottaker = (properties: {
-  type: string;
+  samhandlerType: Nullable<string>;
   adresse: Adresse;
   onAvbryt: () => void;
   onBekreft: () => void;
@@ -44,7 +44,7 @@ const OppsummeringAvValgtMottaker = (properties: {
       {properties.onTilbake.plassering === "top" && (
         <BackButton icon={<PencilIcon />} onClick={properties.onTilbake.fn} text="Rediger" />
       )}
-      <OppsummeringAvAdresse adresse={properties.adresse} type={properties.type} />
+      <OppsummeringAvAdresse adresse={properties.adresse} type={properties.samhandlerType} />
       {properties.onTilbake.plassering === "bottom" && (
         <BackButton icon={<ArrowLeftIcon />} onClick={properties.onTilbake.fn} text="Tilbake til søk" />
       )}
@@ -74,11 +74,11 @@ const OppsummeringAvValgtMottaker = (properties: {
 
 export default OppsummeringAvValgtMottaker;
 
-const OppsummeringAvAdresse = (properties: { type: string; adresse: Adresse }) => {
+const OppsummeringAvAdresse = (properties: { type: Nullable<string>; adresse: Adresse }) => {
   return (
     <Table>
       <Table.Body>
-        <InversedTableRow label="Type" value={properties.type} />
+        {properties.type && <InversedTableRow label="Type" value={properties.type} />}
         <InversedTableRow label="Navn" value={properties.adresse.navn} />
         <InversedTableRow label="Adresselinje 1" value={properties.adresse.linje1} />
         <InversedTableRow label="Adresselinje 2" value={properties.adresse.linje2} />

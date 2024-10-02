@@ -27,7 +27,7 @@ export const BrevForhåndsvisning = (properties: { sakId: string; brevId: string
         </VStack>
       )}
       {hentPdfQuery.isError && <ApiError error={hentPdfQuery.error} title={"Kunne ikke hente PDF"} />}
-      {hentPdfQuery.isSuccess && (
+      {hentPdfQuery.isSuccess && hentPdfQuery.data !== null && (
         <PDFViewer
           brevId={properties.brevId}
           pdf={hentPdfQuery.data}

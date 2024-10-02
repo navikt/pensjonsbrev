@@ -1,6 +1,8 @@
-import { type BrevStatus } from "~/types/brev";
+import type { UserInfo } from "~/api/bff-endpoints";
+import type { BrevInfo } from "~/types/brev";
+import { type BrevStatus, type NavAnsatt } from "~/types/brev";
 
-export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus) => {
+export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeBruker?: UserInfo) => {
   switch (status.type) {
     case "Kladd": {
       return { variant: "warning" as const, text: "Kladd" };
@@ -10,7 +12,25 @@ export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus) => {
     }
 
     case "UnderRedigering": {
-      return { variant: "neutral" as const, text: `Redigeres av ${status.redigeresAv.navn}` };
+      return {
+        variant: "neutral" as const,
+        text: `Redigeres av ${forkortetSaksbehandlernavn(status.redigeresAv, gjeldendeBruker)}`,
+      };
     }
   }
 };
+
+export const forkortetSaksbehandlernavn = (navAnsatt: NavAnsatt, gjeldendeBruker?: UserInfo) => {
+  return navAnsatt.id === gjeldendeBruker?.navident ? "deg" : navAnsatt.navn ?? navAnsatt.id;
+};
+
+const sorteringsRekkefølge = { Kladd: 1, UnderRedigering: 2, Klar: 3 };
+
+export const sortBrevmeny = (brev: BrevInfo[]): BrevInfo[] =>
+  brev.toSorted((a, b) => {
+    if (sorteringsRekkefølge[a.status.type] !== sorteringsRekkefølge[b.status.type]) {
+      return sorteringsRekkefølge[a.status.type] - sorteringsRekkefølge[b.status.type];
+    }
+
+    return new Date(a.sistredigert).getTime() - new Date(b.sistredigert).getTime();
+  });

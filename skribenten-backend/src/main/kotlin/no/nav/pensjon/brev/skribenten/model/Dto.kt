@@ -17,7 +17,7 @@ object Dto {
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: EditLetterHash,
-        val saksbehandlerValg: BrevbakerBrevdata,
+        val saksbehandlerValg: SaksbehandlerValg,
     )
 
     data class BrevInfo(

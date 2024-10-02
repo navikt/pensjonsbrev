@@ -25,6 +25,8 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.slf4j.LoggerFactory
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
@@ -41,16 +43,15 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             jackson {
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupModule)
+                registerModule(TemplateModelSpecificationModule)
             }
         }
     }
 
     /**
      * Get model specification for a template.
-     *
-     * Returns a string because Skribenten-backend doesn't really care about the content.
      */
-    suspend fun getModelSpecification(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String> =
+    suspend fun getModelSpecification(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<TemplateModelSpecification> =
         client.get(call, "/templates/redigerbar/${brevkode.name}/modelSpecification").toServiceResult()
 
     suspend fun renderMarkup(
@@ -171,4 +172,27 @@ object LetterMarkupModule : SimpleModule() {
                 return p.codec.treeToValue(node, clazz)
             }
         }
+}
+
+object TemplateModelSpecificationModule : SimpleModule() {
+    private fun readResolve(): Any = TemplateModelSpecificationModule
+
+    init {
+        addDeserializer(FieldType::class.java, fieldTypeDeserializer())
+    }
+
+    private fun fieldTypeDeserializer() =
+        object : StdDeserializer<FieldType>(FieldType::class.java) {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): FieldType {
+                val node = p.codec.readTree<JsonNode>(p)
+                val type = when (FieldType.Type.valueOf(node.get("type").textValue())) {
+                    FieldType.Type.array -> FieldType.Array::class.java
+                    FieldType.Type.scalar -> FieldType.Scalar::class.java
+                    FieldType.Type.enum -> FieldType.Enum::class.java
+                    FieldType.Type.`object` -> FieldType.Object::class.java
+                }
+                return p.codec.treeToValue(node, type)
+            }
+        }
+
 }

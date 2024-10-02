@@ -4,11 +4,12 @@ package no.nav.pensjon.brev.template
 
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
-import no.nav.pensjon.brev.template.FieldType.Scalar.Kind
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
-class LetterModelSpecificationTest {
+class TemplateModelSpecificationFactoryTest {
     data class AModel(
         val tekst: String,
         val etTall: Int,
@@ -23,7 +24,7 @@ class LetterModelSpecificationTest {
         data class SubModel(val navn: String, val alder: Int)
     }
 
-    private val spec = LetterModelSpecificationFactory(AModel::class).build()
+    private val spec = TemplateModelSpecificationFactory(AModel::class).build()
     private val aModelSpec = spec.types[AModel::class.qualifiedName!!]!!
 
     @Test
@@ -92,14 +93,14 @@ class LetterModelSpecificationTest {
 
     @Test
     fun `fails for Model classes without primary constructor`() {
-        assertThrows<LetterModelSpecificationError> { LetterModelSpecificationFactory(NoPrimaryConstructor::class).build() }
+        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NoPrimaryConstructor::class).build() }
     }
 
     class NotADataClass(val navn: String, @Suppress("unused") val alder: Int)
 
     @Test
     fun `fails for non data class`() {
-        assertThrows<LetterModelSpecificationError> { LetterModelSpecificationFactory(NotADataClass::class).build() }
+        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NotADataClass::class).build() }
     }
 
     data class WithEnumeration(val navn: String, val anEnum: AnEnum) {
@@ -109,8 +110,8 @@ class LetterModelSpecificationTest {
 
     @Test
     fun `enum fields have Enum type with all enum-values`() {
-        val spec = LetterModelSpecificationFactory(WithEnumeration::class).build().types[WithEnumeration::class.qualifiedName!!]!!
-        assertThat(spec["anEnum"], equalTo(FieldType.Enum(false, WithEnumeration.AnEnum.values().map { it.name }.toSet())))
+        val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build().types[WithEnumeration::class.qualifiedName!!]!!
+        assertThat(spec["anEnum"], equalTo(FieldType.Enum(false, WithEnumeration.AnEnum.entries.map { it.name }.toSet())))
     }
 
     data class WithValueClass(val navn: String, val aValueClass: TheValue) {
@@ -120,7 +121,7 @@ class LetterModelSpecificationTest {
 
     @Test
     fun `value class fields have Object type that can be looked up in specifiaction types`() {
-        val spec = LetterModelSpecificationFactory(WithValueClass::class).build()
+        val spec = TemplateModelSpecificationFactory(WithValueClass::class).build()
         val withValueClassSpec = spec.types[WithValueClass::class.qualifiedName!!]!!
         assertThat(withValueClassSpec["aValueClass"], equalTo(FieldType.Object(false, WithValueClass.TheValue::class.qualifiedName!!)))
         assertThat(spec.types[WithValueClass.TheValue::class.qualifiedName!!]!!, equalTo(mapOf("value" to FieldType.Scalar(false, Kind.NUMBER))))
@@ -130,7 +131,7 @@ class LetterModelSpecificationTest {
 
     @Test
     fun `nullable fields are mapped correctly`() {
-        val spec = LetterModelSpecificationFactory(WithNullable::class).build()
+        val spec = TemplateModelSpecificationFactory(WithNullable::class).build()
 
         assertThat(
             spec.types[WithNullable::class.qualifiedName!!]!!,
@@ -159,11 +160,11 @@ class LetterModelSpecificationTest {
 
     @Test
     fun `recursive model structures causes failure`() {
-        assertThrows<LetterModelSpecificationError>("Should not support self-recursive types") {
-            LetterModelSpecificationFactory(Recursive::class).build()
+        assertThrows<TemplateModelSpecificationError>("Should not support self-recursive types") {
+            TemplateModelSpecificationFactory(Recursive::class).build()
         }
-        assertThrows<LetterModelSpecificationError>("Should not support circular-recursive types") {
-            LetterModelSpecificationFactory(SubRecursive::class).build()
+        assertThrows<TemplateModelSpecificationError>("Should not support circular-recursive types") {
+            TemplateModelSpecificationFactory(SubRecursive::class).build()
         }
     }
 

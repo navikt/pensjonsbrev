@@ -36,7 +36,7 @@ export const ScalarEditor = ({
           fieldType={fieldType}
           onSubmit={submitOnChange}
           step={0.1}
-          timeoutTimer={3000}
+          timeoutTimer={2500}
           type="number"
         />
       );
@@ -47,7 +47,7 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
-          timeoutTimer={3000}
+          timeoutTimer={2500}
           type="text"
         />
       );
@@ -104,17 +104,24 @@ export const AutoSavingTextField = (props: {
 
   /**
    * useEffekten er brukt kun i forbindelse med autolagring
-   * Merk at noen felter er avhengig av at andre felter er fyllt ut, før vi prøver å gjøre et kall til backend
    */
   useEffect(() => {
-    if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
+    if (fieldState.isDirty && (props.fieldType.nullable ? true : !!watchedValue) && props.onSubmit) {
       const timeout = setTimeout(() => {
         props.onSubmit!();
       }, props.timeoutTimer);
 
       return () => clearTimeout(timeout);
     }
-  }, [fieldState.isDirty, watchedValue, watch, props.timeoutTimer, props.onSubmit, props.field]);
+  }, [
+    fieldState.isDirty,
+    watchedValue,
+    watch,
+    props.timeoutTimer,
+    props.onSubmit,
+    props.field,
+    props.fieldType.nullable,
+  ]);
 
   const commonTextFieldProperties = {
     ...registerProperties,
@@ -146,7 +153,6 @@ const ControlledDatePicker = (props: { field: string; fieldType: TScalar; onSubm
 
   /**
    * useEffekten er brukt kun i forbindelse med autolagring
-   * Merk at noen felter er avhengig av at andre felter er fyllt ut, før vi prøver å gjøre et kall til backend
    */
   useEffect(() => {
     if (fieldState.isDirty && !!watchedValue && props.onSubmit) {

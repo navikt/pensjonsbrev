@@ -6,7 +6,11 @@ import { useFormContext } from "react-hook-form";
 import { useModelSpecification } from "~/api/brev-queries";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
+import {
+  convertFieldToReadableLabel,
+  getFieldDefaultValue,
+  isFieldNullableOrBoolean,
+} from "~/Brevredigering/ModelEditor/components/utils";
 import type { FieldType } from "~/types/brevbakerTypes";
 
 const FieldEditor = ({
@@ -55,26 +59,34 @@ export type ObjectEditorProperties = {
   typeName: string;
   parentFieldName?: string;
   submitOnChange?: () => void;
+  showOnlyRequiredFields?: boolean;
 };
 
-export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
+export const ObjectEditor = ({
+  brevkode,
+  typeName,
+  parentFieldName,
+  submitOnChange,
+  showOnlyRequiredFields,
+}: ObjectEditorProperties) => {
   const objectTypeSpecification = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
   return (
     <>
-      {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
-        const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
-
-        return (
-          <FieldEditor
-            brevkode={brevkode}
-            field={fieldName}
-            fieldType={fieldType}
-            key={field}
-            submitOnChange={submitOnChange}
-          />
-        );
-      })}
+      {Object.entries(objectTypeSpecification ?? {})
+        .filter(([, fieldType]) => (showOnlyRequiredFields ? !isFieldNullableOrBoolean(fieldType) : true))
+        .map(([field, fieldType]) => {
+          const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
+          return (
+            <FieldEditor
+              brevkode={brevkode}
+              field={fieldName}
+              fieldType={fieldType}
+              key={field}
+              submitOnChange={submitOnChange}
+            />
+          );
+        })}
     </>
   );
 };
@@ -84,6 +96,7 @@ function ToggleableObjectEditor({
   parentFieldName,
   typeName,
   submitOnChange,
+  showOnlyRequiredFields,
 }: ObjectEditorProperties & { parentFieldName: string }) {
   const {
     formState: { defaultValues },
@@ -121,6 +134,7 @@ function ToggleableObjectEditor({
           <ObjectEditor
             brevkode={brevkode}
             parentFieldName={parentFieldName}
+            showOnlyRequiredFields={showOnlyRequiredFields}
             submitOnChange={submitOnChange}
             typeName={typeName}
           />

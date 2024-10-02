@@ -1,6 +1,8 @@
 import { css } from "@emotion/react";
 import { Button, Heading } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
+import type { Draft } from "immer";
+import { produce } from "immer";
 import { useCallback, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -21,11 +23,7 @@ export type ModelEditorProperties = {
   saksId: string;
   vedtaksId: string | undefined;
   brevId: Nullable<number>;
-  //TODO - ModelEditor skal i utgangspunktet kun være for SaksbehandlerValg.
-  // designet skal ha signatur felt på 'samme sted', altså med editoren.
-  //Den skal ikke brukes ved opprettelse av brev, men kun når man redigerer brevet. Derfor
-  //gjør vi en enkel fiks for å skjule signatur feltet ved opprettelse av brev.
-  showSignaturField?: boolean;
+  showOnlyRequiredFields?: boolean;
 };
 
 export const ModelEditor = ({
@@ -36,7 +34,7 @@ export const ModelEditor = ({
   saksId,
   vedtaksId,
   brevId,
-  showSignaturField,
+  showOnlyRequiredFields,
 }: ModelEditorProperties) => {
   const methods = useForm({ defaultValues });
   const specification = useModelSpecification(brevkode, (s) => s);
@@ -47,17 +45,18 @@ export const ModelEditor = ({
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
   });
 
-  const doSubmit = (values: SaksbehandlerValg & { signatur: string }) => {
-    const { signatur, ...saksbehandlerValg } = values;
-    return onSubmit(createSaksbehandlerValg(saksbehandlerValg), signatur);
-  };
-
   const requestSubmit = useCallback(() => {
     formRef.current?.requestSubmit();
   }, [formRef]);
 
   if (specification) {
     const saksbehandlerValgType = findSaksbehandlerValgTypeName(specification);
+
+    const doSubmit = (values: SaksbehandlerValg & { signatur: string }) => {
+      const { signatur, ...saksbehandlerValg } = values;
+      return onSubmit(createSaksbehandlerValg(saksbehandlerValg, specification, saksbehandlerValgType), signatur);
+    };
+
     return (
       <>
         <FormProvider {...methods}>
@@ -77,10 +76,17 @@ export const ModelEditor = ({
             <Heading size="small">{brevmal.data?.name}</Heading>
             <ObjectEditor
               brevkode={brevkode}
+              showOnlyRequiredFields={showOnlyRequiredFields}
               submitOnChange={brevId ? requestSubmit : undefined}
               typeName={saksbehandlerValgType}
             />
-            {showSignaturField && (
+            {/*
+              //TODO - ModelEditor skal i utgangspunktet kun være for SaksbehandlerValg.
+              // designet skal ha signatur felt på 'samme sted', altså med editoren.
+              //Den skal ikke brukes ved opprettelse av brev, men kun når man redigerer brevet. Derfor
+              //gjør vi en enkel fiks for å skjule signatur feltet ved opprettelse av brev.
+              */}
+            {!showOnlyRequiredFields && (
               <AutoSavingTextField
                 field={"signatur"}
                 fieldType={{
@@ -89,7 +95,7 @@ export const ModelEditor = ({
                   kind: "STRING",
                 }}
                 onSubmit={brevId ? requestSubmit : undefined}
-                timeoutTimer={3000}
+                timeoutTimer={2500}
                 type={"text"}
               />
             )}
@@ -117,9 +123,32 @@ function findSaksbehandlerValgTypeName(modelSpecification: LetterModelSpecificat
     : modelSpecification.letterModelTypeName;
 }
 
-function createSaksbehandlerValg(values: unknown): SaksbehandlerValg {
-  // In React-Hook-Form it is convential, and easiest, to keep empty inputs as an empty string.
-  // However, in the api empty strings are interpreted literally, we want these to be null in the payload.
-  // To deal with any nested/array properties we use this JSON trick
-  return JSON.parse(JSON.stringify(values), (key, value) => (value === "" ? null : value));
+function createSaksbehandlerValg(
+  values: unknown,
+  specification: LetterModelSpecification,
+  saksbehandlerValgType: string,
+): SaksbehandlerValg {
+  return produce(values as SaksbehandlerValg, (draft) =>
+    saksbehandlerValgObject(draft, specification, saksbehandlerValgType),
+  );
+}
+
+function saksbehandlerValgObject(
+  draft: Draft<SaksbehandlerValg>,
+  specification: LetterModelSpecification,
+  objectType: string,
+) {
+  const objectSpecification = specification.types[objectType];
+
+  for (const [field, fieldType] of Object.entries(objectSpecification)) {
+    if (fieldType.nullable) {
+      if (fieldType.type === "object" && draft[field] !== undefined && draft[field] !== null) {
+        saksbehandlerValgObject(draft[field] as SaksbehandlerValg, specification, fieldType.typeName);
+      } else if (draft[field] === "") {
+        draft[field] = null;
+      }
+    } else if (fieldType.type === "scalar" && fieldType.kind === "BOOLEAN") {
+      draft[field] = draft[field] ?? false;
+    }
+  }
 }

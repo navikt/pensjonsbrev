@@ -16,13 +16,15 @@ import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.tidligereFamiliepleier
 import java.time.LocalDate
 
 data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
     val virkningsdato: LocalDate,
     val avdoed: Avdoed,
     val utbetalingsbeloep: Kroner,
-    val etterbetaling: Boolean
+    val etterbetaling: Boolean,
+    val tidligereFamiliepleier: Boolean = false,
 )
 
 @TemplateModelHelpers
@@ -51,7 +53,7 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(
-                OmstillingsstoenadInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(etterbetaling),
+                OmstillingsstoenadInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(etterbetaling, tidligereFamiliepleier),
             )
         }
     }
