@@ -59,97 +59,111 @@ data class OmstillingsstoenadRevurderingDTO(
     val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
     val feilutbetaling: FeilutbetalingType,
     val tidligereFamiliepleier: Boolean = false,
-    ): FerdigstillingBrevDTO
+    val harInntektNesteAar: Boolean = false,
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = OmstillingsstoenadRevurderingDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Revurdering av omstillingsstønad",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        )
-    ) {
-        title {
-            text(
-                Bokmal to "Vi har ",
-                Nynorsk to "Vi har ",
-                English to "We have ",
-            )
-            showIf(erOmgjoering) {
-                ifNotNull(datoVedtakOmgjoering) {
-                    textExpr(
-                        Bokmal to "omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
-                        Nynorsk to "gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
-                        English to "reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
-                    )
-                }
-            }.orShow {
-                showIf(beregning.sisteBeregningsperiode.sanksjon) {
-                    text(
-                        Bokmal to "stanset",
-                        Nynorsk to "stansa",
-                        English to "stopped",
-                    )
-                } orShow {
-                    showIf(erEndret) {
-                        text(
-                            Bokmal to "endret",
-                            Nynorsk to "endra",
-                            English to "changed",
-                        )
-                    } orShow {
-                        text(
-                            Bokmal to "vurdert",
-                            Nynorsk to "vurdert",
-                            English to "evaluated",
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = OmstillingsstoenadRevurderingDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - Revurdering av omstillingsstønad",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Vi har ",
+                    Nynorsk to "Vi har ",
+                    English to "We have ",
+                )
+                showIf(erOmgjoering) {
+                    ifNotNull(datoVedtakOmgjoering) {
+                        textExpr(
+                            Bokmal to "omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
+                            Nynorsk to "gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
+                            English to "reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
                         )
                     }
+                }.orShow {
+                    showIf(beregning.sisteBeregningsperiode.sanksjon) {
+                        text(
+                            Bokmal to "stanset",
+                            Nynorsk to "stansa",
+                            English to "stopped",
+                        )
+                    } orShow {
+                        showIf(erEndret) {
+                            text(
+                                Bokmal to "endret",
+                                Nynorsk to "endra",
+                                English to "changed",
+                            )
+                        } orShow {
+                            text(
+                                Bokmal to "vurdert",
+                                Nynorsk to "vurdert",
+                                English to "evaluated",
+                            )
+                        }
+                    }
+                    text(
+                        Bokmal to " omstillingsstønaden din",
+                        Nynorsk to " omstillingsstønaden din",
+                        English to " your adjustment allowance",
+                    )
                 }
-                text(
-                    Bokmal to " omstillingsstønaden din",
-                    Nynorsk to " omstillingsstønaden din",
-                    English to " your adjustment allowance",
+            }
+
+            outline {
+                includePhrase(
+                    OmstillingsstoenadRevurderingFraser.RevurderingVedtak(
+                        erEndret,
+                        beregning,
+                        etterbetaling.notNull(),
+                        harFlereUtbetalingsperioder,
+                        harUtbetaling,
+                    ),
                 )
+
+                konverterElementerTilBrevbakerformat(innhold)
+
+                includePhrase(
+                    OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(
+                        beregning,
+                        omsRettUtenTidsbegrensning,
+                        tidligereFamiliepleier,
+                    ),
+                )
+                showIf(omsRettUtenTidsbegrensning.not()) {
+                    includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt(tidligereFamiliepleier))
+                }
+                includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
+                includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
+                includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
+
+            includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = true), beregning, tidligereFamiliepleier)
+            includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = false), beregning, tidligereFamiliepleier.not())
+
+            includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = true), innhold, tidligereFamiliepleier)
+            includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = false), innhold, tidligereFamiliepleier.not())
+
+            includeAttachment(dineRettigheterOgPlikter, innhold)
+            includeAttachment(
+                forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering,
+                this.argument,
+                feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL),
+            )
         }
-
-        outline {
-            includePhrase(OmstillingsstoenadRevurderingFraser.RevurderingVedtak(
-                erEndret,
-                beregning,
-                etterbetaling.notNull(),
-                harFlereUtbetalingsperioder,
-                harUtbetaling
-            ))
-
-            konverterElementerTilBrevbakerformat(innhold)
-
-            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, omsRettUtenTidsbegrensning, tidligereFamiliepleier))
-            showIf(omsRettUtenTidsbegrensning.not()) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt(tidligereFamiliepleier))
-            }
-            includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
-            includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
-            includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
-            includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
-
-        }
-
-        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = true), beregning, tidligereFamiliepleier)
-        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = false), beregning, tidligereFamiliepleier.not())
-
-        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = true), innhold, tidligereFamiliepleier)
-        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = false), innhold, tidligereFamiliepleier.not())
-
-        includeAttachment(dineRettigheterOgPlikter, innhold)
-        includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
-    }
 }

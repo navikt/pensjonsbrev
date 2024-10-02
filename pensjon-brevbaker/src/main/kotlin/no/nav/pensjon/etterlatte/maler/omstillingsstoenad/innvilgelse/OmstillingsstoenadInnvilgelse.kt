@@ -23,6 +23,7 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.harInntektNesteAar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
@@ -42,56 +43,78 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
     val tidligereFamiliepleier: Boolean = false,
-): FerdigstillingBrevDTO
+    val harInntektNesteAar: Boolean = false,
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
-object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInnvilgelseDTO>, Hovedmal {
+object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnvilgelseDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNVILGELSE
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = OmstillingsstoenadInnvilgelseDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Innvilget omstillingsstønad",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        )
-    ) {
-        title {
-            text(
-                Bokmal to "Vi har innvilget søknaden din om omstillingsstønad",
-                Nynorsk to "Vi har innvilga søknaden din om omstillingsstønad",
-                English to "We have granted your application for adjustment allowance",
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = OmstillingsstoenadInnvilgelseDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - Innvilget omstillingsstønad",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Vi har innvilget søknaden din om omstillingsstønad",
+                    Nynorsk to "Vi har innvilga søknaden din om omstillingsstønad",
+                    English to "We have granted your application for adjustment allowance",
+                )
+            }
+
+            outline {
+                includePhrase(OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier))
+
+                konverterElementerTilBrevbakerformat(innhold)
+
+                showIf(harUtbetaling) {
+                    includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
+                }
+                includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad(tidligereFamiliepleier))
+                includePhrase(
+                    OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(
+                        beregning,
+                        omsRettUtenTidsbegrensning,
+                        tidligereFamiliepleier,
+                    ),
+                )
+                showIf(omsRettUtenTidsbegrensning.not()) {
+                    includePhrase(
+                        OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(
+                            innvilgetMindreEnnFireMndEtterDoedsfall,
+                            tidligereFamiliepleier,
+                        ),
+                    )
+                }
+                includePhrase(OmstillingsstoenadFellesFraser.Inntektsendring)
+                includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
+                includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
+            }
+            includeAttachment(
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, harInntektForNesteAar = harInntektNesteAar),
+                beregning,
+                tidligereFamiliepleier,
             )
+            includeAttachment(
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, harInntektForNesteAar = harInntektNesteAar),
+                beregning,
+                tidligereFamiliepleier.not(),
+            )
+
+            includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = true), innhold, tidligereFamiliepleier)
+            includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = false), innhold, tidligereFamiliepleier.not())
+
+            includeAttachment(dineRettigheterOgPlikter, beregning)
         }
-
-        outline {
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier))
-
-            konverterElementerTilBrevbakerformat(innhold)
-
-            showIf(harUtbetaling) {
-                includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
-            }
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad(tidligereFamiliepleier))
-            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, omsRettUtenTidsbegrensning, tidligereFamiliepleier))
-            showIf(omsRettUtenTidsbegrensning.not()) {
-                includePhrase(OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(innvilgetMindreEnnFireMndEtterDoedsfall, tidligereFamiliepleier))
-            }
-            includePhrase(OmstillingsstoenadFellesFraser.Inntektsendring)
-            includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
-            includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
-            includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
-        }
-        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = true), beregning, tidligereFamiliepleier)
-        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = false), beregning, tidligereFamiliepleier.not())
-
-        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = true), innhold, tidligereFamiliepleier)
-        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = false), innhold, tidligereFamiliepleier.not())
-
-        includeAttachment(dineRettigheterOgPlikter, beregning)
-    }
 }
