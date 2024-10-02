@@ -6,11 +6,11 @@ import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { orderEblankett } from "~/api/skribenten-api-endpoints";
+import { orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderEblankettRequest } from "~/types/apiTypes";
 
-import type { SubmitBrevmalButtonOptions } from "../../route";
+import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
@@ -28,10 +28,10 @@ const eblankettValidationSchema = z.object({
 
 export default function Eblankett({
   letterTemplate,
-  setSubmitBrevmalButtonOptions,
+  setOnFormSubmitClick,
 }: {
   letterTemplate: LetterMetadata;
-  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
   const { saksId } = Route.useParams();
   const { vedtaksId } = Route.useSearch();
@@ -50,14 +50,13 @@ export default function Eblankett({
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
+    mutationKey: orderLetterKeys.brevsystem("e-blankett"),
   });
 
   useEffect(() => {
-    setSubmitBrevmalButtonOptions({
-      onClick: () => formRef.current?.requestSubmit(),
-      status: orderEblankettMutation.status,
-    });
-  }, [setSubmitBrevmalButtonOptions, orderEblankettMutation.status]);
+    setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
+  }, [setOnFormSubmitClick]);
+
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />

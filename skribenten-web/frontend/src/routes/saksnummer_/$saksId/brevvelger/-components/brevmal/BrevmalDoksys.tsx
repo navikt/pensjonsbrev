@@ -5,11 +5,11 @@ import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
-import { orderDoksysLetter } from "~/api/skribenten-api-endpoints";
+import { orderDoksysLetter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/types/apiTypes";
 
-import type { SubmitBrevmalButtonOptions } from "../../route";
+import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
 import HentOgVisAdresse from "../endreMottaker/HentOgVisAdresse";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
@@ -25,7 +25,7 @@ export default function BrevmalForDoksys({
   defaultValues,
   templateId,
   saksId,
-  setSubmitBrevmalButtonOptions,
+  setOnFormSubmitClick,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: SpraakKode | null;
@@ -38,7 +38,7 @@ export default function BrevmalForDoksys({
   };
   templateId: string;
   saksId: string;
-  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const { vedtaksId } = Route.useSearch();
@@ -47,16 +47,14 @@ export default function BrevmalForDoksys({
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
+    mutationKey: orderLetterKeys.brevsystem("doksys"),
   });
 
   const validationSchema = createValidationSchema(letterTemplate);
 
   useEffect(() => {
-    setSubmitBrevmalButtonOptions({
-      onClick: () => formRef.current?.requestSubmit(),
-      status: orderLetterMutation.status,
-    });
-  }, [setSubmitBrevmalButtonOptions, orderLetterMutation.status]);
+    setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
+  }, [setOnFormSubmitClick]);
 
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,

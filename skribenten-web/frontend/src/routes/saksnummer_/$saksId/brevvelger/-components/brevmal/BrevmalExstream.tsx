@@ -6,13 +6,13 @@ import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
-import { orderExstreamLetter } from "~/api/skribenten-api-endpoints";
+import { orderExstreamLetter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { SpraakKode } from "~/types/apiTypes";
 import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import type { SubmitBrevmalButtonOptions } from "../../route";
+import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
 import EndreMottaker from "../endreMottaker/EndreMottaker";
 import HentOgVisAdresse from "../endreMottaker/HentOgVisAdresse";
@@ -30,7 +30,7 @@ export default function BrevmalForExstream({
   defaultValues,
   templateId,
   saksId,
-  setSubmitBrevmalButtonOptions,
+  setOnFormSubmitClick,
 }: {
   letterTemplate: LetterMetadata;
   preferredLanguage: Nullable<SpraakKode>;
@@ -43,7 +43,7 @@ export default function BrevmalForExstream({
   };
   templateId: string;
   saksId: string;
-  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
   const formRef = useRef<HTMLFormElement>(null);
@@ -52,16 +52,14 @@ export default function BrevmalForExstream({
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
+    mutationKey: orderLetterKeys.brevsystem("exstream"),
   });
 
   const validationSchema = createValidationSchema(letterTemplate);
 
   useEffect(() => {
-    setSubmitBrevmalButtonOptions({
-      onClick: () => formRef.current?.requestSubmit(),
-      status: orderLetterMutation.status,
-    });
-  }, [setSubmitBrevmalButtonOptions, orderLetterMutation.status]);
+    setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
+  }, [setOnFormSubmitClick]);
 
   const methods = useForm<z.infer<typeof validationSchema>>({
     defaultValues: defaultValues,

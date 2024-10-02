@@ -1,9 +1,8 @@
 import { css } from "@emotion/react";
-import React from "react";
 
 import type { LetterMetadata } from "~/types/apiTypes";
 
-import type { SubmitBrevmalButtonOptions } from "../route";
+import type { SubmitTemplateOptions } from "../route";
 import { BrevmalBrevbakerKladd } from "./BrevmalBrevbakerKladd";
 import { TemplateLoader } from "./TemplateLoader";
 
@@ -12,7 +11,7 @@ const BrevmalPanel = (props: {
   templateId?: string;
   brevId?: string;
   letterTemplates: LetterMetadata[];
-  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
   return (
     <div>
@@ -25,32 +24,21 @@ const BrevmalPanel = (props: {
             padding: var(--a-spacing-6);
           `}
         >
-          {props.templateId && props.brevId ? (
+          {props.templateId ? (
             <TemplateLoader
               letterTemplate={props.letterTemplates.find((template) => template.id === props.templateId)!}
               saksId={props.saksId}
-              setSubmitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
+              setOnFormSubmitClick={props.setOnFormSubmitClick}
               templateId={props.templateId}
             />
           ) : (
-            <>
-              {props.templateId && (
-                <TemplateLoader
-                  letterTemplate={props.letterTemplates.find((template) => template.id === props.templateId)!}
-                  saksId={props.saksId}
-                  setSubmitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
-                  templateId={props.templateId}
-                />
-              )}
-              {props.brevId && (
-                <BrevmalBrevbakerKladd
-                  brevId={props.brevId}
-                  letterTemplates={props.letterTemplates}
-                  saksId={props.saksId.toString()}
-                  setSubmitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
-                />
-              )}
-            </>
+            <BrevmalBrevbakerKladd
+              //linje 18 garanterer at vi ikke får undefined
+              brevId={props.brevId!}
+              letterTemplates={props.letterTemplates}
+              saksId={props.saksId.toString()}
+              setOnFormSubmitClick={props.setOnFormSubmitClick}
+            />
           )}
         </div>
       )}

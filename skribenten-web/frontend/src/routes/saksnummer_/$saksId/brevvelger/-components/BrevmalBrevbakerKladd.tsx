@@ -15,14 +15,14 @@ import type { BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import Oppsummeringspar from "../../kvittering/-components/Oppsummeringspar";
-import type { SubmitBrevmalButtonOptions } from "../route";
+import type { SubmitTemplateOptions } from "../route";
 import { Route } from "../route";
 
 export const BrevmalBrevbakerKladd = (props: {
   saksId: string;
   brevId: string;
   letterTemplates: LetterMetadata[];
-  setSubmitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
   const brevQuery = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(props.saksId.toString()),
@@ -44,7 +44,7 @@ export const BrevmalBrevbakerKladd = (props: {
           brev={brev}
           letterMetadata={letterMetadataForBrev}
           saksId={props.saksId}
-          submitBrevmalButtonOptions={props.setSubmitBrevmalButtonOptions}
+          setOnFormSubmitClick={props.setOnFormSubmitClick}
         />
       )}
     </div>
@@ -63,21 +63,20 @@ const Brevmal = (props: {
   saksId: string;
   brev: BrevInfo;
   letterMetadata?: LetterMetadata;
-  submitBrevmalButtonOptions: (s: SubmitBrevmalButtonOptions) => void;
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
   const navigate = useNavigate({ from: Route.fullPath });
 
   useEffect(() => {
-    props.submitBrevmalButtonOptions({
+    props.setOnFormSubmitClick({
       onClick: () => {
         navigate({
           to: "/saksnummer/$saksId/brev/$brevId",
           params: { saksId: props.saksId, brevId: props.brev.id },
         });
       },
-      status: null,
     });
-  }, [props.submitBrevmalButtonOptions]);
+  }, [props.setOnFormSubmitClick]);
 
   return (
     <div

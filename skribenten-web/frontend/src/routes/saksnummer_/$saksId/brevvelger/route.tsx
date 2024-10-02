@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { Accordion, Alert, BodyShort, Button, Heading, HStack, Label, Search, VStack } from "@navikt/ds-react";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { useMutationState, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import { groupBy, partition, sortBy } from "lodash";
@@ -16,6 +16,7 @@ import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
 import type { BrevInfo } from "~/types/brev";
+import type { Nullable } from "~/types/Nullable";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 
@@ -39,24 +40,19 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   component: BrevvelgerPage,
 });
 
-export type SubmitBrevmalButtonOptions = {
-  status: "error" | "idle" | "pending" | "success" | null;
+export interface SubmitTemplateOptions {
   onClick: () => void;
-} | null;
+}
 
 export function BrevvelgerPage() {
   const { brevId, templateId } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
   const { saksId, letterTemplates } = Route.useLoaderData();
-  const [submitBrevmalButtonOptions, setSubmitBrevmalButtonOptions] = useState<SubmitBrevmalButtonOptions>(null);
+  const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
   const alleSaksbrevQuery = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(saksId.toString()),
     queryFn: () => hentAlleBrevForSak.queryFn(saksId.toString()),
   });
-
-  const antallBrevKlarTilSending = alleSaksbrevQuery.data?.filter(erBrevKlar)?.length ?? 0;
-  const harBrevKlarTilSending = antallBrevKlarTilSending > 0;
 
   return (
     <div
@@ -89,53 +85,70 @@ export function BrevvelgerPage() {
           brevId={brevId}
           letterTemplates={letterTemplates}
           saksId={saksId}
-          setSubmitBrevmalButtonOptions={setSubmitBrevmalButtonOptions}
+          setOnFormSubmitClick={setOnSubmitClick}
           templateId={templateId}
         />
       </div>
-
-      <HStack
-        css={css`
-          padding: 8px 12px;
-          border-top: 1px solid var(--a-gray-200);
-        `}
-        justify={"end"}
-      >
-        <Button
-          onClick={() => {
-            navigate({
-              to: "/saksnummer/$saksId/brevbehandler",
-              params: { saksId: saksId.toString() },
-            });
-          }}
-          size="small"
-          type="button"
-          variant="tertiary"
-        >
-          {harBrevKlarTilSending
-            ? `Du har ${antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
-            : "Gå til brevbehandler"}
-        </Button>
-        {submitBrevmalButtonOptions && (
-          <Button
-            css={css`
-              width: fit-content;
-            `}
-            data-cy="order-letter"
-            icon={<ArrowRightIcon />}
-            iconPosition="right"
-            loading={submitBrevmalButtonOptions.status === "pending"}
-            onClick={submitBrevmalButtonOptions.onClick}
-            size="small"
-            variant="primary"
-          >
-            Åpne brev
-          </Button>
-        )}
-      </HStack>
+      <BrevvelgerFooter
+        antallBrevKlarTilSending={alleSaksbrevQuery.data?.filter(erBrevKlar)?.length ?? 0}
+        onSubmitClick={onSubmitClick}
+        saksId={saksId}
+      />
     </div>
   );
 }
+
+const BrevvelgerFooter = (props: {
+  saksId: number;
+  antallBrevKlarTilSending: number;
+  onSubmitClick: Nullable<SubmitTemplateOptions>;
+}) => {
+  const navigate = useNavigate({ from: Route.fullPath });
+  const harBrevKlarTilSending = props.antallBrevKlarTilSending > 0;
+  const mutationState = useMutationState({ filters: { mutationKey: ["OPEN_LETTER"] } });
+
+  return (
+    <HStack
+      css={css`
+        padding: 8px 12px;
+        border-top: 1px solid var(--a-gray-200);
+      `}
+      justify={"end"}
+    >
+      <Button
+        onClick={() => {
+          navigate({
+            to: "/saksnummer/$saksId/brevbehandler",
+            params: { saksId: props.saksId.toString() },
+          });
+        }}
+        size="small"
+        type="button"
+        variant="tertiary"
+      >
+        {harBrevKlarTilSending
+          ? `Du har ${props.antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
+          : "Gå til brevbehandler"}
+      </Button>
+      {props.onSubmitClick && (
+        <Button
+          css={css`
+            width: fit-content;
+          `}
+          data-cy="order-letter"
+          icon={<ArrowRightIcon />}
+          iconPosition="right"
+          loading={mutationState.at(-1)?.status === "pending"}
+          onClick={props.onSubmitClick.onClick}
+          size="small"
+          variant="primary"
+        >
+          Åpne brev
+        </Button>
+      )}
+    </HStack>
+  );
+};
 
 function Brevmaler({
   letterTemplates,
