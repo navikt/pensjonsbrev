@@ -38,6 +38,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.omsRettUtenTidsbegrensning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering
@@ -56,7 +57,8 @@ data class OmstillingsstoenadRevurderingDTO(
     val harUtbetaling: Boolean,
     val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut
     val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
-    val feilutbetaling: FeilutbetalingType
+    val feilutbetaling: FeilutbetalingType,
+    val tidligereFamiliepleier: Boolean = false,
     ): FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -129,19 +131,24 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, omsRettUtenTidsbegrensning))
+            includePhrase(OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, omsRettUtenTidsbegrensning, tidligereFamiliepleier))
             showIf(omsRettUtenTidsbegrensning.not()) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt)
+                includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt(tidligereFamiliepleier))
             }
             includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
             includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
             includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
             includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
+
         }
 
-        includeAttachment(beregningAvOmstillingsstoenad, beregning)
-        includeAttachment(informasjonOmOmstillingsstoenad, innhold)
+        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = true), beregning, tidligereFamiliepleier)
+        includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = false), beregning, tidligereFamiliepleier.not())
+
+        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = true), innhold, tidligereFamiliepleier)
+        includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = false), innhold, tidligereFamiliepleier.not())
+
         includeAttachment(dineRettigheterOgPlikter, innhold)
         includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }

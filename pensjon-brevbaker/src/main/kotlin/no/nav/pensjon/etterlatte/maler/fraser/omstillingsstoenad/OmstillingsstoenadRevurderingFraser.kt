@@ -4,6 +4,9 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -58,7 +61,7 @@ class OmstillingsstoenadRevurderingFraser {
                                             formatertVirkningsdato + ". You will receive NOK " + formatertBeloep +
                                             " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
                                             ". Read more about amounts for previous periods and how we have calculated " +
-                                            "your Adjustment Allowance in the attachment Calculation of " +
+                                            "your Adjustment Allowance in the attachment: Calculation of " +
                                             "Adjustment Allowance."
                                 )
                             }
@@ -90,7 +93,7 @@ class OmstillingsstoenadRevurderingFraser {
                                     Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av " +
                                             "omstillingsstønad» korleis vi har rekna ut omstillingsstønaden din.",
                                     Language.English to "Read more about how we calculated your Adjustment " +
-                                            "Allowance in the attachment Calculation of Adjustment Allowance.",
+                                            "Allowance in the attachment: Calculation of Adjustment Allowance.",
                                 )
                             }
                         }
@@ -120,7 +123,7 @@ class OmstillingsstoenadRevurderingFraser {
                                 Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                         "korleis vi har rekna ut omstillingsstønaden din.",
                                 Language.English to "Read more about how we calculated your Adjustment Allowance in " +
-                                        "the attachment Calculation of Adjustment Allowance.",
+                                        "the attachment: Calculation of Adjustment Allowance.",
                             )
                         }
                     }
@@ -165,7 +168,7 @@ class OmstillingsstoenadRevurderingFraser {
                             Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                     "korleis vi har rekna ut omstillingsstønaden din.",
                             Language.English to "Read more about how we calculated your Adjustment Allowance in " +
-                                    "the attachment Calculation of Adjustment Allowance.",
+                                    "the attachment: Calculation of Adjustment Allowance.",
                         )
                     }
                 }
@@ -395,28 +398,37 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object Aktivitetsplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class Aktivitetsplikt(
+        val tidligereFamiliepleier: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
-                text(
-                    Language.Bokmal to "Du må være i aktivitet fra seks måneder etter dødsfallet",
-                    Language.Nynorsk to "Du må vere i aktivitet når det har gått seks månader sidan dødsfallet",
-                    Language.English to "You are obligated to be active starting six months after the death",
+                textExpr(
+                    Bokmal to "Du må være i aktivitet fra seks måneder etter ".expr() +
+                            ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet"),
+                    Nynorsk to "Du må vere i aktivitet når det har gått seks månader sidan ".expr() +
+                            ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet"),
+                    English to "You are obligated to be active starting six months after the ".expr() +
+                            ifElse(tidligereFamiliepleier, "after care period ended", "death"),
                 )
             }
             paragraph {
-                text(
-                    Language.Bokmal to "Når det er gått seks måneder etter dødsfallet er du pliktig til å være " +
-                            "i minst 50 prosent aktivitet for å motta omstillingsstønad. Les mer om aktivitetsplikt " +
-                            "og hva denne innebærer i vedlegget «Informasjon til deg som mottar omstillingsstønad».",
-                    Language.Nynorsk to "For at du skal kunne halde fram med å få omstillingsstønad når det " +
-                            "har gått seks månader sidan dødsfallet, må du vere i minst 50 prosent aktivitet. I " +
-                            "vedlegget «Informasjon til deg som får omstillingsstønad» kan du lese meir om " +
-                            "aktivitetsplikta og kva denne inneber. ",
-                    Language.English to "Once six months have passed since the death, you are obligated to be " +
-                            "active at least 50 percent to receive the adjustment allowance. Read more about the " +
-                            "activity obligation and what this involves in the attachment Information for " +
-                            "Adjustment Allowance Recipients.",
+                textExpr(
+                    Language.Bokmal to "Når det er gått seks måneder etter ".expr() +
+                            ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
+                            " er du pliktig til å være i minst 50 prosent aktivitet for å motta omstillingsstønad. Les " +
+                            "mer om aktivitetsplikt og hva denne innebærer i vedlegget " +
+                            "«Informasjon til deg som mottar omstillingsstønad».",
+                    Language.Nynorsk to "For at du skal kunne halde fram med å få omstillingsstønad når det ".expr() +
+                            "har gått seks månader sidan " +
+                            ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet") +
+                            ", må du vere i minst 50 prosent aktivitet. I vedlegget «Informasjon til deg som får " +
+                            "omstillingsstønad» kan du lese meir om aktivitetsplikta og kva denne inneber.",
+                    Language.English to "Once six months have passed since the ".expr() +
+                            ifElse(tidligereFamiliepleier, "care period ended", "death") +
+                            ", you are obligated to be active at least 50 percent to receive the adjustment allowance. " +
+                            "Read more about the activity obligation and what this involves in the attachment: " +
+                            "Information for Adjustment Allowance Recipients.",
                 )
             }
         }

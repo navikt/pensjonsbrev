@@ -2,26 +2,23 @@ package no.nav.pensjon.etterlatte.maler.vedlegg
 
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
-
-
 fun klageOgAnke(
 	bosattUtland: Boolean,
 	tilbakekreving: Boolean = false,
-): AttachmentTemplate<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any> {
+): AttachmentTemplate<LangBokmalNynorskEnglish, Any> {
 	return createAttachment(
 		title = newText(
 			Bokmal to "Informasjon om klage og anke",
@@ -42,7 +39,7 @@ fun klageOgAnke(
 	}
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.duKanFaaDekketUtgifter() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.duKanFaaDekketUtgifter() {
     title2 {
         text(
             Bokmal to "Du kan få dekket utgifter",
@@ -73,7 +70,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.hvaMaaKlagenInneholde(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvaMaaKlagenInneholde(
     bosattUtland: Expression<Boolean>
 ) {
     title2 {
@@ -147,7 +144,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.hvordanSendeKlage(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanSendeKlage(
     bosattUtland: Expression<Boolean>
 ) {
     title2 {
@@ -186,7 +183,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.klagePaaVedtaket() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.klagePaaVedtaket() {
     title2 {
         text(
             Bokmal to "Klage på vedtaket - folketrygdloven § 21-12",
@@ -213,7 +210,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.hjelpFraAndre() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hjelpFraAndre() {
     title2 {
         text(
             Bokmal to "Hjelp fra andre - forvaltningsloven § 12",
@@ -239,7 +236,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.veiledning() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.veiledning() {
     title2 {
         text(
             Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
@@ -262,7 +259,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.tilbakekreving() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.tilbakekreving() {
 	title2 {
 		text(
 			Bokmal to "Tilbakekreving",

@@ -7,8 +7,12 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
@@ -35,7 +39,7 @@ object OmstillingsstoenadFellesFraser {
                             "endringar du må seie frå om. ",
                     English to "You are obligated to notify us of any changes that affect the payment of " +
                             "the adjustment allowance, or the right to receive the allowance. You will see " +
-                            "which changes you must report in the attachment Your Rights and Obligations."
+                            "which changes you must report in the attachment: Your Rights and Obligations."
                 )
             }
         }
@@ -176,7 +180,8 @@ object OmstillingsstoenadFellesFraser {
 
     data class HvorLengerKanDuFaaOmstillingsstoenad(
         val beregning: Expression<OmstillingsstoenadBeregning>,
-        val omsRettUtenTidsbegrensning: Expression<Boolean>
+        val omsRettUtenTidsbegrensning: Expression<Boolean>,
+        val tidligereFamiliepleier: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -188,30 +193,38 @@ object OmstillingsstoenadFellesFraser {
             }
             showIf(omsRettUtenTidsbegrensning) {
                 paragraph {
-                    text(
-                        Bokmal to "Du kommer inn under unntaksreglene for varighet av stønaden, fordi du har hatt " +
-                                "lav eller ingen inntekt de siste fem årene før dødsfallstidspunktet. Du får " +
-                                "omstillingsstønad frem til du fyller 67 år, så lenge du oppfyller vilkårene.",
-                        Nynorsk to "Du kjem inn under unntaksreglane for lengde på stønad, då du var utan " +
-                                "inntekt eller hadde låg inntekt dei siste fem åra før dødsfallet. Under " +
-                                "føresetnad av at du oppfyller vilkåra, får du omstillingsstønad fram til du " +
+                    textExpr(
+                        Bokmal to "Du kommer inn under unntaksreglene for varighet av stønaden, fordi du har hatt ".expr() +
+                                "lav eller ingen inntekt de siste fem årene før " +
+                                ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallstidspunktet") +
+                                ". Du får omstillingsstønad frem til du fyller 67 år, så lenge du oppfyller vilkårene.",
+                        Nynorsk to "Du kjem inn under unntaksreglane for lengde på stønad, då du var utan ".expr() +
+                                "inntekt eller hadde låg inntekt dei siste fem åra før " +
+                                ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
+                                ". Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad fram til du " +
                                 "fyller 67 år. ",
-                        English to "If any of the rules for exemption from the duration of allowance apply to " +
+                        English to "If any of the rules for exemption from the duration of allowance apply to ".expr() +
                                 "you, because you had a low income or no income in the last five years before the " +
-                                "date of the death. You are eligible for the adjustment allowance until you turn " +
+                                ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
+                                ". You are eligible for the adjustment allowance until you turn " +
                                 "67 as long as you meet the conditions.",
                     )
                 }
             }.orShow {
                 showIf(beregning.sisteBeregningsperiode.utbetaltBeloep.greaterThan(0)) {
                     paragraph {
-                        text(
-                            Bokmal to "Du får omstillingsstønad frem til det er gått tre år fra datoen for dødsfallet, så " +
+                        textExpr(
+                            Bokmal to "Du får omstillingsstønad frem til det er gått tre år ".expr() +
+                                    ifElse(tidligereFamiliepleier, "siden pleieforholdet opphørte", "fra datoen for dødsfallet") + ", så " +
                                     "lenge du oppfyller vilkårene. Rett til omstillingsstønad faller uansett bort når du fyller 67 år.",
-                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
-                                    "fram til det har gått tre år sidan datoen for dødsfallet. Rett til omstillingsstønad fell uansett bort når du fyller 67 år.",
-                            English to "You are eligible for adjustment allowance for three years from the " +
-                                    "date of the death, as long as you meet the conditions for receiving the allowance. The right to adjustment allowance ceases when you reach the age of 67.",
+                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad ".expr() +
+                                    "fram til det har gått tre år frå datoen " +
+                                    ifElse(tidligereFamiliepleier, "siden pleieforholdet opphørte", "for dødsfallet") +
+                                    ". Rett til omstillingsstønad fell uansett bort når du fyller 67 år.",
+                            English to "You are eligible for adjustment allowance for three years from the ".expr() +
+                                    ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
+                                    ", as long as you meet the conditions for receiving the allowance. " +
+                                    "The right to adjustment allowance ceases when you reach the age of 67.",
                         )
                     }
                     paragraph {
@@ -226,15 +239,18 @@ object OmstillingsstoenadFellesFraser {
                     }
                 }.orShow {
                     paragraph {
-                        text(
-                            Bokmal to "Du er innvilget omstillingsstønad frem til det er gått tre år fra datoen for " +
-                                    "dødsfallet, så lenge du oppfyller vilkårene. Om det skjer endringer " +
+                        textExpr(
+                            Bokmal to "Du er innvilget omstillingsstønad frem til det er gått tre år ".expr() +
+                                    ifElse(tidligereFamiliepleier, "siden pleieforholdet opphørte", "fra datoen for dødsfallet") +
+                                    ", så lenge du oppfyller vilkårene. Om det skjer endringer " +
                                     "i inntekten din kan dette gjør at du likevel vil få utbetalt stønad i denne perioden. ",
-                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
-                                    "i tre år frå datoen for dødsfallet. Dersom inntekta di skulle endre seg, kan " +
+                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad ".expr() +
+                                    "i tre år frå datoen " + ifElse(tidligereFamiliepleier, "siden pleieforholdet opphørte", "for dødsfallet") +
+                                    ". Dersom inntekta di skulle endre seg, kan " +
                                     "dette gjere at du likevel får utbetalt stønad i denne perioden.",
-                            English to "You are eligible for adjustment allowance for three years from the " +
-                                    "date of the death, as long as you meet the conditions for receiving the allowance. " +
+                            English to "You are eligible for adjustment allowance for three years from the ".expr() +
+                                    ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
+                                    ", as long as you meet the conditions for receiving the allowance. " +
                                     "Changes to your income may make you eligible for allowance in this period. ",
                         )
                     }
@@ -273,7 +289,7 @@ object OmstillingsstoenadFellesFraser {
                     English to "To receive the correct amount of the adjustment allowance, you are obligated " +
                             "to inform us about any changes to your income. We will adjust the adjustment " +
                             "allowance starting the month after you reported the change. You can read more " +
-                            "about income reporting in the attachment Information to Adjustment Allowance Recipients.",
+                            "about income reporting in the attachment: Information for Adjustment Allowance Recipients.",
                 )
             }
         }

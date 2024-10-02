@@ -113,6 +113,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
         innvilgetMindreEnnFireMndEtterDoedsfall = true,
         lavEllerIngenInntekt = true,
         harUtbetaling = true,
+        tidligereFamiliepleier = false,
     )
 
 fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
@@ -123,5 +124,6 @@ fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
             doedsdato = LocalDate.now()
         ),
         utbetalingsbeloep = Kroner(12345),
-        etterbetaling = true
+        etterbetaling = true,
+        tidligereFamiliepleier = false,
     )
