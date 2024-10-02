@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -14,7 +15,7 @@ data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
-    val modelSpecification: TemplateModelSpecification = LetterModelSpecificationFactory(letterDataType).build()
+    val modelSpecification: TemplateModelSpecification = TemplateModelSpecificationFactory(letterDataType).build()
 
     init {
         if (title.isEmpty()) {

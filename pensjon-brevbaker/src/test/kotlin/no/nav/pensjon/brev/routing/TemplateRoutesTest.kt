@@ -10,11 +10,11 @@ import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.TemplateModelSpecification
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
