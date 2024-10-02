@@ -10,7 +10,7 @@ object Constants {
     const val HELSE_URL = "$NAV_URL/helse"
     const val UTBETALING_URL = "$NAV_URL/utbetalinger"
     const val UTBETALINGSDATOER_URL = "$NAV_URL/utbetalingsdatoer"
-    const val SKRIVTILOSS_URL = "$NAV_URL/skrivtiloss"
+    const val SKRIVTILOSS_URL = "$NAV_URL/skriv-til-oss"
     const val KONTONUMMER_URL = "$NAV_URL/kontonummer"
     const val ENDRING_KONTONUMMER_URL = "$NAV_URL/start/soknad-endring-bankkontonummer"
     const val KONTAKT_URL = "$NAV_URL/kontaktoss"
