@@ -321,7 +321,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         " har vært medlem i folketrygden etter fylte 16 år. ",
                 Nynorsk to "Trygdetida svarer til talet på år ".expr() +
                         ifElse(tidligereFamiliepleier, "du", "avdøde") +
-                        "avdøde var medlem i folketrygda etter fylte 16 år. ",
+                        " var medlem i folketrygda etter fylte 16 år. ",
                 English to "Contribution time is the number of years ".expr() +
                         ifElse(tidligereFamiliepleier, "you", "the deceased") +
                         " has been a member of the Norwegian National Insurance Scheme after reaching the age of 16. ",

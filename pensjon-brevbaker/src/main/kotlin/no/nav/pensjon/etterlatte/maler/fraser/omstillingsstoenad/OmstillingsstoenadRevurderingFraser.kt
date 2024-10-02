@@ -61,7 +61,7 @@ class OmstillingsstoenadRevurderingFraser {
                                             formatertVirkningsdato + ". You will receive NOK " + formatertBeloep +
                                             " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
                                             ". Read more about amounts for previous periods and how we have calculated " +
-                                            "your Adjustment Allowance in the attachment Calculation of " +
+                                            "your Adjustment Allowance in the attachment: Calculation of " +
                                             "Adjustment Allowance."
                                 )
                             }
@@ -93,7 +93,7 @@ class OmstillingsstoenadRevurderingFraser {
                                     Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av " +
                                             "omstillingsstønad» korleis vi har rekna ut omstillingsstønaden din.",
                                     Language.English to "Read more about how we calculated your Adjustment " +
-                                            "Allowance in the attachment Calculation of Adjustment Allowance.",
+                                            "Allowance in the attachment: Calculation of Adjustment Allowance.",
                                 )
                             }
                         }
@@ -123,7 +123,7 @@ class OmstillingsstoenadRevurderingFraser {
                                 Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                         "korleis vi har rekna ut omstillingsstønaden din.",
                                 Language.English to "Read more about how we calculated your Adjustment Allowance in " +
-                                        "the attachment Calculation of Adjustment Allowance.",
+                                        "the attachment: Calculation of Adjustment Allowance.",
                             )
                         }
                     }
@@ -168,7 +168,7 @@ class OmstillingsstoenadRevurderingFraser {
                             Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                     "korleis vi har rekna ut omstillingsstønaden din.",
                             Language.English to "Read more about how we calculated your Adjustment Allowance in " +
-                                    "the attachment Calculation of Adjustment Allowance.",
+                                    "the attachment: Calculation of Adjustment Allowance.",
                         )
                     }
                 }
@@ -427,7 +427,7 @@ class OmstillingsstoenadRevurderingFraser {
                     Language.English to "Once six months have passed since the ".expr() +
                             ifElse(tidligereFamiliepleier, "care period ended", "death") +
                             ", you are obligated to be active at least 50 percent to receive the adjustment allowance. " +
-                            "Read more about the activity obligation and what this involves in the attachment " +
+                            "Read more about the activity obligation and what this involves in the attachment: " +
                             "Information for Adjustment Allowance Recipients.",
                 )
             }

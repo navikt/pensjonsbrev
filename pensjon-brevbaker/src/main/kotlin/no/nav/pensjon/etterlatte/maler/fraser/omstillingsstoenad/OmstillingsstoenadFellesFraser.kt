@@ -39,7 +39,7 @@ object OmstillingsstoenadFellesFraser {
                             "endringar du må seie frå om. ",
                     English to "You are obligated to notify us of any changes that affect the payment of " +
                             "the adjustment allowance, or the right to receive the allowance. You will see " +
-                            "which changes you must report in the attachment Your Rights and Obligations."
+                            "which changes you must report in the attachment: Your Rights and Obligations."
                 )
             }
         }
@@ -289,7 +289,7 @@ object OmstillingsstoenadFellesFraser {
                     English to "To receive the correct amount of the adjustment allowance, you are obligated " +
                             "to inform us about any changes to your income. We will adjust the adjustment " +
                             "allowance starting the month after you reported the change. You can read more " +
-                            "about income reporting in the attachment Information to Adjustment Allowance Recipients.",
+                            "about income reporting in the attachment: Information for Adjustment Allowance Recipients.",
                 )
             }
         }
