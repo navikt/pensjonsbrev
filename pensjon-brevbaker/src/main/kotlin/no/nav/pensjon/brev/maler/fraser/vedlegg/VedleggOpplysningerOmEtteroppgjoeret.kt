@@ -299,17 +299,16 @@ data class OmBeregningAvBarnetillegg(
             }
             text(
                 Bokmal to "Hvis personinntekten din overstiger et visst beløp (fribeløp), blir barnetillegget redusert eller faller helt bort. " +
-                        "Fikk du innvilget barnetillegg i løpet av året, eller barnetillegget opphørte i løpet av året" +
-                        ", er det bare inntekten for perioden med rett til barnetillegg som har betydning.",
+                        "Fikk du innvilget barnetillegg i løpet av året, eller barnetillegget opphørte i løpet av året, er inntekten kortet ned for kun å gjelde den perioden du mottar barnetillegg. " +
+                        "Dette regnes ut ved å dele årsinntekten på antall måneder med uføretrygd i etteroppgjørsåret og multiplisere med antall måneder du mottar barnetillegg.",
 
                 Nynorsk to "Dersom personinntekta di er over eit visst beløp (fribeløp), vil barnetillegget bli redusert eller falle bort heilt. " +
-                        "Viss barnetillegg blei innvilga eller avvikla i løpet av året, vil det berre vere inntekta for perioden med rett til " +
-                        "barnetillegg som har betydning.",
+                        "Fekk du innvilga barnetillegg i løpet av året, eller barnetillegget opphøyrde i løpet av året, er inntekta korta ned for berre å gjelde den perioden du mottar barnetillegg. " +
+                        "Dette vert rekna ut ved å dele årsinntekta på talet månader med uføretrygd i etteroppgjørsåret og så multiplisert med talet månader du mottar barnetillegg.",
 
-                English to "The limit for what you can earn before child supplement is reduced is called the free allowance. If your personal income " +
-                        "exceeds the free allowance, the child supplement will be reduced or cease completely. If you were granted child supplement, " +
-                        "or if the child supplement ceased during the year, only the income for the period you were eligible " +
-                        "for the child supplement matters."
+                English to "If your personal income exceeds a certain amount (threshold), the child supplement is reduced or completely discontinued. " +
+                        "If you were granted the child supplement during the year, or if the child supplement ceased during the year, the income is adjusted to apply only to the period when you receive the child supplement. " +
+                        "This calculation is done by dividing the annual income by the number of months with disability benefit in the post-settlement year and multiplying it by the number of months you receive the child supplement."
             )
         }
 
