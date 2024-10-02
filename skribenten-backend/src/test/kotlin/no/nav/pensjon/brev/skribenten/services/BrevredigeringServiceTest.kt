@@ -1021,6 +1021,7 @@ class BrevredigeringServiceTest {
         assertThat(tilbakestilt.saksbehandlerValg).isEqualTo(Api.GeneriskBrevdata().apply {
             put("ytelse", "uføre")
             put("inkluderAfpTekst", false)
+            put("land", null)
         })
     }
 

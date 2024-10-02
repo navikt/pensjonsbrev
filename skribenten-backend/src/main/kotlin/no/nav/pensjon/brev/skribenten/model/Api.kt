@@ -15,7 +15,7 @@ import java.time.Instant
 typealias SaksbehandlerValg = Api.GeneriskBrevdata
 
 object Api {
-    class GeneriskBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
+    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata
 
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbar,

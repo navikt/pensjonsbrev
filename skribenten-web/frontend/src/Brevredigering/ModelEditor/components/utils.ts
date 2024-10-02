@@ -9,8 +9,8 @@ export function convertFieldToReadableLabel(field: string) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getFieldDefaultValue(defaults: { [x: string]: any } | undefined, fieldName: string) {
-  if (defaults === undefined) {
-    return undefined;
+  if (defaults === undefined || defaults === null) {
+    return defaults;
   }
 
   const dotIndex = fieldName.indexOf(".");
