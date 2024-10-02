@@ -59,7 +59,7 @@ describe("Brevbehandler", () => {
 
     //verifiserer innhold før / etter lås
     cy.contains("Fortsett redigering").should("be.visible");
-    cy.contains("Lås for redigering").click();
+    cy.contains("Brev klart til sending").click();
     cy.contains("Fortsett redigering").should("not.exist");
     cy.get('[data-cy="brevbehandler-distribusjonstype"] input[type="radio"][value="SENTRALPRINT"]').should(
       "be.checked",
@@ -116,7 +116,7 @@ describe("Brevbehandler", () => {
 
     //verifiserer innhold før / etter lås
     cy.contains("Fortsett redigering").should("be.visible");
-    cy.contains("Lås for redigering").click();
+    cy.contains("Brev klart til sending").click();
     cy.contains("Fortsett redigering").should("not.exist");
     cy.contains("Lokalprint").click();
 
@@ -176,7 +176,7 @@ describe("Brevbehandler", () => {
 
     //verifiserer innhold før / etter lås
     cy.contains("Fortsett redigering").should("be.visible");
-    cy.contains("Lås for redigering").click();
+    cy.contains("Brev klart til sending").click();
     cy.contains("Fortsett redigering").should("not.exist");
     cy.contains("Lokalprint").click();
 

@@ -19,6 +19,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
   overrideOppsummering?: (edit: React.ReactNode) => React.ReactNode;
   withOppsummeringTitle?: boolean;
   kanTilbakestilleMottaker?: boolean;
+  withGap?: boolean;
 }) => {
   const queryClient = useQueryClient();
   const mottakerMutation = useMutation<DelvisOppdaterBrevResponse, AxiosError, Mottaker>({
@@ -47,7 +48,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
 
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   return (
-    <VStack gap="2">
+    <VStack gap={props.withGap ? "2" : "0"}>
       {modalÅpen && (
         <EndreMottakerModal
           error={mottakerMutation.error}
@@ -60,7 +61,6 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
           åpen={modalÅpen}
         />
       )}
-
       <HStack align={"center"} gap="2">
         {props.overrideOppsummering ? (
           props.overrideOppsummering(
@@ -70,13 +70,12 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
                   css={css`
                     padding: 0;
                   `}
+                  icon={<PencilIcon fontSize="24px" />}
                   onClick={() => setModalÅpen(true)}
-                  size="small"
+                  size="xsmall"
                   type="button"
                   variant="tertiary"
-                >
-                  <PencilIcon fontSize="24px" />
-                </Button>
+                />
               )}
             </div>,
           )

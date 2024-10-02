@@ -114,7 +114,12 @@ const Brevmal = (props: {
         <Divider />
 
         <VStack gap="8">
-          <EndreMottakerMedOppsummeringOgApiHåndtering brev={props.brev} saksId={props.saksId} withOppsummeringTitle />
+          <EndreMottakerMedOppsummeringOgApiHåndtering
+            brev={props.brev}
+            saksId={props.saksId}
+            withGap
+            withOppsummeringTitle
+          />
           <Oppsummeringspar
             boldedTitle
             size="small"
