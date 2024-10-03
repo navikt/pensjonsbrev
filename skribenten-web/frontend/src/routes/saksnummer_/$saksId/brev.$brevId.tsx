@@ -222,40 +222,49 @@ function RedigerBrev({
       <div
         css={css`
           background: var(--a-white);
-          display: grid;
-          grid-template:
-            "modelEditor letterEditor" 1fr
-            "footer footer" var(--nav-bar-height) / 30% 70%;
-
+          diplay: flex;
+          flex-direction: column;
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
-
-          > form:first-of-type {
-            padding: var(--a-spacing-6);
-            border-right: 1px solid var(--a-gray-200);
-          }
         `}
       >
-        <ModelEditor
-          brevId={brev.info.id}
-          brevkode={brev.info.brevkode}
-          defaultValues={defaultValuesModelEditor}
-          disableSubmit={saksbehandlerValgMutation.isPending}
-          onSubmit={onSubmit}
-          saksId={saksId}
-          vedtaksId={vedtaksId}
-        />
-        <LetterEditor
-          editorHeight={"var(--main-page-content-height)"}
-          editorState={editorState}
-          error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError || signaturMutation.isError}
-          freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending}
-          setEditorState={setEditorState}
-          showDebug={showDebug}
-        />
+        <div
+          css={css`
+            display: flex;
+
+            > form:first-of-type {
+              max-width: 389px;
+              padding: var(--a-spacing-6);
+              border-right: 1px solid var(--a-gray-200);
+            }
+          `}
+        >
+          <ModelEditor
+            brevId={brev.info.id}
+            brevkode={brev.info.brevkode}
+            defaultValues={defaultValuesModelEditor}
+            disableSubmit={saksbehandlerValgMutation.isPending}
+            onSubmit={onSubmit}
+            saksId={saksId}
+            vedtaksId={vedtaksId}
+          />
+          <LetterEditor
+            editorHeight={"var(--main-page-content-height)"}
+            editorState={editorState}
+            error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError || signaturMutation.isError}
+            freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending}
+            setEditorState={setEditorState}
+            showDebug={showDebug}
+          />
+        </div>
         <HStack
           css={css`
-            grid-area: footer;
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--a-white);
+
             border-top: 1px solid var(--a-gray-200);
             padding: 0.5rem 1rem;
           `}
