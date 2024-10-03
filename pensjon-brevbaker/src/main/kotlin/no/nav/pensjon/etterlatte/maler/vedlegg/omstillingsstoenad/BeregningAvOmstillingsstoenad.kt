@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.harInntektNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
@@ -51,7 +52,6 @@ import java.time.format.DateTimeFormatter
 
 fun beregningAvOmstillingsstoenad(
     tidligereFamiliepleier: Boolean,
-    harInntektForNesteAar: Expression<Boolean>,
 ): AttachmentTemplate<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning> =
     createAttachment(
         title =
@@ -62,7 +62,7 @@ fun beregningAvOmstillingsstoenad(
             ),
         includeSakspart = false,
     ) {
-        beregning(tidligereFamiliepleier.expr(), harInntektForNesteAar)
+        beregning(tidligereFamiliepleier.expr())
         trygdetid(trygdetid, tidligereFamiliepleier.expr())
         perioderMedRegistrertTrygdetid(trygdetid, tidligereFamiliepleier.expr())
         meldFraTilNav()
@@ -70,7 +70,6 @@ fun beregningAvOmstillingsstoenad(
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning>.beregning(
     tidligereFamiliepleier: Expression<Boolean>,
-    harInntektForNesteAar: Expression<Boolean>,
 ) {
     val grunnbeloep = sisteBeregningsperiode.grunnbeloep
     val aarsinntekt = sisteBeregningsperiode.aarsinntekt
@@ -233,7 +232,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             )
         }
 
-        showIf(harInntektForNesteAar) {
+        showIf(harInntektNesteAar) {
             val januarNesteAar =
                 YearMonth
                     .now()
