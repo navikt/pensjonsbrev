@@ -68,6 +68,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                         sanksjon = false,
                         institusjon = false,
                     ),
+                sisteBeregningsperiodeNesteAar = null,
                 trygdetid =
                     Trygdetid(
                         trygdetidsperioder =

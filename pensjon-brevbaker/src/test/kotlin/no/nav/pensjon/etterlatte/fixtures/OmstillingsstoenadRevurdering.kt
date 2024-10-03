@@ -63,6 +63,7 @@ fun createOmstillingsstoenadRevurderingDTO() =
                         sanksjon = false,
                         institusjon = false,
                     ),
+                sisteBeregningsperiodeNesteAar = null,
                 trygdetid =
                     Trygdetid(
                         trygdetidsperioder =
@@ -89,7 +90,6 @@ fun createOmstillingsstoenadRevurderingDTO() =
                         mindreEnnFireFemtedelerAvOpptjeningstiden = true,
                         navnAvdoed = "Elvis Presley",
                     ),
-                harInntektNesteAar = false,
             ),
         etterbetaling =
             OmstillingsstoenadEtterbetaling(

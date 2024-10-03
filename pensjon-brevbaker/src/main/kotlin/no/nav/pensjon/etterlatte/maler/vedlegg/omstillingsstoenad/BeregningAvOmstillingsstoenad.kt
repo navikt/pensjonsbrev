@@ -71,22 +71,23 @@ fun beregningAvOmstillingsstoenad(
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning>.beregning(
     tidligereFamiliepleier: Expression<Boolean>,
 ) {
-    val grunnbeloep = sisteBeregningsperiode.grunnbeloep
-    val aarsinntekt = sisteBeregningsperiode.aarsinntekt
-    val fratrekkInnAar = sisteBeregningsperiode.fratrekkInnAar
-    val gjenvaerendeMaaneder = sisteBeregningsperiode.relevantMaanederInnAar
+    val sisteInntekt = sisteBeregningsperiode.inntekt
+    val sisteGrunnbeloep = sisteBeregningsperiode.grunnbeloep
+    val sisteAarsinntekt = sisteBeregningsperiode.aarsinntekt
+    val sisteFratrekkInnAar = sisteBeregningsperiode.fratrekkInnAar
+    val sisteGjenvaerendeMaaneder = sisteBeregningsperiode.relevantMaanederInnAar
 
     paragraph {
         textExpr(
             Bokmal to "Full omstillingsstønad beregnes utfra 2,25 ganger folketrygdens ".expr() +
-                "grunnbeløp (G). Dagens verdi av grunnbeløpet er " + grunnbeloep.format() + " kroner. " +
+                "grunnbeløp (G). Dagens verdi av grunnbeløpet er " + sisteGrunnbeloep.format() + " kroner. " +
                 "Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år.",
             Nynorsk to "Full omstillingsstønad blir rekna ut etter 2,25 gongar grunnbeløpet i ".expr() +
-                "folketrygda (G). Dagens verdi av grunnbeløpet er " + grunnbeloep.format() + " kroner. " +
+                "folketrygda (G). Dagens verdi av grunnbeløpet er " + sisteGrunnbeloep.format() + " kroner. " +
                 "Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i " +
                 "juni kvart år.",
             English to "Full adjustment allowance are calculated based on 2.25 × the national ".expr() +
-                "insurance basic amount (G). The current value of the basic amount is NOK " + grunnbeloep.format() +
+                "insurance basic amount (G). The current value of the basic amount is NOK " + sisteGrunnbeloep.format() +
                 ". The basic amount is adjusted on 1 May each year. You will receive payment of any increase in " +
                 "June of each year.",
         )
@@ -187,9 +188,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         )
     }
 
-    val inntekt = sisteBeregningsperiode.inntekt
-
-    showIf(inntekt.greaterThan(0)) {
+    showIf(sisteInntekt.greaterThan(0)) {
         paragraph {
             text(
                 Bokmal to
@@ -202,32 +201,33 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         }
         paragraph {
             textExpr(
-                Bokmal to "Din oppgitte årsinntekt for inneværende år er ".expr() + aarsinntekt.format() + " kroner. Fratrekk " +
-                    "for inntekt i måneder du ikke er innvilget stønad er " + fratrekkInnAar.format() + " kroner. Vi har lagt til grunn " +
-                    "at du har en inntekt på " + inntekt.format() +
-                    " kroner i innvilgede måneder i år. Beløpet er avrundet ned til nærmeste tusen",
-                Nynorsk to "Du har ei oppgitt årsinntekt inneverande år på ".expr() + aarsinntekt.format() + " kroner. " +
-                    "Fråtrekk for inntekt i månader du ikkje er innvilga stønad er " + fratrekkInnAar.format() +
+                Bokmal to "Din oppgitte årsinntekt for inneværende år er ".expr() + sisteAarsinntekt.format() + " kroner. Fratrekk " +
+                    "for inntekt i måneder du ikke er innvilget stønad er " + sisteFratrekkInnAar.format() +
                     " kroner. Vi har lagt til grunn " +
-                    "at du har ei inntekt på " + inntekt.format() +
+                    "at du har en inntekt på " + sisteInntekt.format() +
+                    " kroner i innvilgede måneder i år. Beløpet er avrundet ned til nærmeste tusen",
+                Nynorsk to "Du har ei oppgitt årsinntekt inneverande år på ".expr() + sisteAarsinntekt.format() + " kroner. " +
+                    "Fråtrekk for inntekt i månader du ikkje er innvilga stønad er " + sisteFratrekkInnAar.format() +
+                    " kroner. Vi har lagt til grunn " +
+                    "at du har ei inntekt på " + sisteInntekt.format() +
                     " kroner i innvilga månader i år. Beløpet er avrunda ned til næraste tusen.",
                 English to
-                    "Your estimated annual income for the current year is NOK ".expr() + aarsinntekt.format() + ". " +
-                    "Deduction for income in months you are not granted allowance is NOK " + fratrekkInnAar.format() + ". " +
-                    "We have assumed that you have an income of NOK " + inntekt.format() + " in granted months this year." +
+                    "Your estimated annual income for the current year is NOK ".expr() + sisteAarsinntekt.format() + ". " +
+                    "Deduction for income in months you are not granted allowance is NOK " + sisteFratrekkInnAar.format() + ". " +
+                    "We have assumed that you have an income of NOK " + sisteInntekt.format() + " in granted months this year." +
                     "The amount is rounded down to the nearest thousand.",
             )
         }
         paragraph {
             textExpr(
-                Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + inntekt.format() +
-                    " kroner / " + gjenvaerendeMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
+                Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + sisteInntekt.format() +
+                    " kroner / " + sisteGjenvaerendeMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
                     "Beløpet ganges med 45 prosent.",
-                Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + inntekt.format() +
-                    " kroner / " + gjenvaerendeMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
+                Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + sisteInntekt.format() +
+                    " kroner / " + sisteGjenvaerendeMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
                     "Beløpet blir gonga med 45 prosent.",
                 English to "The monthly allowance amount has been reduced as follows: (NOK ".expr() +
-                    inntekt.format() + " / " + gjenvaerendeMaaneder.format() + " months) minus (0.5 G / 12 months). " +
+                    sisteInntekt.format() + " / " + sisteGjenvaerendeMaaneder.format() + " months) minus (0.5 G / 12 months). " +
                     "The amount is multiplied by 45 percent.",
             )
         }
@@ -246,14 +246,14 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 textExpr(
                     Bokmal to
                         "Fra ".expr() + januarNesteAar + " har vi lagt til grunn din oppgitte forventede inntekt på " +
-                        inntekt.format() +
+                        sisteInntekt.format() +
                         "kroner. Beløpet er avrundet ned til nærmeste tusen",
                     Nynorsk to
                         "Frå ".expr() + januarNesteAar + " har vi lagt til grunn den oppgitte forventa inntekta di på " +
-                        inntekt.format() +
+                        sisteInntekt.format() +
                         "kroner. Dette er forventa inntekt fram til stønaden stansar frå <dato>. Beløpet er avrunda ned til næraste tusen. ",
                     English to
-                        "From ".expr() + januarNesteAar + ", we have based your stated expected income on NOK " + inntekt.format() +
+                        "From ".expr() + januarNesteAar + ", we have based your stated expected income on NOK " + sisteInntekt.format() +
                         ". The amount is rounded down to the nearest thousand. ",
                 )
             }
@@ -261,14 +261,14 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             // TODO: skal denne bruke ny oppgitt inntekt eller samme som over?
             paragraph {
                 textExpr(
-                    Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + inntekt.format() +
-                        " kroner / " + gjenvaerendeMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
+                    Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + sisteInntekt.format() +
+                        " kroner / " + sisteGjenvaerendeMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
                         "Beløpet ganges med 45 prosent.",
-                    Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + inntekt.format() +
-                        " kroner / " + gjenvaerendeMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
+                    Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + sisteInntekt.format() +
+                        " kroner / " + sisteGjenvaerendeMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
                         "Beløpet blir gonga med 45 prosent.",
                     English to "The monthly allowance amount has been reduced as follows: (NOK ".expr() +
-                        inntekt.format() + " / " + gjenvaerendeMaaneder.format() + " months) minus (0.5 G / 12 months). " +
+                        sisteInntekt.format() + " / " + sisteGjenvaerendeMaaneder.format() + " months) minus (0.5 G / 12 months). " +
                         "The amount is multiplied by 45 percent.",
                 )
             }

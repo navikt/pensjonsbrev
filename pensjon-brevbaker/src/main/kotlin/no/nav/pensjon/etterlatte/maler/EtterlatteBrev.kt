@@ -47,6 +47,7 @@ data class OmstillingsstoenadBeregning(
     val virkningsdato: LocalDate,
     val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,
     val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
+    val sisteBeregningsperiodeNesteAar: OmstillingsstoenadBeregningsperiode?,
     val trygdetid: Trygdetid,
     val harInntektNesteAar: Boolean = false,
 ) : BrevDTO
