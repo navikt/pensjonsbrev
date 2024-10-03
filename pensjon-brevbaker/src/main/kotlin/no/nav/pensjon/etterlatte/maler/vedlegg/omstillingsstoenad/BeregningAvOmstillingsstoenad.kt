@@ -233,6 +233,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         }
 
         showIf(harInntektNesteAar) {
+            // TODO: bytte ut data med data fra sisteBeregningsperiodeNesteAar
+
             val januarNesteAar =
                 YearMonth
                     .now()
@@ -241,7 +243,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     .atDay(1)
                     .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
-            // TODO: skal denne bruke ny oppgitt inntekt eller samme som over?
             paragraph {
                 textExpr(
                     Bokmal to
@@ -258,7 +259,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 )
             }
 
-            // TODO: skal denne bruke ny oppgitt inntekt eller samme som over?
             paragraph {
                 textExpr(
                     Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + sisteInntekt.format() +
