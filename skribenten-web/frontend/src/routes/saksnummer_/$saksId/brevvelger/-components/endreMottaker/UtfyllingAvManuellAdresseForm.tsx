@@ -121,6 +121,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                         top: auto;
                       }
                     `}
+                    data-cy="land-combobox"
                     error={fieldState.error?.message}
                     label="Land *"
                     onToggleSelected={(option) => {
