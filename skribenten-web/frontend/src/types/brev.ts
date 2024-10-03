@@ -118,6 +118,6 @@ export interface UtenlandskAdresse {
 }
 
 export interface NAVEnhet {
-  id: string;
+  enhetNr: string;
   navn: string;
 }

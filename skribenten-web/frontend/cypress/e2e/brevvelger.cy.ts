@@ -13,7 +13,6 @@ describe("Brevvelger spec", () => {
 
     cy.contains("Søk etter brevmal"); // TODO: assert something smarter?
   });
-
   it("Søk etter brevmal", () => {
     cy.visit("/saksnummer/123456/brevvelger");
 
@@ -92,7 +91,8 @@ describe("Brevvelger spec", () => {
 
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
-    cy.getDataCy("order-letter").click();
+    //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
+    cy.getDataCy("order-letter").click("left");
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -118,7 +118,8 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("is-sensitive").should("not.exist");
 
     cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
-    cy.getDataCy("order-letter").click();
+    //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
+    cy.getDataCy("order-letter").click("left");
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mfprocstart9:leaseid=c8cfd547-b80f-442b-8e7f-62f96ff52231",
@@ -151,12 +152,14 @@ describe("Brevvelger spec", () => {
 
     cy.getDataCy("brev-title-textfield").click().type("GGMU");
     cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
-    cy.getDataCy("order-letter").click();
+    //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
+    cy.getDataCy("order-letter").click("left");
 
     cy.getDataCy("is-sensitive").get(".navds-error-message");
     cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
 
-    cy.getDataCy("order-letter").click();
+    //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
+    cy.getDataCy("order-letter").click("left");
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864212?token=1711023327721&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -185,7 +188,8 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-search").click().type("E 001");
     cy.getDataCy("brevmal-button").click();
 
-    cy.getDataCy("order-letter").click();
+    //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
+    cy.getDataCy("order-letter").click("left");
     cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
 
     cy.getDataCy("is-sensitive").find(".navds-error-message");
@@ -200,7 +204,8 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("mottaker-text-textfield").type("Haaland");
     cy.getDataCy("mottaker-text-textfield").parent().find(".navds-error-message").should("not.exist");
 
-    cy.getDataCy("order-letter").click();
+    //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
+    cy.getDataCy("order-letter").click("left");
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864284?token=1711101230605&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -293,7 +298,7 @@ describe("Brevvelger spec", () => {
       //asserter at vi har byttet til samhandler
       cy.url().should(
         "eq",
-        "http://localhost:5173/saksnummer/123456/brevvelger/PE_IY_05_300?idTSSEkstern=%2280000781720%22",
+        "http://localhost:5173/saksnummer/123456/brevvelger?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22",
       );
 
       cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
@@ -302,13 +307,14 @@ describe("Brevvelger spec", () => {
       cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
       //bestiller brev
-      cy.getDataCy("order-letter").click();
+      cy.getDataCy("order-letter").click("left");
       cy.get("@window-open").should(
         "have.been.calledOnceWithExactly",
         "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
       );
       cy.getDataCy("order-letter-success-message");
     });
+
     it("søk med organisasjonsnavn", () => {
       cy.intercept("POST", "/bff/skribenten-backend/finnSamhandler", (request) => {
         expect(request.body).to.deep.equal({
@@ -350,7 +356,7 @@ describe("Brevvelger spec", () => {
       //asserter at vi har byttet til samhandler
       cy.url().should(
         "eq",
-        "http://localhost:5173/saksnummer/123456/brevvelger/PE_IY_05_300?idTSSEkstern=%2280000781720%22",
+        "http://localhost:5173/saksnummer/123456/brevvelger?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22",
       );
 
       cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
@@ -359,13 +365,14 @@ describe("Brevvelger spec", () => {
       cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
       //bestiller brev
-      cy.getDataCy("order-letter").click();
+      cy.getDataCy("order-letter").click("left");
       cy.get("@window-open").should(
         "have.been.calledOnceWithExactly",
         "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
       );
       cy.getDataCy("order-letter-success-message");
     });
+
     it("søk med personnavn", () => {
       cy.intercept("POST", "/bff/skribenten-backend/finnSamhandler", (request) => {
         expect(request.body).to.deep.equal({
@@ -407,7 +414,7 @@ describe("Brevvelger spec", () => {
       //asserter at vi har byttet til samhandler
       cy.url().should(
         "eq",
-        "http://localhost:5173/saksnummer/123456/brevvelger/PE_IY_05_300?idTSSEkstern=%2280000781720%22",
+        "http://localhost:5173/saksnummer/123456/brevvelger?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22",
       );
 
       cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
@@ -416,13 +423,14 @@ describe("Brevvelger spec", () => {
       cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
       //bestiller brev
-      cy.getDataCy("order-letter").click();
+      cy.getDataCy("order-letter").click("left");
       cy.get("@window-open").should(
         "have.been.calledOnceWithExactly",
         "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
       );
       cy.getDataCy("order-letter-success-message");
     });
+
     it("kan legge inn manuell adresse for brevbaker brev", () => {
       cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
         request.reply({ fixture: "land.json" });
@@ -450,7 +458,7 @@ describe("Brevvelger spec", () => {
       cy.contains("Adresselinjen").should("be.visible");
       cy.contains("0000").should("be.visible");
       cy.contains("Poststedet").should("be.visible");
-      cy.contains("Se").should("be.visible");
+      cy.get("td:contains('Se')").should("be.visible");
       cy.getDataCy("bekreft-ny-mottaker").click();
 
       cy.contains("Fornavn Etternavnsen").should("be.visible");
@@ -460,6 +468,7 @@ describe("Brevvelger spec", () => {
       cy.contains("SE").should("be.visible");
       cy.contains("Tilbakestill mottaker").should("be.visible");
     });
+
     it("kan ikke legge inn manuell adresse for exstream brev", () => {
       cy.getDataCy("brevmal-search").click().type("brev fra nav");
       cy.getDataCy("brevmal-button").click();
@@ -576,9 +585,7 @@ describe("Brevvelger spec", () => {
       cy.contains("Ja, slett kladden").click();
       cy.wait("@deleteKladd");
       cy.wait("@getAlleBrevForSak");
-      //TODO - trigger rerender. Se kommentar i PDFViewerTopBar.tsx/SlettBrevModal
-      cy.contains("Informasjon om saksbehandlingstid").click();
-      cy.contains("Brev med id 1 ble ikke funnet").click();
+      cy.contains("Informasjon om saksbehandlingstid").should("not.be.visible");
     });
   });
 });

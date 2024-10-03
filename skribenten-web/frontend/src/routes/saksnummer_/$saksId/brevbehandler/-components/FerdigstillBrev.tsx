@@ -21,12 +21,12 @@ import { Route } from "../route";
 
 export const FerdigstillOgSendBrevButton = (properties: {
   sakId: string;
-  valgtBrevId?: string;
+  valgtBrevId?: number;
   brevInfo: BrevInfo[];
   åpneFerdigstillModal: () => void;
 }) => {
   if (properties.valgtBrevId) {
-    const valgtBrev = properties.brevInfo.find((brev) => brev.id.toString() === properties.valgtBrevId);
+    const valgtBrev = properties.brevInfo.find((brev) => brev.id === properties.valgtBrevId);
 
     //safe-guard i det tilfellet bogus id er sendt
     if (!valgtBrev) {

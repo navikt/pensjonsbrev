@@ -8,7 +8,6 @@ import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
 import { getAdresseTypeName } from "~/types/nameMappings";
 import { humanizeName } from "~/utils/stringUtils";
 
-import { Route } from "../../route";
 import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";
 
 /**
@@ -38,7 +37,9 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
       {properties.showMottakerTitle && <Label size="small">Mottaker</Label>}
       {!properties.samhandlerId && (
         <div>
-          {adresseQuery.isSuccess && <MottakerAdresseOppsummering adresse={adresseQuery.data} erSamhandler={false} />}
+          {adresseQuery.isSuccess && (
+            <MottakerAdresseOppsummering adresse={adresseQuery.data} erSamhandler={false} saksId={properties.sakId} />
+          )}
           {adresseQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
           {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
         </div>
@@ -47,7 +48,11 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
         <div>
           {hentSamhandlerAdresseQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
           {hentSamhandlerAdresseQuery.isSuccess && (
-            <MottakerAdresseOppsummering adresse={hentSamhandlerAdresseQuery.data} erSamhandler />
+            <MottakerAdresseOppsummering
+              adresse={hentSamhandlerAdresseQuery.data}
+              erSamhandler
+              saksId={properties.sakId}
+            />
           )}
           {hentSamhandlerAdresseQuery.error && (
             <ApiError error={hentSamhandlerAdresseQuery.error} title="Fant ikke adresse" />
@@ -63,13 +68,14 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
  * @param erSamhandler - burde settes dersom adressen er en Adresse, og ikke en KontaktAdresseResponse
  */
 const MottakerAdresseOppsummering = (properties: {
+  saksId: string;
   adresse: Adresse | KontaktAdresseResponse;
   erSamhandler?: boolean;
 }) => {
   return (
     <div>
       {erAdresseKontaktAdresse(properties.adresse) ? (
-        <ValgtKontaktAdresseOppsummering adresse={properties.adresse} />
+        <ValgtKontaktAdresseOppsummering adresse={properties.adresse} saksId={properties.saksId} />
       ) : (
         <ValgtAdresseOppsummering adresse={properties.adresse} erSamhandler={properties.erSamhandler ?? false} />
       )}
@@ -77,11 +83,10 @@ const MottakerAdresseOppsummering = (properties: {
   );
 };
 
-const ValgtKontaktAdresseOppsummering = (properties: { adresse: KontaktAdresseResponse }) => {
-  const { saksId } = Route.useParams();
+const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: KontaktAdresseResponse }) => {
   const { data: navn } = useQuery({
-    queryKey: getNavn.queryKey(saksId),
-    queryFn: () => getNavn.queryFn(saksId),
+    queryKey: getNavn.queryKey(properties.saksId),
+    queryFn: () => getNavn.queryFn(properties.saksId),
   });
 
   return (

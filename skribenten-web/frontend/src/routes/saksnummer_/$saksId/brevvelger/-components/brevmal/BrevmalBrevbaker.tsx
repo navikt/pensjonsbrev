@@ -1,8 +1,6 @@
-import { css } from "@emotion/react";
-import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { Button, HStack, VStack } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -12,12 +10,14 @@ import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 
-import { Route } from "../route";
-import { EndreMottakerModal } from "./endreMottaker/EndreMottaker";
-import LetterTemplateHeading from "./LetterTemplate";
-import { useMottakerContext } from "./MottakerContext";
-import SelectEnhet from "./SelectEnhet";
-import SelectLanguage from "./SelectLanguage";
+import { Route } from "../../../route";
+import type { SubmitTemplateOptions } from "../../route";
+import { EndreMottakerModal } from "../endreMottaker/EndreMottaker";
+import { useMottakerContext } from "../endreMottaker/MottakerContext";
+import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
+import LetterTemplateHeading from "./components/LetterTemplate";
+import SelectEnhet from "./components/SelectEnhet";
+import SelectLanguage from "./components/SelectLanguage";
 import type { brevmalBrevbakerFormSchema } from "./TemplateUtils";
 
 const BrevmalBrevbaker = (properties: {
@@ -30,22 +30,29 @@ const BrevmalBrevbaker = (properties: {
     spraak: SpraakKode;
     enhetsId: string;
   };
+  saksId: string;
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
-  const { saksId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const { mottaker, setMottaker } = useMottakerContext();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<z.infer<typeof brevmalBrevbakerFormSchema>>({
     defaultValues: properties.defaultValues,
   });
+
+  useEffect(() => {
+    properties.setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
+  }, [properties.setOnFormSubmitClick]);
 
   return (
     <>
       <LetterTemplateHeading letterTemplate={properties.letterTemplate} />
       <Divider />
       <FormProvider {...form}>
-        <form
+        <BrevmalFormWrapper
+          formRef={formRef}
           onSubmit={form.handleSubmit((values) => {
             navigate({
               to: "/saksnummer/$saksId/brev",
@@ -61,7 +68,7 @@ const BrevmalBrevbaker = (properties: {
           <VStack gap="8">
             <VStack gap="2">
               <VStack>
-                <OppsummeringAvMottaker mottaker={mottaker} saksId={saksId} withTitle />
+                <OppsummeringAvMottaker mottaker={mottaker} saksId={properties.saksId} withTitle />
 
                 {modalÅpen && (
                   <EndreMottakerModal
@@ -94,21 +101,10 @@ const BrevmalBrevbaker = (properties: {
               sorterteSpråk={properties.displayLanguages}
             />
           </VStack>
-          <Button
-            css={css`
-              width: fit-content;
-            `}
-            data-cy="order-letter"
-            icon={<ArrowRightIcon />}
-            iconPosition="right"
-            size="small"
-          >
-            Åpne brev
-          </Button>
-        </form>
+        </BrevmalFormWrapper>
       </FormProvider>
     </>
   );
 };
 
-export default BrevmalBrevbaker;
+export default memo(BrevmalBrevbaker);

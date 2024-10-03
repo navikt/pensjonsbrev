@@ -102,4 +102,4 @@ env:
     value: "api://prod-fss.pensjondeployer.pensjon-samhandler-proxy/.default"
 
   - name: NORG2_URL
-    value: "https://norg2.intern.nav.no/norg2"
+    value: "https://norg2.intern.nav.no/norg2/"

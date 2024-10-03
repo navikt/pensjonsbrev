@@ -8,7 +8,7 @@ import type { BrevInfo } from "~/types/brev";
 
 export const SlettBrev = (properties: {
   sakId: string;
-  brevId: string | number;
+  brevId: number;
   buttonText: string;
   onSlettSuccess: () => void;
   modalTexts?: {
@@ -43,7 +43,7 @@ export const SlettBrev = (properties: {
 
 const SlettBrevModal = (properties: {
   sakId: string;
-  brevId: string | number;
+  brevId: number;
   åpen: boolean;
   onClose: () => void;
   onSlettSuccess: () => void;
@@ -59,9 +59,8 @@ const SlettBrevModal = (properties: {
   const slett = useMutation({
     mutationFn: () => slettBrev(properties.sakId, properties.brevId),
     onSuccess: () => {
-      //TODO - må finne ut hvorfor tanstack ikke gjør en rerendering når vi oppdaterer query. Filter skal være en immutable update
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.filter((brev) => brev.id.toString() !== properties.brevId),
+        currentBrevInfo.filter((brev) => brev.id !== properties.brevId),
       );
       properties.onSlettSuccess();
     },

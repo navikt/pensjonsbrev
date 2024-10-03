@@ -1,20 +1,22 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BodyShort, TextField, VStack } from "@navikt/ds-react";
+import { BodyShort, TextField } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { orderEblankett } from "~/api/skribenten-api-endpoints";
+import { orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import type { LetterMetadata, OrderEblankettRequest } from "~/types/apiTypes";
 
-import { Route } from "../route";
-import BestillOgRedigerButton from "./BestillOgRedigerButton";
-import LetterTemplateHeading from "./LetterTemplate";
-import SelectAvtaleland from "./SelectAvtaleland";
-import SelectEnhet from "./SelectEnhet";
-import SelectSensitivity from "./SelectSensitivity";
+import type { SubmitTemplateOptions } from "../../route";
+import { Route } from "../../route";
+import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
+import LetterTemplateHeading from "./components/LetterTemplate";
+import SelectAvtaleland from "./components/SelectAvtaleland";
+import SelectEnhet from "./components/SelectEnhet";
+import SelectSensitivity from "./components/SelectSensitivity";
 import { byggEBlankettOnSubmitRequest } from "./TemplateUtils";
 
 const eblankettValidationSchema = z.object({
@@ -24,10 +26,16 @@ const eblankettValidationSchema = z.object({
   enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
-export default function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+export default function Eblankett({
+  letterTemplate,
+  setOnFormSubmitClick,
+}: {
+  letterTemplate: LetterMetadata;
+  setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
+}) {
   const { saksId } = Route.useParams();
-
   const { vedtaksId } = Route.useSearch();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
     defaultValues: {
@@ -42,7 +50,12 @@ export default function Eblankett({ letterTemplate }: { letterTemplate: LetterMe
     onSuccess: (callbackUrl) => {
       window.open(callbackUrl);
     },
+    mutationKey: orderLetterKeys.brevsystem("e-blankett"),
   });
+
+  useEffect(() => {
+    setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
+  }, [setOnFormSubmitClick]);
 
   return (
     <>
@@ -50,7 +63,8 @@ export default function Eblankett({ letterTemplate }: { letterTemplate: LetterMe
       <BodyShort size="small">E-blankett</BodyShort>
       <Divider />
       <FormProvider {...methods}>
-        <form
+        <BrevmalFormWrapper
+          formRef={formRef}
           onSubmit={methods.handleSubmit((submittedValues) =>
             orderEblankettMutation.mutate(
               byggEBlankettOnSubmitRequest({
@@ -61,21 +75,20 @@ export default function Eblankett({ letterTemplate }: { letterTemplate: LetterMe
             ),
           )}
         >
-          <VStack gap="8">
-            <TextField
-              data-cy="mottaker-text-textfield"
-              {...methods.register("mottakerText")}
-              autoComplete="off"
-              error={methods.formState.errors.mottakerText?.message}
-              label="Mottaker"
-              size="small"
-            />
-            <SelectAvtaleland />
-            <SelectEnhet />
-            <SelectSensitivity />
-          </VStack>
-          <BestillOgRedigerButton orderMutation={orderEblankettMutation} />
-        </form>
+          <TextField
+            data-cy="mottaker-text-textfield"
+            {...methods.register("mottakerText")}
+            autoComplete="off"
+            error={methods.formState.errors.mottakerText?.message}
+            label="Mottaker"
+            size="small"
+          />
+          <SelectAvtaleland />
+          <SelectEnhet />
+          <SelectSensitivity />
+        </BrevmalFormWrapper>
+
+        <OrderLetterResult data={orderEblankettMutation.data} error={orderEblankettMutation.error} />
       </FormProvider>
     </>
   );

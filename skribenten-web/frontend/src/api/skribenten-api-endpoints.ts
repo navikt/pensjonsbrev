@@ -83,6 +83,11 @@ export const preferredLanguageKeys = {
   saksId: (saksId: string) => [...preferredLanguageKeys.all, saksId] as const,
 };
 
+export const orderLetterKeys = {
+  all: ["ORDER_LETTER"],
+  brevsystem: (brevsystem: string) => [...orderLetterKeys.all, brevsystem] as const,
+};
+
 export const getSakContext = {
   queryKey: saksnummerKeys.id,
   queryFn: async (saksId: string, vedtaksId: string | undefined) =>

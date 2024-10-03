@@ -105,4 +105,4 @@ env:
     value: "api://dev-fss.pensjon-q2.pensjon-samhandler-proxy-q2/.default"
 
   - name: NORG2_URL
-    value: "https://norg2.intern.dev.nav.no/norg2"
+    value: "https://norg2.intern.dev.nav.no/norg2/"

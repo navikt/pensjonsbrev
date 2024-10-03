@@ -10,7 +10,7 @@ import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 
-import { MottakerContextProvider } from "./brevvelger/$templateId/-components/MottakerContext";
+import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId")({
