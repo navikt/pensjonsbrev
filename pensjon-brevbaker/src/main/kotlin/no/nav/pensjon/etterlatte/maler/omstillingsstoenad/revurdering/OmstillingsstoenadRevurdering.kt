@@ -35,6 +35,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harFlereUtbetalingsperioder
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harInntektNesteAar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.omsRettUtenTidsbegrensning
@@ -153,8 +154,16 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
 
-            includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = true), beregning, tidligereFamiliepleier)
-            includeAttachment(beregningAvOmstillingsstoenad(tidligereFamiliepleier = false), beregning, tidligereFamiliepleier.not())
+            includeAttachment(
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, harInntektForNesteAar = harInntektNesteAar),
+                beregning,
+                tidligereFamiliepleier,
+            )
+            includeAttachment(
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, harInntektForNesteAar = harInntektNesteAar),
+                beregning,
+                tidligereFamiliepleier.not(),
+            )
 
             includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = true), innhold, tidligereFamiliepleier)
             includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = false), innhold, tidligereFamiliepleier.not())
