@@ -30,5 +30,9 @@ data class PE(
         val pe_ut_sum_fattnorge_fatt_a10_netto: Int,
         val pe_ut_sum_fattnorge_fattbilateral: Int,
         val pe_ut_antallbarnserkullogfelles: Int,
+        val fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt: Boolean,
+        val fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj: Boolean,
+        val pe_ut_etteroppgjorfratrekklistebrukeretterbetaling: Boolean,
+        val pe_ut_inntekt_trukket_fra_personinntekt: Kroner,
     )
 }

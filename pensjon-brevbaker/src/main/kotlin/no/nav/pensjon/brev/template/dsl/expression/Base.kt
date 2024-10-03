@@ -30,7 +30,7 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
 fun <T: Any> Expression<List<T>?>.getOrNull(index: Int = 0): Expression<T?> = Expression.BinaryInvoke(
     this,
     index.expr(),
-    BinaryOperation.GetElement()
+    BinaryOperation.GetElementOrNull()
 )
 
 fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = not(isOneOf(*enums))
