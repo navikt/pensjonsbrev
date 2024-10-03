@@ -10,24 +10,16 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.harInntektNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiodeNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.aarsinntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.fratrekkInnAar
@@ -232,8 +224,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             )
         }
 
-        showIf(harInntektNesteAar) {
-            // TODO: bytte ut data med data fra sisteBeregningsperiodeNesteAar
+        ifNotNull(sisteBeregningsperiodeNesteAar) {
+            val sisteInntektNesteAar = it.inntekt
+            val gjenvaerendeMaanederNesteAar = it.relevantMaanederInnAar
 
             val januarNesteAar =
                 YearMonth
@@ -247,28 +240,30 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 textExpr(
                     Bokmal to
                         "Fra ".expr() + januarNesteAar + " har vi lagt til grunn din oppgitte forventede inntekt på " +
-                        sisteInntekt.format() +
+                        sisteInntektNesteAar.format() +
                         "kroner. Beløpet er avrundet ned til nærmeste tusen",
                     Nynorsk to
                         "Frå ".expr() + januarNesteAar + " har vi lagt til grunn den oppgitte forventa inntekta di på " +
-                        sisteInntekt.format() +
+                        sisteInntektNesteAar.format() +
                         "kroner. Dette er forventa inntekt fram til stønaden stansar frå <dato>. Beløpet er avrunda ned til næraste tusen. ",
                     English to
-                        "From ".expr() + januarNesteAar + ", we have based your stated expected income on NOK " + sisteInntekt.format() +
+                        "From ".expr() + januarNesteAar + ", we have based your stated expected income on NOK " +
+                        sisteInntektNesteAar.format() +
                         ". The amount is rounded down to the nearest thousand. ",
                 )
             }
 
             paragraph {
                 textExpr(
-                    Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + sisteInntekt.format() +
+                    Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + sisteInntektNesteAar.format() +
                         " kroner / " + sisteGjenvaerendeMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
                         "Beløpet ganges med 45 prosent.",
-                    Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + sisteInntekt.format() +
-                        " kroner / " + sisteGjenvaerendeMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
+                    Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + sisteInntektNesteAar.format() +
+                        " kroner / " + gjenvaerendeMaanederNesteAar.format() + " månader) minus (0,5 G / 12 månader). " +
                         "Beløpet blir gonga med 45 prosent.",
                     English to "The monthly allowance amount has been reduced as follows: (NOK ".expr() +
-                        sisteInntekt.format() + " / " + sisteGjenvaerendeMaaneder.format() + " months) minus (0.5 G / 12 months). " +
+                        sisteInntektNesteAar.format() + " / " + gjenvaerendeMaanederNesteAar.format() +
+                        " months) minus (0.5 G / 12 months). " +
                         "The amount is multiplied by 45 percent.",
                 )
             }

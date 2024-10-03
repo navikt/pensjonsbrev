@@ -49,7 +49,6 @@ data class OmstillingsstoenadBeregning(
     val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
     val sisteBeregningsperiodeNesteAar: OmstillingsstoenadBeregningsperiode?,
     val trygdetid: Trygdetid,
-    val harInntektNesteAar: Boolean = false,
 ) : BrevDTO
 
 data class OmstillingsstoenadBeregningsperiode(
