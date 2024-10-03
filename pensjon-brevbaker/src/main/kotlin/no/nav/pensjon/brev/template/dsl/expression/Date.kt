@@ -44,31 +44,6 @@ private object LocalDateSelectors {
 }
 
 
-fun Expression<LocalDate?>.legacyGreaterThan(second: Expression<LocalDate?>): Expression<Boolean> =
-    Expression.BinaryInvoke(this, second, BinaryOperation.SafeCall(BinaryOperation.GreaterThan())).ifNull(false)
-
-fun Expression<LocalDate?>.legacyGreaterThanOrEqual(second: Expression<LocalDate?>): Expression<Boolean> =
-    Expression.BinaryInvoke(this, second, BinaryOperation.SafeCall(BinaryOperation.GreaterThanOrEqual())).ifNull(false)
-
-fun Expression<LocalDate?>.legacyLessThan(second: Expression<LocalDate?>): Expression<Boolean> =
-    Expression.BinaryInvoke(this, second, BinaryOperation.SafeCall(BinaryOperation.LessThan())).ifNull(false)
-
-fun Expression<LocalDate?>.legacyLessThanOrEqual(second: Expression<LocalDate?>): Expression<Boolean> =
-    Expression.BinaryInvoke(this, second, BinaryOperation.SafeCall(BinaryOperation.LessThanOrEqual())).ifNull(false)
-
-fun Expression<LocalDate?>.legacyGreaterThan(second: LocalDate?): Expression<Boolean> =
-    legacyGreaterThan(second.expr())
-
-fun Expression<LocalDate?>.legacyGreaterThanOrEqual(second: LocalDate?): Expression<Boolean> =
-    Expression.BinaryInvoke(this, second.expr(), BinaryOperation.SafeCall(BinaryOperation.GreaterThanOrEqual())).ifNull(false)
-
-fun Expression<LocalDate?>.legacyLessThan(second: LocalDate?): Expression<Boolean> =
-    Expression.BinaryInvoke(this, second.expr(), BinaryOperation.SafeCall(BinaryOperation.LessThan())).ifNull(false)
-
-fun Expression<LocalDate?>.legacyLessThanOrEqual(second: LocalDate?): Expression<Boolean> =
-    Expression.BinaryInvoke(this, second.expr(), BinaryOperation.SafeCall(BinaryOperation.LessThanOrEqual())).ifNull(false)
-
-
 val Expression<LocalDate>.year: Expression<Int>
     get() = select(LocalDateSelectors.yearSelector)
 
