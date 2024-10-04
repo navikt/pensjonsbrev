@@ -22,6 +22,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sist
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiodeNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.aarsinntekt
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.fratrekkInnAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
@@ -39,8 +40,6 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.trygdetidsperioder
 import no.nav.pensjon.etterlatte.maler.formatBroek
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 
 fun beregningAvOmstillingsstoenad(
     tidligereFamiliepleier: Boolean,
@@ -197,7 +196,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     "for inntekt i måneder du ikke er innvilget stønad er " + sisteFratrekkInnAar.format() +
                     " kroner. Vi har lagt til grunn " +
                     "at du har en inntekt på " + sisteInntekt.format() +
-                    " kroner i innvilgede måneder i år. Beløpet er avrundet ned til nærmeste tusen",
+                    " kroner i innvilgede måneder i år. Beløpet er avrundet ned til nærmeste tusen.",
                 Nynorsk to "Du har ei oppgitt årsinntekt inneverande år på ".expr() + sisteAarsinntekt.format() + " kroner. " +
                     "Fråtrekk for inntekt i månader du ikkje er innvilga stønad er " + sisteFratrekkInnAar.format() +
                     " kroner. Vi har lagt til grunn " +
@@ -227,27 +226,20 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         ifNotNull(sisteBeregningsperiodeNesteAar) {
             val sisteInntektNesteAar = it.inntekt
             val gjenvaerendeMaanederNesteAar = it.relevantMaanederInnAar
-
-            val januarNesteAar =
-                YearMonth
-                    .now()
-                    .plusYears(1)
-                    .withMonth(1)
-                    .atDay(1)
-                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+            val sisteInntektNesteAarFom = it.datoFOM
 
             paragraph {
                 textExpr(
                     Bokmal to
-                        "Fra ".expr() + januarNesteAar + " har vi lagt til grunn din oppgitte forventede inntekt på " +
+                        "Fra ".expr() + sisteInntektNesteAarFom.format() + " har vi lagt til grunn din oppgitte forventede inntekt på " +
                         sisteInntektNesteAar.format() +
-                        "kroner. Beløpet er avrundet ned til nærmeste tusen",
+                        "kroner. Beløpet er avrundet ned til nærmeste tusen.",
                     Nynorsk to
-                        "Frå ".expr() + januarNesteAar + " har vi lagt til grunn den oppgitte forventa inntekta di på " +
+                        "Frå ".expr() + sisteInntektNesteAarFom.format() + " har vi lagt til grunn den oppgitte forventa inntekta di på " +
                         sisteInntektNesteAar.format() +
                         "kroner. Dette er forventa inntekt fram til stønaden stansar frå <dato>. Beløpet er avrunda ned til næraste tusen. ",
                     English to
-                        "From ".expr() + januarNesteAar + ", we have based your stated expected income on NOK " +
+                        "From ".expr() + sisteInntektNesteAarFom.format() + ", we have based your stated expected income on NOK " +
                         sisteInntektNesteAar.format() +
                         ". The amount is rounded down to the nearest thousand. ",
                 )
