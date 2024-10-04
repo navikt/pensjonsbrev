@@ -68,27 +68,36 @@ object OmstillingsstoenadInnvilgelseFraser {
                 val datoFomSisteBeregningsperiode = omstillingsstoenadBeregning.sisteBeregningsperiode.datoFOM
 
                 showIf(harFlerePerioder) {
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() +
-                                " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ".",
-                            Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før " +
-                                "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". ",
-                            English to "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
-                                "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ". ",
-                        )
-                        ifNotNull(omstillingsstoenadBeregning.sisteBeregningsperiodeNesteAar) {
+                    ifNotNull(omstillingsstoenadBeregning.sisteBeregningsperiodeNesteAar) {
+                        paragraph {
                             textExpr(
                                 Bokmal to
-                                    "Fra ".expr() + it.datoFOM.format() + " får du " + it.utbetaltBeloep.format() +
+                                    "Du får ".expr() + sisteUtbetaltBeloep.format() +
+                                    " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ". Fra ".expr() +
+                                    it.datoFOM.format() + " får du " +
+                                    it.utbetaltBeloep.format() +
                                     " kroner hver måned før skatt.",
                                 Nynorsk to
-                                    "Frå og med ".expr() + it.datoFOM.format() + " får du " + it.utbetaltBeloep.format() +
-                                    " kroner kvar månad før skatt.",
+                                    "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før " +
+                                    "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". Frå og med ".expr() +
+                                    it.datoFOM.format() + " får du " +
+                                    it.utbetaltBeloep.format() + " kroner kvar månad før skatt. ",
                                 English to
-                                    "Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK" +
-                                    it.utbetaltBeloep.format() +
-                                    " each month before tax.",
+                                    "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
+                                    "month before tax, starting on " + datoFomSisteBeregningsperiode.format() +
+                                    ". Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK" +
+                                    it.utbetaltBeloep.format() + " each month before tax.",
+                            )
+                        }
+                    }.orShow {
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() +
+                                    " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ".",
+                                Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før " +
+                                    "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". ",
+                                English to "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
+                                    "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ".",
                             )
                         }
                     }
