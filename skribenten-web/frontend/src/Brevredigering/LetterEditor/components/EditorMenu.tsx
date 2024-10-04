@@ -12,18 +12,9 @@ import { formatTime } from "~/utils/dateUtils";
 import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
-
-export enum Typography {
-  PARAGRAPH = "PARAGRAPH",
-  TITLE1 = "TITLE1",
-  TITLE2 = "TITLE2",
-}
-
-const TypographyToText = {
-  [Typography.PARAGRAPH]: "Normal",
-  [Typography.TITLE1]: "Overskrift 1",
-  [Typography.TITLE2]: "Underoverskrift 2",
-} as const;
+import { getCursorOffset } from "../services/caretUtils";
+import type { Typography } from "../utils";
+import { TypographyToText } from "../utils";
 
 const SelectTypography = (props: {
   editorState: LetterEditorState;
@@ -47,6 +38,8 @@ const SelectTypography = (props: {
           props.editorState.focus,
           e.target.value as Typography,
         );
+        //setter fokuset tilbake til editor etter valgt tekststil
+        applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
       }}
       readOnly={!changeableContent}
       size="small"
@@ -68,8 +61,8 @@ export const EditorMenu = () => {
     <div
       css={css`
         border-bottom: 1px solid var(--a-gray-200);
-        background: var(--a-blue-50);
-        padding: var(--a-spacing-3) var(--a-spacing-4);
+        background: var(--a-white);
+        padding: var(--a-spacing-2) var(--a-spacing-4);
         display: flex;
         gap: var(--a-spacing-2);
         align-self: stretch;
