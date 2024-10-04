@@ -248,7 +248,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             paragraph {
                 textExpr(
                     Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + sisteInntektNesteAar.format() +
-                        " kroner / " + sisteGjenvaerendeMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
+                        " kroner / " + gjenvaerendeMaanederNesteAar.format() + " måneder) minus (0,5 G / 12 måneder). " +
                         "Beløpet ganges med 45 prosent.",
                     Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + sisteInntektNesteAar.format() +
                         " kroner / " + gjenvaerendeMaanederNesteAar.format() + " månader) minus (0,5 G / 12 månader). " +
