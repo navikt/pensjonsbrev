@@ -67,12 +67,12 @@ object OmstillingsstoenadInnvilgelseFraser {
                 var sisteUtbetaltBeloep = omstillingsstoenadBeregning.sisteBeregningsperiode.utbetaltBeloep
                 var datoFomSisteBeregningsperiode = omstillingsstoenadBeregning.sisteBeregningsperiode.datoFOM
 
-                ifNotNull(omstillingsstoenadBeregning.sisteBeregningsperiodeNesteAar) {
-                    sisteUtbetaltBeloep = it.utbetaltBeloep
-                    datoFomSisteBeregningsperiode = it.datoFOM
-                }
-
                 showIf(harFlerePerioder) {
+                    ifNotNull(omstillingsstoenadBeregning.sisteBeregningsperiodeNesteAar) {
+                        sisteUtbetaltBeloep = it.utbetaltBeloep
+                        datoFomSisteBeregningsperiode = it.datoFOM
+                    }
+
                     paragraph {
                         textExpr(
                             Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() +
