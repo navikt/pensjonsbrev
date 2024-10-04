@@ -77,10 +77,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                             English to "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
                                 "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ". ",
                         )
-                    }
-
-                    ifNotNull(omstillingsstoenadBeregning.sisteBeregningsperiodeNesteAar) {
-                        paragraph {
+                        ifNotNull(omstillingsstoenadBeregning.sisteBeregningsperiodeNesteAar) {
                             textExpr(
                                 Bokmal to
                                     "Fra ".expr() + it.datoFOM.format() + " får du " + it.utbetaltBeloep.format() +
@@ -89,8 +86,9 @@ object OmstillingsstoenadInnvilgelseFraser {
                                     "Frå og med ".expr() + it.datoFOM.format() + " får du " + it.utbetaltBeloep.format() +
                                     " kroner kvar månad før skatt.",
                                 English to
-                                    "Starting from ".expr() + it.datoFOM.format() + ", you will receive " + it.utbetaltBeloep.format() +
-                                    " NOK each month before tax.",
+                                    "Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK" +
+                                    it.utbetaltBeloep.format() +
+                                    " each month before tax.",
                             )
                         }
                     }
