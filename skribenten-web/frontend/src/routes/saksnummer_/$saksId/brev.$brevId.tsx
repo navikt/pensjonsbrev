@@ -222,7 +222,7 @@ function RedigerBrev({
       <div
         css={css`
           background: var(--a-white);
-          diplay: flex;
+          display: flex;
           flex-direction: column;
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
