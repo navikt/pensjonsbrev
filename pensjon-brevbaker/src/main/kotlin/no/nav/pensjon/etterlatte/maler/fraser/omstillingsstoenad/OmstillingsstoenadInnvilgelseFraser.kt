@@ -64,15 +64,10 @@ object OmstillingsstoenadInnvilgelseFraser {
             }
 
             showIf(harUtbetaling) {
-                var sisteUtbetaltBeloep = omstillingsstoenadBeregning.sisteBeregningsperiode.utbetaltBeloep
-                var datoFomSisteBeregningsperiode = omstillingsstoenadBeregning.sisteBeregningsperiode.datoFOM
+                val sisteUtbetaltBeloep = omstillingsstoenadBeregning.sisteBeregningsperiode.utbetaltBeloep
+                val datoFomSisteBeregningsperiode = omstillingsstoenadBeregning.sisteBeregningsperiode.datoFOM
 
                 showIf(harFlerePerioder) {
-                    ifNotNull(omstillingsstoenadBeregning.sisteBeregningsperiodeNesteAar) {
-                        sisteUtbetaltBeloep = it.utbetaltBeloep
-                        datoFomSisteBeregningsperiode = it.datoFOM
-                    }
-
                     paragraph {
                         textExpr(
                             Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() +
@@ -82,6 +77,22 @@ object OmstillingsstoenadInnvilgelseFraser {
                             English to "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
                                 "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ". ",
                         )
+                    }
+
+                    ifNotNull(omstillingsstoenadBeregning.sisteBeregningsperiodeNesteAar) {
+                        paragraph {
+                            textExpr(
+                                Bokmal to
+                                    "Fra ".expr() + it.datoFOM.format() + " får du " + it.utbetaltBeloep.format() +
+                                    " kroner hver måned før skatt.",
+                                Nynorsk to
+                                    "Frå og med ".expr() + it.datoFOM.format() + " får du " + it.utbetaltBeloep.format() +
+                                    " kroner kvar månad før skatt.",
+                                English to
+                                    "Starting from ".expr() + it.datoFOM.format() + ", you will receive " + it.utbetaltBeloep.format() +
+                                    " NOK each month before tax.",
+                            )
+                        }
                     }
                 }.orShow {
                     paragraph {
