@@ -230,10 +230,10 @@ function RedigerBrev({
       >
         <div
           css={css`
-            display: flex;
+            display: grid;
+            grid-template-columns: 25% 75%;
 
             > form:first-of-type {
-              max-width: 389px;
               padding: var(--a-spacing-6);
               border-right: 1px solid var(--a-gray-200);
             }
