@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.grunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateral
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOS
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNor
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjor
 
 
 data class Persongrunnlag(
@@ -11,4 +12,5 @@ data class Persongrunnlag(
     val trygdetidsgrunnlaglistebilateral: TrygdetidsgrunnlagListeBilateral?,
     val trygdetidsgrunnlaglisteeos: TrygdetidsgrunnlagListeEOS?,
     val trygdetidsgrunnlaglistenor: TrygdetidsgrunnlagListeNor?,
+    val uforetrygdetteroppgjor: UforetrygdEtteroppgjor?,
 )

@@ -69,6 +69,7 @@ object Fixtures {
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             VarselSaksbehandlingstidAutoDto::class -> createVarselSaksbehandlingstidAutoDto() as T
             EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T
+            EtteroppgjoerEtterbetalingAutoDto::class -> createEtteroppgjoerEtterbetalingAuto() as T
             PE::class -> createPE() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
 
