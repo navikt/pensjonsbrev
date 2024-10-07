@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_ENG_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.PENSJON_URL
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -18,11 +22,42 @@ class Alderspensjon {
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner mer informasjon på nav.no/pensjon. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager 09.00-15.00.",
-                    English to "You can find more information at nav.no/pensjon. At nav.no/contact you can chat or write to us. If you do not find the answer at nav.no, you can call us at: +47 55 55 33 34, weekdays 09:00-15:00.",
+                    Bokmal to "Du finner mer informasjon på $PENSJON_URL. På $KONTAKT_URL kan du chatte eller skrive til oss. Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon 55 55 33 34, hverdager 09.00-15.00.",
+                    English to "You can find more information at $PENSJON_URL. At $KONTAKT_ENG_URL you can chat or write to us. If you do not find the answer at $NAV_URL, you can call us at: +47 55 55 33 34, weekdays 09:00-15:00.",
+                )
+            }
+        }
+    }
+
+    object Returadresse : OutlinePhrase<LangBokmalEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "NAV Familie- og pensjonsytelser",
+                    English to "NAV Familie- og pensjonsytelser",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Postboks 6600, Etterstad",
+                    English to "Postboks 6600, Etterstad",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "",
+                    English to "",
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "",
+                    English to "NORWAY",
                 )
             }
         }
 
     }
+
 }
