@@ -162,7 +162,13 @@ const BrevItem = (properties: {
         </Accordion.Header>
         <Accordion.Content>
           <VStack gap="4">
-            <VStack gap="2">
+            <div
+              css={css`
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+              `}
+            >
               <EndreMottakerMedOppsummeringOgApiHåndtering
                 brev={properties.brev}
                 endreAsIcon
@@ -191,7 +197,7 @@ const BrevItem = (properties: {
                 onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
                 size="small"
               >
-                Brev klart til sending
+                Brevet er klart for sending
               </Switch>
 
               {!erLåst && (
@@ -250,7 +256,9 @@ const BrevItem = (properties: {
                   <Radio value={Distribusjonstype.LOKALPRINT}>Lokalprint</Radio>
                 </RadioGroup>
               )}
-            </VStack>
+
+              {properties.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && <LokalPrintInfoAlerts />}
+            </div>
 
             <div>
               <Detail textColor="subtle">
@@ -282,5 +290,24 @@ const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjelden
     >
       {text}
     </Tag>
+  );
+};
+
+const LokalPrintInfoAlerts = () => {
+  return (
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      `}
+    >
+      <Alert size="small" variant="warning">
+        Du må åpne PDF og skrive ut brevet etter du har ferdigstilt.
+      </Alert>
+      <Alert size="small" variant="info">
+        Skribenten-brev som skal til samhandler kan sendes via sentralprint.
+      </Alert>
+    </div>
   );
 };
