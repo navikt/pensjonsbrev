@@ -6,13 +6,14 @@ import type { Dispatch, SetStateAction } from "react";
 import { createContext, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
-import type { CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
+import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import type { LetterEditorState } from "./model/state";
+import { useEditorKeyboardShortcuts } from "./utils";
 
 export const LetterEditor = ({
   freeze,
@@ -31,6 +32,7 @@ export const LetterEditor = ({
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
+  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
 
   return (
     <div
@@ -64,7 +66,7 @@ export const LetterEditor = ({
           >
             {letter.title}
           </Heading>
-          <div>
+          <div onKeyDown={editorKeyboardShortcuts}>
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
                 <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
