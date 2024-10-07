@@ -132,8 +132,8 @@ object OmstillingsstoenadInnvilgelseFraser {
                         "omstillingsstønad».",
                     Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» korleis vi har " +
                         "rekna ut omstillingsstønaden din.",
-                    English to "You can see how we calculated your adjustment allowance in the " +
-                        "attachment Calculation of Adjustment Allowance.",
+                    English to
+                        "You can see how we calculated your adjustment allowance in the attachment: Calculation of adjustment allowance.",
                 )
             }
         }
