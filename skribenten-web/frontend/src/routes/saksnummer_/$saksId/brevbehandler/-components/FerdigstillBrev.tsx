@@ -25,6 +25,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
   brevInfo: BrevInfo[];
   åpneFerdigstillModal: () => void;
 }) => {
+  const antallBrevSomErKlarTilSending = properties.brevInfo.filter(erBrevKlar).length;
   if (properties.valgtBrevId) {
     const valgtBrev = properties.brevInfo.find((brev) => brev.id === properties.valgtBrevId);
 
@@ -35,6 +36,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
 
     return (
       <FerdigstillValgtBrev
+        antallBrevKlarTilSending={antallBrevSomErKlarTilSending}
         brev={valgtBrev}
         sakId={properties.sakId}
         åpneFerdigstillModal={properties.åpneFerdigstillModal}
@@ -47,7 +49,11 @@ export const FerdigstillOgSendBrevButton = (properties: {
     return (
       <Button onClick={properties.åpneFerdigstillModal} size="small" type="button">
         <HStack gap="2">
-          <Label>Send ferdigstilte brev</Label>
+          {antallBrevSomErKlarTilSending === 1 ? (
+            <Label>Send 1 ferdigstilt brev</Label>
+          ) : (
+            <Label>Send {antallBrevSomErKlarTilSending} ferdigstilte brev</Label>
+          )}
           <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
         </HStack>
       </Button>
@@ -58,7 +64,12 @@ export const FerdigstillOgSendBrevButton = (properties: {
   return null;
 };
 
-const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpneFerdigstillModal: () => void }) => {
+const FerdigstillValgtBrev = (properties: {
+  sakId: string;
+  brev: BrevInfo;
+  åpneFerdigstillModal: () => void;
+  antallBrevKlarTilSending: number;
+}) => {
   const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
 
   if (erLåst) {
@@ -73,7 +84,7 @@ const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpne
         type="button"
       >
         <HStack gap="2">
-          <Label>Ferdigstill brev</Label>
+          <Label>Ferdigstill {properties.antallBrevKlarTilSending} brev</Label>
           <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
         </HStack>
       </Button>
