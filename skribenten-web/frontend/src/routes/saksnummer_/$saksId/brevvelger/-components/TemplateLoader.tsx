@@ -22,6 +22,7 @@ export const TemplateLoader = (props: {
   letterTemplate: LetterMetadata;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
   enhetsId: string;
+  onAddFavorittSuccess?: (templateId: string) => void;
 }) => {
   const preferredLanguage =
     useQuery({
@@ -37,7 +38,7 @@ export const TemplateLoader = (props: {
         gap: 1rem;
       `}
     >
-      <FavoriteButton templateId={props.templateId} />
+      <FavoriteButton onAddFavorittSuccess={props.onAddFavorittSuccess} templateId={props.templateId} />
       <Brevmal
         enhetsId={props.enhetsId}
         letterTemplate={props.letterTemplate}
