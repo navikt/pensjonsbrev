@@ -3,12 +3,8 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDtoSelectors.BrevDataSelectors.avsenderEnhetAdresselinje1
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDtoSelectors.BrevDataSelectors.avsenderEnhetAdresselinje2
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDtoSelectors.BrevDataSelectors.avsenderEnhetLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDtoSelectors.BrevDataSelectors.avsenderEnhetNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.fraser.InnhentingAvInformasjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -33,7 +29,7 @@ object InnhentningOpplysningerFraBruker : RedigerbarTemplate<InnhentningOpplysni
         letterMetadata = LetterMetadata(
             displayTitle = "Innhente opplysninger",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // TODO viktig eller annet?
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG, // TODO viktig eller annet?
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
@@ -75,12 +71,7 @@ object InnhentningOpplysningerFraBruker : RedigerbarTemplate<InnhentningOpplysni
                 )
             }
 
-            includePhrase(InnhentingAvInformasjon.Returadresse(
-                avsenderEnhetNavn = pesysData.avsenderEnhetNavn,
-                avsenderEnhetAdresselinje1 = pesysData.avsenderEnhetAdresselinje1,
-                avsenderEnhetAdresselinje2 = pesysData.avsenderEnhetAdresselinje2,
-                avsenderEnhetLand = pesysData.avsenderEnhetLand,
-            ))
+            includePhrase(Alderspensjon.Returadresse)
 
             includePhrase(Alderspensjon.HarDuSpoersmaal)
         }
