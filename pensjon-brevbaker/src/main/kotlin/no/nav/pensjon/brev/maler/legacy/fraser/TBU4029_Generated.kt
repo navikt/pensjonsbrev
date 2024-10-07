@@ -104,9 +104,17 @@ data class TBU4029_Generated(
                         Nynorsk to "Etterbetalinga du fekk frå NAV blir trekt frå dette beløpet. ",
                     )
                 }
+
+                //IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggFB = true AND PE_UT_GrunnIkkeReduksjon_lik_erstatning_innttap_ertstoppgj_finnes = true) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb() and pe.ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes())){
+                    text (
+                        Bokmal to "Erstatning for inntektstap ved erstatningsoppgjør for annen forelder trekkes fra dette beløpet.",
+                        Nynorsk to "Erstatning for inntektstap ved erstatningsoppgjer til den andre forelderen blir trekt frå dette beløpet.",
+                    )
+                }
+
                 textExpr (
                     Bokmal to "Opplysningene om inntekt for deg og annen forelder viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format() + " kroner i barnetillegg i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fikk imidlertid " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format() + " kroner. Du har derfor fått " + pe.ut_avviksbeloptfbutenminus().format() + " kroner for ",
-
                     Nynorsk to "Opplysningane om inntekta til deg og den andre forelderen viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format() + " kroner i barnetillegg i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fekk derimot " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format() + " kroner. Du har derfor fått " + pe.ut_avviksbeloptfbutenminus().format() + " kroner for ",
                 )
 

@@ -109,7 +109,6 @@ data class TBU4030_Generated(
             }
             textExpr (
                 Bokmal to "Opplysninger om inntekten din viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format() + " kroner i barnetillegg i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fikk imidlertid " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format() + " kroner. Du har derfor fått " + pe.ut_avviksbeloptsbutenminus().format() + " kroner for ",
-
                 Nynorsk to "Opplysningane om inntekta di viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format() + " kroner i barnetillegg i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fekk derimot " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format() + " kroner. Du har derfor fått " + pe.ut_avviksbeloptsbutenminus().format() + " kroner for ",
             )
 

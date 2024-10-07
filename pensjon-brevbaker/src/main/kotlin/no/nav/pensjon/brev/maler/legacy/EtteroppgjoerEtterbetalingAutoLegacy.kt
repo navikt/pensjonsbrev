@@ -19,6 +19,8 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput
+import kotlin.and
 
 @TemplateModelHelpers
 object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtterbetalingAutoDto> {
@@ -84,6 +86,7 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
                 includePhrase(TBU4020_Generated(pe))
             }
 
+            //TODO her er det noe feil i logikken som gjør at teksten ikke kommer med når den skal. Tror det er feil-antagelser rundt fom og tom dato. Må undersøkes.
             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0 AND PE_UT_PeriodeFomMindreLik0101() = true AND PE_UT_PeriodeTomStorreLik3112() = true) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().notEqualTo(0) and pe.ut_periodefommindrelik0101() and pe.ut_periodetomstorrelik3112())){
                 includePhrase(TBU3304_Generated(pe))
