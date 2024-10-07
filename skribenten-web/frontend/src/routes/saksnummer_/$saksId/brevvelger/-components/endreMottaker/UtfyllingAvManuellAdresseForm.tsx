@@ -1,12 +1,11 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
 import { hentLandForManuellUtfyllingAvAdresse } from "~/api/skribenten-api-endpoints";
-import { BasicSelect, SelectLayoutWrapper } from "~/components/select/CustomSelectComponents";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
 
@@ -23,7 +22,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   return (
     <VStack gap="6">
       <VStack gap="4">
-        <Alert variant="warning">
+        <Alert size="small" variant="warning">
           <Heading size="xsmall">Manuell adresseendringsrutine</Heading>
           <Link
             href="https://navno.sharepoint.com/sites/fag-og-ytelser-pensjon-alderspensjon/SitePages/Maler/Mal-for-rutiner.aspx "
@@ -32,7 +31,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
             Les rutinen for endring av adresse her {<ExternalLinkIcon />}
           </Link>
         </Alert>
-        <Alert variant="info">
+        <Alert size="small" variant="info">
           <BodyShort>
             Brev sendes til brukers folkeregistrerte adresse eller annen foretrukken kanal. Legg til mottaker dersom
             brev skal sendes til utenlandsk adresse, fullmektig, verge eller dødsbo.
@@ -42,14 +41,16 @@ const UtfyllingAvManuellAdresseForm = (properties: {
         <Controller
           control={properties.control}
           name="manuellAdresse.adresse.navn"
-          render={({ field, fieldState }) => <TextField label="Navn" {...field} error={fieldState.error?.message} />}
+          render={({ field, fieldState }) => (
+            <TextField label="Navn" {...field} error={fieldState.error?.message} size="small" />
+          )}
         />
 
         <Controller
           control={properties.control}
           name="manuellAdresse.adresse.linje1"
           render={({ field, fieldState }) => (
-            <TextField label="Adresselinje 1" {...field} error={fieldState.error?.message} />
+            <TextField label="Adresselinje 1" {...field} error={fieldState.error?.message} size="small" />
           )}
         />
 
@@ -57,7 +58,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           control={properties.control}
           name="manuellAdresse.adresse.linje2"
           render={({ field, fieldState }) => (
-            <TextField label="Adresselinje 2" {...field} error={fieldState.error?.message} />
+            <TextField label="Adresselinje 2" {...field} error={fieldState.error?.message} size="small" />
           )}
         />
 
@@ -73,6 +74,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                 label="Postnummer"
                 {...field}
                 error={fieldState.error?.message}
+                size="small"
               />
             )}
           />
@@ -87,6 +89,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                 label="Poststed"
                 {...field}
                 error={fieldState.error?.message}
+                size="small"
               />
             )}
           />
@@ -106,22 +109,31 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                   .map((land) => ({ label: land.navn, value: land.kode }));
 
                 return (
-                  <>
-                    <SelectLayoutWrapper error={fieldState?.error} htmlFor="endre-mottaker-land-select" label="Land *">
-                      <BasicSelect
-                        inputId="endre-mottaker-land-select"
-                        {...field}
-                        css={css`
-                          align-self: flex-start;
-                          width: 60%;
-                        `}
-                        isClearable={false}
-                        onChange={(option) => field.onChange(option?.value)}
-                        options={options}
-                        value={options.find((option) => option.value === field.value) ?? null}
-                      />
-                    </SelectLayoutWrapper>
-                  </>
+                  <UNSAFE_Combobox
+                    css={css`
+                      align-self: flex-start;
+                      width: 60%;
+
+                      /*
+                        siden input feltet er nederts på modalen, vil det å åpne den tvinge en scroll på modalen
+                        vi setter den derfor til å åpne oppover
+                      */
+                      .navds-combobox__list {
+                        bottom: 100%;
+                        top: auto;
+                      }
+                    `}
+                    data-cy="land-combobox"
+                    error={fieldState.error?.message}
+                    label="Land *"
+                    onToggleSelected={(option) => {
+                      field.onChange(option);
+                    }}
+                    options={options}
+                    selectedOptions={options.filter((option) => option.value === field.value) ?? undefined}
+                    shouldAutocomplete
+                    size="small"
+                  />
                 );
               }}
             />

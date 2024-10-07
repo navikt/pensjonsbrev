@@ -451,7 +451,7 @@ describe("Brevvelger spec", () => {
       cy.contains("Adresselinje 1").click().type("Adresselinjen 1");
       cy.contains("Postnummer").click().type("0000");
       cy.contains("Poststed").click().type("Poststedet");
-      cy.contains("Land *").click().type("Sver{enter}");
+      cy.getDataCy("land-combobox").click().type("Sver{enter}");
       cy.contains("Gå videre").click();
 
       cy.contains("Fornavn Etternavnsen").should("be.visible");

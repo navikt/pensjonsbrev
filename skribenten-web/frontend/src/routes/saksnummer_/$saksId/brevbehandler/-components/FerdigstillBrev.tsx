@@ -2,16 +2,16 @@ import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { delvisOppdaterBrev, hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
+import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { BestillBrevResponse, DelvisOppdaterBrevResponse } from "~/types/brev";
+import type { BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
 import { erBrevKlar } from "~/utils/brevUtils";
 
@@ -25,6 +25,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
   brevInfo: BrevInfo[];
   åpneFerdigstillModal: () => void;
 }) => {
+  const antallBrevSomErKlarTilSending = properties.brevInfo.filter(erBrevKlar).length;
   if (properties.valgtBrevId) {
     const valgtBrev = properties.brevInfo.find((brev) => brev.id === properties.valgtBrevId);
 
@@ -35,6 +36,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
 
     return (
       <FerdigstillValgtBrev
+        antallBrevKlarTilSending={antallBrevSomErKlarTilSending}
         brev={valgtBrev}
         sakId={properties.sakId}
         åpneFerdigstillModal={properties.åpneFerdigstillModal}
@@ -47,7 +49,11 @@ export const FerdigstillOgSendBrevButton = (properties: {
     return (
       <Button onClick={properties.åpneFerdigstillModal} size="small" type="button">
         <HStack gap="2">
-          <Label>Send ferdigstilte brev</Label>
+          {antallBrevSomErKlarTilSending === 1 ? (
+            <Label>Send 1 ferdigstilt brev</Label>
+          ) : (
+            <Label>Send {antallBrevSomErKlarTilSending} ferdigstilte brev</Label>
+          )}
           <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
         </HStack>
       </Button>
@@ -58,43 +64,34 @@ export const FerdigstillOgSendBrevButton = (properties: {
   return null;
 };
 
-const FerdigstillValgtBrev = (properties: { sakId: string; brev: BrevInfo; åpneFerdigstillModal: () => void }) => {
-  const queryClient = useQueryClient();
-
-  const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
-    mutationFn: (låst) =>
-      delvisOppdaterBrev({ saksId: properties.sakId, brevId: properties.brev.id, laastForRedigering: låst }),
-    onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
-      );
-      properties.åpneFerdigstillModal();
-    },
-  });
-
+const FerdigstillValgtBrev = (properties: {
+  sakId: string;
+  brev: BrevInfo;
+  åpneFerdigstillModal: () => void;
+  antallBrevKlarTilSending: number;
+}) => {
   const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
 
-  return (
-    <div>
+  if (erLåst) {
+    return (
       <Button
-        loading={låsForRedigeringMutation.isPending}
         onClick={() => {
           if (erLåst) {
             properties.åpneFerdigstillModal();
-          } else {
-            låsForRedigeringMutation.mutate(true);
           }
         }}
         size="small"
         type="button"
       >
         <HStack gap="2">
-          <Label>{erLåst ? "Ferdigstill brev" : "Ferdigstill og send brev"}</Label>
+          <Label>Ferdigstill {properties.antallBrevKlarTilSending} brev</Label>
           <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
         </HStack>
       </Button>
-    </div>
-  );
+    );
+  }
+
+  return null;
 };
 
 const validationSchema = z.object({

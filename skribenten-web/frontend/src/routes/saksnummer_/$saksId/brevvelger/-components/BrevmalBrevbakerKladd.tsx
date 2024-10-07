@@ -101,20 +101,25 @@ const Brevmal = (props: {
             sakId={props.saksId}
           />
 
-          <div>
+          <VStack gap="2">
             <Heading size="small">{props.brev.brevtittel}</Heading>
             {props.letterMetadata ? (
               <LetterTemplateTags letterTemplate={props.letterMetadata} />
             ) : (
               <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
             )}
-          </div>
+          </VStack>
         </VStack>
 
         <Divider />
 
         <VStack gap="8">
-          <EndreMottakerMedOppsummeringOgApiHåndtering brev={props.brev} saksId={props.saksId} withOppsummeringTitle />
+          <EndreMottakerMedOppsummeringOgApiHåndtering
+            brev={props.brev}
+            saksId={props.saksId}
+            withGap
+            withOppsummeringTitle
+          />
           <Oppsummeringspar
             boldedTitle
             size="small"

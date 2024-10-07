@@ -48,6 +48,7 @@ export const LetterEditor = ({
             position: sticky;
             top: 0;
             width: 100%;
+            z-index: 1;
           `}
         >
           <EditorMenu />
