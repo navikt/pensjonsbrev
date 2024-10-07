@@ -85,7 +85,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                                 English to
                                     "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
                                     "month before tax, starting on " + datoFomSisteBeregningsperiode.format() +
-                                    ". Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK" +
+                                    ". Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK " +
                                     it.utbetaltBeloep.format() + " each month before tax.",
                             )
                         }
