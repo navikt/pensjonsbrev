@@ -237,7 +237,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     Nynorsk to
                         "Frå ".expr() + sisteInntektNesteAarFom.format() + " har vi lagt til grunn den oppgitte forventa inntekta di på " +
                         sisteInntektNesteAar.format() +
-                        " kroner. Dette er forventa inntekt fram til stønaden stansar frå <dato>. Beløpet er avrunda ned til næraste tusen. ",
+                        " kroner. Beløpet er avrunda ned til næraste tusen.",
                     English to
                         "From ".expr() + sisteInntektNesteAarFom.format() + ", we have based your stated expected income on NOK " +
                         sisteInntektNesteAar.format() +
