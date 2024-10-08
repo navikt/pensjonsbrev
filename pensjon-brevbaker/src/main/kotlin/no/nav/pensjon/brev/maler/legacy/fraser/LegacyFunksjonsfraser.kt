@@ -3,6 +3,8 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -13,6 +15,7 @@ import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
 import no.nav.pensjon.brev.template.dsl.text
 
 // Fraser som var funksjoner i Exstream
@@ -50,7 +53,26 @@ object LegacyFunksjonsfraser {
 
     }
 
-    data class PE_UT_inntekt_hoyere_lavere (pe: Expression<PE>) :
+    data class PE_UT_inntekt_hoyere_lavere (val pe: Expression<PE>) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+        override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().greaterThan(
+                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+            )) {
+                text(
+                    Bokmal to "høyere",
+                    Nynorsk to "høgare",
+                    English to "higher"
+                )
+            }.orShowIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().lessThanOrEqual(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop())) {
+                text(
+                    Bokmal to "lavere",
+                    Nynorsk to "lågare",
+                    English to "lower"
+                )
+            }
+        }
+
+    }
 
 /*
 IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning > PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop)
