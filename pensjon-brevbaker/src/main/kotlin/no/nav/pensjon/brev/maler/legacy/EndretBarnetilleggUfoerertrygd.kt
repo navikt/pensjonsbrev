@@ -5,9 +5,12 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.pe
 
 import no.nav.pensjon.brev.maler.fraser.generated.*
+import no.nav.pensjon.brev.maler.legacy.fraser.FradragHoyereLavere
+import no.nav.pensjon.brev.maler.legacy.fraser.LegacyFunksjonsfraser
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1121_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1123_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1254_Generated
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -75,7 +78,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
             paragraph {
                 textExpr (
-                    Bokmal to "Barnetillegget ditt er beregnet på nytt fordi det årlige beløpet av uføretrygden er endret som følge av nytt kalenderår. Det betyr at utbetalingen for ".expr() + pe.ut_virkningfomar() + " endres fordi din årlige reduksjon av barnetillegg er beregnet på nytt.",
+                    Bokmal to "Barnetillegget ditt er beregnet på nytt fordi det årlige beløpet av uføretrygden er endret som følge av nytt kalenderår. Det betyr at utbetalingen for ".expr() + pe.ut_virkningfomar().format() + " endres fordi din årlige reduksjon av barnetillegg er beregnet på nytt.",
                 )
             }
             //[TBU4062]
@@ -96,7 +99,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
             paragraph {
                 textExpr (
-                    Bokmal to "Utbetalingen av uføretrygden i løpet av et kalenderår er en del av inntekten som brukes i behovsprøvingen av barnetillegget. Fra 1. januar ".expr() + pe.ut_virkningfomar() + " er den årlige uføretrygden lik månedsbeløpet du får i januar multiplisert med 12 måneder. Dette beløpet er større enn den årlige uføretrygden som inngikk i behovsprøvingen i fjor. Fribeløpet er uendret fra 1. januar " + pe.ut_virkningfomar() + ".",
+                    Bokmal to "Utbetalingen av uføretrygden i løpet av et kalenderår er en del av inntekten som brukes i behovsprøvingen av barnetillegget. Fra 1. januar ".expr() + pe.ut_virkningfomar().format() + " er den årlige uføretrygden lik månedsbeløpet du får i januar multiplisert med 12 måneder. Dette beløpet er større enn den årlige uføretrygden som inngikk i behovsprøvingen i fjor. Fribeløpet er uendret fra 1. januar " + pe.ut_virkningfomar().format() + ".",
                 )
             }
 
@@ -128,9 +131,14 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
                     //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 )) THEN      INCLUDE ENDIF
                     showIf(((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)))){
-                        textExpr (
-                            Bokmal to "Til sammen er inntektene ".expr() + pe.ut_fradrag_høyere_lavere() + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner. Barnetillegget ditt er derfor ",
+                        text (
+                            Bokmal to "Til sammen er inntektene "
                         )
+                        includePhrase(LegacyFunksjonsfraser.PE_UT_fradrag_hoyere_lavere(pe))
+                        textExpr (
+                            Bokmal to " enn fribeløpet ditt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner. Barnetillegget ditt er derfor ",
+                        )
+
                     }
 
                     //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0  AND  PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0 )) THEN      INCLUDE ENDIF
