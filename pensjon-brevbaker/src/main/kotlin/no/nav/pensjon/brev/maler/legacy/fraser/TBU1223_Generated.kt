@@ -11,15 +11,15 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
 
-object TBU1092_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object TBU1223_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-		//[TBU1092NN, TBU1092EN, TBU1092]
+		//[TBU1223, TBU1223NN, TBU1223EN]
 
-		title1 {
+		paragraph {
 			text (
-				Bokmal to "Begrunnelse for vedtaket",
-				Nynorsk to "Grunngiving for vedtaket",
-				English to "Grounds for the decision",
+				Bokmal to "Du må melde fra om endringer",
+				Nynorsk to "Du må melde frå om endringar",
+				English to "You must notify any changes",
 			)
 		}
     }

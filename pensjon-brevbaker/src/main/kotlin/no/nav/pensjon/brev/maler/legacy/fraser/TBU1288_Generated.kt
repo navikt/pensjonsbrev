@@ -11,15 +11,15 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
 
-object TBU1092_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object TBU1288_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-		//[TBU1092NN, TBU1092EN, TBU1092]
+		//[TBU1288NN, TBU1288, TBU1288EN]
 
-		title1 {
+		paragraph {
 			text (
-				Bokmal to "Begrunnelse for vedtaket",
-				Nynorsk to "Grunngiving for vedtaket",
-				English to "Grounds for the decision",
+				Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget «Opplysninger om beregningen».",
+				Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget «Opplysningar om berekninga».",
+				English to "Read more about how child supplements are calculated in the attachment called \"Information about calculations\".",
 			)
 		}
     }

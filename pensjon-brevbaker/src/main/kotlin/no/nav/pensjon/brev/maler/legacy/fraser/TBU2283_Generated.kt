@@ -11,16 +11,25 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
 
-object TBU1092_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-		//[TBU1092NN, TBU1092EN, TBU1092]
 
-		title1 {
+data class TBU2283_Generated(
+    val pe: Expression<PE>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+		//[TBU2283, TBU2283NN, TBU2283_EN]
+
+		paragraph {
 			text (
-				Bokmal to "Begrunnelse for vedtaket",
-				Nynorsk to "Grunngiving for vedtaket",
-				English to "Grounds for the decision",
+				Bokmal to "Med vennlig hilsen",
+				Nynorsk to "Med vennleg helsing",
+				English to "Yours sincerely",
+			)
+			textExpr (
+				Bokmal to pe.kontaktinformasjon_navnavsenderenhet(),
+				Nynorsk to pe.kontaktinformasjon_navnavsenderenhet(),
+				English to pe.kontaktinformasjon_navnavsenderenhet(),
 			)
 		}
     }
 }
+        

@@ -726,3 +726,17 @@ fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppg
     vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljeps_safe.eps_sumfratrekkbt_safe.ifNull(Kroner(0))
 
 fun Expression<PE>.ut_inntekt_trukket_fra_personinntekt(): Expression<Kroner> = functions.pe_ut_inntekt_trukket_fra_personinntekt
+
+// TODO Hanne
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggfelles_safe.btfbfradrag_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.uforetrygdberegning_safe.instopphanvendt_safe.ifNull(false)
+
+// TODO Hanne: funksjon
+fun Expression<PE>.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall(): Expression<String> =
+    sivilstand_safe.ektefelle_safe.partner_safe.samboer_safe.bormed_safe.ut_safe.alle_safe.spraak_safe.entall_safe.ifNull("")
+
+fun Expression<PE>.kontaktinformasjon_navnavsenderenhet(): Expression<String> =
+    kontaktinformasjon_safe.navnavsenderenhet_safe.ifNull("")
