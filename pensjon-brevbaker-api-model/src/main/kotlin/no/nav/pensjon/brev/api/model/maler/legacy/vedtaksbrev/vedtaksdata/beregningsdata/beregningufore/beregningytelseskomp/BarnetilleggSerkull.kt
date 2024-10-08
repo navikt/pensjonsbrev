@@ -9,6 +9,7 @@ data class BarnetilleggSerkull(
     val btsbnetto: Kroner?,
     val btsbinntektbruktiavkortning: Kroner?,
     val btsbfribelop: Kroner?,
+    val btsbfradrag: Kroner?,
     val btsbbruttoperar: Kroner?,
     val btsbnettoperar: Kroner?,
     val antallbarnserkull: Int?,

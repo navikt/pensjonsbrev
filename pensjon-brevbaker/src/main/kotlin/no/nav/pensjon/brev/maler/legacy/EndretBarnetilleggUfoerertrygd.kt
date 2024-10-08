@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.pe
 
 import no.nav.pensjon.brev.maler.fraser.generated.*
-import no.nav.pensjon.brev.maler.legacy.fraser.FradragHoyereLavere
 import no.nav.pensjon.brev.maler.legacy.fraser.LegacyFunksjonsfraser
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1121_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1123_Generated
@@ -205,8 +204,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
                     //IF(PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
                     showIf((pe.ut_tbu1286_del1() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0))){
-                        textExpr (
-                            Bokmal to "Inntekten din er ".expr() + pe.ut_inntekt_høyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene. ",
+                        text (
+                            Bokmal to "Inntekten din er "
+                        )
+                        includePhrase(LegacyFunksjonsfraser.PE_UT_inntekt_hoyere_lavere(pe))
+                        textExpr(
+                            Bokmal to " enn ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene. ",
                         )
                     }
 
