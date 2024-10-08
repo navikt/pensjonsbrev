@@ -42,20 +42,25 @@ describe("Brevvelger spec", () => {
     cy.intercept("GET", "/bff/skribenten-backend/me/favourites", []).as("ingen favoritter");
     cy.visit("/saksnummer/123456/brevvelger");
     cy.get(".navds-accordion__item").contains("Favoritter").should("not.exist");
-    cy.getDataCy("brevmal-search").click().type("brev fra nav");
-    cy.getDataCy("brevmal-button").click();
+
+    cy.contains("Informasjonsbrev").click();
+    cy.get("p:contains('Informasjon om gjenlevenderettigheter')").should("have.length", 1);
+    cy.contains("Informasjon om gjenlevenderettigheter").click();
 
     cy.intercept("POST", "/bff/skribenten-backend/me/favourites", (request) => {
-      expect(request.body).to.eq("PE_IY_05_300");
+      expect(request.body).to.eq("DOD_INFO_RETT_MAN");
       request.reply({});
     }).as("Legg til favoritt");
-    cy.intercept("GET", "/bff/skribenten-backend/me/favourites", ["PE_IY_05_300"]).as("1 favoritt");
+    cy.intercept("GET", "/bff/skribenten-backend/me/favourites", ["DOD_INFO_RETT_MAN"]).as("1 favoritt");
 
     cy.getDataCy("add-favorite-button").click();
     cy.get(".navds-accordion__item").contains("Favoritter").should("exist").and("have.length", 1);
+    //skal finnes 2 elementer i DOM'en
+    cy.get("p:contains('Informasjon om gjenlevenderettigheter')").should("have.length", 2);
+    cy.get("p:contains('Informasjon om gjenlevenderettigheter')").filter(":visible").should("have.length", 1);
 
     cy.intercept("DELETE", "/bff/skribenten-backend/me/favourites", (request) => {
-      expect(request.body).to.eq("PE_IY_05_300");
+      expect(request.body).to.eq("DOD_INFO_RETT_MAN");
       request.reply({});
     }).as("Fjern favoritt");
     cy.intercept("GET", "/bff/skribenten-backend/me/favourites", []).as("ingen favoritter");
