@@ -7,6 +7,7 @@ data class BarnetilleggSerkull(
     val avkortningsinformasjon: AvkortningsInformasjonBT?,
     val btsbinnvilget: Boolean?,
     val btsbnetto: Kroner?,
+    val btsbbrutto: Kroner?,
     val btsbinntektbruktiavkortning: Kroner?,
     val btsbfribelop: Kroner?,
     val btsbfradrag: Kroner?,
