@@ -114,7 +114,7 @@ const BrevmalBrevbaker = (props: {
             </VStack>
             <SelectEnhet />
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
-            <SaksbehandlerValgModelEditor brevkode={props.letterTemplate.id} fieldsToRender={"required"} />
+            <SaksbehandlerValgModelEditor brevkode={props.letterTemplate.id} fieldsToRender="required" />
           </VStack>
         </BrevmalFormWrapper>
       </FormProvider>

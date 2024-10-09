@@ -1,11 +1,13 @@
 import { BodyShort, VStack } from "@navikt/ds-react";
 import { partition } from "lodash";
+import { useFormContext } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
 import { ApiError } from "~/components/ApiError";
 import type { FieldType, LetterModelSpecification } from "~/types/brevbakerTypes";
 
 import { FieldEditor } from "./components/ObjectEditor";
+import { isFieldNullableOrBoolean } from "./components/utils";
 
 const useModelSpecificationForm = (brevkode: string) => {
   const brevKodeSpecification = useModelSpecification(brevkode, (s) => s);
@@ -27,7 +29,7 @@ const usePartitionedModelSpecification = (brevkode: string) => {
   const { status, specification, error } = useModelSpecificationForm(brevkode);
 
   const [optionalFields, requiredfields] = specification
-    ? partition(Object.entries(specification), (spec) => spec[1].nullable)
+    ? partition(Object.entries(specification), (spec) => isFieldNullableOrBoolean(spec[1]))
     : [[], []];
 
   return {
@@ -38,35 +40,43 @@ const usePartitionedModelSpecification = (brevkode: string) => {
   };
 };
 
-const createFormElementsFromSpecification = (
+const createFormElementsFromSpecification = (args: {
   specificationFormElements: {
     requiredfields: [string, FieldType][];
     optionalFields: [string, FieldType][];
-  },
-  brevkode: string,
-  submitOnChange?: () => void,
-) => {
-  const requiredFields = specificationFormElements.requiredfields.map(([field, fieldType]) => (
-    <FieldEditor
-      brevkode={brevkode}
-      field={field}
-      fieldType={fieldType}
-      key={field}
-      prependedName="saksbehandlerValg"
-      submitOnChange={submitOnChange}
-    />
-  ));
+  };
+  brevkode: string;
+  submitOnChange?: () => void;
+}) => {
+  const requiredFields = args.specificationFormElements.requiredfields.map(([field, fieldType]) => ({
+    field: field,
+    fieldType: fieldType,
+    element: (
+      <FieldEditor
+        brevkode={args.brevkode}
+        field={field}
+        fieldType={fieldType}
+        key={field}
+        prependedName="saksbehandlerValg"
+        submitOnChange={args.submitOnChange}
+      />
+    ),
+  }));
 
-  const optionalFields = specificationFormElements.optionalFields.map(([field, fieldType]) => (
-    <FieldEditor
-      brevkode={brevkode}
-      field={field}
-      fieldType={fieldType}
-      key={field}
-      prependedName="saksbehandlerValg"
-      submitOnChange={submitOnChange}
-    />
-  ));
+  const optionalFields = args.specificationFormElements.optionalFields.map(([field, fieldType]) => ({
+    field: field,
+    fieldType: fieldType,
+    element: (
+      <FieldEditor
+        brevkode={args.brevkode}
+        field={field}
+        fieldType={fieldType}
+        key={field}
+        prependedName="saksbehandlerValg"
+        submitOnChange={args.submitOnChange}
+      />
+    ),
+  }));
 
   return {
     requiredFields,
@@ -79,12 +89,13 @@ export const SaksbehandlerValgModelEditor = (props: {
   fieldsToRender: "required" | "optional";
   submitOnChange?: () => void;
 }) => {
+  const { register } = useFormContext();
   const specificationFormElements = usePartitionedModelSpecification(props.brevkode);
-  const { requiredFields, optionalFields } = createFormElementsFromSpecification(
+  const { requiredFields, optionalFields } = createFormElementsFromSpecification({
     specificationFormElements,
-    props.brevkode,
-    props.submitOnChange,
-  );
+    brevkode: props.brevkode,
+    submitOnChange: props.submitOnChange,
+  });
 
   switch (specificationFormElements.status) {
     case "error": {
@@ -93,10 +104,30 @@ export const SaksbehandlerValgModelEditor = (props: {
     case "success": {
       switch (props.fieldsToRender) {
         case "required": {
-          return <VStack gap="6">{...requiredFields}</VStack>;
+          /**
+           * Boolean felter er spesielle
+           * Det at et felt er non-nullable, betyr at den er påkrevd ved innsending av skjemaet
+           * Derimot, så er boolean felter stort sett kun brukt for brev-tekst, og er ikke et påkrevd felt som saksbehandler skal
+           * forholde seg til ved opprettelse av brev.
+           *
+           * Tidligere har vi mekket opp et objekt ved innsending som inneholdt boolean feltene ved opprettelse av brev, som ikke
+           * har vært registrert i formet.
+           *
+           * Dette er litt fordi at feltene blir først registrert når dem blit rendret, og boolean felter skal ikke bli rendret under opprettelse av brev.
+           *
+           * Derfor, så registrerer vi boolean felter her.
+           *
+           * Merk at dette er på mange måter bare en ny hack
+           */
+          for (const field of optionalFields) {
+            if (field.fieldType.type === "scalar" && field.fieldType.kind === "BOOLEAN") {
+              register(`saksbehandlerValg.${field.field}`, { value: false });
+            }
+          }
+          return <VStack gap="6">{requiredFields.map((field) => field.element)}</VStack>;
         }
         case "optional": {
-          return <VStack gap="6">{...optionalFields}</VStack>;
+          return <VStack gap="6">{optionalFields.map((field) => field.element)}</VStack>;
         }
       }
 

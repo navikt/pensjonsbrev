@@ -63,22 +63,15 @@ export type ObjectEditorProperties = {
   typeName: string;
   parentFieldName?: string;
   submitOnChange?: () => void;
-  showOnlyRequiredFields?: boolean;
 };
 
-export const ObjectEditor = ({
-  brevkode,
-  typeName,
-  parentFieldName,
-  submitOnChange,
-  showOnlyRequiredFields,
-}: ObjectEditorProperties) => {
+export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
   const { specification: objectTypeSpecification } = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
   return (
     <>
       {Object.entries(objectTypeSpecification ?? {})
-        .filter(([, fieldType]) => (showOnlyRequiredFields ? !isFieldNullableOrBoolean(fieldType) : true))
+        .filter(([, fieldType]) => !isFieldNullableOrBoolean(fieldType))
         .map(([field, fieldType]) => {
           const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
           return (
@@ -100,7 +93,6 @@ function ToggleableObjectEditor({
   parentFieldName,
   typeName,
   submitOnChange,
-  showOnlyRequiredFields,
 }: ObjectEditorProperties & { parentFieldName: string }) {
   const {
     formState: { defaultValues },
@@ -138,7 +130,6 @@ function ToggleableObjectEditor({
           <ObjectEditor
             brevkode={brevkode}
             parentFieldName={parentFieldName}
-            showOnlyRequiredFields={showOnlyRequiredFields}
             submitOnChange={submitOnChange}
             typeName={typeName}
           />
