@@ -39,6 +39,7 @@ object Constants {
         const val KLAGE_URL = "${Constants.KLAGE_URL}/en"
         const val BARNEPENSJON_URL = "${Constants.BARNEPENSJON_URL}/en"
         const val SKRIVTILOSS_URL = "${Constants.SKRIVTILOSS_URL}/en"
+        const val BESKJED_TIL_NAV_URL = "${Constants.BESKJED_TIL_NAV_URL}/en"
         const val KONTONUMMER_URL = "${Constants.KONTONUMMER_URL}/en"
         const val FULLMAKT_URL = "${Constants.FULLMAKT_URL}/en"
         const val KONTAKT_URL = "${Constants.KONTAKT_URL}/en"
