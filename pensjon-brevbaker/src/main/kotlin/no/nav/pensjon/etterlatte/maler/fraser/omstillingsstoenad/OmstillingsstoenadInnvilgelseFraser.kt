@@ -417,7 +417,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                         ifElse(tidligereFamiliepleier, "care period ended", "death") +
                         ". After six months have passed, one condition for continuing " +
                         "to receive adjustment allowance is that you are at least 50 percent active. This is " +
-                        "called the Activity Obligation.  Read more about the activity obligation and what this " +
+                        "called the activity obligation.  Read more about the activity obligation and what this " +
                         "involves in the attachment Information to recipients of adjustment allowance.",
                 )
             }

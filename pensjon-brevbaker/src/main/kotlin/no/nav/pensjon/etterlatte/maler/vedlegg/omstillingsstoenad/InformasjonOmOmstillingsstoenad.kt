@@ -64,7 +64,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.aktivitet(
                     ifElse(tidligereFamiliepleier, "care period ended", "death") +
                     ", receiving adjustment allowance is contingent upon working at least 50 percent or involved in " +
                     "another activity with the aim of finding employment. After one year, you will be expected to be " +
-                    "active 100 percent. This is called the Activity Obligation.",
+                    "active 100 percent. This is called the activity obligation.",
         )
     }
     paragraph {
