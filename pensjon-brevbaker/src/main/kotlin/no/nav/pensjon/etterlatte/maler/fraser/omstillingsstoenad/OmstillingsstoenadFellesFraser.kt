@@ -125,7 +125,7 @@ object OmstillingsstoenadFellesFraser {
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
-                    English to "Any questions?"
+                    English to "Do you have any questions?"
                 )
             }
             paragraph {

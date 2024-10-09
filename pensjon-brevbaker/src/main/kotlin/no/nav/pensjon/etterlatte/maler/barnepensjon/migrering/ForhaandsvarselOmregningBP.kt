@@ -159,7 +159,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
                 text(
                     Language.Bokmal to "Har du spørsmål?",
                     Language.Nynorsk to "Har du spørsmål?",
-                    Language.English to "Any questions?"
+                    Language.English to "Do you have any questions?"
                 )
             }
             paragraph {
