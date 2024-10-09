@@ -1,16 +1,15 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
-import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { Accordion, Alert, BodyShort, Button, Heading, HStack, Label, Search, VStack } from "@navikt/ds-react";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useMutationState, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
+import { getFavoritter } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -21,6 +20,7 @@ import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 
 import BrevmalPanel from "./-components/BrevmalPanel";
+import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   validateSearch: (
@@ -45,7 +45,6 @@ export interface SubmitTemplateOptions {
 }
 
 export function BrevvelgerPage() {
-  const { brevId, templateId, enhetsId } = Route.useSearch();
   const { saksId, letterTemplates } = Route.useLoaderData();
   const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
@@ -63,33 +62,12 @@ export function BrevvelgerPage() {
         background-color: white;
       `}
     >
-      <div
-        css={css`
-          display: flex;
-          background-color: white;
-          height: var(--main-page-content-height);
-        `}
-      >
-        <div
-          css={css`
-            width: 720px;
-            border-left: 1px solid var(--a-gray-200);
-            border-right: 1px solid var(--a-gray-200);
-            padding: var(--a-spacing-6);
-            overflow-y: scroll;
-          `}
-        >
-          <Brevmaler alleSaksbrev={alleSaksbrevQuery} letterTemplates={letterTemplates} />
-        </div>
-        <BrevmalPanel
-          brevId={brevId}
-          enhetsId={enhetsId ?? ""}
-          letterTemplates={letterTemplates}
-          saksId={saksId}
-          setOnFormSubmitClick={setOnSubmitClick}
-          templateId={templateId}
-        />
-      </div>
+      <BrevvelgerMainContent
+        alleSaksbrevQuery={alleSaksbrevQuery}
+        letterTemplates={letterTemplates}
+        saksId={saksId}
+        setOnSubmitClick={setOnSubmitClick}
+      />
       <BrevvelgerFooter
         antallBrevKlarTilSending={alleSaksbrevQuery.data?.filter(erBrevKlar)?.length ?? 0}
         onSubmitClick={onSubmitClick}
@@ -99,67 +77,80 @@ export function BrevvelgerPage() {
   );
 }
 
-const BrevvelgerFooter = (props: {
+const BrevvelgerMainContent = (props: {
   saksId: number;
-  antallBrevKlarTilSending: number;
-  onSubmitClick: Nullable<SubmitTemplateOptions>;
+  letterTemplates: LetterMetadata[];
+  alleSaksbrevQuery: UseQueryResult<BrevInfo[], Error>;
+  setOnSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
-  const navigate = useNavigate({ from: Route.fullPath });
-  const harBrevKlarTilSending = props.antallBrevKlarTilSending > 0;
-  const mutationState = useMutationState({ filters: { mutationKey: orderLetterKeys.all } });
+  const { brevId, templateId, enhetsId } = Route.useSearch();
+  const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({});
+
+  const closeAccordionWhereTemplateWasAdded = (templateId: string) => {
+    const kategori = props.letterTemplates.find((template) => template.id === templateId)?.brevkategori ?? "Annet";
+
+    setOpenAccordions((prev) => ({
+      ...prev,
+      [kategori]: !prev[kategori],
+    }));
+  };
 
   return (
-    <HStack
+    <div
       css={css`
-        padding: 8px 12px;
-        border-top: 1px solid var(--a-gray-200);
+        display: flex;
+        background-color: white;
+        height: var(--main-page-content-height);
       `}
-      justify={"end"}
     >
-      <Button
-        onClick={() => {
-          navigate({
-            to: "/saksnummer/$saksId/brevbehandler",
-            params: { saksId: props.saksId.toString() },
-          });
-        }}
-        size="small"
-        type="button"
-        variant="tertiary"
+      <VStack
+        css={css`
+          width: 720px;
+          border-left: 1px solid var(--a-gray-200);
+          border-right: 1px solid var(--a-gray-200);
+          padding: var(--a-spacing-6);
+          overflow-y: scroll;
+        `}
+        gap="6"
       >
-        {harBrevKlarTilSending
-          ? `Du har ${props.antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
-          : "Gå til brevbehandler"}
-      </Button>
-      {props.onSubmitClick && (
-        <Button
-          css={css`
-            width: fit-content;
-          `}
-          data-cy="order-letter"
-          icon={<ArrowRightIcon />}
-          iconPosition="right"
-          loading={mutationState.at(-1)?.status === "pending"}
-          onClick={props.onSubmitClick.onClick}
-          size="small"
-          variant="primary"
-        >
-          Åpne brev
-        </Button>
-      )}
-    </HStack>
+        <Heading level="1" size="small">
+          Brevmeny
+        </Heading>
+        <Brevmaler
+          alleSaksbrev={props.alleSaksbrevQuery}
+          handleOpenAccordionChange={(categoryKey) =>
+            setOpenAccordions((prev) => ({ ...prev, [categoryKey]: !prev[categoryKey] }))
+          }
+          letterTemplates={props.letterTemplates}
+          openAccordions={openAccordions}
+        />
+      </VStack>
+      <BrevmalPanel
+        brevId={brevId}
+        enhetsId={enhetsId ?? ""}
+        letterTemplates={props.letterTemplates}
+        onAddFavorittSuccess={(templateId) => closeAccordionWhereTemplateWasAdded(templateId)}
+        saksId={props.saksId}
+        setOnFormSubmitClick={props.setOnSubmitClick}
+        templateId={templateId}
+      />
+    </div>
   );
 };
 
 function Brevmaler({
   letterTemplates,
   alleSaksbrev,
+  openAccordions,
+  handleOpenAccordionChange,
 }: {
   letterTemplates: LetterMetadata[];
   alleSaksbrev: UseQueryResult<BrevInfo[], Error>;
+  openAccordions: Record<string, boolean>;
+  handleOpenAccordionChange: (categoryKey: string) => void;
 }) {
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
-  const { templateId, brevId } = Route.useSearch();
+  const { templateId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
   const favoritter = useQuery(getFavoritter).data ?? [];
 
@@ -190,9 +181,6 @@ function Brevmaler({
 
   return (
     <VStack gap="6">
-      <Heading level="1" size="small">
-        Brevmeny
-      </Heading>
       <Search
         data-cy="brevmal-search"
         hideLabel={false}
@@ -214,57 +202,7 @@ function Brevmaler({
         indent={false}
         size="small"
       >
-        {alleSaksbrev.isSuccess && alleSaksbrev.data.some(erBrevKladdEllerUnderRedigering) && (
-          <Accordion.Item defaultOpen>
-            <Accordion.Header
-              css={css`
-                flex-direction: row-reverse;
-                justify-content: space-between;
-              `}
-            >
-              <HStack gap="2">
-                <Label size="small">Kladder</Label>
-              </HStack>
-            </Accordion.Header>
-            <Accordion.Content>
-              <div
-                css={css`
-                  display: flex;
-                  flex-direction: column;
-                `}
-              >
-                {alleSaksbrev.data.filter(erBrevKladdEllerUnderRedigering).map((brev) => (
-                  <BrevmalButton
-                    description={`Opprettet ${formatStringDate(brev.opprettet)}`}
-                    extraStyles={
-                      brev.id.toString() === brevId
-                        ? css`
-                            color: var(--a-text-on-action);
-                            background-color: var(--a-surface-action-selected-hover);
-                          `
-                        : undefined
-                    }
-                    key={brev.id}
-                    onClick={() => {
-                      navigate({
-                        to: "/saksnummer/$saksId/brevvelger",
-                        search: (s) => ({ ...s, brevId: brev.id.toString(), templateId: undefined }),
-                      });
-                    }}
-                    title={
-                      <HStack align={"center"} gap="2">
-                        <BrevSystemIcon
-                          brevsystem={letterTemplates.find((template) => template.id === brev.brevkode)?.brevsystem}
-                        />
-                        <BodyShort size="small">{brev.brevtittel}</BodyShort>
-                      </HStack>
-                    }
-                  />
-                ))}
-              </div>
-            </Accordion.Content>
-          </Accordion.Item>
-        )}
+        {alleSaksbrev.isSuccess && <Kladder alleBrevPåSaken={alleSaksbrev.data} letterTemplates={letterTemplates} />}
 
         {Object.keys(brevmalerGroupedByType).length === 0 && (
           <Alert data-cy="ingen-treff-alert" size="small" variant="info">
@@ -278,7 +216,8 @@ function Brevmaler({
               data-cy="category-item"
               defaultOpen={type === "Favoritter"}
               key={type}
-              open={searchTerm.length > 0 ? true : undefined}
+              onOpenChange={() => handleOpenAccordionChange(type)}
+              open={searchTerm.length > 0 ? true : openAccordions[type]}
             >
               <Accordion.Header
                 css={css`
@@ -329,6 +268,68 @@ function Brevmaler({
     </VStack>
   );
 }
+
+const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterMetadata[] }) => {
+  const { brevId } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const kladder = props.alleBrevPåSaken.filter(erBrevKladdEllerUnderRedigering);
+
+  if (kladder.length > 0) {
+    return (
+      <Accordion.Item defaultOpen>
+        <Accordion.Header
+          css={css`
+            flex-direction: row-reverse;
+            justify-content: space-between;
+          `}
+        >
+          <HStack gap="2">
+            <Label size="small">Kladder</Label>
+          </HStack>
+        </Accordion.Header>
+        <Accordion.Content>
+          <div
+            css={css`
+              display: flex;
+              flex-direction: column;
+            `}
+          >
+            {kladder.map((brev) => (
+              <BrevmalButton
+                description={`Opprettet ${formatStringDate(brev.opprettet)}`}
+                extraStyles={
+                  brev.id.toString() === brevId
+                    ? css`
+                        color: var(--a-text-on-action);
+                        background-color: var(--a-surface-action-selected-hover);
+                      `
+                    : undefined
+                }
+                key={brev.id}
+                onClick={() => {
+                  navigate({
+                    to: "/saksnummer/$saksId/brevvelger",
+                    search: (s) => ({ ...s, brevId: brev.id.toString(), templateId: undefined }),
+                  });
+                }}
+                title={
+                  <HStack align={"center"} gap="2">
+                    <BrevSystemIcon
+                      brevsystem={props.letterTemplates.find((template) => template.id === brev.brevkode)?.brevsystem}
+                    />
+                    <BodyShort size="small">{brev.brevtittel}</BodyShort>
+                  </HStack>
+                }
+              />
+            ))}
+          </div>
+        </Accordion.Content>
+      </Accordion.Item>
+    );
+  }
+
+  return null;
+};
 
 const BrevSystemIcon = (props: { brevsystem?: BrevSystem }) => {
   switch (props.brevsystem) {

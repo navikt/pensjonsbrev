@@ -49,7 +49,7 @@ fun beregningAvOmstillingsstoenad(
             newText(
                 Bokmal to "Beregning av omstillingsstønad",
                 Nynorsk to "Utrekning av omstillingsstønad",
-                English to "Calculation of Adjustment Allowance",
+                English to "Calculation of adjustment allowance",
             ),
         includeSakspart = false,
     ) {
@@ -237,7 +237,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     Nynorsk to
                         "Frå ".expr() + sisteInntektNesteAarFom.format() + " har vi lagt til grunn den oppgitte forventa inntekta di på " +
                         sisteInntektNesteAar.format() +
-                        " kroner. Dette er forventa inntekt fram til stønaden stansar frå <dato>. Beløpet er avrunda ned til næraste tusen. ",
+                        " kroner. Beløpet er avrunda ned til næraste tusen.",
                     English to
                         "From ".expr() + sisteInntektNesteAarFom.format() + ", we have based your stated expected income on NOK " +
                         sisteInntektNesteAar.format() +
@@ -312,7 +312,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             text(
                 Bokmal to "Sanksjon - stans i utbetalingen av omstillingsstønaden",
                 Nynorsk to "Sanksjon – stans i utbetaling av omstillingsstønad",
-                English to "Sanction – stoppage of payment of Adjustment Allowance",
+                English to "Sanction – stoppage of payment of adjustment allowance",
             )
         }
 
@@ -322,7 +322,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     "“Utbetaling per måned” er derfor satt til 0 fra gjeldende tidspunkt, slik det fremgår i tabellen over.",
                 Nynorsk to "Då du ikkje har oppfylt kravet om aktivitetsplikt, har omstillingsstønaden din blitt stansa. " +
                     "«Utbetaling per månad» er difor sett til 0 frå gjeldande tidspunkt, slik det går fram av tabellen over.",
-                English to "Your Adjustment Allowance has been stopped because you have not met the mandatory activity requirements. " +
+                English to "Your adjustment allowance has been stopped because you have not met the mandatory activity requirements. " +
                     "«Payment per month is therefore set at «0» from the relevant date, as evident in the table above.",
             )
         }

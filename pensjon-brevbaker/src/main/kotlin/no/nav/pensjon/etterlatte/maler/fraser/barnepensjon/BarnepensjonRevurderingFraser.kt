@@ -200,14 +200,18 @@ object BarnepensjonRevurderingFraser {
             paragraph {
                 text(
                     Language.Bokmal to "Siden pensjonen din er opphørt tilbake i tid, har du fått for mye " +
-                            "utbetalt. Vi oppretter en sak om mulig tilbakekreving av det du har fått for mye " +
-                            "utbetalt. Dette får du mer informasjon om i et eget brev fra oss.",
+                            "utbetalt. Det feilutbetalte beløpet vil bli trukket i etterbetaling av annen ytelse " +
+                            "du mottar fra NAV. Hvis feilutbetalingen er større enn etterbetalingen, vil du få et " +
+                            "eget brev om mulig tilbakekreving av for mye utbetalt barnepensjon. ",
                     Language.Nynorsk to "Ettersom pensjonen din blei avvikla tilbake i tid, har du fått for " +
-                            "mykje utbetalt. Vi opprettar ei sak om mogleg tilbakekrevjing av det du har fått for " +
-                            "mykje utbetalt. Dette får du meir informasjon om i eit eige brev frå oss.",
+                            "mykje utbetalt. Det du har fått for mykje utbetalt vil trekkast i etterbetalinga av ei " +
+                            "anna yting du får frå NAV. Er beløpet du har fått for mykje meir enn etterbetalinga, " +
+                            "får du eiget brev om mogleg tilbakekrevjing av for mykje utbetalt barnepensjon. ",
                     Language.English to "You have been overpaid because your pension has been terminated " +
-                            "retroactively. We will start a case to assess whether you must repay pension. You " +
-                            "will receive more information about this in a separate letter from us.",
+                            "retroactively. The incorrect paid amount will be deducted from the back payment of " +
+                            "another benefit you receive from NAV. If the incorrect payment is greater than the " +
+                            "back payment, you will receive a separate letter about the possible repayment of " +
+                            "overpaid child pension. ",
                 )
             }
         }
@@ -268,15 +272,18 @@ object BarnepensjonRevurderingFraser {
             paragraph {
                 text(
                     Language.Bokmal to "Siden pensjonen din er redusert tilbake i tid, har du fått for mye " +
-                            "utbetalt. Vi oppretter en sak om mulig tilbakekreving av det du har fått for mye " +
-                            "utbetalt. Dette får du mer informasjon om i et eget brev fra oss.",
+                            "utbetalt. Det feilutbetalte beløpet vil bli trukket i etterbetaling av annen ytelse " +
+                            "du mottar fra NAV. Hvis feilutbetalingen er større enn etterbetalingen, vil du få et " +
+                            "eget brev om mulig tilbakekreving av for mye utbetalt barnepensjon. ",
                     Language.Nynorsk to "Fordi pensjonen din er redusert tilbake i tid, har du fått utbetalt " +
-                            "for mykje. Vi opprettar ei sak om mogleg tilbakekrevjing av det du har fått for mykje " +
-                            "utbetalt. Dette får du meir informasjon om i eit eige brev frå oss.",
+                            "for mykje. Det du har fått for mykje utbetalt vil trekkast i etterbetalinga av ei anna " +
+                            "yting du får frå NAV. Er beløpet du har fått for mykje meir enn etterbetalinga, får du " +
+                            "eiget brev om mogleg tilbakekrevjing av for mykje utbetalt barnepensjon. ",
                     Language.English to "Because your pension has been reduced retroactively, you received " +
-                            "more than you were owed. We will start a case to assess whether you must repay " +
-                            "children’s pension. You will receive more information about this in a separate " +
-                            "letter from us. ",
+                            "more than you were owed. The incorrect paid amount will be deducted from the back " +
+                            "payment of another benefit you receive from NAV. If the incorrect payment is greater " +
+                            "than the back payment, you will receive a separate letter about the possible repayment " +
+                            "of overpaid child pension.",
                 )
             }
         }

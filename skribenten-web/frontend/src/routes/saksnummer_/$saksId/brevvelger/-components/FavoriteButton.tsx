@@ -5,7 +5,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { addFavoritt, deleteFavoritt, getFavoritter } from "~/api/skribenten-api-endpoints";
 
-export default function FavoriteButton(props: { templateId: string }) {
+export default function FavoriteButton(props: {
+  templateId: string;
+  onAddFavorittSuccess?: (templateId: string) => void;
+}) {
   const queryClient = useQueryClient();
   const isFavoritt = useQuery({
     ...getFavoritter,
@@ -15,6 +18,7 @@ export default function FavoriteButton(props: { templateId: string }) {
   const toggleFavoritesMutation = useMutation<unknown, unknown, string>({
     mutationFn: (id) => (isFavoritt ? deleteFavoritt(id) : addFavoritt(id)),
     onSettled: () => queryClient.invalidateQueries({ queryKey: getFavoritter.queryKey }),
+    onSuccess: isFavoritt ? undefined : () => props.onAddFavorittSuccess?.(props.templateId),
   });
 
   if (isFavoritt) {

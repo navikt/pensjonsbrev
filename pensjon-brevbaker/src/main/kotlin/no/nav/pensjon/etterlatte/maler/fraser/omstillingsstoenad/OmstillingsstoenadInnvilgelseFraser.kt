@@ -85,7 +85,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                                 English to
                                     "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
                                     "month before tax, starting on " + datoFomSisteBeregningsperiode.format() +
-                                    ". Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK" +
+                                    ". Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK " +
                                     it.utbetaltBeloep.format() + " each month before tax.",
                             )
                         }
@@ -231,7 +231,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                         item {
                             text(
                                 Bokmal to "avdøde i de siste fem årene før dødsfallet var medlem i folketrygden, " +
-                                    "eller fikk pensjon eller uføretrygd fra folketrygden.",
+                                    "eller fikk pensjon eller uføretrygd fra folketrygden",
                                 Nynorsk to "avdøde i dei siste fem åra fram til sin død var medlem i folketrygda, " +
                                     "eller fekk pensjon eller uføretrygd frå folketrygda",
                                 English to "in the last five years before his or her death, the deceased was a " +
@@ -417,8 +417,8 @@ object OmstillingsstoenadInnvilgelseFraser {
                         ifElse(tidligereFamiliepleier, "care period ended", "death") +
                         ". After six months have passed, one condition for continuing " +
                         "to receive adjustment allowance is that you are at least 50 percent active. This is " +
-                        "called the Activity Obligation.  Read more about the activity obligation and what this " +
-                        "involves in the attachment Information to Recipients of Adjustment Allowance.",
+                        "called the activity obligation.  Read more about the activity obligation and what this " +
+                        "involves in the attachment Information to recipients of adjustment allowance.",
                 )
             }
 
