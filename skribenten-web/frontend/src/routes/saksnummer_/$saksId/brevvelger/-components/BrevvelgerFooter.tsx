@@ -4,7 +4,6 @@ import { Button, HStack } from "@navikt/ds-react";
 import { useMutationState } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
-import { orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import type { Nullable } from "~/types/Nullable";
 
 import type { SubmitTemplateOptions } from "../route";
@@ -17,7 +16,8 @@ const BrevvelgerFooter = (props: {
 }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const harBrevKlarTilSending = props.antallBrevKlarTilSending > 0;
-  const mutationState = useMutationState({ filters: { mutationKey: orderLetterKeys.all } });
+  //henter mutations som er pending for å vise loading på knapp - vi har kun en mutation som kan være pending
+  const mutationState = useMutationState({ filters: { status: "pending" } });
 
   return (
     <HStack

@@ -92,9 +92,11 @@ export const getBrevReservasjon = {
 };
 
 export function useModelSpecification<T>(brevkode: string, select: (data: LetterModelSpecification) => T) {
-  return useQuery({
+  const { status, data, error } = useQuery({
     queryKey: getModelSpecification.queryKey(brevkode),
     queryFn: () => getModelSpecification.queryFn(brevkode),
     select,
-  }).data;
+  });
+
+  return { status, specification: data, error };
 }

@@ -1,10 +1,11 @@
 import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyLong, Button, HStack, Label, Modal } from "@navikt/ds-react";
+import { BodyLong, Button, Heading, HStack, Label, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
+import { type Dispatch, type SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
@@ -16,12 +17,14 @@ import {
   tilbakestillBrev,
 } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { getSakContext } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
+import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
+import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
@@ -136,6 +139,11 @@ const TilbakestillMalModal = (props: {
   );
 };
 
+interface RedigerBrevSidemenyFormData {
+  signatur: string;
+  saksbehandlerValg: SaksbehandlerValg;
+}
+
 function RedigerBrev({
   brev,
   doReload,
@@ -149,6 +157,11 @@ function RedigerBrev({
 }) {
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
+  const brevmal = useQuery({
+    queryKey: getSakContext.queryKey(saksId, vedtaksId),
+    queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
+    select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brev.info.brevkode),
+  });
 
   const navigate = useNavigate({ from: Route.fullPath });
   const showDebug = useSearch({
@@ -167,10 +180,10 @@ function RedigerBrev({
     },
   );
 
-  const onSubmit = (saksbehandlerValg: SaksbehandlerValg, signatur: string) => {
-    saksbehandlerValgMutation.mutate(saksbehandlerValg, {
+  const onSubmit = (values: RedigerBrevSidemenyFormData) => {
+    saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
       onSuccess: () => {
-        signaturMutation.mutate(signatur);
+        signaturMutation.mutate(values.signatur);
       },
     });
   };
@@ -202,128 +215,148 @@ function RedigerBrev({
 
   const defaultValuesModelEditor = useMemo(
     () => ({
-      ...brev.saksbehandlerValg,
+      saksbehandlerValg: {
+        ...brev.saksbehandlerValg,
+      },
       signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
     }),
     [brev.redigertBrev.signatur.saksbehandlerNavn, brev.saksbehandlerValg],
   );
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const form = useForm<RedigerBrevSidemenyFormData>({
+    defaultValues: defaultValuesModelEditor,
+  });
+
+  useEffect(() => {
+    form.reset(defaultValuesModelEditor);
+  }, [defaultValuesModelEditor, form]);
+
+  const requestSubmit = useCallback(() => {
+    formRef.current?.requestSubmit();
+  }, [formRef]);
 
   return (
-    <div>
-      <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
-      {vilTilbakestilleMal && (
-        <TilbakestillMalModal
-          brevId={brev.info.id}
-          onClose={() => setVilTilbakestilleMal(false)}
-          resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
-          åpen={vilTilbakestilleMal}
-        />
-      )}
-      <div
-        css={css`
-          background: var(--a-white);
-          display: flex;
-          flex-direction: column;
-          border-left: 1px solid var(--a-gray-200);
-          border-right: 1px solid var(--a-gray-200);
-        `}
-      >
+    <FormProvider {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
+        <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
+        {vilTilbakestilleMal && (
+          <TilbakestillMalModal
+            brevId={brev.info.id}
+            onClose={() => setVilTilbakestilleMal(false)}
+            resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
+            åpen={vilTilbakestilleMal}
+          />
+        )}
         <div
           css={css`
-            display: grid;
-            grid-template-columns: 25% 75%;
-
-            > form:first-of-type {
-              padding: var(--a-spacing-6);
-              border-right: 1px solid var(--a-gray-200);
-            }
-          `}
-        >
-          <ModelEditor
-            brevId={brev.info.id}
-            brevkode={brev.info.brevkode}
-            defaultValues={defaultValuesModelEditor}
-            disableSubmit={saksbehandlerValgMutation.isPending}
-            onSubmit={onSubmit}
-            saksId={saksId}
-            vedtaksId={vedtaksId}
-          />
-          <LetterEditor
-            editorHeight={"var(--main-page-content-height)"}
-            editorState={editorState}
-            error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError || signaturMutation.isError}
-            freeze={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending}
-            setEditorState={setEditorState}
-            showDebug={showDebug}
-          />
-        </div>
-        <HStack
-          css={css`
-            position: sticky;
-            bottom: 0;
-            left: 0;
-            width: 100%;
             background: var(--a-white);
-
-            border-top: 1px solid var(--a-gray-200);
-            padding: 0.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--a-gray-200);
+            border-right: 1px solid var(--a-gray-200);
           `}
-          justify={"space-between"}
         >
-          <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
-            <HStack align={"center"} gap="1">
-              <ArrowCirclepathIcon
-                css={css`
-                  transform: scaleX(-1);
-                `}
-                fontSize="1.5rem"
-                title="Tilbakestill mal"
-              />
-              Tilbakestill malen
-            </HStack>
-          </Button>
-          <HStack gap="2" justify={"end"}>
-            <Button
-              onClick={() => {
-                navigate({
-                  to: "/saksnummer/$saksId/brevvelger",
-                  params: { saksId: saksId },
-                  search: (s) => ({ ...s, brevId: brev.info.id.toString() }),
-                });
-              }}
-              size="small"
-              type="button"
-              variant="tertiary"
-            >
-              Tilbake til brevvelger
-            </Button>
-            <Button
-              loading={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
-              onClick={async () => {
-                await redigertBrevMutation.mutateAsync(
-                  { redigertBrev: editorState.redigertBrev, frigiReservasjon: true },
-                  {
-                    onSuccess: () => {
-                      navigate({
-                        to: "/saksnummer/$saksId/brevbehandler",
-                        params: { saksId },
-                        search: { brevId: brev.info.id },
-                      });
-                    },
-                  },
-                );
-              }}
-              size="small"
-              type="button"
-            >
-              <HStack align={"center"} gap="2">
-                <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+          <div
+            css={css`
+              display: grid;
+              grid-template-columns: 25% 75%;
+
+              > :first-of-type {
+                padding: var(--a-spacing-6);
+                border-right: 1px solid var(--a-gray-200);
+              }
+
+              @media (max-width: 1024px) {
+                > :first-of-type {
+                  padding: var(--a-spacing-3);
+                }
+              }
+            `}
+          >
+            <VStack gap="3">
+              <Heading size="small">{brevmal.data?.name}</Heading>
+              <OpprettetBrevSidemenyForm brev={brev} submitOnChange={requestSubmit} />
+            </VStack>
+            <LetterEditor
+              editorHeight={"var(--main-page-content-height)"}
+              editorState={editorState}
+              error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError || signaturMutation.isError}
+              freeze={
+                redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending
+              }
+              setEditorState={setEditorState}
+              showDebug={showDebug}
+            />
+          </div>
+          <HStack
+            css={css`
+              position: sticky;
+              bottom: 0;
+              left: 0;
+              width: 100%;
+              background: var(--a-white);
+
+              border-top: 1px solid var(--a-gray-200);
+              padding: 0.5rem 1rem;
+            `}
+            justify={"space-between"}
+          >
+            <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
+              <HStack align={"center"} gap="1">
+                <ArrowCirclepathIcon
+                  css={css`
+                    transform: scaleX(-1);
+                  `}
+                  fontSize="1.5rem"
+                  title="Tilbakestill mal"
+                />
+                Tilbakestill malen
               </HStack>
             </Button>
+            <HStack gap="2" justify={"end"}>
+              <Button
+                onClick={() => {
+                  navigate({
+                    to: "/saksnummer/$saksId/brevvelger",
+                    params: { saksId: saksId },
+                    search: (s) => ({ ...s, brevId: brev.info.id.toString() }),
+                  });
+                }}
+                size="small"
+                type="button"
+                variant="tertiary"
+              >
+                Tilbake til brevvelger
+              </Button>
+              <Button
+                loading={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
+                onClick={async () => {
+                  await redigertBrevMutation.mutateAsync(
+                    { redigertBrev: editorState.redigertBrev, frigiReservasjon: true },
+                    {
+                      onSuccess: () => {
+                        navigate({
+                          to: "/saksnummer/$saksId/brevbehandler",
+                          params: { saksId },
+                          search: { brevId: brev.info.id },
+                        });
+                      },
+                    },
+                  );
+                }}
+                size="small"
+                type="button"
+              >
+                <HStack align={"center"} gap="2">
+                  <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+                </HStack>
+              </Button>
+            </HStack>
           </HStack>
-        </HStack>
-      </div>
-    </div>
+        </div>
+      </form>
+    </FormProvider>
   );
 }
 
@@ -352,3 +385,87 @@ function useHurtiglagreMutation<T>(
     },
   });
 }
+
+enum BrevSidemenyTabs {
+  TEKSTVALG = "TEKSTVALG",
+  OVERSTYRING = "OVERSTYRING",
+}
+
+const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?: () => void }) => {
+  return (
+    <Tabs
+      css={css`
+        width: 100%;
+        .navds-tabs__scroll-button {
+          /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
+          display: none;
+        }
+      `}
+      defaultValue={BrevSidemenyTabs.TEKSTVALG}
+      fill
+      size="small"
+    >
+      <Tabs.List
+        css={css`
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+        `}
+      >
+        <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
+        <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />
+      </Tabs.List>
+      <Tabs.Panel
+        css={css`
+          display: flex;
+          flex-direction: column;
+          gap: var(--a-spacing-6);
+          margin-top: 12px;
+        `}
+        value={BrevSidemenyTabs.TEKSTVALG}
+      >
+        <SaksbehandlerValgModelEditor
+          brevkode={props.brev.info.brevkode}
+          fieldsToRender={"optional"}
+          submitOnChange={props.submitOnChange}
+        />
+        <AutoSavingTextField
+          field={"signatur"}
+          fieldType={{
+            type: "scalar",
+            nullable: false,
+            kind: "STRING",
+          }}
+          onSubmit={props.submitOnChange}
+          timeoutTimer={2500}
+          type={"text"}
+        />
+      </Tabs.Panel>
+      <Tabs.Panel
+        css={css`
+          display: flex;
+          flex-direction: column;
+          gap: var(--a-spacing-6);
+          margin-top: 12px;
+        `}
+        value={BrevSidemenyTabs.OVERSTYRING}
+      >
+        <SaksbehandlerValgModelEditor
+          brevkode={props.brev.info.brevkode}
+          fieldsToRender={"required"}
+          submitOnChange={props.submitOnChange}
+        />
+        <AutoSavingTextField
+          field={"signatur"}
+          fieldType={{
+            type: "scalar",
+            nullable: false,
+            kind: "STRING",
+          }}
+          onSubmit={props.submitOnChange}
+          timeoutTimer={2500}
+          type={"text"}
+        />
+      </Tabs.Panel>
+    </Tabs>
+  );
+};

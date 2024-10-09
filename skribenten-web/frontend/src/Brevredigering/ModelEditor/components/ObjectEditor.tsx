@@ -13,12 +13,14 @@ import {
 } from "~/Brevredigering/ModelEditor/components/utils";
 import type { FieldType } from "~/types/brevbakerTypes";
 
-const FieldEditor = ({
+export const FieldEditor = ({
+  prependedName,
   brevkode,
   field,
   fieldType,
   submitOnChange,
 }: {
+  prependedName?: string;
   brevkode: string;
   field: string;
   fieldType: FieldType;
@@ -29,21 +31,23 @@ const FieldEditor = ({
       return fieldType.nullable ? (
         <ToggleableObjectEditor
           brevkode={brevkode}
-          parentFieldName={field}
+          parentFieldName={prependedName ? `${prependedName}.${field}` : field}
           submitOnChange={submitOnChange}
           typeName={fieldType.typeName}
         />
       ) : (
         <ObjectEditor
           brevkode={brevkode}
-          parentFieldName={field}
+          parentFieldName={prependedName ? `${prependedName}.${field}` : field}
           submitOnChange={submitOnChange}
           typeName={fieldType.typeName}
         />
       );
     }
     case "scalar": {
-      return <ScalarEditor field={field} fieldType={fieldType} submitOnChange={submitOnChange} />;
+      return (
+        <ScalarEditor field={field} fieldType={fieldType} prependName={prependedName} submitOnChange={submitOnChange} />
+      );
     }
     case "array": {
       return <div>ARRAY TODO</div>;
@@ -69,7 +73,7 @@ export const ObjectEditor = ({
   submitOnChange,
   showOnlyRequiredFields,
 }: ObjectEditorProperties) => {
-  const objectTypeSpecification = useModelSpecification(brevkode, (s) => s.types[typeName]);
+  const { specification: objectTypeSpecification } = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
   return (
     <>
