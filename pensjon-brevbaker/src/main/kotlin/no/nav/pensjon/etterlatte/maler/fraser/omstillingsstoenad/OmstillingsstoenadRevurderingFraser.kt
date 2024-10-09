@@ -428,7 +428,7 @@ class OmstillingsstoenadRevurderingFraser {
                             ifElse(tidligereFamiliepleier, "care period ended", "death") +
                             ", you are obligated to be active at least 50 percent to receive the adjustment allowance. " +
                             "Read more about the activity obligation and what this involves in the attachment: " +
-                            "Information for adjustment allowance Recipients.",
+                            "Information for recipients of adjustment allowance.",
                 )
             }
         }

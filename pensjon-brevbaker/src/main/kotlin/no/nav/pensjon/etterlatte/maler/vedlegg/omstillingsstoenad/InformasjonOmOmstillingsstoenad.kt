@@ -24,7 +24,7 @@ fun informasjonOmOmstillingsstoenad(
         title = newText(
             Bokmal to "Informasjon til deg som mottar omstillingsstønad",
             Nynorsk to "Informasjon til deg som får omstillingsstønad",
-            English to "Information for Recipients of adjustment allowance",
+            English to "Information for recipients of adjustment allowance",
         ),
         includeSakspart = false,
     ) {
