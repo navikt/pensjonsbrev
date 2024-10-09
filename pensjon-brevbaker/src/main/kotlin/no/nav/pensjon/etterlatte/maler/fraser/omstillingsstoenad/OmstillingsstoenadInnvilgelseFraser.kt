@@ -418,7 +418,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                         ". After six months have passed, one condition for continuing " +
                         "to receive adjustment allowance is that you are at least 50 percent active. This is " +
                         "called the Activity Obligation.  Read more about the activity obligation and what this " +
-                        "involves in the attachment Information to Recipients of Adjustment Allowance.",
+                        "involves in the attachment Information to Recipients of adjustment allowance.",
                 )
             }
 
