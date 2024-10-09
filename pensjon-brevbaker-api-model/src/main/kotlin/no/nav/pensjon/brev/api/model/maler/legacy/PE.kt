@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
 import no.nav.pensjon.brevbaker.api.model.Kroner
-//PE_PersonSak_PSfnr_tssid
+
 data class PE(
     val vedtaksbrev: Vedtaksbrev,
     val pebrevkode: String,
