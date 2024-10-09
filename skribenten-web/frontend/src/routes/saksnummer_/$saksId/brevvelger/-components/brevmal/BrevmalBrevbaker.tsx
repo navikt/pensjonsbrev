@@ -74,7 +74,7 @@ const BrevmalBrevbaker = (props: {
 
   useEffect(() => {
     props.setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
-  }, [props.setOnFormSubmitClick]);
+  }, [props.setOnFormSubmitClick, props]);
 
   return (
     <VStack gap="4">

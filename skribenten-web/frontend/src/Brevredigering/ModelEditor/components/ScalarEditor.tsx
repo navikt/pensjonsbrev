@@ -105,21 +105,11 @@ export const AutoSavingTextField = (props: {
   timeoutTimer: number;
   onSubmit?: () => void;
 }) => {
-  const { register, getFieldState, watch, formState } = useFormContext();
+  const { getFieldState, watch, formState } = useFormContext();
 
   const fieldName = props.prependName ? `${props.prependName}.${props.field}` : props.field;
-  const registerProperties = register(fieldName, {
-    required: props.fieldType.nullable ? false : "Må oppgis",
-    pattern:
-      props.fieldType.kind === "NUMBER"
-        ? {
-            value: /^\d+$/,
-            message: "Må være et tall",
-          }
-        : undefined,
-  });
-  const fieldState = getFieldState(registerProperties.name, formState);
-  const watchedValue = watch(registerProperties.name);
+  const fieldState = getFieldState(fieldName, formState);
+  const watchedValue = watch(fieldName);
 
   /**
    * useEffekten er brukt kun i forbindelse med autolagring
@@ -142,19 +132,31 @@ export const AutoSavingTextField = (props: {
     props.fieldType.nullable,
   ]);
 
-  const commonTextFieldProperties = {
-    ...registerProperties,
-    autoComplete: "off",
-    error: fieldState.error?.message,
-    label: convertFieldToReadableLabel(props.field),
-    size: "small" as const,
-  };
-
   return (
-    <TextField
-      {...commonTextFieldProperties}
-      inputMode={props.type === "number" ? "numeric" : undefined}
-      step={props.step}
+    <Controller
+      name={fieldName}
+      render={({ field, fieldState }) => (
+        <TextField
+          {...field}
+          autoComplete="off"
+          error={fieldState.error?.message}
+          inputMode={props.type === "number" ? "numeric" : undefined}
+          label={convertFieldToReadableLabel(fieldName)}
+          onChange={(e) => (e.target.value ? field.onChange(e.target.value) : field.onChange(null))}
+          size="small"
+          step={props.step}
+        />
+      )}
+      rules={{
+        required: props.fieldType.nullable ? false : "Må oppgis",
+        pattern:
+          props.fieldType.kind === "NUMBER"
+            ? {
+                value: /^\d+$/,
+                message: "Må være et tall",
+              }
+            : undefined,
+      }}
     />
   );
 };
