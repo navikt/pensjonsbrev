@@ -231,7 +231,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                         item {
                             text(
                                 Bokmal to "avdøde i de siste fem årene før dødsfallet var medlem i folketrygden, " +
-                                    "eller fikk pensjon eller uføretrygd fra folketrygden.",
+                                    "eller fikk pensjon eller uføretrygd fra folketrygden",
                                 Nynorsk to "avdøde i dei siste fem åra fram til sin død var medlem i folketrygda, " +
                                     "eller fekk pensjon eller uføretrygd frå folketrygda",
                                 English to "in the last five years before his or her death, the deceased was a " +
