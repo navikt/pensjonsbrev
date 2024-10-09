@@ -2,7 +2,7 @@ import { format, formatISO } from "date-fns";
 
 import type { BrevResponse } from "~/types/brev";
 
-import { nyBrevInfo, nyBrevResponse, nyRedigertBrev } from "../../../utils/brevredigeringTestUtils";
+import { nyBrevInfo, nyBrevResponse, nyRedigertBrev } from "../../utils/brevredigeringTestUtils";
 
 describe("autolagring", () => {
   const hurtiglagreTidspunkt = formatISO(new Date());
