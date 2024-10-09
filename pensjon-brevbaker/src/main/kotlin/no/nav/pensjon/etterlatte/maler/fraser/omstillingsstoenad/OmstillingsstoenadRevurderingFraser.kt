@@ -61,8 +61,8 @@ class OmstillingsstoenadRevurderingFraser {
                                             formatertVirkningsdato + ". You will receive NOK " + formatertBeloep +
                                             " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
                                             ". Read more about amounts for previous periods and how we have calculated " +
-                                            "your Adjustment Allowance in the attachment: Calculation of " +
-                                            "Adjustment Allowance."
+                                            "your adjustment allowance in the attachment: Calculation of " +
+                                            "adjustment allowance."
                                 )
                             }
                         }.orShow {
@@ -93,7 +93,7 @@ class OmstillingsstoenadRevurderingFraser {
                                     Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av " +
                                             "omstillingsstønad» korleis vi har rekna ut omstillingsstønaden din.",
                                     Language.English to "Read more about how we calculated your Adjustment " +
-                                            "Allowance in the attachment: Calculation of Adjustment Allowance.",
+                                            "Allowance in the attachment: Calculation of adjustment allowance.",
                                 )
                             }
                         }
@@ -112,7 +112,7 @@ class OmstillingsstoenadRevurderingFraser {
                             text(
                                 Language.Bokmal to "Du får ikke utbetalt stønad. ",
                                 Language.Nynorsk to "Du får ikkje utbetalt stønad. ",
-                                Language.English to "You will not receive Adjustment Allowance because your " +
+                                Language.English to "You will not receive adjustment allowance because your " +
                                         "income is higher than the limit for receiving adjustment allowance. ",
                             )
                         }
@@ -122,8 +122,8 @@ class OmstillingsstoenadRevurderingFraser {
                                         "«Beregning av omstillingsstønad».",
                                 Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                         "korleis vi har rekna ut omstillingsstønaden din.",
-                                Language.English to "Read more about how we calculated your Adjustment Allowance in " +
-                                        "the attachment: Calculation of Adjustment Allowance.",
+                                Language.English to "Read more about how we calculated your adjustment allowance in " +
+                                        "the attachment: Calculation of adjustment allowance.",
                             )
                         }
                     }
@@ -134,7 +134,7 @@ class OmstillingsstoenadRevurderingFraser {
                             textExpr(
                                 Language.Bokmal to "Omstillingsstønaden din er stanset fra ".expr() + formatertVirkningsdato + ".",
                                 Language.Nynorsk to "Omstillingsstønaden din er stansa frå ".expr() + formatertVirkningsdato + ".",
-                                Language.English to "Your Adjustment Allowance has been stopped from ".expr() + formatertVirkningsdato + ".",
+                                Language.English to "Your adjustment allowance has been stopped from ".expr() + formatertVirkningsdato + ".",
                             )
                         }
                     }.orShow {
@@ -167,8 +167,8 @@ class OmstillingsstoenadRevurderingFraser {
                                     "«Beregning av omstillingsstønad».",
                             Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» " +
                                     "korleis vi har rekna ut omstillingsstønaden din.",
-                            Language.English to "Read more about how we calculated your Adjustment Allowance in " +
-                                    "the attachment: Calculation of Adjustment Allowance.",
+                            Language.English to "Read more about how we calculated your adjustment allowance in " +
+                                    "the attachment: Calculation of adjustment allowance.",
                         )
                     }
                 }
@@ -396,7 +396,7 @@ class OmstillingsstoenadRevurderingFraser {
                     Language.Nynorsk to "Ettersom omstillingsstønaden din blei avvikla tilbake i tid, har du " +
                             "fått for mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
                             "tilbake omstillingsstønad».",
-                    Language.English to "You have been overpaid because your Adjustment Allowance has been " +
+                    Language.English to "You have been overpaid because your adjustment allowance has been " +
                             "terminated retroactively. See the Attachment Advance notice – we are assessing whether " +
                             "you must repay adjustment allowance.",
                 )
@@ -434,7 +434,7 @@ class OmstillingsstoenadRevurderingFraser {
                             ifElse(tidligereFamiliepleier, "care period ended", "death") +
                             ", you are obligated to be active at least 50 percent to receive the adjustment allowance. " +
                             "Read more about the activity obligation and what this involves in the attachment: " +
-                            "Information for Adjustment Allowance Recipients.",
+                            "Information for recipients of adjustment allowance.",
                 )
             }
         }
