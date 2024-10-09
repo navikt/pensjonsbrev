@@ -60,10 +60,10 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                     list {
                         item {
                             text(
-                                Bokmal to "sende en melding på ${Constants.SKRIVTILOSS_URL} (her får du ikke lagt ved dokumentasjon)",
-                                Nynorsk to "send ei melding på ${Constants.SKRIVTILOSS_URL} (her får du ikkje lagt ved dokumentasjon).",
+                                Bokmal to "sende en beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her får du ikke lagt ved dokumentasjon)",
+                                Nynorsk to "send ein beskjed ${Constants.BESKJED_TIL_NAV_URL} (her kan du ikkje leggje ved dokumentasjon)",
                                 English to
-                                    "sending a message through ${Constants.Engelsk.SKRIVTILOSS_URL} (you cannot attach any documentationhere)",
+                                    "send us a message online: ${Constants.Engelsk.BESKJED_TIL_NAV_URL} (you cannot attach documentation from this page)",
                             )
                         }
                         item {

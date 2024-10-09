@@ -120,9 +120,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
                 list {
                     item {
                         text(
-                            Bokmal to "sende en melding på ${Constants.SKRIVTILOSS_URL} (her får du ikke lagt ved dokumentasjon)",
-                            Nynorsk to "Send ei melding på ${Constants.SKRIVTILOSS_URL} (her får du ikkje lagt ved dokumentasjon).",
-                            English to "send us a message online: ${Constants.SKRIVTILOSS_URL} (you cannot attach documentation from this page)",
+                            Bokmal to "sende en beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her får du ikke lagt ved dokumentasjon)",
+                            Nynorsk to "Send ein beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her kan du ikkje leggje ved dokumentasjon)",
+                            English to "send us a message online: ${Constants.Engelsk.BESKJED_TIL_NAV_URL} (you cannot attach documentation from this page)",
                         )
                     }
                     item {

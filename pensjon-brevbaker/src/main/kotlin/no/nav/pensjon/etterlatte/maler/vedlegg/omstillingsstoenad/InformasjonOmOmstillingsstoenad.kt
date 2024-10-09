@@ -358,9 +358,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanMeldeEndringe
         list {
             item {
                 text(
-                    Bokmal to "en melding på " + Constants.SKRIVTILOSS_URL,
-                    Nynorsk to "ei melding på " + Constants.SKRIVTILOSS_URL,
-                    English to "a message online: " + Constants.SKRIVTILOSS_URL,
+                    Bokmal to "beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her får du ikke lagt ved dokumentasjon)",
+                    Nynorsk to "ein beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her kan du ikkje leggje ved dokumentasjon)",
+                    English to "a message online: ${Constants.Engelsk.BESKJED_TIL_NAV_URL} (you cannot attach documentation from this page)",
                 )
             }
             item {
