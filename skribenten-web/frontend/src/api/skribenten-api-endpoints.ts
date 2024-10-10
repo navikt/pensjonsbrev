@@ -7,6 +7,7 @@ import axios, { AxiosError } from "axios";
 
 import type {
   Avtaleland,
+  BestillOgRedigerBrevApiResponse,
   BestillOgRedigerBrevResponse,
   Enhet,
   FinnSamhandlerRequestDto,
@@ -141,7 +142,7 @@ export async function deleteFavoritt(id: string) {
 }
 
 export async function orderExstreamLetter(saksId: string, orderLetterRequest: OrderExstreamLetterRequest) {
-  const response = await axios.post<BestillOgRedigerBrevResponse>(
+  const response = await axios.post<BestillOgRedigerBrevApiResponse>(
     `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/exstream`,
     orderLetterRequest,
   );
@@ -150,7 +151,7 @@ export async function orderExstreamLetter(saksId: string, orderLetterRequest: Or
 }
 
 export async function orderDoksysLetter(saksId: string, orderLetterRequest: OrderDoksysLetterRequest) {
-  const response = await axios.post<BestillOgRedigerBrevResponse>(
+  const response = await axios.post<BestillOgRedigerBrevApiResponse>(
     `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/doksys`,
     orderLetterRequest,
   );
@@ -159,7 +160,7 @@ export async function orderDoksysLetter(saksId: string, orderLetterRequest: Orde
 }
 
 export async function orderEblankett(saksId: string, orderLetterRequest: OrderEblankettRequest) {
-  const response = await axios.post<BestillOgRedigerBrevResponse>(
+  const response = await axios.post<BestillOgRedigerBrevApiResponse>(
     `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/exstream/eblankett`,
     orderLetterRequest,
   );
@@ -167,16 +168,18 @@ export async function orderEblankett(saksId: string, orderLetterRequest: OrderEb
   return convertBestillOgRedigerBrevResponse(response);
 }
 
-function convertBestillOgRedigerBrevResponse(response: AxiosResponse<BestillOgRedigerBrevResponse>) {
+function convertBestillOgRedigerBrevResponse(
+  response: AxiosResponse<BestillOgRedigerBrevApiResponse>,
+): BestillOgRedigerBrevResponse {
   if (response.data.failureType) {
     throw convertResponseToAxiosError({ message: response.data.failureType, response });
   }
-  const url = response.data.url;
-  if (!url) {
-    throw convertResponseToAxiosError({ message: "Responsen mangler url for redigering", response });
+
+  if (!response.data.url && !response.data.journalpostId) {
+    throw convertResponseToAxiosError({ message: "Responsen mangler url og journalpostId for redigering", response });
   }
 
-  return url;
+  return { url: response.data.url, journalpostId: response.data.journalpostId };
 }
 
 export async function finnSamhandler(request: FinnSamhandlerRequestDto): Promise<FinnSamhandlerResponseDto> {

@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
-import { Alert, Heading, Link } from "@navikt/ds-react";
+import { Alert, BodyShort, Heading, Link } from "@navikt/ds-react";
 import type { AxiosError } from "axios";
 
 import { ApiError } from "~/components/ApiError";
+import type { BestillOgRedigerBrevResponse } from "~/types/apiTypes";
 
 const BrevmalFormWrapper = (props: {
   onSubmit: () => void;
@@ -37,7 +38,7 @@ export default BrevmalFormWrapper;
 
 export const OrderLetterResult = (props: {
   error: Error | AxiosError<Error, unknown> | null;
-  data: string | undefined;
+  data: BestillOgRedigerBrevResponse | undefined;
 }) => {
   return (
     <div>
@@ -47,9 +48,14 @@ export const OrderLetterResult = (props: {
           <Heading level="3" size="xsmall">
             Brev bestilt
           </Heading>
-          <span>
-            Åpnet ikke brevet seg? <Link href={props.data}>Klikk her for å prøve igjen</Link>
-          </span>
+          {props.data.journalpostId && (
+            <BodyShort>Brevet er bestilt og sendt til mottaker med journalpostId {props.data.journalpostId}</BodyShort>
+          )}
+          {props.data.url && (
+            <span>
+              Åpnet ikke brevet seg? <Link href={props.data.url}>Klikk her for å prøve igjen</Link>
+            </span>
+          )}
         </Alert>
       )}
     </div>

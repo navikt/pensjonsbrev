@@ -51,6 +51,7 @@ export type LetterMetadata = {
   brevkategori?: string;
   dokumentkategoriCode?: DokumentkategoriCode;
   redigerbarBrevtittel: boolean;
+  redigerbart: boolean;
 };
 
 export enum BrevSystem {
@@ -91,10 +92,16 @@ export type OrderEblankettRequest = Omit<BaseLetterRequest, "spraak"> & {
   mottakerText: string;
 };
 
-export type BestillOgRedigerBrevResponse = {
-  url?: string;
-  failureType?: FailureType;
+export type BestillOgRedigerBrevApiResponse = {
+  url: Nullable<string>;
+  failureType: Nullable<FailureType>;
+  journalpostId: Nullable<string>;
 };
+
+export interface BestillOgRedigerBrevResponse {
+  url: Nullable<string>;
+  journalpostId: Nullable<string>;
+}
 
 export const FAILURE_TYPES = [
   "DOKSYS_BESTILLING_ADDRESS_NOT_FOUND",

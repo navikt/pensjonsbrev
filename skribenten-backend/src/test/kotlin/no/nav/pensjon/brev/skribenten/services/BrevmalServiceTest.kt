@@ -106,11 +106,6 @@ class BrevmalServiceTest {
     }
 
     @Test
-    fun `filtrerer ut ikke redigerbare brev`() {
-        assertThatBrevmalerInSakskontekst(testOkSakBrev.copy(redigerbart = false, brevkodeIBrevsystem = "autobrev")).noneMatch { it.id == "autobrev" }
-    }
-
-    @Test
     fun `viser vedtaksbrev i vedtaks kontekst`() {
         assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, sakType = UFOREP).anyMatch { it.id == testOkVedtakBrev.brevkodeIBrevsystem }
     }
