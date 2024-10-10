@@ -3,9 +3,7 @@ package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -15,31 +13,36 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadDataSelectors.tidligereFamiliepleier
 
 
-fun informasjonOmOmstillingsstoenad(
-    tidligereFamiliepleier: Boolean,
-): AttachmentTemplate<LangBokmalNynorskEnglish, Any> {
+data class InformasjonOmOmstillingsstoenadData(
+    val tidligereFamiliepleier: Boolean = false,
+    val bosattUtland: Boolean = false,
+)
+
+fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData> {
     return createAttachment(
         title = newText(
             Bokmal to "Informasjon til deg som mottar omstillingsstønad",
-            Nynorsk to "Informasjon til deg som får omstillingsstønad",
+            Nynorsk to "Informasjon til deg som får omstilliTesngsstønad",
             English to "Information for Recipients of adjustment allowance",
         ),
         includeSakspart = false,
     ) {
-        aktivitet(tidligereFamiliepleier.expr())
+        aktivitet(argument.tidligereFamiliepleier)
         hvisDuIkkeFyllerAktivitetsplikten()
         inntektOgOmstillingsstoenad()
         endretInntekt()
         hvilkenInntektReduseresEtter()
-        hvordanMeldeEndringer()
+        hvordanMeldeEndringer(argument.bosattUtland)
         utbetalingTilKontonummer()
         skatt()
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.aktivitet(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.aktivitet(
     tidligereFamiliepleier: Expression<Boolean>
 ) {
     title2 {
@@ -142,7 +145,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.aktivitet(
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvisDuIkkeFyllerAktivitetsplikten() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.hvisDuIkkeFyllerAktivitetsplikten() {
     title2 {
         text(
             Bokmal to "Hva skjer hvis du ikke fyller aktivitetsplikten?",
@@ -202,7 +205,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvisDuIkkeFyllerAkti
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.inntektOgOmstillingsstoenad() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.inntektOgOmstillingsstoenad() {
     title2 {
         text(
             Bokmal to "Inntekt og omstillingsstønad",
@@ -225,7 +228,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.inntektOgOmstillings
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.endretInntekt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.endretInntekt() {
     title2 {
         text(
             Bokmal to "Får du endret inntekt i løpet av året?",
@@ -270,7 +273,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.endretInntekt() {
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvilkenInntektReduseresEtter() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.hvilkenInntektReduseresEtter() {
     title2 {
         text(
             Bokmal to "Hvilken inntekt skal omstillingsstønaden reduseres etter?",
@@ -341,7 +344,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvilkenInntektReduse
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanMeldeEndringer() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.hvordanMeldeEndringer(bosattUtland: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Hvordan melder du fra om endringer?",
@@ -355,6 +358,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanMeldeEndringe
             Nynorsk to "Du kan gi beskjed om endringar i inntekta di ved å sende",
             English to "You can notify us about changes in your income by submitting",
         )
+
+        val postadresse = ifElse(bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
+
         list {
             item {
                 text(
@@ -364,17 +370,17 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanMeldeEndringe
                 )
             }
             item {
-                text(
-                    Bokmal to "brev til " + Constants.POSTADRESSE,
-                    Nynorsk to "brev til " + Constants.POSTADRESSE,
-                    English to "send a letter to " +  Constants.POSTADRESSE,
+                textExpr(
+                    Bokmal to "brev til ".expr() + postadresse,
+                    Nynorsk to "brev til ".expr() + postadresse,
+                    English to "send a letter to ".expr() + postadresse,
                 )
             }
         }
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.utbetalingTilKontonummer() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.utbetalingTilKontonummer() {
     title2 {
         text(
             Bokmal to "Utbetaling til kontonummer",
@@ -398,7 +404,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.utbetalingTilKontonu
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.skatt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.skatt() {
     title2 {
         text(
             Bokmal to "Skatt",

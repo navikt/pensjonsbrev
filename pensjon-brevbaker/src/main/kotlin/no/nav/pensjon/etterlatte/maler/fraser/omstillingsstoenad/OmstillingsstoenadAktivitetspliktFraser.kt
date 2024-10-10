@@ -8,7 +8,11 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.NasjonalEllerUtland
 
@@ -117,6 +121,8 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     English to "You can report changes in the following ways:",
                 )
 
+                val postadresse = ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), Constants.POSTADRESSE, Constants.Utland.POSTADRESSE)
+
                 list {
                     item {
                         text(
@@ -136,10 +142,10 @@ class OmstillingsstoenadAktivitetspliktFraser {
                         )
                     }
                     item {
-                        text(
-                            Bokmal to "sende brev til ${Constants.POSTADRESSE}",
-                            Nynorsk to "Send brev til ${Constants.POSTADRESSE}",
-                            English to "send a letter to ${Constants.POSTADRESSE}",
+                        textExpr(
+                            Bokmal to "sende brev til ".expr() + postadresse,
+                            Nynorsk to "Send brev til ".expr() + postadresse,
+                            English to "send a letter to ".expr() + postadresse,
                         )
                     }
                 }
