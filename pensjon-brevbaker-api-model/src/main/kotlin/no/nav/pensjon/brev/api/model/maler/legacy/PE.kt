@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
 import no.nav.pensjon.brevbaker.api.model.Kroner
-
+//PE_PersonSak_PSfnr_tssid
 data class PE(
     val vedtaksbrev: Vedtaksbrev,
     val pebrevkode: String,
@@ -32,7 +32,6 @@ data class PE(
         val pe_ut_antallbarnserkullogfelles: Int,
         val fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt: Boolean,
         val fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj: Boolean,
-        val pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes: Boolean,
         val pe_ut_etteroppgjorfratrekklistebrukeretterbetaling: Boolean,
         val pe_ut_inntekt_trukket_fra_personinntekt: Kroner,
     )
