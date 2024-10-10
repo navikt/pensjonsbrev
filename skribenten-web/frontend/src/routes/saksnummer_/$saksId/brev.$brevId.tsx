@@ -267,7 +267,7 @@ function RedigerBrev({
                 border-right: 1px solid var(--a-gray-200);
               }
 
-              @media (max-width: 1024px) {
+              @media (width <= 1024px) {
                 > :first-of-type {
                   padding: var(--a-spacing-3);
                 }
@@ -396,6 +396,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
     <Tabs
       css={css`
         width: 100%;
+
         .navds-tabs__scroll-button {
           /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
           display: none;
