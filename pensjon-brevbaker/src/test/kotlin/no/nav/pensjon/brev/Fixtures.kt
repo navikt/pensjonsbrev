@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev
 
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
@@ -19,8 +17,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
-import no.nav.pensjon.brev.fixtures.createBarnetilleggFellesbarn
-import no.nav.pensjon.brev.fixtures.createBarnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.fixtures.createEgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.fixtures.createEndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createEndretUfoeretrygdPGAInntektDto
@@ -121,9 +117,6 @@ object Fixtures {
             PE::class -> createPE() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
             EndretBarnetilleggUfoerertrygd::class -> createEndretBarnetilleggUfoeretrygdDto() as T
-            BarnetilleggFellesbarn::class -> createBarnetilleggFellesbarn() as T
-            BarnetilleggSaerkullsbarn::class -> createBarnetilleggSaerkullsbarn() as T
-
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

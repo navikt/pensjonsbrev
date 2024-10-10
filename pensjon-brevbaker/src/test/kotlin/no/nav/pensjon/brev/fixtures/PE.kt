@@ -1,8 +1,5 @@
 package no.nav.pensjon.brev.fixtures
 
-import no.nav.pensjon.brev.api.model.BorMedSivilstand
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Grunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Persongrunnlag
@@ -405,33 +402,6 @@ fun createBarnetilleggFelles() =
         btfbbrutto = Kroner(9832),
         btfbfradrag = Kroner(3802),
     )
-
-fun createBarnetilleggFellesbarn() = BarnetilleggFellesbarn(
-    brukerBorMed = BorMedSivilstand.EKTEFELLE,
-    gjelderFlereBarn = true,
-    inntektstak = Kroner(1234),
-    beloepBrutto = Kroner(5000),
-    beloepNetto = Kroner(4500),
-    fribeloep = Kroner(1000),
-    harFradrag = true,
-    harFratrukketBeloepFraAnnenForelder = false,
-    harJusteringsbeloep = true,
-    inntektAnnenForelder = Kroner(2000),
-    brukersIntektBruktIAvkortning = Kroner(3000),
-    samletInntektBruktIAvkortning = Kroner(5000)
-)
-
-fun createBarnetilleggSaerkullsbarn() = BarnetilleggSaerkullsbarn(
-    brukerBorMed = BorMedSivilstand.PARTNER,
-    gjelderFlereBarn = false,
-    inntektstak = Kroner(1500),
-    beloepBrutto = Kroner(4000),
-    beloepNetto = Kroner(3500),
-    fribeloep = Kroner(800),
-    harFradrag = false,
-    harJusteringsbeloep = true,
-    inntektBruktIAvkortning = Kroner(2500)
-)
 
 fun createAvkortningsInformasjonBT() =
     AvkortningsInformasjonBT(

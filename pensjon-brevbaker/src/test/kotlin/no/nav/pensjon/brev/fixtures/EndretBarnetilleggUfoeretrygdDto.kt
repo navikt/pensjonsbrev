@@ -8,7 +8,5 @@ fun createEndretBarnetilleggUfoeretrygdDto() =
         pe = Fixtures.create(),
         maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
         orienteringOmRettigheterUfoere = Fixtures.create(),
-        barnetilleggFellesbarn = Fixtures.create(),
-        barnetilleggSaerkullsbarn = Fixtures.create()
 
         )

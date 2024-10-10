@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.barnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.pe
@@ -12,10 +10,10 @@ import no.nav.pensjon.brev.maler.fraser.generated.TBU1091_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU1092_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU1286_1_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU1286_2_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU1288_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2338_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2339_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2490_Generated
-import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.HarDuSpoersmaalUfoeretrygd
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.RettTilAAKlage
@@ -41,7 +39,6 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -358,19 +355,14 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 //            showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv())){
 //                includePhrase(TBU5005_Generated)
 //            }
-//
+// TODO
 //            //IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
 //            showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv())){
 //                includePhrase(TBU5007_Generated)
 //            }
 
             // TBU1288
-            includePhrase(
-                Barnetillegg.HenvisningTilVedleggOpplysningerOmBeregning(
-                    harBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.notNull(),
-                    harBarnetilleggFellesbarn = barnetilleggFellesbarn.notNull()
-                )
-            )
+            includePhrase(TBU1288_Generated)
             // TBU1223 og TBU1224
             includePhrase(MeldeFraOmEndringer)
             // TBU1100
