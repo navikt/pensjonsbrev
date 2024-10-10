@@ -76,7 +76,7 @@ const Brevmal = (props: {
         });
       },
     });
-  }, [props.setOnFormSubmitClick]);
+  }, [props.setOnFormSubmitClick, props, navigate]);
 
   return (
     <div
