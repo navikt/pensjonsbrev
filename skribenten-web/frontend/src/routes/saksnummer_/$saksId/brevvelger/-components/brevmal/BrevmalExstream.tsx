@@ -39,7 +39,7 @@ const BestillAutobrevModal = (props: { åpen: boolean; onClose: () => void; onFo
       </Modal.Body>
       <Modal.Footer>
         <HStack gap="4">
-          <Button onClick={props.onClose} type="button" variant="secondary">
+          <Button data-cy="autobrev-modal-nei" onClick={props.onClose} type="button" variant="secondary">
             Nei
           </Button>
           <Button onClick={props.onFormSubmit} type="button" variant="primary">

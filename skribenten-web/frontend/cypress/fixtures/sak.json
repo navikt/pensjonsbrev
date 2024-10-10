@@ -88,6 +88,18 @@
       "redigerbarBrevtittel": false
     },
     {
+      "name": "Innhente bekreftelse på flyktningstatus fra UDI",
+      "id": "PE_IY_03_049",
+      "brevsystem": "EXSTREAM",
+      "spraak": [
+        "NB"
+      ],
+      "brevkategori": "Innhente opplysninger",
+      "dokumentkategoriCode": "B",
+      "redigerbart": false,
+      "redigerbarBrevtittel": false
+    },
+    {
       "name": "Innhente opplysninger (uføretrygd - med førsteside for ettersendelse)",
       "id": "PE_UP_07_100",
       "brevsystem": "EXSTREAM",
@@ -256,6 +268,16 @@
       "redigerbarBrevtittel": false
     },
     {
+      "name": "Brev med skjema Alternativ leveattest (NAV 21-03.06)",
+      "id": "PE_IY_06_510",
+      "brevsystem": "EXSTREAM",
+      "spraak": [],
+      "brevkategori": "Brev med skjema",
+      "dokumentkategoriCode": "B",
+      "redigerbart": false,
+      "redigerbarBrevtittel": false
+    },
+    {
       "name": "Påminnelse generell",
       "id": "PE_IY_03_178",
       "brevsystem": "EXSTREAM",
@@ -265,6 +287,16 @@
       "brevkategori": "Innhente opplysninger",
       "dokumentkategoriCode": "B",
       "redigerbart": true,
+      "redigerbarBrevtittel": false
+    },
+    {
+      "name": "Påminnelse – brev med skjema Alternativ leveattest (NAV 21-03.06)",
+      "id": "PE_IY_06_511",
+      "brevsystem": "EXSTREAM",
+      "spraak": [],
+      "brevkategori": "Innhente opplysninger",
+      "dokumentkategoriCode": "B",
+      "redigerbart": false,
       "redigerbarBrevtittel": false
     },
     {
@@ -302,6 +334,19 @@
       "brevkategori": "Informasjonsbrev",
       "dokumentkategoriCode": "B",
       "redigerbart": true,
+      "redigerbarBrevtittel": false
+    },
+    {
+      "name": "Varsel om mulig avslag/opphør p.g.a. manglende opplysninger",
+      "id": "PE_IY_03_051",
+      "brevsystem": "EXSTREAM",
+      "spraak": [
+        "EN",
+        "NB"
+      ],
+      "brevkategori": "Varsel",
+      "dokumentkategoriCode": "B",
+      "redigerbart": false,
       "redigerbarBrevtittel": false
     },
     {
@@ -366,6 +411,30 @@
       "brevkategori": "Innhente opplysninger",
       "dokumentkategoriCode": "B",
       "redigerbart": true,
+      "redigerbarBrevtittel": false
+    },
+    {
+      "name": "Brev med skjema Leveattest (NAV 21-03.05)",
+      "id": "PE_IY_05_410",
+      "brevsystem": "EXSTREAM",
+      "spraak": [
+        "NB"
+      ],
+      "brevkategori": "Leveattest",
+      "dokumentkategoriCode": "VB",
+      "redigerbart": false,
+      "redigerbarBrevtittel": false
+    },
+    {
+      "name": "Påminnelse om leveattest - med skjema Leveattest (NAV 21-03.05)",
+      "id": "PE_IY_05_411",
+      "brevsystem": "EXSTREAM",
+      "spraak": [
+        "NB"
+      ],
+      "brevkategori": "Leveattest",
+      "dokumentkategoriCode": "B",
+      "redigerbart": false,
       "redigerbarBrevtittel": false
     },
     {
@@ -556,42 +625,6 @@
       ],
       "brevkategori": "Informasjonsbrev",
       "dokumentkategoriCode": "IB",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
-      "name": "E 204 - Behandling av krav om uføretrygd/uførepensjon",
-      "id": "E204",
-      "brevsystem": "EXSTREAM",
-      "spraak": [
-        "NB"
-      ],
-      "brevkategori": null,
-      "dokumentkategoriCode": "E_BLANKETT",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
-      "name": "E 205 - Attest om trygdetid i Norge",
-      "id": "E205",
-      "brevsystem": "EXSTREAM",
-      "spraak": [
-        "NB"
-      ],
-      "brevkategori": null,
-      "dokumentkategoriCode": "E_BLANKETT",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
-      "name": "E 001 - Anmodning om opplysninger",
-      "id": "E001",
-      "brevsystem": "EXSTREAM",
-      "spraak": [
-        "NB"
-      ],
-      "brevkategori": null,
-      "dokumentkategoriCode": "E_BLANKETT",
       "redigerbart": true,
       "redigerbarBrevtittel": false
     }
