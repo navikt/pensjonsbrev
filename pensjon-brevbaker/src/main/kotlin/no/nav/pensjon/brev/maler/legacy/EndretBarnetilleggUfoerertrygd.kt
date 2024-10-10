@@ -2,18 +2,48 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.barnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.barnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.pe
-
-import no.nav.pensjon.brev.maler.fraser.generated.*
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.generated.TBU1091_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU1092_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU1286_1_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU1286_2_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU2338_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU2339_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU2490_Generated
+import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.HarDuSpoersmaalUfoeretrygd
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.MeldeFraOmEndringer
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.RettTilAAKlage
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.SjekkUtbetalingene
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.SkattForDegSomBorIUtlandet
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.Skattekort
 import no.nav.pensjon.brev.maler.legacy.fraser.LegacyFunksjonsfraser
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1121_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1123_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1254_Generated
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -89,7 +119,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
             }
             //[TBU4063]
 
-            paragraph {
+            title1 {
                 text (
                     Bokmal to "Slik påvirker inntekt og fribeløp barnetillegget ditt",
                 )
@@ -118,13 +148,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
                 paragraph {
                     textExpr (
-                        Bokmal to "Inntekten din er ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner og inntekten til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. ",
+                        Bokmal to "Inntekten din er ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner og inntekten til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. ",
                     )
 
                     //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbelopFratrukketAnnenForeldersInntekt > 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt().greaterThan(0))){
                         textExpr (
-                            Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner er holdt utenfor inntekten til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din. ",
+                            Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner er holdt utenfor inntekten til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din. ",
                         )
                     }
 
@@ -241,7 +271,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
                     //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
                     showIf((pe.ut_tbu1286_del1() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))){
                         textExpr (
-                            Bokmal to "inntektene til deg og ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din " + pe.ut_bruttoetterreduksjonbt_høyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. ",
+                            Bokmal to "inntektene til deg og ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din "
+                        )
+                        includePhrase(LegacyFunksjonsfraser.PE_UT_bruttoetterreduksjonbt_hoyere_lavere(pe))
+                        textExpr(
+                            Bokmal to " enn ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. ",
                         )
                     }
 
@@ -304,59 +338,61 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
                 includePhrase(TBU2490_Generated(pe))
             }
 
+            // TODO
+//            Integer index
+//                    Integer counter
+//                    counter = 0
+//
+//            length = COUNT(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarKravlinjeKode)
+//            FOR index = 1 TO length
+//            IF (
+//                PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarKravlinjeKode(index) =  "bt"
+//                        AND
+//                        PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVedtakResultat(index) = "avsl"
+//            ) THEN
+//                    counter = counter + 1
+//            ENDIF
+//            NEXT
+//            value = counter
             //IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
-            showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv())){
-                includePhrase(TBU5005_Generated)
-            }
+//            showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv())){
+//                includePhrase(TBU5005_Generated)
+//            }
+//
+//            //IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
+//            showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv())){
+//                includePhrase(TBU5007_Generated)
+//            }
 
-            //IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
-            showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv())){
-                includePhrase(TBU5007_Generated)
-            }
-            includePhrase(TBU1288_Generated)
-            includePhrase(TBU1223_Generated)
-            includePhrase(TBU1224_Generated)
-            includePhrase(TBU1100_Generated(pe))
-            includePhrase(TBU1074_Generated)
-            includePhrase(TBU1075_Generated(pe))
-            includePhrase(TBU1227_Generated)
-            includePhrase(TBU1228_Generated)
-
-            //IF(FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "nor" AND FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "") THEN      INCLUDE ENDIF
-            showIf((FUNKSJON_FF_GetArrayElement_String(pe.grunnlag_persongrunnlagsliste_personbostedsland()).notEqualTo("nor") and FUNKSJON_FF_GetArrayElement_String(pe.grunnlag_persongrunnlagsliste_personbostedsland()).notEqualTo(""))){
-                includePhrase(TBU3730_Generated)
-            }
-            includePhrase(TBU1076_Generated)
-            includePhrase(TBU1077_Generated)
-            includePhrase(TBU2283_Generated(pe))
-            includePhrase(TBU2245_Generated)
-            //[TBU4070]
-
-            paragraph {
-                text (
-                    Bokmal to "Vedlegg:",
+            // TBU1288
+            includePhrase(
+                Barnetillegg.HenvisningTilVedleggOpplysningerOmBeregning(
+                    harBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.notNull(),
+                    harBarnetilleggFellesbarn = barnetilleggFellesbarn.notNull()
                 )
+            )
+            // TBU1223 og TBU1224
+            includePhrase(MeldeFraOmEndringer)
+            // TBU1100
+            includePhrase(RettTilAAKlage)
+            // TBU1074 og TBU1075
+            includePhrase(Felles.RettTilInnsynPesys)
+            // TBU1227
+            includePhrase(SjekkUtbetalingene)
+            // TBU1228
+            includePhrase(Skattekort)
 
-                //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                    text (
-                        Bokmal to "",
-                    )
-                }
+            //TBU3730
+            includePhrase(SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("nor") and pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("")))
+            //TBU1076 og TBU1077
+            includePhrase(HarDuSpoersmaalUfoeretrygd)
 
-                //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                    text (
-                        Bokmal to "Dette er din månedlige uføretrygd før skatt",
-                    )
-                }
-                text (
-                    Bokmal to "Opplysninger om beregningen",
-                )
-                text (
-                    Bokmal to "Orientering om rettigheter og plikter",
-                )
-            }
+
         }
-    }
+            // Vedlegg
+            includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+            includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
+            includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
+
+        }
 }

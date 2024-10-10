@@ -30,7 +30,26 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.virkningstidpunkt_safe
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.day
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.firstDayOfYear
+import no.nav.pensjon.brev.template.dsl.expression.getOrNull
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.lastDayOfYear
+import no.nav.pensjon.brev.template.dsl.expression.legacyGreaterThan
+import no.nav.pensjon.brev.template.dsl.expression.legacyLessThan
+import no.nav.pensjon.brev.template.dsl.expression.legacyLessThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.month
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -178,6 +197,9 @@ fun Expression<PE>.ut_sum_inntekterbt_totalbeloput(): Expression<Kroner> = vedta
 
 fun Expression<PE>.ut_firstday(): Expression<LocalDate?> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().ifNull(LocalDate.of(2014,10,14)).firstDayOfYear
 fun Expression<PE>.ut_lastday(): Expression<LocalDate?> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().ifNull(LocalDate.of(2014,10,14)).lastDayOfYear
+
+fun Expression<PE>.ut_barnet_barna_felles_en_entall_flertall(): String = if (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().equals(1)) "s" else ""
+fun Expression<PE>.ut_barnet_barna_serkull_en_entall_flertall(): String = if (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equals(1)) "s" else ""
 
 // GENERATED
 fun Expression<PE>.inkluderopplysningerbruktiberegningen() = ((not(vedtaksdata_faktoromregnet()) and pebrevkode().notEqualTo("PE_UT_04_102")) or (pebrevkode().equalTo("PE_UT_04_102") and (vedtaksdata_beregningsdata_beregningufore_belopokt() or (vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse() and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(0)) or vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo("stdbegr_12_8_2_5")) or vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))

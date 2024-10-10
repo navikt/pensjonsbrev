@@ -4,16 +4,22 @@ package no.nav.pensjon.brev.maler.fraser.generated
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles_en_entall_flertall
 import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_serkull
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_serkull_en_entall_flertall
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.model.*
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 data class TBU2490_Generated(
@@ -22,7 +28,6 @@ data class TBU2490_Generated(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU2490, TBU2490NN, TBU2490EN]
 
-		// TODO Hanne
 		paragraph {
 			textExpr (
 				Bokmal to "Barnetillegget for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + " kroner. Barnetillegget for " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + " kroner. Inntektene er over grensen for å få utbetalt barnetillegg.",
@@ -32,4 +37,3 @@ data class TBU2490_Generated(
 		}
     }
 }
-        

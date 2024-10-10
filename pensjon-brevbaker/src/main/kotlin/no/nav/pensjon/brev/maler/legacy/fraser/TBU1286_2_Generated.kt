@@ -3,13 +3,22 @@
 package no.nav.pensjon.brev.maler.fraser.generated
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.model.*
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles_en_entall_flertall
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 data class TBU1286_2_Generated(

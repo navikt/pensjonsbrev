@@ -1,15 +1,63 @@
 package no.nav.pensjon.brev
 
-import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDto
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUfoeretrygdPGAInntektDto
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.api.model.vedlegg.*
-import no.nav.pensjon.brev.fixtures.*
+import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
+import no.nav.pensjon.brev.fixtures.createBarnetilleggFellesbarn
+import no.nav.pensjon.brev.fixtures.createBarnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.fixtures.createEgenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.fixtures.createEndretBarnetilleggUfoeretrygdDto
+import no.nav.pensjon.brev.fixtures.createEndretUfoeretrygdPGAInntektDto
+import no.nav.pensjon.brev.fixtures.createEtteroppgjoerEtterbetalingAuto
+import no.nav.pensjon.brev.fixtures.createForhaandsvarselEtteroppgjoerUfoeretrygdDto
+import no.nav.pensjon.brev.fixtures.createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret
+import no.nav.pensjon.brev.fixtures.createInformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
+import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned
+import no.nav.pensjon.brev.fixtures.createOmsorgEgenAutoDto
+import no.nav.pensjon.brev.fixtures.createOpphoerBarnetilleggAutoDto
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende
+import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende
+import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
+import no.nav.pensjon.brev.fixtures.createPE
+import no.nav.pensjon.brev.fixtures.createUfoerOmregningEnsligDto
+import no.nav.pensjon.brev.fixtures.createUngUfoerAutoDto
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
-import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
+import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.NAVEnhet
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -72,6 +120,10 @@ object Fixtures {
             EtteroppgjoerEtterbetalingAutoDto::class -> createEtteroppgjoerEtterbetalingAuto() as T
             PE::class -> createPE() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
+            EndretBarnetilleggUfoerertrygd::class -> createEndretBarnetilleggUfoeretrygdDto() as T
+            BarnetilleggFellesbarn::class -> createBarnetilleggFellesbarn() as T
+            BarnetilleggSaerkullsbarn::class -> createBarnetilleggSaerkullsbarn() as T
+
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

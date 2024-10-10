@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.fixtures
 
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Grunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Persongrunnlag
@@ -20,8 +23,23 @@ import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.Vedtaksdata
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsData
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.*
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.*
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYK
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYK
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.Belopsendring
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUfore
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.Minsteytelse
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.Reduksjonsgrunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.UforetrygdOrdinerYK
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjon
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.AvkortningsInformasjonBT
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFelles
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkull
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKomp
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningsgrunnlagOrdinar
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.Ektefelletillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.Gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdiner
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.Ytelsesgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.Uforetrygdberegning
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregninguforeperiode.BeregningUforePeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.Etteroppgjoerresultat
@@ -307,6 +325,7 @@ fun createUforetrygdberegning() =
         uforetidspunkt = LocalDate.of(2020,1,1),
         proratabrokteller = 10,
         proratabroknevner = 11,
+        instopphanvendt = true
     )
 
 fun createReduksjonsgrunnlag() =
@@ -366,6 +385,8 @@ fun createBarnetilleggSerkull() =
         antallbarnserkull = 2,
         btsbbruttoperar = Kroner(8590),
         btsbnettoperar = Kroner(19111),
+        btsbfradrag = Kroner(19112),
+        btsbbrutto = Kroner(19113),
     )
 
 fun createBarnetilleggFelles() =
@@ -380,8 +401,37 @@ fun createBarnetilleggFelles() =
         btfbinntektannenforelder = Kroner(1205),
         antallbarnfelles = 2,
         btfbbruttoperar = Kroner(5819),
-        btfbnettoperar = Kroner(10085)
+        btfbnettoperar = Kroner(10085),
+        btfbbrutto = Kroner(9832),
+        btfbfradrag = Kroner(3802),
     )
+
+fun createBarnetilleggFellesbarn() = BarnetilleggFellesbarn(
+    brukerBorMed = BorMedSivilstand.EKTEFELLE,
+    gjelderFlereBarn = true,
+    inntektstak = Kroner(1234),
+    beloepBrutto = Kroner(5000),
+    beloepNetto = Kroner(4500),
+    fribeloep = Kroner(1000),
+    harFradrag = true,
+    harFratrukketBeloepFraAnnenForelder = false,
+    harJusteringsbeloep = true,
+    inntektAnnenForelder = Kroner(2000),
+    brukersIntektBruktIAvkortning = Kroner(3000),
+    samletInntektBruktIAvkortning = Kroner(5000)
+)
+
+fun createBarnetilleggSaerkullsbarn() = BarnetilleggSaerkullsbarn(
+    brukerBorMed = BorMedSivilstand.PARTNER,
+    gjelderFlereBarn = false,
+    inntektstak = Kroner(1500),
+    beloepBrutto = Kroner(4000),
+    beloepNetto = Kroner(3500),
+    fribeloep = Kroner(800),
+    harFradrag = false,
+    harJusteringsbeloep = true,
+    inntektBruktIAvkortning = Kroner(2500)
+)
 
 fun createAvkortningsInformasjonBT() =
     AvkortningsInformasjonBT(

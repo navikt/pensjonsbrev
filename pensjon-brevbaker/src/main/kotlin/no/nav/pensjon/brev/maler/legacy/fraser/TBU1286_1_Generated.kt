@@ -3,14 +3,14 @@
 package no.nav.pensjon.brev.maler.fraser.generated
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_serkull
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
-
 
 data class TBU1286_1_Generated(
     val pe: Expression<PE>,
