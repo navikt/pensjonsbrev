@@ -65,6 +65,7 @@ fun createPE() =
             fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj = true,
             pe_ut_etteroppgjorfratrekklistebrukeretterbetaling = true,
             pe_ut_inntekt_trukket_fra_personinntekt = Kroner(1088),
+            pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes = false,
         ),
         pebrevkode = "PE_UT_05_100",
         personsak = PersonSak(PSfnr("01019878910"))
