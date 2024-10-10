@@ -26,8 +26,8 @@ fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEngli
     return createAttachment(
         title = newText(
             Bokmal to "Informasjon til deg som mottar omstillingsstønad",
-            Nynorsk to "Informasjon til deg som får omstilliTesngsstønad",
-            English to "Information for Recipients of adjustment allowance",
+            Nynorsk to "Informasjon til deg som får omstillingsstønad",
+            English to "Information for recipients of adjustment allowance",
         ),
         includeSakspart = false,
     ) {
@@ -67,7 +67,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                     ifElse(tidligereFamiliepleier, "care period ended", "death") +
                     ", receiving adjustment allowance is contingent upon working at least 50 percent or involved in " +
                     "another activity with the aim of finding employment. After one year, you will be expected to be " +
-                    "active 100 percent. This is called the Activity Obligation.",
+                    "active 100 percent. This is called the activity obligation.",
         )
     }
     paragraph {
@@ -364,9 +364,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         list {
             item {
                 text(
-                    Bokmal to "en melding på " + Constants.SKRIVTILOSS_URL,
-                    Nynorsk to "ei melding på " + Constants.SKRIVTILOSS_URL,
-                    English to "a message online: " + Constants.SKRIVTILOSS_URL,
+                    Bokmal to "beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her får du ikke lagt ved dokumentasjon)",
+                    Nynorsk to "ein beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her kan du ikkje leggje ved dokumentasjon)",
+                    English to "a message online: ${Constants.Engelsk.BESKJED_TIL_NAV_URL} (you cannot attach documentation from this page)",
                 )
             }
             item {
