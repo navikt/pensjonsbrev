@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -144,33 +145,55 @@ object Felles {
         val utland: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    Bokmal to "NAV skanning",
-                    Nynorsk to "NAV skanning",
-                    English to "NAV skanning",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Postboks 1400",
-                    Nynorsk to "Postboks 1400",
-                    English to "Postboks 1400",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "0109 Oslo",
-                    Nynorsk to "0109 Oslo",
-                    English to "0109 Oslo",
-                )
-            }
             showIf(utland) {
+                paragraph {
+                    text(
+                        Bokmal to "NAV Familie- og pensjonsytelser",
+                        Nynorsk to "NAV Familie- og pensjonsytelser",
+                        English to "NAV Familie- og pensjonsytelser",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Postboks 6600 Etterstad",
+                        Nynorsk to "Postboks 6600 Etterstad",
+                        English to "Postboks 6600 Etterstad",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "0607 Oslo",
+                        Nynorsk to "0607 Oslo",
+                        English to "0607 Oslo",
+                    )
+                }
                 paragraph {
                     text(
                         Bokmal to "Norge/Norway",
                         Nynorsk to "Norge/Norway",
-                        English to "Norge/Norway",
+                        English to "Norway",
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Bokmal to "NAV skanning",
+                        Nynorsk to "NAV skanning",
+                        English to "NAV skanning",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Postboks 1400",
+                        Nynorsk to "Postboks 1400",
+                        English to "Postboks 1400",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "0109 Oslo",
+                        Nynorsk to "0109 Oslo",
+                        English to "0109 Oslo",
                     )
                 }
             }
