@@ -1,9 +1,7 @@
 describe("Endrer på mottaker", () => {
   beforeEach(() => {
-    beforeEach(() => {
-      cy.setupSakStubs();
-      cy.viewport(1200, 1400);
-    });
+    cy.setupSakStubs();
+    cy.viewport(1200, 1400);
 
     cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", (request) => {
       expect(request.body).to.deep.equal({ idTSSEkstern: "80000781720" });
@@ -222,6 +220,9 @@ describe("Endrer på mottaker", () => {
   });
 
   it("kan legge inn manuell adresse for brevbaker brev", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
+      fixture: "modelSpecification.json",
+    });
     cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
       request.reply({ fixture: "land.json" });
     }).as("Land fra backend");
