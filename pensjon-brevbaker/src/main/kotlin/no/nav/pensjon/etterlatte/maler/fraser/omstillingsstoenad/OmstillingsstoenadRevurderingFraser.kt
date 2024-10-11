@@ -92,8 +92,8 @@ class OmstillingsstoenadRevurderingFraser {
                                             "«Beregning av omstillingsstønad».",
                                     Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av " +
                                             "omstillingsstønad» korleis vi har rekna ut omstillingsstønaden din.",
-                                    Language.English to "Read more about how we calculated your Adjustment " +
-                                            "Allowance in the attachment: Calculation of adjustment allowance.",
+                                    Language.English to "Read more about how we calculated your adjustment " +
+                                            "allowance in the attachment: Calculation of adjustment allowance.",
                                 )
                             }
                         }
@@ -341,7 +341,7 @@ class OmstillingsstoenadRevurderingFraser {
                     Language.Nynorsk to "Fordi omstillingsstønaden din blei avvikla tilbake i tid, har du fått " +
                             "for mykje utbetalt. Beløpet er under den nedre grensa for tilbakekrevjing som går fram " +
                             "av folketrygdlova § 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt. ",
-                    Language.English to "You have been overpaid because your Adjustmenst Allowance has been " +
+                    Language.English to "You have been overpaid because your adjustment allowance has been " +
                             "terminated retroactively. The amount is below the lower limit for demanding repayment, " +
                             "as stated in the National Insurance Act - Section 22-15(6). So no repayment will be " +
                             "demanded of you.",
@@ -369,7 +369,7 @@ class OmstillingsstoenadRevurderingFraser {
                             "mykje utbetalt. Det du har fått for mykje utbetalt vil trekkast i etterbetalinga av ei " +
                             "anna yting du får frå NAV. Er beløpet du har fått for mykje meir enn etterbetalinga, " +
                             "får du eiget brev om mogleg tilbakekrevjing av for mykje utbetalt omstillingsstønad. ",
-                    Language.English to "You have been overpaid because your Adjustment Allowance has been " +
+                    Language.English to "You have been overpaid because your adjustment allowance has been " +
                             "terminated retroactively. The incorrect paid amount will be deducted from the back " +
                             "payment of other benefits you receive from NAV. If the incorrect payment is greater " +
                             "than the overpayment, you will receive a separate letter about the possible repayment " +
