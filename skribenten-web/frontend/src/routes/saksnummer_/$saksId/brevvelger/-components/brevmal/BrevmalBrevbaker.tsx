@@ -1,17 +1,18 @@
-import { Button, HStack, VStack } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BodyShort, Button, HStack, Modal, VStack } from "@navikt/ds-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
+import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
-import type { BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
+import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../../../route";
@@ -29,6 +30,47 @@ interface BrevbakerFormData {
   mottaker: Nullable<Mottaker>;
 }
 
+const EksisterendeKladdModal = (props: {
+  åpen: boolean;
+  onClose: () => void;
+  onFormSubmit: () => void;
+  sisteEksisterendeKladdId: number;
+}) => {
+  const navigate = useNavigate({ from: Route.fullPath });
+  return (
+    <Modal
+      header={{ heading: "Vil du bruke eksisterende kladd?" }}
+      onClose={props.onClose}
+      open={props.åpen}
+      portal
+      width={500}
+    >
+      <Modal.Body>
+        <BodyShort>Du har en eksisterende kladd basert på samme brevmal.</BodyShort>
+      </Modal.Body>
+      <Modal.Footer>
+        <HStack gap="4">
+          <Button onClick={props.onFormSubmit} type="button" variant="secondary">
+            Lag nytt brev
+          </Button>
+          <Button
+            onClick={() => {
+              navigate({
+                to: "/saksnummer/$saksId/brev/$brevId",
+                params: { brevId: props.sisteEksisterendeKladdId },
+              });
+            }}
+            type="button"
+            variant="primary"
+          >
+            Ja, bruk eksisterende kladd
+          </Button>
+        </HStack>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
 const BrevmalBrevbaker = (props: {
   letterTemplate: LetterMetadata;
   preferredLanguage: SpraakKode | null;
@@ -44,6 +86,22 @@ const BrevmalBrevbaker = (props: {
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const [åpnerNyttBrevOgHarKladd, setÅpnerNyttBrevOgHarKladd] = useState<boolean>(false);
+
+  const alleSaksbrevQuery = useQuery({
+    queryKey: hentAlleBrevForSak.queryKey(props.saksId.toString()),
+    queryFn: () => hentAlleBrevForSak.queryFn(props.saksId.toString()),
+  });
+
+  const sistOpprettetKladd = useMemo(() => {
+    return alleSaksbrevQuery.data
+      ?.filter((brev: BrevInfo) => brev.brevkode === props.letterTemplate.id)
+      .toSorted((a, b) => {
+        return new Date(a.opprettet).getTime() - new Date(b.opprettet).getTime();
+      })
+      .at(-1);
+  }, [alleSaksbrevQuery.data, props.letterTemplate.id]);
+  const harEksisterendeKladd = !!sistOpprettetKladd;
 
   const opprettBrevMutation = useMutation<BrevResponse, Error, BrevbakerFormData>({
     mutationFn: async (values) =>
@@ -73,11 +131,34 @@ const BrevmalBrevbaker = (props: {
   });
 
   useEffect(() => {
-    props.setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
-  }, [props.setOnFormSubmitClick, props]);
+    if (harEksisterendeKladd) {
+      props.setOnFormSubmitClick({
+        onClick: () => {
+          form.trigger().then((isValid) => {
+            if (isValid) {
+              setÅpnerNyttBrevOgHarKladd(true);
+            }
+          });
+        },
+      });
+    } else {
+      props.setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
+    }
+  }, [props.setOnFormSubmitClick, props, harEksisterendeKladd, form]);
 
   return (
     <VStack gap="4">
+      {åpnerNyttBrevOgHarKladd && (
+        <EksisterendeKladdModal
+          onClose={() => setÅpnerNyttBrevOgHarKladd(false)}
+          onFormSubmit={() => {
+            formRef.current?.requestSubmit();
+            setÅpnerNyttBrevOgHarKladd(false);
+          }}
+          sisteEksisterendeKladdId={sistOpprettetKladd!.id}
+          åpen={åpnerNyttBrevOgHarKladd}
+        />
+      )}
       <LetterTemplateHeading letterTemplate={props.letterTemplate} />
       <Divider />
       <FormProvider {...form}>
