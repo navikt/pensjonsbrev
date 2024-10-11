@@ -15,4 +15,5 @@ data class Uforetrygdberegning(
     val uforetidspunkt: LocalDate?,
     val proratabrokteller: Int?,
     val proratabroknevner: Int?,
+    val instopphanvendt: Boolean?
 )

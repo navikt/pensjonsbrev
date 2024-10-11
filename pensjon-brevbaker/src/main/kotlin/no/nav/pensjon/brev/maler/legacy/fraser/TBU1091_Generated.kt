@@ -1,6 +1,4 @@
-
-
-package no.nav.pensjon.brev.maler.fraser.generated
+package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*

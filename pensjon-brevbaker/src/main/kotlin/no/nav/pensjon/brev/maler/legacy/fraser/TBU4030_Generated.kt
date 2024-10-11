@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.generated
+package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.maler.legacy.*

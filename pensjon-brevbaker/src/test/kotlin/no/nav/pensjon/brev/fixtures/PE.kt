@@ -66,6 +66,8 @@ fun createPE() =
             pe_ut_etteroppgjorfratrekklistebrukeretterbetaling = true,
             pe_ut_inntekt_trukket_fra_personinntekt = Kroner(1088),
             pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes = false,
+            pe_ut_inntektsgrense_faktisk_minus_60000 = Kroner(100001),
+            pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08 = Kroner(18276)
         ),
         pebrevkode = "PE_UT_05_100",
         personsak = PersonSak(PSfnr("01019878910"))
@@ -308,6 +310,7 @@ fun createUforetrygdberegning() =
         uforetidspunkt = LocalDate.of(2020,1,1),
         proratabrokteller = 10,
         proratabroknevner = 11,
+        instopphanvendt = true
     )
 
 fun createReduksjonsgrunnlag() =
@@ -318,6 +321,7 @@ fun createReduksjonsgrunnlag() =
         prosentsatsoifufortak = 30,
         sumbruttoforreduksjonbt = Kroner(8752),
         sumbruttoetterreduksjonbt = Kroner(8510),
+        sumutbt = Kroner(8511),
     )
 
 fun createBelopsendring() =
@@ -367,6 +371,8 @@ fun createBarnetilleggSerkull() =
         antallbarnserkull = 2,
         btsbbruttoperar = Kroner(8590),
         btsbnettoperar = Kroner(19111),
+        btsbfradrag = Kroner(19112),
+        btsbbrutto = Kroner(19113),
     )
 
 fun createBarnetilleggFelles() =
@@ -381,7 +387,9 @@ fun createBarnetilleggFelles() =
         btfbinntektannenforelder = Kroner(1205),
         antallbarnfelles = 2,
         btfbbruttoperar = Kroner(5819),
-        btfbnettoperar = Kroner(10085)
+        btfbnettoperar = Kroner(10085),
+        btfbbrutto = Kroner(9832),
+        btfbfradrag = Kroner(3802),
     )
 
 fun createAvkortningsInformasjonBT() =
@@ -411,6 +419,7 @@ fun createYtelsesgrunnlag() =
         beregningsgrunnlagordinar = createBeregningsgrunnlagOrdinar(),
         beregningsgrunnlagyrkesskadearsbelop = Kroner(5810),
         inntektvedskadetidspunktet = Kroner(1010),
+        beregningsgrunnlagyrkesskadebest = false,
     )
 
 fun createBeregningsgrunnlagOrdinar() =

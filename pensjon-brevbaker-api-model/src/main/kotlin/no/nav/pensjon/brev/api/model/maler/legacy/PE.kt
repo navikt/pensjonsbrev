@@ -35,5 +35,7 @@ data class PE(
         val pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes: Boolean,
         val pe_ut_etteroppgjorfratrekklistebrukeretterbetaling: Boolean,
         val pe_ut_inntekt_trukket_fra_personinntekt: Kroner,
+        val pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08: Kroner,
+        val pe_ut_inntektsgrense_faktisk_minus_60000: Kroner,
     )
 }
