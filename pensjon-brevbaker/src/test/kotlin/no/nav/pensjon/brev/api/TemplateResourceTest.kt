@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlin
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.maler.OpphoerBarnetilleggAuto
+import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language

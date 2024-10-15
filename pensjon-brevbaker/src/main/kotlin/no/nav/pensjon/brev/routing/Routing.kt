@@ -7,7 +7,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.api.ProductionTemplates
+import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.etterlatte.etterlatteRouting
