@@ -29,7 +29,8 @@ object BarnepensjonInnvilgelseFraser {
         val erEtterbetaling: Expression<Boolean>,
         val harFlereUtbetalingsperioder: Expression<Boolean>,
         val erGjenoppretting: Expression<Boolean>,
-        val harUtbetaling: Expression<Boolean>
+        val harUtbetaling: Expression<Boolean>,
+        val erSluttbehandling: Expression<Boolean>,
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -53,6 +54,8 @@ object BarnepensjonInnvilgelseFraser {
                         Language.English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + ". "
                     )
                 }
+
+
 
                 showIf(harUtbetaling) {
                     showIf(harFlereUtbetalingsperioder) {
