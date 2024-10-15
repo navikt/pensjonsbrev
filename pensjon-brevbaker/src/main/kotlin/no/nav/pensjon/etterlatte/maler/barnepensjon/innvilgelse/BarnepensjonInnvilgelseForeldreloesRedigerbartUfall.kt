@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erGjenoppretting
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erSluttbehandling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.flerePerioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.forskjelligAvdoedPeriode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.harUtbetaling
@@ -33,6 +34,7 @@ data class BarnepensjonForeldreloesRedigerbarDTO(
     val erGjenoppretting: Boolean,
     val vedtattIPesys: Boolean,
     val forskjelligAvdoedPeriode: ForskjelligAvdoedPeriode? = null,
+    val erSluttbehandling: Boolean = false
 )
 
 @TemplateModelHelpers
@@ -64,6 +66,7 @@ object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
                     vedtattIPesys = vedtattIPesys,
                     erGjenoppretting = erGjenoppretting,
                     forskjelligAvdoedPeriode = forskjelligAvdoedPeriode,
+                    erSluttbehandling = erSluttbehandling,
                 )
             )
             includePhrase(

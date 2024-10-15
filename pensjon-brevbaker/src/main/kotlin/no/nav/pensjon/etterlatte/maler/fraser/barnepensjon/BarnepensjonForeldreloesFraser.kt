@@ -32,12 +32,15 @@ object BarnepensjonForeldreloesFraser {
         val harUtbetaling: Expression<Boolean>,
         val vedtattIPesys: Expression<Boolean>,
         val erGjenoppretting: Expression<Boolean>,
-        val forskjelligAvdoedPeriode: Expression<ForskjelligAvdoedPeriode?>
+        val forskjelligAvdoedPeriode: Expression<ForskjelligAvdoedPeriode?>,
+        val erSluttbehandling: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val formatertVirkningsdato = virkningstidspunkt.format()
             val formatertBeloep = sistePeriodeBeloep.format()
             val formatertFom = sistePeriodeFom.format()
+
+            // TODO: add BP sluttbehandling
 
             paragraph {
                 showIf(vedtattIPesys) {
