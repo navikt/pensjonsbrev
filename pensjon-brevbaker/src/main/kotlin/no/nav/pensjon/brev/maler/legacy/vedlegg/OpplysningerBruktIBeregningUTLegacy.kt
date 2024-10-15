@@ -64,8 +64,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         //TBU010V
         includePhrase(TBU010V(pe))
 
-        // TODO TBUxx1V trengs for brev som ikke er:
-        //  PE_UT_07_100, PE_UT_05_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200, PE_UT_06_300
+        includePhrase(TBUxx1V(pe))
 
         // TODO TBU011V-TBU016V trengs for brev som ikke er:
         //  PE_UT_07_100 , PE_UT_05_100 , PE_UT_04_300 , PE_UT_14_300 , PE_UT_04_108 , PE_UT_04_109 , PE_UT_07_200 , PE_UT_06_300

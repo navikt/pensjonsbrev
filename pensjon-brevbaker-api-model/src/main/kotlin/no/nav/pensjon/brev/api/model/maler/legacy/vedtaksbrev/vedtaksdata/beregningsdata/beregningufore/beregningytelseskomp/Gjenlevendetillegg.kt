@@ -2,5 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.bereg
 
 
 data class Gjenlevendetillegg(
-    val gtinnvilget: Boolean?
+    val gtinnvilget: Boolean?,
+    val nyttgjenlevendetillegg: Boolean?,
+    val gjenlevendetillegginformasjon: GjenlevendetilleggInformasjon?
 )

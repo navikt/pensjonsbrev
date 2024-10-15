@@ -1,8 +1,11 @@
 package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.pe
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.TBU1216_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_1_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_2_Generated
@@ -11,6 +14,7 @@ import no.nav.pensjon.brev.maler.fraser.generated.TBU2368_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2490_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2530_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU3224_Generated
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1091_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1092_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1201_Generated
@@ -54,6 +58,9 @@ import no.nav.pensjon.brev.maler.legacy.fraser.TBU2279_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2280_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3740_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU_3803_Generated
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -65,7 +72,6 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
-//Selectors used in this letter(Copy into LegacySelectors as needed):
 @TemplateModelHelpers
 object EndretUforetrygdPGAOpptjeningLegacy : AutobrevTemplate<EndretUforetrygdPGAOpptjeningLegacyDto> {
 
@@ -543,136 +549,19 @@ override val kode = Brevkode.AutoBrev.UT_ENDRET_PGA_OPPTJENING
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()){
                 includePhrase(TBU2530_Generated)
             }
-            /*includePhrase(TBU2212_Generated)
-            includePhrase(TBU2213_Generated)
-            includePhrase(TBU1074_MedMargin_Generated)
-            includePhrase(TBU2242_Generated)
-            includePhrase(TBU1227_Generated)
-            includePhrase(TBU1228_Generated)
 
-            //IF(FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "nor" AND FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "") THEN      INCLUDE ENDIF
-            showIf((FUNKSJON_FF_GetArrayElement_String(pe.grunnlag_persongrunnlagsliste_personbostedsland()).notEqualTo("nor") and FUNKSJON_FF_GetArrayElement_String(pe.grunnlag_persongrunnlagsliste_personbostedsland()).notEqualTo(""))){
-                includePhrase(TBU3730_Generated)
-            }
-            includePhrase(TBU1076_MedMargin_Generated)
-            includePhrase(TBU1077_Generated)
-            includePhrase(TBU2246_Generated(pe))
-            includePhrase(TBU2245_Generated)
-            //[TBU2247]
-            // TODO Logic was different for different language layers.
-            paragraph {
-                text (
-                    Bokmal to "Vedlegg:",
-                )
-
-                //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                    text (
-                        Bokmal to "",
-                    )
-                }
-
-                //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                    text (
-                        Bokmal to "Dette er din månedlige uføretrygd før skatt",
-                    )
-                }
-
-                //PE_Vedtaksdata_Faktoromregnet = false
-                showIf(not(pe.vedtaksdata_faktoromregnet())){
-                    text (
-                        Bokmal to "",
-                    )
-                }
-
-                //PE_Vedtaksdata_Faktoromregnet = false
-                showIf(not(pe.vedtaksdata_faktoromregnet())){
-                    text (
-                        Bokmal to "Opplysninger om beregningen",
-                    )
-                }
-                text (
-                    Bokmal to "Orientering om rettigheter og plikter",
-                )
-            }
-            //[TBU2247]
-            // TODO Logic was different for different language layers.
-            paragraph {
-                text (
-                    Nynorsk to "Vedlegg:",
-                )
-
-                //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                    text (
-                        Nynorsk to "",
-                    )
-                }
-
-                //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                    text (
-                        Nynorsk to "Dette er den månadlege uføretrygda di før skatt",
-                    )
-                }
-
-                //IF(PE_Vedtaksdata_Faktoromregnet = false) THEN      INCLUDE ENDIF
-                showIf((not(pe.vedtaksdata_faktoromregnet()))){
-                    text (
-                        Nynorsk to "",
-                    )
-                }
-
-                //IF(PE_Vedtaksdata_Faktoromregnet = false) THEN      INCLUDE ENDIF
-                showIf((not(pe.vedtaksdata_faktoromregnet()))){
-                    text (
-                        Nynorsk to "Opplysningar om berekninga",
-                    )
-                }
-                text (
-                    Nynorsk to "Orientering om rettar og plikter",
-                )
-            }
-            //[TBU2247]
-            // TODO Logic was different for different language layers.
-            paragraph {
-                text (
-                    English to "Attachments:",
-                )
-
-                //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                    text (
-                        English to " ",
-                    )
-                }
-
-                //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                    text (
-                        English to "This is your monthly disability benefit before tax",
-                    )
-                }
-
-                //PE_Vedtaksdata_Faktoromregnet = false
-                showIf(not(pe.vedtaksdata_faktoromregnet())){
-                    text (
-                        English to " ",
-                    )
-                }
-
-                //PE_Vedtaksdata_Faktoromregnet = false
-                showIf(not(pe.vedtaksdata_faktoromregnet())){
-                    text (
-                        English to "Information about calculations",
-                    )
-                }
-                text (
-                    English to "Information about rights and obligations",
-                )
-            }*/
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.RettTilAAKlage)
+            includePhrase(Felles.RettTilInnsynPesys)
+            includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+            includePhrase(Ufoeretrygd.Skattekort)
+            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("nor") or pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("")))
+            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
         }
+
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
+        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
     }
 }
 

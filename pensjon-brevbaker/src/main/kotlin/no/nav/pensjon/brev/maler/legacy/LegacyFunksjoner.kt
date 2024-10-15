@@ -103,7 +103,8 @@ fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Exp
 fun FUNKSJON_Year(date: Expression<LocalDate?>): Expression<Int> =
     date.ifNull(LocalDate.of(1000,1,1)).year // I exstream er Year(null) = 1000
 
-
+fun FUNKSJON_Month(date: Expression<LocalDate?>): Expression<Int> =
+    date.ifNull(LocalDate.of(1000,1,1)).month
 
 fun Expression<PE>.ut_barnet_barna_felles(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())

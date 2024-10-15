@@ -23,6 +23,8 @@ data class PE(
         val pe_ut_virkningstidpunktarminus1ar: Int,
         val pe_ut_vilfylle67ivirkningfomar: Boolean,
         val pe_ut_virkningfomar: Int,
+        val pe_ut_fattnorgeplusfatteos_avdod: Int,
+        val pe_ut_fattnorgeplusfatta10netto_avdod: Int,
         val pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en: String,
         val pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop: Kroner,
         val pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop: Kroner,
@@ -37,5 +39,6 @@ data class PE(
         val pe_ut_inntekt_trukket_fra_personinntekt: Kroner,
         val pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08: Kroner,
         val pe_ut_inntektsgrense_faktisk_minus_60000: Kroner,
+        val avdod_fremtidig_trygdetid_under_40_aar: Boolean, // (FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTNorsk,1) / 12) < 40)
     )
 }
