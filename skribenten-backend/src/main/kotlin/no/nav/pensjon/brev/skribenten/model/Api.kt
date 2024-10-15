@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.LetterMetadata
-import no.nav.pensjon.brev.skribenten.services.NAVAnsattEnhet
 import no.nav.pensjon.brev.skribenten.services.NavEnhet
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import java.time.Duration
@@ -51,6 +50,7 @@ object Api {
         val mottaker: OverstyrtMottaker?,
         val avsenderEnhet: NavEnhet?,
         val spraak: SpraakKode,
+        val journalpostId: Long?,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")

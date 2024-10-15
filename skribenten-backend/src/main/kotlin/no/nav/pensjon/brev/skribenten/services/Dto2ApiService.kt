@@ -43,7 +43,8 @@ class Dto2ApiService(
             distribusjonstype = info.distribusjonstype,
             mottaker = info.mottaker?.toApi(call),
             avsenderEnhet = info.avsenderEnhetId?.let { norg2Service.getEnhet(call, it) },
-            spraak = info.spraak.toApi()
+            spraak = info.spraak.toApi(),
+            journalpostId = info.journalpostId,
         )
     }
 

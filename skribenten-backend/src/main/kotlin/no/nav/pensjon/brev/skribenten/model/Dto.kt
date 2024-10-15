@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.db.MottakerType
@@ -36,6 +35,7 @@ object Dto {
         val avsenderEnhetId: String?,
         val spraak: LanguageCode,
         val signaturSignerende: String,
+        val journalpostId: Long?,
     )
 
     data class Document(

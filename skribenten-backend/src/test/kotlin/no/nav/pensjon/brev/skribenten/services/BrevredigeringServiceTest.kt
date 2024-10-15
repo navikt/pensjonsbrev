@@ -114,17 +114,7 @@ class BrevredigeringServiceTest {
             signerendeSaksbehandlere = null,
         ), brevdata = Api.GeneriskBrevdata()
     )
-    private val penService: PenService = mockk {
-        coEvery {
-            hentPesysBrevdata(
-                any(),
-                eq(sak.saksId),
-                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
-                any()
-            )
-        } returns ServiceResult.Ok(brevdataResponseData)
-        coEvery { sendbrev(any(), any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
-    }
+    private val penService: PenService = mockk()
     private val navAnsattService = mockk<NavansattService> {
         coEvery { harTilgangTilEnhet(any(), any(), any()) } returns ServiceResult.Ok(false)
         coEvery {
@@ -175,7 +165,7 @@ class BrevredigeringServiceTest {
 
     @BeforeEach
     fun clearMocks() {
-        clearMocks(brevbakerMock)
+        clearMocks(brevbakerMock, penService)
         coEvery {
             brevbakerMock.renderMarkup(
                 any(),
@@ -187,6 +177,16 @@ class BrevredigeringServiceTest {
         } returns ServiceResult.Ok(letter)
         coEvery { brevbakerMock.getRedigerbarTemplate(any(), any()) } returns templateDescription
         stagePdf(stagetPDF)
+
+        coEvery {
+            penService.hentPesysBrevdata(
+                any(),
+                eq(sak.saksId),
+                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                any()
+            )
+        } returns ServiceResult.Ok(brevdataResponseData)
+        coEvery { penService.sendbrev(any(), any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
     }
 
     @Test
@@ -263,6 +263,7 @@ class BrevredigeringServiceTest {
         ).isNull()
         assertThat(
             brevredigeringService.delvisOppdaterBrev(
+                call = callMock(),
                 saksId = sak.saksId + 1,
                 brevId = brev.info.id,
                 laastForRedigering = true,
@@ -608,6 +609,7 @@ class BrevredigeringServiceTest {
         ).resultOrNull()!!
 
         service.delvisOppdaterBrev(
+            call = callMock(),
             saksId = sak.saksId,
             brevId = brev.info.id,
             laastForRedigering = true,
@@ -669,6 +671,7 @@ class BrevredigeringServiceTest {
         ).resultOrNull()!!
 
         service.delvisOppdaterBrev(
+            call = callMock(),
             saksId = sak.saksId,
             brevId = brev.info.id,
             laastForRedigering = true,
@@ -810,6 +813,66 @@ class BrevredigeringServiceTest {
     }
 
     @Test
+    fun `brev kan ikke endres om det er arkivert`(): Unit = runBlocking {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
+
+        val pdf = brevredigeringService.hentEllerOpprettPdf(callMock(), brev.info.saksId, brev.info.id)?.resultOrNull()
+        assertThat(pdf).isNotNull()
+
+        coEvery { penService.sendbrev(any(), any(), any()) } returns ServiceResult.Ok(
+            Pen.BestillBrevResponse(
+                991,
+                Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
+            )
+        )
+        brevredigeringService.sendBrev(callMock(), brev.info.saksId, brev.info.id)?.resultOrNull()
+        assertThat(brevredigeringService.hentBrev(callMock(), brev.info.saksId, brev.info.id)?.resultOrNull()).isNotNull()
+
+        assertThrows<ArkivertBrevException> {
+            brevredigeringService.oppdaterBrev(
+                call = callMock(),
+                saksId = brev.info.saksId,
+                brevId = brev.info.id,
+                nyeSaksbehandlerValg = null,
+                nyttRedigertbrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit()
+            )
+        }
+        assertThrows<ArkivertBrevException> {
+            brevredigeringService.delvisOppdaterBrev(
+                callMock(),
+                brev.info.saksId,
+                brev.info.id,
+                false,
+                Distribusjonstype.LOKALPRINT
+            )
+        }
+        assertThrows<ArkivertBrevException> { brevredigeringService.oppdaterSignatur(callMock(), brev.info.id, "ny signatur") }
+        assertThrows<ArkivertBrevException> { brevredigeringService.tilbakestill(callMock(), brev.info.id) }
+    }
+
+    @Test
+    fun `arkivert brev men ikke distribuert kan sendes`(): Unit = runBlocking {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
+
+        val pdf = brevredigeringService.hentEllerOpprettPdf(callMock(), brev.info.saksId, brev.info.id)?.resultOrNull()
+        assertThat(pdf).isNotNull()
+
+        coEvery { penService.sendbrev(any(), any(), any()) } returns ServiceResult.Ok(
+            Pen.BestillBrevResponse(
+                991,
+                Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
+            )
+        )
+        brevredigeringService.sendBrev(callMock(), brev.info.saksId, brev.info.id)?.resultOrNull()
+        assertThat(brevredigeringService.hentBrev(callMock(), brev.info.saksId, brev.info.id)?.resultOrNull()).isNotNull()
+
+        coEvery { penService.sendbrev(any(), any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(991,null))
+        brevredigeringService.sendBrev(callMock(), brev.info.saksId, brev.info.id)
+
+        assertThat(transaction { Brevredigering.findById(brev.info.id) }).isNull()
+    }
+
+    @Test
     fun `brev reservasjon utloeper`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
 
@@ -923,7 +986,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrNull()!!
         val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f")
 
-        val oppdatert = brevredigeringService.delvisOppdaterBrev(sak.saksId, brev.info.id, mottaker = nyMottaker)
+        val oppdatert = brevredigeringService.delvisOppdaterBrev(callMock(), sak.saksId, brev.info.id, mottaker = nyMottaker)
         assertEquals(nyMottaker, oppdatert?.info?.mottaker)
     }
 
@@ -932,7 +995,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
         val nyMottaker = Dto.Mottaker.utenlandskAdresse("a", "b", "c", "d", "e", "f", "g")
 
-        val oppdatert = brevredigeringService.delvisOppdaterBrev(sak.saksId, brev.info.id, mottaker = nyMottaker)
+        val oppdatert = brevredigeringService.delvisOppdaterBrev(callMock(), sak.saksId, brev.info.id, mottaker = nyMottaker)
         assertEquals(nyMottaker, oppdatert?.info?.mottaker)
     }
 
@@ -1000,19 +1063,21 @@ class BrevredigeringServiceTest {
             frigiReservasjon = false,
         )?.resultOrNull()!!
 
-        coEvery { brevbakerMock.getModelSpecification(any(), eq(brev.info.brevkode)) } returns ServiceResult.Ok(TemplateModelSpecification(
-            types = mapOf(
-                "BrevData1" to mapOf(
-                    "saksbehandlerValg" to FieldType.Object(false, "SaksbehandlerValg1"),
+        coEvery { brevbakerMock.getModelSpecification(any(), eq(brev.info.brevkode)) } returns ServiceResult.Ok(
+            TemplateModelSpecification(
+                types = mapOf(
+                    "BrevData1" to mapOf(
+                        "saksbehandlerValg" to FieldType.Object(false, "SaksbehandlerValg1"),
+                    ),
+                    "SaksbehandlerValg1" to mapOf(
+                        "ytelse" to FieldType.Scalar(false, FieldType.Scalar.Kind.STRING),
+                        "land" to FieldType.Scalar(true, FieldType.Scalar.Kind.STRING),
+                        "inkluderAfpTekst" to FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN),
+                    ),
                 ),
-                "SaksbehandlerValg1" to mapOf(
-                    "ytelse" to FieldType.Scalar(false, FieldType.Scalar.Kind.STRING),
-                    "land" to FieldType.Scalar(true, FieldType.Scalar.Kind.STRING),
-                    "inkluderAfpTekst" to FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN),
-                ),
-            ),
-            letterModelTypeName = "BrevData1",
-        ))
+                letterModelTypeName = "BrevData1",
+            )
+        )
 
         val tilbakestilt = brevredigeringService.tilbakestill(callMock(), brev.info.id)?.resultOrNull()!!
         assertThat(tilbakestilt.redigertBrev).isEqualTo(letter.toEdit())
@@ -1030,7 +1095,7 @@ class BrevredigeringServiceTest {
         saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
     ) =
         brevredigeringService.opprettBrev(
-            call = call,
+            call = callMock(),
             sak = sak,
             brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
             spraak = LanguageCode.ENGLISH,
