@@ -11,13 +11,13 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
-import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAvslagFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.erSluttbehandling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
@@ -25,6 +25,7 @@ data class OmstillingstoenadAvslagDTO(
     override val innhold: List<Element>,
     val bosattUtland: Boolean,
     val erSluttbehandling: Boolean = false,
+    val avdoed: Avdoed,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -53,6 +54,8 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
             }
 
             outline {
+                includePhrase(OmstillingsstoenadAvslagFraser.Vedtak(avdoed, erSluttbehandling))
+
                 includePhrase(Vedtak.BegrunnelseForVedtaket)
 
                 konverterElementerTilBrevbakerformat(innhold)
