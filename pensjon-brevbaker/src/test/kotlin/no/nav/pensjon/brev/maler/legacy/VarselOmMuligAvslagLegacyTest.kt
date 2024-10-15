@@ -11,25 +11,25 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
-class VarselOmMuligAvslagAutoLegacyTest {
+class VarselOmMuligAvslagLegacyTest {
 
     @Test
     fun testPdf() {
         Letter(
-            VarselOmMuligAvslagAutoLegacy.template,
+            VarselOmMuligAvslagLegacy.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF(VarselOmMuligAvslagAutoLegacy.kode.name)
+        ).renderTestPDF(VarselOmMuligAvslagLegacy.kode.name)
     }
 
     @Test
     fun testHtml() {
         Letter(
-            VarselOmMuligAvslagAutoLegacy.template,
+            VarselOmMuligAvslagLegacy.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestHtml(VarselOmMuligAvslagAutoLegacy.kode.name)
+        ).renderTestHtml(VarselOmMuligAvslagLegacy.kode.name)
     }
 }

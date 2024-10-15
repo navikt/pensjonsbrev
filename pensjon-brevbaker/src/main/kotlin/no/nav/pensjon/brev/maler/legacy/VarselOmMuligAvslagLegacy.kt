@@ -1,10 +1,11 @@
 package no.nav.pensjon.brev.maler.legacy
 
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselOmMuligAvslagDto
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -13,14 +14,15 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object VarselOmMuligAvslagAutoLegacy : AutobrevTemplate<EmptyBrevdata> {
+object VarselOmMuligAvslagLegacy : RedigerbarTemplate<VarselOmMuligAvslagDto> {
 
 
-    override val kode = Brevkode.AutoBrev.PE_VARSEL_OM_MULIG_AVSLAG_AUTO
+    override val kode = Brevkode.Redigerbar.PE_VARSEL_OM_MULIG_AVSLAG
+    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.VARSEL
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EmptyBrevdata::class,
+        letterDataType = VarselOmMuligAvslagDto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel om mulig avslag/opphør p.g.a. manglende opplysninger",
