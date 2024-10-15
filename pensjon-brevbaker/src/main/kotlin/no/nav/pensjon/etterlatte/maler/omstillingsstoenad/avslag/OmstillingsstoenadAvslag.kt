@@ -21,49 +21,51 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.Omstillingstoen
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
-
 data class OmstillingstoenadAvslagDTO(
     override val innhold: List<Element>,
     val bosattUtland: Boolean,
-): FerdigstillingBrevDTO
+    val erSluttbehandling: Boolean = false,
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_AVSLAG
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = OmstillingstoenadAvslagDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - avslag",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        )
-    ) {
-        title {
-            text(
-                Bokmal to "Vi har avslått søknaden din om omstillingsstønad",
-                Nynorsk to "Vi har avslått søknaden din om omstillingsstønad",
-                English to "We have rejected your application for adjustment allowance",
-            )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = OmstillingstoenadAvslagDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - avslag",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Vi har avslått søknaden din om omstillingsstønad",
+                    Nynorsk to "Vi har avslått søknaden din om omstillingsstønad",
+                    English to "We have rejected your application for adjustment allowance",
+                )
+            }
+
+            outline {
+                includePhrase(Vedtak.BegrunnelseForVedtaket)
+
+                konverterElementerTilBrevbakerformat(innhold)
+
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageAvslagOpphoer)
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
+                includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
+            }
+
+            // Nasjonal
+            includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
+
+            // Bosatt utland
+            includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
         }
-
-        outline {
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
-
-            konverterElementerTilBrevbakerformat(innhold)
-
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageAvslagOpphoer)
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
-            includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
-        }
-
-        // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
-
-        // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
-    }
 }

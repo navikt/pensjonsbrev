@@ -35,13 +35,14 @@ object OmstillingsstoenadInnvilgelseFraser {
         val omstillingsstoenadBeregning: Expression<OmstillingsstoenadBeregning>,
         val harUtbetaling: Expression<Boolean>,
         val tidligereFamiliepleier: Expression<Boolean>,
+        val erSluttbehandling: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val harFlerePerioder = omstillingsstoenadBeregning.beregningsperioder.size().greaterThan(1)
+            val formatertVirkningsdato = omstillingsstoenadBeregning.virkningsdato.format()
+            val formatertDoedsdato = avdoed.doedsdato.format()
 
             paragraph {
-                val formatertVirkningsdato = omstillingsstoenadBeregning.virkningsdato.format()
-                val formatertDoedsdato = avdoed.doedsdato.format()
                 showIf(tidligereFamiliepleier) {
                     textExpr(
                         Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
@@ -52,6 +53,39 @@ object OmstillingsstoenadInnvilgelseFraser {
                             formatertVirkningsdato + " based on caring for a close family member.",
                     )
                 }.orShow {
+                    textExpr(
+                        Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
+                            " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ".",
+                        Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
+                            ", ettersom " + avdoed.navn + " døydde " + formatertDoedsdato + ".",
+                        English to "You have been granted adjustment allowance starting ".expr() +
+                            formatertVirkningsdato + " because " + avdoed.navn + " died on " + formatertDoedsdato + ".",
+                    )
+                }
+            }
+
+            showIf(erSluttbehandling) {
+                paragraph {
+                    text(
+                        Bokmal to
+                            "Du har tidligere fått et foreløpig avslag på søknaden din om omstillingsstønad fordi du ikke hadde rett på stønaden kun vurdert etter nasjonale regler. Avslaget var gitt i påvente av opplysninger fra utenlandske trygdemyndigheter.",
+                        Nynorsk to
+                            "Du har tidlegare fått eit foreløpig avslag på søknaden din om omstillingsstønad fordi du ikkje hadde rett på stønaden berre vurdert etter nasjonale reglar. Avslaget var gitt i påvente av opplysningar frå utanlandske trygdemyndigheiter.",
+                        English to
+                            "You previously received a preliminary rejection of your application for adjustment allowance because you were assessed only according to national rules, which did not entitle you to the allowance. The rejection was issued pending information from foreign social security authorities.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to
+                            "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på stønaden etter EØS-reglene.",
+                        Nynorsk to
+                            "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du har rett på stønaden etter EØS-reglane.",
+                        English to
+                            "We have now received information from foreign social security authorities, which means you are entitled to the allowance under the EEA rules.",
+                    )
+                }
+                paragraph {
                     textExpr(
                         Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
                             " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ".",

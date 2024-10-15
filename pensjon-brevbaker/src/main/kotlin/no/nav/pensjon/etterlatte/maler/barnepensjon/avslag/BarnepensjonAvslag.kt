@@ -25,42 +25,45 @@ data class BarnepensjonAvslagDTO(
     override val innhold: List<Element>,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
+    val erSluttbehandling: Boolean = false,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonAvslag : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal {
     override val kode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonAvslagDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - avslag",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Bokmal to "Vi har avslått søknaden din om barnepensjon",
-                Nynorsk to "Vi har avslått søknaden din om barnepensjon",
-                English to "We have rejected your application for a children's pension",
-            )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonAvslagDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - avslag",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Vi har avslått søknaden din om barnepensjon",
+                    Nynorsk to "Vi har avslått søknaden din om barnepensjon",
+                    English to "We have rejected your application for a children's pension",
+                )
+            }
+            outline {
+                konverterElementerTilBrevbakerformat(innhold)
+
+                includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
+            }
+
+            // Nasjonal
+            includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
+
+            // Bosatt utland
+            includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
         }
-        outline {
-            konverterElementerTilBrevbakerformat(innhold)
-
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
-        }
-
-        // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
-
-        // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
-    }
 }
