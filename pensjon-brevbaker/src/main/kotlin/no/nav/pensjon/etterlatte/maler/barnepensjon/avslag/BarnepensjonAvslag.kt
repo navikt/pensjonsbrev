@@ -37,13 +37,12 @@ object BarnepensjonAvslag : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal 
         name = kode.name,
         letterDataType = BarnepensjonAvslagDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata =
-            LetterMetadata(
-                displayTitle = "Vedtak - avslag",
-                isSensitiv = true,
-                distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-            ),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Vedtak - avslag",
+            isSensitiv = true,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        ),
     ) {
         title {
             text(
