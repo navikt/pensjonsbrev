@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselOmMuligAvslagDto
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -14,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object VarselOmMuligAvslagLegacy : RedigerbarTemplate<VarselOmMuligAvslagDto> {
+object VarselOmMuligAvslag : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
 
     override val kode = Brevkode.Redigerbar.PE_VARSEL_OM_MULIG_AVSLAG
@@ -22,7 +22,7 @@ object VarselOmMuligAvslagLegacy : RedigerbarTemplate<VarselOmMuligAvslagDto> {
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = VarselOmMuligAvslagDto::class,
+        letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel om mulig avslag/opphør p.g.a. manglende opplysninger",
