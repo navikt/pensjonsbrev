@@ -19,7 +19,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.Omstillingstoen
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.tidligereFamiliepleier
 
 
-data class OmstillingstoenadAvslagRedigerbartUtfallDTO(val avdoedNavn: String, val tidligereFamiliepleier: Boolean? = false) : RedigerbartUtfallBrevDTO
+data class OmstillingstoenadAvslagRedigerbartUtfallDTO(val avdoedNavn: String, val tidligereFamiliepleier: Boolean = false) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadAvslagRedigerbartUtfall : EtterlatteTemplate<OmstillingstoenadAvslagRedigerbartUtfallDTO>,
