@@ -43,7 +43,7 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
     val tidligereFamiliepleier: Boolean = false,
-    val erSluttbehandling: Boolean = false, // TODO: må sende med via Gjenny
+    val erSluttbehandling: Boolean = false // TODO: må sende med via Gjenny
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
