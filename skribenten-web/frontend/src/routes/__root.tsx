@@ -22,7 +22,7 @@ export const Route = createRootRouteWithContext<{
   component: () => (
     <>
       <React.Suspense fallback="">
-        <TanStackRouterDevtools position="bottom-right" />
+        <TanStackRouterDevtools position="top-right" />
       </React.Suspense>
       <div>
         <AppHeader />
