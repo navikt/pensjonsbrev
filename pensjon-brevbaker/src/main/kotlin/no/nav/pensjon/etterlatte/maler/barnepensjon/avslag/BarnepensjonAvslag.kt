@@ -26,7 +26,7 @@ data class BarnepensjonAvslagDTO(
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val erSluttbehandling: Boolean = false,
-    val avdoed: Avdoed,
+    val avdoed: Avdoed? = null,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers

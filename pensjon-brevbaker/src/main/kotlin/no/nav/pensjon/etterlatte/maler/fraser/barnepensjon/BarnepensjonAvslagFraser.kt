@@ -39,15 +39,28 @@ object BarnepensjonAvslagFraser {
                             "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA rules either.",
                     )
                 }
-                paragraph {
-                    textExpr(
-                        Bokmal to "Din søknad om barnepensjon  etter ".expr() + avdoed.navn + " er derfor endelig avslått.",
-                        Nynorsk to "Søknaden din om barnepensjon  etter ".expr() + avdoed.navn + " er derfor endeleg avslått.",
-                        English to
-                            "Your application for children`s pension for ".expr() + avdoed.navn +
-                            " has therefore been finally rejected.",
-                    )
+
+                ifNotNull(avdoed) {
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Din søknad om barnepensjon  etter ".expr() + avdoed.navn + " er derfor endelig avslått.",
+                            Nynorsk to "Søknaden din om barnepensjon etter ".expr() + avdoed.navn + " er derfor endeleg avslått.",
+                            English to
+                                    "Your application for children`s pension for ".expr() + avdoed.navn +
+                                    " has therefore been finally rejected.",
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            Bokmal to "Din søknad om barnepensjon er derfor endelig avslått.",
+                            Nynorsk to "Søknaden din om barnepensjon er derfor endeleg avslått.",
+                            English to
+                                    "Your application for children`s pension has therefore been finally rejected.",
+                        )
+                    }
                 }
+
             }
         }
     }
