@@ -22,7 +22,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.Omstillingstoen
 data class OmstillingstoenadAvslagRedigerbartUtfallDTO(
     val avdoedNavn: String,
     val erSluttbehandling: Boolean = false,
-    val tidligereFamiliepleier: Boolean? = false
+    val tidligereFamiliepleier: Boolean = false
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
