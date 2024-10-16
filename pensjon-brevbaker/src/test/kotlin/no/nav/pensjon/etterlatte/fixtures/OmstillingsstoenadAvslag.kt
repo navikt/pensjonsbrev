@@ -9,7 +9,6 @@ fun createOmstillingsstoenadAvslagDTO() =
         innhold = createPlaceholderForRedigerbartInnhold(),
         bosattUtland = false,
         erSluttbehandling = false,
-        avdoed = mockk(),
     )
 
 fun createOmstillingsstoenadAvslagRedigerbartUtfallDTO() = OmstillingstoenadAvslagRedigerbartUtfallDTO(avdoedNavn = "Ola Nordmann")

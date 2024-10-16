@@ -14,7 +14,6 @@ import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 
 object OmstillingsstoenadAvslagFraser {
     data class Vedtak(
-        val avdoed: Expression<Avdoed>,
         val erSluttbehandling: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -40,20 +39,20 @@ object OmstillingsstoenadAvslagFraser {
                     )
                 }
                 paragraph {
-                    textExpr(
-                        Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoed.navn + " er derfor endelig avslått.",
-                        Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoed.navn + " er derfor endeleg avslått.",
+                    text(
+                        Bokmal to "Din søknad om omstillingsstønad er derfor endelig avslått.",
+                        Nynorsk to "Søknaden din om omstillingsstønad er derfor endeleg avslått.",
                         English to
-                            "Your application for adjustment allowance for ".expr() + avdoed.navn + " has therefore been finally rejected.",
+                            "Your application for adjustment allowance has therefore been finally rejected.",
                     )
                 }
             }.orShow {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoed.navn + " er avslått.",
-                        Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoed.navn + " er avslått.",
+                    text(
+                        Bokmal to "Din søknad om omstillingsstønad er avslått.",
+                        Nynorsk to "Søknaden din om omstillingsstønad er avslått.",
                         English to
-                                "Your application for adjustment allowance for ".expr() + avdoed.navn + " has been rejected.",
+                                "Your application for adjustment allowance has been rejected.",
                     )
                 }
             }

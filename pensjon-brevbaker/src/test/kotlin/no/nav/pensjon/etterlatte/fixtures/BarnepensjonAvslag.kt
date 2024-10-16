@@ -8,7 +8,6 @@ fun createBarnepensjonAvslagDTO() {
         bosattUtland = false,
         brukerUnder18Aar = false,
         erSluttbehandling = false,
-        avdoed = null,
     )
 
 }

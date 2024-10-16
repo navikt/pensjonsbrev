@@ -14,7 +14,6 @@ import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 
 object BarnepensjonAvslagFraser {
     data class Vedtak(
-        val avdoed: Expression<Avdoed?>,
         val erSluttbehandling: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -40,26 +39,15 @@ object BarnepensjonAvslagFraser {
                     )
                 }
 
-                ifNotNull(avdoed) {
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Din søknad om barnepensjon  etter ".expr() + it.navn + " er derfor endelig avslått.",
-                            Nynorsk to "Søknaden din om barnepensjon etter ".expr() + it.navn + " er derfor endeleg avslått.",
-                            English to
-                                    "Your application for children`s pension for ".expr() + it.navn +
-                                    " has therefore been finally rejected.",
-                        )
-                    }
-                }.orShow {
-                    paragraph {
-                        text(
-                            Bokmal to "Din søknad om barnepensjon er derfor endelig avslått.",
-                            Nynorsk to "Søknaden din om barnepensjon er derfor endeleg avslått.",
-                            English to
-                                    "Your application for children`s pension has therefore been finally rejected.",
-                        )
-                    }
+                paragraph {
+                    text(
+                        Bokmal to "Din søknad om barnepensjon er derfor endelig avslått.",
+                        Nynorsk to "Søknaden din om barnepensjon er derfor endeleg avslått.",
+                        English to
+                                "Your application for children`s pension has therefore been finally rejected.",
+                    )
                 }
+
 
             }
         }

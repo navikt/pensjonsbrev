@@ -26,7 +26,6 @@ data class BarnepensjonAvslagDTO(
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val erSluttbehandling: Boolean = false,
-    val avdoed: Avdoed? = null,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -52,7 +51,7 @@ object BarnepensjonAvslag : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal 
             )
         }
         outline {
-            includePhrase(BarnepensjonAvslagFraser.Vedtak(avdoed, erSluttbehandling))
+            includePhrase(BarnepensjonAvslagFraser.Vedtak(erSluttbehandling))
 
             konverterElementerTilBrevbakerformat(innhold)
 
