@@ -33,6 +33,8 @@ services:
     ports:
       - "8082:8080"
       - "5017:5007"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     env_file:
       - ./skribenten-backend/secrets/azuread.env
       - ./skribenten-backend/secrets/unleash.env
