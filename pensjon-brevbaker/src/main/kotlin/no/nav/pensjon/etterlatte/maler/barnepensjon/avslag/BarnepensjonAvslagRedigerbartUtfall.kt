@@ -9,17 +9,24 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDTOSelectors.erSluttbehandling
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonAvslagFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
+data class BarnepensjonAvslagRedigerbartUtfallDTO(
+    val erSluttbehandling: Boolean = false,
+): RedigerbartUtfallBrevDTO
+
+
 @TemplateModelHelpers
-object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
+object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<BarnepensjonAvslagRedigerbartUtfallDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG_UTFALL
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
+        letterDataType = BarnepensjonAvslagRedigerbartUtfallDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilgelse",
@@ -35,7 +42,9 @@ object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>,
                 Language.English to "We have rejected your application for a children's pension",
             )
         }
+
         outline {
+            includePhrase(BarnepensjonAvslagFraser.Vedtak(erSluttbehandling))
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(BarnepensjonFellesFraser.FyllInn)
         }
