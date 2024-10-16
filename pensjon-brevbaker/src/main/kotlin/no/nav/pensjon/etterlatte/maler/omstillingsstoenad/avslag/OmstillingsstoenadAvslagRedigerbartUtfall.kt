@@ -17,10 +17,12 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.avdoedNavn
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.erSluttbehandling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.tidligereFamiliepleier
 
 data class OmstillingstoenadAvslagRedigerbartUtfallDTO(
     val avdoedNavn: String,
     val erSluttbehandling: Boolean = false,
+    val tidligereFamiliepleier: Boolean? = false
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -51,9 +53,14 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
             }
 
             outline {
-                includePhrase(OmstillingsstoenadAvslagFraser.Vedtak(erSluttbehandling, avdoedNavn))
+                includePhrase(
+                    OmstillingsstoenadAvslagFraser.Vedtak(
+                        erSluttbehandling,
+                        tidligereFamiliepleier,
+                        avdoedNavn
+                    )
+                )
                 includePhrase(Vedtak.BegrunnelseForVedtaket)
                 includePhrase(OmstillingsstoenadFellesFraser.FyllInn)
             }
-        }
 }
