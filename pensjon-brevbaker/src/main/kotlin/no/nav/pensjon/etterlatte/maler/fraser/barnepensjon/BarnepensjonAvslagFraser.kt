@@ -14,7 +14,7 @@ import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 
 object BarnepensjonAvslagFraser {
     data class Vedtak(
-        val erSluttbehandling: Expression<Boolean>,
+        val erSluttbehandling: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(erSluttbehandling) {
@@ -47,8 +47,6 @@ object BarnepensjonAvslagFraser {
                                 "Your application for children`s pension has therefore been finally rejected.",
                     )
                 }
-
-
             }
         }
     }

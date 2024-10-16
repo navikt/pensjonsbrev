@@ -24,7 +24,7 @@ data class BarnepensjonAvslagDTO(
     override val innhold: List<Element>,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
-    val erSluttbehandling: Boolean = false,
+    val erSluttbehandling: Boolean = false
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers

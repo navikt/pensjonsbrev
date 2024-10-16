@@ -14,7 +14,7 @@ import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 
 object OmstillingsstoenadAvslagFraser {
     data class Vedtak(
-        val erSluttbehandling: Expression<Boolean>,
+        val erSluttbehandling: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(erSluttbehandling) {

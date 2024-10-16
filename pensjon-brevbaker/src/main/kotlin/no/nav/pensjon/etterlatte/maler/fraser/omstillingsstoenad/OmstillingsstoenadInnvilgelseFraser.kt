@@ -35,7 +35,7 @@ object OmstillingsstoenadInnvilgelseFraser {
         val omstillingsstoenadBeregning: Expression<OmstillingsstoenadBeregning>,
         val harUtbetaling: Expression<Boolean>,
         val tidligereFamiliepleier: Expression<Boolean>,
-        val erSluttbehandling: Expression<Boolean>,
+        val erSluttbehandling: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val harFlerePerioder = omstillingsstoenadBeregning.beregningsperioder.size().greaterThan(1)
