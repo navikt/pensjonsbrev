@@ -16,9 +16,10 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.tidligereFamiliepleier
 
 
-data class OmstillingstoenadAvslagRedigerbartUtfallDTO(val avdoedNavn: String) : RedigerbartUtfallBrevDTO
+data class OmstillingstoenadAvslagRedigerbartUtfallDTO(val avdoedNavn: String, val tidligereFamiliepleier: Boolean? = false) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadAvslagRedigerbartUtfall : EtterlatteTemplate<OmstillingstoenadAvslagRedigerbartUtfallDTO>,
@@ -45,12 +46,22 @@ object OmstillingsstoenadAvslagRedigerbartUtfall : EtterlatteTemplate<Omstilling
         }
 
         outline {
-            paragraph {
-                textExpr(
-                    Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.".expr(),
-                    Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.".expr(),
-                    English to "Your application for adjustment allowance for the deceased ".expr() + avdoedNavn + " has been rejected.".expr(),
-                )
+            showIf(tidligereFamiliepleier) {
+                paragraph {
+                    text(
+                        Bokmal to "Din søknad om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid> er avslått.",
+                        Nynorsk to "Din søknad om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid> er avslått.",
+                        English to "Your application for adjustment allowance as a former family caregiver for <name of the person who has been cared for> has been rejected.",
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.".expr(),
+                        Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.".expr(),
+                        English to "Your application for adjustment allowance for the deceased ".expr() + avdoedNavn + " has been rejected.".expr(),
+                    )
+                }
             }
             paragraph {
                 text(
