@@ -23,14 +23,8 @@ import java.time.LocalDate
 
 object BarnepensjonFellesFraser {
 
-    data class DuHarTidligereAvslagMenErNaaInvilget(
-        var virkningstidspunkt: Expression<LocalDate>,
-        var avdoed: Expression<Avdoed>
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object DuHarTidligereAvslagViHarFaattNyeOplysninger : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            val formatertVirkningsdato = virkningstidspunkt.format()
-            val formatertDoedsdato = avdoed.doedsdato.format()
-
             paragraph {
                 text(
                     Bokmal to "Du har tidligere fått et foreløpig avslag på søknaden din om barnepensjon fordi du ikke hadde rett på pensjonen kun vurdert etter nasjonale regler. Avslaget var gitt i påvente av opplysninger fra utenlandske trygdemyndigheter.",
@@ -47,21 +41,8 @@ object BarnepensjonFellesFraser {
                 )
             }
 
-            paragraph {
-                textExpr(
-                    Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                            " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ".",
-                    Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
-                            ", ettersom " + avdoed.navn + " døydde " + formatertDoedsdato + ".",
-                    English to "You have been granted adjustment allowance starting ".expr() +
-                            formatertVirkningsdato + " because " + avdoed.navn + " died on " + formatertDoedsdato + ".",
-                )
-            }
-
         }
     }
-
-
 
     object FyllInn : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

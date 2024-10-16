@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -35,11 +36,19 @@ object BarnepensjonInnvilgelseFraser {
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
-
             showIf(erSluttbehandling) {
-                includePhrase(BarnepensjonFellesFraser.DuHarTidligereAvslagMenErNaaInvilget(virkningsdato, avdoed))
+                includePhrase(BarnepensjonFellesFraser.DuHarTidligereAvslagViHarFaattNyeOplysninger)
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + virkningsdato.format() +
+                                " fordi " + avdoed.navn + " døde " + avdoed.doedsdato.format() + ".",
+                        Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + virkningsdato.format() +
+                                ", ettersom " + avdoed.navn + " døydde " + avdoed.doedsdato.format() + ".",
+                        English to "You have been granted adjustment allowance starting ".expr() +
+                                avdoed.doedsdato.format() + " because " + avdoed.navn + " died on " + virkningsdato.format() + ".",
+                    )
+                }
             }
-
 
             paragraph {
                 val formatertVirkningsdato = virkningsdato.format()
