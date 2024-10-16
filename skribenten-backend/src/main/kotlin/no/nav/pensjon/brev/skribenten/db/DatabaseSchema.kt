@@ -154,6 +154,7 @@ fun initDatabase(jdbcUrl: String, username: String, password: String) {
             this.jdbcUrl = jdbcUrl
             this.username = username
             this.password = password
+            this.initializationFailTimeout = 6000
             maximumPoolSize = 2
             validate()
         }),
