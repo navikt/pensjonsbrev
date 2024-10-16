@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.legacy
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.maler.redigerbar.VarselOmMuligAvslag
 import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language
