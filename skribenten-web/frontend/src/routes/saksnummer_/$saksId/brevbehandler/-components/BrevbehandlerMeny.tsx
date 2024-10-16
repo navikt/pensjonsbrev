@@ -4,6 +4,8 @@ import {
   Accordion,
   Alert,
   BodyShort,
+  Button,
+  Detail,
   HStack,
   Label,
   Loader,
@@ -89,13 +91,17 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
 const MottakerNavn = (properties: { mottaker: Mottaker }) => {
   switch (properties.mottaker.type) {
     case "Samhandler": {
-      return <BodyShort>{properties.mottaker.navn ?? `Fant ikke navn for ${properties.mottaker.tssId}`}</BodyShort>;
+      return (
+        <BodyShort size="small">
+          {properties.mottaker.navn ?? `Fant ikke navn for ${properties.mottaker.tssId}`}
+        </BodyShort>
+      );
     }
     case "NorskAdresse": {
-      return <BodyShort>{properties.mottaker.navn}</BodyShort>;
+      return <BodyShort size="small">{properties.mottaker.navn}</BodyShort>;
     }
     case "UtenlandskAdresse": {
-      return <BodyShort>{properties.mottaker.navn}</BodyShort>;
+      return <BodyShort size="small">{properties.mottaker.navn}</BodyShort>;
     }
   }
 };
@@ -155,28 +161,28 @@ const BrevItem = (properties: {
           </VStack>
         </Accordion.Header>
         <Accordion.Content>
-          <VStack gap="8">
-            <VStack gap="4">
+          <VStack gap="4">
+            <div
+              css={css`
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+              `}
+            >
               <EndreMottakerMedOppsummeringOgApiHåndtering
                 brev={properties.brev}
                 endreAsIcon
                 kanTilbakestilleMottaker={!erLåst}
                 overrideOppsummering={(edit) => (
                   <div>
-                    <BodyShort
-                      css={css`
-                        color: var(--a-grayalpha-700);
-                      `}
-                    >
-                      Mottaker
-                    </BodyShort>
+                    <Detail textColor="subtle">Mottaker</Detail>
                     {properties.brev.mottaker ? (
                       <HStack align={"center"} gap="2">
                         <MottakerNavn mottaker={properties.brev.mottaker} /> {!erLåst && edit}
                       </HStack>
                     ) : (
                       <HStack align={"center"} gap="2">
-                        <BodyShort>{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {!erLåst && edit}
+                        <BodyShort size="small">{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {!erLåst && edit}
                       </HStack>
                     )}
                   </div>
@@ -189,8 +195,9 @@ const BrevItem = (properties: {
                 // TODO - finn en måte å gi feedback på dersom kallet gir error. Jeg antar at switcehn ikke blir endret dersom det er en error
                 loading={låsForRedigeringMutation.isPending}
                 onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
+                size="small"
               >
-                Lås for redigering
+                Brevet er klart for sending
               </Switch>
 
               {!erLåst && (
@@ -200,36 +207,13 @@ const BrevItem = (properties: {
                   `}
                   gap="4"
                 >
-                  {/*
-                  TODO - Implementer oppdatering av data
-                  <Button
-                    css={css`
-                      color: #23262a;
-                      border-color: #23262a;
-                      box-shadow: inset 0 0 0 2px #23262a;
-                    `}
-                    onClick={() => {
-                      //TODO: Implementer oppdatering av data
-                      console.log("Oppdaterer data");
-                    }}
-                    size="small"
-                    type="button"
-                    variant="secondary"
-                  >
-                    Oppdater data
-                  </Button>
-                  */}
                   <Link
-                    className="navds-button navds-button--small navds-label navds-label--small"
-                    css={css`
-                      color: #23262a;
-                      border-color: #23262a;
-                      box-shadow: inset 0 0 0 2px #23262a;
-                    `}
                     params={{ saksId: properties.saksId, brevId: properties.brev.id }}
                     to="/saksnummer/$saksId/brev/$brevId"
                   >
-                    Fortsett redigering
+                    <Button as="a" size="small" variant="secondary-neutral">
+                      Fortsett redigering
+                    </Button>
                   </Link>
                 </VStack>
               )}
@@ -272,27 +256,19 @@ const BrevItem = (properties: {
                   <Radio value={Distribusjonstype.LOKALPRINT}>Lokalprint</Radio>
                 </RadioGroup>
               )}
-            </VStack>
+
+              {properties.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && <LokalPrintInfoAlerts />}
+            </div>
 
             <div>
-              <BodyShort
-                css={css`
-                  color: var(--a-grayalpha-700);
-                `}
-              >
+              <Detail textColor="subtle">
                 Sist endret:{" "}
                 {isDateToday(properties.brev.sistredigert)
                   ? formatStringDateWithTime(properties.brev.sistredigert)
                   : formatStringDate(properties.brev.sistredigert)}{" "}
                 av {forkortetSaksbehandlernavn(properties.brev.sistredigertAv, gjeldendeBruker)}
-              </BodyShort>
-              <BodyShort
-                css={css`
-                  color: var(--a-grayalpha-700);
-                `}
-              >
-                Brev opprettet: {formatStringDate(properties.brev.opprettet)}
-              </BodyShort>
+              </Detail>
+              <Detail textColor="subtle">Brev opprettet: {formatStringDate(properties.brev.opprettet)}</Detail>
             </div>
           </VStack>
         </Accordion.Content>
@@ -309,10 +285,29 @@ const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjelden
       css={css`
         align-self: flex-start;
       `}
-      size="small"
+      size="xsmall"
       variant={variant}
     >
-      <BodyShort>{text}</BodyShort>
+      {text}
     </Tag>
+  );
+};
+
+const LokalPrintInfoAlerts = () => {
+  return (
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      `}
+    >
+      <Alert size="small" variant="warning">
+        Du må åpne PDF og skrive ut brevet etter du har ferdigstilt.
+      </Alert>
+      <Alert size="small" variant="info">
+        Skribenten-brev som skal til samhandler kan sendes via sentralprint.
+      </Alert>
+    </div>
   );
 };

@@ -5,6 +5,7 @@ import { BodyShort, Button, HStack, TextField } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 
+import { VerticalDivider } from "~/components/Divider";
 import { SlettBrev } from "~/components/SlettBrev";
 
 import { Route } from "../route";
@@ -27,15 +28,19 @@ const PDFViewerTopBar = (properties: {
         border-bottom: 1px solid var(--a-gray-200);
         padding: 0 1rem;
         height: 48px;
+        position: sticky;
+        top: 0;
+        z-index: 3;
       `}
       justify="space-between"
     >
-      <HStack align="center" gap="2">
+      <HStack align="center" gap="4">
         <TopBarNavigation
           currentPageNumber={properties.currentPageNumber}
           setCurrentPageNumber={properties.setCurrentPageNumber}
           totalNumberOfPages={properties.totalNumberOfPages}
         />
+        <VerticalDivider />
         <TopBarZoom scale={properties.scale} setScale={properties.setScale} />
       </HStack>
       <SlettBrev
@@ -96,41 +101,39 @@ const TopBarNavigation = (properties: {
   };
 
   return (
-    <HStack
-      align="end"
-      css={css`
-        border-right: 1px solid var(--a-gray-200);
-        padding-right: 1rem;
-      `}
-      gap="2"
-    >
-      <BasicPDFViewerButton
-        cssOveride={css`
-          padding: 0;
-          height: 24px;
-          width: 24px;
+    <HStack align="center" css={css``} gap="2">
+      <HStack
+        align="center"
+        css={css`
+          gap: 6px;
         `}
-        disabled={properties.currentPageNumber === 1}
-        onClick={goToPreviousPage}
       >
-        <ChevronUpIcon fontSize="24px" title="forrige side" />
-      </BasicPDFViewerButton>
-      <BasicPDFViewerButton
-        cssOveride={css`
-          padding: 0;
-          height: 24px;
-          width: 24px;
-        `}
-        disabled={properties.currentPageNumber === properties.totalNumberOfPages}
-        onClick={goToNextPage}
-      >
-        <ChevronDownIcon fontSize="24px" title="neste side" />
-      </BasicPDFViewerButton>
+        <BasicPDFViewerButton
+          cssOveride={css`
+            padding: 0;
+            height: 24px;
+            width: 24px;
+          `}
+          disabled={properties.currentPageNumber === 1}
+          icon={<ChevronUpIcon fontSize="24px" title="forrige side" />}
+          onClick={goToPreviousPage}
+        />
+        <BasicPDFViewerButton
+          cssOveride={css`
+            padding: 0;
+            height: 24px;
+            width: 24px;
+          `}
+          disabled={properties.currentPageNumber === properties.totalNumberOfPages}
+          icon={<ChevronDownIcon fontSize="24px" title="neste side" />}
+          onClick={goToNextPage}
+        />
+      </HStack>
       <HStack gap="1">
         <TextField
           css={css`
             input {
-              width: 28px;
+              width: 27px;
               height: 32px;
               min-height: 32px;
 
@@ -154,10 +157,11 @@ const TopBarNavigation = (properties: {
           }}
           value={textFieldValue}
         />
+
         <BodyShort
           css={css`
+            width: 27px;
             align-self: center;
-            font-size: 20px;
           `}
         >
           / {properties.totalNumberOfPages}
@@ -171,24 +175,30 @@ const TopBarZoom = (properties: { scale: number; setScale: (n: number) => void }
   return (
     <HStack gap="2">
       <BasicPDFViewerButton
+        cssOveride={css`
+          height: 32px;
+          width: 32px;
+        `}
+        icon={<ZoomPlusIcon fontSize="20px" title="zoom-in" />}
         onClick={() => {
           if (properties.scale <= 1.5) {
             properties.setScale(properties.scale + 0.1);
           }
         }}
-      >
-        <ZoomPlusIcon fontSize="24px" title="zoom-in" />
-      </BasicPDFViewerButton>
+      />
 
       <BasicPDFViewerButton
+        cssOveride={css`
+          height: 32px;
+          width: 32px;
+        `}
+        icon={<ZoomMinusIcon fontSize="20px" title="zoom-ut" />}
         onClick={() => {
           if (properties.scale >= 1) {
             properties.setScale(properties.scale - 0.1);
           }
         }}
-      >
-        <ZoomMinusIcon fontSize="24px" title="zoom-ut" />
-      </BasicPDFViewerButton>
+      />
     </HStack>
   );
 };
@@ -197,7 +207,7 @@ const BasicPDFViewerButton = (properties: {
   cssOveride?: SerializedStyles;
   disabled?: boolean;
   onClick: () => void;
-  children: React.ReactNode;
+  icon: React.ReactNode;
 }) => {
   return (
     <Button
@@ -209,11 +219,10 @@ const BasicPDFViewerButton = (properties: {
         `
       }
       disabled={properties.disabled}
+      icon={properties.icon}
       onClick={properties.onClick}
       type="button"
       variant="tertiary-neutral"
-    >
-      {properties.children}
-    </Button>
+    />
   );
 };

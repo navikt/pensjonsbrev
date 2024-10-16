@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, HStack, Modal } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -21,7 +22,11 @@ export const SlettBrev = (properties: {
   const [vilSletteBrev, setVilSletteBrev] = useState(false);
 
   return (
-    <div>
+    <div
+      css={css`
+        height: 32px;
+      `}
+    >
       {vilSletteBrev && (
         <SlettBrevModal
           brevId={properties.brevId}

@@ -20,6 +20,5 @@ export const SakspartView = ({ sakspart }: { sakspart: Sakspart }) => (
     <span />
     <span>Saksnummer:</span>
     <span>{sakspart.saksnummer}</span>
-    <span>{sakspart.dokumentDato}</span>
   </div>
 );

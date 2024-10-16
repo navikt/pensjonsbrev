@@ -1,7 +1,9 @@
 .editor {
     margin-top: var(--a-spacing-6);
-    width: 758px;
+    /*clamp: minimum, ideal, max */
+    padding: 0 clamp(1rem, 2vw, 4rem);
     caret-color: green;
+
     [contenteditable] {
 
         &:focus-within {
@@ -18,14 +20,14 @@
     font-size: var(--a-font-size-heading-medium);
     letter-spacing: -0.002em;
     line-height: var(--a-font-line-height-heading-medium);
-     font-weight: var(--a-font-weight-bold);
-     margin-bottom: var(--a-spacing-2);
+    font-weight: var(--a-font-weight-bold);
+    margin-bottom: var(--a-spacing-2);
 }
 
 .TITLE2 {
     font-size: var(--a-font-size-heading-small);
     letter-spacing: -0.001em;
     line-height: var(--a-font-line-height-heading-small);
-     font-weight: var(--a-font-weight-bold);
-     margin-bottom: var(--a-spacing-2);
+    font-weight: var(--a-font-weight-bold);
+    margin-bottom: var(--a-spacing-2);
 }

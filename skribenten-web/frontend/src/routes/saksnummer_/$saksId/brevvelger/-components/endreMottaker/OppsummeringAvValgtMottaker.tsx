@@ -76,7 +76,7 @@ export default OppsummeringAvValgtMottaker;
 
 const OppsummeringAvAdresse = (properties: { type: Nullable<string>; adresse: Adresse }) => {
   return (
-    <Table>
+    <Table size="small">
       <Table.Body>
         {properties.type && <InversedTableRow label="Type" value={properties.type} />}
         <InversedTableRow label="Navn" value={properties.adresse.navn} />

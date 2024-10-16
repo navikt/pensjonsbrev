@@ -55,21 +55,18 @@ describe("<LetterEditor />", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.get(".TITLE1").contains("Tittel over punktliste").click();
-      cy.get('[data-cy="TITLE1-BUTTON"]').should("be.disabled");
-      cy.get('[data-cy="TITLE2-BUTTON"]').should("be.enabled");
-      cy.get('[data-cy="PARAGRAPH-BUTTON"]').should("be.enabled").click();
+      cy.getDataCy("typography-select").contains("Overskrift (alt+2)").should("be.selected");
 
+      cy.getDataCy("typography-select").select("Normal (alt+1)");
       cy.get(".PARAGRAPH").contains("Tittel over punktliste");
-      cy.get('[data-cy="PARAGRAPH-BUTTON"]').should("be.disabled");
-      cy.get('[data-cy="TITLE1-BUTTON"]').should("be.enabled");
-      cy.get('[data-cy="TITLE2-BUTTON"]').should("be.enabled").click();
+      cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
 
+      cy.getDataCy("typography-select").select("Underoverskrift (alt+3)");
       cy.get(".TITLE2").contains("Tittel over punktliste");
-      cy.get('[data-cy="TITLE2-BUTTON"]').should("be.disabled");
-      cy.get('[data-cy="PARAGRAPH-BUTTON"]').should("be.enabled");
-      cy.get('[data-cy="TITLE1-BUTTON"]').should("be.enabled");
+      cy.getDataCy("typography-select").contains("Underoverskrift (alt+3)").should("be.selected");
     });
   });
+
   describe("Navigation", () => {
     it("ArrowUp works within sibling contenteditables", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);

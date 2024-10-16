@@ -1,10 +1,10 @@
-package no.nav.pensjon.brev.api
+package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.adhoc.*
-import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntekt
+import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
+import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
@@ -21,7 +21,8 @@ object ProductionTemplates {
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
-        EndretUfoeretrygdPGAInntekt,
+        EndretUfoeretrygdPGAInntektLegacy,
+        EtteroppgjoerEtterbetalingAutoLegacy,
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
         OmsorgEgenAuto,

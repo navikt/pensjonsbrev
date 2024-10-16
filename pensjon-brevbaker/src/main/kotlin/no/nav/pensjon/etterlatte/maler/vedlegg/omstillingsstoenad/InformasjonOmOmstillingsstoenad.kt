@@ -24,7 +24,7 @@ fun informasjonOmOmstillingsstoenad(
         title = newText(
             Bokmal to "Informasjon til deg som mottar omstillingsstønad",
             Nynorsk to "Informasjon til deg som får omstillingsstønad",
-            English to "Information for Recipients of adjustment allowance",
+            English to "Information for recipients of adjustment allowance",
         ),
         includeSakspart = false,
     ) {
@@ -64,7 +64,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.aktivitet(
                     ifElse(tidligereFamiliepleier, "care period ended", "death") +
                     ", receiving adjustment allowance is contingent upon working at least 50 percent or involved in " +
                     "another activity with the aim of finding employment. After one year, you will be expected to be " +
-                    "active 100 percent. This is called the Activity Obligation.",
+                    "active 100 percent. This is called the activity obligation.",
         )
     }
     paragraph {
@@ -254,23 +254,18 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.endretInntekt() {
     paragraph {
         text(
             Bokmal to "Utbetalingen for resten av året vil justeres utfra det du har fått utbetalt så langt " +
-                    "det gjeldende året. Dette gjøres for å redusere et eventuelt etteroppgjør, som kan medføre " +
-                    "tilbakekreving av tidligere utbetalt omstillingsstønad.",
+                    "det gjeldende året. Meld derfor fra snarest mulig for å få mest mulig riktig utbetalt " +
+                    "omstillingsstønad, slik at etteroppgjøret blir så riktig som mulig. Du kan finne mer " +
+                    "informasjon om etteroppgjør på ${Constants.OMS_ETTEROPPGJOER_URL}.",
             Nynorsk to "Utbetalinga for resten av året vil bli justert ut frå det du har fått utbetalt så " +
-                    "langt det gjeldande året. Dette blir gjort for å redusere eit eventuelt etteroppgjer som kan " +
-                    "føre til at tidlegare utbetalt omstillingsstønad blir kravd tilbake. ",
+                    "langt det gjeldande året. Meld difor frå snarast råd, slik at du får utbetalt " +
+                    "omstillingsstønaden du har krav på, og etteroppgjeret blir mest mogleg rett. Du finn meir " +
+                    "informasjon om etteroppgjer på ${Constants.OMS_ETTEROPPGJOER_URL}.",
             English to "The payment for the rest of the year will be adjusted based on what you have been " +
-                    "paid so far in the current year. This is done to reduce any final settlement that could result " +
-                    "in NAV demanding repayment of previously paid adjustment allowance.",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Om inntekten din endres, må du melde fra til oss snarest mulig for å unngå etteroppgjør.",
-            Nynorsk to "Dersom det skulle skje endringar i inntekta di, må du melde frå til oss snarast mogleg " +
-                    "for å unngå etteroppgjer.",
-            English to "If your income changes, you must notify us as soon as possible to avoid this type " +
-                    "of future settlement.",
+                    "paid so far in the current year. It is therefore important to notify us as soon as possible " +
+                    "to receive the correct amount of adjustment allowance, so that any final settlement will " +
+                    "be as correct as possible. You can find more information about final settlements " +
+                    "online: ${Constants.OMS_ETTEROPPGJOER_URL}.",
         )
     }
 }
@@ -363,9 +358,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanMeldeEndringe
         list {
             item {
                 text(
-                    Bokmal to "en melding på " + Constants.SKRIVTILOSS_URL,
-                    Nynorsk to "ei melding på " + Constants.SKRIVTILOSS_URL,
-                    English to "a message online: " + Constants.SKRIVTILOSS_URL,
+                    Bokmal to "beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her får du ikke lagt ved dokumentasjon)",
+                    Nynorsk to "ein beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her kan du ikkje leggje ved dokumentasjon)",
+                    English to "a message online: ${Constants.Engelsk.BESKJED_TIL_NAV_URL} (you cannot attach documentation from this page)",
                 )
             }
             item {

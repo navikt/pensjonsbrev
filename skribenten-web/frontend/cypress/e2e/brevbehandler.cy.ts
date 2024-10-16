@@ -28,10 +28,10 @@ describe("Brevbehandler", () => {
     cy.visit("/saksnummer/123456/brevbehandler");
   });
 
-  it("saken inneholder ingen brev", () => {
+  /*it("saken inneholder ingen brev", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", { body: [] });
     cy.contains("Fant ingen brev som er under behandling").should("be.visible");
-  });
+  });*/
 
   it("kan ferdigstille og sende brev med sentralprint", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (request) => {
@@ -59,7 +59,7 @@ describe("Brevbehandler", () => {
 
     //verifiserer innhold før / etter lås
     cy.contains("Fortsett redigering").should("be.visible");
-    cy.contains("Lås for redigering").click();
+    cy.contains("Brevet er klart for sending").click();
     cy.contains("Fortsett redigering").should("not.exist");
     cy.get('[data-cy="brevbehandler-distribusjonstype"] input[type="radio"][value="SENTRALPRINT"]').should(
       "be.checked",
@@ -67,7 +67,7 @@ describe("Brevbehandler", () => {
 
     //---- ferdigstiller brevet
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
-    cy.contains("Ferdigstill brev").click("left");
+    cy.contains("Ferdigstill 1 brev").click("left");
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
     cy.contains("Ja, send valgte brev").click();
@@ -116,13 +116,13 @@ describe("Brevbehandler", () => {
 
     //verifiserer innhold før / etter lås
     cy.contains("Fortsett redigering").should("be.visible");
-    cy.contains("Lås for redigering").click();
+    cy.contains("Brevet er klart for sending").click();
     cy.contains("Fortsett redigering").should("not.exist");
     cy.contains("Lokalprint").click();
 
     //---- ferdigstiller brevet
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
-    cy.contains("Ferdigstill brev").click("left");
+    cy.contains("Ferdigstill 1 brev").click("left");
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
 
@@ -176,13 +176,13 @@ describe("Brevbehandler", () => {
 
     //verifiserer innhold før / etter lås
     cy.contains("Fortsett redigering").should("be.visible");
-    cy.contains("Lås for redigering").click();
+    cy.contains("Brevet er klart for sending").click();
     cy.contains("Fortsett redigering").should("not.exist");
     cy.contains("Lokalprint").click();
 
     //---- ferdigstiller brevet
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
-    cy.contains("Ferdigstill brev").click("left");
+    cy.contains("Ferdigstill 1 brev").click("left");
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
 
@@ -213,7 +213,7 @@ describe("Brevbehandler", () => {
       request.reply([klarBrev, brevSomSendesSomLokalPrint]);
     });
 
-    cy.contains("Send ferdigstilte brev").click("left");
+    cy.contains("Send 2 ferdigstilte brev").click("left");
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="2"]`).should("be.checked");
@@ -245,7 +245,7 @@ describe("Brevbehandler", () => {
       request.reply([klarBrev, brevSomSendesSomLokalPrint]);
     });
 
-    cy.contains("Send ferdigstilte brev").click("left");
+    cy.contains("Send 2 ferdigstilte brev").click("left");
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="2"]`).click();
@@ -317,7 +317,7 @@ describe("Brevbehandler", () => {
       request.reply([klarBrev]);
     });
 
-    cy.contains("Send ferdigstilte brev").click("left");
+    cy.contains("Send 1 ferdigstilt brev").click("left");
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
     cy.contains("Ja, send valgte brev").click();

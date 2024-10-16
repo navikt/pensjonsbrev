@@ -125,7 +125,7 @@ object OmstillingsstoenadFellesFraser {
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
-                    English to "Any questions?"
+                    English to "Do you have any questions?"
                 )
             }
             paragraph {
@@ -289,7 +289,7 @@ object OmstillingsstoenadFellesFraser {
                     English to "To receive the correct amount of the adjustment allowance, you are obligated " +
                             "to inform us about any changes to your income. We will adjust the adjustment " +
                             "allowance starting the month after you reported the change. You can read more " +
-                            "about income reporting in the attachment: Information for Adjustment Allowance Recipients.",
+                            "about income reporting in the attachment: Information for recipients of adjustment allowance.",
                 )
             }
         }
@@ -317,7 +317,7 @@ object OmstillingsstoenadFellesFraser {
                     English to "To receive the correct amount of adjustment allowance, you are obligated to " +
                             "inform us about any changes to your income. We will adjust the adjustment allowance " +
                             "starting the month after you reported the change. You can read more about income " +
-                            "reporting in the attachment Information to Recipients of Adjustment Allowance. ",
+                            "reporting in the attachment Information to recipients of adjustment allowance. ",
                 )
             }
         }

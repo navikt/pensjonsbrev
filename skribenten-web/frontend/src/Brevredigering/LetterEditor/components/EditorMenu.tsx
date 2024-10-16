@@ -1,55 +1,77 @@
 import { css } from "@emotion/react";
 import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { Button, HStack, Loader } from "@navikt/ds-react";
+import { HStack, Loader, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
-import { memo, type ReactNode, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { formatTime } from "~/utils/dateUtils";
 
+import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
+import type { LetterEditorState } from "../model/state";
+import { getCursorOffset } from "../services/caretUtils";
+import type { Typography } from "../utils";
+import { TypographyToText } from "../utils";
+
+const SelectTypography = (props: {
+  editorState: LetterEditorState;
+  setEditorState: CallbackReceiver<LetterEditorState>;
+}) => {
+  const changeableContent = isTextContent(
+    props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex]?.content?.[
+      props.editorState.focus.contentIndex
+    ],
+  );
+
+  return (
+    <Select
+      data-cy="typography-select"
+      hideLabel
+      label="Tekst stil"
+      onChange={(e) => {
+        applyAction(
+          Actions.switchTypography,
+          props.setEditorState,
+          props.editorState.focus,
+          e.target.value as Typography,
+        );
+        //setter fokuset tilbake til editor etter valgt tekststil
+        applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
+      }}
+      readOnly={!changeableContent}
+      size="small"
+      value={props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex]?.type}
+    >
+      {Object.entries(TypographyToText).map(([key, value]) => (
+        <option key={key} value={key}>
+          {value}
+        </option>
+      ))}
+    </Select>
+  );
+};
 
 export const EditorMenu = () => {
   const { freeze, error, editorState, setEditorState } = useEditor();
-  const activeTypography = editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.type;
-  const changeableContent = isTextContent(
-    editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.content?.[editorState.focus.contentIndex],
-  );
 
   return (
     <div
       css={css`
         border-bottom: 1px solid var(--a-gray-200);
-        background: var(--a-blue-50);
-        padding: var(--a-spacing-3) var(--a-spacing-4);
+        background: var(--a-white);
+        padding: var(--a-spacing-2) var(--a-spacing-4);
         display: flex;
         gap: var(--a-spacing-2);
         align-self: stretch;
+        align-items: center;
+        justify-content: space-between;
       `}
     >
-      <SelectTypographyButton
-        dataCy="TITLE1-BUTTON"
-        enabled={activeTypography !== "TITLE1" && changeableContent}
-        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus, "TITLE1")}
-      >
-        Overskrift 1
-      </SelectTypographyButton>
-      <SelectTypographyButton
-        dataCy="TITLE2-BUTTON"
-        enabled={activeTypography !== "TITLE2" && changeableContent}
-        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus, "TITLE2")}
-      >
-        Overskrift 2
-      </SelectTypographyButton>
-      <SelectTypographyButton
-        dataCy="PARAGRAPH-BUTTON"
-        enabled={activeTypography !== "PARAGRAPH" && changeableContent}
-        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus, "PARAGRAPH")}
-      >
-        Normal
-      </SelectTypographyButton>
+      <SelectTypography editorState={editorState} setEditorState={setEditorState} />
+
       <LagretTidspunkt
         datetime={editorState.info.sistredigert}
         error={error}
@@ -132,39 +154,3 @@ const LagretTidspunkt = memo(
     }
   },
 );
-
-function SelectTypographyButton({
-  dataCy,
-  enabled,
-  children,
-  onClick,
-}: {
-  dataCy: string;
-  enabled: boolean;
-  children: ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <Button
-      css={
-        !enabled &&
-        css`
-          color: var(--a-text-on-action);
-          background-color: var(--a-surface-action-active);
-        `
-      }
-      data-cy={dataCy}
-      disabled={!enabled}
-      // Use mouseDown instead of onClick to prevent the cursor from losing focus
-      onMouseDown={(event) => {
-        event.preventDefault();
-        onClick();
-      }}
-      size="xsmall"
-      type="button"
-      variant="secondary-neutral"
-    >
-      {children}
-    </Button>
-  );
-}

@@ -280,7 +280,11 @@ const ModalTabs = (properties: {
           samhandlerValues={properties.samhandlerValuesMedId}
         />
       ) : (
-        <Tabs onChange={(s) => properties.tab.setTab(s as EndreMottakerModalTabs)} value={properties.tab.tab}>
+        <Tabs
+          onChange={(s) => properties.tab.setTab(s as EndreMottakerModalTabs)}
+          size="small"
+          value={properties.tab.tab}
+        >
           <Tabs.List>
             <Tabs.Tab label="Finn samhandler" value="samhandler" />
 

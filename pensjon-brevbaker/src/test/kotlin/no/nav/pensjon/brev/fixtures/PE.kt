@@ -9,6 +9,12 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbil
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOS
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNor
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.FratrekkListe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektListe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjor
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBruker
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPS
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PSfnr
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
@@ -18,6 +24,10 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.*
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.Uforetrygdberegning
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregninguforeperiode.BeregningUforePeriode
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.Etteroppgjoerresultat
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.EoEndringBruker
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.EoEndringEps
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.ForrigeEtteroppgjor
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.Kravhode
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakList
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.Vilkar
@@ -51,6 +61,11 @@ fun createPE() =
             pe_ut_sum_fattnorge_fatt_a10_netto = 10,
             pe_ut_sum_fattnorge_fattbilateral = 11,
             pe_ut_antallbarnserkullogfelles = 12,
+            fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt = true,
+            fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj = true,
+            pe_ut_etteroppgjorfratrekklistebrukeretterbetaling = true,
+            pe_ut_inntekt_trukket_fra_personinntekt = Kroner(1088),
+            pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes = false,
         ),
         pebrevkode = "PE_UT_05_100",
         personsak = PersonSak(PSfnr("01019878910"))
@@ -74,18 +89,68 @@ fun createPersongrunnlag() =
         trygdetidsgrunnlaglistebilateral = createTrygdetidsgrunnlagListeBilateral(),
         trygdetidsgrunnlaglisteeos = createTrygdetidsgrunnlagListeEOS(),
         trygdetidsgrunnlaglistenor = createTrygdetidsgrunnlagListeNor(),
+        uforetrygdetteroppgjor = createUforetrygdEtteroppgjor(),
     )
+
+fun createUforetrygdEtteroppgjor(): UforetrygdEtteroppgjor =
+    UforetrygdEtteroppgjor(
+        barnetilleggfb = true,
+        barnetilleggsb = true,
+        periodefom = LocalDate.of(2020, 1, 1),
+        periodetom = LocalDate.of(2020, 1, 1),
+        uforetrygdetteroppgjordetaljbruker = createUforetrygdEtteroppgjorDetaljBruker(),
+        uforetrygdetteroppgjordetaljeps = createUforetrygdEtteroppgjorDetaljEps()
+    )
+
+private fun createUforetrygdEtteroppgjorDetaljBruker() = UforetrygdEtteroppgjorDetaljBruker(
+    fratrekkliste = createFratrekkListe(),
+    sumfratrekkut = Kroner(22),
+    suminntekterut = Kroner(23),
+    inntektliste = createInntektsListe(),
+    suminntekterbt = Kroner(12),
+    sumfratrekkbt = Kroner(14)
+)
+
+private fun createInntektsListe() =
+    InntektListe(
+        inntektsgrunnlag = listOf(
+            createInntektsgrunnlag()
+        )
+    )
+
+private fun createUforetrygdEtteroppgjorDetaljEps() = UforetrygdEtteroppgjorDetaljEPS(
+
+    inntektliste = createInntektsListe(),
+    fratrekkListe = createFratrekkListe(),
+    suminntekterbt = Kroner(11),
+    sumfratrekkbt = Kroner(13)
+)
+
+private fun createFratrekkListe() = FratrekkListe(
+    inntektsgrunnlag = listOf(
+        createInntektsgrunnlag()
+    )
+)
+
+private fun createInntektsgrunnlag(): Inntektsgrunnlag = Inntektsgrunnlag(
+    grunnikkereduksjon = "grunnikkereduksjon",
+    belop = Kroner(1234),
+    inntekttype = "inntekttype",
+    registerkilde = "registerkilde"
+)
 
 fun createTrygdetidsgrunnlagListeBilateral() =
     TrygdetidsgrunnlagListeBilateral(
         listOf(
-            TrygdetidsgrunnlagBilateral(
-                trygdetidbilateralland = "usa",
-                trygdetidfombilateral = LocalDate.of(2020, 1, 5),
-                trygdetidtombilateral = LocalDate.of(2020, 5, 5),
-            )
+            createTrygdetidsgrunnlagBilateral()
         )
     )
+
+private fun createTrygdetidsgrunnlagBilateral() = TrygdetidsgrunnlagBilateral(
+    trygdetidbilateralland = "usa",
+    trygdetidfombilateral = LocalDate.of(2020, 1, 5),
+    trygdetidtombilateral = LocalDate.of(2020, 5, 5),
+)
 
 fun createTrygdetidsgrunnlagListeEOS() =
     TrygdetidsgrunnlagListeEOS(
@@ -114,6 +179,32 @@ fun createVedtaksdata() = Vedtaksdata(
     vilkarsvedtaklist = createVilkarsVedtakList(),
     virkningfom = LocalDate.of(2020, 1, 1),
     faktoromregnet = false,
+    etteroppgjorresultat = Etteroppgjoerresultat(
+        avviksbelop = Kroner(5450),
+        avviksbeloptfb = Kroner(5451),
+        avviksbeloptsb = Kroner(5452),
+        avviksbeloput = Kroner(5453),
+        etteroppgjorresultattype = "etteroppgjorresultattype",
+        inntektut = Kroner(6464),
+        tidligerebeloptfb = Kroner(5454),
+        tidligerebeloptsb = Kroner(5455),
+        tidligerebeloput = Kroner(5456),
+        totalbeloptfb = Kroner(5457),
+        totalbeloptsb = Kroner(5458),
+        totalbeloput = Kroner(5459),
+    ),
+    forrigeetteroppgjor = ForrigeEtteroppgjor(
+        eoendringeps = EoEndringEps(
+            endretpensjonogandreytelser = true,
+            endretpgi = true
+        ),
+        eoendringbruker = EoEndringBruker(
+            endretpensjonogandreytelser = true,
+            endretpgi = true
+        ),
+        resultatforrigeeo = "",
+        tidligereeoiverksatt = true
+    ),
 )
 
 fun createVilkarsVedtakList() =

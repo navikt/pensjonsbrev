@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.*

@@ -3,6 +3,8 @@
 package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner
@@ -10,6 +12,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsS
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_antallbarnserkullogfelles
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_etteroppgjorfratrekklistebrukeretterbetaling
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntekt_trukket_fra_personinntekt
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_nettoakk_pluss_nettorestar
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_sum_fattnorge_fatt_a10_netto
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_sum_fattnorge_fattbilateral
@@ -27,14 +32,31 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelecto
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.personbostedsland_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistebilateral_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistenor_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.uforetrygdetteroppgjor_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.trygdetidfombilateral_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateralSelectors.trygdetidsgrunnlagbilateral_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNorSelectors.trygdetidsgrunnlag_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.trygdetidfom_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektListeSelectors.inntektsgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.fratrekkliste_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.inntektliste_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.sumfratrekkbt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.sumfratrekkut_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.suminntekterbt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBrukerSelectors.suminntekterut_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.barnetilleggfb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.barnetilleggsb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.periodefom_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.periodetom_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.uforetrygdetteroppgjordetaljbruker_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorSelectors.uforetrygdetteroppgjordetaljeps_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.grunnlag_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.beregningsdata_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.etteroppgjorresultat_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.faktoromregnet_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.forrigeetteroppgjor_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.kravhode_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.vilkarsvedtaklist_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.virkningfom_safe
@@ -129,6 +151,26 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.uforegrad_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.uforetidspunkt_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.UforetrygdberegningSelectors.yrkesskadegrad_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.avviksbelop_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.avviksbeloptfb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.avviksbeloptsb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.avviksbeloput_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.etteroppgjorresultattype_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.inntektut_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.tidligerebeloptfb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.tidligerebeloptsb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.tidligerebeloput_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.totalbeloptfb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.totalbeloptsb_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.EtteroppgjoerresultatSelectors.totalbeloput_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.EoEndringBrukerSelectors.endretpensjonogandreytelser_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.EoEndringBrukerSelectors.endretpgi_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.EoEndringEpsSelectors.endretpensjonogandreytelser_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.EoEndringEpsSelectors.endretpgi_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.ForrigeEtteroppgjorSelectors.eoendringbruker_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.ForrigeEtteroppgjorSelectors.eoendringeps_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.ForrigeEtteroppgjorSelectors.resultatforrigeeo_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.ForrigeEtteroppgjorSelectors.tidligereeoiverksatt_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.boddarbeidutland_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.brukerkonvertertup_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype_safe
@@ -163,8 +205,14 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.getOrNull
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.FratrekkListeSelectors.inntektsgrunnlag_safe as fratrekk_inntektsgrunnlag_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPSSelectors.fratrekkListe_safe as eps_fratrekkListe_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPSSelectors.inntektliste_safe as eps_inntektliste_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPSSelectors.sumfratrekkbt_safe as eps_sumfratrekkbt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPSSelectors.suminntekterbt_safe as eps_suminntekterbt_safe
 
 fun Expression<PE>.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget(): Expression<Boolean> =
     vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggserkull_safe.btsbinnvilget_safe.ifNull(false)
@@ -262,6 +310,7 @@ fun Expression<PE>.sivilstand_ektefelle_partner_samboer_bormed_ut(): Expression<
 fun Expression<PE>.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(): Expression<String> =
     functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall.ifNull("")
 
+fun Expression<PE>.ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes(): Expression<Boolean> = functions.pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes
 
 fun Expression<PE>.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner(): Expression<String> =
     functions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner.ifNull("")
@@ -533,7 +582,149 @@ fun Expression<PE>.vedtaksdata_virkningfom(): Expression<LocalDate?> = vedtaksbr
 fun Expression<PE>.vedtaksdata_faktoromregnet(): Expression<Boolean> = vedtaksbrev_safe.vedtaksdata_safe.faktoromregnet_safe.ifNull(false)
 
 fun Expression<PE>.nettoakk_pluss_nettorestar() = functions.pe_ut_nettoakk_pluss_nettorestar
+
 fun Expression<PE>.ut_vilfylle67ivirkningfomar() = functions.pe_ut_vilfylle67ivirkningfomar
+
 fun Expression<PE>.ut_virkningfomar() = functions.pe_ut_virkningfomar
+
 fun Expression<PE>.ut_virkningstidpunktarminus1ar() = functions.pe_ut_virkningstidpunktarminus1ar
 
+fun Expression<PE>.ut_avviksbeloptfbutenminus(): Expression<Kroner> =
+    vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().absoluteValue()
+
+fun Expression<PE>.ut_avviksbeloptsbutenminus(): Expression<Kroner> =
+    vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().absoluteValue()
+
+fun Expression<PE>.ut_avviksbeloputenminus(): Expression<Kroner> =
+    vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop()
+
+fun Expression<PE>.ut_avviksbelopututenminus(): Expression<Kroner> =
+    vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().absoluteValue()
+
+fun Expression<PE>.ut_uforetrygdetteroppgjor_periodefom_year(): Expression<Int> =
+    vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().ifNull(LocalDate.of(0,1,1)).year
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb(): Expression<Boolean> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.barnetilleggfb_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggsb(): Expression<Boolean> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.barnetilleggsb_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom(): Expression<LocalDate?> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.periodefom_safe
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodetom(): Expression<LocalDate?> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.periodetom_safe
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut(): Expression<Kroner> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljbruker_safe.sumfratrekkut_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut(): Expression<Kroner> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljbruker_safe.suminntekterut_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.avviksbeloptfb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.avviksbeloptsb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.avviksbeloput_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.avviksbelop_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_inntektut(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.inntektut_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.tidligerebeloptfb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.tidligerebeloptsb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.tidligerebeloput_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.totalbeloptfb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.totalbeloptsb_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput(): Expression<Kroner> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.totalbeloput_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringbruker_endretpensjonogandreytelser(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.forrigeetteroppgjor_safe.eoendringbruker_safe.endretpensjonogandreytelser_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringbruker_endretpensjonogandreytelser_new(): Expression<Boolean> =
+    vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringbruker_endretpensjonogandreytelser()
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringbruker_endretpgi(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.forrigeetteroppgjor_safe.eoendringbruker_safe.endretpgi_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringbruker_endretpgi_new(): Expression<Boolean> =
+    vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringbruker_endretpgi()
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringeps_endretpensjonogandreytelser(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.forrigeetteroppgjor_safe.eoendringeps_safe.endretpensjonogandreytelser_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringeps_endretpensjonogandreytelser_new(): Expression<Boolean> =
+    vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringeps_endretpensjonogandreytelser()
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringeps_endretpgi(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.forrigeetteroppgjor_safe.eoendringeps_safe.endretpgi_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringeps_endretpgi_new(): Expression<Boolean> =
+    vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringeps_endretpgi()
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_resultatforrigeeo(): Expression<String> =
+    vedtaksbrev_safe.vedtaksdata_safe.forrigeetteroppgjor_safe.resultatforrigeeo_safe.ifNull("")
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_resultatforrigeeo_new(): Expression<String> =
+    vedtaksbrev_vedtaksdata_forrigeetteroppgjor_resultatforrigeeo()
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_tidligereeoiverksatt(): Expression<Boolean> =
+    vedtaksbrev_safe.vedtaksdata_safe.forrigeetteroppgjor_safe.tidligereeoiverksatt_safe.ifNull(false)
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_tidligereeoiverksatt_new(): Expression<Boolean> =
+    vedtaksbrev_vedtaksdata_forrigeetteroppgjor_tidligereeoiverksatt()
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt()
+    = functions.fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj()
+        = functions.fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj
+
+fun Expression<PE>.ut_etteroppgjorfratrekklistebrukeretterbetaling() =
+    functions.pe_ut_etteroppgjorfratrekklistebrukeretterbetaling
+
+fun Expression<PE>.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype(): Expression<String> =
+    vedtaksbrev_safe.vedtaksdata_safe.etteroppgjorresultat_safe.etteroppgjorresultattype_safe.ifNull("")
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterbt(): Expression<Kroner> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljbruker_safe.suminntekterbt_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_inntektliste_inntektsgrunnlag(): Expression<List<Inntektsgrunnlag>> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljbruker_safe.inntektliste_safe.inntektsgrunnlag_safe.ifNull(emptyList())
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag(): Expression<List<Inntektsgrunnlag>> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljbruker_safe.fratrekkliste_safe.fratrekk_inntektsgrunnlag_safe.ifNull(emptyList())
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt(): Expression<Kroner> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljbruker_safe.sumfratrekkbt_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag() =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljeps_safe.eps_inntektliste_safe.inntektsgrunnlag_safe.ifNull(emptyList())
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_fratrekkliste_inntektsgrunnlag() =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljeps_safe.eps_fratrekkListe_safe.fratrekk_inntektsgrunnlag_safe.ifNull(emptyList())
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt(): Expression<Kroner> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljeps_safe.eps_suminntekterbt_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_sumfratrekkbt(): Expression<Kroner> =
+    vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().uforetrygdetteroppgjor_safe.uforetrygdetteroppgjordetaljeps_safe.eps_sumfratrekkbt_safe.ifNull(Kroner(0))
+
+fun Expression<PE>.ut_inntekt_trukket_fra_personinntekt(): Expression<Kroner> = functions.pe_ut_inntekt_trukket_fra_personinntekt

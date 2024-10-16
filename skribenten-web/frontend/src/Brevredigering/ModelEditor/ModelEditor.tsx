@@ -1,119 +1,141 @@
-import { css } from "@emotion/react";
-import { Button, Heading } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
-import type { Draft } from "immer";
-import { produce } from "immer";
-import { useCallback, useEffect, useRef } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { BodyShort, VStack } from "@navikt/ds-react";
+import { partition } from "lodash";
+import { useFormContext } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
-import { getSakContext } from "~/api/skribenten-api-endpoints";
-import type { SaksbehandlerValg } from "~/types/brev";
-import type { LetterModelSpecification } from "~/types/brevbakerTypes";
-import type { Nullable } from "~/types/Nullable";
+import { ApiError } from "~/components/ApiError";
+import type { FieldType, LetterModelSpecification } from "~/types/brevbakerTypes";
 
-import { ObjectEditor } from "./components/ObjectEditor";
-import { AutoSavingTextField } from "./components/ScalarEditor";
+import { FieldEditor } from "./components/ObjectEditor";
+import { isFieldNullableOrBoolean } from "./components/utils";
 
-export type ModelEditorProperties = {
-  brevkode: string;
-  defaultValues?: SaksbehandlerValg & { signatur: string };
-  disableSubmit: boolean;
-  onSubmit: (saksbehandlerValg: SaksbehandlerValg, signatur: string) => void;
-  saksId: string;
-  vedtaksId: string | undefined;
-  brevId: Nullable<number>;
-  showOnlyRequiredFields?: boolean;
+const useModelSpecificationForm = (brevkode: string) => {
+  const brevKodeSpecification = useModelSpecification(brevkode, (s) => s);
+  const saksbehandlerValgType = brevKodeSpecification.specification
+    ? findSaksbehandlerValgTypeName(brevKodeSpecification.specification)
+    : "";
+  const saksbehandlerValgSpecification = useModelSpecification(brevkode, (s) => s.types[saksbehandlerValgType]);
+
+  return {
+    status:
+      brevKodeSpecification.status === "success" ? saksbehandlerValgSpecification.status : brevKodeSpecification.status,
+    specification: saksbehandlerValgSpecification.specification,
+    error:
+      brevKodeSpecification.status === "error" ? brevKodeSpecification.error : saksbehandlerValgSpecification.error,
+  };
 };
 
-export const ModelEditor = ({
-  brevkode,
-  defaultValues,
-  disableSubmit,
-  onSubmit,
-  saksId,
-  vedtaksId,
-  brevId,
-  showOnlyRequiredFields,
-}: ModelEditorProperties) => {
-  const methods = useForm({ defaultValues });
-  const specification = useModelSpecification(brevkode, (s) => s);
-  const formRef = useRef<HTMLFormElement>(null);
-  const brevmal = useQuery({
-    queryKey: getSakContext.queryKey(saksId, vedtaksId),
-    queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
-    select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brevkode),
+const usePartitionedModelSpecification = (brevkode: string) => {
+  const { status, specification, error } = useModelSpecificationForm(brevkode);
+
+  const [optionalFields, requiredfields] = specification
+    ? partition(Object.entries(specification), (spec) => isFieldNullableOrBoolean(spec[1]))
+    : [[], []];
+
+  return {
+    status: status,
+    requiredfields,
+    optionalFields,
+    error: error,
+  };
+};
+
+const createFormElementsFromSpecification = (args: {
+  specificationFormElements: {
+    requiredfields: [string, FieldType][];
+    optionalFields: [string, FieldType][];
+  };
+  brevkode: string;
+  submitOnChange?: () => void;
+}) => {
+  const requiredFields = args.specificationFormElements.requiredfields.map(([field, fieldType]) => ({
+    field: field,
+    fieldType: fieldType,
+    element: (
+      <FieldEditor
+        brevkode={args.brevkode}
+        field={field}
+        fieldType={fieldType}
+        key={field}
+        prependedName="saksbehandlerValg"
+        submitOnChange={args.submitOnChange}
+      />
+    ),
+  }));
+
+  const optionalFields = args.specificationFormElements.optionalFields.map(([field, fieldType]) => ({
+    field: field,
+    fieldType: fieldType,
+    element: (
+      <FieldEditor
+        brevkode={args.brevkode}
+        field={field}
+        fieldType={fieldType}
+        key={field}
+        prependedName="saksbehandlerValg"
+        submitOnChange={args.submitOnChange}
+      />
+    ),
+  }));
+
+  return {
+    requiredFields,
+    optionalFields,
+  };
+};
+
+export const SaksbehandlerValgModelEditor = (props: {
+  brevkode: string;
+  fieldsToRender: "required" | "optional";
+  submitOnChange?: () => void;
+}) => {
+  const { register } = useFormContext();
+  const specificationFormElements = usePartitionedModelSpecification(props.brevkode);
+  const { requiredFields, optionalFields } = createFormElementsFromSpecification({
+    specificationFormElements,
+    brevkode: props.brevkode,
+    submitOnChange: props.submitOnChange,
   });
 
-  useEffect(() => {
-    methods.reset(defaultValues);
-  }, [defaultValues, methods]);
+  switch (specificationFormElements.status) {
+    case "error": {
+      return <ApiError error={specificationFormElements.error} title={"En feil skjedde"} />;
+    }
+    case "success": {
+      switch (props.fieldsToRender) {
+        case "required": {
+          /**
+           * Boolean felter er spesielle
+           * Det at et felt er non-nullable, betyr at den er påkrevd ved innsending av skjemaet
+           * Derimot, så er boolean felter stort sett kun brukt for brev-tekst, og er ikke et påkrevd felt som saksbehandler skal
+           * forholde seg til ved opprettelse av brev.
+           *
+           * Tidligere har vi mekket opp et objekt ved innsending som inneholdt boolean feltene ved opprettelse av brev, som ikke
+           * har vært registrert i formet.
+           *
+           * Dette er litt fordi at feltene blir først registrert når dem blit rendret, og boolean felter skal ikke bli rendret under opprettelse av brev.
+           *
+           * Derfor, så registrerer vi boolean felter her.
+           *
+           * Merk at dette er på mange måter bare en ny hack
+           */
+          for (const field of optionalFields) {
+            if (field.fieldType.type === "scalar" && field.fieldType.kind === "BOOLEAN") {
+              register(`saksbehandlerValg.${field.field}`, { value: false });
+            }
+          }
+          return <VStack gap="6">{requiredFields.map((field) => field.element)}</VStack>;
+        }
+        case "optional": {
+          return <VStack gap="6">{optionalFields.map((field) => field.element)}</VStack>;
+        }
+      }
 
-  const requestSubmit = useCallback(() => {
-    formRef.current?.requestSubmit();
-  }, [formRef]);
-
-  if (specification) {
-    const saksbehandlerValgType = findSaksbehandlerValgTypeName(specification);
-
-    const doSubmit = (values: SaksbehandlerValg & { signatur: string }) => {
-      const { signatur, ...saksbehandlerValg } = values;
-      return onSubmit(createSaksbehandlerValg(saksbehandlerValg, specification, saksbehandlerValgType), signatur);
-    };
-
-    return (
-      <>
-        <FormProvider {...methods}>
-          <form
-            css={css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--a-spacing-6);
-
-              > {
-                width: 100%;
-              }
-            `}
-            onSubmit={methods.handleSubmit(doSubmit)}
-            ref={formRef}
-          >
-            <Heading size="small">{brevmal.data?.name}</Heading>
-            <ObjectEditor
-              brevkode={brevkode}
-              showOnlyRequiredFields={showOnlyRequiredFields}
-              submitOnChange={brevId ? requestSubmit : undefined}
-              typeName={saksbehandlerValgType}
-            />
-            {/*
-              //TODO - ModelEditor skal i utgangspunktet kun være for SaksbehandlerValg.
-              // designet skal ha signatur felt på 'samme sted', altså med editoren.
-              //Den skal ikke brukes ved opprettelse av brev, men kun når man redigerer brevet. Derfor
-              //gjør vi en enkel fiks for å skjule signatur feltet ved opprettelse av brev.
-              */}
-            {!showOnlyRequiredFields && (
-              <AutoSavingTextField
-                field={"signatur"}
-                fieldType={{
-                  type: "scalar",
-                  nullable: false,
-                  kind: "STRING",
-                }}
-                onSubmit={brevId ? requestSubmit : undefined}
-                timeoutTimer={2500}
-                type={"text"}
-              />
-            )}
-            {!brevId && (
-              <Button loading={disableSubmit} type="submit">
-                Opprett brev
-              </Button>
-            )}
-          </form>
-        </FormProvider>
-      </>
-    );
-  } else {
-    return <div>Henter skjema for saksbehandler valg</div>;
+      break;
+    }
+    case "pending": {
+      return <BodyShort size="small">Henter skjema for saksbehandler valg...</BodyShort>;
+    }
   }
 };
 
@@ -125,34 +147,4 @@ function findSaksbehandlerValgTypeName(modelSpecification: LetterModelSpecificat
   return saksbehandlerValgModelSpec?.type === "object"
     ? saksbehandlerValgModelSpec.typeName
     : modelSpecification.letterModelTypeName;
-}
-
-function createSaksbehandlerValg(
-  values: unknown,
-  specification: LetterModelSpecification,
-  saksbehandlerValgType: string,
-): SaksbehandlerValg {
-  return produce(values as SaksbehandlerValg, (draft) =>
-    saksbehandlerValgObject(draft, specification, saksbehandlerValgType),
-  );
-}
-
-function saksbehandlerValgObject(
-  draft: Draft<SaksbehandlerValg>,
-  specification: LetterModelSpecification,
-  objectType: string,
-) {
-  const objectSpecification = specification.types[objectType];
-
-  for (const [field, fieldType] of Object.entries(objectSpecification)) {
-    if (fieldType.nullable) {
-      if (fieldType.type === "object" && draft[field] !== undefined && draft[field] !== null) {
-        saksbehandlerValgObject(draft[field] as SaksbehandlerValg, specification, fieldType.typeName);
-      } else if (draft[field] === "") {
-        draft[field] = null;
-      }
-    } else if (fieldType.type === "scalar" && fieldType.kind === "BOOLEAN") {
-      draft[field] = draft[field] ?? false;
-    }
-  }
 }
