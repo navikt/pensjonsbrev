@@ -42,16 +42,6 @@ object BarnepensjonForeldreloesFraser {
 
             showIf(erSluttbehandling) {
                 includePhrase(BarnepensjonFellesFraser.DuHarTidligereAvslagViHarFaattNyeOplysninger)
-                paragraph {
-                    textExpr(
-                        Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() +
-                                formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.".expr(),
-                        Language.Nynorsk to "Du er innvilga barnepensjon frå ".expr() +
-                                formatertVirkningsdato + " fordi begge foreldra dine er registrert som døde.".expr(),
-                        Language.English to "You have been granted a children's pension starting ".expr() +
-                                formatertVirkningsdato + " because both your parents are registered as deceased.".expr()
-                    )
-                }
             }
 
             paragraph {

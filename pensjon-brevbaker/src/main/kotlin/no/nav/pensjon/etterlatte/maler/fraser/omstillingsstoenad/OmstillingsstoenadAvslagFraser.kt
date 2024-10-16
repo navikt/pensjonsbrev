@@ -47,6 +47,15 @@ object OmstillingsstoenadAvslagFraser {
                             "Your application for adjustment allowance for ".expr() + avdoed.navn + " has therefore been finally rejected.",
                     )
                 }
+            }.orShow {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoed.navn + " er avslått.",
+                        Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoed.navn + " er avslått.",
+                        English to
+                                "Your application for adjustment allowance for ".expr() + avdoed.navn + " has been rejected.",
+                    )
+                }
             }
         }
     }
