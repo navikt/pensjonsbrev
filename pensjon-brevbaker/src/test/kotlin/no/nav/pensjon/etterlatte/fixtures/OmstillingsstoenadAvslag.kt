@@ -7,7 +7,6 @@ fun createOmstillingsstoenadAvslagDTO() =
     OmstillingstoenadAvslagDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
         bosattUtland = false,
-        tidligereFamiliepleier = false,
     )
 
 fun createOmstillingsstoenadAvslagRedigerbartUtfallDTO() =
