@@ -4,5 +4,6 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.Omstillingsstoe
 
 
 fun createOmstillingsstoenadVarselAktivitetspliktDTO() = OmstillingsstoenadVarselAktivitetspliktDTO(
-    innhold = emptyList()
+    innhold = emptyList(),
+    bosattUtland = true
 )
