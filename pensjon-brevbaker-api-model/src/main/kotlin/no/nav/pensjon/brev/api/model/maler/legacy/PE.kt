@@ -40,5 +40,8 @@ data class PE(
         val pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08: Kroner,
         val pe_ut_inntektsgrense_faktisk_minus_60000: Kroner,
         val avdod_fremtidig_trygdetid_under_40_aar: Boolean, // (FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTNorsk,1) / 12) < 40)
+        val pe_ut_sisteopptjeningarlikuforetidspunkt: Boolean,
+        val pe_ut_forstegangstjenesteikkenull: Boolean,
+        val pe_ut_fattnorgeplusfattbilateral_avdod: Int,
     )
 }

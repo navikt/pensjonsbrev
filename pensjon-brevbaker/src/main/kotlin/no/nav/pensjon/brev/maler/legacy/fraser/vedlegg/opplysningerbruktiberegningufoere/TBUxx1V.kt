@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagavdod_brukerflykt
 import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagavdod_fodselsnummer
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.ut_fattnorgeplusfatta10netto_avdod
-import no.nav.pensjon.brev.maler.legacy.ut_fattnorgeplusfattbilateral_avdød
+import no.nav.pensjon.brev.maler.legacy.ut_fattnorgeplusfattbilateral_avdod
 import no.nav.pensjon.brev.maler.legacy.ut_fattnorgeplusfatteos_avdod
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_anvendttrygdetid
@@ -442,12 +442,8 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                             }
                         }
                     }
-                    //Failed to convert with error: Expected token of type CLOSE_PAREN but found NUMBER
-
-                    //IF((FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTNorsk,1) / 12) < 40) THEN      INCLUDE ENDIF
 
                     //[TBUxx1V]
-
                     showIf(pe.avdod_fremtidig_trygdetid_under_40_aar()){
                         row {
                             cell {
@@ -572,9 +568,9 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to pe.ut_fattnorgeplusfattbilateral_avdød().format() + " måneder",
-                                    Nynorsk to pe.ut_fattnorgeplusfattbilateral_avdød().format() + " månader",
-                                    English to pe.ut_fattnorgeplusfattbilateral_avdød().format() + " months",
+                                    Bokmal to pe.ut_fattnorgeplusfattbilateral_avdod().format() + " måneder",
+                                    Nynorsk to pe.ut_fattnorgeplusfattbilateral_avdod().format() + " månader",
+                                    English to pe.ut_fattnorgeplusfattbilateral_avdod().format() + " months",
                                 )
                             }
                         }
