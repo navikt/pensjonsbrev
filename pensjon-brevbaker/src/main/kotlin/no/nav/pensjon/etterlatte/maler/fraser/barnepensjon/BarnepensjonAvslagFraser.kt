@@ -33,7 +33,6 @@ object BarnepensjonAvslagFraser {
                             "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA rules either.",
                     )
                 }
-
                 paragraph {
                     text(
                         Bokmal to "Din søknad om barnepensjon er derfor endelig avslått.",

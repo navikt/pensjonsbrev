@@ -32,7 +32,7 @@ data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
     val harFlereUtbetalingsperioder: Boolean,
     val erGjenoppretting: Boolean,
     val harUtbetaling: Boolean,
-    val erSluttbehandling: Boolean = false // TODO: sendes med fra Gjenny
+    val erSluttbehandling: Boolean = false
 )
 
 @TemplateModelHelpers

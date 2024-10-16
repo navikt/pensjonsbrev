@@ -23,7 +23,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 data class OmstillingstoenadAvslagDTO(
     override val innhold: List<Element>,
     val bosattUtland: Boolean,
-    val erSluttbehandling: Boolean = false // TODO: sende med fra Gjenny
+    val erSluttbehandling: Boolean = false
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
