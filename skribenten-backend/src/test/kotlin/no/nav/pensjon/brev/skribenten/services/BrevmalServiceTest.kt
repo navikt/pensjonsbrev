@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
@@ -28,7 +29,7 @@ class BrevmalServiceTest {
     private val brevbakerbrev = listOf(
         TemplateDescription(
             "brevbaker mal",
-            "en dataklasse ref",
+            EmptyRedigerbarBrevdata::class.java.name,
             listOf(LanguageCode.BOKMAL),
             no.nav.pensjon.brevbaker.api.model.LetterMetadata(
                 "brevbaker brev",
@@ -168,7 +169,8 @@ class BrevmalServiceTest {
 
     @Test
     fun `inkluderer brevbakerbrev om feature er aktivert`() = runBlocking {
-        Features.override("brevbakerbrev", true)
+        Features.override(Features.brevbakerbrev, true)
+        Features.override(Features.brevutendata, false)
         val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Pen.SakType.ALDER)
         for (brev in brevbakerbrev) {
             brevmalerAssert.anyMatch { it.id == brev.name }
@@ -177,7 +179,20 @@ class BrevmalServiceTest {
 
     @Test
     fun `inkluderer ikke brevbakerbrev om feature er deaktivert`() = runBlocking {
-        Features.override("brevbakerbrev", false)
+        Features.override(Features.brevbakerbrev, false)
+        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Pen.SakType.ALDER)
+        for (brev in brevbakerbrev) {
+            brevmalerAssert.noneMatch { it.id == brev.name }
+        }
+    }
+
+    @Test
+    fun `inkluderer ikke brevbakerbrev uten brevdata om feature er deaktivert`() = runBlocking {
+        coEvery { brevbakerService.getTemplates(any()) } returns ServiceResult.Ok(
+            brevbakerbrev.map { it.copy(letterDataClass = EmptyRedigerbarBrevdata::class.java.name) }
+        )
+        Features.override(Features.brevbakerbrev, true)
+        Features.override(Features.brevutendata, true)
         val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Pen.SakType.ALDER)
         for (brev in brevbakerbrev) {
             brevmalerAssert.noneMatch { it.id == brev.name }

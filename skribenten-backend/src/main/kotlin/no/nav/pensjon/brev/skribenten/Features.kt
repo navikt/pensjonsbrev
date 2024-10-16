@@ -15,12 +15,13 @@ data class UnleashToggle(val name: String) {
 
 object Features {
     val brevbakerbrev = UnleashToggle("brevbakerbrev")
+    val brevutendata = UnleashToggle("brevutendata")
 
     private var unleash: Unleash? = null
     private val overrides = mutableMapOf<String, Boolean>()
 
-    fun override(key: String, value: Boolean) {
-        overrides[key] = value
+    fun override(key: UnleashToggle, value: Boolean) {
+        overrides[key.name] = value
     }
 
     fun initUnleash(config: Config) {

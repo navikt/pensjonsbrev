@@ -5,6 +5,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.AFP
@@ -125,6 +127,18 @@ class BrevmalService(
     private suspend fun hentBrevakerMaler(call: ApplicationCall): List<LetterMetadata> =
         if (Features.brevbakerbrev.isEnabled(call)) {
             brevbakerService.getTemplates(call)
+                .map { result ->
+                    result.filter { brev ->
+                        if (Features.brevutendata.isEnabled(call)) {
+                            brev.letterDataClass !in setOf(
+                                EmptyRedigerbarBrevdata::class.java.name,
+                                EmptyBrevdata::class.java.name
+                            )
+                        } else {
+                            true
+                        }
+                    }
+                }
                 .map { result -> result.map { it.toMetadata() } }
                 .catch { message, statusCode ->
                     logger.error("Kunne ikke hente brevmaler fra brevbaker: $message - $statusCode")
