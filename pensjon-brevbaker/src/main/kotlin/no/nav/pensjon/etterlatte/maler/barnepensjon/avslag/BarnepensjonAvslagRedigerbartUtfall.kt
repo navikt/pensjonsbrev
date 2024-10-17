@@ -10,12 +10,14 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDTOSelectors.avdoedNavn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDTOSelectors.erSluttbehandling
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonAvslagFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 data class BarnepensjonAvslagRedigerbartUtfallDTO(
+    val avdoedNavn: String = "<Klarte ikke å finne navn automatisk, du må sette inn her>",
     val erSluttbehandling: Boolean = false,
 ): RedigerbartUtfallBrevDTO
 
@@ -29,7 +31,7 @@ object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<BarnepensjonAvsl
         letterDataType = BarnepensjonAvslagRedigerbartUtfallDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - innvilgelse",
+            displayTitle = "Vedtak - begrunnelse for avslag",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -44,7 +46,7 @@ object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<BarnepensjonAvsl
         }
 
         outline {
-            includePhrase(BarnepensjonAvslagFraser.Vedtak(erSluttbehandling))
+            includePhrase(BarnepensjonAvslagFraser.Vedtak(erSluttbehandling, avdoedNavn))
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(BarnepensjonFellesFraser.FyllInn)
         }

@@ -2,19 +2,20 @@ package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.etterlatte.maler.Avdoed
-import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 
 object OmstillingsstoenadAvslagFraser {
     data class Vedtak(
-        val erSluttbehandling: Expression<Boolean>
+        val erSluttbehandling: Expression<Boolean>,
+        val avdoedNavn: Expression<String>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(erSluttbehandling) {
@@ -39,23 +40,25 @@ object OmstillingsstoenadAvslagFraser {
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "Din søknad om omstillingsstønad er derfor endelig avslått.",
-                        Nynorsk to "Søknaden din om omstillingsstønad er derfor endeleg avslått.",
+                    textExpr(
+                        Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoedNavn + " er derfor endelig avslått.",
+                        Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoedNavn + " er derfor endeleg avslått.",
                         English to
-                            "Your application for adjustment allowance has therefore been finally rejected.",
+                            "Your application for adjustment allowance for the deceased ".expr() + avdoedNavn + " has therefore been finally rejected.",
                     )
                 }
             }.orShow {
                 paragraph {
-                    text(
-                        Bokmal to "Din søknad om omstillingsstønad er avslått.",
-                        Nynorsk to "Søknaden din om omstillingsstønad er avslått.",
+                    textExpr(
+                        Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.",
+                        Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.",
                         English to
-                                "Your application for adjustment allowance has been rejected.",
+                                "Your application for adjustment allowance for the deceased ".expr() + avdoedNavn + " has been rejected.",
                     )
                 }
             }
+
+
         }
     }
 }
