@@ -60,6 +60,7 @@ tasks {
     task<Test>("integrationTest") {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
+            maxParallelForks = Runtime.getRuntime().availableProcessors()
             includeTags = setOf("integration-test")
         }
     }
