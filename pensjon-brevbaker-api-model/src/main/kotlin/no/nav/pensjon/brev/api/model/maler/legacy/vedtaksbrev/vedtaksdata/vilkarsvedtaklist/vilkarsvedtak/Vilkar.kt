@@ -4,4 +4,6 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilka
 data class Vilkar(
     val yrkesskaderesultat: String?,
     val unguforresultat: String?,
+    val fortsattmedlemskap: FortsattMedlemskap?,
+    val medlemskapforutettertrygdeavtaler: MedlemskapForUTetterTrygdeavtaler?,
 )

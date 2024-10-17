@@ -43,5 +43,6 @@ data class PE(
         val pe_ut_sisteopptjeningarlikuforetidspunkt: Boolean,
         val pe_ut_forstegangstjenesteikkenull: Boolean,
         val pe_ut_fattnorgeplusfattbilateral_avdod: Int,
+        val pe_ut_vilkargjelderpersonalder: Int,
     )
 }

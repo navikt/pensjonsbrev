@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbil
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.grunnlag_safe
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.*
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -65,9 +64,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includePhrase(TBU010V(pe))
         includePhrase(TBUxx1V(pe))
         includePhrase(TBU011V_TBU016V(pe))
-
-        // TODO TBUxx2V trengs for brev som ikke er:
-        //  PE_UT_04_300, PE_UT_14_300, PE_UT_05_100, PE_UT_07_100, PE_UT_04_108, PE_UT_04_109, PE_UT_07_100, PE_UT_07_200, PE_UT_06_300
+        includePhrase(TBUxx2V(pe))
 
         // TODO TBU080V-TBU027V trengs for brev som ikke er:
         //  PE_UT_07_100, PE_UT_05_100, PE_UT_04_300, PE_UT_14_300, PE_UT_04_103, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300

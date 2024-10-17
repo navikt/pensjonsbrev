@@ -378,7 +378,8 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                                 Nynorsk to "Ja",
                                 English to "Yes",
                             )
-                        }                    }
+                        }
+                    }
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = PE_SivilstandAnvendt_gift_men_lever_adskilt AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "gift") THEN      INCLUDE ENDIF
