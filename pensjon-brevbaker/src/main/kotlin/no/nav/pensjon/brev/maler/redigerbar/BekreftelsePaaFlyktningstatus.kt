@@ -24,7 +24,8 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER // TODO
+    override val kategori: TemplateDescription.Brevkategori =
+        TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER // TODO
 
 
     override val template = createTemplate(
@@ -38,6 +39,11 @@ object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdat
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
+        title {
+            text(
+                Bokmal to "Bekreftelse på flyktningstatus"
+            )
+        }
         outline {
             paragraph {
                 textExpr(
