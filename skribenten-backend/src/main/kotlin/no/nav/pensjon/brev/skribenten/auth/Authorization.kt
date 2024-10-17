@@ -92,7 +92,7 @@ class MissingClaimException(msg: String) : UnauthorizedException(msg)
 
 @JvmInline
 value class UserAccessToken(val token: String)
-data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Payload) : Principal {
+data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Payload) {
     private val onBehalfOfTokens = mutableMapOf<String, TokenResponse.OnBehalfOfToken>()
 
     fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken? = onBehalfOfTokens[scope]

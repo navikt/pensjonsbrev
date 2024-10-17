@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.routing
 
-import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.TemplateResource

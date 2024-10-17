@@ -11,8 +11,8 @@ import io.ktor.client.request.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.io.IOException
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.LatexDocument
 import org.slf4j.LoggerFactory

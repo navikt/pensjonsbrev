@@ -129,7 +129,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val client = HttpClient(CIO) {
         defaultRequest {
-            url("http://localhost:${runBlocking { server.resolvedConnectors().first().port }}/")
+            url("http://localhost:${runBlocking { server.engine.resolvedConnectors().first().port }}/")
         }
         install(Auth) {
             basic {
