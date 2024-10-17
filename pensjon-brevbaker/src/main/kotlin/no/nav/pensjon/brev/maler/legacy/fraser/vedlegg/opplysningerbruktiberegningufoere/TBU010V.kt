@@ -340,9 +340,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             //PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "enke"
                             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("enke")) {
                                 text(
-                                    Bokmal to "Enke/Enkemann",
-                                    Nynorsk to "Enkje/Enkjemann",
-                                    English to "Widow/widower",
+                                    Bokmal to "Enke/Enkemann ",
+                                    Nynorsk to "Enkje/Enkjemann ",
+                                    English to "Widow/widower ",
                                 )
                             }
 
