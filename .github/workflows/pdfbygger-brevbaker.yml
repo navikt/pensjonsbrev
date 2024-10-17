@@ -26,7 +26,7 @@ env:
 jobs:
   "build-brevbaker":
     name: "build brevbaker"
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest-8-cores
     permissions:
       packages: "write"
       id-token: "write"
@@ -76,7 +76,7 @@ jobs:
 
   "build-pdfbygger":
     name: "build pdfbygger"
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest-8-cores
     permissions:
       packages: "write"
       id-token: "write"
@@ -118,7 +118,7 @@ jobs:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
   changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     outputs:
       latex: ${{ steps.changes.outputs.latex }}
     steps:
@@ -156,7 +156,7 @@ jobs:
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     permissions:
       statuses: write
       checks: write
@@ -220,7 +220,7 @@ jobs:
       id-token: "write"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: ["runIntegrationTests", "build-brevbaker"]
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest-8-cores
     steps:
       - uses: "actions/checkout@v4"
       - name: "Deploy to DEV"
@@ -239,7 +239,7 @@ jobs:
       id-token: "write"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: ["runIntegrationTests", "build-pdfbygger"]
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest-8-cores
     steps:
       - uses: "actions/checkout@v4"
       - name: "Deploy to DEV"
@@ -258,7 +258,7 @@ jobs:
       id-token: "write"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: ["runIntegrationTests", "build-brevbaker"]
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest-8-cores
     steps:
       - uses: "actions/checkout@v4"
       - name: "Deploy to production"
@@ -277,7 +277,7 @@ jobs:
       id-token: "write"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: ["runIntegrationTests", "build-pdfbygger"]
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest-8-cores
     steps:
       - uses: "actions/checkout@v4"
       - name: "Deploy to production"
