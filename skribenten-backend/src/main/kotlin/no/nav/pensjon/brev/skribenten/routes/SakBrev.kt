@@ -58,6 +58,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
 
             brevredigeringService.delvisOppdaterBrev(
+                call = call,
                 saksId = sak.saksId,
                 brevId = brevId,
                 laastForRedigering = request.laastForRedigering,

@@ -23,6 +23,7 @@ import io.ktor.server.response.*
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.services.ArkivertBrevException
 import no.nav.pensjon.brev.skribenten.services.KanIkkeReservereBrevredigeringException
 
 
@@ -70,6 +71,9 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
         }
         exception<KanIkkeReservereBrevredigeringException> { call, cause ->
             call.respond(HttpStatusCode.Locked, cause.response)
+        }
+        exception<ArkivertBrevException> { call, cause ->
+            call.respond(HttpStatusCode.Conflict, cause.message ?: "Brev er allerede arkivert")
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)

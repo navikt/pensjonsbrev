@@ -64,6 +64,7 @@ object BrevredigeringTable : LongIdTable() {
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
     val signaturSignerende: Column<String> = varchar("signaturSignerende", length = 50)
+    val journalpostId: Column<Long?> = long("journalpostId").nullable()
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
@@ -83,6 +84,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var sistredigert by BrevredigeringTable.sistredigert
     var sistReservert by BrevredigeringTable.sistReservert
     var signaturSignerende by BrevredigeringTable.signaturSignerende
+    var journalpostId by BrevredigeringTable.journalpostId
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
 
@@ -154,6 +156,7 @@ fun initDatabase(jdbcUrl: String, username: String, password: String) {
             this.jdbcUrl = jdbcUrl
             this.username = username
             this.password = password
+            this.initializationFailTimeout = 6000
             maximumPoolSize = 2
             validate()
         }),

@@ -1908,9 +1908,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 )) THEN   INCLUDE ENDIF
                         showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)){
                             textExpr (
-                                Bokmal to pe.barnetilleggfelles_justeringsbelopperarutenminus()
+                                Bokmal to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
                                     .format() + " kroner i det vi reduserer barnetillegget med for resten av året.",
-                                Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus()
+                                Nynorsk to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
                                     .format() + " kroner i det vi har redusert barnetillegget med for resten av året.",
                             )
                         }
