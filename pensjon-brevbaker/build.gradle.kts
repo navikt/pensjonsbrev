@@ -61,7 +61,7 @@ tasks {
     task<Test>("integrationTest") {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
-            maxParallelForks = Runtime.getRuntime().availableProcessors()
+            maxParallelForks = 4
             includeTags = setOf("integration-test")
             testLogging {
                 events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
