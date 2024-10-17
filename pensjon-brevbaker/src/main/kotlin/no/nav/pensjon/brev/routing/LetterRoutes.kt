@@ -15,7 +15,7 @@ fun Route.letterRoutes(
 ) {
     route("/${autobrev.name}") {
         post<BestillBrevRequest<Brevkode.AutoBrev>>("/pdf") { brevbestilling ->
-            call.respond(autobrev.renderPDF(call, brevbestilling))
+            call.respond(autobrev.renderPDF(brevbestilling))
             autobrev.countLetter(brevbestilling.kode)
         }
 
@@ -30,7 +30,7 @@ fun Route.letterRoutes(
             call.respond(markup)
         }
         post<BestillRedigertBrevRequest<Brevkode.Redigerbar>>("/pdf") { brevbestilling ->
-            call.respond(redigerbareBrev.renderPDF(call, brevbestilling))
+            call.respond(redigerbareBrev.renderPDF(brevbestilling))
             redigerbareBrev.countLetter(brevbestilling.kode)
         }
 

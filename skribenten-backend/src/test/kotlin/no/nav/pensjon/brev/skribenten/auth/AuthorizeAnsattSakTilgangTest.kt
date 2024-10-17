@@ -2,17 +2,12 @@ package no.nav.pensjon.brev.skribenten.auth
 
 import com.typesafe.config.ConfigValueFactory
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -21,14 +16,15 @@ import io.ktor.server.util.*
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
-import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.PdlService
+import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Month
