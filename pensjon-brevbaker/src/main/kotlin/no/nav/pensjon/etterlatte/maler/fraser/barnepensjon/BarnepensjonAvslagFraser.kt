@@ -2,14 +2,20 @@ package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 object BarnepensjonAvslagFraser {
     data class Vedtak(
-        val erSluttbehandling: Expression<Boolean>
+        val erSluttbehandling: Expression<Boolean>,
+        val avdoedNavn: Expression<String>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(erSluttbehandling) {
@@ -34,11 +40,20 @@ object BarnepensjonAvslagFraser {
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "Din søknad om barnepensjon er derfor endelig avslått.",
-                        Nynorsk to "Søknaden din om barnepensjon er derfor endeleg avslått.",
+                    textExpr(
+                        Bokmal to "Din søknad om barnepensjon etter ".expr() + avdoedNavn +  " er derfor endelig avslått.",
+                        Nynorsk to "Søknaden din om barnepensjon etter ".expr() + avdoedNavn + " er derfor endeleg avslått.",
                         English to
-                                "Your application for children`s pension has therefore been finally rejected.",
+                                "Your application for children`s pension for the deceased ".expr() + avdoedNavn + " has therefore been finally rejected.",
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Din søknad om barnepensjon etter ".expr() + avdoedNavn + " er avslått.",
+                        Nynorsk to "Søknaden din om barnepensjon etter ".expr() + avdoedNavn + " er avslått.",
+                        English to
+                                "Your application for children`s pension for the deceased ".expr() + avdoedNavn + " has been rejected.",
                     )
                 }
             }
