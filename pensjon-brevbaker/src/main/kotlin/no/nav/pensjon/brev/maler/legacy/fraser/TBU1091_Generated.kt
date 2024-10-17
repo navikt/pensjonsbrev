@@ -1,14 +1,15 @@
+package no.nav.pensjon.brev.maler.legacy.fraser
 
-
-package no.nav.pensjon.brev.maler.fraser.generated
-
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.text
 
 object TBU1091_Generated : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-		//[TBU1091NN, TBU1091]
+		//[TBU1091, TBU1091NN]
 
 		paragraph {
 			text (

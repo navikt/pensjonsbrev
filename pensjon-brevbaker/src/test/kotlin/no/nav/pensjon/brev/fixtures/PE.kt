@@ -9,12 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbil
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOS
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNor
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.FratrekkListe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektListe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjor
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBruker
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPS
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.*
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PSfnr
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
@@ -66,8 +61,9 @@ fun createPE() =
             pe_ut_etteroppgjorfratrekklistebrukeretterbetaling = true,
             pe_ut_inntekt_trukket_fra_personinntekt = Kroner(1088),
             pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes = false,
+            pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv = 1
         ),
-        pebrevkode = "PE_UT_05_100",
+        pebrevkode = "PE_UT_06_300",
         personsak = PersonSak(PSfnr("01019878910"))
     )
 
@@ -216,7 +212,10 @@ fun createVilkarsVedtak() =
     VilkarsVedtak(
         beregningsvilkar = createBeregningsVilkar(),
         vilkar = createVilkar(),
-        vilkarVirkningFom = LocalDate.of(2020,1,1)
+        vilkarvirkningfom = LocalDate.of(2020, 1, 1),
+        vilkarVirkningFom = LocalDate.of(2020, 1, 1), // TODO: fjern
+        vilkarkravlinjekode = "bt",
+        vilkarvedtakresultat = "avsl",
     )
 
 fun createVilkar() =
@@ -308,6 +307,7 @@ fun createUforetrygdberegning() =
         uforetidspunkt = LocalDate.of(2020,1,1),
         proratabrokteller = 10,
         proratabroknevner = 11,
+        instopphanvendt = true
     )
 
 fun createReduksjonsgrunnlag() =
@@ -355,7 +355,10 @@ fun createEktefelletillegg() =
     Ektefelletillegg(true)
 
 fun createGjenlevendetillegg() =
-    Gjenlevendetillegg(true)
+    Gjenlevendetillegg(
+        gtinnvilget = true,
+        nyttgjenlevendetillegg = true
+    )
 
 fun createBarnetilleggSerkull() =
     BarnetilleggSerkull(
@@ -367,6 +370,8 @@ fun createBarnetilleggSerkull() =
         antallbarnserkull = 2,
         btsbbruttoperar = Kroner(8590),
         btsbnettoperar = Kroner(19111),
+        btsbfradrag = Kroner(19112),
+        btsbbrutto = Kroner(19113),
     )
 
 fun createBarnetilleggFelles() =
@@ -381,7 +386,9 @@ fun createBarnetilleggFelles() =
         btfbinntektannenforelder = Kroner(1205),
         antallbarnfelles = 2,
         btfbbruttoperar = Kroner(5819),
-        btfbnettoperar = Kroner(10085)
+        btfbnettoperar = Kroner(10085),
+        btfbbrutto = Kroner(9832),
+        btfbfradrag = Kroner(3802),
     )
 
 fun createAvkortningsInformasjonBT() =
