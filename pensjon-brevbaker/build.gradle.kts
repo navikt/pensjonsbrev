@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -62,6 +63,10 @@ tasks {
         useJUnitPlatform {
             maxParallelForks = Runtime.getRuntime().availableProcessors()
             includeTags = setOf("integration-test")
+            testLogging {
+                events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+                exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            }
         }
     }
     task<Test>("manualTest") {
