@@ -8,4 +8,6 @@ data class VilkarsVedtak(
     val beregningsvilkar: BeregningsVilkar?,
     val vilkar: Vilkar?,
     val vilkarVirkningFom: LocalDate?,
+    val vilkarKravlinjeKode: String?,
+    val vilkarvedtakResultat: String?,
 )
