@@ -65,7 +65,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         tjenestebusJwt(azureADConfig)
     }
 
-
     configureMetrics()
 
     routing {

@@ -6,8 +6,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.callId
+import no.nav.pensjon.brev.skribenten.callIdHeaders
 
 sealed class AuthorizedHttpClientResult {
     class Response(val response: HttpResponse) : AuthorizedHttpClientResult()
@@ -23,15 +22,15 @@ class AzureADOnBehalfOfAuthorizedHttpClient(
     private val client = HttpClient(clientEngine, clientConfigBlock)
 
     private suspend fun request(call: ApplicationCall, url: String, method: HttpMethod, block: HttpRequestBuilder.() -> Unit): AuthorizedHttpClientResult {
-        return authService.getOnBehalfOfToken(call, scope).let { token ->
+        val principal = PrincipalInContext.require()
+
+        return authService.getOnBehalfOfToken(principal, scope).let { token ->
             when (token) {
                 is TokenResponse.ErrorResponse -> AuthorizedHttpClientResult.Error(token)
                 is TokenResponse.OnBehalfOfToken -> AuthorizedHttpClientResult.Response(
                     client.request(url) {
-                        headers {
-                            bearerAuth(token.accessToken)
-                            callId(call)
-                        }
+                        callIdHeaders()
+                        headers { bearerAuth(token.accessToken) }
                         block()
                         this.method = method
                     }

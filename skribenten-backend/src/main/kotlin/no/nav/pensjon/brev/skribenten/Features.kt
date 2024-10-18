@@ -36,9 +36,11 @@ object Features {
 
     fun isEnabled(toggle: UnleashToggle, call: ApplicationCall? = null): Boolean =
         overrides[toggle.name]
-            ?: unleash?.isEnabled(unleashTogglePrefix + toggle.name, context(call))
+            ?: unleash?.isEnabled(unleashTogglePrefix + toggle.name, context())
             ?: false
 
-    private fun context(call: ApplicationCall?): UnleashContext =
-        call?.let { UnleashContext.builder().userId(it.principal().navIdent).build() } ?: UnleashContext.builder().build()
+    private suspend fun context(): UnleashContext =
+        PrincipalInContext.get()
+            ?.let { UnleashContext.builder().userId(it.navIdent).build() }
+            ?: UnleashContext.builder().build()
 }

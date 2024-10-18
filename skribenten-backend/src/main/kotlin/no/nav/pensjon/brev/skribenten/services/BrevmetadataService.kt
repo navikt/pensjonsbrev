@@ -16,7 +16,7 @@ import io.ktor.server.application.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import no.nav.pensjon.brev.skribenten.callId
+import no.nav.pensjon.brev.skribenten.callIdHeaders
 import no.nav.pensjon.brev.skribenten.model.Pen
 import org.slf4j.LoggerFactory
 
@@ -45,9 +45,7 @@ class BrevmetadataService(
 
     private suspend fun getBrevmalerForSakstype(call: ApplicationCall, sakstype: Pen.SakType): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
-            headers {
-                callId(call)
-            }
+            callIdHeaders()
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {
@@ -61,9 +59,7 @@ class BrevmetadataService(
     private suspend fun getEblanketter(call: ApplicationCall): List<BrevdataDto> {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
             contentType(ContentType.Application.Json)
-            headers{
-                callId(call)
-            }
+            callIdHeaders()
         }.body<List<BrevdataDto>>()
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
     }
