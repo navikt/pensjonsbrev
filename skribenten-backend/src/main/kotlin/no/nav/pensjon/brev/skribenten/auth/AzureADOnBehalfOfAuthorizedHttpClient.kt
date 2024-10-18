@@ -21,7 +21,7 @@ class AzureADOnBehalfOfAuthorizedHttpClient(
 ) {
     private val client = HttpClient(clientEngine, clientConfigBlock)
 
-    private suspend fun request(call: ApplicationCall, url: String, method: HttpMethod, block: HttpRequestBuilder.() -> Unit): AuthorizedHttpClientResult {
+    private suspend fun request(url: String, method: HttpMethod, block: HttpRequestBuilder.() -> Unit): AuthorizedHttpClientResult {
         val principal = PrincipalInContext.require()
 
         return authService.getOnBehalfOfToken(principal, scope).let { token ->
@@ -39,18 +39,18 @@ class AzureADOnBehalfOfAuthorizedHttpClient(
         }
     }
 
-    suspend fun get(call: ApplicationCall, url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
-        request(call, url, HttpMethod.Get, block)
+    suspend fun get(url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
+        request(url, HttpMethod.Get, block)
 
-    suspend fun post(call: ApplicationCall, url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
-        request(call, url, HttpMethod.Post, block)
+    suspend fun post(url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
+        request(url, HttpMethod.Post, block)
 
-    suspend fun put(call: ApplicationCall, url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
-        request(call, url, HttpMethod.Put, block)
+    suspend fun put(url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
+        request(url, HttpMethod.Put, block)
 
-    suspend fun delete(call: ApplicationCall, url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
-        request(call, url, HttpMethod.Delete, block)
+    suspend fun delete(url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
+        request(url, HttpMethod.Delete, block)
 
-    suspend fun options(call: ApplicationCall, url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
-        request(call, url, HttpMethod.Options, block)
+    suspend fun options(url: String, block: HttpRequestBuilder.() -> Unit = {}): AuthorizedHttpClientResult =
+        request(url, HttpMethod.Options, block)
 }

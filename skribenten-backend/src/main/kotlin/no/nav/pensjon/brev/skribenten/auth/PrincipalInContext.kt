@@ -34,18 +34,23 @@ class PrincipalInContext {
             pipeline.intercept(PrincipalContextPhase) {
                 val principal = call.principal()
 
-                withContext(ContextElement(principal)) {
+                withPrincipal(principal) {
                     proceed()
                 }
             }
             return plugin
         }
     }
-
-    private class ContextElement(val principal: UserPrincipal) : CoroutineContext.Element {
-        override val key: CoroutineContext.Key<*>
-            get() = ContextElement
-
-        companion object : CoroutineContext.Key<ContextElement>
-    }
 }
+
+private class ContextElement(val principal: UserPrincipal) : CoroutineContext.Element {
+    override val key: CoroutineContext.Key<*>
+        get() = ContextElement
+
+    companion object : CoroutineContext.Key<ContextElement>
+}
+
+suspend fun <T> withPrincipal(principal: UserPrincipal, block: suspend () -> T): T =
+    withContext(ContextElement(principal)) {
+        block()
+    }

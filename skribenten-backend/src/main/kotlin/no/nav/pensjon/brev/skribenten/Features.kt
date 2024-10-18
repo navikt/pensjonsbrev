@@ -5,12 +5,12 @@ import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import io.getunleash.util.UnleashConfig
-import io.ktor.server.application.*
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 
 private const val unleashTogglePrefix = "pensjonsbrev.skribenten."
 
 data class UnleashToggle(val name: String) {
-    fun isEnabled(call: ApplicationCall) = Features.isEnabled(this, call)
+    suspend fun isEnabled() = Features.isEnabled(this)
 }
 
 object Features {
@@ -34,7 +34,7 @@ object Features {
         )
     }
 
-    fun isEnabled(toggle: UnleashToggle, call: ApplicationCall? = null): Boolean =
+    suspend fun isEnabled(toggle: UnleashToggle): Boolean =
         overrides[toggle.name]
             ?: unleash?.isEnabled(unleashTogglePrefix + toggle.name, context())
             ?: false

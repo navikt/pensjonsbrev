@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.ktor.server.application.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -42,27 +41,25 @@ class BrevmalService(
     private val logger = LoggerFactory.getLogger(BrevmalService::class.java)
 
     suspend fun hentBrevmalerForSak(
-        call: ApplicationCall,
         sakType: Pen.SakType,
         includeEblanketter: Boolean,
     ): List<LetterMetadata> = coroutineScope {
-        val brevbakerMaler = async { hentBrevakerMaler(call) }
-        val brevmetadata = brevmetadataService.hentMaler(call, sakType, includeEblanketter)
+        val brevbakerMaler = async { hentBrevakerMaler() }
+        val brevmetadata = brevmetadataService.hentMaler(sakType, includeEblanketter)
         val relevanteMaler = brevmetadata.maler.filter { filterForSaksKontekst(it) }
         mapToRelevantMetadata(relevanteMaler, brevmetadata.eblanketter, brevbakerMaler.await())
     }
 
     suspend fun hentBrevmalerForVedtak(
-        call: ApplicationCall,
         sakType: Pen.SakType,
         includeEblanketter: Boolean,
         vedtaksId: String,
     ): List<LetterMetadata> = coroutineScope {
-        val brevmetadataAsync = async { brevmetadataService.hentMaler(call, sakType, includeEblanketter) }
-        val brevbakerMaler = async { hentBrevakerMaler(call) }
+        val brevmetadataAsync = async { brevmetadataService.hentMaler(sakType, includeEblanketter) }
+        val brevbakerMaler = async { hentBrevakerMaler() }
         val erKravPaaGammeltRegelverk =
             if (sakType == ALDER) {
-                penService.hentIsKravPaaGammeltRegelverk(call, vedtaksId)
+                penService.hentIsKravPaaGammeltRegelverk(vedtaksId)
                     .catch { message, httpStatusCode ->
                         logger.error("Feil ved henting av felt \"erKravPaaGammeltRegelverk\" fra vedtak. Status: $httpStatusCode, message: $message")
                         false
@@ -124,12 +121,12 @@ class BrevmalService(
         }
 
     // TODO: Filtrere brevmaler som er relevante
-    private suspend fun hentBrevakerMaler(call: ApplicationCall): List<LetterMetadata> =
-        if (Features.brevbakerbrev.isEnabled(call)) {
-            brevbakerService.getTemplates(call)
+    private suspend fun hentBrevakerMaler(): List<LetterMetadata> =
+        if (Features.brevbakerbrev.isEnabled()) {
+            brevbakerService.getTemplates()
                 .map { result ->
                     result.filter { brev ->
-                        if (Features.brevutendata.isEnabled(call)) {
+                        if (Features.brevutendata.isEnabled()) {
                             brev.letterDataClass !in setOf(
                                 EmptyRedigerbarBrevdata::class.java.name,
                                 EmptyBrevdata::class.java.name

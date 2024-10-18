@@ -8,7 +8,6 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
@@ -35,11 +34,8 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
 
     private val logger = LoggerFactory.getLogger(SamhandlerService::class.java)
 
-    suspend fun finnSamhandler(
-        call: ApplicationCall,
-        requestDto: FinnSamhandlerRequestDto,
-    ): FinnSamhandlerResponseDto =
-        samhandlerProxyClient.post(call, "/api/samhandler/finnSamhandler") {
+    suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto =
+        samhandlerProxyClient.post("/api/samhandler/finnSamhandler") {
             contentType(Json)
             accept(Json)
             setBody(lagRequest(requestDto))
@@ -50,11 +46,8 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
                 FinnSamhandlerResponseDto("Feil ved henting av samhandler")
             }
 
-    suspend fun hentSamhandler(
-        call: ApplicationCall,
-        idTSSEkstern: String,
-    ): HentSamhandlerResponseDto =
-        samhandlerProxyClient.get(call, "/api/samhandler/hentSamhandlerEnkel/") {
+    suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
+        samhandlerProxyClient.get("/api/samhandler/hentSamhandlerEnkel/") {
             url {
                 appendPathSegments(idTSSEkstern)
             }
@@ -68,13 +61,13 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
             }
 
     private val samhandlerNavnCache = Cache<String, String>()
-    suspend fun hentSamhandlerNavn(call: ApplicationCall, idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
-        hentSamhandler(call, idTSSEkstern).success?.navn
+    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
+        hentSamhandler(idTSSEkstern).success?.navn
     }
 
     override val name = "SamhandlerService"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
-        samhandlerProxyClient.get(call, "/api/samhandler/ping").toServiceResult<String>().map { true }
+    override suspend fun ping(): ServiceResult<Boolean> =
+        samhandlerProxyClient.get("/api/samhandler/ping").toServiceResult<String>().map { true }
 
     private fun lagRequest(requestDto: FinnSamhandlerRequestDto) =
         when (requestDto) {

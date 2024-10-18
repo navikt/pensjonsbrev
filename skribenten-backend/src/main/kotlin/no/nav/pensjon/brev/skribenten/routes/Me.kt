@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -24,7 +23,7 @@ fun Route.meRoute(navansattService: NavansattService) {
             call.respond(favouritesRepository.getFavourites(principal().navIdent()))
         }
         get("/enheter") {
-            respondWithResult(navansattService.hentNavAnsattEnhetListe(call, principal().navIdent))
+            respondWithResult(navansattService.hentNavAnsattEnhetListe(principal().navIdent))
         }
     }
 }

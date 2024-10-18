@@ -7,7 +7,6 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
@@ -64,11 +63,8 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
         MOTTATT, JOURNALFOERT, FERDIGSTILT, EKSPEDERT, UNDER_ARBEID, FEILREGISTRERT, UTGAAR, AVBRUTT, UKJENT_BRUKER, RESERVERT, OPPLASTING_DOKUMENT, UKJENT,
     }
 
-    private suspend fun getStatus(
-        call: ApplicationCall,
-        journalpostId: String
-    ): JournalpostLoadingResult =
-        client.post(call, "") {
+    private suspend fun getStatus(journalpostId: String): JournalpostLoadingResult =
+        client.post("") {
             contentType(ContentType.Application.Json)
             setBody(
                 JournalQuery(
@@ -96,14 +92,11 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
                 JournalpostLoadingResult.ERROR
             }
 
-    suspend fun waitForJournalpostStatusUnderArbeid(
-        call: ApplicationCall,
-        journalpostId: String
-    ): JournalpostLoadingResult =
+    suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult =
         withTimeoutOrNull(TIMEOUT.seconds) {
             for (i in 1..TIMEOUT) {
                 delay(1000)
-                when (val result = getStatus(call, journalpostId)) {
+                when (val result = getStatus(journalpostId)) {
                     JournalpostLoadingResult.READY,
                     JournalpostLoadingResult.ERROR -> return@withTimeoutOrNull result
 
@@ -113,8 +106,8 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
             return@withTimeoutOrNull JournalpostLoadingResult.NOT_READY
         } ?: JournalpostLoadingResult.NOT_READY
 
-    private suspend fun getDocumentsInJournal(call: ApplicationCall, journalpostId: String) =
-        client.post(call, "") {
+    private suspend fun getDocumentsInJournal(journalpostId: String) =
+        client.post("") {
             contentType(ContentType.Application.Json)
             setBody(
                 JournalQuery(
@@ -124,28 +117,22 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
             )
         }.toServiceResult<HentDokumenterResponse>()
 
-    suspend fun getFirstDocumentInJournal(
-        call: ApplicationCall,
-        journalpostId: String
-    ): ServiceResult<HentDokumenterResponse> =
-        getDocumentsInJournal(call, journalpostId)
+    suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<HentDokumenterResponse> =
+        getDocumentsInJournal(journalpostId)
 
     /*
      * man kan spesifisere hvilket 'variantFormat' vi vil ha - per nå er vi bare interesert i 'ARKIV' versjonen
      */
-    suspend fun hentPdfForJournalpostId(call: ApplicationCall, journalpostId: String): ServiceResult<ByteArray> =
-        hentFørsteDokumentInfoIdFraJournalpost(call, journalpostId).then { dokumentInfoId ->
-            client.get(call = call, url = "$safRestUrl/hentdokument/$journalpostId/$dokumentInfoId/ARKIV").toServiceResult()
+    suspend fun hentPdfForJournalpostId(journalpostId: String): ServiceResult<ByteArray> =
+        hentFoersteDokumentInfoIdFraJournalpost(journalpostId).then { dokumentInfoId ->
+            client.get(url = "$safRestUrl/hentdokument/$journalpostId/$dokumentInfoId/ARKIV").toServiceResult()
         }
 
     /*
      *  Vi sender 1 dokument per journalpost
      */
-    private suspend fun hentFørsteDokumentInfoIdFraJournalpost(
-        call: ApplicationCall,
-        journalpostId: String
-    ): ServiceResult<String> {
-        return getDocumentsInJournal(call, journalpostId)
+    private suspend fun hentFoersteDokumentInfoIdFraJournalpost(journalpostId: String): ServiceResult<String> {
+        return getDocumentsInJournal(journalpostId)
             .map { it.data?.journalpost?.dokumenter?.firstOrNull()?.dokumentInfoId }
             .nonNull(
                 "Fant ingen dokumenter for journalpostId: $journalpostId",
@@ -154,6 +141,6 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
     }
 
     override val name = "SAF"
-    override suspend fun ping(call: ApplicationCall) =
-        client.options(call, "").toServiceResult<String>().map { true }
+    override suspend fun ping() =
+        client.options("").toServiceResult<String>().map { true }
 }
