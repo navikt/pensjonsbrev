@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Bleed, CopyButton } from "@navikt/ds-react";
+import { Bleed, BodyShort, CopyButton } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet } from "@tanstack/react-router";
@@ -96,30 +96,30 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
           border-bottom: 1px solid var(--a-gray-200);
           background: var(--a-surface-default);
 
-          span {
+          p {
             display: flex;
             align-items: center;
           }
 
-          span::after {
+          p::after {
             content: "/";
             margin: 0 var(--a-spacing-3);
           }
 
-          span:last-child::after {
+          p:last-child::after {
             content: none;
           }
         `}
       >
-        <span>
+        <BodyShort size="small">
           {sak.foedselsnr} <CopyButton copyText={sak.foedselsnr} size="small" />
-        </span>
-        <span>{navn ?? ""}</span>
-        <span>Sakstype: {SAK_TYPE_TO_TEXT[sak.sakType]}</span>
-        <span>
+        </BodyShort>
+        <BodyShort size="small">{navn ?? ""}</BodyShort>
+        <BodyShort size="small">Sakstype: {SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>
+        <BodyShort size="small">
           Saksnummer: {sak.saksId} <CopyButton copyText={sak.saksId.toString()} size="small" />
-        </span>
-        {vedtaksId && <span>vedtaksId: {vedtaksId}</span>}
+        </BodyShort>
+        {vedtaksId && <BodyShort size="small">vedtaksId: {vedtaksId}</BodyShort>}
       </div>
     </Bleed>
   );
