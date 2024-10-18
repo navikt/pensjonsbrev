@@ -57,7 +57,7 @@ class BrevredigeringService(
     ): ServiceResult<Dto.Brevredigering> =
         harTilgangTilEnhet(avsenderEnhetsId) {
             val principal = PrincipalInContext.require()
-            val signerendeSaksbehandler = navansattService.hentNavansatt(principal.navIdent)
+            val signerendeSaksbehandler = navansattService.hentNavansatt(principal.navIdent.id)
                 ?.let { "${it.fornavn} ${it.etternavn}" }
                 ?: principal.fullName
 
@@ -72,19 +72,19 @@ class BrevredigeringService(
                 transaction {
                     Brevredigering.new {
                         saksId = sak.saksId
-                        opprettetAvNavIdent = principal.navIdent()
+                        opprettetAvNavIdent = principal.navIdent
                         this.brevkode = brevkode
                         this.spraak = spraak
                         this.avsenderEnhetId = avsenderEnhetsId
                         this.saksbehandlerValg = saksbehandlerValg
                         laastForRedigering = false
                         distribusjonstype = Distribusjonstype.SENTRALPRINT
-                        redigeresAvNavIdent = principal.navIdent().takeIf { reserverForRedigering }
+                        redigeresAvNavIdent = principal.navIdent.takeIf { reserverForRedigering }
                         sistReservert = Instant.now().truncatedTo(ChronoUnit.MILLIS).takeIf { reserverForRedigering }
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         redigertBrev = letter.toEdit()
-                        sistRedigertAvNavIdent = principal.navIdent()
+                        sistRedigertAvNavIdent = principal.navIdent
                         signaturSignerende = signerendeSaksbehandler
                     }.also {
                         if (mottaker != null) {
@@ -117,7 +117,7 @@ class BrevredigeringService(
                         redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
-                        sistRedigertAvNavIdent = principal.navIdent()
+                        sistRedigertAvNavIdent = principal.navIdent
                         if (frigiReservasjon) {
                             redigeresAvNavIdent = null
                         }
@@ -211,7 +211,7 @@ class BrevredigeringService(
 
             Api.ReservasjonResponse(
                 vellykket = true,
-                reservertAv = Api.NavAnsatt(id = principal.navIdent(), navn = principal.fullName),
+                reservertAv = Api.NavAnsatt(id = principal.navIdent, navn = principal.fullName),
                 timestamp = brevDto.info.sistReservert ?: Instant.now(),
                 expiresIn = RESERVASJON_TIMEOUT,
                 redigertBrevHash = brevDto.redigertBrevHash,
@@ -309,8 +309,8 @@ class BrevredigeringService(
         return transaction(Connection.TRANSACTION_REPEATABLE_READ) {
             Brevredigering.findByIdAndSaksId(brevId, saksId)
                 ?.apply {
-                    if (redigeresAvNavIdent == null || redigeresAvNavIdent == principal.navIdent() || erReservasjonUtloept()) {
-                        redigeresAvNavIdent = principal.navIdent()
+                    if (redigeresAvNavIdent == null || redigeresAvNavIdent == principal.navIdent || erReservasjonUtloept()) {
+                        redigeresAvNavIdent = principal.navIdent
                         sistReservert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                     }
                 }?.let { ReservertBrevScope(it) }
@@ -319,7 +319,7 @@ class BrevredigeringService(
 
             if (reservertBrevScope.brevDto.info.journalpostId != null) {
                 throw ArkivertBrevException(reservertBrevScope.brevDto.info.id, journalpostId = reservertBrevScope.brevDto.info.journalpostId)
-            } else if (redigeresAv == principal.navIdent()) {
+            } else if (redigeresAv == principal.navIdent) {
                 reservertBrevScope.block()
             } else throw KanIkkeReservereBrevredigeringException(
                 message = "Brev er allerede reservert av: ${reservertBrevScope.brevDto.info.redigeresAv}",
@@ -368,7 +368,7 @@ class BrevredigeringService(
         return if (enhetsId == null) {
             then()
         } else {
-            navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent, enhetsId)
+            navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent.id, enhetsId)
                 .then { harTilgang ->
                     if (harTilgang) {
                         then()

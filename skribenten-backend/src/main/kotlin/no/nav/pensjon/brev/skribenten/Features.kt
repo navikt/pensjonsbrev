@@ -41,6 +41,6 @@ object Features {
 
     private suspend fun context(): UnleashContext =
         PrincipalInContext.get()
-            ?.let { UnleashContext.builder().userId(it.navIdent).build() }
+            ?.let { UnleashContext.builder().userId(it.navIdent.id).build() }
             ?: UnleashContext.builder().build()
 }

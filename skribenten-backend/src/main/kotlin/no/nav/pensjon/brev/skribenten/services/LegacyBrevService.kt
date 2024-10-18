@@ -38,7 +38,7 @@ class LegacyBrevService(
     suspend fun bestillOgRedigerExstreamBrev(gjelderPid: String, request: Api.BestillExstreamBrevRequest, saksId: Long): Api.BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
-        val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent)
+        val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent.id)
 
         return if (brevtittel.isNullOrBlank()) {
             Api.BestillOgRedigerBrevResponse(failureType = EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
@@ -68,7 +68,7 @@ class LegacyBrevService(
     suspend fun bestillOgRedigerEblankett(gjelderPid: String, request: Api.BestillEblankettRequest, saksId: Long): Api.BestillOgRedigerBrevResponse =
         coroutineScope {
             val brevMetadataDeffered = async { brevmetadataService.getMal(request.brevkode) }
-            val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent)
+            val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent.id)
             val brevMetadata = brevMetadataDeffered.await()
 
             if (navansatt == null) {
@@ -137,7 +137,7 @@ class LegacyBrevService(
                     kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),
                     saksid = saksId.toString(),
                     saksbehandlernavn = saksbehandler.fornavn + " " + saksbehandler.etternavn,
-                    saksbehandlerid = PrincipalInContext.require().navIdent,
+                    saksbehandlerid = PrincipalInContext.require().navIdent.id,
                     kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
                     land = landkode.takeIf { isEblankett },
                     mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
@@ -225,7 +225,7 @@ class LegacyBrevService(
             }
 
     private suspend fun harTilgangTilEnhet(enhetsId: String): Boolean =
-        navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent, enhetsId)
+        navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent.id, enhetsId)
             .catch { message, httpStatusCode -> throw LegacyBrevException("Kunne ikke hente NavEnheter - $httpStatusCode: $message") }
 
     private fun Pen.BestillDoksysBrevResponse.FailureType.toApi(): Api.BestillOgRedigerBrevResponse.FailureType =

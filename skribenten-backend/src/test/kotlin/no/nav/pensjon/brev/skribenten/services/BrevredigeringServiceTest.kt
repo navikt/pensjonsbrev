@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
@@ -80,11 +80,7 @@ class BrevredigeringServiceTest {
     private val principalNavn2 = "Laurence Fishburne"
     private val principalNavEnhetId = "Nebuchadnezzar"
 
-    private fun principalMock(ident: NavIdent = principalNavIdent) = mockk<UserPrincipal> {
-        every { navIdent() } returns ident
-        every { navIdent } returns ident.id
-        every { fullName } returns "Laurence Fishburne"
-    }
+    private fun principalMock(ident: NavIdent = principalNavIdent) = MockPrincipal(ident, "Laurence Fishburne")
 
     private val sak = Pen.SakSelection(
         1234L,

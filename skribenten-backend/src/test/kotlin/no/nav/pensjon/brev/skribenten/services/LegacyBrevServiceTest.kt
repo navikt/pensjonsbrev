@@ -1,10 +1,9 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NavIdent
@@ -22,12 +21,7 @@ private const val dokumentId = "5678"
 class LegacyBrevServiceTest {
 
     private val principalIdent = NavIdent("kulIdent1234")
-    private val principal = mockk<UserPrincipal> {
-        every {
-            navIdent()
-        } returns principalIdent
-        every { navIdent } returns principalIdent.id
-    }
+    private val principal = MockPrincipal(principalIdent, "Kul saksbehandler")
     private val principalSinNAVEnhet = NAVAnsattEnhet("1111", "NAV Ozzzlo")
 
 

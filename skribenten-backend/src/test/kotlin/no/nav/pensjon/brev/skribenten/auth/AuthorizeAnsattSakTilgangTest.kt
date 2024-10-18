@@ -14,8 +14,9 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.ktor.server.util.*
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
+import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
@@ -25,11 +26,12 @@ import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Month
 
-private const val NAVIdent = "månedens ansatt"
+private val navIdent = NavIdent("månedens ansatt")
 private val testSak = Pen.SakSelection(
     1337,
     "12345",
@@ -78,10 +80,7 @@ class AuthorizeAnsattSakTilgangTest {
     }
 
     private val creds = BasicAuthCredentials("test", "123")
-    private val principalMock = mockk<UserPrincipal> {
-        every { navIdent } returns NAVIdent
-        every { isInGroup(any()) } returns false
-    }
+    private val principalMock = MockPrincipal(navIdent, "Ansatt, Veldig Bra")
     private val pdlService = mockk<PdlService> {
         coEvery { hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
     }
@@ -140,8 +139,14 @@ class AuthorizeAnsattSakTilgangTest {
         block(client)
     }
 
+    @BeforeEach
+    fun clearGroups() {
+        principalMock.groups.clear()
+    }
+
     @Test
     fun `bruker faar tilgang til sak naar krav er oppfylt`() = basicAuthTestApplication { client ->
+        coEvery { pdlService.hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
@@ -155,8 +160,6 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `krever at ansatt har gruppe for FortroligAdresse`() = basicAuthTestApplication { client ->
-        every { principalMock.isInGroup(any()) } returns false
-
         coEvery {
             pdlService.hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(Pdl.Gradering.FORTROLIG))
@@ -187,7 +190,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `ansatt med gruppe for FortroligAdresse faar svar`() = basicAuthTestApplication { client ->
-        every { principalMock.isInGroup(ADGroups.fortroligAdresse) } returns true
+        principalMock.groups.add(ADGroups.fortroligAdresse)
         coEvery {
             pdlService.hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(Pdl.Gradering.FORTROLIG))
@@ -199,7 +202,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `ansatt med gruppe for StrengtFortroligAdresse faar svar`() = basicAuthTestApplication { client ->
-        every { principalMock.isInGroup(ADGroups.strengtFortroligAdresse) } returns true
+        principalMock.groups.add(ADGroups.strengtFortroligAdresse)
         coEvery {
             pdlService.hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG))
@@ -211,7 +214,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `ansatt med gruppe for StrengtFortroligUtland faar svar`() = basicAuthTestApplication { client ->
-        every { principalMock.isInGroup(ADGroups.strengtFortroligUtland) } returns true
+        principalMock.groups.add(ADGroups.strengtFortroligUtland)
         coEvery {
             pdlService.hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND))

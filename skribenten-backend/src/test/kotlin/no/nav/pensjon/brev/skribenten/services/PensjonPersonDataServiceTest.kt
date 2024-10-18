@@ -5,12 +5,11 @@ import com.typesafe.config.ConfigFactory
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.TokenResponse
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.assertj.core.api.Assertions.assertThat
@@ -22,12 +21,7 @@ class PensjonPersonDataServiceTest {
         coEvery { getOnBehalfOfToken(any(), any()) } returns TokenResponse.OnBehalfOfToken("token", "refresh", "Bearer", "scope", 12345L)
     }
 
-    private val principal = mockk<UserPrincipal> {
-        every {
-            navIdent()
-        } returns NavIdent("veldig kul ansatt")
-        every { navIdent } returns "veldig kul ansatt"
-    }
+    private val principal = MockPrincipal(NavIdent("veldig kul ansatt"), "Veldig kult navn")
 
     @Test
     fun `returnerer kontaktadresse`() {

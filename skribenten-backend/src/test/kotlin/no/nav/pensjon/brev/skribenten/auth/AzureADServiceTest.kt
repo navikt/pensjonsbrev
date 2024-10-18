@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class AzureADServiceTest {
     private val jwtConfig = JwtConfig("navn", "utsteder", "jwks url", "skribenten-client-id", "http://localhost:9991/token", "skribenten-secret", emptyList(), true)
     private val objectMapper = jacksonObjectMapper()
-    private val principal = UserPrincipal(UserAccessToken("access_token 123532"), mockk())
+    private val principal = JwtUserPrincipal(UserAccessToken("access_token 123532"), mockk())
 
     @Test
     fun `getOnBehalfOfToken can exchange token`() {
@@ -60,7 +60,7 @@ class AzureADServiceTest {
     @Test
     fun `getOnBehalfOfToken caches the aqcuired token`() {
         val onBehalfOfToken = TokenResponse.OnBehalfOfToken("obo token", "refresh obo", "Bearer", "bla2", 1024L)
-        val userPrincipal = UserPrincipal(UserAccessToken("access_token 123532"), mockk())
+        val userPrincipal = JwtUserPrincipal(UserAccessToken("access_token 123532"), mockk())
 
         val service = createService {
             respond(
@@ -78,7 +78,7 @@ class AzureADServiceTest {
     @Test
     fun `getOnBehalfOfToken uses cached token`() {
         val onBehalfOfToken = TokenResponse.OnBehalfOfToken("obo token", "refresh obo", "Bearer", "bla3", 1024L)
-        val userPrincipal = UserPrincipal(UserAccessToken("access_token 123532"), mockk()).apply { setOnBehalfOfToken("bla3", onBehalfOfToken) }
+        val userPrincipal = JwtUserPrincipal(UserAccessToken("access_token 123532"), mockk()).apply { setOnBehalfOfToken("bla3", onBehalfOfToken) }
 
         val service = createService()
         runBlocking {
