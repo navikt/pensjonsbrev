@@ -11,10 +11,18 @@ function SelectLanguage({
   sorterteSpråk: SpraakKode[];
   preferredLanguage: SpraakKode | null;
 }) {
-  const { register } = useFormContext();
+  const { register, getFieldState } = useFormContext();
+  const fieldName = "spraak";
+  const fieldState = getFieldState(fieldName);
 
   return (
-    <Select {...register("spraak")} data-cy="språk-velger-select" label="Språk" size="small">
+    <Select
+      {...register(fieldName)}
+      data-cy="språk-velger-select"
+      error={fieldState.error?.message}
+      label="Språk"
+      size="small"
+    >
       {sorterteSpråk.map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
