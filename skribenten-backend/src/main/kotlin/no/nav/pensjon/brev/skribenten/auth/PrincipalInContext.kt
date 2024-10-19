@@ -14,7 +14,6 @@ private val PrincipalContextPhase: PipelinePhase = PipelinePhase("PrincipalConte
 
 class PrincipalInContext {
     object Hook : KtorHook<suspend (ApplicationCall) -> Unit> {
-
         override fun install(pipeline: ApplicationCallPipeline, handler: suspend (ApplicationCall) -> Unit) {
             pipeline.insertPhaseBefore(ApplicationCallPipeline.Call, PrincipalContextPhase)
             pipeline.insertPhaseAfter(PrincipalContextPhase, PrincipalInContextPhase)
