@@ -14,7 +14,7 @@ import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import no.nav.pensjon.brev.skribenten.callIdHeaders
+import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import no.nav.pensjon.brev.skribenten.model.Pen
 import org.slf4j.LoggerFactory
 
@@ -32,6 +32,7 @@ class BrevmetadataService(
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
+        install(CallIdFromContext)
     }
 
     suspend fun hentMaler(sakType: Pen.SakType, includeEblanketter: Boolean): Brevmaler =
@@ -43,7 +44,6 @@ class BrevmetadataService(
 
     private suspend fun getBrevmalerForSakstype(sakstype: Pen.SakType): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
-            callIdHeaders()
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {
@@ -57,7 +57,6 @@ class BrevmetadataService(
     private suspend fun getEblanketter(): List<BrevdataDto> {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
             contentType(ContentType.Application.Json)
-            callIdHeaders()
         }.body<List<BrevdataDto>>()
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
     }

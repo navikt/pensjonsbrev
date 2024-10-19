@@ -3,21 +3,21 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
 
 class KrrService(config: Config, authService: AzureADService): ServiceStatus {
     private val krrUrl = config.getString("url")
-    private val krrScope = config.getString("scope")
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(krrScope, authService) {
+    private val client = HttpClient(CIO) {
         defaultRequest {
             url(krrUrl)
         }
@@ -26,6 +26,7 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
                 registerModule(JavaTimeModule())
             }
         }
+        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
     }
 
     @Suppress("EnumEntryName")

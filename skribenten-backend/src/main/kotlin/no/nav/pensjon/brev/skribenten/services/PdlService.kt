@@ -3,12 +3,13 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import org.slf4j.LoggerFactory
@@ -28,13 +29,14 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     private val pdlUrl = config.getString("url")
     private val pdlScope = config.getString("scope")
 
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(pdlScope, authService) {
+    private val client = HttpClient(CIO) {
         defaultRequest {
             url(pdlUrl)
         }
         install(ContentNegotiation) {
             jackson()
         }
+        callIdAndOnBehalfOfClient(pdlScope, authService)
     }
 
     private data class PDLQuery<T : Any>(
