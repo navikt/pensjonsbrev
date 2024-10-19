@@ -65,34 +65,37 @@ class LegacyBrevService(
         }
     }
 
-    suspend fun bestillOgRedigerEblankett(gjelderPid: String, request: Api.BestillEblankettRequest, saksId: Long): Api.BestillOgRedigerBrevResponse =
-        coroutineScope {
-            val brevMetadataDeffered = async { brevmetadataService.getMal(request.brevkode) }
-            val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent.id)
-            val brevMetadata = brevMetadataDeffered.await()
+    suspend fun bestillOgRedigerEblankett(
+        gjelderPid: String,
+        request: Api.BestillEblankettRequest,
+        saksId: Long,
+    ): Api.BestillOgRedigerBrevResponse = coroutineScope {
+        val brevMetadataDeffered = async { brevmetadataService.getMal(request.brevkode) }
+        val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent.id)
+        val brevMetadata = brevMetadataDeffered.await()
 
-            if (navansatt == null) {
-                Api.BestillOgRedigerBrevResponse(failureType = NAVANSATT_MANGLER_NAVN)
-            } else {
-                val result = bestillExstreamBrevPen(
-                    brevkode = request.brevkode,
-                    enhetsId = request.enhetsId,
-                    gjelderPid = gjelderPid,
-                    isSensitive = request.isSensitive,
-                    metadata = brevMetadata,
-                    saksId = saksId,
-                    spraak = SpraakKode.NB,
-                    brevtittel = brevMetadata.dekode,
-                    landkode = request.landkode,
-                    mottakerText = request.mottakerText,
-                    saksbehandler = navansatt
-                )
+        if (navansatt == null) {
+            Api.BestillOgRedigerBrevResponse(failureType = NAVANSATT_MANGLER_NAVN)
+        } else {
+            val result = bestillExstreamBrevPen(
+                brevkode = request.brevkode,
+                enhetsId = request.enhetsId,
+                gjelderPid = gjelderPid,
+                isSensitive = request.isSensitive,
+                metadata = brevMetadata,
+                saksId = saksId,
+                spraak = SpraakKode.NB,
+                brevtittel = brevMetadata.dekode,
+                landkode = request.landkode,
+                mottakerText = request.mottakerText,
+                saksbehandler = navansatt
+            )
 
-                if (result.failureType == null && result.journalpostId != null) {
-                    redigerExstreamBrev(result.journalpostId)
-                } else result
-            }
+            if (result.failureType == null && result.journalpostId != null) {
+                redigerExstreamBrev(result.journalpostId)
+            } else result
         }
+    }
 
     private suspend fun bestillExstreamBrevPen(
         brevkode: String,
