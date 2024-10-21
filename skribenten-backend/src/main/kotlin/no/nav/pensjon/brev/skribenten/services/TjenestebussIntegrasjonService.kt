@@ -7,7 +7,6 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
@@ -30,11 +29,8 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             }
         }
 
-    suspend fun hentSamhandlerAdresse(
-        call: ApplicationCall,
-        idTSSEkstern: String,
-    ): HentSamhandlerAdresseResponseDto =
-        tjenestebussIntegrasjonClient.post(call, "/hentSamhandlerAdresse") {
+    suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto =
+        tjenestebussIntegrasjonClient.post("/hentSamhandlerAdresse") {
             contentType(Json)
             accept(Json)
             setBody(HentSamhandlerAdresseRequestDto(idTSSEkstern))
@@ -45,10 +41,10 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             }
 
     override val name = "Tjenestebuss-integrasjon"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
-        tjenestebussIntegrasjonClient.get(call, "/isReady").toServiceResult<String>().map { true }
+    override suspend fun ping(): ServiceResult<Boolean> =
+        tjenestebussIntegrasjonClient.get("/isReady").toServiceResult<String>().map { true }
 
-    suspend fun status(call: ApplicationCall): ServiceResult<TjenestebussStatus> =
-        tjenestebussIntegrasjonClient.get(call, "/status").toServiceResult()
+    suspend fun status(): ServiceResult<TjenestebussStatus> =
+        tjenestebussIntegrasjonClient.get("/status").toServiceResult()
 
 }

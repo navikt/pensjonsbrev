@@ -8,7 +8,6 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.model.Pdl
@@ -80,12 +79,8 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
-    suspend fun hentNavn(
-        call: ApplicationCall,
-        fnr: String,
-        behandlingsnummer: Pdl.Behandlingsnummer?
-    ): ServiceResult<String> {
-        return client.post(call, "") {
+    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> {
+        return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             headers {
@@ -106,12 +101,8 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
             }
     }
 
-    suspend fun hentAdressebeskyttelse(
-        call: ApplicationCall,
-        fnr: String,
-        behandlingsnummer: Pdl.Behandlingsnummer?
-    ): ServiceResult<List<Pdl.Gradering>> {
-        return client.post(call, "") {
+    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {
+        return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(
@@ -167,8 +158,8 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     }
 
     override val name = "PDL"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
-        client.options(call, "")
+    override suspend fun ping(): ServiceResult<Boolean> =
+        client.options("")
             .toServiceResult<String>()
             .map { true }
 

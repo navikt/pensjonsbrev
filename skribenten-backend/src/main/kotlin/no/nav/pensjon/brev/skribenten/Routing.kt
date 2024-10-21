@@ -6,6 +6,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
@@ -34,11 +35,12 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
-
     routing {
         healthRoute()
 
         authenticate(authConfig.name) {
+            install(PrincipalInContext)
+
             setupServiceStatus(
                 safService,
                 penService,

@@ -11,7 +11,6 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 
@@ -51,8 +50,8 @@ class PensjonPersonDataService(config: Config, authService: AzureADService, clie
         }
     }
 
-    suspend fun hentKontaktadresse(call: ApplicationCall, pid: String): ServiceResult<KontaktAdresseResponseDto?> =
-        client.get(call, "/api/adresse/kontaktadresse") {
+    suspend fun hentKontaktadresse(pid: String): ServiceResult<KontaktAdresseResponseDto?> =
+        client.get("/api/adresse/kontaktadresse") {
             parameter("checkForVerge", true)
             headers {
                 header("pid", pid)
@@ -65,8 +64,8 @@ class PensjonPersonDataService(config: Config, authService: AzureADService, clie
         }
 
     override val name = "Pensjon PersonData"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
-        client.get(call, "/actuator/health/liveness")
+    override suspend fun ping(): ServiceResult<Boolean> =
+        client.get("/actuator/health/liveness")
             .toServiceResult<String>()
             .map { true }
 }

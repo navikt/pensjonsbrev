@@ -8,7 +8,6 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
@@ -50,8 +49,8 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
         }
     }
 
-    suspend fun getPreferredLocale(call: ApplicationCall, pid: String): KontaktinfoResponse {
-        return client.get(call, "/rest/v1/person") {
+    suspend fun getPreferredLocale(pid: String): KontaktinfoResponse {
+        return client.get("/rest/v1/person") {
             headers {
                 accept(ContentType.Application.Json)
                 header("Nav-Personident", pid)
@@ -80,8 +79,8 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
     }
 
     override val name = "KRR"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
-        client.get(call, "/internal/health/readiness")
+    override suspend fun ping(): ServiceResult<Boolean> =
+        client.get("/internal/health/readiness")
             .toServiceResult<String>()
             .map { true }
 }

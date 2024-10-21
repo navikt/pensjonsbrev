@@ -3,14 +3,13 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.client.plugins.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.TjenestebussStatus
 
 interface ServiceStatus {
     val name: String
-    suspend fun ping(call: ApplicationCall): ServiceResult<Boolean>
+    suspend fun ping(): ServiceResult<Boolean>
 }
 
 data class StatusResponse(
@@ -22,15 +21,15 @@ data class StatusResponse(
 
 fun Route.setupServiceStatus(vararg services: ServiceStatus) {
     get("/status") {
-        call.respond(services.checkStatuses(call))
+        call.respond(services.checkStatuses())
     }
 }
 
 
-private suspend fun Array<out ServiceStatus>.checkStatuses(call: ApplicationCall): StatusResponse {
+private suspend fun Array<out ServiceStatus>.checkStatuses(): StatusResponse {
     val pingResponses = this.associate {
         it.name to try {
-            it.ping(call)
+            it.ping()
         } catch (e: ClientRequestException) {
             ServiceResult.Error(e.response.bodyAsText(), e.response.status)
         } catch (e: Exception) {
@@ -55,6 +54,6 @@ private suspend fun Array<out ServiceStatus>.checkStatuses(call: ApplicationCall
         overall = results.values.all { it },
         services = results,
         errors = errors,
-        tjenestebuss = this.filterIsInstance<TjenestebussIntegrasjonService>().firstOrNull()?.status(call)?.resultOrNull(),
+        tjenestebuss = this.filterIsInstance<TjenestebussIntegrasjonService>().firstOrNull()?.status()?.resultOrNull(),
     )
 }

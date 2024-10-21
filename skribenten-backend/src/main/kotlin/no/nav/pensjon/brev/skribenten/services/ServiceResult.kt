@@ -5,7 +5,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
-import io.ktor.util.pipeline.*
+import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.*
 
 sealed class ServiceResult<Result> {
@@ -63,7 +63,7 @@ sealed class ServiceResult<Result> {
 
 }
 
-suspend inline fun <reified R> PipelineContext<Unit, ApplicationCall>.respondWithResult(
+suspend inline fun <reified R> RoutingContext.respondWithResult(
     result: ServiceResult<R>,
     noinline onOk: suspend ApplicationCall.(R) -> Unit = { if (it != null) respond(it) else respond(HttpStatusCode.NotFound) },
     noinline onError: suspend ApplicationCall.(String) -> Unit = { message ->

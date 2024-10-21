@@ -67,7 +67,7 @@ private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetr
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(pdfFileName: String, path: Path = Path.of("build", "test_pdf")): Letter<ParameterType> {
     Letter2Markup.render(this)
         .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, language, felles, template.letterMetadata.brevtype) }
-        .let { runBlocking { laTeXCompilerService.producePDF(it, "test").base64PDF } }
+        .let { runBlocking { laTeXCompilerService.producePDF(it).base64PDF } }
         .also { writeTestPDF(pdfFileName, Base64.getDecoder().decode(it), path) }
     return this
 }

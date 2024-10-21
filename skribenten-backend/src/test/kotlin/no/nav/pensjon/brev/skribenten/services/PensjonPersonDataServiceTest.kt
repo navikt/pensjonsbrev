@@ -4,14 +4,14 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.typesafe.config.ConfigFactory
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.plugins.callid.*
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.TokenResponse
+import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -20,15 +20,14 @@ class PensjonPersonDataServiceTest {
     private val mockAdService = mockk<AzureADService> {
         coEvery { getOnBehalfOfToken(any(), any()) } returns TokenResponse.OnBehalfOfToken("token", "refresh", "Bearer", "scope", 12345L)
     }
-    private val mockCall = mockk<ApplicationCall> {
-        every { callId } returns "utrolig kul callId"
-    }
+
+    private val principal = MockPrincipal(NavIdent("veldig kul ansatt"), "Veldig kult navn")
 
     @Test
     fun `returnerer kontaktadresse`() {
         runBlocking {
             val expected = KontaktAdresseResponseDto("Eli, Jarl og Raffen", listOf("Portveien 2"), KontaktAdresseResponseDto.Adressetype.VEGADRESSE)
-            val actual = mockResponse(expected).hentKontaktadresse(mockCall, "1234")
+            val actual = withPrincipal(principal) { mockResponse(expected).hentKontaktadresse("1234") }
 
             assertThat(actual).isEqualTo(ServiceResult.Ok(expected))
         }
@@ -37,7 +36,7 @@ class PensjonPersonDataServiceTest {
     @Test
     fun `returerer null om person ikke har adresse`() {
         runBlocking {
-            val actual = mockResponse(null, HttpStatusCode.NotFound).hentKontaktadresse(mockCall, "1234")
+            val actual = withPrincipal(principal) { mockResponse(null, HttpStatusCode.NotFound).hentKontaktadresse("1234") }
 
             assertThat(actual).isEqualTo(ServiceResult.Ok(null))
         }

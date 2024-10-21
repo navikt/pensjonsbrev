@@ -3,9 +3,10 @@ package no.nav.pensjon.brev.api
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.plugins.callid.*
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -36,7 +37,7 @@ class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
     private val base64PDF = Base64.getEncoder().encodeToString(pdfInnhold.toByteArray())
     private val latexMock = mockk<LaTeXCompilerService> {
-        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(base64PDF)
+        coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
     }
     private val autobrev = TemplateResource("autobrev", ProductionTemplates.autobrev, latexMock)
     private val redigerbar = TemplateResource("autobrev", ProductionTemplates.redigerbare, latexMock)
@@ -71,13 +72,9 @@ class TemplateResourceTest {
         )
     )
 
-    private val callMock = mockk<ApplicationCall> {
-        every { callId } returns "abdef"
-    }
-
     @Test
     fun `can renderPDF with valid letterData`(): Unit = runBlocking {
-        val result = autobrev.renderPDF(callMock, validAutobrevRequest)
+        val result = autobrev.renderPDF(validAutobrevRequest)
         assertEquals(
             LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), OpphoerBarnetilleggAuto.template.letterMetadata),
             result
@@ -94,7 +91,7 @@ class TemplateResourceTest {
     @Test
     fun `fails renderPDF with invalid letterData`(): Unit = runBlocking {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderPDF(callMock, validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+            autobrev.renderPDF(validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
         }
     }
 
@@ -129,8 +126,8 @@ class TemplateResourceTest {
         ).firstOrNull()
 
         val capturedLatex = slot<LatexDocument>()
-        redigerbar.renderPDF(callMock, validRedigertBrevRequest)
-        coVerify { latexMock.producePDF(capture(capturedLatex), any()) }
+        redigerbar.renderPDF(validRedigertBrevRequest)
+        coVerify { latexMock.producePDF(capture(capturedLatex)) }
 
         val letterLatexContent = capturedLatex.captured.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "letter.tex" }.content
         assertThat(
