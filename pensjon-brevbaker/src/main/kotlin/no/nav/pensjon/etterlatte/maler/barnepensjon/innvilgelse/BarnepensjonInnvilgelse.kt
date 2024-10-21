@@ -49,6 +49,7 @@ data class BarnepensjonInnvilgelseDTO(
     val frivilligSkattetrekk: Boolean,
     val harUtbetaling: Boolean,
     val kunNyttRegelverk: Boolean,
+    val erSluttbehandling: Boolean = false
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
