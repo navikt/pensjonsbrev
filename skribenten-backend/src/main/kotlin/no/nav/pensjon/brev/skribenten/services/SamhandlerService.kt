@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -9,28 +11,27 @@ import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
 import org.slf4j.LoggerFactory
 
-class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADService): ServiceStatus {
+class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADService) : ServiceStatus {
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
-    private val samhandlerProxyClient =
-        AzureADOnBehalfOfAuthorizedHttpClient(samhandlerProxyScope, authService) {
-            defaultRequest {
-                url(samhandlerProxyUrl)
-            }
-            install(ContentNegotiation) {
-                jackson {
-                    disable(FAIL_ON_UNKNOWN_PROPERTIES)
-                }
+    private val samhandlerProxyClient = HttpClient(CIO) {
+        defaultRequest {
+            url(samhandlerProxyUrl)
+        }
+        install(ContentNegotiation) {
+            jackson {
+                disable(FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
+        callIdAndOnBehalfOfClient(samhandlerProxyScope, authService)
+    }
 
     private val logger = LoggerFactory.getLogger(SamhandlerService::class.java)
 
@@ -79,6 +80,7 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
                     samhandlerType = requestDto.samhandlerType.name,
                 )
             }
+
             is FinnSamhandlerRequestDto.Organisasjonsnavn -> {
                 Soek(
                     navn = requestDto.navn,
@@ -87,6 +89,7 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
                     samhandlerType = requestDto.samhandlerType.name,
                 )
             }
+
             is FinnSamhandlerRequestDto.Personnavn -> {
                 Soek(
                     "${requestDto.etternavn} ${requestDto.fornavn}",
@@ -142,7 +145,7 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
         val idTSSEkstern: String,
         val avdelingNavn: String?,
         val avdelingType: String?,
-        val avdelingsnr: String?
+        val avdelingsnr: String?,
     )
 
     private fun SamhandlerEnkel.toHentSamhandlerResponseDto() =

@@ -6,7 +6,6 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.skribenten.auth.*
 
 sealed class ServiceResult<Result> {
     data class Ok<Result>(val result: Result) : ServiceResult<Result>()
@@ -76,7 +75,6 @@ suspend inline fun <reified R> RoutingContext.respondWithResult(
     }
 }
 
-
 suspend inline fun <reified R> HttpResponse.toServiceResult(): ServiceResult<R> =
     toServiceResult { ServiceResult.Error(it.bodyAsText(), it.status) }
 
@@ -85,14 +83,4 @@ suspend inline fun <reified R> HttpResponse.toServiceResult(noinline errorHandle
         ServiceResult.Ok(body())
     } else {
         errorHandler(this)
-    }
-
-suspend inline fun <reified R> AuthorizedHttpClientResult.toServiceResult(noinline errorHandler: (suspend (HttpResponse) -> ServiceResult<R>)? = null): ServiceResult<R> =
-    when (this) {
-        is AuthorizedHttpClientResult.Error -> ServiceResult.Error(
-            "Feil ved token-utveksling correlation_id: ${error.correlation_id} Description:${error.error_description}",
-            HttpStatusCode.Unauthorized
-        )
-
-        is AuthorizedHttpClientResult.Response -> errorHandler?.let { response.toServiceResult(it) } ?: response.toServiceResult()
     }

@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -19,7 +21,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -34,7 +35,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
     private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(config.getString("scope"), authService) {
+    private val client = HttpClient(CIO) {
         defaultRequest {
             url(brevbakerUrl)
         }
@@ -45,6 +46,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                 registerModule(TemplateModelSpecificationModule)
             }
         }
+        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
     }
 
     /**
@@ -57,7 +59,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
         brevkode: Brevkode.Redigerbar,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles
+        felles: Felles,
     ): ServiceResult<LetterMarkup> =
         client.post("/letter/redigerbar/markup") {
             contentType(ContentType.Application.Json)
@@ -76,7 +78,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-        redigertBrev: LetterMarkup
+        redigertBrev: LetterMarkup,
     ): ServiceResult<LetterResponse> =
         client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)

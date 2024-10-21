@@ -4,14 +4,18 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.visitor.KSDefaultVisitor
 
-private val SKIPPED_NO_WARN_PACKAGES = setOf("kotlin", "java.util", "java.time")
+private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util", "java.time")
+private val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
+    "no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata",
+    "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata",
+)
 
 private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
     val message = "Skipping $classDeclaration: can only generate helpers for data classes"
 
     if (classDeclaration.packageName.asString() in SKIPPED_NO_WARN_PACKAGES
         || classDeclaration.classKind == ClassKind.ENUM_CLASS
-        || classDeclaration.qualifiedName?.asString() == "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata"
+        || classDeclaration.qualifiedName?.asString() in SKIPPED_NO_WARN_CLASSES
     ) {
         info(message, classDeclaration)
     } else {

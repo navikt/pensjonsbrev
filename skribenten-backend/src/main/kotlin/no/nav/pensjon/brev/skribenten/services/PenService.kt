@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
+import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -11,7 +13,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -27,7 +28,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     private val penUrl = config.getString("url")
     private val penScope = config.getString("scope")
 
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(penScope, authService) {
+    private val client = HttpClient(CIO) {
         defaultRequest {
             url(penUrl)
         }
@@ -37,6 +38,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
+        callIdAndOnBehalfOfClient(penScope, authService)
     }
 
     private suspend fun <R> handlePenErrorResponse(response: HttpResponse): ServiceResult<R> =

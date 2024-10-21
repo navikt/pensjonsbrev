@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.typesafe.config.ConfigFactory
+import io.ktor.callid.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import io.mockk.coEvery
@@ -26,19 +27,22 @@ class PensjonPersonDataServiceTest {
     @Test
     fun `returnerer kontaktadresse`() {
         runBlocking {
-            val expected = KontaktAdresseResponseDto("Eli, Jarl og Raffen", listOf("Portveien 2"), KontaktAdresseResponseDto.Adressetype.VEGADRESSE)
-            val actual = withPrincipal(principal) { mockResponse(expected).hentKontaktadresse("1234") }
+            withCallId("veldig-kul-id") {
+                val expected = KontaktAdresseResponseDto("Eli, Jarl og Raffen", listOf("Portveien 2"), KontaktAdresseResponseDto.Adressetype.VEGADRESSE)
+                val actual = withPrincipal(principal) { mockResponse(expected).hentKontaktadresse("1234") }
 
-            assertThat(actual).isEqualTo(ServiceResult.Ok(expected))
+                assertThat(actual).isEqualTo(ServiceResult.Ok(expected))
+            }
         }
     }
 
     @Test
     fun `returerer null om person ikke har adresse`() {
         runBlocking {
-            val actual = withPrincipal(principal) { mockResponse(null, HttpStatusCode.NotFound).hentKontaktadresse("1234") }
-
-            assertThat(actual).isEqualTo(ServiceResult.Ok(null))
+            withCallId("veldig-kul-id") {
+                val actual = withPrincipal(principal) { mockResponse(null, HttpStatusCode.NotFound).hentKontaktadresse("1234") }
+                assertThat(actual).isEqualTo(ServiceResult.Ok(null))
+            }
         }
     }
 

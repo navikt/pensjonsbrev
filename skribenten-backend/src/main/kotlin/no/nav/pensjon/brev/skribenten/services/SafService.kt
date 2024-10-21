@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -9,7 +11,6 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
@@ -40,13 +41,14 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     //TODO vurder å bruke en egen client for graphql: (https://opensource.expediagroup.com/graphql-kotlin/docs/client/client-overview/)
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(safScope, authService) {
+    private val client = HttpClient(CIO) {
         defaultRequest {
             url(safUrl)
         }
         install(ContentNegotiation) {
             jackson()
         }
+        callIdAndOnBehalfOfClient(safScope, authService)
     }
 
     data class HentJournalStatusResponse(val data: HentJournalpostData?, val errors: JsonNode?)
@@ -59,6 +61,7 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
     }
 
     data class JournalPost(val journalpostId: String, val journalstatus: Journalstatus)
+    @Suppress("unused")
     enum class Journalstatus {
         MOTTATT, JOURNALFOERT, FERDIGSTILT, EKSPEDERT, UNDER_ARBEID, FEILREGISTRERT, UTGAAR, AVBRUTT, UKJENT_BRUKER, RESERVERT, OPPLASTING_DOKUMENT, UKJENT,
     }
@@ -125,7 +128,7 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
      */
     suspend fun hentPdfForJournalpostId(journalpostId: String): ServiceResult<ByteArray> =
         hentFoersteDokumentInfoIdFraJournalpost(journalpostId).then { dokumentInfoId ->
-            client.get(url = "$safRestUrl/hentdokument/$journalpostId/$dokumentInfoId/ARKIV").toServiceResult()
+            client.get("$safRestUrl/hentdokument/$journalpostId/$dokumentInfoId/ARKIV").toServiceResult()
         }
 
     /*

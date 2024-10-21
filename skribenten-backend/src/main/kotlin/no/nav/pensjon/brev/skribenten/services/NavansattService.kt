@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
 
@@ -18,7 +20,7 @@ class NavansattService(config: Config, authService: AzureADService) : ServiceSta
     private val navansattUrl = config.getString("url")
     private val navansattScope = config.getString("scope")
 
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(navansattScope, authService) {
+    private val client = HttpClient(CIO) {
         defaultRequest {
             url(navansattUrl)
         }
@@ -28,6 +30,7 @@ class NavansattService(config: Config, authService: AzureADService) : ServiceSta
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
+        callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
     suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {

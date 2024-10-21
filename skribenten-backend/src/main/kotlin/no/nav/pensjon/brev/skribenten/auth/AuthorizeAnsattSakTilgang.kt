@@ -25,19 +25,17 @@ class AuthorizeAnsattSakTilgangConfiguration {
 
 val AuthorizeAnsattSakTilgang = createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
     on(PrincipalInContext.Hook) { call ->
-        coroutineScope {
-            val saksId = call.parameters.getOrFail(SAKSID_PARAM)
-            val pdlService = pluginConfig.pdlService
-            val penService = pluginConfig.penService
+        val saksId = call.parameters.getOrFail(SAKSID_PARAM)
+        val pdlService = pluginConfig.pdlService
+        val penService = pluginConfig.penService
 
-            val ikkeTilgang = penService.hentSak(saksId).map { sak ->
-                call.attributes.put(SakKey, sak)
-                sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer), PrincipalInContext.require())
-            }.catch(::AuthAnsattSakTilgangResponse)
+        val ikkeTilgang = penService.hentSak(saksId).map { sak ->
+            call.attributes.put(SakKey, sak)
+            sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer), PrincipalInContext.require())
+        }.catch(::AuthAnsattSakTilgangResponse)
 
-            if (ikkeTilgang != null) {
-                call.respond(ikkeTilgang.status, ikkeTilgang.melding)
-            }
+        if (ikkeTilgang != null) {
+            call.respond(ikkeTilgang.status, ikkeTilgang.melding)
         }
     }
 }
