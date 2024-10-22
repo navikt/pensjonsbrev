@@ -17,10 +17,12 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.avdoedNavn
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.erSluttbehandling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.tidligereFamiliepleier
 
 data class OmstillingstoenadAvslagRedigerbartUtfallDTO(
     val avdoedNavn: String,
     val erSluttbehandling: Boolean = false,
+    val tidligereFamiliepleier: Boolean = false
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -35,12 +37,12 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
             letterDataType = OmstillingstoenadAvslagRedigerbartUtfallDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-                LetterMetadata(
-                    displayTitle = "Vedtak - begrunnelse for avslag",
-                    isSensitiv = true,
-                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-                ),
+            LetterMetadata(
+                displayTitle = "Vedtak - begrunnelse for avslag",
+                isSensitiv = true,
+                distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            ),
         ) {
             title {
                 text(
@@ -51,7 +53,13 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
             }
 
             outline {
-                includePhrase(OmstillingsstoenadAvslagFraser.Vedtak(erSluttbehandling, avdoedNavn))
+                includePhrase(
+                    OmstillingsstoenadAvslagFraser.Vedtak(
+                        erSluttbehandling,
+                        tidligereFamiliepleier,
+                        avdoedNavn
+                    )
+                )
                 includePhrase(Vedtak.BegrunnelseForVedtaket)
                 includePhrase(OmstillingsstoenadFellesFraser.FyllInn)
             }
