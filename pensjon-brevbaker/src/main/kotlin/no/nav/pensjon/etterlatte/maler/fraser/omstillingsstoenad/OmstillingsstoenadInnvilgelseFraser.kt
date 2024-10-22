@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
@@ -31,7 +32,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 object OmstillingsstoenadInnvilgelseFraser {
     data class Vedtak(
-        val avdoed: Expression<Avdoed>,
+        val avdoed: Expression<Avdoed?>,
         val omstillingsstoenadBeregning: Expression<OmstillingsstoenadBeregning>,
         val harUtbetaling: Expression<Boolean>,
         val tidligereFamiliepleier: Expression<Boolean>,
@@ -40,7 +41,6 @@ object OmstillingsstoenadInnvilgelseFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val harFlerePerioder = omstillingsstoenadBeregning.beregningsperioder.size().greaterThan(1)
             val formatertVirkningsdato = omstillingsstoenadBeregning.virkningsdato.format()
-            val formatertDoedsdato = avdoed.doedsdato.format()
 
 
                 showIf(tidligereFamiliepleier) {
@@ -75,30 +75,25 @@ object OmstillingsstoenadInnvilgelseFraser {
                                     "We have now received information from foreign social security authorities, which means you are entitled to the allowance under the EEA rules.",
                         )
                     }
+                }
 
-                    // TODO: ta ut i fellesFraser
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                                    " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ".",
-                            Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
-                                    ", ettersom " + avdoed.navn + " døydde " + formatertDoedsdato + ".",
-                            English to "You have been granted adjustment allowance starting ".expr() +
-                                    formatertVirkningsdato + " because " + avdoed.navn + " died on " + formatertDoedsdato + ".",
-                        )
+                showIf(tidligereFamiliepleier.not()) {
+                    ifNotNull(avdoed){
+                        val formatertDoedsdato = it.doedsdato.format()
+
+                        // TODO: ta ut i fellesFraser
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
+                                        " fordi " + it.navn + " døde " + formatertDoedsdato + ".",
+                                Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
+                                        ", ettersom " + it.navn + " døydde " + formatertDoedsdato + ".",
+                                English to "You have been granted adjustment allowance starting ".expr() +
+                                        formatertVirkningsdato + " because " + it.navn + " died on " + formatertDoedsdato + ".",
+                            )
+                        }
                     }
-                }.orShow {
-                    // TODO: gjennbruk fra fellesFraser
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                                " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ".",
-                            Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
-                                ", ettersom " + avdoed.navn + " døydde " + formatertDoedsdato + ".",
-                            English to "You have been granted adjustment allowance starting ".expr() +
-                                formatertVirkningsdato + " because " + avdoed.navn + " died on " + formatertDoedsdato + ".",
-                        )
-                    }
+
                 }
 
             showIf(harUtbetaling) {
