@@ -79,7 +79,12 @@ object Edit {
             override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() } || deletedItems.isNotEmpty()
         }
 
-        data class Table(override val id: Int?, val rows: List<Row>, val header: Header) : ParagraphContent(Type.TABLE) {
+        data class Table(
+            override val id: Int?,
+            val rows: List<Row>,
+            val header: Header,
+            val deletedRows: Set<Int> = emptySet(),
+        ) : ParagraphContent(Type.TABLE) {
             data class Row(override val id: Int?, val cells: List<Cell>) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() }
             }
@@ -98,7 +103,7 @@ object Edit {
 
             enum class ColumnAlignment { LEFT, RIGHT }
 
-            override fun isEdited(): Boolean = isNew() || rows.any { it.isEdited() } || header.isEdited()
+            override fun isEdited(): Boolean = isNew() || deletedRows.isNotEmpty() || rows.any { it.isEdited() } || header.isEdited()
         }
 
         sealed class Text(type: Type) : ParagraphContent(type) {
@@ -114,7 +119,7 @@ object Edit {
                 val editedText: String? = null,
                 val editedFontType: FontType? = null,
             ) : Text(Type.LITERAL) {
-                override fun isEdited(): Boolean = isNew() || editedText != null
+                override fun isEdited(): Boolean = isNew() || editedText != null || editedFontType != null
             }
 
             data class Variable(override val id: Int?, override val text: String, override val fontType: FontType) : Text(Type.VARIABLE) {
