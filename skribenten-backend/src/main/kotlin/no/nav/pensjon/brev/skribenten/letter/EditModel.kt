@@ -103,12 +103,21 @@ object Edit {
 
         sealed class Text(type: Type) : ParagraphContent(type) {
             abstract val text: String
+            abstract val fontType: FontType
 
-            data class Literal(override val id: Int?, override val text: String, val editedText: String? = null) : Text(Type.LITERAL) {
+            enum class FontType { PLAIN, BOLD, ITALIC }
+
+            data class Literal(
+                override val id: Int?,
+                override val text: String,
+                override val fontType: FontType,
+                val editedText: String? = null,
+                val editedFontType: FontType? = null,
+            ) : Text(Type.LITERAL) {
                 override fun isEdited(): Boolean = isNew() || editedText != null
             }
 
-            data class Variable(override val id: Int?, override val text: String) : Text(Type.VARIABLE) {
+            data class Variable(override val id: Int?, override val text: String, override val fontType: FontType) : Text(Type.VARIABLE) {
                 override fun isEdited(): Boolean = false
             }
         }
@@ -188,9 +197,16 @@ fun ParagraphContent.toEdit(): Edit.ParagraphContent =
 
 fun ParagraphContent.Text.toEdit(): Edit.ParagraphContent.Text =
     when (this) {
-        is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id, text, null)
-        is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id, text)
+        is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id, text, fontType.toEdit())
+        is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id, text, fontType.toEdit())
         is ParagraphContent.Text.NewLine -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
+    }
+
+fun ParagraphContent.Text.FontType.toEdit(): Edit.ParagraphContent.Text.FontType =
+    when (this) {
+        ParagraphContent.Text.FontType.PLAIN -> Edit.ParagraphContent.Text.FontType.PLAIN
+        ParagraphContent.Text.FontType.BOLD -> Edit.ParagraphContent.Text.FontType.BOLD
+        ParagraphContent.Text.FontType.ITALIC -> Edit.ParagraphContent.Text.FontType.ITALIC
     }
 
 fun ParagraphContent.ItemList.Item.toEdit(): Edit.ParagraphContent.ItemList.Item =
@@ -234,20 +250,26 @@ fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
         is Edit.ParagraphContent.Text -> toMarkup()
     }
 
-//TODO add fontType til text
 fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
     when (this) {
         is Edit.ParagraphContent.Text.Literal -> ParagraphContent.Text.Literal(
             id = id ?: 0,
             text = editedText ?: text,
-            fontType = ParagraphContent.Text.FontType.PLAIN
+            fontType = (editedFontType ?: fontType).toMarkup()
         )
 
         is Edit.ParagraphContent.Text.Variable -> ParagraphContent.Text.Variable(
             id = id ?: 0,
             text = text,
-            fontType = ParagraphContent.Text.FontType.PLAIN
+            fontType = fontType.toMarkup()
         )
+    }
+
+fun Edit.ParagraphContent.Text.FontType.toMarkup(): ParagraphContent.Text.FontType =
+    when (this) {
+        Edit.ParagraphContent.Text.FontType.PLAIN -> ParagraphContent.Text.FontType.PLAIN
+        Edit.ParagraphContent.Text.FontType.BOLD -> ParagraphContent.Text.FontType.BOLD
+        Edit.ParagraphContent.Text.FontType.ITALIC -> ParagraphContent.Text.FontType.ITALIC
     }
 
 fun Edit.ParagraphContent.ItemList.Item.toMarkup(): ParagraphContent.ItemList.Item =

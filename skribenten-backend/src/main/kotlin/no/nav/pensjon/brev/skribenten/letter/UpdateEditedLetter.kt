@@ -7,7 +7,7 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
 /**
  * Update a letter edited in Skribenten (originally rendered by brevbaker) with a fresh
  * rendering from brevbaker. In the new rendering from brevbaker we may receive elements (blocks/content)
- * that wasn't present in previous renders, e.g. if Saksbehandler has modified the template options or
+ * that wasn't present in previous renders, e.g. if Saksbehandler has modified the template options (saksbehandlerValg) or
  * if Sak-data has changed in pesys. Or elements (blocks/content) present in previous renders may no longer be
  * present.
  */
@@ -104,7 +104,7 @@ private fun mergeListText(edited: List<Edit.ParagraphContent.Text>, rendered: Ed
 private fun mergeTextContent(edited: Edit.ParagraphContent.Text, rendered: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text =
     when (edited) {
         is Edit.ParagraphContent.Text.Literal -> when (rendered) {
-            is Edit.ParagraphContent.Text.Literal -> rendered.copy(editedText = edited.editedText)
+            is Edit.ParagraphContent.Text.Literal -> rendered.copy(editedText = edited.editedText, editedFontType = edited.editedFontType)
             is Edit.ParagraphContent.Text.Variable -> throw UpdateEditedLetterException("Edited literal and rendered variable has same ID, cannot merge: $edited - $rendered")
         }
 
@@ -152,7 +152,7 @@ private fun updateVariableValues(content: Edit.ParagraphContent.Text, variableVa
         is Edit.ParagraphContent.Text.Literal -> content
         is Edit.ParagraphContent.Text.Variable -> variableValues[content.id]
             ?.let { content.copy(text = it) }
-            ?: Edit.ParagraphContent.Text.Literal(content.id, content.text)
+            ?: Edit.ParagraphContent.Text.Literal(content.id, content.text, content.fontType)
     }
 
 private fun updateVariableValues(itemList: Edit.ParagraphContent.ItemList, variableValues: Map<Int, String>): Edit.ParagraphContent.ItemList =
