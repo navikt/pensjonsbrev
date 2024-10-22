@@ -40,6 +40,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType as E_FontType
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
 class BrevredigeringServiceTest {
@@ -988,7 +989,7 @@ class BrevredigeringServiceTest {
                     blocks = brev.redigertBrev.blocks + E_Paragraph(
                         null,
                         true,
-                        listOf(E_Literal(null, "", "and blue pill"))
+                        listOf(E_Literal(null, "", E_FontType.PLAIN,"and blue pill"))
                     )
                 ),
                 frigiReservasjon = false,
