@@ -37,12 +37,12 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
             letterDataType = OmstillingstoenadAvslagRedigerbartUtfallDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-                LetterMetadata(
-                    displayTitle = "Vedtak - begrunnelse for avslag",
-                    isSensitiv = true,
-                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-                ),
+            LetterMetadata(
+                displayTitle = "Vedtak - begrunnelse for avslag",
+                isSensitiv = true,
+                distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            ),
         ) {
             title {
                 text(
@@ -63,4 +63,5 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
                 includePhrase(Vedtak.BegrunnelseForVedtaket)
                 includePhrase(OmstillingsstoenadFellesFraser.FyllInn)
             }
+        }
 }
