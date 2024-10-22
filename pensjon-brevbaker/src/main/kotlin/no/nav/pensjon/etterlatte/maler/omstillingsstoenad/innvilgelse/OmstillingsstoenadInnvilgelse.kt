@@ -1,8 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse
 
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -11,24 +9,20 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Avdoed
-import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
-import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
+import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
-import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.erSluttbehandling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.informasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.tidligereFamiliepleier
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
@@ -43,8 +37,11 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
     val tidligereFamiliepleier: Boolean = false,
-    val erSluttbehandling: Boolean = false
-) : FerdigstillingBrevDTO
+    val bosattUtland: Boolean = false,
+    val erSluttbehandling: Boolean = false,
+) : FerdigstillingBrevDTO {
+    val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
+}
 
 @TemplateModelHelpers
 object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnvilgelseDTO>, Hovedmal {
@@ -114,8 +111,7 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
                 tidligereFamiliepleier.not(),
             )
 
-            includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = true), innhold, tidligereFamiliepleier)
-            includeAttachment(informasjonOmOmstillingsstoenad(tidligereFamiliepleier = false), innhold, tidligereFamiliepleier.not())
+            includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
 
             includeAttachment(dineRettigheterOgPlikter, beregning)
         }
