@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.typesafe.config.Config
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -12,11 +11,10 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import no.nav.pensjon.brev.skribenten.callId
+import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import no.nav.pensjon.brev.skribenten.model.Pen
 import org.slf4j.LoggerFactory
 
@@ -34,20 +32,18 @@ class BrevmetadataService(
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
+        install(CallIdFromContext)
     }
 
-    suspend fun hentMaler(call: ApplicationCall, sakType: Pen.SakType, includeEblanketter: Boolean): Brevmaler =
+    suspend fun hentMaler(sakType: Pen.SakType, includeEblanketter: Boolean): Brevmaler =
         coroutineScope {
-            val eblanketterAsync: Deferred<List<BrevdataDto>> = async { if (includeEblanketter) getEblanketter(call) else emptyList() }
-            val malerAsync: Deferred<List<BrevdataDto>> = async { getBrevmalerForSakstype(call, sakType) }
+            val eblanketterAsync: Deferred<List<BrevdataDto>> = async { if (includeEblanketter) getEblanketter() else emptyList() }
+            val malerAsync: Deferred<List<BrevdataDto>> = async { getBrevmalerForSakstype(sakType) }
             return@coroutineScope Brevmaler(eblanketterAsync.await(), malerAsync.await())
         }
 
-    private suspend fun getBrevmalerForSakstype(call: ApplicationCall, sakstype: Pen.SakType): List<BrevdataDto> {
+    private suspend fun getBrevmalerForSakstype(sakstype: Pen.SakType): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
-            headers {
-                callId(call)
-            }
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {
@@ -58,12 +54,9 @@ class BrevmetadataService(
         }
     }
 
-    private suspend fun getEblanketter(call: ApplicationCall): List<BrevdataDto> {
+    private suspend fun getEblanketter(): List<BrevdataDto> {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
             contentType(ContentType.Application.Json)
-            headers{
-                callId(call)
-            }
         }.body<List<BrevdataDto>>()
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
     }
@@ -75,7 +68,7 @@ class BrevmetadataService(
     }
 
     override val name = "Brevmetadata"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+    override suspend fun ping(): ServiceResult<Boolean> =
         httpClient.get("/api/internal/isReady").toServiceResult<String>().map { true }
 
     data class Brevmaler(

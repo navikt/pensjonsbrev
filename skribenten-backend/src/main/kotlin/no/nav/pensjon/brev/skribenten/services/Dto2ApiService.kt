@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.db.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BrevStatus
@@ -16,34 +15,35 @@ class Dto2ApiService(
     private val samhandlerService: SamhandlerService,
 ) {
 
-    suspend fun toApi(call: ApplicationCall, brevredigering: Dto.Brevredigering): Api.BrevResponse =
+    suspend fun toApi(brevredigering: Dto.Brevredigering): Api.BrevResponse =
         Api.BrevResponse(
-            info = toApi(call, brevredigering.info),
+            info = toApi(brevredigering.info),
             redigertBrev = brevredigering.redigertBrev,
             redigertBrevHash = brevredigering.redigertBrevHash,
             saksbehandlerValg = brevredigering.saksbehandlerValg,
         )
 
-    suspend fun toApi(call: ApplicationCall, info: Dto.BrevInfo): Api.BrevInfo {
-        val template = brevbakerService.getRedigerbarTemplate(call, info.brevkode)
+    suspend fun toApi(info: Dto.BrevInfo): Api.BrevInfo {
+        val template = brevbakerService.getRedigerbarTemplate(info.brevkode)
 
         return Api.BrevInfo(
             id = info.id,
-            opprettetAv = hentNavAnsatt(call, info.opprettetAv),
+            opprettetAv = hentNavAnsatt(info.opprettetAv),
             opprettet = info.opprettet,
-            sistredigertAv = hentNavAnsatt(call, info.sistredigertAv),
+            sistredigertAv = hentNavAnsatt(info.sistredigertAv),
             sistredigert = info.sistredigert,
             brevkode = info.brevkode,
             brevtittel = template?.metadata?.displayTitle ?: info.brevkode.name,
             status = when {
                 info.laastForRedigering -> BrevStatus.Klar
-                info.redigeresAv != null -> BrevStatus.UnderRedigering(hentNavAnsatt(call, info.redigeresAv))
+                info.redigeresAv != null -> BrevStatus.UnderRedigering(hentNavAnsatt(info.redigeresAv))
                 else -> BrevStatus.Kladd
             },
             distribusjonstype = info.distribusjonstype,
-            mottaker = info.mottaker?.toApi(call),
-            avsenderEnhet = info.avsenderEnhetId?.let { norg2Service.getEnhet(call, it) },
-            spraak = info.spraak.toApi()
+            mottaker = info.mottaker?.toApi(),
+            avsenderEnhet = info.avsenderEnhetId?.let { norg2Service.getEnhet(it) },
+            spraak = info.spraak.toApi(),
+            journalpostId = info.journalpostId,
         )
     }
 
@@ -53,8 +53,8 @@ class Dto2ApiService(
         LanguageCode.ENGLISH -> SpraakKode.EN
     }
 
-    private suspend fun Dto.Mottaker.toApi(call: ApplicationCall): Api.OverstyrtMottaker = when (type) {
-        MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(tssId!!, samhandlerService.hentSamhandlerNavn(call, tssId))
+    private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
+        MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(tssId!!, samhandlerService.hentSamhandlerNavn(tssId))
         MottakerType.NORSK_ADRESSE -> Api.OverstyrtMottaker.NorskAdresse(navn!!, postnummer!!, poststed!!, adresselinje1, adresselinje2, adresselinje3)
         MottakerType.UTENLANDSK_ADRESSE -> Api.OverstyrtMottaker.UtenlandskAdresse(
             navn!!,
@@ -67,7 +67,7 @@ class Dto2ApiService(
         )
     }
 
-    private suspend fun hentNavAnsatt(call: ApplicationCall, navIdent: NavIdent): NavAnsatt =
-        NavAnsatt(navIdent, navansattService.hentNavansatt(call, navIdent.id)?.navn)
+    private suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
+        NavAnsatt(navIdent, navansattService.hentNavansatt(navIdent.id)?.navn)
 
 }

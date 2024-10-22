@@ -296,22 +296,16 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad())
                     ) {
                         textExpr(
-                            Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar()
-                                .format() + ", er inntekten justert opp slik at den gjelder for hele " + pe.ut_virkningfomar()
-                                .format() + ".",
-                            Nynorsk to "Fekk du innvilga uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar()
-                                .format() + ", er inntekta også justert opp slik at den gjeld for heile " + pe.ut_virkningfomar()
-                                .format() + ".",
+                            Bokmal to " Fikk du innvilget uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar().format() + ", er inntekten justert opp slik at den gjelder for hele " + pe.ut_virkningfomar().format() + ".",
+                            Nynorsk to " Fekk du innvilga uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar().format() + ", er inntekta også justert opp slik at den gjeld for heile " + pe.ut_virkningfomar().format() + ".",
                         )
                     }
 
                     //PE_UT_VilFylle67iVirkningFomAr = true
                     showIf(pe.ut_vilfylle67ivirkningfomar()) {
                         textExpr(
-                            Bokmal to " Fordi du fyller 67 år i ".expr() + pe.ut_virkningfomar()
-                                .format() + ", er inntekten justert i forhold til antall måneder du mottar uføretrygd.",
-                            Nynorsk to " Fordi du fyljer 67 år i ".expr() + pe.ut_virkningfomar()
-                                .format() + ", er inntekta justert ut frå talet på månadar du får uføretrygd.",
+                            Bokmal to " Fordi du fyller 67 år i ".expr() + pe.ut_virkningfomar().format() + ", er inntekten justert i forhold til antall måneder du mottar uføretrygd.",
+                            Nynorsk to " Fordi du fyljer 67 år i ".expr() + pe.ut_virkningfomar().format() + ", er inntekta justert ut frå talet på månadar du får uføretrygd.",
                         )
                     }
                 }
@@ -1908,9 +1902,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 )) THEN   INCLUDE ENDIF
                         showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)){
                             textExpr (
-                                Bokmal to pe.barnetilleggfelles_justeringsbelopperarutenminus()
+                                Bokmal to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
                                     .format() + " kroner i det vi reduserer barnetillegget med for resten av året.",
-                                Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus()
+                                Nynorsk to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
                                     .format() + " kroner i det vi har redusert barnetillegget med for resten av året.",
                             )
                         }

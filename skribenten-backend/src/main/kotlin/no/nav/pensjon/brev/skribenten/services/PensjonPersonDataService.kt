@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
+import io.ktor.client.*
 import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
@@ -11,8 +12,6 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -40,7 +39,7 @@ class PensjonPersonDataService(config: Config, authService: AzureADService, clie
 
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(scope, authService, clientEngine) {
+    private val client = HttpClient(clientEngine) {
         defaultRequest {
             url(pensjonPersondataURL)
         }
@@ -49,10 +48,11 @@ class PensjonPersonDataService(config: Config, authService: AzureADService, clie
                 registerModule(JavaTimeModule())
             }
         }
+        callIdAndOnBehalfOfClient(scope, authService)
     }
 
-    suspend fun hentKontaktadresse(call: ApplicationCall, pid: String): ServiceResult<KontaktAdresseResponseDto?> =
-        client.get(call, "/api/adresse/kontaktadresse") {
+    suspend fun hentKontaktadresse(pid: String): ServiceResult<KontaktAdresseResponseDto?> =
+        client.get("/api/adresse/kontaktadresse") {
             parameter("checkForVerge", true)
             headers {
                 header("pid", pid)
@@ -65,8 +65,8 @@ class PensjonPersonDataService(config: Config, authService: AzureADService, clie
         }
 
     override val name = "Pensjon PersonData"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
-        client.get(call, "/actuator/health/liveness")
+    override suspend fun ping(): ServiceResult<Boolean> =
+        client.get("/actuator/health/liveness")
             .toServiceResult<String>()
             .map { true }
 }

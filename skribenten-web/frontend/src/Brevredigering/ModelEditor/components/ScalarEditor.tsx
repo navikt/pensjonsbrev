@@ -8,10 +8,12 @@ import type { TScalar } from "~/types/brevbakerTypes";
 import { formatDateWithoutTimezone, parseDate } from "~/utils/dateUtils";
 
 export const ScalarEditor = ({
+  prependName,
   fieldType,
   field,
   submitOnChange,
 }: {
+  prependName?: string;
   field: string;
   fieldType: TScalar;
   submitOnChange?: () => void;
@@ -23,6 +25,7 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
+          prependName={prependName}
           step={1}
           timeoutTimer={2000}
           type={"number"}
@@ -35,6 +38,7 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
+          prependName={prependName}
           step={0.1}
           timeoutTimer={2500}
           type="number"
@@ -47,26 +51,30 @@ export const ScalarEditor = ({
           field={field}
           fieldType={fieldType}
           onSubmit={submitOnChange}
+          prependName={prependName}
           timeoutTimer={2500}
           type="text"
         />
       );
     }
     case "BOOLEAN": {
-      return <SwitchField field={field} fieldType={fieldType} onSubmit={submitOnChange} />;
+      return <SwitchField field={field} fieldType={fieldType} onSubmit={submitOnChange} prependName={prependName} />;
     }
     case "DATE": {
-      return <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} />;
+      return (
+        <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} prependName={prependName} />
+      );
     }
   }
 };
 
-const SwitchField = (props: { field: string; fieldType: TScalar; onSubmit?: () => void }) => {
+const SwitchField = (props: { prependName?: string; field: string; fieldType: TScalar; onSubmit?: () => void }) => {
+  const fieldName = props.prependName ? `${props.prependName}.${props.field}` : props.field;
   return (
     <div>
       <Controller
         defaultValue={false}
-        name={props.field}
+        name={fieldName}
         render={({ field }) => (
           <Switch
             {...field}
@@ -89,6 +97,7 @@ const SwitchField = (props: { field: string; fieldType: TScalar; onSubmit?: () =
  * Ellers, kan den også brukes som et vanlig tekst felt.
  */
 export const AutoSavingTextField = (props: {
+  prependName?: string;
   field: string;
   fieldType: TScalar;
   type: "number" | "text";
@@ -96,11 +105,11 @@ export const AutoSavingTextField = (props: {
   timeoutTimer: number;
   onSubmit?: () => void;
 }) => {
-  const { register, getFieldState, watch, formState } = useFormContext();
+  const { getFieldState, watch, formState } = useFormContext();
 
-  const registerProperties = register(props.field, { required: props.fieldType.nullable ? false : "Må oppgis" });
-  const fieldState = getFieldState(registerProperties.name, formState);
-  const watchedValue = watch(registerProperties.name);
+  const fieldName = props.prependName ? `${props.prependName}.${props.field}` : props.field;
+  const fieldState = getFieldState(fieldName, formState);
+  const watchedValue = watch(fieldName);
 
   /**
    * useEffekten er brukt kun i forbindelse med autolagring
@@ -123,22 +132,45 @@ export const AutoSavingTextField = (props: {
     props.fieldType.nullable,
   ]);
 
-  const commonTextFieldProperties = {
-    ...registerProperties,
-    autoComplete: "off",
-    error: fieldState.error?.message,
-    label: convertFieldToReadableLabel(props.field),
-    size: "small" as const,
-  };
-
-  return <TextField {...commonTextFieldProperties} step={props.step} type={props.type} />;
+  return (
+    <Controller
+      name={fieldName}
+      render={({ field, fieldState }) => (
+        <TextField
+          {...field}
+          autoComplete="off"
+          error={fieldState.error?.message}
+          inputMode={props.type === "number" ? "numeric" : undefined}
+          label={convertFieldToReadableLabel(fieldName)}
+          onChange={(e) => (e.target.value ? field.onChange(e.target.value) : field.onChange(null))}
+          size="small"
+          step={props.step}
+        />
+      )}
+      rules={{
+        required: props.fieldType.nullable ? false : "Må oppgis",
+        pattern:
+          props.fieldType.kind === "NUMBER"
+            ? {
+                value: /^\d+$/,
+                message: "Må være et tall",
+              }
+            : undefined,
+      }}
+    />
+  );
 };
 
 /**
  * Componenten har mulighet til å autolagre endringer i feltet etter en gitt timeout dersom onSubmit sendes med.
  * Ellers, kan den også brukes som et vanlig tekst felt.
  */
-const ControlledDatePicker = (props: { field: string; fieldType: TScalar; onSubmit?: () => void }) => {
+const ControlledDatePicker = (props: {
+  prependName?: string;
+  field: string;
+  fieldType: TScalar;
+  onSubmit?: () => void;
+}) => {
   const {
     control,
     getFieldState,
@@ -147,9 +179,10 @@ const ControlledDatePicker = (props: { field: string; fieldType: TScalar; onSubm
     register,
   } = useFormContext();
 
-  register(props.field, { required: props.fieldType.nullable ? false : "Må oppgis" });
-  const watchedValue = useWatch({ name: props.field, control: control });
-  const fieldState = getFieldState(props.field);
+  const fieldName = props.prependName ? `${props.prependName}.${props.field}` : props.field;
+  register(fieldName, { required: props.fieldType.nullable ? false : "Må oppgis" });
+  const watchedValue = useWatch({ name: fieldName, control: control });
+  const fieldState = getFieldState(fieldName);
 
   /**
    * useEffekten er brukt kun i forbindelse med autolagring
@@ -162,19 +195,19 @@ const ControlledDatePicker = (props: { field: string; fieldType: TScalar; onSubm
 
       return () => clearTimeout(timeout);
     }
-  }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, props.field]);
+  }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, fieldName]);
 
-  const defaultValue = getFieldDefaultValue(defaultValues, props.field);
+  const defaultValue = getFieldDefaultValue(defaultValues, fieldName);
 
   return (
     <Controller
       control={control}
-      name={props.field}
+      name={fieldName}
       render={({ field, fieldState }) => (
         <DatePickerEditor
           defaultValue={defaultValue}
           error={fieldState.error?.message}
-          label={convertFieldToReadableLabel(props.field)}
+          label={convertFieldToReadableLabel(fieldName)}
           onChange={field.onChange}
         />
       )}

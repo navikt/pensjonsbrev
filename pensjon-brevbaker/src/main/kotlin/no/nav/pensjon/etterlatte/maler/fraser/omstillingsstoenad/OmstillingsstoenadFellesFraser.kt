@@ -267,6 +267,28 @@ object OmstillingsstoenadFellesFraser {
         }
     }
 
+    object FyllInn : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "(Utfall jamfør tekstbibliotek)",
+                    Nynorsk to "(Utfall jamfør tekstbibliotek)",
+                    English to "(Utfall jamfør tekstbibliotek)",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to
+                            "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § <riktig paragrafhenvisning>.",
+                    Nynorsk to
+                            "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § <riktig paragrafhenvisning>.",
+                    English to
+                            "This decision has been made pursuant to the provisions regarding adjustment allowance in the National Insurance Act – sections § <riktig paragrafhenvisning>.",
+                )
+            }
+        }
+    }
+
     object SpesieltOmInntektsendring : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
