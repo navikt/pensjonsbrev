@@ -10,7 +10,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Var
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.testcontainers.shaded.com.google.errorprone.annotations.Var
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
@@ -21,6 +20,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.Cell as
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.ColumnSpec as E_ColumnSpec
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.Header as E_Header
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.Row as E_Row
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType as E_FontType
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable as E_Variable
 
@@ -72,9 +72,9 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel ", "Her har jeg redigert"),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert"),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             )
         )
@@ -96,9 +96,9 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             )
         )
@@ -118,9 +118,9 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel ", "Her har jeg redigert"),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert"),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             )
         )
@@ -128,8 +128,8 @@ class UpdateRenderedLetterTest {
         val expected = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel ", "Her har jeg redigert"),
-                    E_Variable(2, "for deg "),
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert"),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
                 )
             )
         )
@@ -150,11 +150,11 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(null, "", "Her har jeg lagt til "),
-                    E_Literal(1, "Var med i forrige rendring, men skal ikke være med i neste"),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!"),
-                    E_Literal(null, "", " Også lagt til"),
+                    E_Literal(null, "", E_FontType.PLAIN, "Her har jeg lagt til "),
+                    E_Literal(1, "Var med i forrige rendring, men skal ikke være med i neste", E_FontType.PLAIN),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN),
+                    E_Literal(null, "", E_FontType.PLAIN, " Også lagt til"),
                 )
             )
         )
@@ -162,10 +162,10 @@ class UpdateRenderedLetterTest {
         val expected = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(null, "", "Her har jeg lagt til "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!"),
-                    E_Literal(null, "", " Også lagt til"),
+                    E_Literal(null, "", E_FontType.PLAIN, "Her har jeg lagt til "),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN),
+                    E_Literal(null, "", E_FontType.PLAIN, " Også lagt til"),
                 )
             )
         )
@@ -187,8 +187,8 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!", "og dine"),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN, "og dine"),
                 )
             )
         )
@@ -196,9 +196,9 @@ class UpdateRenderedLetterTest {
         val expected = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!", "og dine"),
-                    E_Literal(4, " pluss noe mer tekst"),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN, "og dine"),
+                    E_Literal(4, " pluss noe mer tekst", E_FontType.PLAIN),
                 )
             )
         )
@@ -220,9 +220,9 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel", "Her er det en ulovlig redigering"),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel", E_FontType.PLAIN, "Her er det en ulovlig redigering"),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             )
         )
@@ -244,10 +244,10 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(null, "", "ny literal"),
-                    E_Variable(1, "En tittel "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(null, "", E_FontType.PLAIN, "ny literal"),
+                    E_Variable(1, "En tittel ", E_FontType.PLAIN),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             )
         )
@@ -270,21 +270,21 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Variable(1, "En tittel "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!"),
-                    E_Literal(null, "", "ny literal"),
+                    E_Variable(1, "En tittel ", E_FontType.PLAIN),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN),
+                    E_Literal(null, "", E_FontType.PLAIN, "ny literal"),
                 )
             )
         )
         val expected = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Variable(1, "En tittel "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!"),
-                    E_Literal(null, "", "ny literal"),
-                    E_Literal(4, "ny rendered literal"),
+                    E_Variable(1, "En tittel ", E_FontType.PLAIN),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN),
+                    E_Literal(null, "", E_FontType.PLAIN, "ny literal"),
+                    E_Literal(4, "ny rendered literal", E_FontType.PLAIN),
                 )
             )
         )
@@ -305,8 +305,8 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "Noe tekst"),
-                    E_Variable(2, "en variabel"),
+                    E_Literal(1, "Noe tekst", E_FontType.PLAIN),
+                    E_Variable(2, "en variabel", E_FontType.PLAIN),
                 ),
                 originalType = Edit.Block.Type.PARAGRAPH,
             )
@@ -330,18 +330,18 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "Noe tekst", "Noe redigert tekst "),
-                    E_Variable(2, "med en variabel"),
-                    E_Literal(3, " og noe mer tekst"),
+                    E_Literal(1, "Noe tekst", E_FontType.PLAIN, "Noe redigert tekst "),
+                    E_Variable(2, "med en variabel", E_FontType.PLAIN),
+                    E_Literal(3, " og noe mer tekst", E_FontType.PLAIN),
                 )
             )
         )
         val expected = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "Noe tekst ", "Noe redigert tekst "),
-                    E_Variable(2, "med en oppdatert variabel"),
-                    E_Literal(3, " og noe mer tekst"),
+                    E_Literal(1, "Noe tekst ", E_FontType.PLAIN, "Noe redigert tekst "),
+                    E_Variable(2, "med en oppdatert variabel", E_FontType.PLAIN),
+                    E_Literal(3, " og noe mer tekst", E_FontType.PLAIN),
                 )
             ),
         )
@@ -363,19 +363,19 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "Noe tekst ", "Noe redigert tekst "),
-                    E_Variable(2, "med en variabel"),
-                    E_Literal(3, " og noe mer tekst"),
+                    E_Literal(1, "Noe tekst ", E_FontType.PLAIN, "Noe redigert tekst "),
+                    E_Variable(2, "med en variabel", E_FontType.PLAIN),
+                    E_Literal(3, " og noe mer tekst", E_FontType.PLAIN),
                 )
             )
         )
         val expected = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "Noe tekst ", "Noe redigert tekst "),
-                    E_Variable(2, "med en oppdatert variabel"),
-                    E_Literal(3, " og noe mer tekst"),
-                    E_Literal(4, " pluss noe ny tekst"),
+                    E_Literal(1, "Noe tekst ", E_FontType.PLAIN, "Noe redigert tekst "),
+                    E_Variable(2, "med en oppdatert variabel", E_FontType.PLAIN),
+                    E_Literal(3, " og noe mer tekst", E_FontType.PLAIN),
+                    E_Literal(4, " pluss noe ny tekst", E_FontType.PLAIN),
                 )
             )
         )
@@ -396,19 +396,19 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "", "Noe ny tekst")
+                    E_Literal(null, "", E_FontType.PLAIN, "Noe ny tekst")
                 )
             ),
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel ", "Her har jeg redigert "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             ),
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "", "Noe mer ny tekst")
+                    E_Literal(null, "", E_FontType.PLAIN, "Noe mer ny tekst")
                 )
             ),
         )
@@ -436,33 +436,33 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel ", "Her har jeg redigert "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             ),
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "Noe mer ny tekst")
+                    E_Literal(null, "Noe mer ny tekst", E_FontType.PLAIN)
                 )
             ),
         )
         val expected = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel ", "Her har jeg redigert "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             ),
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "Noe mer ny tekst")
+                    E_Literal(null, "Noe mer ny tekst", E_FontType.PLAIN)
                 )
             ),
             E_Title1(
                 3, true, listOf(
-                    E_Literal(1, "En ny tittel "),
+                    E_Literal(1, "En ny tittel ", E_FontType.PLAIN),
                 )
             ),
         )
@@ -490,34 +490,34 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "", "første teksten")
+                    E_Literal(null, "", E_FontType.PLAIN, "første teksten")
                 )
             ),
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel ", "Her har jeg redigert "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             ),
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "Noe mer ny tekst")
+                    E_Literal(null, "Noe mer ny tekst", E_FontType.PLAIN)
                 )
             ),
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "enda mer tekst")
+                    E_Literal(null, "enda mer tekst", E_FontType.PLAIN)
                 )
             ),
             E_Title1(
                 3, true, listOf(
-                    E_Literal(1, "En ny tittel "),
+                    E_Literal(1, "En ny tittel ", E_FontType.PLAIN),
                 )
             ),
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "siste teksten")
+                    E_Literal(null, "siste teksten", E_FontType.PLAIN)
                 )
             ),
         )
@@ -549,43 +549,43 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel ", "Her har jeg redigert "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             ),
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "Noe ny redigert tekst")
+                    E_Literal(null, "Noe ny redigert tekst", E_FontType.PLAIN)
                 )
             ),
             E_Title1(
                 4, true, listOf(
-                    E_Literal(1, "En tittel "),
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN),
                 )
             ),
         )
         val expected = editedLetter(
             E_Title1(
                 1, true, listOf(
-                    E_Literal(1, "En tittel ", "Her har jeg redigert "),
-                    E_Variable(2, "for deg "),
-                    E_Literal(3, "og meg!")
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
+                    E_Variable(2, "for deg ", E_FontType.PLAIN),
+                    E_Literal(3, "og meg!", E_FontType.PLAIN)
                 )
             ),
             E_Paragraph(
                 null, true, listOf(
-                    E_Literal(null, "Noe ny redigert tekst")
+                    E_Literal(null, "Noe ny redigert tekst", E_FontType.PLAIN)
                 )
             ),
             E_Title1(
                 3, true, listOf(
-                    E_Literal(1, "Dette er en ny block før id:4 "),
+                    E_Literal(1, "Dette er en ny block før id:4 ", E_FontType.PLAIN),
                 )
             ),
             E_Title1(
                 4, true, listOf(
-                    E_Literal(1, "En tittel "),
+                    E_Literal(1, "En tittel ", E_FontType.PLAIN),
                 )
             ),
         )
@@ -614,16 +614,16 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Paragraph(
                 1, true, listOf(
-                    E_Literal(11, "Første"),
-                    E_Variable(12, "en variabel"),
-                    E_Literal(13, "Andre"),
-                    E_Variable(14, "andre variabel"),
-                    E_Literal(25, "Tredje"),
-                    E_Variable(27, "burde ikke bli med etter rendring"),
-                    E_Literal(28, "burde heller ikke bli med etter rendring"),
+                    E_Literal(11, "Første", E_FontType.PLAIN),
+                    E_Variable(12, "en variabel", E_FontType.PLAIN),
+                    E_Literal(13, "Andre", E_FontType.PLAIN),
+                    E_Variable(14, "andre variabel", E_FontType.PLAIN),
+                    E_Literal(25, "Tredje", E_FontType.PLAIN),
+                    E_Variable(27, "burde ikke bli med etter rendring", E_FontType.PLAIN),
+                    E_Literal(28, "burde heller ikke bli med etter rendring", E_FontType.PLAIN),
                     E_ItemList(
                         16, listOf(
-                            E_Item(160, listOf(E_Literal(161, "punkt 1"), E_Literal(162, "punkt 2"), E_Literal(163, "punkt 3"))),
+                            E_Item(160, listOf(E_Literal(161, "punkt 1", E_FontType.PLAIN), E_Literal(162, "punkt 2", E_FontType.PLAIN), E_Literal(163, "punkt 3", E_FontType.PLAIN))),
                         )
                     ),
                 )
@@ -649,9 +649,9 @@ class UpdateRenderedLetterTest {
             E_Paragraph(
                 1, true,
                 listOf(
-                    E_Literal(11, "lit1"),
-                    E_Variable(12, "var1"),
-                    E_Literal(13, "rediger til tom streng", ""),
+                    E_Literal(11, "lit1", E_FontType.PLAIN),
+                    E_Variable(12, "var1", E_FontType.PLAIN),
+                    E_Literal(13, "rediger til tom streng", E_FontType.PLAIN, ""),
                 ),
             ),
         )
@@ -679,7 +679,7 @@ class UpdateRenderedLetterTest {
             E_Paragraph(
                 1, true,
                 listOf(
-                    E_Literal(11, "lit1"),
+                    E_Literal(11, "lit1", E_FontType.PLAIN),
                 ),
             ),
             deleted = setOf(2),
@@ -714,19 +714,19 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Paragraph(
                 1, true, listOf(
-                    E_Literal(11, "1lit1"),
+                    E_Literal(11, "1lit1", E_FontType.PLAIN),
                 ),
                 deletedContent = setOf(12)
             ),
             E_Title1(
                 2, true, listOf(
-                    E_Literal(21, "2lit1"),
+                    E_Literal(21, "2lit1", E_FontType.PLAIN),
                 ),
                 deletedContent = setOf(22)
             ),
             E_Title2(
                 3, true, listOf(
-                    E_Literal(31, "3lit1"),
+                    E_Literal(31, "3lit1", E_FontType.PLAIN),
                 ),
                 deletedContent = setOf(32)
             ),
@@ -757,7 +757,7 @@ class UpdateRenderedLetterTest {
                     E_ItemList(
                         11,
                         listOf(
-                            E_Item(112, listOf(E_Literal(1121, "item 2"))),
+                            E_Item(112, listOf(E_Literal(1121, "item 2", E_FontType.PLAIN))),
                         ),
                         setOf(111),
                     ),
@@ -784,7 +784,7 @@ class UpdateRenderedLetterTest {
             E_Paragraph(
                 1, true,
                 listOf(
-                    E_Literal(14, "fjerde", "fjerdeEdited"),
+                    E_Literal(14, "fjerde", E_FontType.PLAIN, "fjerdeEdited"),
                 )
             )
         )
@@ -792,10 +792,10 @@ class UpdateRenderedLetterTest {
             E_Paragraph(
                 1, true,
                 listOf(
-                    E_Literal(11, "første"),
-                    E_Literal(12, "andre"),
-                    E_Literal(13, "tredje"),
-                    E_Literal(14, "fjerde", "fjerdeEdited"),
+                    E_Literal(11, "første", E_FontType.PLAIN),
+                    E_Literal(12, "andre", E_FontType.PLAIN),
+                    E_Literal(13, "tredje", E_FontType.PLAIN),
+                    E_Literal(14, "fjerde", E_FontType.PLAIN, "fjerdeEdited"),
                 )
             )
         )
@@ -820,9 +820,9 @@ class UpdateRenderedLetterTest {
             E_Paragraph(
                 null, true,
                 listOf(
-                    E_Literal(11, "en literal"),
-                    E_Variable(12, "en variabel"),
-                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "variabel 2"))))),
+                    E_Literal(11, "en literal", E_FontType.PLAIN),
+                    E_Variable(12, "en variabel", E_FontType.PLAIN),
+                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "variabel 2", E_FontType.PLAIN))))),
                     E_Table(
                         id = 14,
                         header = E_Header(
@@ -830,27 +830,27 @@ class UpdateRenderedLetterTest {
                             colSpec = listOf(
                                 E_ColumnSpec(
                                     1411,
-                                    E_Cell(14111, listOf(E_Variable(141111, "variabel 3"))),
+                                    E_Cell(14111, listOf(E_Variable(141111, "variabel 3", E_FontType.PLAIN))),
                                     Edit.ParagraphContent.Table.ColumnAlignment.LEFT,
                                     1
                                 )
                             )
                         ),
-                        rows = listOf(E_Row(142, listOf(E_Cell(1421, listOf(E_Variable(14211, "variabel 4")))))),
+                        rows = listOf(E_Row(142, listOf(E_Cell(1421, listOf(E_Variable(14211, "variabel 4", E_FontType.PLAIN)))))),
                     )
                 )
             ),
-            E_Title1(null, true, listOf(E_Variable(1311, "variabel 2"))),
-            E_Title2(null, true, listOf(E_Variable(14211, "variabel 4"))),
+            E_Title1(null, true, listOf(E_Variable(1311, "variabel 2", E_FontType.PLAIN))),
+            E_Title2(null, true, listOf(E_Variable(14211, "variabel 4", E_FontType.PLAIN))),
             deleted = setOf(1),
         )
         val expected = editedLetter(
             E_Paragraph(
                 null, true,
                 listOf(
-                    E_Literal(11, "en literal"),
-                    E_Variable(12, "oppdatert variabel"),
-                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "oppdatert variabel 2"))))),
+                    E_Literal(11, "en literal", E_FontType.PLAIN),
+                    E_Variable(12, "oppdatert variabel", E_FontType.PLAIN),
+                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "oppdatert variabel 2", E_FontType.PLAIN))))),
                     E_Table(
                         id = 14,
                         header = E_Header(
@@ -858,18 +858,18 @@ class UpdateRenderedLetterTest {
                             colSpec = listOf(
                                 E_ColumnSpec(
                                     1411,
-                                    E_Cell(14111, listOf(E_Variable(141111, "oppdatert variabel 3"))),
+                                    E_Cell(14111, listOf(E_Variable(141111, "oppdatert variabel 3", E_FontType.PLAIN))),
                                     Edit.ParagraphContent.Table.ColumnAlignment.LEFT,
                                     1
                                 )
                             )
                         ),
-                        rows = listOf(E_Row(142, listOf(E_Cell(1421, listOf(E_Variable(14211, "oppdatert variabel 4")))))),
+                        rows = listOf(E_Row(142, listOf(E_Cell(1421, listOf(E_Variable(14211, "oppdatert variabel 4", E_FontType.PLAIN)))))),
                     )
                 )
             ),
-            E_Title1(null, true, listOf(E_Variable(1311, "oppdatert variabel 2"))),
-            E_Title2(null, true, listOf(E_Variable(14211, "oppdatert variabel 4"))),
+            E_Title1(null, true, listOf(E_Variable(1311, "oppdatert variabel 2", E_FontType.PLAIN))),
+            E_Title2(null, true, listOf(E_Variable(14211, "oppdatert variabel 4", E_FontType.PLAIN))),
             deleted = setOf(1),
         )
         assertEquals(expected, edited.updateEditedLetter(next))
@@ -889,8 +889,8 @@ class UpdateRenderedLetterTest {
             E_Paragraph(
                 null, true,
                 listOf(
-                    E_Literal(11, "en literal"),
-                    E_Variable(12, "en variabel"),
+                    E_Literal(11, "en literal", E_FontType.PLAIN),
+                    E_Variable(12, "en variabel", E_FontType.PLAIN),
                 )
             ),
             deleted = setOf(1),
@@ -899,8 +899,8 @@ class UpdateRenderedLetterTest {
             E_Paragraph(
                 null, true,
                 listOf(
-                    E_Literal(11, "en literal"),
-                    E_Literal(12, "en variabel"),
+                    E_Literal(11, "en literal", E_FontType.PLAIN),
+                    E_Literal(12, "en variabel", E_FontType.PLAIN),
                 )
             ),
             deleted = setOf(1),
