@@ -18,12 +18,6 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.text
-import pebrevkode
-import vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup
-import vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget
-import vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg
-import vedtaksdata_kravhode_kravarsaktype
-import kotlin.and
 
 data class TBUxx2V(
     val pe: Expression<PE>,
@@ -34,7 +28,7 @@ data class TBUxx2V(
         showIf((pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup() and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300"))){
             //[TBUxx2V]
 
-            paragraph {
+            title1 {
                 text (
                     Bokmal to "Slik beregner vi uføretrygden din",
                     Nynorsk to "Slik bereknar vi uføretrygda di",

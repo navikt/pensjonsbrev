@@ -37,7 +37,7 @@ data class TBU011V_TBU016V(val pe: Expression<PE>): OutlinePhrase<LangBokmalNyno
         showIf((pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().notEqualTo(60000) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300"))){
             //[TBU011V-TBU016V]
 
-            paragraph {
+            title1 {
                 text (
                     Bokmal to "Slik beregner vi uføretrygden din",
                     Nynorsk to "Slik bereknar vi uføretrygda di",

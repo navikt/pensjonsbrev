@@ -8,5 +8,6 @@ data class Kravhode(
     val brukerkonvertertup: Boolean?,
     val kravarsaktype: String?,
     val kravgjelder: String?,
+    val vurderetrygdeavtale: Boolean?,
     val onsketvirkningsdato: LocalDate?,
 )

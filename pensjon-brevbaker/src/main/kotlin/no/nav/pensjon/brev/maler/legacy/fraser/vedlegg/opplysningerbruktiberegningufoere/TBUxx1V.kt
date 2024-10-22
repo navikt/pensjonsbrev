@@ -35,6 +35,7 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksdata_trygdetidavdod_ttutlandtrygd
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_framtidigttavtaleland
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_ttnevnerbilateral
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_tttellerbilateral
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

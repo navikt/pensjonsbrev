@@ -44,5 +44,8 @@ data class PE(
         val pe_ut_forstegangstjenesteikkenull: Boolean,
         val pe_ut_fattnorgeplusfattbilateral_avdod: Int,
         val pe_ut_vilkargjelderpersonalder: Int,
+        val harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg: Boolean,
+        val harOpptjeningUTMedFoerstegangstjenesteOgOmsorg: Boolean,
+        val harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste: Boolean,
     )
 }

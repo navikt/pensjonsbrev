@@ -34,7 +34,6 @@ interface StableHash {
      * like memory location.
      */
     fun stableHashCode(): Int
-    fun format(): StringExpression
 
     companion object {
         fun hash(firstField: StableHash?, vararg fields: StableHash?): Int =

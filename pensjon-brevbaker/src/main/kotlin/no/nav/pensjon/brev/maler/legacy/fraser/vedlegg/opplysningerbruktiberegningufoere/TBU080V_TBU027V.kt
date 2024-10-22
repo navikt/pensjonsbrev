@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaleland
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.ut_vilkargjelderpersonalder
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging
@@ -14,6 +15,7 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufor
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravarsaktype
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_onsketvirkningsdato
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_vurderetrygdeavtale
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -25,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.legacyGreaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.legacyLessThan
@@ -50,7 +53,7 @@ data class TBU080V_TBU027V(
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().equalTo(60000) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse())){
                 //[TBU080V-TBU027V]
 
-                paragraph {
+                title1 {
                     text (
                         Bokmal to "For deg som har rett til minsteytelse",
                         Nynorsk to "For deg som har rett til minsteyting",

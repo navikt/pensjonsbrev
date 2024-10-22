@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 data class GjenlevendetilleggInformasjon (
     val uforetidspunkt: LocalDate?,
-    val anvendttrygdetid: Boolean?,
+    val anvendttrygdetid: Int?,
     val minsteytelsebenyttetungufor: Boolean?,
     val beregningsgrunnlagavdodordiner: BeregningsgrunnlagAvdodOrdiner?,
     val yrkesskadegrad: Int?,

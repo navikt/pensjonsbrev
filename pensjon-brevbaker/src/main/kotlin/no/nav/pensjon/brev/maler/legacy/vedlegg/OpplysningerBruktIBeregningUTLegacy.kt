@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbil
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.grunnlag_safe
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.*
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -65,13 +66,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includePhrase(TBUxx1V(pe))
         includePhrase(TBU011V_TBU016V(pe))
         includePhrase(TBUxx2V(pe))
-
-        // TODO TBU080V-TBU027V trengs for brev som ikke er:
-        //  PE_UT_07_100, PE_UT_05_100, PE_UT_04_300, PE_UT_14_300, PE_UT_04_103, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300
+        includePhrase(TBU080V_TBU027V(pe))
 
         // TODO TBU028V-TBU020V trengs for brev PE_UT_04_300 og PE_UT_14_300
-
-
 
         showIf(
             pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
@@ -84,17 +81,10 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 TBU034V_036V(pe)
             )
         }
-        // TODO TBU037V_1 trengs for brev som ikke er:
-        //  PE_UT_05_100, PE_UT_14_300, PE_UT_07_100, PE_UT_04_300, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300, PE_UT_04_500
-
-        // TODO TBU037V_2 trengs for brev som ikke er:
-        //  PE_UT_05_100, PE_UT_14_300, PE_UT_07_100, PE_UT_04_300, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300, PE_UT_04_500
-
-        // TODO TBU038V_1 trengs for brev som ikke er:
-        //  PE_UT_07_100, PE_UT_05_100, PE_UT_14_300, PE_UT_04_300, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300, PE_UT_04_500
-
-        // TODO TBU038V_2 trengs for brev som ikke er:
-        //  PE_UT_07_100, PE_UT_05_100, PE_UT_14_300, PE_UT_04_300, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300, PE_UT_04_500
+        includePhrase(TBU037V_1(pe))
+        includePhrase(TBU037V_2(pe))
+        includePhrase(TBU038V_1(pe))
+        includePhrase(TBU038V_2(pe))
 
         // TODO TVU037V_3 trengs for brev som ikke er:
         //  PE_UT_05_100, PE_UT_04_300, PE_UT_07_100, PE_UT_14_300, PE_UT_04_500, PE_UT_06_300
