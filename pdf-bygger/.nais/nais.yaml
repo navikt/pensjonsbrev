@@ -24,7 +24,7 @@ spec:
     timeout: 5
   replicas:
     min: 12
-    max: 300
+    max: 190
     cpuThresholdPercentage: 50
   prometheus:
     enabled: true
