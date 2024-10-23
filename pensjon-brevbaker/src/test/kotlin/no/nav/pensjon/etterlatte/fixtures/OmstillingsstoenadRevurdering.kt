@@ -89,7 +89,11 @@ fun createOmstillingsstoenadRevurderingDTO() =
                         beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
                         mindreEnnFireFemtedelerAvOpptjeningstiden = true,
                         navnAvdoed = "Elvis Presley",
+
                     ),
+                innvilgelsesAarMindreEnn12Maaneder = true,
+                innvilgelsesOgOpphoerSammeAar = false,
+                opphoerNesteAar = false,
             ),
         etterbetaling =
             OmstillingsstoenadEtterbetaling(

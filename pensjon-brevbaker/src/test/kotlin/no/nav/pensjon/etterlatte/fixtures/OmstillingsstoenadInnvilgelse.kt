@@ -95,6 +95,9 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                         mindreEnnFireFemtedelerAvOpptjeningstiden = false,
                         navnAvdoed = "Elvis Presley",
                     ),
+                innvilgelsesAarMindreEnn12Maaneder = true,
+                innvilgelsesOgOpphoerSammeAar = false,
+                opphoerNesteAar = false,
             ),
         etterbetaling =
             OmstillingsstoenadEtterbetaling(
