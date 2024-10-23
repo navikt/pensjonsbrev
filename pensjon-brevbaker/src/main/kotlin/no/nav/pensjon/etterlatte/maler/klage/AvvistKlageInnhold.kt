@@ -25,7 +25,7 @@ data class AvvistKlageInnholdDTO(
     val sakType: SakType,
     val klageDato: LocalDate,
     val datoForVedtaketKlagenGjelder: LocalDate?,
-
+    val bosattUtland: Boolean = false,
     )
 
 @TemplateModelHelpers

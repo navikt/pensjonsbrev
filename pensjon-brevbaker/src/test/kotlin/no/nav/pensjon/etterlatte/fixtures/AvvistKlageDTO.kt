@@ -16,6 +16,7 @@ fun createAvvistKlageFerdigDTO() = AvvistKlageFerdigDTO(
     data = AvvistKlageInnholdDTO(
         sakType = SakType.BARNEPENSJON,
         klageDato = LocalDate.of(2024, 2, 29),
-        datoForVedtaketKlagenGjelder = LocalDate.of(2023, 12, 12)
+        datoForVedtaketKlagenGjelder = LocalDate.of(2023, 12, 12),
+        bosattUtland = true
     )
 )
