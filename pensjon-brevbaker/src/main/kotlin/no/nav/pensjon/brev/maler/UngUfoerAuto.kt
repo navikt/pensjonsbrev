@@ -90,7 +90,7 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Ufoeretrygd.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsynPesys)
+            includePhrase(Felles.RettTilInnsynForVedlegg(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
         }

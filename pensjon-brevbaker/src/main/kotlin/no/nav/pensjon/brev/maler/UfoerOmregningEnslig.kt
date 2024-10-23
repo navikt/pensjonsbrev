@@ -322,7 +322,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Ufoeretrygd.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsynPesys)
+            includePhrase(Felles.RettTilInnsynForVedlegg(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(bruker.borINorge))

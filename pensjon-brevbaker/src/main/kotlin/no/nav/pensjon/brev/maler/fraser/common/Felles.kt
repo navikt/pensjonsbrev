@@ -13,7 +13,7 @@ object Felles {
     /**
      * TBU1074, TBU2242NB, TBU1075NN, TBU2242EN, RettTilInnsynPesys_001
      */
-    object RettTilInnsynPesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class RettTilInnsynForVedlegg(val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -25,9 +25,15 @@ object Felles {
 
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram.",
-                    English to "You are entitled to see your case documents. Refer to the attachment «Your rights and obligations» for information about how to proceed.",
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg ",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg ",
+                    English to "You are entitled to see your case documents. Refer to the attachment ",
+                )
+                namedReference(vedlegg)
+                text(
+                    Bokmal to  " for informasjon om hvordan du går fram.",
+                    Nynorsk to " for informasjon om korleis du går fram.",
+                    English to " for information about how to proceed.",
                 )
             }
         }
