@@ -12,9 +12,9 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, L
     paragraph {
         showIf(utland) {
             text(
-                Language.Bokmal to "NAV Familie- og pensjonsytelser",
-                Language.Nynorsk to "NAV Familie- og pensjonsytelser",
-                Language.English to "NAV Familie- og pensjonsytelser"
+                Language.Bokmal to "Nav familie- og pensjonsytelser",
+                Language.Nynorsk to "Nav familie- og pensjonsytelser",
+                Language.English to "Nav familie- og pensjonsytelser"
             )
             newline()
             text(
@@ -36,9 +36,9 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, L
             )
         }.orShow {
             text(
-                Language.Bokmal to "NAV skanning",
-                Language.Nynorsk to "NAV skanning",
-                Language.English to "NAV skanning"
+                Language.Bokmal to "Nav skanning",
+                Language.Nynorsk to "Nav skanning",
+                Language.English to "Nav skanning"
             )
             newline()
             text(

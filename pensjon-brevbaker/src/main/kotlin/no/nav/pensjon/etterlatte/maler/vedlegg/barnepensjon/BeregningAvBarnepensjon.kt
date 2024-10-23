@@ -175,9 +175,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             )
             newline()
             textExpr(
-                Bokmal to "NAV gjør en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er ".expr() + antallBarn.format() + " barn som oppdras sammen.",
-                Nynorsk to "NAV gjer ei samla utrekning av pensjon for barn som blir oppdregne saman. For denne utrekninga har vi lagt til grunn at de er ".expr() + antallBarn.format() + " barn som blir oppdregne saman.",
-                English to "NAV makes a combined pension calculation for children who are raised together. For this calculation, we have determined that your family has ".expr() + antallBarn.format() + " being raised together.",
+                Bokmal to "Nav gjør en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er ".expr() + antallBarn.format() + " barn som oppdras sammen.",
+                Nynorsk to "Nav gjer ei samla utrekning av pensjon for barn som blir oppdregne saman. For denne utrekninga har vi lagt til grunn at de er ".expr() + antallBarn.format() + " barn som blir oppdregne saman.",
+                English to "Nav makes a combined pension calculation for children who are raised together. For this calculation, we have determined that your family has ".expr() + antallBarn.format() + " being raised together.",
             )
         }
         paragraph {
@@ -959,7 +959,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.meldFraTilNav() {
     paragraph {
         text(
-            Bokmal to "Hvis du mener at opplysningene brukt i beregningen er feil, må du melde fra til NAV. Det kan ha betydning for størrelsen på pensjonen din.",
+            Bokmal to "Hvis du mener at opplysningene brukt i beregningen er feil, må du melde fra til Nav. Det kan ha betydning for størrelsen på pensjonen din.",
             Nynorsk to "Sei frå til NAV dersom du meiner at det er brukt feil opplysningar i utrekninga. Det kan ha betydning for kor mykje pensjon du får.",
             English to "If you believe the information applied in the calculation is incorrect, you must notify NAV. Errors may affect your pension amount."
         )

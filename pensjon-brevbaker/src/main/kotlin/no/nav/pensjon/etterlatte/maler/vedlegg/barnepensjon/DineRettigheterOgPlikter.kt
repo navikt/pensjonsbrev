@@ -95,8 +95,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.meldFraOmEndringer()
         }
         text(
             Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av barnepensjon, " +
-                "og du må straks melde fra om eventuelle feil til NAV. Er det utbetalt for mye barnepensjon fordi " +
-                "NAV ikke har fått beskjed, må pengene vanligvis betales tilbake.",
+                "og du må straks melde fra om eventuelle feil til Nav. Er det utbetalt for mye barnepensjon fordi " +
+                "Nav ikke har fått beskjed, må pengene vanligvis betales tilbake.",
             Nynorsk to "Du er ansvarleg for å følgje med på bevegelsar på kontoen for utbetaling av barnepensjon, " +
                     "og må straks melde frå til NAV dersom du blir merksam på feil. " +
                     "Viss det har blitt utbetalt for mykje barnepensjon fordi NAV ikkje har fått beskjed om endringar, " +

@@ -33,7 +33,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
             Nynorsk to "Plikt til å opplyse om endringar – folketrygdlova § 21-3",
-            English to "Duty to notify NAV of any changes – National Insurance Act Section 21-3",
+            English to "Duty to notify Nav of any changes – National Insurance Act Section 21-3",
         )
     }
     paragraph {

@@ -675,11 +675,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
     paragraph {
         text(
             Bokmal to
-                "Hvis du mener at opplysningene brukt i beregningen er feil, må du melde fra til NAV. Det kan ha betydning for størrelsen på omstillingsstønaden din.",
+                "Hvis du mener at opplysningene brukt i beregningen er feil, må du melde fra til Nav. Det kan ha betydning for størrelsen på omstillingsstønaden din.",
             Nynorsk to
-                "Sei frå til NAV dersom du meiner at det er brukt feil opplysningar i utrekninga. Det kan ha betydning for kor mykje omstillingsstønad du får.",
+                "Sei frå til Nav dersom du meiner at det er brukt feil opplysningar i utrekninga. Det kan ha betydning for kor mykje omstillingsstønad du får.",
             English to
-                "If you believe the information applied in the calculation is incorrect, you must notify NAV. Errors may affect your allowance amount.",
+                "If you believe the information applied in the calculation is incorrect, you must notify Nav. Errors may affect your allowance amount.",
         )
     }
 }

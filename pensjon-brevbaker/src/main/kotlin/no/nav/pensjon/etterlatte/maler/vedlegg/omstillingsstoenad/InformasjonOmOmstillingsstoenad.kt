@@ -195,11 +195,11 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
     }
     paragraph {
         text(
-            Bokmal to "NAV må kunne komme i kontakt med deg for å følge deg opp ved behov. Får vi ikke " +
+            Bokmal to "Nav må kunne komme i kontakt med deg for å følge deg opp ved behov. Får vi ikke " +
                     "kontakt med deg, kan vi stoppe stønaden din.",
-            Nynorsk to "NAV må kunne kontakte deg for å gi oppfølging ved behov. Dersom vi ikkje får kontakt " +
+            Nynorsk to "Nav må kunne kontakte deg for å gi oppfølging ved behov. Dersom vi ikkje får kontakt " +
                     "med deg, kan vi stoppe stønaden.",
-            English to "NAV must be able to get in touch with you to follow up your case, whenever needed. " +
+            English to "Nav must be able to get in touch with you to follow up your case, whenever needed. " +
                     "We may stop your allowance if we cannot get in touch with you. ",
         )
     }
@@ -390,13 +390,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
     }
     paragraph {
         text(
-            Bokmal to "Du kan bare ha ett kontonummer registrert hos NAV. Du kan endre kontonummeret i " +
+            Bokmal to "Du kan bare ha ett kontonummer registrert hos Nav. Du kan endre kontonummeret i " +
                     "«Personopplysninger» ved å logge på nav.no. Du kan også sende endring per post. " +
                     "Du finner skjema og riktig adresse på " + Constants.ENDRING_KONTONUMMER_URL + ".",
-            Nynorsk to "Du kan berre ha eitt kontonummer registrert hos NAV. Du kan endre kontonummer under " +
+            Nynorsk to "Du kan berre ha eitt kontonummer registrert hos Nav. Du kan endre kontonummer under " +
                     "«Personopplysningar» ved å logge på nav.no. Du kan også sende endring per post. Du finn skjema " +
                     "og rett adresse på " + Constants.ENDRING_KONTONUMMER_URL + ".",
-            English to "You can only have one account number registered with NAV. You can change your account " +
+            English to "You can only have one account number registered with Nav. You can change your account " +
                     "number online (in Personal Data) by logging in to nav.no. You can also report changes by " +
                     "conventional mail. You will find the form and the correct address online: " +
                     Constants.ENDRING_KONTONUMMER_URL + ".",
@@ -414,12 +414,12 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
     }
     paragraph {
         text(
-            Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til NAV " +
+            Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til Nav " +
                     "fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten.",
-            Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til NAV, " +
+            Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til Nav, " +
                     "då skatteopplysningane dine blir sende elektronisk frå Skatteetaten.",
             English to "Adjustment allowance are taxable. You do not need to submit your tax deduction " +
-                    "card to NAV because your tax information is sent to NAV electronically from the " +
+                    "card to Nav because your tax information is sent to Nav electronically from the " +
                     "Norwegian Tax Administration.",
         )
     }
