@@ -13,7 +13,7 @@ object Felles {
     /**
      * TBU1074, TBU2242NB, TBU1075NN, TBU2242EN, RettTilInnsynPesys_001
      */
-    data class RettTilInnsynForVedlegg(val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class RettTilInnsyn(val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -39,7 +39,7 @@ object Felles {
         }
     }
 
-    object HarDuSpoersmaalOmsorgsarbeid : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class HarDuSpoersmaal(val merInformasjonUrl: String, val telefonnummer: String): OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -50,17 +50,44 @@ object Felles {
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner mer informasjon på ${Constants.OMSORGSOPPTJENING_URL}."
+                    Bokmal to "Du finner mer informasjon på $merInformasjonUrl."
                             + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
                             + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                    Nynorsk to "Du finn meir informasjon på ${Constants.OMSORGSOPPTJENING_URL}."
-                            + " Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                    Nynorsk to "Du finn meir informasjon på $merInformasjonUrl."
+                            + " Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
                             + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                    English to "You can find more information at ${Constants.OMSORGSOPPTJENING_URL}."
+                    English to "You can find more information at $merInformasjonUrl."
                             + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
-                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 $telefonnummer,"
                             + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                )
+            }
+        }
+    }
+
+    // TBU2213, TBU1100, RettTilKlagePesys_001
+    // TBU2452NN, TBU2452EN, TBU2452
+    data class RettTilAAKlage(val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Du har rett til å klage",
+                    Nynorsk to "Du har rett til å klage",
+                    English to "You have the right of appeal"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget ",
+                    Nynorsk to "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget ",
+                    English to "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment ",
+                )
+                namedReference(vedlegg)
+                text(
+                    Bokmal to " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
+                    Nynorsk to " får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
+                    English to ", you can find out more about how to proceed. You will find forms and information at ${Constants.KLAGE_URL}.",
                 )
             }
         }

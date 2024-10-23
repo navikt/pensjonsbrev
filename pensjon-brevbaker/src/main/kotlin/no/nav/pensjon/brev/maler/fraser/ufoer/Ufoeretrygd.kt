@@ -263,26 +263,6 @@ object Ufoeretrygd {
         }
     }
 
-    // TBU2213, TBU1100, RettTilKlagePesys_001
-    object RettTilAAKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title1 {
-                text(
-                    Bokmal to "Du har rett til å klage",
-                    Nynorsk to "Du har rett til å klage",
-                    English to "You have the right of appeal"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
-                    Nynorsk to "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
-                    English to "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment “Your rights and obligations”, you can find out more about how to proceed. You will find forms and information at ${Constants.KLAGE_URL}."
-                )
-            }
-        }
-    }
-
     // TBU1228, SkattekortOverskrift_001, SkattekortUT_001
     object Skattekort : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -322,34 +302,6 @@ object Ufoeretrygd {
                         English to "You can find more information about withholding tax to Norway at $SKATTEETATEN_URL. For information about taxation from your country of residence, you can contact the locale tax authorities."
                     )
                 }
-            }
-        }
-    }
-
-    object HarDuSpoersmaalUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "Do you have questions?"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på ${Constants.UFOERETRYGD_URL}."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
-                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                    Nynorsk to "Du finn meir informasjon på ${Constants.UFOERETRYGD_URL}."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Viss du ikkje finn svar på $NAV_URL, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
-                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                    English to "You can find more information at ${Constants.UFOERETRYGD_URL}."
-                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
-                            + " If you do not find the answer at $NAV_URL, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON},"
-                            + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
-                )
             }
         }
     }

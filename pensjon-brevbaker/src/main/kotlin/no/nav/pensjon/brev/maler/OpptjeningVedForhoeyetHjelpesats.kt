@@ -53,8 +53,7 @@ object OpptjeningVedForhoeyetHjelpesats : AutobrevTemplate<OpptjeningVedForhoeye
             includePhrase(Omsorgsopptjening.Info)
             includePhrase(Omsorgsopptjening.OverforingInfo)
             includePhrase(Omsorgsopptjening.HjelpestonadAutoGodkjennInfo)
-            includePhrase(Felles.HarDuSpoersmaalOmsorgsarbeid)
+            includePhrase(Felles.HarDuSpoersmaal(Constants.OMSORGSOPPTJENING_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
-
     }
 }
