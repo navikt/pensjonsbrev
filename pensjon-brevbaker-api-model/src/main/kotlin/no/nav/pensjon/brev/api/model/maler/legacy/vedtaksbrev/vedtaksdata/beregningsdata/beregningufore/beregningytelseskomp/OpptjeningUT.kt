@@ -5,7 +5,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 data class OpptjeningUT(
     val forstegansgstjeneste: Int?,
     val inntektiavtaleland: Boolean?,
-    val aar: Int?,
+    val ar: Int?,
     val pgi: Kroner?,
     val omsorgsaar: Boolean?,
     val justertbelop: Kroner?,

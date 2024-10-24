@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.aar_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.ar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.avkortetbelop_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.brukt_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.forstegansgstjeneste_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.inntektiavtaleland_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.justertbelop_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.omsorgsaar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.pgi_safe
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
@@ -91,16 +90,16 @@ data class TBU038V_1(
                                 cell {
                                     showIf(opptjeningUt.brukt_safe.ifNull(false)) {
                                         textExpr(
-                                            Bokmal to opptjeningUt.aar_safe.ifNull(0).format(),
-                                            Nynorsk to opptjeningUt.aar_safe.ifNull(0).format(),
-                                            English to opptjeningUt.aar_safe.ifNull(0).format(),
+                                            Bokmal to opptjeningUt.ar_safe.ifNull(0).format(),
+                                            Nynorsk to opptjeningUt.ar_safe.ifNull(0).format(),
+                                            English to opptjeningUt.ar_safe.ifNull(0).format(),
                                             BOLD,
                                         )
                                     }.orShow {
                                         textExpr(
-                                            Bokmal to opptjeningUt.aar_safe.ifNull(0).format(),
-                                            Nynorsk to opptjeningUt.aar_safe.ifNull(0).format(),
-                                            English to opptjeningUt.aar_safe.ifNull(0).format(),
+                                            Bokmal to opptjeningUt.ar_safe.ifNull(0).format(),
+                                            Nynorsk to opptjeningUt.ar_safe.ifNull(0).format(),
+                                            English to opptjeningUt.ar_safe.ifNull(0).format(),
                                         )
                                     }
                                 }

@@ -67,7 +67,8 @@ fun createPE() =
             pe_ut_inntekt_trukket_fra_personinntekt = Kroner(1088),
             pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes = false,
             pe_ut_inntektsgrense_faktisk_minus_60000 = Kroner(100001),
-            pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08 = Kroner(18276)
+            pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08 = Kroner(18276),
+
         ),
         pebrevkode = "PE_UT_05_100",
         personsak = PersonSak(PSfnr("01019878910"))

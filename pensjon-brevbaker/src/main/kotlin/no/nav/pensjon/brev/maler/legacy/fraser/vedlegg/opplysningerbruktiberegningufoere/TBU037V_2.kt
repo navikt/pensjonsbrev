@@ -39,8 +39,6 @@ data class TBU037V_2(
             }
             //Failed to convert with error: Exstream logikk har innhold før if. Tolkes ikke.
 
-
-            // TODO denne sjekker om du har ett år med omsorgsarbeid og førstegangstjeneste.
             //Integer i i = 1
             // FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar)
             //      IF( FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,i) <> 0  AND FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,i) = true ) THEN      INCLUDE ENDIF
