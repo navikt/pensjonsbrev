@@ -7,6 +7,8 @@ import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDtoSele
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.*
 import no.nav.pensjon.brev.maler.fraser.ufoer.HarDuSpoersmaalEtteroppgjoer
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1091_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2278_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.opplysningerOmETteroppgjoeretUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
