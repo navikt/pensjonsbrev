@@ -24,14 +24,32 @@ object AdhocFeilEtteroppgjoer2023 : AutobrevTemplate<EmptyBrevdata> {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        // TODO legg inn innhold så snart det er klart. (Haste-oppdrag)
         title {
             text(
-                Bokmal to "",
+                Bokmal to "Feil i beregningen av etteroppgjør uføretrygd for 2023",
             )
         }
         outline {
-
+            paragraph {
+                text(
+                    Bokmal to "Vi viser til brev datert 22. oktober om etteroppgjør av uføretrygd for året 2023.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Resultatet av etteroppgjøret ditt har dessverre blitt feil. Feilen gjelder barnetillegget. Inntekten til den andre forelderen som er oppgitt i brevet, har ikke blitt tatt med i beregningen av barnetillegget.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Vi beklager dette.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du kan se bort fra brevet. Vi vil sende deg brev med nytt resultat så snart feilen er rettet.",
+                )
+            }
         }
     }
 }
