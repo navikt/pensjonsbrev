@@ -121,7 +121,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     English to "You can report changes in the following ways:",
                 )
 
-                val postadresse = ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), Constants.POSTADRESSE, Constants.Utland.POSTADRESSE)
+                val postadresse = ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
 
                 list {
                     item {
