@@ -80,7 +80,7 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                                 "Dersom saka di ikkje har blitt ferdigbehandla innan denne tida, vil du få nærmare beskjed. " +
                                 "Du finn saksbehandlingstida vår på nav.no/saksbehandlingstider#barnepensjon.",
                             English to
-                                "NAV will process your application as soon as possible, and within <fritekst: antall uker/måneder> " +
+                                "Nav will process your application as soon as possible, and within <fritekst: antall uker/måneder> " +
                                 "at the latest. If your application is not processed within this time frame, " +
                                 "you will hear from us again. Read more about processing times at nav.no/saksbehandlingstider#barnepensjon.",
                         )
@@ -97,16 +97,16 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                         text(
                             Bokmal to
                                 "Du må kontakte trygdemyndigheten i landet du bor i for å søke om barnepensjon. " +
-                                "Dette landets trygdemyndigheter vil sende søknaden videre til NAV. " +
+                                "Dette landets trygdemyndigheter vil sende søknaden videre til Nav. " +
                                 "Mottatt søknad er derfor avbrutt og vil ikke bli behandlet.",
                             Nynorsk to
                                 "Du må kontakte trygdemaktene i landet du bur i for å søkje om barnepensjon. " +
-                                "Trygdemaktene i landet du bur i vil sende søknaden til NAV. " +
+                                "Trygdemaktene i landet du bur i vil sende søknaden til Nav. " +
                                 "Motteken søknad er avbrutt og vil ikkje bli behandla.",
                             English to
                                 "You must contact the national insurance authority in the country where you live to apply " +
                                 "for a children's pension. This country’s national insurance authority will then " +
-                                "forward your application to NAV. The application we received has therefore been terminated and will not be processed.",
+                                "forward your application to Nav. The application we received has therefore been terminated and will not be processed.",
                         )
                     }
                 }

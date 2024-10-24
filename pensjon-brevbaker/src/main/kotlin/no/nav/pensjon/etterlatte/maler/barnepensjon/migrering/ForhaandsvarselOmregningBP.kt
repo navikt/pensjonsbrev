@@ -49,15 +49,15 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
         outline {
             paragraph {
                 text(
-                    Language.Bokmal to "Dette er et forhåndsvarsel om at NAV vil fatte nytt vedtak om barnepensjon fordi Stortinget har vedtatt nye regler for barnepensjon. De nye reglene gjelder fra 1. januar 2024.",
-                    Language.Nynorsk to "Dette er eit førehandsvarsel om at NAV vil fatte eit nytt vedtak om barnepensjon fordi Stortinget har vedteke nye reglar for barnepensjon. Dei nye reglane gjeld frå og med 1. januar 2024.",
-                    Language.English to "This is an advance notice that NAV will be considering adjustments to the children's pensions because the Storting has adopted new rules for this type of pension. The new rules will apply from 1 January 2024."
+                    Language.Bokmal to "Dette er et forhåndsvarsel om at Nav vil fatte nytt vedtak om barnepensjon fordi Stortinget har vedtatt nye regler for barnepensjon. De nye reglene gjelder fra 1. januar 2024.",
+                    Language.Nynorsk to "Dette er eit førehandsvarsel om at Nav vil fatte eit nytt vedtak om barnepensjon fordi Stortinget har vedteke nye reglar for barnepensjon. Dei nye reglane gjeld frå og med 1. januar 2024.",
+                    Language.English to "This is an advance notice that Nav will be considering adjustments to the children's pensions because the Storting has adopted new rules for this type of pension. The new rules will apply from 1 January 2024."
                 )
             }
             showIf(erForeldreloes) {
                 paragraph {
                     text(
-                        Language.Bokmal to "Beregningen av barnepensjon til foreldreløse barn er annerledes fra 1. januar 2024. Det vil vurderes om pensjonen din vil bli høyere med nytt regelverk enn det du har i dag. Du vil få det som gir høyest utbetaling hver måned. Du trenger ikke å gi beskjed til NAV om hvilken beregning du ønsker.",
+                        Language.Bokmal to "Beregningen av barnepensjon til foreldreløse barn er annerledes fra 1. januar 2024. Det vil vurderes om pensjonen din vil bli høyere med nytt regelverk enn det du har i dag. Du vil få det som gir høyest utbetaling hver måned. Du trenger ikke å gi beskjed til Nav om hvilken beregning du ønsker.",
                         Language.Nynorsk to "",
                         Language.English to ""
                     )
@@ -72,9 +72,9 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to "Du trenger ikke å gi beskjed til NAV om du ønsker høyere barnepensjon. Det nye beløpet får du fra januar 2024.",
-                        Language.Nynorsk to "Du treng ikkje å gi beskjed til NAV om at du ønskjer høgare barnepensjon. Du får det nye beløpet frå og med januar 2024.",
-                        Language.English to "You do not need to notify NAV if you want a higher children's pension. The new amount will be available starting in January 2024."
+                        Language.Bokmal to "Du trenger ikke å gi beskjed til Nav om du ønsker høyere barnepensjon. Det nye beløpet får du fra januar 2024.",
+                        Language.Nynorsk to "Du treng ikkje å gi beskjed til Nav om at du ønskjer høgare barnepensjon. Du får det nye beløpet frå og med januar 2024.",
+                        Language.English to "You do not need to notify Nav if you want a higher children's pension. The new amount will be available starting in January 2024."
                     )
                 }
             }
@@ -88,9 +88,9 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Vi forhåndsvarsler deg slik at du kan sjekke om beregningen av pensjonen din er korrekt. Dette er en foreløpig beregning som NAV har gjort på bakgrunn av opplysningene vi allerede har om barnepensjonen din.",
-                    Language.Nynorsk to "Vi varslar deg på førehand slik at du kan sjekke at utrekninga av barnepensjonen din stemmer. Dette er ei førebels utrekning som NAV har gjort på bakgrunn av opplysningane som allereie er lagra om barnepensjonen din.",
-                    Language.English to "We are notifying all children's pension recipients in advance so you can check whether the calculation of your pension is correct. This is a preliminary calculation that NAV has made based on the information we already have about your children's pension."
+                    Language.Bokmal to "Vi forhåndsvarsler deg slik at du kan sjekke om beregningen av pensjonen din er korrekt. Dette er en foreløpig beregning som Nav har gjort på bakgrunn av opplysningene vi allerede har om barnepensjonen din.",
+                    Language.Nynorsk to "Vi varslar deg på førehand slik at du kan sjekke at utrekninga av barnepensjonen din stemmer. Dette er ei førebels utrekning som Nav har gjort på bakgrunn av opplysningane som allereie er lagra om barnepensjonen din.",
+                    Language.English to "We are notifying all children's pension recipients in advance so you can check whether the calculation of your pension is correct. This is a preliminary calculation that Nav has made based on the information we already have about your children's pension."
                 )
             }
             paragraph {
@@ -117,9 +117,9 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis opplysningene ikke stemmer, må du gi beskjed til NAV snarest mulig. Hvis opplysningene gjør at NAV må beregne barnepensjonen din på nytt, får du et nytt vedtak.",
-                    Language.Nynorsk to "Dersom opplysningane ikkje stemmer, må du gi beskjed til NAV innan fire veker frå du får dette førehandsvarselet. Du vil få eit nytt vedtak dersom opplysningane gjer det nødvendig for NAV å rekne ut barnepensjonen din på nytt.",
-                    Language.English to "If the information is incorrect, you must notify NAV within four weeks of receiving this advance notice. If the information means that NAV has to recalculate your children's pension, you will receive a new decision."
+                    Language.Bokmal to "Hvis opplysningene ikke stemmer, må du gi beskjed til Nav snarest mulig. Hvis opplysningene gjør at Nav må beregne barnepensjonen din på nytt, får du et nytt vedtak.",
+                    Language.Nynorsk to "Dersom opplysningane ikkje stemmer, må du gi beskjed til Nav innan fire veker frå du får dette førehandsvarselet. Du vil få eit nytt vedtak dersom opplysningane gjer det nødvendig for Nav å rekne ut barnepensjonen din på nytt.",
+                    Language.English to "If the information is incorrect, you must notify Nav within four weeks of receiving this advance notice. If the information means that Nav has to recalculate your children's pension, you will receive a new decision."
                 )
             }
 
@@ -149,9 +149,9 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
 
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis forelderen din døde av yrkesskade eller yrkessykdom, kan det ha betydning for barnepensjonen din. Da må du ta kontakt med NAV slik at vi er sikre på at vi har beregnet barnepensjonen din riktig.",
-                    Language.Nynorsk to "Dersom forelderen din døydde av yrkesskade eller yrkessjukdom, kan det ha betydning for barnepensjonen din. Kontakt i dette tilfellet NAV, slik at vi er sikre på at vi har rekna ut barnepensjonen din rett.",
-                    Language.English to "If your parent died of an occupational injury or illness, this may affect your children's pension. You must then contact NAV so we can be sure that we calculate your children's pension correctly."
+                    Language.Bokmal to "Hvis forelderen din døde av yrkesskade eller yrkessykdom, kan det ha betydning for barnepensjonen din. Da må du ta kontakt med Nav slik at vi er sikre på at vi har beregnet barnepensjonen din riktig.",
+                    Language.Nynorsk to "Dersom forelderen din døydde av yrkesskade eller yrkessjukdom, kan det ha betydning for barnepensjonen din. Kontakt i dette tilfellet Nav, slik at vi er sikre på at vi har rekna ut barnepensjonen din rett.",
+                    Language.English to "If your parent died of an occupational injury or illness, this may affect your children's pension. You must then contact Nav so we can be sure that we calculate your children's pension correctly."
                 )
             }
 

@@ -87,7 +87,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
 
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Saksbehandlingstiden til NAV Klageinstans finner du på ".expr() + ifElse(sakType.equalTo(
+                    Language.Bokmal to "Saksbehandlingstiden til Nav klageinstans finner du på ".expr() + ifElse(sakType.equalTo(
                         SakType.BARNEPENSJON), Constants.SAKSBEHANDLINGSTIDER_BP.expr(), Constants.SAKSBEHANDLINGSTIDER_OMS.expr()) + ".",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
@@ -96,7 +96,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
 
             title1 {
                 text(
-                    Language.Bokmal to "Dette er vurderingen vi har sendt til NAV Klageinstans",
+                    Language.Bokmal to "Dette er vurderingen vi har sendt til Nav klageinstans",
                     Language.Nynorsk to "",
                     Language.English to "",
                 )
@@ -136,7 +136,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
             }
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Du kan også kontakte NAV Klageinstans på ".expr() + sakUrl(sakType) + " eller telefon " + ifElse(
+                    Language.Bokmal to "Du kan også kontakte Nav klageinstans på ".expr() + sakUrl(sakType) + " eller telefon " + ifElse(
                         bosattIUtlandet,
                         Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE,
                         Constants.KONTAKTTELEFON_PENSJON
