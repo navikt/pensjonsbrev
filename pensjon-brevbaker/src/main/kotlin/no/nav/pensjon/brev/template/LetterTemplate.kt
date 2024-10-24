@@ -223,7 +223,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             sealed class Text<out Lang : LanguageSupport> : ParagraphContent<Lang>() {
                 abstract val fontType: FontType
 
-                @Suppress("DataClassPrivateConstructor")
+                @ConsistentCopyVisibility
                 data class Literal<out Lang : LanguageSupport> private constructor(
                     val text: Map<Language, String>,
                     val languages: Lang,
@@ -278,7 +278,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     override val fontType: FontType = FontType.PLAIN
                 ) : Text<Lang>(), StableHash by StableHash.of(expression, StableHash.of(fontType)) {
 
-                    @Suppress("DataClassPrivateConstructor")
+                    @ConsistentCopyVisibility
                     data class ByLanguage<out Lang : LanguageSupport> private constructor(
                         val expression: Map<Language, StringExpression>,
                         val languages: Lang,

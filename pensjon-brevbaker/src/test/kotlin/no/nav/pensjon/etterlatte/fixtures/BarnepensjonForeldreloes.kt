@@ -152,6 +152,7 @@ fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedig
             senereAvdoed = Avdoed(navn = "Senere Død", doedsdato = andreDoed),
             senereVirkningsdato = andreDoed.plusMonths(1)
 
-        )
+        ),
+        erSluttbehandling = false
     )
 }

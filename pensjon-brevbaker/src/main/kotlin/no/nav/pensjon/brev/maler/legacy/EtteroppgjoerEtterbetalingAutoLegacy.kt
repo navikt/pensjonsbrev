@@ -56,8 +56,8 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
             )
             ifNotNull(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom()){
                 textExpr(
-                    Bokmal to it.format(),
-                    Nynorsk to it.format()
+                    Bokmal to it.year.format(),
+                    Nynorsk to it.year.format()
                 )
             }
         }

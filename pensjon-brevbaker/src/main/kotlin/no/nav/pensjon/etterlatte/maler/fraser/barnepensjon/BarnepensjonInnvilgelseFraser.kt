@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -29,10 +30,16 @@ object BarnepensjonInnvilgelseFraser {
         val erEtterbetaling: Expression<Boolean>,
         val harFlereUtbetalingsperioder: Expression<Boolean>,
         val erGjenoppretting: Expression<Boolean>,
-        val harUtbetaling: Expression<Boolean>
+        val harUtbetaling: Expression<Boolean>,
+        val erSluttbehandling: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+
+            showIf(erSluttbehandling) {
+                includePhrase(BarnepensjonFellesFraser.DuHarTidligereAvslagViHarFaattNyeOplysninger)
+            }
+
             paragraph {
                 val formatertVirkningsdato = virkningsdato.format()
                 val formatertDoedsdato = avdoed.doedsdato.format()

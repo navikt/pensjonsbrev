@@ -6,7 +6,7 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
+import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
@@ -22,13 +22,13 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
     route("/brev") {
 
         post<Api.OpprettBrevRequest> { request ->
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[SakKey]
             val spraak = request.spraak.toLanguageCode()
             val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
 
-            brevredigeringService.opprettBrev(call, sak, request.brevkode, spraak, avsenderEnhetsId, request.saksbehandlerValg, true, request.mottaker?.toDto())
+            brevredigeringService.opprettBrev(sak, request.brevkode, spraak, avsenderEnhetsId, request.saksbehandlerValg, true, request.mottaker?.toDto())
                 .onOk { brev ->
-                    call.respond(HttpStatusCode.Created, dto2ApiService.toApi(call, brev))
+                    call.respond(HttpStatusCode.Created, dto2ApiService.toApi(brev))
                 }.onError { message, statusCode ->
                     logger.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
@@ -37,15 +37,14 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
 
         put<Api.OppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[SakKey]
 
             brevredigeringService.oppdaterBrev(
-                call = call,
                 saksId = sak.saksId,
                 brevId = brevId,
                 nyeSaksbehandlerValg = request.saksbehandlerValg,
                 nyttRedigertbrev = request.redigertBrev
-            )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(call, brev)) }
+            )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
                 ?.onError { message, statusCode ->
                     logger.error("$statusCode - Feil ved oppdatering av brev ${brevId}: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
@@ -55,7 +54,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
 
         patch<Api.DelvisOppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[SakKey]
 
             brevredigeringService.delvisOppdaterBrev(
                 saksId = sak.saksId,
@@ -63,13 +62,13 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 laastForRedigering = request.laastForRedigering,
                 distribusjonstype = request.distribusjonstype,
                 mottaker = request.mottaker?.toDto(),
-            )?.also { call.respond(HttpStatusCode.OK, dto2ApiService.toApi(call, it)) }
+            )?.also { call.respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
         delete("/{brevId}") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[SakKey]
 
             if (brevredigeringService.slettBrev(sak.saksId, brevId)) {
                 call.respond(HttpStatusCode.NoContent)
@@ -80,7 +79,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
 
         delete("/{brevId}/mottaker") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[SakKey]
 
             if (brevredigeringService.fjernOverstyrtMottaker(brevId, sak.saksId)) {
                 call.respond(HttpStatusCode.NoContent)
@@ -90,13 +89,13 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
         }
 
         get("/{brevId}") {
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[SakKey]
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val reserver = call.parameters["reserver"].toBoolean()
 
-            brevredigeringService.hentBrev(call, sak.saksId, brevId, reserver)
+            brevredigeringService.hentBrev(sak.saksId, brevId, reserver)
                 ?.onOk { brev ->
-                    call.respond(HttpStatusCode.OK, dto2ApiService.toApi(call, brev))
+                    call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev))
                 }?.onError { message, statusCode ->
                     call.application.log.error("$statusCode - Feil ved henting av brev: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
@@ -105,19 +104,19 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
         }
 
         get {
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[SakKey]
 
             call.respond(
                 HttpStatusCode.OK,
-                brevredigeringService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(call, it) }
+                brevredigeringService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
             )
         }
 
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[SakKey]
 
-            brevredigeringService.hentEllerOpprettPdf(call, sak.saksId, brevId)
+            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId)
                 ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
@@ -125,9 +124,9 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
 
         post("/{brevId}/pdf/send") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[AuthorizeAnsattSakTilgang.sakKey]
+            val sak: Pen.SakSelection = call.attributes[SakKey]
 
-            brevredigeringService.sendBrev(call = call, saksId = sak.saksId, brevId = brevId)
+            brevredigeringService.sendBrev(saksId = sak.saksId, brevId = brevId)
                 ?.onOk { call.respond(HttpStatusCode.OK, it) }
                 ?.onError { error, _ -> call.respond(HttpStatusCode.InternalServerError, error) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")

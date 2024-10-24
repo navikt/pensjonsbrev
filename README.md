@@ -72,6 +72,16 @@ environment:
 - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
 ```
 
+#### Kjøre PEN lokalt utenfor docker compose
+Vi har ikke noe bra oppsett for dette, men her er en oppskrift på hvordan man kan løse det.
+
+1. Endre PEN_URL environment variable i docker-compose.yaml for skribenten-backend til `http://host.docker.internal/pen/api/`
+
+Om du får ConnectTimeoutException på kall til PEN fra skribenten, så betyr det mest sannsynlig at du har en brannmur som blokkerer. Følgende oppskrift er for linux.
+1. Kjør `docker network ls` og merk deg NETWORK ID for "pensjon-local"
+2. Sjekk at du har et network interface med navnet `br-<NETWORK ID>` ved å kjøre `ip link show`
+3. Legg til en (midlertidig) regel for å tillate tilkobling til host fra docker compose med `sudo iptables -I INPUT 1 -i br-<NETWORK ID> -j ACCEPT`
+
 ### Oppsett av packages.read token
 For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new) med packages.read tilgang.
 #### For gradle

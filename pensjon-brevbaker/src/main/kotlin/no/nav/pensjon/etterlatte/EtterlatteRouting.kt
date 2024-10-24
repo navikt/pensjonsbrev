@@ -1,7 +1,5 @@
 package no.nav.pensjon.etterlatte
 
-import io.ktor.server.application.*
-import io.ktor.server.plugins.callid.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -25,7 +23,7 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         val letter = letterResource.create(letterRequest)
         val pdfBase64 = Letter2Markup.render(letter)
             .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
-            .let { latexCompilerService.producePDF(it, call.callId) }
+            .let { latexCompilerService.producePDF(it) }
 
         call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
 

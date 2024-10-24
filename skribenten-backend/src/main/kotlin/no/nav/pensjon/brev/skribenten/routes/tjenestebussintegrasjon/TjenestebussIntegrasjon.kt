@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon
 
-import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -14,14 +13,14 @@ fun Route.tjenestebussIntegrasjonRoute(samhandlerService: SamhandlerService, tje
 
     post("/finnSamhandler") {
         val requestDto = call.receive<FinnSamhandlerRequestDto>()
-        call.respond(samhandlerService.finnSamhandler(call, requestDto))
+        call.respond(samhandlerService.finnSamhandler(requestDto))
     }
     post("/hentSamhandler") {
         val requestDto = call.receive<HentSamhandlerRequestDto>()
-        call.respond(samhandlerService.hentSamhandler(call, requestDto.idTSSEkstern))
+        call.respond(samhandlerService.hentSamhandler(requestDto.idTSSEkstern))
     }
     post("/hentSamhandlerAdresse") {
         val requestDto = call.receive<HentSamhandlerAdresseRequestDto>()
-        call.respond(tjenestebussIntegrasjonService.hentSamhandlerAdresse(call, requestDto.idTSSEkstern))
+        call.respond(tjenestebussIntegrasjonService.hentSamhandlerAdresse(requestDto.idTSSEkstern))
     }
 }

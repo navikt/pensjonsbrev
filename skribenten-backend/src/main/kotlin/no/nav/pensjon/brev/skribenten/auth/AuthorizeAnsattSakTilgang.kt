@@ -2,53 +2,47 @@ package no.nav.pensjon.brev.skribenten.auth
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
 import kotlinx.coroutines.coroutineScope
-import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.NAME
-import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.SAKSID_PARAM
-import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang.sakKey
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.PdlService
+import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.slf4j.LoggerFactory
 
-object AuthorizeAnsattSakTilgang {
-    const val NAME = "AuthorizeAnsattSakTilgang"
-    const val SAKSID_PARAM = "saksId"
-    val sakKey = AttributeKey<Pen.SakSelection>("AuthorizeAnsattSakTilgang:sak")
+const val SAKSID_PARAM = "saksId"
+val SakKey = AttributeKey<Pen.SakSelection>("AuthorizeAnsattSakTilgang:sak")
+
+private val logger = LoggerFactory.getLogger("AuthorizeAnsattSakTilgang")
+
+class AuthorizeAnsattSakTilgangConfiguration {
+    lateinit var pdlService: PdlService
+    lateinit var penService: PenService
 }
 
-private val logger = LoggerFactory.getLogger(AuthorizeAnsattSakTilgang::class.java)
+val AuthorizeAnsattSakTilgang = createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
+    on(PrincipalInContext.Hook) { call ->
+        val saksId = call.parameters.getOrFail(SAKSID_PARAM)
+        val pdlService = pluginConfig.pdlService
+        val penService = pluginConfig.penService
 
-@Suppress("FunctionName")
-fun AuthorizeAnsattSakTilgang(
-    pdlService: PdlService,
-    penService: PenService,
-) = createRouteScopedPlugin(NAME) {
-    on(AuthenticationChecked) { call ->
-        coroutineScope {
-            val principal = call.principal()
-            val saksId = call.parameters.getOrFail(SAKSID_PARAM)
+        val ikkeTilgang = penService.hentSak(saksId).map { sak ->
+            call.attributes.put(SakKey, sak)
+            sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer), PrincipalInContext.require())
+        }.catch(::AuthAnsattSakTilgangResponse)
 
-            val ikkeTilgang = penService.hentSak(call, saksId).map { sak ->
-                call.attributes.put(sakKey, sak)
-                sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(call, sak.foedselsnr, sak.sakType.behandlingsnummer), principal)
-            }.catch(::AuthAnsattSakTilgangResponse)
-
-            if (ikkeTilgang != null) {
-                call.respond(ikkeTilgang.status, ikkeTilgang.melding)
-            }
+        if (ikkeTilgang != null) {
+            call.respond(ikkeTilgang.status, ikkeTilgang.melding)
         }
     }
 }
 
 private fun sjekkAdressebeskyttelse(
     adressebeskyttelse: ServiceResult<List<Pdl.Gradering>>,
-    principal: UserPrincipal
+    principal: UserPrincipal,
 ): AuthAnsattSakTilgangResponse? =
     adressebeskyttelse.map { gradering ->
         val adGrupper = gradering.mapNotNull { it.toADGruppe() }
