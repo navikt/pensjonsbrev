@@ -29,7 +29,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmO
 
 data class OmstillingsstoenadInnvilgelseDTO(
     override val innhold: List<Element>,
-    val avdoed: Avdoed,
+    val avdoed: Avdoed?,
     val beregning: OmstillingsstoenadBeregning,
     val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean,
     val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut

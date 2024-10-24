@@ -128,11 +128,6 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
 fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
     OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
         virkningsdato = LocalDate.now(),
-        avdoed =
-            Avdoed(
-                navn = "Avdod Avdodesen",
-                doedsdato = LocalDate.now(),
-            ),
         utbetalingsbeloep = Kroner(12345),
         etterbetaling = true,
         tidligereFamiliepleier = false,

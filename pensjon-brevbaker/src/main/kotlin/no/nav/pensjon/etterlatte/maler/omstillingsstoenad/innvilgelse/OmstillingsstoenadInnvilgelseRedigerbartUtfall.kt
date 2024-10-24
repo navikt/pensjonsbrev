@@ -11,7 +11,6 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
@@ -21,7 +20,6 @@ import java.time.LocalDate
 
 data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
     val virkningsdato: LocalDate,
-    val avdoed: Avdoed,
     val utbetalingsbeloep: Kroner,
     val etterbetaling: Boolean,
     val tidligereFamiliepleier: Boolean = false,
