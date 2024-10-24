@@ -199,16 +199,24 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             textExpr(
                 Bokmal to "Din oppgitte inntekt for ".expr() + virkningsdato.formatAar() + " er " +
                     sisteOppgittInntekt.format() + " kroner.",
-                Nynorsk to "".expr(),
-                English to "".expr(),
+
+                Nynorsk to "Du har ei oppgitt inntekt for ".expr() + virkningsdato.formatAar() + " på " +
+                    sisteOppgittInntekt.format() + " kroner",
+
+                English to "Your estimated income for ".expr() + virkningsdato.formatAar() + " is NOK " +
+                    sisteOppgittInntekt.format() + ".",
             )
             showIf(opphoerNesteAar.not()) {
                 ifNotNull(oppphoersdato) { opphoer ->
                     textExpr(
                         Bokmal to " Dette er forventet inntekt frem til ".expr() + opphoer.format() +
                             ", som er forventet opphørsdato for mottak av stønaden.",
-                        Nynorsk to "".expr(),
-                        English to "".expr(),
+
+                        Nynorsk to " Dette er forventa inntekt fram til ".expr() + opphoer.format() +
+                            ", som er forventa opphøyrsdato for mottak av stønaden.",
+
+                        English to " This is the expected income until ".expr() + opphoer.format() +
+                            ", which is the expected end date for receiving the allowance."
                     )
                 }
             }
@@ -217,14 +225,20 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har en inntekt på " +
                         sisteInntekt.format() + " kroner i innvilgede måneder i år.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
+
+                    Nynorsk to " Fråtrekk for inntekt i månader før du er innvilga stønad er ".expr() +
+                        sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har ei inntekt på " +
+                        sisteInntekt.format() + " kroner i innvilga månader i år",
+
+                    English to " Deduction for income in months before you are granted allowance is NOK ".expr() +
+                        sisteFratrekkInnAar.format() + ". We have assumed that you have an income of NOK " +
+                        sisteInntekt.format() + " in granted months this year.",
                 )
             }
             textExpr(
                 Bokmal to " Beløpet er avrundet ned til nærmeste tusen.".expr(),
-                Nynorsk to "".expr(),
-                English to "".expr(),
+                Nynorsk to " Beløpet er avrunda ned til næraste tusen".expr(),
+                English to " The amount is rounded down to the nearest thousand".expr(),
             )
         }
         paragraph {

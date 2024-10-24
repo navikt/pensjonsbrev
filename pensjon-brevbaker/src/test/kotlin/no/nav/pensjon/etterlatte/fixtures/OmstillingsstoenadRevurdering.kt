@@ -91,7 +91,8 @@ fun createOmstillingsstoenadRevurderingDTO() =
                         navnAvdoed = "Elvis Presley",
 
                     ),
-                fomJanuar = false,
+                fomJanuar = true,
+                oppphoersdato = LocalDate.of(2024, 12, 1),
                 opphoerNesteAar = false,
             ),
         etterbetaling =
