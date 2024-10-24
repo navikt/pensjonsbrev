@@ -103,7 +103,7 @@ object Fixtures {
             avsenderEnhet =
                 NAVEnhet(
                     nettside = "nav.no",
-                    navn = "NAV Familie- og pensjonsytelser Porsgrunn",
+                    navn = "Nav familie- og pensjonsytelser Porsgrunn",
                     telefonnummer = Telefonnummer("55553334"),
                 ),
             bruker =
