@@ -21,7 +21,7 @@ object Brevkode {
         UT_OPPHOER_BT_AUTO,
         UT_UNG_UFOER_20_AAR_AUTO,
         UT_VARSEL_SAKSBEHANDLINGSTID_AUTO,
-        ;
+        UT_BARNETILLEGG_ENDRET_AUTO;
     }
 
     enum class Redigerbar {

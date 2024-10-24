@@ -35,5 +35,7 @@ data class PE(
         val pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes: Boolean,
         val pe_ut_etteroppgjorfratrekklistebrukeretterbetaling: Boolean,
         val pe_ut_inntekt_trukket_fra_personinntekt: Kroner,
-    )
+        val pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv: Int,
+
+        )
 }
