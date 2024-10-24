@@ -75,7 +75,7 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
                     English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                 )
             }
-            includePhrase(Felles.HarDuSpoersmaal(Constants.OMSORGSOPPTJENING_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
+            includePhrase(Felles.HarDuSpoersmaal.omsorg)
         }
         includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, egenerklaeringOmsorgsarbeidDto)
     }

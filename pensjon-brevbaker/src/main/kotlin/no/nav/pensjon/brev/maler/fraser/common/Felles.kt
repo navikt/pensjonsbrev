@@ -64,6 +64,10 @@ object Felles {
                 )
             }
         }
+        companion object {
+            val ufoeretrygd = HarDuSpoersmaal(Constants.UFOERETRYGD_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
+            val omsorg = HarDuSpoersmaal(Constants.OMSORGSOPPTJENING_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
+        }
     }
 
     // TBU2213, TBU1100, RettTilKlagePesys_001
