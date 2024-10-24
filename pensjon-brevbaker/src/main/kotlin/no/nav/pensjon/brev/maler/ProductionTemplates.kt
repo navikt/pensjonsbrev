@@ -17,6 +17,7 @@ object ProductionTemplates {
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
         AdhocGjenlevendEtter1970,
+        AdhocFeilEtteroppgjoer2023,
         AdhocUfoeretrygdEtterbetalingDagpenger,
         AdhocUfoeretrygdKombiDagpenger,
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
