@@ -58,7 +58,7 @@ data class OmstillingsstoenadBeregningsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
     val inntekt: Kroner,
-    val aarsinntekt: Kroner,
+    val oppgittInntekt: Kroner,
     val fratrekkInnAar: Kroner,
     val relevantMaanederInnAar: Int,
     val grunnbeloep: Kroner,

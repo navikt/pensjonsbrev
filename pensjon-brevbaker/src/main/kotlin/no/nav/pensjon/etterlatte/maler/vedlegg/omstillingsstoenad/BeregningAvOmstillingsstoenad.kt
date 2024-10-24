@@ -25,11 +25,11 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sist
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiodeNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.aarsinntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.fratrekkInnAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.oppgittInntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.relevantMaanederInnAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.restanse
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
@@ -43,7 +43,6 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.trygdetidsperioder
 import no.nav.pensjon.etterlatte.maler.formatAar
 import no.nav.pensjon.etterlatte.maler.formatBroek
-import no.nav.pensjon.etterlatte.maler.formatMaanedAar
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
@@ -70,7 +69,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
 ) {
     val sisteInntekt = sisteBeregningsperiode.inntekt
     val sisteGrunnbeloep = sisteBeregningsperiode.grunnbeloep
-    val sisteAarsinntekt = sisteBeregningsperiode.aarsinntekt
+    val sisteOppgittInntekt = sisteBeregningsperiode.oppgittInntekt
     val sisteFratrekkInnAar = sisteBeregningsperiode.fratrekkInnAar
     val sisteGjenvaerendeMaaneder = sisteBeregningsperiode.relevantMaanederInnAar
 
@@ -198,20 +197,26 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         }
         paragraph {
             textExpr(
-                Bokmal to "Din oppgitte inntekt for ".expr() + virkningsdato.formatAar() + " er " + sisteInntekt.format() + " kroner.",
+                Bokmal to "Din oppgitte inntekt for ".expr() + virkningsdato.formatAar() + " er " +
+                    sisteOppgittInntekt.format() + " kroner.",
                 Nynorsk to "".expr(),
                 English to "".expr(),
             )
-            showIf(oppphoersdato.notNull().and(opphoerNesteAar.not())) {
-                textExpr(
-                    Bokmal to " Dette er forventet inntekt fra <innvilgelsesdato eller januar i revurderingsår> frem til <dato>, som er forventet opphørsdato for mottak av stønaden.".expr(),
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
+            showIf(opphoerNesteAar.not()) {
+                ifNotNull(oppphoersdato) { opphoer ->
+                    textExpr(
+                        Bokmal to " Dette er forventet inntekt frem til ".expr() + opphoer.format() +
+                            ", som er forventet opphørsdato for mottak av stønaden.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
             }
             showIf(fomJanuar.not()) {
                 textExpr(
-                    Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er <beløp> kroner. Vi har lagt til grunn at du har en inntekt på <beløp inntekt, avrundet> kroner i innvilgede måneder i år.".expr(),
+                    Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er ".expr() +
+                        sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har en inntekt på " +
+                        sisteInntekt.format() + " kroner i innvilgede måneder i år.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
