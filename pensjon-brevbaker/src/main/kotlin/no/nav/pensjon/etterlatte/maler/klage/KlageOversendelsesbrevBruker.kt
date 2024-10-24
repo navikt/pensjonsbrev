@@ -54,7 +54,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
         letterDataType = KlageOversendelseBrukerDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vi har sendt klagen din tiil NAV Klageinstans Vest",
+            displayTitle = "Vi har sendt klagen din tiil Nav klageinstans vest",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
@@ -62,7 +62,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har sendt klagen din til NAV Klageinstans Vest",
+                Language.Bokmal to "Vi har sendt klagen din til Nav klageinstans vest",
                 Language.Nynorsk to "",
                 Language.English to "",
             )
@@ -71,7 +71,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
         outline {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Vi har ".expr() + klageDato.format() + " fått klagen din på vedtaket om " + sakType.format() + " som ble gjort " + vedtakDato.format() + ", og har kommet frem til at vi ikke endrer vedtaket. NAV Klageinstans skal vurdere saken din på nytt.",
+                    Language.Bokmal to "Vi har ".expr() + klageDato.format() + " fått klagen din på vedtaket om " + sakType.format() + " som ble gjort " + vedtakDato.format() + ", og har kommet frem til at vi ikke endrer vedtaket. Nav klageinstans skal vurdere saken din på nytt.",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
                 )

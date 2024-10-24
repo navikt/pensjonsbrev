@@ -78,9 +78,9 @@ object BarnepensjonInnvilgelseFraser {
                 }.orShow {
                     text(
                         Language.Bokmal to "Du får ikke utbetalt barnepensjon fordi den er redusert utfra det du" +
-                                " mottar i uføretrygd fra NAV.",
+                                " mottar i uføretrygd fra Nav.",
                         Language.Nynorsk to "Du får ikkje utbetalt barnepensjon, då denne har blitt redusert med" +
-                                " utgangspunkt i uføretrygda du får frå NAV.",
+                                " utgangspunkt i uføretrygda du får frå Nav.",
                         Language.English to "You will not receive payments from the children’s pension because they" +
                                 " have been reduced according to what you already receive in disability benefits from NAV.",
                     )

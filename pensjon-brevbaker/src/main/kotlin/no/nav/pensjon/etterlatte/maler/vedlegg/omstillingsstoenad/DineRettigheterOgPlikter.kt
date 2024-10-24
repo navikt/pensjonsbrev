@@ -40,7 +40,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Du må melde fra om endringer som",
             Nynorsk to "Du må melde frå dersom",
-            English to "You must notify NAV of any changes in your circumstances, for example if:",
+            English to "You must notify Nav of any changes in your circumstances, for example if:",
         )
         list {
             item {
@@ -59,9 +59,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             }
             item {
                 text(
-                    Bokmal to "du får innvilget andre stønader fra NAV",
-                    Nynorsk to "du får innvilga andre stønader frå NAV",
-                    English to "You are granted any other benefits by NAV ",
+                    Bokmal to "du får innvilget andre stønader fra Nav",
+                    Nynorsk to "du får innvilga andre stønader frå Nav",
+                    English to "You are granted any other benefits by Nav ",
                 )
             }
             item {
@@ -168,9 +168,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.veiledningFraNavForvaltningsloven11() {
     title2 {
         text(
-            Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
-            Nynorsk to "Rettleiing frå NAV – forvaltingslova § 11",
-            English to "Guidance from NAV – Section 11 of the Public Administration Act",
+            Bokmal to "Veiledning fra Nav - forvaltningsloven § 11",
+            Nynorsk to "Rettleiing frå Nav – forvaltingslova § 11",
+            English to "Guidance from Nav – Section 11 of the Public Administration Act",
         )
     }
     paragraph {

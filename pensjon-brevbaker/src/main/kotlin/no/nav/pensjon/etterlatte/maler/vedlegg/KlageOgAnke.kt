@@ -285,7 +285,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.tilbakekreving() {
                     "Dette kan vere aktuelt til dømes dersom vi forventar at vedtaket vil bli gjort om. " +
                     "Du kan også søkje om å få utsett tilbakebetalinga fram til klaga er behandla. " +
                     "Vi gjer merksam på at det ikkje blir gitt utsetjing av reint økonomiske grunnar.",
-			English to "NAV may, on its own initiative, decide that recovery of owed payments shall be postponed " +
+			English to "Nav may, on its own initiative, decide that recovery of owed payments shall be postponed " +
                     "until the appeal has been processed, for example if we see that it is likely that the appealed decision will be reversed. " +
                     "You may also apply for a repayment extension until the appeal has been processed. " +
                     "Please be aware that deferments are not granted merely for financial reasons."

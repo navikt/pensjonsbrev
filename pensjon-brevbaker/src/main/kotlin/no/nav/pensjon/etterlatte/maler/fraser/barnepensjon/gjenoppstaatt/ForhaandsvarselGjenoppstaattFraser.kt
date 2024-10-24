@@ -107,7 +107,7 @@ object ForhaandsvarselGjenoppstaattFraser {
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Du må kontakte Skatteetaten for å avklare om du bør endre skattekortet eller sende inn frivillig skattetrekk til NAV.",
+                        Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Du må kontakte Skatteetaten for å avklare om du bør endre skattekortet eller sende inn frivillig skattetrekk til Nav.",
                         Language.Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at du har gitt beskjed om det. Kontakt Skatteetaten for å avklare om du bør endre skattekortet eller sende inn frivillig skattetrekk til NAV.",
                         Language.English to "Children’s pension is taxable; however, we do not deduct tax if you do not notify us to do so. You must contact the Tax Administration to clarify whether you need to change your tax card or submit voluntary tax deductions to NAV.",
                     )

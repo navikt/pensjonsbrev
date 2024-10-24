@@ -98,12 +98,12 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.meldFraOmEndringer()
                 "og du må straks melde fra om eventuelle feil til Nav. Er det utbetalt for mye barnepensjon fordi " +
                 "Nav ikke har fått beskjed, må pengene vanligvis betales tilbake.",
             Nynorsk to "Du er ansvarleg for å følgje med på bevegelsar på kontoen for utbetaling av barnepensjon, " +
-                    "og må straks melde frå til NAV dersom du blir merksam på feil. " +
-                    "Viss det har blitt utbetalt for mykje barnepensjon fordi NAV ikkje har fått beskjed om endringar, " +
+                    "og må straks melde frå til Nav dersom du blir merksam på feil. " +
+                    "Viss det har blitt utbetalt for mykje barnepensjon fordi Nav ikkje har fått beskjed om endringar, " +
                     "må pengane vanlegvis betalast tilbake.",
             English to "You are responsible for staying informed of the transactions in your bank account " +
-                    "regarding the payment of the children's pension, and you must immediately report any errors to NAV. " +
-                    "If too much children's pension has been paid because NAV has not been notified, " +
+                    "regarding the payment of the children's pension, and you must immediately report any errors to Nav. " +
+                    "If too much children's pension has been paid because Nav has not been notified, " +
                     "the money must normally be repaid.",
         )
     }
@@ -112,9 +112,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.meldFraOmEndringer()
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.veiledningFraNavForvaltningsloven11() {
     title2 {
         text(
-            Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
-            Nynorsk to "Rettleiing frå NAV – forvaltingslova § 11",
-            English to "Guidance from NAV – Section 11 of the Public Administration Act",
+            Bokmal to "Veiledning fra Nav - forvaltningsloven § 11",
+            Nynorsk to "Rettleiing frå Nav – forvaltingslova § 11",
+            English to "Guidance from Nav – Section 11 of the Public Administration Act",
         )
     }
     paragraph {

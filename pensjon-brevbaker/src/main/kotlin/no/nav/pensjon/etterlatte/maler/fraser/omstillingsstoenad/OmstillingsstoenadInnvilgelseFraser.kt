@@ -343,11 +343,11 @@ object OmstillingsstoenadInnvilgelseFraser {
             paragraph {
                 text(
                     Bokmal to "Utbetalingen kan bli forsinket hvis den skal samordnes med ytelser du mottar " +
-                        "fra NAV eller andre, som for eksempel tjenestepensjonsordninger.",
+                        "fra Nav eller andre, som for eksempel tjenestepensjonsordninger.",
                     Nynorsk to "Utbetalinga kan bli forseinka dersom ho skal samordnast med ytingar du får " +
-                        "frå NAV eller andre (t.d. tenestepensjonsordningar).",
+                        "frå Nav eller andre (t.d. tenestepensjonsordningar).",
                     English to "The payment may be delayed if they are coordination with benefits you receive " +
-                        "from NAV or others, such as a pension from an occupational pension scheme.",
+                        "from Nav or others, such as a pension from an occupational pension scheme.",
                 )
             }
             ifNotNull(etterbetaling) {
@@ -368,13 +368,13 @@ object OmstillingsstoenadInnvilgelseFraser {
                 paragraph {
                     text(
                         Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder " +
-                            "etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
+                            "etterbetalingen tidligere år trekker Nav skatt etter Skatteetatens standardsatser. " +
                             "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
                         Nynorsk to "Det blir normalt sett bli trekt skatt av etterbetaling. Dersom " +
-                            "etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane til " +
+                            "etterbetalinga gjeld tidlegare år, vil Nav trekkje skatt etter standardsatsane til " +
                             "Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
                         English to "Tax is usually deducted from back payments. If the back payment " +
-                            "applies to previous years, NAV will deduct the tax at the Tax Administration's " +
+                            "applies to previous years, Nav will deduct the tax at the Tax Administration's " +
                             "standard rates. You can read more about the rates here: " +
                             "${Constants.SKATTETREKK_ETTERBETALING_URL}. ",
                     )

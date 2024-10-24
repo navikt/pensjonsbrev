@@ -960,8 +960,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     paragraph {
         text(
             Bokmal to "Hvis du mener at opplysningene brukt i beregningen er feil, må du melde fra til Nav. Det kan ha betydning for størrelsen på pensjonen din.",
-            Nynorsk to "Sei frå til NAV dersom du meiner at det er brukt feil opplysningar i utrekninga. Det kan ha betydning for kor mykje pensjon du får.",
-            English to "If you believe the information applied in the calculation is incorrect, you must notify NAV. Errors may affect your pension amount."
+            Nynorsk to "Sei frå til Nav dersom du meiner at det er brukt feil opplysningar i utrekninga. Det kan ha betydning for kor mykje pensjon du får.",
+            English to "If you believe the information applied in the calculation is incorrect, you must notify Nav. Errors may affect your pension amount."
         )
     }
 }

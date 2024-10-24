@@ -183,15 +183,15 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 paragraph {
                     text(
                         Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”. " +
-                                "Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, må du melde deg som reell arbeidssøker hos NAV. " +
-                                "Dette innebærer at du sender meldekort, er aktiv med å søke jobber, samt deltar på de kurs som NAV tilbyr.",
+                                "Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, må du melde deg som reell arbeidssøker hos Nav. " +
+                                "Dette innebærer at du sender meldekort, er aktiv med å søke jobber, samt deltar på de kurs som Nav tilbyr.",
                         Nynorsk to "For å kunne få omstillingsstønad vidare må du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?». " +
-                                "Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du melde deg som reell arbeidssøkjar hos NAV. " +
-                                "Dette inneber at du sender meldekort, er aktiv med å søkje jobbar, og deltek på kursa som NAV tilbyr.",
+                                "Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du melde deg som reell arbeidssøkjar hos Nav. " +
+                                "Dette inneber at du sender meldekort, er aktiv med å søkje jobbar, og deltek på kursa som Nav tilbyr.",
                         English to "To receive an adjustment allowance in the future, you must increase your level of activity. " +
                                 "See “How do I comply with the activity obligation?”.  If you do not undertake any of the other activities mentioned, " +
-                                "you must register as a genuine job seeker with NAV. This means that you must send in the Employment Status Form, " +
-                                "actively be looking for work, and participate in the courses offered by NAV.",
+                                "you must register as a genuine job seeker with Nav. This means that you must send in the Employment Status Form, " +
+                                "actively be looking for work, and participate in the courses offered by Nav.",
                     )
                 }
 
@@ -199,7 +199,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                     text(
                         Bokmal to "Hvis du ikke kan registrere deg elektronisk må du møte opp på lokalkontoret ditt for å registrere deg som reell arbeidssøker.",
                         Nynorsk to "Dersom du ikkje kan registrere deg elektronisk, møter du opp på lokalkontoret ditt for å registrere deg som reell arbeidssøkjar.",
-                        English to "If you are unable to register electronically, you must register as a genuine job seeker in person at your local NAV office.",
+                        English to "If you are unable to register electronically, you must register as a genuine job seeker in person at your local Nav office.",
                     )
                 }
 
@@ -315,16 +315,16 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                     }
                     item {
                         text(
-                            Bokmal to "etablere egen virksomhet (må godkjennes av NAV)",
-                            Nynorsk to "etablere eiga verksemd (må godkjennast av NAV)",
-                            English to "setting up your own business (must be approved by NAV)",
+                            Bokmal to "etablere egen virksomhet (må godkjennes av Nav)",
+                            Nynorsk to "etablere eiga verksemd (må godkjennast av Nav)",
+                            English to "setting up your own business (must be approved by Nav)",
                         )
                     }
                     item {
                         text(
-                            Bokmal to "ta utdanning som er nødvendig og hensiktsmessig (må godkjennes av NAV)",
-                            Nynorsk to "ta utdanning som er nødvendig og føremålstenleg (må godkjennast av NAV)",
-                            English to "taking a necessary and suitable education (must be approved by NAV)",
+                            Bokmal to "ta utdanning som er nødvendig og hensiktsmessig (må godkjennes av Nav)",
+                            Nynorsk to "ta utdanning som er nødvendig og føremålstenleg (må godkjennast av Nav)",
+                            English to "taking a necessary and suitable education (must be approved by Nav)",
                         )
                     }
                     item {
@@ -440,9 +440,9 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                     }
                     item {
                         text(
-                            Bokmal to "har en arbeidsevnevurdering fra ditt lokale NAV-kontor som sier at du ikke kan arbeide",
-                            Nynorsk to "har ei arbeidsevnevurdering frå det lokale NAV-kontoret ditt på at du ikkje kan jobbe",
-                            English to "have completed the work capability assessment from your local NAV office that proves you cannot be employed",
+                            Bokmal to "har en arbeidsevnevurdering fra ditt lokale Nav-kontor som sier at du ikke kan arbeide",
+                            Nynorsk to "har ei arbeidsevnevurdering frå det lokale Nav-kontoret ditt på at du ikkje kan jobbe",
+                            English to "have completed the work capability assessment from your local Nav office that proves you cannot be employed",
                         )
                     }
                 }
