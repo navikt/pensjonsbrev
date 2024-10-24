@@ -68,6 +68,8 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 sanksjon = false,
                 institusjon = false,
             ),
+            sisteBeregningsperiodeNesteAar = null,
+            /*
             sisteBeregningsperiodeNesteAar = OmstillingsstoenadBeregningsperiode(
                 datoFOM = LocalDate.of(2025, 1, 1),
                 datoTOM = null,
@@ -83,7 +85,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 sanksjon = false,
                 institusjon = false,
             ),
-
+             */
             trygdetid =
             Trygdetid(
                 trygdetidsperioder =
@@ -110,10 +112,9 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 mindreEnnFireFemtedelerAvOpptjeningstiden = false,
                 navnAvdoed = "Elvis Presley",
             ),
-            innvilgelsesAarMindreEnn12Maaneder = true,
-            innvilgelsesOgOpphoerSammeAar = false,
+            fomJanuar = false,
             oppphoersdato = LocalDate.of(2024, 12, 1),
-            opphoerNesteAar = true,
+            opphoerNesteAar = false,
         ),
         etterbetaling =
         OmstillingsstoenadEtterbetaling(

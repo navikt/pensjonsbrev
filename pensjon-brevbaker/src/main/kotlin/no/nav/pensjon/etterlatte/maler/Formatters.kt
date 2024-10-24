@@ -27,3 +27,11 @@ object MaanedAarFormatter : LocalizedFormatter<LocalDate>(), StableHash by Stabl
        return date.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
     }
 }
+
+fun Expression<LocalDate>.formatAar(): Expression<String> = this.format(AarFormatter)
+
+object AarFormatter : LocalizedFormatter<LocalDate>(), StableHash by StableHash.of("AarFormatter") {
+    override fun apply(date: LocalDate, second: Language): String {
+        return date.format(DateTimeFormatter.ofPattern("yyyy", second.locale()))
+    }
+}

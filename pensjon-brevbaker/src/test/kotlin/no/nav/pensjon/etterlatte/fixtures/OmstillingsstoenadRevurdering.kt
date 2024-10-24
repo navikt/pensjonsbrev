@@ -91,8 +91,7 @@ fun createOmstillingsstoenadRevurderingDTO() =
                         navnAvdoed = "Elvis Presley",
 
                     ),
-                innvilgelsesAarMindreEnn12Maaneder = true,
-                innvilgelsesOgOpphoerSammeAar = false,
+                fomJanuar = false,
                 opphoerNesteAar = false,
             ),
         etterbetaling =

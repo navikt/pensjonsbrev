@@ -17,14 +17,14 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.fomJanuar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innvilgelsesAarMindreEnn12Maaneder
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innvilgelsesOgOpphoerSammeAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.opphoerNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.oppphoersdato
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiodeNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.trygdetid
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.aarsinntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.fratrekkInnAar
@@ -41,7 +41,9 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeFraGru
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.mindreEnnFireFemtedelerAvOpptjeningstiden
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.trygdetidsperioder
+import no.nav.pensjon.etterlatte.maler.formatAar
 import no.nav.pensjon.etterlatte.maler.formatBroek
+import no.nav.pensjon.etterlatte.maler.formatMaanedAar
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
@@ -195,53 +197,29 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             )
         }
         paragraph {
-            showIf(innvilgelsesOgOpphoerSammeAar) {
-                // TODO Hvis det er innvilgelse og opphør samme år vil det fortsatt være fratrekk?
-                ifNotNull(oppphoersdato) { opphoer ->
-                    textExpr(
-                        Bokmal to " Vi har lagt til grunn din oppgitte forventede inntekt på ".expr() + sisteInntekt.format() +
-                            " kroner. Dette er forventet inntekt fra innvilgelse frem til " + opphoer.format() +
-                            ", som er forventet opphørsdato for mottak av stønaden.",
-
-                        Nynorsk to " Vi har lagt til grunn di oppgitte forventa inntekt på ".expr() + sisteInntekt.format() +
-                            " kroner. Dette er forventa inntekt frå innvilging fram til " + opphoer.format() +
-                            ", som er forventa opphøyrsdato for mottak av stønaden.",
-
-                        English to " We have based your stated expected income on NOK ".expr() + sisteInntekt.format() +
-                            ". This is the expected income from the grant until " + opphoer.format() +
-                            ", which is the expected end date for receiving the allowance."
-                    )
-                }
-            }.orShowIf(innvilgelsesAarMindreEnn12Maaneder) {
+            textExpr(
+                Bokmal to "Din oppgitte inntekt for ".expr() + virkningsdato.formatAar() + " er " + sisteInntekt.format() + " kroner.",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+            showIf(oppphoersdato.notNull().and(opphoerNesteAar.not())) {
                 textExpr(
-                    Bokmal to "Din oppgitte inntekt for inneværende år er ".expr() + sisteAarsinntekt.format() + " kroner.",
-                    Nynorsk to "Du har ei oppgitt inntekt inneverande år på ".expr() + sisteAarsinntekt.format() + " kroner.",
-                    English to "Your estimated income for the current year is NOK ".expr() + sisteAarsinntekt.format() + "."
-                )
-                textExpr(
-                    Bokmal to
-                        " Fratrekk for inntekt i måneder før du er innvilget stønad er ".expr() + sisteFratrekkInnAar.format() +
-                        " kroner. Vi har lagt til grunn at du har en inntekt på " + sisteInntekt.format() + " kroner i innvilgede måneder i år.",
-
-                    Nynorsk to " Fråtrekk for inntekt i månader før du er  innvilga stønad er ".expr() + sisteFratrekkInnAar.format() +
-                        " kroner. Vi har lagt til grunn at du har ei inntekt på " + sisteInntekt.format() + "kroner i innvilga månader i år.",
-
-                    English to " Deduction for income in months before you are granted allowance is NOK ".expr() + sisteFratrekkInnAar.format() +
-                        ". We have assumed that you have an income of NOK " + sisteInntekt.format() + " in granted months this year."
-                )
-            }.orShow {
-                // TODO omstrukturer
-                textExpr(
-                    Bokmal to "Din oppgitte inntekt for inneværende år er ".expr() + sisteAarsinntekt.format() + " kroner.",
-                    Nynorsk to "Du har ei oppgitt inntekt inneverande år på ".expr() + sisteAarsinntekt.format() + " kroner.",
-                    English to "Your estimated income for the current year is NOK ".expr() + sisteAarsinntekt.format() + "."
+                    Bokmal to " Dette er forventet inntekt fra <innvilgelsesdato eller januar i revurderingsår> frem til <dato>, som er forventet opphørsdato for mottak av stønaden.".expr(),
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
                 )
             }
-            // TODO Hva hvis opphør men ikke innvilgelsesår?
+            showIf(fomJanuar.not()) {
+                textExpr(
+                    Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er <beløp> kroner. Vi har lagt til grunn at du har en inntekt på <beløp inntekt, avrundet> kroner i innvilgede måneder i år.".expr(),
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
             textExpr(
                 Bokmal to " Beløpet er avrundet ned til nærmeste tusen.".expr(),
-                Nynorsk to " Beløpet er avrunda ned til næraste tusen.".expr(),
-                English to " The amount is rounded down to the nearest thousand.".expr()
+                Nynorsk to "".expr(),
+                English to "".expr(),
             )
         }
         paragraph {
