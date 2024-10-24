@@ -79,7 +79,6 @@ class BrevmalService(
         brevbakerMaler: List<LetterMetadata>
     ) = relevanteMaler
         .asSequence()
-        .filter { it.redigerbart }
         .plus(eblanketter)
         .filter { !ekskluderteBrev.contains(it.brevkodeIBrevsystem) }
         .map { it.mapToMetadata() }
