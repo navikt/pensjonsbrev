@@ -20,7 +20,7 @@ object Fixtures {
         saksnummer = "1337123",
         avsenderEnhet = NAVEnhet(
             nettside = "nav.no",
-            navn = "Nav familie- og pensjonsytelser Porsgrunn",
+            navn = "NAV Familie- og pensjonsytelser Porsgrunn",
             telefonnummer = Telefonnummer("55553334"),
         ),
         bruker = Bruker(
