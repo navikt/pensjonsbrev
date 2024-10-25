@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -51,13 +50,11 @@ object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdat
                     Bokmal to felles.avsenderEnhet.navn
                             + " ønsker å få bekreftet om følgende person er registrert med flyktningstatus hos dere:"
                 )
-            }
-            paragraph {
+                newline()
                 textExpr(
                     Bokmal to felles.bruker.fulltNavn()
                 )
-            }
-            paragraph {
+                newline()
                 textExpr(
                     Bokmal to felles.bruker.foedselsnummer.value
                 )
