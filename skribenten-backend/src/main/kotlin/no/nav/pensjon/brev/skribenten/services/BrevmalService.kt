@@ -126,13 +126,9 @@ class BrevmalService(
             brevbakerService.getTemplates()
                 .map { result ->
                     result.filter { brev ->
-                        if (Features.brevutendata.isEnabled()) {
-                            brev.letterDataClass !in setOf(
-                                EmptyRedigerbarBrevdata::class.java.name,
-                                EmptyBrevdata::class.java.name
-                            )
-                        } else {
-                            true
+                        when {
+                            brev.hasEmptyBrevData() -> Features.brevutendata.isEnabled()
+                            else -> true
                         }
                     }
                 }
@@ -142,6 +138,11 @@ class BrevmalService(
                     emptyList()
                 }
         } else emptyList()
+
+    private fun TemplateDescription.hasEmptyBrevData() = letterDataClass in setOf(
+        EmptyRedigerbarBrevdata::class.java.name,
+        EmptyBrevdata::class.java.name
+    )
 
     private fun TemplateDescription.toMetadata(): LetterMetadata =
         LetterMetadata(
