@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.fomJanuar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.opphoerNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.oppphoersdato
@@ -29,8 +28,8 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.fratrekkInnAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.innvilgaMaaneder
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.oppgittInntekt
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.relevantMaanederInnAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.restanse
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
@@ -71,7 +70,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     val sisteGrunnbeloep = sisteBeregningsperiode.grunnbeloep
     val sisteOppgittInntekt = sisteBeregningsperiode.oppgittInntekt
     val sisteFratrekkInnAar = sisteBeregningsperiode.fratrekkInnAar
-    val sisteGjenvaerendeMaaneder = sisteBeregningsperiode.relevantMaanederInnAar
+    val sisteInnvilgaMaaneder = sisteBeregningsperiode.innvilgaMaaneder
 
     paragraph {
         textExpr(
@@ -220,7 +219,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     )
                 }
             }
-            showIf(fomJanuar.not()) {
+            showIf(sisteInnvilgaMaaneder.lessThan(12)) {
                 textExpr(
                     Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har en inntekt på " +
@@ -244,20 +243,20 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         paragraph {
             textExpr(
                 Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + sisteInntekt.format() +
-                    " kroner / " + sisteGjenvaerendeMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
+                    " kroner / " + sisteInnvilgaMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
                     "Beløpet ganges med 45 prosent.",
                 Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + sisteInntekt.format() +
-                    " kroner / " + sisteGjenvaerendeMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
+                    " kroner / " + sisteInnvilgaMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
                     "Beløpet blir gonga med 45 prosent.",
                 English to "The monthly allowance amount has been reduced as follows: (NOK ".expr() +
-                    sisteInntekt.format() + " / " + sisteGjenvaerendeMaaneder.format() + " months) minus (0.5 G / 12 months). " +
+                    sisteInntekt.format() + " / " + sisteInnvilgaMaaneder.format() + " months) minus (0.5 G / 12 months). " +
                     "The amount is multiplied by 45 percent.",
             )
         }
 
         ifNotNull(sisteBeregningsperiodeNesteAar) {
             val sisteInntektNesteAar = it.inntekt
-            val gjenvaerendeMaanederNesteAar = it.relevantMaanederInnAar
+            val innvilgaMaanederNesteAar = it.innvilgaMaaneder
             val sisteInntektNesteAarFom = it.datoFOM
 
             paragraph {
@@ -296,13 +295,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             paragraph {
                 textExpr(
                     Bokmal to "Stønad per måned er redusert på følgende måte: (".expr() + sisteInntektNesteAar.format() +
-                        " kroner / " + gjenvaerendeMaanederNesteAar.format() + " måneder) minus (0,5 G / 12 måneder). " +
+                        " kroner / " + innvilgaMaanederNesteAar.format() + " måneder) minus (0,5 G / 12 måneder). " +
                         "Beløpet ganges med 45 prosent.",
                     Nynorsk to "Stønaden per månad har blitt redusert på følgjande måte: (".expr() + sisteInntektNesteAar.format() +
-                        " kroner / " + gjenvaerendeMaanederNesteAar.format() + " månader) minus (0,5 G / 12 månader). " +
+                        " kroner / " + innvilgaMaanederNesteAar.format() + " månader) minus (0,5 G / 12 månader). " +
                         "Beløpet blir gonga med 45 prosent.",
                     English to "The monthly allowance amount has been reduced as follows: (NOK ".expr() +
-                        sisteInntektNesteAar.format() + " / " + gjenvaerendeMaanederNesteAar.format() +
+                        sisteInntektNesteAar.format() + " / " + innvilgaMaanederNesteAar.format() +
                         " months) minus (0.5 G / 12 months). " +
                         "The amount is multiplied by 45 percent.",
                 )

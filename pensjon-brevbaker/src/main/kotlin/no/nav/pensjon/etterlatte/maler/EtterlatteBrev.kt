@@ -49,7 +49,6 @@ data class OmstillingsstoenadBeregning(
     val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
     val sisteBeregningsperiodeNesteAar: OmstillingsstoenadBeregningsperiode?,
     val trygdetid: Trygdetid,
-    val fomJanuar: Boolean,
     val oppphoersdato: LocalDate? = null,
     val opphoerNesteAar: Boolean,
 ) : BrevDTO
@@ -60,7 +59,7 @@ data class OmstillingsstoenadBeregningsperiode(
     val inntekt: Kroner,
     val oppgittInntekt: Kroner,
     val fratrekkInnAar: Kroner,
-    val relevantMaanederInnAar: Int,
+    val innvilgaMaaneder: Int,
     val grunnbeloep: Kroner,
     val ytelseFoerAvkorting: Kroner,
     val restanse: Kroner,
