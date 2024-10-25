@@ -200,7 +200,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     sisteOppgittInntekt.format() + " kroner.",
 
                 Nynorsk to "Du har ei oppgitt inntekt for ".expr() + virkningsdato.formatAar() + " på " +
-                    sisteOppgittInntekt.format() + " kroner",
+                    sisteOppgittInntekt.format() + " kroner.",
 
                 English to "Your estimated income for ".expr() + virkningsdato.formatAar() + " is NOK " +
                     sisteOppgittInntekt.format() + ".",
@@ -227,17 +227,17 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
 
                     Nynorsk to " Fråtrekk for inntekt i månader før du er innvilga stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har ei inntekt på " +
-                        sisteInntekt.format() + " kroner i innvilga månader i år",
+                        sisteInntekt.format() + " kroner i innvilga månader i år.",
 
                     English to " Deduction for income in months before you are granted allowance is NOK ".expr() +
                         sisteFratrekkInnAar.format() + ". We have assumed that you have an income of NOK " +
                         sisteInntekt.format() + " in granted months this year.",
                 )
             }
-            textExpr(
-                Bokmal to " Beløpet er avrundet ned til nærmeste tusen.".expr(),
-                Nynorsk to " Beløpet er avrunda ned til næraste tusen".expr(),
-                English to " The amount is rounded down to the nearest thousand".expr(),
+            text(
+                Bokmal to " Beløpet er avrundet ned til nærmeste tusen.",
+                Nynorsk to " Beløpet er avrunda ned til næraste tusen.",
+                English to " The amount is rounded down to the nearest thousand.",
             )
         }
         paragraph {
@@ -285,10 +285,10 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                         )
                     }
                 }
-                textExpr(
-                    Bokmal to " Beløpet er avrundet ned til nærmeste tusen.".expr(),
-                    Nynorsk to " Beløpet er avrunda ned til næraste tusen.".expr(),
-                    English to " The amount is rounded down to the nearest thousand.".expr()
+                text(
+                    Bokmal to " Beløpet er avrundet ned til nærmeste tusen.",
+                    Nynorsk to " Beløpet er avrunda ned til næraste tusen.",
+                    English to " The amount is rounded down to the nearest thousand."
                 )
             }
 

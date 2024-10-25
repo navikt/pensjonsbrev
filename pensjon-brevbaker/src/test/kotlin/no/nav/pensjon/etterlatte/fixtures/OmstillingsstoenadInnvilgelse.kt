@@ -69,23 +69,6 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 institusjon = false,
             ),
             sisteBeregningsperiodeNesteAar = null,
-            /*
-            sisteBeregningsperiodeNesteAar = OmstillingsstoenadBeregningsperiode(
-                datoFOM = LocalDate.of(2025, 1, 1),
-                datoTOM = null,
-                inntekt = Kroner(500000),
-                aarsinntekt = Kroner(600000),
-                fratrekkInnAar = Kroner(100000),
-                relevantMaanederInnAar = 10,
-                grunnbeloep = Kroner(118620),
-                utbetaltBeloep = Kroner(9000),
-                restanse = Kroner(300),
-                ytelseFoerAvkorting = Kroner(22000),
-                trygdetid = 40,
-                sanksjon = false,
-                institusjon = false,
-            ),
-             */
             trygdetid =
             Trygdetid(
                 trygdetidsperioder =
@@ -147,11 +130,6 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
 fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
     OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
         virkningsdato = LocalDate.now(),
-        avdoed =
-        Avdoed(
-            navn = "Avdod Avdodesen",
-            doedsdato = LocalDate.now(),
-        ),
         utbetalingsbeloep = Kroner(12345),
         etterbetaling = true,
         tidligereFamiliepleier = false,
