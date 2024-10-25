@@ -6,10 +6,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.etternavn
-import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
-import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.mellomnavn
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
+import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 object Felles {
@@ -142,25 +139,10 @@ object Felles {
         }
     }
 
-    object NavnPaaBruker : ParagraphPhrase<LangBokmalNynorskEnglish>() {
-        override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            textExpr(
-                Bokmal to felles.bruker.fornavn + " ",
-                Nynorsk to felles.bruker.fornavn + " ",
-                English to felles.bruker.fornavn + " "
-            )
-            ifNotNull(felles.bruker.mellomnavn) {
-                textExpr(
-                    Bokmal to it + " ",
-                    Nynorsk to it + " ",
-                    English to it + " "
-                )
-            }
-            textExpr(
-                Bokmal to felles.bruker.etternavn,
-                Nynorsk to felles.bruker.etternavn,
-                English to felles.bruker.etternavn,
-            )
-        }
-    }
+    fun Expression<Bruker>.fulltNavn(): Expression<String> =
+        Expression.UnaryInvoke(
+            value = this,
+            operation = UnaryOperation.BrukerFulltNavn
+        )
+
 }
