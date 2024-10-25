@@ -755,6 +755,3 @@ fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskom
     vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.gjenlevendetillegg_safe.nyttgjenlevendetillegg_safe.ifNull(false)
 
 fun Expression<PE>.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv(): Expression<Int> = functions.pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv.ifNull(0)
-
-fun Expression<PE>.leveattesthistorikkliste_leveattesthistorikk_utlopsdatopurring_dagensdato(): Expression<LocalDate> =
-    leveattesthistorikkliste_safe.leveattesthistorikk_safe.utlopsdatopurring_safe.dagensdato_safe.ifNull(TODO)

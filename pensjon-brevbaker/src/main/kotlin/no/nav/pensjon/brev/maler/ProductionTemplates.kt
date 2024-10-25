@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
 import no.nav.pensjon.brev.maler.redigerbar.VarselOmMuligAvslag
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.redigerbar.PaaminnelseLeveattest
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -41,6 +42,7 @@ object ProductionTemplates {
         BekreftelsePaaFlyktningstatus,
         InformasjonOmSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
+        PaaminnelseLeveattest,
         VarselOmMuligAvslag,
     )
 }

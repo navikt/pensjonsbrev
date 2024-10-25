@@ -2,11 +2,14 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.redigerbar.PaaminnelseLeveattestDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.PaaminnelseLeveattestDtoSelectors.PesysdataSelectors.fristdato
+import no.nav.pensjon.brev.api.model.maler.redigerbar.PaaminnelseLeveattestDtoSelectors.pesysData
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -18,14 +21,14 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 //fun Expression<PE>.leveattesthistorikkliste_leveattesthistorikk_utlopsdatopurring_dagensdato(): Expression<LocalDate> =
 //    leveattesthistorikkliste_safe.leveattesthistorikk_safe.utlopsdatopurring_safe.dagensdato_safe.ifNull(TODO)
 @TemplateModelHelpers
-object PaaminnelseLeveattest : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
 
     override val kode = Brevkode.Redigerbar.PE_PAAMINNELSE_LEVEATTEST
     override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EmptyRedigerbarBrevdata::class,
+        letterDataType = PaaminnelseLeveattestDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Påminnelse - leveattest",
@@ -66,7 +69,7 @@ object PaaminnelseLeveattest : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             // TODO: Attesten må sendes innen.. er i utheva skrift (gjeld alle språk)
             paragraph {
                 textExpr(
-                    Bokmal to "Vedlagt følger en ny leveattest. Vennligst les veiledningen på baksiden før du fyller ut attesten. Attesten må sendes innen ".expr() + pe.leveattesthistorikkliste_leveattesthistorikk_utlopsdatopurring_dagensdato()
+                    Bokmal to "Vedlagt følger en ny leveattest. Vennligst les veiledningen på baksiden før du fyller ut attesten. Attesten må sendes innen ".expr() + pesysData.fristdato
                         .format() + ".",
                 )
             }
@@ -95,7 +98,7 @@ object PaaminnelseLeveattest : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
             paragraph {
                 textExpr(
-                    Bokmal to "You will find a new life certificate enclosed. Please read the guidelines on the reverse side before filling out the certificate. The certificate must be returned within ".expr() + pe.leveattesthistorikkliste_leveattesthistorikk_utlopsdatopurring_dagensdato()
+                    Bokmal to "You will find a new life certificate enclosed. Please read the guidelines on the reverse side before filling out the certificate. The certificate must be returned within ".expr() + pesysData.fristdato
                         .format() + ".",
                 )
             }
@@ -124,7 +127,7 @@ object PaaminnelseLeveattest : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
             paragraph {
                 textExpr(
-                    Bokmal to "Beigelegt finden Sie ein neues Lebensbescheinigungsformular. Bitte beachten Sie die Hinweise auf der Rückseite, bevor Sie die Bescheinigung ausfüllen. Die Bescheinigung muß bis spätestens ".expr() + pe.leveattesthistorikkliste_leveattesthistorikk_utlopsdatopurring_dagensdato()
+                    Bokmal to "Beigelegt finden Sie ein neues Lebensbescheinigungsformular. Bitte beachten Sie die Hinweise auf der Rückseite, bevor Sie die Bescheinigung ausfüllen. Die Bescheinigung muß bis spätestens ".expr() + pesysData.fristdato
                         .format() + ". zurückgeschickt werden.",
                 )
             }
@@ -160,7 +163,7 @@ object PaaminnelseLeveattest : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
             paragraph {
                 textExpr(
-                    Bokmal to "Le certificat de vie devra être adressé avant ".expr() + pe.leveattesthistorikkliste_leveattesthistorikk_utlopsdatopurring_dagensdato()
+                    Bokmal to "Le certificat de vie devra être adressé avant ".expr() + pesysData.fristdato
                         .format() + ".",
                 )
             }
@@ -196,7 +199,7 @@ object PaaminnelseLeveattest : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
             paragraph {
                 textExpr(
-                    Bokmal to "Debe remitir el certificado antes del ".expr() + pe.leveattesthistorikkliste_leveattesthistorikk_utlopsdatopurring_dagensdato()
+                    Bokmal to "Debe remitir el certificado antes del ".expr() + pesysData.fristdato
                         .format() + ".",
                 )
             }
