@@ -71,7 +71,7 @@ fun AuthenticationConfig.skribentenJwt(config: JwtConfig) =
             val azp = it["azp"]
 
             if (config.preAuthorizedApps.any { app -> app.clientId == azp }) {
-                UserPrincipal(userAccessToken(), it.payload)
+                JwtUserPrincipal(userAccessToken(), it.payload)
             } else {
                 logger.info("Invalid authorization - claim 'azp' is not a preAuthorizedApp: $azp")
                 null
@@ -92,11 +92,25 @@ class MissingClaimException(msg: String) : UnauthorizedException(msg)
 
 @JvmInline
 value class UserAccessToken(val token: String)
-data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Payload) : Principal {
+
+interface UserPrincipal {
+    val accessToken: UserAccessToken
+    val navIdent: NavIdent
+    val fullName: String
+
+    fun isInGroup(groupId: ADGroup): Boolean
+    fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken?
+    fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken)
+}
+
+data class JwtUserPrincipal(override val accessToken: UserAccessToken, private val jwtPayload: Payload) : UserPrincipal {
+    override val navIdent: NavIdent by lazy { NavIdent(getClaimAsString("NAVident")) }
+    override val fullName: String by lazy { getClaimAsString("name") }
     private val onBehalfOfTokens = mutableMapOf<String, TokenResponse.OnBehalfOfToken>()
 
-    fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken? = onBehalfOfTokens[scope]
-    fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken) {
+    override fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
+    override fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken? = onBehalfOfTokens[scope]
+    override fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken) {
         onBehalfOfTokens[scope] = token
     }
 
@@ -104,13 +118,9 @@ data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Paylo
         jwtPayload.getClaim(claim).asString()
             ?: throw MissingClaimException("Missing claim: $claim")
 
-    val navIdent: String by lazy { getClaimAsString("NAVident") }
-    val fullName: String by lazy { getClaimAsString("name") }
-    val groups: List<ADGroup> by lazy {
+
+    private val groups: List<ADGroup> by lazy {
         jwtPayload.getClaim("groups")?.asList(String::class.java)?.map { ADGroup(it) }
             ?: emptyList()
     }
-
-    fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
-    fun navIdent(): NavIdent = NavIdent(navIdent)
 }

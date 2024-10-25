@@ -67,9 +67,9 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
             }.orShow { includePhrase(Manuelt(erBosattUtlandet)) }
             paragraph {
                 text(
-                    Bokmal to "Hvis du har andre ytelser fra NAV, Lånekassen, andre tjenestepensjonsordninger eller fra andre land enn Norge, må du selv undersøke hvilke konsekvenser barnepensjon fra folketrygden vil ha for deg.",
-                    Nynorsk to "Dersom du får andre ytingar frå NAV, Lånekassen eller andre tenestepensjonsordningar, eller frå andre land enn Noreg, må du sjølv undersøkje kva konsekvensar barnepensjonen frå folketrygda får for deg.",
-                    English to "If you receive other benefits from NAV, Lånekassen, other pension schemes or from countries other than Norway, you must yourself investigate the consequences that the children’s pension from the National Insurance scheme will have for you.",
+                    Bokmal to "Hvis du har andre ytelser fra Nav, Lånekassen, andre tjenestepensjonsordninger eller fra andre land enn Norge, må du selv undersøke hvilke konsekvenser barnepensjon fra folketrygden vil ha for deg.",
+                    Nynorsk to "Dersom du får andre ytingar frå Nav, Lånekassen eller andre tenestepensjonsordningar, eller frå andre land enn Noreg, må du sjølv undersøkje kva konsekvensar barnepensjonen frå folketrygda får for deg.",
+                    English to "If you receive other benefits from Nav, Lånekassen, other pension schemes or from countries other than Norway, you must yourself investigate the consequences that the children’s pension from the National Insurance scheme will have for you.",
                 )
             }
         }
@@ -79,16 +79,16 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "NAV har vurdert at du har rett til ny barnepensjon fra 1. januar 2024. Vi har lagt ved en beregning av hva du vil få i barnepensjon.",
-                    Nynorsk to "NAV har kome til at du har rett på ny barnepensjon frå 1. januar 2024. Vi har lagt ved ei utrekning som viser kor mykje du kjem til å få i barnepensjon.",
-                    English to "NAV has assessed that you have the right to a new children’s pension from 1 January 2024. We have enclosed a calculation of the amount you will receive in children’s pension.",
+                    Bokmal to "Nav har vurdert at du har rett til ny barnepensjon fra 1. januar 2024. Vi har lagt ved en beregning av hva du vil få i barnepensjon.",
+                    Nynorsk to "Nav har kome til at du har rett på ny barnepensjon frå 1. januar 2024. Vi har lagt ved ei utrekning som viser kor mykje du kjem til å få i barnepensjon.",
+                    English to "Nav has assessed that you have the right to a new children’s pension from 1 January 2024. We have enclosed a calculation of the amount you will receive in children’s pension.",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Beregningen er gjort med bakgrunn i de opplysningene vi har om deg. Du er selv ansvarlig for å sjekke om opplysningene er riktige. Meld fra til oss hvis du ser noen feil eller mangler. Hvis du ikke melder fra om endringer og får utbetalt for mye barnepensjon, kan barnepensjon som er utbetalt feil kreves tilbake.",
                     Nynorsk to "Utrekninga er gjort på grunnlag av opplysningane vi har om deg. Du er sjølv ansvarleg for å sjekke at opplysningane stemmer. Sei frå til oss dersom du ser at noko er feil eller manglar. Dersom du får utbetalt for mykje barnepensjon fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake det du ikkje hadde rett på.",
-                    English to "The calculation has been made based on the information we hold about you. You are responsible for checking that this information is correct. You must notify NAV if you discover any errors or omissions. If you do not notify us of any changes and receive too much in children’s pension, we can require you to repay any overpaid amounts.",
+                    English to "The calculation has been made based on the information we hold about you. You are responsible for checking that this information is correct. You must notify Nav if you discover any errors or omissions. If you do not notify us of any changes and receive too much in children’s pension, we can require you to repay any overpaid amounts.",
                 )
             }
             paragraph {
@@ -136,9 +136,9 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
             }
             paragraph {
                 text(
-                    Bokmal to "Du må sjekke at du har et kontonummer registrert hos NAV.",
-                    Nynorsk to "Sjekk at du har eit kontonummer registrert hos NAV.",
-                    English to "You must check that you have an account number registered with NAV.",
+                    Bokmal to "Du må sjekke at du har et kontonummer registrert hos Nav.",
+                    Nynorsk to "Sjekk at du har eit kontonummer registrert hos Nav.",
+                    English to "You must check that you have an account number registered with Nav.",
                 )
             }
             includePhrase(ForhaandsvarselGjenoppstaattFraser.KontonummerOgSkatt(erBosattUtlandet))
@@ -149,9 +149,9 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "NAV vurderer om du har rett til ny barnepensjon fra 1. januar 2024. Vi har lagt ved en foreløpig beregning av hva du kan få i barnepensjon.",
-                    Nynorsk to "NAV vurderer om du har rett til ny barnepensjon frå 1. januar 2024. Vi har lagt ved ei førebels utrekning som viser kor mykje du kan få i barnepensjon.",
-                    English to "NAV is assessing whether you have the right to a new children’s pension from 1 January 2024. We have enclosed a provisional calculation of the amount you can receive in children’s pension.",
+                    Bokmal to "Nav vurderer om du har rett til ny barnepensjon fra 1. januar 2024. Vi har lagt ved en foreløpig beregning av hva du kan få i barnepensjon.",
+                    Nynorsk to "Nav vurderer om du har rett til ny barnepensjon frå 1. januar 2024. Vi har lagt ved ei førebels utrekning som viser kor mykje du kan få i barnepensjon.",
+                    English to "Nav is assessing whether you have the right to a new children’s pension from 1 January 2024. We have enclosed a provisional calculation of the amount you can receive in children’s pension.",
                 )
             }
             paragraph {
@@ -199,9 +199,9 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
             }
             paragraph {
                 text(
-                    Bokmal to "Du må sjekke at du har et kontonummer registrert hos NAV. Du må også bekrefte at opplysningene som er vedlagt er riktige, eller gi nye opplysninger for å få riktig barnepensjon.",
-                    Nynorsk to "Sjekk at du har eit kontonummer registrert hos NAV. For å få rett barnepensjon må du også stadfeste at dei vedlagde opplysningane stemmer, eller gi nye, korrekte opplysningar.",
-                    English to "You need to make sure that your bank account is registered with NAV. You also need to confirm that the associated information is correct or provide us with new/updated information to receive the right amount of children’s pension.",
+                    Bokmal to "Du må sjekke at du har et kontonummer registrert hos Nav. Du må også bekrefte at opplysningene som er vedlagt er riktige, eller gi nye opplysninger for å få riktig barnepensjon.",
+                    Nynorsk to "Sjekk at du har eit kontonummer registrert hos Nav. For å få rett barnepensjon må du også stadfeste at dei vedlagde opplysningane stemmer, eller gi nye, korrekte opplysningar.",
+                    English to "You need to make sure that your bank account is registered with Nav. You also need to confirm that the associated information is correct or provide us with new/updated information to receive the right amount of children’s pension.",
                 )
             }
             includePhrase(ForhaandsvarselGjenoppstaattFraser.KontonummerOgSkatt(erBosattUtlandet))

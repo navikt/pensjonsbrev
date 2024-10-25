@@ -13,8 +13,6 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.principal
 import java.time.LocalDateTime
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
@@ -73,13 +71,9 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
         }
     }
 
-    suspend fun getOnBehalfOfToken(call: ApplicationCall, scope: String): TokenResponse {
-        val principal: UserPrincipal = call.principal()
-
-        // TODO: Legge til støtte for bruk av refresh_token?
+    suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
         return principal.getOnBehalfOfToken(scope)?.takeIf { it.isValid() }
-            ?: exchangeToken(principal.accessToken, scope)
-                .also {
+            ?: exchangeToken(principal.accessToken, scope).also {
                     if (it is TokenResponse.OnBehalfOfToken) {
                         principal.setOnBehalfOfToken(scope, it)
                     }

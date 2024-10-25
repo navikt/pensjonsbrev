@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 object OmstillingsstoenadAvslagFraser {
     data class Vedtak(
         val erSluttbehandling: Expression<Boolean>,
+        val tidligereFamiliepleier: Expression<Boolean>,
         val avdoedNavn: Expression<String>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -48,17 +49,25 @@ object OmstillingsstoenadAvslagFraser {
                     )
                 }
             }.orShow {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.",
-                        Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.",
-                        English to
-                                "Your application for adjustment allowance for the deceased ".expr() + avdoedNavn + " has been rejected.",
-                    )
+                showIf(tidligereFamiliepleier) {
+                    paragraph {
+                        text(
+                            Bokmal to "Din søknad om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid> er avslått.",
+                            Nynorsk to "Din søknad om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid> er avslått.",
+                            English to "Your application for adjustment allowance as a former family caregiver for <name of the person who has been cared for> has been rejected.",
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.",
+                            Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.",
+                            English to
+                                    "Your application for adjustment allowance for the deceased ".expr() + avdoedNavn + " has been rejected.",
+                        )
+                    }
                 }
             }
-
-
         }
     }
 }

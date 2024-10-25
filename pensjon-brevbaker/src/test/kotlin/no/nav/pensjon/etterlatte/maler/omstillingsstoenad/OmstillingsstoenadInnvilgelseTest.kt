@@ -2,7 +2,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad
 
 import io.mockk.mockk
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
-import org.junit.Assert.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class OmstillingsstoenadInnvilgelseTest {

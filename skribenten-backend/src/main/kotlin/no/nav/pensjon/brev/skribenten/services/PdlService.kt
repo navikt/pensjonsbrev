@@ -3,13 +3,13 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import org.slf4j.LoggerFactory
@@ -29,13 +29,14 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     private val pdlUrl = config.getString("url")
     private val pdlScope = config.getString("scope")
 
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(pdlScope, authService) {
+    private val client = HttpClient(CIO) {
         defaultRequest {
             url(pdlUrl)
         }
         install(ContentNegotiation) {
             jackson()
         }
+        callIdAndOnBehalfOfClient(pdlScope, authService)
     }
 
     private data class PDLQuery<T : Any>(
@@ -80,12 +81,8 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
-    suspend fun hentNavn(
-        call: ApplicationCall,
-        fnr: String,
-        behandlingsnummer: Pdl.Behandlingsnummer?
-    ): ServiceResult<String> {
-        return client.post(call, "") {
+    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> {
+        return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             headers {
@@ -106,12 +103,8 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
             }
     }
 
-    suspend fun hentAdressebeskyttelse(
-        call: ApplicationCall,
-        fnr: String,
-        behandlingsnummer: Pdl.Behandlingsnummer?
-    ): ServiceResult<List<Pdl.Gradering>> {
-        return client.post(call, "") {
+    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {
+        return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(
@@ -167,8 +160,8 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     }
 
     override val name = "PDL"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
-        client.options(call, "")
+    override suspend fun ping(): ServiceResult<Boolean> =
+        client.options("")
             .toServiceResult<String>()
             .map { true }
 

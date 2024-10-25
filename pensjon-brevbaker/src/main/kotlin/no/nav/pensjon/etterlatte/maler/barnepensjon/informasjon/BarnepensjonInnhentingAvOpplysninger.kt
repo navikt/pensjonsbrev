@@ -63,7 +63,7 @@ object BarnepensjonInnhentingAvOpplysninger : EtterlatteTemplate<BarnepensjonInn
                         text(
                             Bokmal to "Hvordan sende opplysninger til oss?",
                             Nynorsk to "Korleis melder du frå om endringar?",
-                            English to "How to submit information to NAV?",
+                            English to "How to submit information to Nav?",
                         )
                     }
                     paragraph {

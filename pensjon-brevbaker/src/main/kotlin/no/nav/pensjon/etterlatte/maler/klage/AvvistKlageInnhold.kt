@@ -25,7 +25,7 @@ data class AvvistKlageInnholdDTO(
     val sakType: SakType,
     val klageDato: LocalDate,
     val datoForVedtaketKlagenGjelder: LocalDate?,
-
+    val bosattUtland: Boolean = false,
     )
 
 @TemplateModelHelpers
@@ -144,7 +144,7 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                             "saka når klagefristen har gått ut. Bakgrunnen for dette er at klagefristen i trygdesaker er " +
                             "vesentleg lenger enn ankefristen for sivile saker til domstolane, og dobbelt så lang som " +
                             "klagefristen i andre delar av forvaltinga. Det er dermed lagt opp til at føresegna skal tolkast bokstaveleg.",
-                    Language.English to "Legal practice at NAV indicates that making such exceptions requires very " +
+                    Language.English to "Legal practice at Nav indicates that making such exceptions requires very " +
                             "special circumstances. The reason for this is that the deadline for appeal in national insurance " +
                             "cases is significantly longer than the appeal deadline in civil cases in Norwegian courts and " +
                             "double the time compared to other state agencies. That is why this legal provision is to be understood and followed literally."

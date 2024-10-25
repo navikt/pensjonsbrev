@@ -3,9 +3,7 @@ package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -15,11 +13,16 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadDataSelectors.tidligereFamiliepleier
 
 
-fun informasjonOmOmstillingsstoenad(
-    tidligereFamiliepleier: Boolean,
-): AttachmentTemplate<LangBokmalNynorskEnglish, Any> {
+data class InformasjonOmOmstillingsstoenadData(
+    val tidligereFamiliepleier: Boolean = false,
+    val bosattUtland: Boolean = false,
+)
+
+fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData> {
     return createAttachment(
         title = newText(
             Bokmal to "Informasjon til deg som mottar omstillingsstønad",
@@ -28,18 +31,18 @@ fun informasjonOmOmstillingsstoenad(
         ),
         includeSakspart = false,
     ) {
-        aktivitet(tidligereFamiliepleier.expr())
+        aktivitet(argument.tidligereFamiliepleier)
         hvisDuIkkeFyllerAktivitetsplikten()
         inntektOgOmstillingsstoenad()
         endretInntekt()
         hvilkenInntektReduseresEtter()
-        hvordanMeldeEndringer()
+        hvordanMeldeEndringer(argument.bosattUtland)
         utbetalingTilKontonummer()
         skatt()
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.aktivitet(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.aktivitet(
     tidligereFamiliepleier: Expression<Boolean>
 ) {
     title2 {
@@ -142,7 +145,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.aktivitet(
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvisDuIkkeFyllerAktivitetsplikten() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.hvisDuIkkeFyllerAktivitetsplikten() {
     title2 {
         text(
             Bokmal to "Hva skjer hvis du ikke fyller aktivitetsplikten?",
@@ -192,17 +195,17 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvisDuIkkeFyllerAkti
     }
     paragraph {
         text(
-            Bokmal to "NAV må kunne komme i kontakt med deg for å følge deg opp ved behov. Får vi ikke " +
+            Bokmal to "Nav må kunne komme i kontakt med deg for å følge deg opp ved behov. Får vi ikke " +
                     "kontakt med deg, kan vi stoppe stønaden din.",
-            Nynorsk to "NAV må kunne kontakte deg for å gi oppfølging ved behov. Dersom vi ikkje får kontakt " +
+            Nynorsk to "Nav må kunne kontakte deg for å gi oppfølging ved behov. Dersom vi ikkje får kontakt " +
                     "med deg, kan vi stoppe stønaden.",
-            English to "NAV must be able to get in touch with you to follow up your case, whenever needed. " +
+            English to "Nav must be able to get in touch with you to follow up your case, whenever needed. " +
                     "We may stop your allowance if we cannot get in touch with you. ",
         )
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.inntektOgOmstillingsstoenad() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.inntektOgOmstillingsstoenad() {
     title2 {
         text(
             Bokmal to "Inntekt og omstillingsstønad",
@@ -225,7 +228,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.inntektOgOmstillings
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.endretInntekt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.endretInntekt() {
     title2 {
         text(
             Bokmal to "Får du endret inntekt i løpet av året?",
@@ -270,7 +273,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.endretInntekt() {
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvilkenInntektReduseresEtter() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.hvilkenInntektReduseresEtter() {
     title2 {
         text(
             Bokmal to "Hvilken inntekt skal omstillingsstønaden reduseres etter?",
@@ -341,7 +344,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvilkenInntektReduse
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanMeldeEndringer() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.hvordanMeldeEndringer(bosattUtland: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Hvordan melder du fra om endringer?",
@@ -355,6 +358,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanMeldeEndringe
             Nynorsk to "Du kan gi beskjed om endringar i inntekta di ved å sende",
             English to "You can notify us about changes in your income by submitting",
         )
+
+        val postadresse = ifElse(bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
+
         list {
             item {
                 text(
@@ -364,17 +370,17 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanMeldeEndringe
                 )
             }
             item {
-                text(
-                    Bokmal to "brev til " + Constants.POSTADRESSE,
-                    Nynorsk to "brev til " + Constants.POSTADRESSE,
-                    English to "send a letter to " +  Constants.POSTADRESSE,
+                textExpr(
+                    Bokmal to "brev til ".expr() + postadresse,
+                    Nynorsk to "brev til ".expr() + postadresse,
+                    English to "send a letter to ".expr() + postadresse,
                 )
             }
         }
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.utbetalingTilKontonummer() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.utbetalingTilKontonummer() {
     title2 {
         text(
             Bokmal to "Utbetaling til kontonummer",
@@ -384,13 +390,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.utbetalingTilKontonu
     }
     paragraph {
         text(
-            Bokmal to "Du kan bare ha ett kontonummer registrert hos NAV. Du kan endre kontonummeret i " +
+            Bokmal to "Du kan bare ha ett kontonummer registrert hos Nav. Du kan endre kontonummeret i " +
                     "«Personopplysninger» ved å logge på nav.no. Du kan også sende endring per post. " +
                     "Du finner skjema og riktig adresse på " + Constants.ENDRING_KONTONUMMER_URL + ".",
-            Nynorsk to "Du kan berre ha eitt kontonummer registrert hos NAV. Du kan endre kontonummer under " +
+            Nynorsk to "Du kan berre ha eitt kontonummer registrert hos Nav. Du kan endre kontonummer under " +
                     "«Personopplysningar» ved å logge på nav.no. Du kan også sende endring per post. Du finn skjema " +
                     "og rett adresse på " + Constants.ENDRING_KONTONUMMER_URL + ".",
-            English to "You can only have one account number registered with NAV. You can change your account " +
+            English to "You can only have one account number registered with Nav. You can change your account " +
                     "number online (in Personal Data) by logging in to nav.no. You can also report changes by " +
                     "conventional mail. You will find the form and the correct address online: " +
                     Constants.ENDRING_KONTONUMMER_URL + ".",
@@ -398,7 +404,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.utbetalingTilKontonu
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.skatt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.skatt() {
     title2 {
         text(
             Bokmal to "Skatt",
@@ -408,12 +414,12 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.skatt() {
     }
     paragraph {
         text(
-            Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til NAV " +
+            Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til Nav " +
                     "fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten.",
-            Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til NAV, " +
+            Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til Nav, " +
                     "då skatteopplysningane dine blir sende elektronisk frå Skatteetaten.",
             English to "Adjustment allowance are taxable. You do not need to submit your tax deduction " +
-                    "card to NAV because your tax information is sent to NAV electronically from the " +
+                    "card to Nav because your tax information is sent to Nav electronically from the " +
                     "Norwegian Tax Administration.",
         )
     }

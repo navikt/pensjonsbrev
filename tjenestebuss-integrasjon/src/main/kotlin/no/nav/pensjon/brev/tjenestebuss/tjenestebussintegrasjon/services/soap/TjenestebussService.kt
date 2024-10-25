@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap
 
-import io.ktor.server.application.*
 import io.ktor.server.plugins.callid.*
-import io.ktor.util.pipeline.*
+import io.ktor.server.routing.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asContextElement
 import kotlinx.coroutines.withContext
@@ -98,7 +97,7 @@ abstract class TjenestebussService<Client>(factory: ClientFactory<Client>, pingE
     }
 }
 
-suspend fun <T : TjenestebussService<*>, R> PipelineContext<Unit, ApplicationCall>.withCallId(
+suspend fun <T : TjenestebussService<*>, R> RoutingContext.withCallId(
     service: T,
     block: suspend T.() -> R
 ): R =

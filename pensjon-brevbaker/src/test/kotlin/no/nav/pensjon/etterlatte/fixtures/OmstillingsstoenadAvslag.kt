@@ -8,4 +8,9 @@ fun createOmstillingsstoenadAvslagDTO() =
         bosattUtland = false,
     )
 
-fun createOmstillingsstoenadAvslagRedigerbartUtfallDTO() = OmstillingstoenadAvslagRedigerbartUtfallDTO(avdoedNavn = "Ola Nordmann", erSluttbehandling = true)
+fun createOmstillingsstoenadAvslagRedigerbartUtfallDTO() =
+    OmstillingstoenadAvslagRedigerbartUtfallDTO(
+        avdoedNavn = "Ola Nordmann",
+        erSluttbehandling = true,
+        tidligereFamiliepleier = false,
+    )

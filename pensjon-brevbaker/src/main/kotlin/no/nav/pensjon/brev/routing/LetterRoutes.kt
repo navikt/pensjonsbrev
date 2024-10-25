@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.routing
 
-import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.TemplateResource
@@ -16,7 +15,7 @@ fun Route.letterRoutes(
 ) {
     route("/${autobrev.name}") {
         post<BestillBrevRequest<Brevkode.AutoBrev>>("/pdf") { brevbestilling ->
-            call.respond(autobrev.renderPDF(call, brevbestilling))
+            call.respond(autobrev.renderPDF(brevbestilling))
             autobrev.countLetter(brevbestilling.kode)
         }
 
@@ -31,7 +30,7 @@ fun Route.letterRoutes(
             call.respond(markup)
         }
         post<BestillRedigertBrevRequest<Brevkode.Redigerbar>>("/pdf") { brevbestilling ->
-            call.respond(redigerbareBrev.renderPDF(call, brevbestilling))
+            call.respond(redigerbareBrev.renderPDF(brevbestilling))
             redigerbareBrev.countLetter(brevbestilling.kode)
         }
 

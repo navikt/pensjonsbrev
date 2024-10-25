@@ -214,14 +214,14 @@ class OmstillingsstoenadRevurderingFraser {
                 text(
                     Language.Bokmal to "Omstillingsstønad blir utbetalt innen den 20. i hver måned. Du finner " +
                             "utbetalingsdatoer på ${Constants.UTBETALING_URL}. Utbetalingen kan bli forsinket hvis " +
-                            "den skal samordnes med ytelser du mottar fra NAV eller andre, som for eksempel " +
+                            "den skal samordnes med ytelser du mottar fra Nav eller andre, som for eksempel " +
                             "tjenestepensjonsordninger.",
                     Language.Nynorsk to "Omstillingsstønad blir utbetalt innan den 20. i kvar månad. Du finn " +
                             "utbetalingsdatoane på ${Constants.UTBETALING_URL}. Utbetalinga kan bli forseinka dersom " +
-                            "ho skal samordnast med ytingar du får frå NAV eller andre (t.d. tenestepensjonsordningar).",
+                            "ho skal samordnast med ytingar du får frå Nav eller andre (t.d. tenestepensjonsordningar).",
                     Language.English to "The adjustment allowance is paid on or before the 20th of each month. " +
                             "You can find payout dates online: ${Constants.UTBETALING_URL}. The payment may be delayed " +
-                            "if it is to be  coordinated with benefits you receive from NAV or others, such as a " +
+                            "if it is to be  coordinated with benefits you receive from Nav or others, such as a " +
                             "pension from an occupational pension scheme.",
                 )
             }
@@ -243,13 +243,13 @@ class OmstillingsstoenadRevurderingFraser {
                 paragraph {
                     text(
                         Language.Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder " +
-                                "etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
+                                "etterbetalingen tidligere år trekker Nav skatt etter Skatteetatens standardsatser. " +
                                 "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
                         Language.Nynorsk to "Det blir normalt sett bli trekt skatt av etterbetaling. Dersom " +
-                                "etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane til " +
+                                "etterbetalinga gjeld tidlegare år, vil Nav trekkje skatt etter standardsatsane til " +
                                 "Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
                         Language.English to "Tax is usually deducted from back payments. If the back payment " +
-                                "applies to previous years, NAV will deduct the tax at the Tax Administration's " +
+                                "applies to previous years, Nav will deduct the tax at the Tax Administration's " +
                                 "standard rates. You can read more about the rates here: " +
                                 "${Constants.SKATTETREKK_ETTERBETALING_URL}. ",
                     )
@@ -290,15 +290,15 @@ class OmstillingsstoenadRevurderingFraser {
                 text(
                     Language.Bokmal to "Fordi stønaden din er redusert tilbake i tid, har du fått for mye " +
                             "utbetalt. Det feilutbetalte beløpet vil bli trukket i etterbetaling av annen ytelse " +
-                            "du mottar fra NAV. Hvis feilutbetalingen er større enn etterbetalingen, vil du få et " +
+                            "du mottar fra Nav. Hvis feilutbetalingen er større enn etterbetalingen, vil du få et " +
                             "eget brev om mulig tilbakekreving av for mye utbetalt omstillingsstønad.",
                     Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått for " +
                             "mykje utbetalt. Det du har fått for mykje utbetalt vil trekkast i etterbetalinga av " +
-                            "ei anna yting du får frå NAV. Er beløpet du har fått for mykje meir enn etterbetalinga, " +
+                            "ei anna yting du får frå Nav. Er beløpet du har fått for mykje meir enn etterbetalinga, " +
                             "får du eiget brev om mogleg tilbakekrevjing av for mykje utbetalt omstillingsstønad.",
                     Language.English to "Because your allowance has been reduced retroactively, you received " +
                             "more than you were owed. The incorrect paid amount will be deducted from the back payment " +
-                            "of other benefits you receive from NAV. If the incorrect payment is greater than the " +
+                            "of other benefits you receive from Nav. If the incorrect payment is greater than the " +
                             "overpayment, you will receive a separate letter about the possible repayment of " +
                             "overpaid adjustment allowance.",
                 )
@@ -363,15 +363,15 @@ class OmstillingsstoenadRevurderingFraser {
                 text(
                     Language.Bokmal to "Fordi stønaden din er opphørt tilbake i tid, har du fått for mye " +
                             "utbetalt. Det feilutbetalte beløpet vil bli trukket i etterbetaling av annen ytelse du " +
-                            "mottar fra NAV. Hvis feilutbetalingen er større enn etterbetalingen, vil du få et eget " +
+                            "mottar fra Nav. Hvis feilutbetalingen er større enn etterbetalingen, vil du få et eget " +
                             "brev om mulig tilbakekreving av for mye utbetalt omstillingsstønad. ",
                     Language.Nynorsk to "Ettersom stønaden din blei avvikla tilbake i tid, har du fått for " +
                             "mykje utbetalt. Det du har fått for mykje utbetalt vil trekkast i etterbetalinga av ei " +
-                            "anna yting du får frå NAV. Er beløpet du har fått for mykje meir enn etterbetalinga, " +
+                            "anna yting du får frå Nav. Er beløpet du har fått for mykje meir enn etterbetalinga, " +
                             "får du eiget brev om mogleg tilbakekrevjing av for mykje utbetalt omstillingsstønad. ",
                     Language.English to "You have been overpaid because your adjustment allowance has been " +
                             "terminated retroactively. The incorrect paid amount will be deducted from the back " +
-                            "payment of other benefits you receive from NAV. If the incorrect payment is greater " +
+                            "payment of other benefits you receive from Nav. If the incorrect payment is greater " +
                             "than the overpayment, you will receive a separate letter about the possible repayment " +
                             "of overpaid adjustment allowance. ",
                 )

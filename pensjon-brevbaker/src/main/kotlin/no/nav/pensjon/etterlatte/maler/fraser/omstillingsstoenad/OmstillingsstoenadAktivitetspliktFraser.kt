@@ -8,7 +8,11 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.NasjonalEllerUtland
 
@@ -33,7 +37,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     Nynorsk to "Vi minner om at du pliktar å melde frå om endringar som kan ha betydning for " +
                             "stønaden du får frå oss. Du må melde frå dersom",
                     English to "Please remember that you are obligated to notify us about changes that may have significance " +
-                            "to the benefits or allowances you receive from NAV. You must report any changes if",
+                            "to the benefits or allowances you receive from Nav. You must report any changes if",
                 )
 
                 list {
@@ -53,9 +57,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                     item {
                         text(
-                            Bokmal to "du får innvilget andre stønader fra NAV",
-                            Nynorsk to "du får innvilga andre stønader frå NAV",
-                            English to "you are granted other benefits from NAV",
+                            Bokmal to "du får innvilget andre stønader fra Nav",
+                            Nynorsk to "du får innvilga andre stønader frå Nav",
+                            English to "you are granted other benefits from Nav",
                         )
                     }
                     item {
@@ -117,6 +121,8 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     English to "You can report changes in the following ways:",
                 )
 
+                val postadresse = ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
+
                 list {
                     item {
                         text(
@@ -136,10 +142,10 @@ class OmstillingsstoenadAktivitetspliktFraser {
                         )
                     }
                     item {
-                        text(
-                            Bokmal to "sende brev til ${Constants.POSTADRESSE}",
-                            Nynorsk to "Send brev til ${Constants.POSTADRESSE}",
-                            English to "send a letter to ${Constants.POSTADRESSE}",
+                        textExpr(
+                            Bokmal to "sende brev til ".expr() + postadresse,
+                            Nynorsk to "Send brev til ".expr() + postadresse,
+                            English to "send a letter to ".expr() + postadresse,
                         )
                     }
                 }
@@ -159,7 +165,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                 text(
                     Bokmal to "Hvis du ikke melder fra om endringer og får utbetalt for mye stønad, kan stønad som er utbetalt feil kreves tilbake.",
                     Nynorsk to "Dersom du får utbetalt for mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake det du ikkje hadde rett på.",
-                    English to "If you fail to report changes and/or are paid too much benefits/allowance, NAV has the right to collect the incorrect amount.",
+                    English to "If you fail to report changes and/or are paid too much benefits/allowance, Nav has the right to collect the incorrect amount.",
                 )
             }
 
@@ -179,11 +185,11 @@ class OmstillingsstoenadAktivitetspliktFraser {
             paragraph {
                 text(
                     Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser " +
-                            "eller støtteordninger ved ditt lokale NAV-kontor og på ${Constants.HELSE_URL}.",
+                            "eller støtteordninger ved ditt lokale Nav-kontor og på ${Constants.HELSE_URL}.",
                     Nynorsk to "Viss du har helseutfordringar, kan du undersøkje moglegheitene for andre ytingar " +
-                            "eller støtteordningar ved ditt lokale NAV-kontor og på ${Constants.HELSE_URL}.",
+                            "eller støtteordningar ved ditt lokale Nav-kontor og på ${Constants.HELSE_URL}.",
                     English to "If you are faced with difficult health challenges, you can investigate the possibilities " +
-                            "for other benefits or support schemes through your local NAV office, or check out various " +
+                            "for other benefits or support schemes through your local Nav office, or check out various " +
                             "opportunities online: ${Constants.HELSE_URL}.",
                 )
             }
@@ -202,11 +208,11 @@ class OmstillingsstoenadAktivitetspliktFraser {
 
             paragraph {
                 text(
-                    Bokmal to "NAV tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. " +
+                    Bokmal to "Nav tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. " +
                             "Du kan finne flere jobbsøkertips og informasjon på ${Constants.ARBEID_URL}.",
-                    Nynorsk to "NAV tilbyr ulike tenester og støtteordningar for deg som treng hjelp med å kome i " +
+                    Nynorsk to "Nav tilbyr ulike tenester og støtteordningar for deg som treng hjelp med å kome i " +
                             "arbeid. Du finn fleire jobbsøkjartips og informasjon på ${Constants.ARBEID_URL}.",
-                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and " +
+                    English to "The Norwegian Labour and Welfare Administration (Nav) offers various services and " +
                             "support schemes for those who need help finding a job. You can find more job seeker's tips " +
                             "and information online: ${Constants.ARBEID_URL}.",
                 )
