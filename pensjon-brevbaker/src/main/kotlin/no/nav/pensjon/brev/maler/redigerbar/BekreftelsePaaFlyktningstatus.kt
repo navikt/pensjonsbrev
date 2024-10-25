@@ -26,7 +26,7 @@ object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdat
 
     override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS
     override val kategori: TemplateDescription.Brevkategori =
-        TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER // TODO
+        TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
 
 
     override val template = createTemplate(
