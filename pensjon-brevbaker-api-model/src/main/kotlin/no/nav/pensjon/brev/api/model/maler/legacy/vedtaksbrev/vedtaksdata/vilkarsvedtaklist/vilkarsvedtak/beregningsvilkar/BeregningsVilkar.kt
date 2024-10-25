@@ -14,5 +14,5 @@ data class BeregningsVilkar(
     val virkningstidpunkt: LocalDate?,
     val ieuinntekt: Kroner?,
     val skadetidspunkt: LocalDate?,
-    val yrkesskadegrad: Double?
+    val yrkesskadegrad: Int?
 )
