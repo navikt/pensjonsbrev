@@ -146,14 +146,14 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             textExpr(
                 Bokmal to "".expr() + "Stønad per år før reduksjon av inntekt er beregnet til 2,25 ganger " +
                     "grunnbeløpet i folketrygden (G) ganget med " + trygdetid.beregnetTrygdetidAar.format() + "/40 " +
-                    "trygdetid. Beløpet fordeles på 12 utbetalinger i året. Beløpet er avrundet ned til nærmeste tusen.",
+                    "trygdetid. Beløpet fordeles på 12 utbetalinger i året. ",
                 Nynorsk to "".expr() + "Stønad per år før reduksjon av inntekt er rekna ut til 2,25 gongar " +
                     "grunnbeløpet i folketrygda (G) gonga med " + trygdetid.beregnetTrygdetidAar.format() + "/40 " +
-                    "trygdetid. Beløpet blir fordelt på 12 utbetalingar i året. Beløpet er avrunda ned til næraste tusen. ",
+                    "trygdetid. Beløpet blir fordelt på 12 utbetalingar i året. ",
                 English to "".expr() + "Allowance per year before reduction of income are calculated " +
                     "based on 2.25 × national insurance basic amount (G) × " +
                     trygdetid.beregnetTrygdetidAar.format() + "/40 years of contribution time. This amount " +
-                    "is distributed in 12 payments a year. The amount is rounded down to the nearest thousand.",
+                    "is distributed in 12 payments a year. ",
             )
         }
     }.orShowIf(trygdetid.beregningsMetodeAnvendt.equalTo(BeregningsMetode.PRORATA)) {
