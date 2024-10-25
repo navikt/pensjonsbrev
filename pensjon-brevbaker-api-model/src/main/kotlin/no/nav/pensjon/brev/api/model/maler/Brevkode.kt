@@ -27,6 +27,7 @@ object Brevkode {
     enum class Redigerbar {
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
         PE_VARSEL_OM_MULIG_AVSLAG,
+        UT_AVSLAG_UFOERETRYGD,
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
         ;
     }
