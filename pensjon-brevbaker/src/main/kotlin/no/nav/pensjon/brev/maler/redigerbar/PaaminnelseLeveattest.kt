@@ -17,9 +17,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-//Selectors used in this letter(Copy into LegacySelectors as needed):
-//fun Expression<PE>.leveattesthistorikkliste_leveattesthistorikk_utlopsdatopurring_dagensdato(): Expression<LocalDate> =
-//    leveattesthistorikkliste_safe.leveattesthistorikk_safe.utlopsdatopurring_safe.dagensdato_safe.ifNull(TODO)
 @TemplateModelHelpers
 object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
 
@@ -39,34 +36,42 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
     ) {
         title {
             text(
-                Bokmal to "Påminnelse - leveattest"
+                //[PE_IY_03_178_overskrift]
+                Bokmal to "PÅMINNELSE - LEVEATTEST"
             )
         }
         outline {
-            //[PE_IY_03_178_overskrift]
 
-            paragraph {
-                text(
-                    Bokmal to "PÅMINNELSE  -  LEVEATTEST",
-                )
-            }
             //[PE_IY_05_411_tekst1]
+            paragraph {
+                list {
+                    item {
+                        Bokmal to "REMINDER  -  LIFE CERTIFICAT"
+                    }
+                    item {
+                        Bokmal to "MAHNBRIEF - LEBENSBESCHEINIGUNG (DEUTSCH siehe die Rückseite)"
+                    }
+                    item {
+                        Bokmal to "RAPPEL - CERTIFICAT DE VIE (FRANÇAIS - voir au verso)"
+                    }
+                    item {
+                        Bokmal to "RECORDATORIO - CERTIFICADO DE FE DE VIDA (ESPAÑOL - ver al dorso)"
+                    }
+                }
+            }
 
+            //[PE_IY_03_178_tekst]
+
+            title2 {
+                text(Bokmal to "NORSK:")
+            }
             paragraph {
                 text(
-                    Bokmal to "* REMINDER  -  LIFE CERTIFICATE* MAHNBRIEF - LEBENSBESCHEINIGUNG (DEUTSCH siehe die Rückseite)* RAPPEL - CERTIFICAT DE VIE (FRANÇAIS - voir au verso)* RECORDATORIO - CERTIFICADO DE FE DE VIDA (ESPAÑOL - ver al dorso) ",
+                    Bokmal to "Vi viser til tidligere tilsendt leveattest. Fristen for innsendelse av denne er utløpt, og vi sender nå en påminnelse til de vi ikke har mottatt attest fra.",
                 )
             }
             //[PE_IY_03_178_tekst]
 
-            paragraph {
-                text(
-                    Bokmal to "NORSK:Vi viser til tidligere tilsendt leveattest. Fristen for innsendelse av denne er utløpt, og vi sender nå en påminnelse til de vi ikke har mottatt attest fra.",
-                )
-            }
-            //[PE_IY_03_178_tekst]
-
-            // TODO: Attesten må sendes innen.. er i utheva skrift (gjeld alle språk)
             paragraph {
                 textExpr(
                     Bokmal to "Vedlagt følger en ny leveattest. Vennligst les veiledningen på baksiden før du fyller ut attesten. Attesten må sendes innen ".expr() + pesysData.fristdato
@@ -89,9 +94,12 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
             }
             //[PE_IY_03_178_tekst]
 
+            title2 {
+                text(Bokmal to "ENGLISH: ")
+            }
             paragraph {
                 text(
-                    Bokmal to "ENGLISH: We have previously sent you a life certificate. The return deadline has expired, and we are now sending a reminder to those we have not received the certificate from.",
+                    Bokmal to "We have previously sent you a life certificate. The return deadline has expired, and we are now sending a reminder to those we have not received the certificate from.",
                 )
             }
             //[PE_IY_03_178_tekst]
@@ -118,9 +126,12 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
             }
             //[PE_IY_03_178_tekst]
 
+            title2 {
+                text(Bokmal to "DEUTSCH:")
+            }
             paragraph {
                 text(
-                    Bokmal to "DEUTSCH:Wir verweisen auf die Lebensbescheinigung, die Sie früher erhalten haben. Die Einsendefrist dieser Bescheinigung ist abgelaufen. Wir schicken jetzt ein Mahnschreiben an alle Personen, von denen wir keine Bescheinigung erhalten haben.",
+                    Bokmal to "Wir verweisen auf die Lebensbescheinigung, die Sie früher erhalten haben. Die Einsendefrist dieser Bescheinigung ist abgelaufen. Wir schicken jetzt ein Mahnschreiben an alle Personen, von denen wir keine Bescheinigung erhalten haben.",
                 )
             }
             //[PE_IY_03_178_tekst]
@@ -147,9 +158,14 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
             }
             //[PE_IY_03_178_tekst]
 
+            title2 {
+                text(
+                    Bokmal to "FRANÇAIS:"
+                )
+            }
             paragraph {
                 text(
-                    Bokmal to "FRANÇAIS:Veuillez noter que la date de limite de renvoi du certificat de vie a expiré. Nous envoyons maintenant un rappel à ceux dont nous n'avons pas reçu de certificat.",
+                    Bokmal to "Veuillez noter que la date de limite de renvoi du certificat de vie a expiré. Nous envoyons maintenant un rappel à ceux dont nous n'avons pas reçu de certificat.",
                 )
             }
             //[PE_IY_03_178_tekst]
@@ -183,9 +199,12 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
             }
             //[PE_IY_03_178_tekst]
 
+            title2 {
+                text(Bokmal to "ESPAÑOL:")
+            }
             paragraph {
                 text(
-                    Bokmal to "ESPAÑOL:Hacemos referencia  al certificado de fe de vida que se le ha enviado previamente. El plazo para entregar el certificado ha vencido, y así mandamos un recordatorio a los que no han remitido el certificado.",
+                    Bokmal to "Hacemos referencia  al certificado de fe de vida que se le ha enviado previamente. El plazo para entregar el certificado ha vencido, y así mandamos un recordatorio a los que no han remitido el certificado.",
                 )
             }
             //[PE_IY_03_178_tekst]
