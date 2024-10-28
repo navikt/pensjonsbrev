@@ -1,3 +1,5 @@
+import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils";
+
 describe("Kladd", () => {
   beforeEach(() => {
     cy.setupSakStubs();
@@ -80,5 +82,73 @@ describe("Kladd", () => {
     cy.wait("@deleteKladd");
     cy.wait("@getAlleBrevForSak");
     cy.contains("Informasjon om saksbehandlingstid").should("not.be.visible");
+  });
+
+  it("bruker eksisterende kladd", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+      req.reply([
+        nyBrevInfo({ id: 1, opprettet: "2024-09-17T08:36:09.785Z" }),
+        nyBrevInfo({ id: 2, opprettet: "2024-10-17T08:36:09.785Z" }),
+      ]);
+    }).as("getAlleBrevForSak");
+    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
+      fixture: "modelSpecification.json",
+    });
+
+    cy.wait("@getAlleBrevForSak");
+    cy.contains("Informasjonsbrev").click();
+    cy.get("p:contains('Informasjon om saksbehandlingstid')").eq(3).click();
+    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=spraak]").should("have.value", "NB");
+
+    cy.contains("Mottatt soeknad").click().type("09.10.2024");
+    cy.contains("Ytelse").click().type("Alderspensjon");
+    cy.contains("Svartid uker").click().type("4");
+    cy.contains("Åpne brev").click("left");
+
+    cy.contains("Vil du bruke eksisterende kladd?").should("be.visible");
+    cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
+    cy.contains("Lag nytt brev").should("be.visible");
+    cy.contains("Ja, bruk eksisterende kladd").click();
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/2");
+  });
+
+  it("lager nytt brev selv om saken har eksisterende kladd", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+      req.reply([nyBrevInfo({ id: 1, opprettet: "2024-09-17T08:36:09.785Z" })]);
+    }).as("getAlleBrevForSak");
+    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
+      fixture: "modelSpecification.json",
+    });
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+      expect(req.body).deep.equal({
+        brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+        spraak: "NB",
+        avsenderEnhetsId: "4405",
+        mottaker: null,
+        saksbehandlerValg: {
+          mottattSoeknad: "2024-10-09",
+          ytelse: "Alderspensjon",
+          svartidUker: "4",
+        },
+      });
+      req.reply(nyBrevResponse({ info: nyBrevInfo({ id: 2 }) }));
+    }).as("createBrev");
+
+    cy.wait("@getAlleBrevForSak");
+    cy.contains("Informasjonsbrev").click();
+    cy.get("p:contains('Informasjon om saksbehandlingstid')").eq(2).click();
+    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=spraak]").should("have.value", "NB");
+
+    cy.contains("Mottatt soeknad").click().type("09.10.2024");
+    cy.contains("Ytelse").click().type("Alderspensjon");
+    cy.contains("Svartid uker").click().type("4");
+    cy.contains("Åpne brev").click("left");
+
+    cy.contains("Vil du bruke eksisterende kladd?").should("be.visible");
+    cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
+    cy.contains("Lag nytt brev").click();
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/2");
   });
 });
