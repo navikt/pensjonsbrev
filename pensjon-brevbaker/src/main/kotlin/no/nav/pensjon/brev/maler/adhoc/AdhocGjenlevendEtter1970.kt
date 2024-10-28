@@ -101,11 +101,11 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan få veiledning og støtte fra NAV. Vi kan fortelle deg om ulike muligheter i arbeidsmarkedet "
+                    Bokmal to "Du kan få veiledning og støtte fra Nav. Vi kan fortelle deg om ulike muligheter i arbeidsmarkedet "
                             + "eller snakke med deg om nødvendig utdanning eller andre tiltak som kan hjelpe deg med å komme i arbeid.",
-                    Nynorsk to "Du kan få rettleiing frå NAV. Vi kan fortelje deg om ulike mogelegheiter i arbeidsmarknaden "
+                    Nynorsk to "Du kan få rettleiing frå Nav. Vi kan fortelje deg om ulike mogelegheiter i arbeidsmarknaden "
                             + "eller snakke med deg om nødvendig utdanning eller andre tiltak som kan hjelpe deg med å kome i arbeid.",
-                    English to "You can receive guidance from NAV. We can inform you about various opportunities in the job market "
+                    English to "You can receive guidance from Nav. We can inform you about various opportunities in the job market "
                             + "or discuss necessary education or other measures that can help you find employment."
                 )
             }

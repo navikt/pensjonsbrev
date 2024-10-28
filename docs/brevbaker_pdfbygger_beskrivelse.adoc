@@ -192,7 +192,7 @@ Vi valgte Ktor ettersom vi ønsket å bruke Kotlin og ikke har behov for tyngre 
 
 === Asciidoc
 Asciidoc er brukt mye i Nav og gir oss muligheten til å legge dokumentasjon nær koden. Dette gjør det lettere å legge ut endringer sammen med dokumentasjon.
-Asciidoc kan også kompileres til HTML på github pages som også gjøres mange andre steder i NAV.
+Asciidoc kan også kompileres til HTML på github pages som også gjøres mange andre steder i Nav.
 
 === LaTeX
 Vi  har valgt LaTeX for å produsere brev/pdf-dokumenter.
@@ -202,5 +202,5 @@ Det er viktig å understreke at vi ikke har sterke knytninger til valget av LaTe
 Dette gjør det mulig å bytte ut LaTeX med andre representasjoner av det tekstlige innholdet i brevet med f.eks HTML.
 
 === Kotlin
-Kotlin er ett moderne kodespråk basert på Java som kjører i JVM. Vi bruker Kotlin ettersom det er god støtte og erfaring med Kotlin i NAV. Vi på teamet har også god erfaring med Kotlin.
+Kotlin er ett moderne kodespråk basert på Java som kjører i JVM. Vi bruker Kotlin ettersom det er god støtte og erfaring med Kotlin i Nav. Vi på teamet har også god erfaring med Kotlin.
 
