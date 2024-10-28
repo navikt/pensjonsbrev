@@ -54,8 +54,8 @@ data class TBU3309_Generated(
 				}
 				item {
 					text(
-						Bokmal to "Bidragsgjeld hos NAV",
-						Nynorsk to "bidragsgjeld hos NAV",
+						Bokmal to "Bidragsgjeld hos Nav",
+						Nynorsk to "bidragsgjeld hos Nav",
 					)
 				}
 				item {

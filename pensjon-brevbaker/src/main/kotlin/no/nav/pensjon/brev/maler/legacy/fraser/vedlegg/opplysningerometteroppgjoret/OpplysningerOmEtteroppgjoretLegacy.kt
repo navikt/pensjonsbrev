@@ -77,8 +77,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 )
             }.orShowIf(inntektType.equalTo("rap_and")) {
                 text(
-                    Bokmal to "Pensjoner fra andre enn NAV",
-                    Nynorsk to "Pensjon frå andre enn NAV",
+                    Bokmal to "Pensjoner fra andre enn Nav",
+                    Nynorsk to "Pensjon frå andre enn Nav",
                 )
             }.orShowIf(inntektType.equalTo("forpenutl")) {
                 text(
@@ -139,8 +139,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 )
             }.orShowIf(inntektsgrunnlag.inntekttype_safe.equalTo("rap_and")) {
                 text(
-                    Bokmal to "Pensjoner fra andre enn NAV",
-                    Nynorsk to "Pensjon frå andre enn NAV",
+                    Bokmal to "Pensjoner fra andre enn Nav",
+                    Nynorsk to "Pensjon frå andre enn Nav",
                 )
             }.orShowIf(inntektsgrunnlag.inntekttype_safe.equalTo("forpenutl")) {
                 text(
@@ -179,8 +179,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 )
             }.orShowIf(inntektsgrunnlag.grunnikkereduksjon_safe.equalTo("etterbetaling")) {
                 text(
-                    Bokmal to "NAV",
-                    Nynorsk to "NAV",
+                    Bokmal to "Nav",
+                    Nynorsk to "Nav",
                 )
             }.orShow {
                 text(
@@ -227,8 +227,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
             }
             showIf(grunnIkkeReduksjonKode.equalTo("etterbetaling")) {
                 text(
-                    Bokmal to "Etterbetaling fra NAV",
-                    Nynorsk to "Etterbetaling frå NAV",
+                    Bokmal to "Etterbetaling fra Nav",
+                    Nynorsk to "Etterbetaling frå Nav",
                 )
             }
         }
@@ -255,8 +255,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 )
             }.orShowIf(inntektstypeKode.equalTo("rap_and")) {
                 text(
-                    Bokmal to "Pensjoner fra andre enn NAV",
-                    Nynorsk to "Pensjon frå andre enn NAV",
+                    Bokmal to "Pensjoner fra andre enn Nav",
+                    Nynorsk to "Pensjon frå andre enn Nav",
                 )
             }.orShowIf(inntektstypeKode.equalTo("forpenutl")) {
                 text(
@@ -327,8 +327,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 )
             }.orShowIf(inntektTypeKode.equalTo("rap_and")) {
                 text(
-                    Bokmal to "Pensjoner fra andre enn NAV",
-                    Nynorsk to "Pensjon frå andre enn NAV",
+                    Bokmal to "Pensjoner fra andre enn Nav",
+                    Nynorsk to "Pensjon frå andre enn Nav",
                 )
             }.orShowIf(inntektTypeKode.equalTo("forpenutl")) {
                 text(
@@ -1177,8 +1177,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 }
                                 cell {
                                     text(
-                                        Bokmal to "Beregnet av NAV",
-                                        Nynorsk to "Berekna av NAV",
+                                        Bokmal to "Beregnet av Nav",
+                                        Nynorsk to "Berekna av Nav",
                                     )
                                 }
                                 cell {

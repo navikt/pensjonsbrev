@@ -87,9 +87,9 @@ object SlikBetalerDuTilbake :
         }
         title2 {
             text(
-                Bokmal to "3. Du kan få trekk i støtte fra NAV",
-                Nynorsk to "3. Du kan få trekk i støtte frå NAV",
-                English to "3. You can have deductions made from benefits from NAV"
+                Bokmal to "3. Du kan få trekk i støtte fra Nav",
+                Nynorsk to "3. Du kan få trekk i støtte frå Nav",
+                English to "3. You can have deductions made from benefits from Nav"
             )
         }
         paragraph {
