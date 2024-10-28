@@ -520,9 +520,9 @@ data class OmBeregningAvBarnetillegg(
             }
             paragraph {
                 text(
-                    Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra NAV, regnes dette også med som personinntekt.",
-                    Nynorsk to "Mottar den andre forelderen uføretrygd eller alderspensjon frå NAV, blir dette også rekna som personinntekt.",
-                    English to "If the other parent receives disability benefit or retirement pension from NAV, this will also count as personal income."
+                    Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra Nav, regnes dette også med som personinntekt.",
+                    Nynorsk to "Mottar den andre forelderen uføretrygd eller alderspensjon frå Nav, blir dette også rekna som personinntekt.",
+                    English to "If the other parent receives disability benefit or retirement pension from Nav, this will also count as personal income."
                 )
             }
 

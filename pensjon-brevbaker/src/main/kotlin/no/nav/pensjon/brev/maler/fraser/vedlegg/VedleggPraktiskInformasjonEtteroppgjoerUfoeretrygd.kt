@@ -94,9 +94,9 @@ object SlikBetalerDuTilbake :
         }
         paragraph {
             text(
-                Bokmal to "Betaler du ikke hele beløpet, og du fortsatt får uføretrygd eller annen pengestøtte fra NAV, kan Skatteetaten automatisk trekke fra denne støtten. Normalt trekker vi 10 prosent av innvilget uføretrygd frem til hele beløpet er betalt. Vil du betale ned raskere, kan du be oss om å trekke mer enn 10 prosent.",
-                Nynorsk to "Viss du ikkje betaler heile beløpet, og du framleis får uføretrygd eller anna pengestøtte frå NAV, kan Skatteetaten automatisk trekkje frå denne støtta. Vi trekkjer normalt sett 10 prosent av innvilga uføretrygd fram til heile beløpet er betalt. Dersom du ønskjer å betale ned raskare, kan du be oss om å trekkje meir enn 10 prosent.",
-                English to "If you do not pay the full amount and you are still receiving disability benefits or other financial support from NAV, the Norwegian Tax Administration can automatically deduct from this support. Normally we deduct 10 percent of granted disability benefit until the entire amount is paid. If you wish to pay off faster, you can ask us to deduct more than 10 percent."
+                Bokmal to "Betaler du ikke hele beløpet, og du fortsatt får uføretrygd eller annen pengestøtte fra Nav, kan Skatteetaten automatisk trekke fra denne støtten. Normalt trekker vi 10 prosent av innvilget uføretrygd frem til hele beløpet er betalt. Vil du betale ned raskere, kan du be oss om å trekke mer enn 10 prosent.",
+                Nynorsk to "Viss du ikkje betaler heile beløpet, og du framleis får uføretrygd eller anna pengestøtte frå Nav, kan Skatteetaten automatisk trekkje frå denne støtta. Vi trekkjer normalt sett 10 prosent av innvilga uføretrygd fram til heile beløpet er betalt. Dersom du ønskjer å betale ned raskare, kan du be oss om å trekkje meir enn 10 prosent.",
+                English to "If you do not pay the full amount and you are still receiving disability benefits or other financial support from Nav, the Norwegian Tax Administration can automatically deduct from this support. Normally we deduct 10 percent of granted disability benefit until the entire amount is paid. If you wish to pay off faster, you can ask us to deduct more than 10 percent."
             )
         }
         paragraph {
