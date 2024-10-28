@@ -98,7 +98,7 @@ describe("Kladd", () => {
     cy.wait("@getAlleBrevForSak");
     cy.contains("Informasjonsbrev").click();
     cy.get("p:contains('Informasjon om saksbehandlingstid')").eq(3).click();
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
     cy.contains("Mottatt soeknad").click().type("09.10.2024");
@@ -138,7 +138,7 @@ describe("Kladd", () => {
     cy.wait("@getAlleBrevForSak");
     cy.contains("Informasjonsbrev").click();
     cy.get("p:contains('Informasjon om saksbehandlingstid')").eq(2).click();
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
     cy.contains("Mottatt soeknad").click().type("09.10.2024");

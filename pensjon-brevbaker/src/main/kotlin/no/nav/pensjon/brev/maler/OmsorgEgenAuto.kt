@@ -64,7 +64,7 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
                     English to
                             "We need you to confirm that you have provided nursing and care work in ".expr()
                             + aarEgenerklaringOmsorgspoeng
-                            + ". Therefore, it is required that you complete the enclosed form and return it to NAV within four weeks.",
+                            + ". Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks.",
                 )
             }
             paragraph {

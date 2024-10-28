@@ -92,7 +92,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-button").contains("Varsel - tilbakekreving").click();
 
     cy.get("select[name=spraak]").select("Nynorsk");
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
 
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
@@ -122,7 +122,7 @@ describe("Brevvelger spec", () => {
 
     cy.getDataCy("is-sensitive").should("not.exist");
 
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
     cy.getDataCy("order-letter").click("left");
     cy.get("@window-open").should(
@@ -156,7 +156,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("språk-velger-select").should("not.exist");
 
     cy.getDataCy("brev-title-textfield").click().type("GGMU");
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
     cy.getDataCy("order-letter").click("left");
 
@@ -195,7 +195,7 @@ describe("Brevvelger spec", () => {
 
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
     cy.getDataCy("order-letter").click("left");
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
 
     cy.getDataCy("is-sensitive").find(".navds-error-message");
     cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });

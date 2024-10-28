@@ -479,7 +479,7 @@ describe("autolagring", () => {
           saksbehandlerRolleTekst: "Caseworker",
           saksbehandlerNavn: "Saksbehandler navn",
           attesterendeSaksbehandlerNavn: "",
-          navAvsenderEnhet: "NAV Arbeid og ytelser Sørlandet",
+          navAvsenderEnhet: "Nav Arbeid og ytelser Sørlandet",
         },
       }),
     });

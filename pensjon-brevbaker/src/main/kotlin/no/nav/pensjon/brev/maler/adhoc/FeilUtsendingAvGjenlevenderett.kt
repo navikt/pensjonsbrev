@@ -19,7 +19,7 @@ object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyBrevdata> {
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "NAV har sendt deg feil brev",
+            displayTitle = "Nav har sendt deg feil brev",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
@@ -35,9 +35,9 @@ object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyBrevdata> {
         outline {
             paragraph {
                 text(
-                    Bokmal to "I januar 2024 sendte NAV deg et brev om nye regler for gjenlevenderett i alderspensjonen.",
-                    Nynorsk to "I januar 2024 sendte NAV deg eit brev om nye reglar for attlevenderett i alderspensjonen.",
-                    English to "In January 2024, NAV sent a letter to you informing about the new rules for survivor's rights in the retirement pension.",
+                    Bokmal to "I januar 2024 sendte Nav deg et brev om nye regler for gjenlevenderett i alderspensjonen.",
+                    Nynorsk to "I januar 2024 sendte Nav deg eit brev om nye reglar for attlevenderett i alderspensjonen.",
+                    English to "In January 2024, Nav sent a letter to you informing about the new rules for survivor's rights in the retirement pension.",
                 )
             }
             paragraph {

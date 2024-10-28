@@ -115,7 +115,7 @@ export const nyRedigertBrev = (args: {
       saksbehandlerRolleTekst: args.signatur?.saksbehandlerRolleTekst ?? "Caseworker",
       saksbehandlerNavn: args.signatur?.saksbehandlerNavn ?? "Sak S. Behandler",
       attesterendeSaksbehandlerNavn: args.signatur?.attesterendeSaksbehandlerNavn ?? "Attest S. Behandler",
-      navAvsenderEnhet: args.signatur?.navAvsenderEnhet ?? "NAV Arbeid og ytelser Sørlandet",
+      navAvsenderEnhet: args.signatur?.navAvsenderEnhet ?? "Nav Arbeid og ytelser Sørlandet",
     },
     deletedBlocks: [],
   };

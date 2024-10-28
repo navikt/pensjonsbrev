@@ -10,7 +10,7 @@
     "lint": "eslint --ext .js,.ts, .",
     "lint:fix": "eslint --fix --ext .js,.ts, ."
   },
-  "author": "NAV",
+  "author": "Nav",
   "license": "MIT",
   "dependencies": {
     "@navikt/backend-for-frontend-utils": "0.7.3",

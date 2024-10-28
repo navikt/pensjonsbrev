@@ -130,7 +130,7 @@ class LegacyBrevService(
                 sprakKode = spraak.toString(),
                 brevMottakerNavn = mottakerText?.takeIf { isEblankett },    // custom felt kun for sed/eblankett,
                 sakskontekst = Pen.BestillExstreamBrevRequest.Sakskontekst(
-                    journalenhet = enhetsId,                                // NAV org enhet nr som skriver brevet. Kommer med i signatur.
+                    journalenhet = enhetsId,                                // Nav org enhet nr som skriver brevet. Kommer med i signatur.
                     gjelder = gjelderPid,                                   // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
                     dokumentdato = LocalDateTime.now(),
                     dokumenttype = metadata.dokType.toString(),

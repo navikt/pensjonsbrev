@@ -520,9 +520,9 @@ data class OmBeregningAvBarnetillegg(
             }
             paragraph {
                 text(
-                    Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra NAV, regnes dette også med som personinntekt.",
-                    Nynorsk to "Mottar den andre forelderen uføretrygd eller alderspensjon frå NAV, blir dette også rekna som personinntekt.",
-                    English to "If the other parent receives disability benefit or retirement pension from NAV, this will also count as personal income."
+                    Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra Nav, regnes dette også med som personinntekt.",
+                    Nynorsk to "Mottar den andre forelderen uføretrygd eller alderspensjon frå Nav, blir dette også rekna som personinntekt.",
+                    English to "If the other parent receives disability benefit or retirement pension from Nav, this will also count as personal income."
                 )
             }
 
@@ -748,9 +748,9 @@ data class OmBeregningAvUfoeretrygd(
                 }
                 item {
                     text(
-                        Bokmal to "etterbetaling du har fått fra NAV",
-                        Nynorsk to "etterbetalingar du har fått frå NAV",
-                        English to "back payment you have received from NAV",
+                        Bokmal to "etterbetaling du har fått fra Nav",
+                        Nynorsk to "etterbetalingar du har fått frå Nav",
+                        English to "back payment you have received from Nav",
                     )
                 }
             }
@@ -766,9 +766,9 @@ data class OmBeregningAvUfoeretrygd(
                 list {
                     item {
                         text(
-                            Bokmal to "erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra NAV",
-                            Nynorsk to "erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå NAV",
-                            English to "compensation settlement payments for loss of income if the other parent receives disability benefit or retirement pension from NAV",
+                            Bokmal to "erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav",
+                            Nynorsk to "erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav",
+                            English to "compensation settlement payments for loss of income if the other parent receives disability benefit or retirement pension from Nav",
                         )
                     }
                 }
@@ -932,15 +932,15 @@ data class ErOpplysningeneOmInntektFeil(
         }
         paragraph {
             text(
-                Bokmal to "Hvis inntekten din fra pensjonsytelser utenom NAV blir endret, må du gi beskjed til oss når endringen er gjort. " +
+                Bokmal to "Hvis inntekten din fra pensjonsytelser utenom Nav blir endret, må du gi beskjed til oss når endringen er gjort. " +
                         "Vi gjør da et nytt etteroppgjør. Du kan gi beskjed ved å skrive til oss på ${Constants.SKRIV_TIL_OSS_URL} " +
                         "eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
 
-                Nynorsk to "Dersom inntekta di frå pensjonsytingar utanom NAV blir endra, må du gi beskjed til oss når endringa er gjort. " +
+                Nynorsk to "Dersom inntekta di frå pensjonsytingar utanom Nav blir endra, må du gi beskjed til oss når endringa er gjort. " +
                         "Vi utfører då eit nytt etteroppgjer. Du kan gi beskjed ved å skrive til oss på ${Constants.SKRIV_TIL_OSS_URL} " +
                         "eller ringje til oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
 
-                English to "If your income pensions outside of NAV changes, you must notify us once the changes have been made. " +
+                English to "If your income pensions outside of Nav changes, you must notify us once the changes have been made. " +
                         "We will then conduct a new settlement. You can notify us by writing to us at ${Constants.SKRIV_TIL_OSS_URL} " +
                         "or by calling us at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
             )
@@ -1040,9 +1040,9 @@ data class FratrekkTabell(
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.ETTERBETALING_FRA_NAV -> when (second) {
-                    Bokmal -> "Etterbetaling fra NAV"
-                    Nynorsk -> "Etterbetaling frå NAV"
-                    English -> "Back payment from NAV"
+                    Bokmal -> "Etterbetaling fra Nav"
+                    Nynorsk -> "Etterbetaling frå Nav"
+                    English -> "Back payment from Nav"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.INNTEKT_INNTIL_1G -> when (second) {
@@ -1081,9 +1081,9 @@ data class FratrekkTabell(
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.InntektType.ANDRE_PENSJONER_OG_YTELSER -> when (second) {
-                    Bokmal -> "Pensjon fra andre enn NAV"
-                    Nynorsk -> "Pensjonar frå andre enn NAV"
-                    English -> "Pensions from other than NAV"
+                    Bokmal -> "Pensjon fra andre enn Nav"
+                    Nynorsk -> "Pensjonar frå andre enn Nav"
+                    English -> "Pensions from other than Nav"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.InntektType.FORVENTET_PENSJON_FRA_UTLANDET -> when (second) {
@@ -1188,7 +1188,7 @@ data class InntektTabell(
                     English -> "Provided by you"
                 }
 
-                OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.NAV -> "NAV"
+                OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.NAV -> "Nav"
             }
 
         override fun stableHashCode(): Int = "LocalizedKilde".hashCode()
@@ -1226,9 +1226,9 @@ data class InntektTabell(
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.InntektType.ANDRE_PENSJONER_OG_YTELSER -> when (second) {
-                    Bokmal -> "Pensjon fra andre enn NAV"
-                    Nynorsk -> "Pensjonar frå andre enn NAV"
-                    English -> "Pensions from other than NAV"
+                    Bokmal -> "Pensjon fra andre enn Nav"
+                    Nynorsk -> "Pensjonar frå andre enn Nav"
+                    English -> "Pensions from other than Nav"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.InntektType.FORVENTET_PENSJON_FRA_UTLANDET -> when (second) {

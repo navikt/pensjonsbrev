@@ -33,7 +33,7 @@ object AdhocUfoeretrygdKombiDagpengerInntektsavkorting : AutobrevTemplate<EmptyB
         outline {
             paragraph {
                 text(
-                    Bokmal to "NAV etterbetaler dagpenger til personer som fikk feil beregningsgrunnlag for dagpenger i perioden 2019 til og med desember 2021. "
+                    Bokmal to "Nav etterbetaler dagpenger til personer som fikk feil beregningsgrunnlag for dagpenger i perioden 2019 til og med desember 2021. "
                             + "Du har mottatt eget brev om dette, og vi viser til det brevet for nærmere informasjon om etterbetalingen av dagpenger.",
                 )
             }
