@@ -46,8 +46,8 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
     ) {
         title {
             text(
-                Bokmal to "NAV har regnet om uføretrygden din",
-                Nynorsk to "NAV har endra uføretrygda di",
+                Bokmal to "Nav har regnet om uføretrygden din",
+                Nynorsk to "Nav har endra uføretrygda di",
             )
         }
 

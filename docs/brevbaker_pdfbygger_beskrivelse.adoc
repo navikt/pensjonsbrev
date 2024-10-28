@@ -191,7 +191,7 @@ Ktor er ett moderne og lettvektet rammeverk for å lage http tjenester som funge
 Vi valgte Ktor ettersom vi ønsket å bruke Kotlin og ikke har behov for tyngre rammeverk som f.eks Spring.
 
 === Asciidoc
-Asciidoc er brukt mye i NAV og gir oss muligheten til å legge dokumentasjon nær koden. Dette gjør det lettere å legge ut endringer sammen med dokumentasjon.
+Asciidoc er brukt mye i Nav og gir oss muligheten til å legge dokumentasjon nær koden. Dette gjør det lettere å legge ut endringer sammen med dokumentasjon.
 Asciidoc kan også kompileres til HTML på github pages som også gjøres mange andre steder i NAV.
 
 === LaTeX

@@ -485,9 +485,9 @@ object VedleggPlikterinntektsprovingETAP : OutlinePhrase<LangBokmalNynorskEnglis
 object VedleggPlikterUT1 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
-            Bokmal to "inntekten din endrer seg. Du kan informere NAV om endret inntekt ved å bruke selvbetjeningsløsningen på $NAV_URL",
-            Nynorsk to "inntekta di endrar seg. Du kan informere NAV om endra inntekt ved å bruke sjølvbeteningsløysninga på $NAV_URL",
-            English to "your income changes. You can notify NAV of changes in your income by using the online service at $NAV_URL"
+            Bokmal to "inntekten din endrer seg. Du kan informere Nav om endret inntekt ved å bruke selvbetjeningsløsningen på $NAV_URL",
+            Nynorsk to "inntekta di endrar seg. Du kan informere Nav om endra inntekt ved å bruke sjølvbeteningsløysninga på $NAV_URL",
+            English to "your income changes. You can notify Nav of changes in your income by using the online service at $NAV_URL"
         )
 }
 
@@ -668,9 +668,9 @@ object VedleggPlikterAFP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Du må melde fra til NAV om endringer som har betydning for størrelsen på pensjonen din. Du må alltid melde fra dersom",
-                Nynorsk to "Du må melde frå til NAV om endringar som har noko å seie for storleiken på pensjonen din. Du må alltid melde frå dersom",
-                English to "You must notify NAV of changes that may be important for your pension. You must always notify us if"
+                Bokmal to "Du må melde fra til Nav om endringer som har betydning for størrelsen på pensjonen din. Du må alltid melde fra dersom",
+                Nynorsk to "Du må melde frå til Nav om endringar som har noko å seie for storleiken på pensjonen din. Du må alltid melde frå dersom",
+                English to "You must notify Nav of changes that may be important for your pension. You must always notify us if"
             )
         }
     }
@@ -728,9 +728,9 @@ object InfoAlderspensjonGiBeskjed : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Du kan logge deg inn på Din Pensjon og velge «Kontakt NAV om pensjon», eller på $BESKJED_TIL_NAV_URL og velge «Send beskjed til NAV». Du kan også sende beskjed til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
-                Nynorsk to "Du kan logge deg inn på Din Pensjon og velje «Kontakt NAV om pensjon», eller på $BESKJED_TIL_NAV_URL og velje «Send beskjed til NAV». Du kan også gi melding til oss i posten. Adressa finner du på $ETTERSENDELSE_URL.",
-                English to "You can contact us by logging in to your personal Din Pensjon pension page and selecting “Kontakt NAV”, or by logging in to $BESKJED_TIL_NAV_URL and selecting “Send beskjed til NAV”. You can also contact us by post. You can find the address at $ETTERSENDELSE_URL."
+                Bokmal to "Du kan logge deg inn på Din Pensjon og velge «Kontakt Nav om pensjon», eller på $BESKJED_TIL_NAV_URL og velge «Send beskjed til Nav». Du kan også sende beskjed til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
+                Nynorsk to "Du kan logge deg inn på Din Pensjon og velje «Kontakt Nav om pensjon», eller på $BESKJED_TIL_NAV_URL og velje «Send beskjed til Nav». Du kan også gi melding til oss i posten. Adressa finner du på $ETTERSENDELSE_URL.",
+                English to "You can contact us by logging in to your personal Din Pensjon pension page and selecting “Kontakt Nav”, or by logging in to $BESKJED_TIL_NAV_URL and selecting “Send beskjed til Nav”. You can also contact us by post. You can find the address at $ETTERSENDELSE_URL."
             )
         }
     }
@@ -741,9 +741,9 @@ object VedleggVeiledning : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
-                Nynorsk to "Rettleiing frå NAV - forvaltningslova § 11",
-                English to "Guidance from NAV - Section 11 of the Public Administration Act"
+                Bokmal to "Veiledning fra Nav - forvaltningsloven § 11",
+                Nynorsk to "Rettleiing frå Nav - forvaltningslova § 11",
+                English to "Guidance from Nav - Section 11 of the Public Administration Act"
             )
         }
         paragraph {
@@ -770,9 +770,9 @@ object VedleggInnsynSakPensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             textExpr(
-                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på $NAV_URL for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på $NAV_URL for å sjå all kommunikasjon som har vore mellom deg og NAV i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to $NAV_URL to review the communication between you and NAV in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på $NAV_URL for å se all kommunikasjon som har vært mellom deg og Nav i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på $NAV_URL for å sjå all kommunikasjon som har vore mellom deg og Nav i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to $NAV_URL to review the communication between you and Nav in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
             )
         }
     }
@@ -838,9 +838,9 @@ object VedleggKlagePensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til NAV Klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
-                Nynorsk to "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til NAV Klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten.",
-                English to "If your complaint is declined, it will be forwarded to NAV Appeals for a new review and decision. If this review is also unsuccessful, you may appeal to The National Insurance Court."
+                Bokmal to "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til Nav Klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
+                Nynorsk to "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til Nva Klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten.",
+                English to "If your complaint is declined, it will be forwarded to Nav Appeals for a new review and decision. If this review is also unsuccessful, you may appeal to The National Insurance Court."
             )
         }
         paragraph {
@@ -927,7 +927,7 @@ object VedleggKlagePesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt.",
                 Nynorsk to "Du kan klage på vedtaket innan seks veker frå du fekk det. Kontoret som har gjort vedtaket, vurderer då saka di på nytt.",
-                English to "You may appeal the decision within six weeks of receiving it. The NAV office that made the decision will reconsider your case."
+                English to "You may appeal the decision within six weeks of receiving it. The Nav office that made the decision will reconsider your case."
             )
         }
         paragraph {
@@ -996,16 +996,16 @@ object VedleggKlagePesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Bruk gjerne skjemaet du finner på $KLAGE_URL. NAV kan hjelpe deg med å skrive klagen.",
-                Nynorsk to "Bruk gjerne skjemaet som du finn på $KLAGE_URL. NAV kan hjelpe deg med å skrive klaga.",
-                English to "You can use the form found on $KLAGE_URL. NAV can assist you in writing the appeal."
+                Bokmal to "Bruk gjerne skjemaet du finner på $KLAGE_URL. Nav kan hjelpe deg med å skrive klagen.",
+                Nynorsk to "Bruk gjerne skjemaet som du finn på $KLAGE_URL. Nav kan hjelpe deg med å skrive klaga.",
+                English to "You can use the form found on $KLAGE_URL. Nav can assist you in writing the appeal."
             )
         }
         paragraph {
             text(
-                Bokmal to "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til NAV Klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
-                Nynorsk to "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til NAV Klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten.",
-                English to "If your appeal is not successful, it will be sent to NAV Klageinstans for a new evaluation and final decision. If then you are not successful with your appeal, you can appeal the case in The National Insurance Court."
+                Bokmal to "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til Nav Klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
+                Nynorsk to "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til Nav Klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten.",
+                English to "If your appeal is not successful, it will be sent to Nav Klageinstans for a new evaluation and final decision. If then you are not successful with your appeal, you can appeal the case in The National Insurance Court."
             )
         }
         paragraph {

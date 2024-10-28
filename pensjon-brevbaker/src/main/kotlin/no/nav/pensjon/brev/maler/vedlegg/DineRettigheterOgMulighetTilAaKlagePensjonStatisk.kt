@@ -36,9 +36,9 @@ val dineRettigheterOgMulighetTilAaKlagePensjonStatisk =
         }
         paragraph {
             text(
-                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på $NAV_URL for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON.",
-                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på $NAV_URL for å sjå all kommunikasjon som har vore mellom deg og NAV i saka di. Du kan også ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON.",
-                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to $NAV_URL to review the communication between you and NAV in connection with your case. You can also call us at tel.: +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON."
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på $NAV_URL for å se all kommunikasjon som har vært mellom deg og Nav i saken din. Du kan også ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON.",
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på $NAV_URL for å sjå all kommunikasjon som har vore mellom deg og Nav i saka di. Du kan også ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON.",
+                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to $NAV_URL to review the communication between you and Nav in connection with your case. You can also call us at tel.: +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON."
             )
         }
 
@@ -60,9 +60,9 @@ val dineRettigheterOgMulighetTilAaKlagePensjonStatisk =
         }
         paragraph {
             text(
-                Bokmal to "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til NAV Klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
-                Nynorsk to "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til NAV Klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten.",
-                English to "If your complaint is declined, it will be forwarded to NAV Appeals for a new review and decision. If this review is also unsuccessful, you may appeal to The National Insurance Court."
+                Bokmal to "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til Nav Klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
+                Nynorsk to "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til Nav Klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten.",
+                English to "If your complaint is declined, it will be forwarded to Nav Appeals for a new review and decision. If this review is also unsuccessful, you may appeal to The National Insurance Court."
             )
         }
         paragraph {

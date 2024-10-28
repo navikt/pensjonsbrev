@@ -89,7 +89,7 @@ describe("Endrer på mottaker", () => {
       "http://localhost:5173/saksnummer/123456/brevvelger?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22",
     );
 
-    cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
+    cy.getDataCy("avsenderenhet-select").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
     cy.getDataCy("språk-velger-select").should("have.value", "NB");
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
@@ -147,7 +147,7 @@ describe("Endrer på mottaker", () => {
       "http://localhost:5173/saksnummer/123456/brevvelger?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22",
     );
 
-    cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
+    cy.getDataCy("avsenderenhet-select").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
     cy.getDataCy("språk-velger-select").should("have.value", "NB");
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
@@ -205,7 +205,7 @@ describe("Endrer på mottaker", () => {
       "http://localhost:5173/saksnummer/123456/brevvelger?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22",
     );
 
-    cy.getDataCy("avsenderenhet-select").select("NAV Arbeid og ytelser Innlandet");
+    cy.getDataCy("avsenderenhet-select").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
     cy.getDataCy("språk-velger-select").should("have.value", "NB");
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });

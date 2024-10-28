@@ -59,7 +59,7 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=INFORMASJON_OM_SAKSBEHANDLINGSTID");
 
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
     cy.contains("Mottatt soeknad").click().type("09.10.2024");
@@ -90,7 +90,7 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=UT_ORIENTERING_OM_SAKSBEHANDLINGSTID");
 
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
     cy.contains("Mottatt soknad").click().type("09.10.2024");

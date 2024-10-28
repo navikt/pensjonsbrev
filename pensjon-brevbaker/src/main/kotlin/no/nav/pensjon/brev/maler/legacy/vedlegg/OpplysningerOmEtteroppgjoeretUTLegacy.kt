@@ -138,8 +138,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         paragraph {
             text(
-                Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra NAV regnes dette også med som personinntekt.",
-                Nynorsk to "Dersom den andre forelderen får uføretrygd eller alderspensjon frå NAV, blir også dette rekna med som personinntekt.",
+                Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra Nav regnes dette også med som personinntekt.",
+                Nynorsk to "Dersom den andre forelderen får uføretrygd eller alderspensjon frå Nav, blir også dette rekna med som personinntekt.",
             )
         }
     }
@@ -178,8 +178,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         paragraph {
             text(
-                Bokmal to "Uføretrygden blir justert ut fra pensjonsgivende inntekt. Pensjonsgivende inntekt er for eksempel arbeidsinntekt, næringsinntekt og utlandsinntekt. Ytelser fra NAV som erstatter arbeidsinntekt er også pensjonsgivende inntekt. Dette står i § 3-15 i folketrygdloven. ",
-                Nynorsk to "Uføretrygda blir justert ut frå pensjonsgivande inntekt. Pensjonsgivande inntekt er for eksempel arbeidsinntekt, næringsinntekt og utanlandsinntekt. Ytingar frå NAV som erstattar arbeidsinntekt, er også pensjonsgivande inntekt. Dette står i § 3-15 i folketrygdlova. ",
+                Bokmal to "Uføretrygden blir justert ut fra pensjonsgivende inntekt. Pensjonsgivende inntekt er for eksempel arbeidsinntekt, næringsinntekt og utlandsinntekt. Ytelser fra Nav som erstatter arbeidsinntekt er også pensjonsgivende inntekt. Dette står i § 3-15 i folketrygdloven. ",
+                Nynorsk to "Uføretrygda blir justert ut frå pensjonsgivande inntekt. Pensjonsgivande inntekt er for eksempel arbeidsinntekt, næringsinntekt og utanlandsinntekt. Ytingar frå Nav som erstattar arbeidsinntekt, er også pensjonsgivande inntekt. Dette står i § 3-15 i folketrygdlova. ",
             )
         }
     }

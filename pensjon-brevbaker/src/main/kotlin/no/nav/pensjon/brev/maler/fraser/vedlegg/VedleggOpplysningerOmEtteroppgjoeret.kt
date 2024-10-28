@@ -932,15 +932,15 @@ data class ErOpplysningeneOmInntektFeil(
         }
         paragraph {
             text(
-                Bokmal to "Hvis inntekten din fra pensjonsytelser utenom NAV blir endret, må du gi beskjed til oss når endringen er gjort. " +
+                Bokmal to "Hvis inntekten din fra pensjonsytelser utenom Nav blir endret, må du gi beskjed til oss når endringen er gjort. " +
                         "Vi gjør da et nytt etteroppgjør. Du kan gi beskjed ved å skrive til oss på ${Constants.SKRIV_TIL_OSS_URL} " +
                         "eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
 
-                Nynorsk to "Dersom inntekta di frå pensjonsytingar utanom NAV blir endra, må du gi beskjed til oss når endringa er gjort. " +
+                Nynorsk to "Dersom inntekta di frå pensjonsytingar utanom Nav blir endra, må du gi beskjed til oss når endringa er gjort. " +
                         "Vi utfører då eit nytt etteroppgjer. Du kan gi beskjed ved å skrive til oss på ${Constants.SKRIV_TIL_OSS_URL} " +
                         "eller ringje til oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
 
-                English to "If your income pensions outside of NAV changes, you must notify us once the changes have been made. " +
+                English to "If your income pensions outside of Nav changes, you must notify us once the changes have been made. " +
                         "We will then conduct a new settlement. You can notify us by writing to us at ${Constants.SKRIV_TIL_OSS_URL} " +
                         "or by calling us at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
             )
