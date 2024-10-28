@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsS
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntekt_trukket_fra_personinntekt
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntektsgrense_faktisk_minus_60000
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntektslandtruehvorbruktlikfalse_avdod
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntektslandtruehvorbruktliktrue_avdod
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_nettoakk_pluss_nettorestar
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_sisteopptjeningarlikuforetidspunkt
@@ -36,6 +37,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsS
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_virkningfomar
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_virkningstidpunktarminus1ar
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.pebrevkode_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
@@ -280,6 +284,10 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.medlemskapforutettertrygdeavtaler_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.uforetidspunkt_safe
 
+fun Expression<PE>.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg(): Expression<Boolean> = functions.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg
+fun Expression<PE>.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg(): Expression<Boolean> = functions.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg
+fun Expression<PE>.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste(): Expression<Boolean> = functions.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste
+fun Expression<PE>.ut_inntektslandtruehvorbruktlikfalse_avdod(): Expression<Boolean> = functions.pe_ut_inntektslandtruehvorbruktlikfalse_avdod
 fun Expression<PE>.avdod_fremtidig_trygdetid_under_40_aar(): Expression<Boolean> = functions.avdod_fremtidig_trygdetid_under_40_aar
 fun Expression<PE>.barnetilleggfelles_justeringsbelopperarutenminus(): Expression<Kroner> = vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
 fun Expression<PE>.barnetilleggserkull_justeringsbelopperarutenminus(): Expression<Kroner> = vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus()

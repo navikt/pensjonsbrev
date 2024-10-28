@@ -48,5 +48,9 @@ data class PE(
         val harOpptjeningUTMedFoerstegangstjenesteOgOmsorg: Boolean,
         val harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste: Boolean,
         val pe_ut_inntektslandtruehvorbruktliktrue_avdod: Boolean,
+        val avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg: Boolean,
+        val avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste: Boolean,
+        val avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg: Boolean,
+        val pe_ut_inntektslandtruehvorbruktlikfalse_avdod: Boolean,
     )
 }
