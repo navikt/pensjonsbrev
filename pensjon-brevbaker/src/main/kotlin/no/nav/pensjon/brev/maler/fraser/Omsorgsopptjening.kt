@@ -85,9 +85,9 @@ object Omsorgsopptjening {
             }
             paragraph {
                 text(
-                    Bokmal to "Den av foreldrene som får barnetrygden vil automatisk få omsorgsopptjeningen. Opptjeningen kan overføres til den andre forelderen hvis dere er sammen om omsorgen for barnet. Da må dere fylle ut skjemaet «Overføring av omsorgsopptjening» (NAV 03-16.10), som dere finner på ${Constants.SKJEMA_URL}.",
-                    Nynorsk to "Den av foreldra som får barnetrygda, får automatisk omsorgsoppteninga. Oppteninga kan overførast til den andre forelderen dersom de er saman om omsorga for barnet. Då må de fylle ut skjemaet «Overføring av omsorgsopptening» (NAV 03-16.10), som de finn på ${Constants.SKJEMA_URL}.",
-                    English to "The child benefit recipient will automatically be credited the pension earnings for care work. The pension earnings can be transferred to the other parent if you share the care of the child. To transfer pension earnings, complete the form “Transfer of pension earnings for care work” (form no. NAV 03-16.10), which you will find at ${Constants.SKJEMA_URL}."
+                    Bokmal to "Den av foreldrene som får barnetrygden vil automatisk få omsorgsopptjeningen. Opptjeningen kan overføres til den andre forelderen hvis dere er sammen om omsorgen for barnet. Da må dere fylle ut skjemaet «Overføring av omsorgsopptjening» (Nav 03-16.10), som dere finner på ${Constants.SKJEMA_URL}.",
+                    Nynorsk to "Den av foreldra som får barnetrygda, får automatisk omsorgsoppteninga. Oppteninga kan overførast til den andre forelderen dersom de er saman om omsorga for barnet. Då må de fylle ut skjemaet «Overføring av omsorgsopptening» (Nav 03-16.10), som de finn på ${Constants.SKJEMA_URL}.",
+                    English to "The child benefit recipient will automatically be credited the pension earnings for care work. The pension earnings can be transferred to the other parent if you share the care of the child. To transfer pension earnings, complete the form “Transfer of pension earnings for care work” (form no. Nav 03-16.10), which you will find at ${Constants.SKJEMA_URL}."
                 )
             }
         }
