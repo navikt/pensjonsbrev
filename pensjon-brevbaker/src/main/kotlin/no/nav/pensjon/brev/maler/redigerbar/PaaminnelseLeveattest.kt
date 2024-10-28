@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.redigerbar.PaaminnelseLeveattestDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.PaaminnelseLeveattestDtoSelectors.PesysdataSelectors.fristdato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.PaaminnelseLeveattestDtoSelectors.pesysData
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -73,9 +74,12 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
             //[PE_IY_03_178_tekst]
 
             paragraph {
+                text(
+                    Bokmal to "Vedlagt følger en ny leveattest. Vennligst les veiledningen på baksiden før du fyller ut attesten. ",
+                )
                 textExpr(
-                    Bokmal to "Vedlagt følger en ny leveattest. Vennligst les veiledningen på baksiden før du fyller ut attesten. Attesten må sendes innen ".expr() + pesysData.fristdato
-                        .format() + ".",
+                    Bokmal to "Attesten må sendes innen ".expr() + pesysData.fristdato.format() + ".",
+                    fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
             }
             //[PE_IY_03_178_tekst]
@@ -105,9 +109,12 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
             //[PE_IY_03_178_tekst]
 
             paragraph {
+                text(
+                    Bokmal to "You will find a new life certificate enclosed. Please read the guidelines on the reverse side before filling out the certificate. "
+                )
                 textExpr(
-                    Bokmal to "You will find a new life certificate enclosed. Please read the guidelines on the reverse side before filling out the certificate. The certificate must be returned within ".expr() + pesysData.fristdato
-                        .format() + ".",
+                    Bokmal to "The certificate must be returned within ".expr() + pesysData.fristdato.format() + ".",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
             }
             //[PE_IY_03_178_tekst]
@@ -137,9 +144,13 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
             //[PE_IY_03_178_tekst]
 
             paragraph {
+                text(
+                    Bokmal to "Beigelegt finden Sie ein neues Lebensbescheinigungsformular. Bitte beachten Sie die Hinweise auf der Rückseite, bevor Sie die Bescheinigung ausfüllen. "
+                )
                 textExpr(
-                    Bokmal to "Beigelegt finden Sie ein neues Lebensbescheinigungsformular. Bitte beachten Sie die Hinweise auf der Rückseite, bevor Sie die Bescheinigung ausfüllen. Die Bescheinigung muß bis spätestens ".expr() + pesysData.fristdato
+                    Bokmal to "Die Bescheinigung muß bis spätestens ".expr() + pesysData.fristdato
                         .format() + ". zurückgeschickt werden.",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
             }
             //[PE_IY_03_178_tekst]
@@ -181,6 +192,7 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
                 textExpr(
                     Bokmal to "Le certificat de vie devra être adressé avant ".expr() + pesysData.fristdato
                         .format() + ".",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
             }
             //[PE_IY_03_178_tekst]
@@ -220,6 +232,7 @@ object PaaminnelseLeveattest : RedigerbarTemplate<PaaminnelseLeveattestDto> {
                 textExpr(
                     Bokmal to "Debe remitir el certificado antes del ".expr() + pesysData.fristdato
                         .format() + ".",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
             }
             //[PE_IY_03_178_tekst]
