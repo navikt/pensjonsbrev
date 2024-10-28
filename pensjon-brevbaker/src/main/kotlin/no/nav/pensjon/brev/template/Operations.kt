@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.render.fulltNavn
+import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
@@ -57,6 +59,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
     object IsEmpty : UnaryOperation<Collection<*>, Boolean>(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
+    }
+
+    object BrukerFulltNavn: UnaryOperation<Bruker, String>(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {
+        override fun apply(input: Bruker): String = input.fulltNavn()
     }
 }
 

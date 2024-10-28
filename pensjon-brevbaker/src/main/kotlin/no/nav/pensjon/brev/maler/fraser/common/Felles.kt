@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 object Felles {
@@ -137,4 +138,11 @@ object Felles {
             }
         }
     }
+
+    fun Expression<Bruker>.fulltNavn(): Expression<String> =
+        Expression.UnaryInvoke(
+            value = this,
+            operation = UnaryOperation.BrukerFulltNavn
+        )
+
 }

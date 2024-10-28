@@ -144,8 +144,7 @@ export const nyBrevInfo = (args: {
     brevkode: args.brevkode ?? "INFORMASJON_OM_SAKSBEHANDLINGSTID",
     brevtittel: args.brevtittel ?? "Informasjon om saksbehandlingstid",
     status: args.status ?? {
-      type: "UnderRedigering",
-      redigeresAv: { id: "Z990297", navn: "Sist R. av" },
+      type: "Kladd",
     },
     distribusjonstype: args.distribusjonstype ?? Distribusjonstype.SENTRALPRINT,
     mottaker: args.mottaker ?? null,
