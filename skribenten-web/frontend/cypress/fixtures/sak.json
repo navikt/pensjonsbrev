@@ -594,6 +594,18 @@
       "dokumentkategoriCode": "E_BLANKETT",
       "redigerbart": true,
       "redigerbarBrevtittel": false
+    },
+    {
+      "name": "Bekreftelse på flyktningstatus",
+      "id": "PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS",
+      "brevsystem": "BREVBAKER",
+      "spraak": [
+        "NB"
+      ],
+      "brevkategori": "Innhente opplysninger",
+      "dokumentkategoriCode": "IB",
+      "redigerbart": true,
+      "redigerbarBrevtittel": false
     }
   ]
 }

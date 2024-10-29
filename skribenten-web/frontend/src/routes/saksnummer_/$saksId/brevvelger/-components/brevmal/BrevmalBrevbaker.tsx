@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { BodyShort, Button, HStack, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -7,6 +8,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
+import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
@@ -127,6 +129,7 @@ const BrevmalBrevbaker = (props: {
       enhetsId: props.defaultValues.enhetsId,
       spraak: props.defaultValues.spraak,
       mottaker: null,
+      saksbehandlerValg: {},
     },
   });
 
@@ -144,10 +147,17 @@ const BrevmalBrevbaker = (props: {
     } else {
       props.setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
     }
-  }, [props.setOnFormSubmitClick, props, harEksisterendeKladd, form]);
+    //eslint vil at vi skal ha props som dependency - dette er noe vi egentlig ikke har behov for
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.setOnFormSubmitClick, harEksisterendeKladd, form]);
 
   return (
-    <VStack gap="4">
+    <VStack
+      css={css`
+        height: 100%;
+      `}
+      gap="4"
+    >
       {åpnerNyttBrevOgHarKladd && (
         <EksisterendeKladdModal
           onClose={() => setÅpnerNyttBrevOgHarKladd(false)}
@@ -163,7 +173,12 @@ const BrevmalBrevbaker = (props: {
       <Divider />
       <FormProvider {...form}>
         <BrevmalFormWrapper formRef={formRef} onSubmit={form.handleSubmit((v) => opprettBrevMutation.mutate(v))}>
-          <VStack gap="8">
+          <VStack
+            css={css`
+              flex: 1;
+            `}
+            gap="8"
+          >
             <VStack gap="2">
               <VStack>
                 <OppsummeringAvMottaker mottaker={form.watch("mottaker")} saksId={props.saksId} withTitle />
@@ -197,6 +212,7 @@ const BrevmalBrevbaker = (props: {
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
             <SaksbehandlerValgModelEditor brevkode={props.letterTemplate.id} fieldsToRender="required" />
           </VStack>
+          {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
         </BrevmalFormWrapper>
       </FormProvider>
     </VStack>

@@ -76,7 +76,9 @@ const Brevmal = (props: {
         });
       },
     });
-  }, [props.setOnFormSubmitClick, props, navigate]);
+    //eslint vil at vi skal ha props som dependency - dette er noe vi egentlig ikke har behov for
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.setOnFormSubmitClick, props.saksId, props.brev.id, navigate]);
 
   return (
     <div
