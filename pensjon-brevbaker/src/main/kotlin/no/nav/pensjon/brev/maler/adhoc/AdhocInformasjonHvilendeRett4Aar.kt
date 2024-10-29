@@ -2,10 +2,13 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgPlikterUfoereStatisk
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -81,32 +84,9 @@ object AdhocInformasjonHvilendeRett4Aar : AutobrevTemplate<EmptyBrevdata> {
                     }
                 }
             }
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og mulighet for å klage» for informasjon om hvordan du går frem.",
-                )
-            }
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss.",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du ikke finner svar på nav.no kan du ringe oss på telefon 55 55 33 33, hverdager 09.00-15.00.",
-                )
-            }
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoereStatisk))
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
-
+        includeAttachment(vedleggDineRettigheterOgPlikterUfoereStatisk, EmptyBrevdata.expr())
     }
 }
