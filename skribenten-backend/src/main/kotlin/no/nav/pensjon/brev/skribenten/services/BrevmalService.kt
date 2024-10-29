@@ -4,6 +4,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
@@ -128,6 +129,7 @@ class BrevmalService(
                     result.filter { brev ->
                         when {
                             brev.hasEmptyBrevData() -> Features.brevutendata.isEnabled()
+                            brev.name == Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD.name -> Features.brevmalUTavslag.isEnabled()
                             else -> true
                         }
                     }
