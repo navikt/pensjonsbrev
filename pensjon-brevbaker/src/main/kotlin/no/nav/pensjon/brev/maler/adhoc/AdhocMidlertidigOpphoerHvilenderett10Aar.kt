@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgPlikterUfoereStatisk
+import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -33,7 +33,7 @@ object AdhocMidlertidigOpphoerHvilenderett10Aar : AutobrevTemplate<EmptyBrevdata
         outline {
             paragraph {
                 text(
-                    Bokmal to "Vi stanse uføretrygden din midlertidig fordi du har hatt 10 år med hvilende rett.",
+                    Bokmal to "Vi stanser uføretrygden din midlertidig fordi du har hatt 10 år med hvilende rett.",
                 )
             }
             paragraph {
@@ -62,11 +62,11 @@ object AdhocMidlertidigOpphoerHvilenderett10Aar : AutobrevTemplate<EmptyBrevdata
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoereStatisk))
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoereStatisk))
+            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
 
         }
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoereStatisk)
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }

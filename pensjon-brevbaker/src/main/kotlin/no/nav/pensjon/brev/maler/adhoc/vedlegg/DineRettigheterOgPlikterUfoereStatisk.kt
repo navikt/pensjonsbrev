@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.newText
 
-val vedleggDineRettigheterOgPlikterUfoereStatisk =
+val vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk =
     createAttachment<LangBokmalNynorskEnglish, EmptyBrevdata>(
         title = newText(
             Bokmal to "Dine rettigheter og mulighet til å klage",
