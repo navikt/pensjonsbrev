@@ -17,11 +17,15 @@ class GenererAlleMaleneTest {
     @ParameterizedTest(name = "{index} => template={0}, brevkode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(
-        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
+        template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode,
         fixtures: T,
         spraak: Language,
     ) {
+        if (!template.language.supports(spraak)) {
+            println("Mal $template fins ikke på språk $spraak, tester ikke denne")
+            return
+        }
         val letter = Letter(template, fixtures, spraak, Fixtures.felles)
 
         letter.renderTestPDF(filnavn(brevkode, spraak))
@@ -36,6 +40,7 @@ class GenererAlleMaleneTest {
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
+            println("Mal $template fins ikke på språk $spraak, tester ikke denne")
             return
         }
         Letter(
