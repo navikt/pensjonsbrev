@@ -97,4 +97,29 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("Åpne brev").click("left");
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
   });
+
+  it("kan opprette brev som har tom saksbehandlerValg", () => {
+    cy.intercept(
+      "GET",
+      "/bff/skribenten-backend/brevmal/PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS/modelSpecification",
+      (req) => {
+        req.reply({ types: {}, letterModelTypeName: null });
+      },
+    );
+
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+      expect(req.body).deep.equal({
+        brevkode: "PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS",
+        spraak: "NB",
+        avsenderEnhetsId: "",
+        mottaker: null,
+        saksbehandlerValg: {},
+      });
+      req.reply({ fixture: "brevResponse.json" });
+    }).as("createBrev");
+
+    cy.visit("saksnummer/123456/brevvelger?templateId=PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS");
+    cy.contains("Åpne brev").click("left");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+  });
 });

@@ -65,18 +65,19 @@ const Brevmal = (props: {
   letterMetadata?: LetterMetadata;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
+  const { saksId, brev, setOnFormSubmitClick } = props;
   const navigate = useNavigate({ from: Route.fullPath });
 
   useEffect(() => {
-    props.setOnFormSubmitClick({
+    setOnFormSubmitClick({
       onClick: () => {
         navigate({
           to: "/saksnummer/$saksId/brev/$brevId",
-          params: { saksId: props.saksId, brevId: props.brev.id },
+          params: { saksId: saksId, brevId: brev.id },
         });
       },
     });
-  }, [props.setOnFormSubmitClick, props, navigate]);
+  }, [setOnFormSubmitClick, saksId, brev.id, navigate]);
 
   return (
     <div

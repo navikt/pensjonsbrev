@@ -19,7 +19,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-search").click();
     cy.focused().type("b");
     cy.getDataCy("category-item").should("have.length", 7).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 22);
+    cy.getDataCy("brevmal-button").should("have.length", 23);
 
     cy.focused().type("r");
     cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
