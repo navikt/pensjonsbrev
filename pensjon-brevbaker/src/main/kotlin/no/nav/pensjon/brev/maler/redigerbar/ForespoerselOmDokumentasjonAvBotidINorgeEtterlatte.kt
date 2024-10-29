@@ -28,7 +28,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<E
         letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Forespørsel om dokumentasjon av botid i Norge",
+            displayTitle = "Forespørsel om dokumentasjon av botid i Norge - barnepensjon eller gjenlevendepensjon",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
