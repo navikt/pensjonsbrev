@@ -18,7 +18,7 @@ class GenererAlleMaleneTest {
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
-        brevkode: Brevkode.Brevkode,
+        brevkode: Brevkode,
         fixtures: T,
         spraak: Language,
     ) {
@@ -31,7 +31,7 @@ class GenererAlleMaleneTest {
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
         template: LetterTemplate<LanguageSupport, T>,
-        brevkode: Brevkode.Brevkode,
+        brevkode: Brevkode,
         fixtures: T,
         spraak: Language,
     ) {
@@ -46,7 +46,7 @@ class GenererAlleMaleneTest {
         ).renderTestHtml(filnavn(brevkode, spraak))
     }
 
-    private fun filnavn(brevkode: Brevkode.Brevkode, spraak: Language) =
+    private fun filnavn(brevkode: Brevkode, spraak: Language) =
         "${brevkode.kode()}_${spraak.javaClass.simpleName}"
 
     companion object {
