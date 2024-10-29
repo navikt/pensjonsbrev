@@ -115,7 +115,7 @@ object Edit {
             data class Literal(
                 override val id: Int?,
                 override val text: String,
-                override val fontType: FontType,
+                override val fontType: FontType = FontType.PLAIN,
                 val editedText: String? = null,
                 val editedFontType: FontType? = null,
             ) : Text(Type.LITERAL) {
