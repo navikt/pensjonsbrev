@@ -32,13 +32,7 @@ docker-compose up -d --build
      * Legg til `155.55.2.73	tjenestebuss-q2.adeo.no` i /etc/hosts
 2. Hent alle secrets:
    ```bash
-   (cd skribenten-backend && ./fetch-secrets.sh)
-   ```
-      ```bash
-   (cd tjenestebuss-integrasjon && ./fetch-secrets.sh)
-   ```
-      ```bash
-   (cd skribenten-web/bff && python3 setup_local_azure_secrets.py)
+   ./fetch-secrets.sh
    ```
 3. Sett opp tokens for npm og gradle [se oppsett av packages.read token](#oppsett-av-packagesread-token)
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
