@@ -16,8 +16,6 @@ import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.newText
 
-// Conditional for showing the attachment is: sakstype = UFOEREP && vedtakResultat = AVSLG
-
 val vedleggDineRettigheterOgPlikterUfoere =
     createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
         title = newText(

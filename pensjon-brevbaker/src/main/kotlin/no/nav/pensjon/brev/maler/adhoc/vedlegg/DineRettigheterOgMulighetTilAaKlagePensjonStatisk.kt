@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.vedlegg
+package no.nav.pensjon.brev.maler.adhoc.vedlegg
 
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 
-// Static vedlegg
 @TemplateModelHelpers
 val dineRettigheterOgMulighetTilAaKlagePensjonStatisk =
     createAttachment<LangBokmalNynorskEnglish, Unit>(

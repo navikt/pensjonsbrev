@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -33,14 +32,14 @@ object AdhocVarselOpphoerMedHvilendeRett : AutobrevTemplate<EmptyBrevdata> {
         outline {
             paragraph {
                 text(
-                    Bokmal to "Dette er et varsel om at uføretrygden din blir opphørt fra 1.1.2025 hvis du ikke har rett " +
-                            "til utbetaling av uføretrygd i 2023 og 2024."
+                    Bokmal to "Dette er et varsel om at uføretrygden din blir opphørt fra 1.1.2026 hvis du ikke har rett " +
+                            "til utbetaling av uføretrygd i 2024 og 2025."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du har siden 2015 ikke fått utbetaling av uføretrygd fordi din inntekt har vært over 80 prosent " +
-                            "av oppjustert inntekt før uførhet.  Du har derfor hatt innvilget en hvilende rett."
+                    Bokmal to "Du har siden 2016 ikke fått utbetaling av uføretrygd fordi din inntekt har vært over 80 prosent " +
+                            "av oppjustert inntekt før uførhet. Du har derfor hatt innvilget en hvilende rett."
                 )
             }
             paragraph {
@@ -58,15 +57,15 @@ object AdhocVarselOpphoerMedHvilendeRett : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du har ikke hatt utbetaling av uføretrygd siden 2015. Har du heller ikke rett til utbetaling " +
-                            "av uføretrygd i 2023 og 2024, vil retten til uføretrygd opphøre fra 1.1.2025. " +
+                    Bokmal to "Du har ikke hatt utbetaling av uføretrygd siden 2016. Har du heller ikke rett til utbetaling " +
+                            "av uføretrygd i 2024 og 2025, vil retten til uføretrygd opphøre fra 1.1.2026. " +
                             "Ved opphør av uføretrygden, vil du få eget vedtak om dette."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Har du en årlig inntekt under 80 prosent av oppjustert inntekt før uførhet i 2023 eller 2024, " +
-                            "vil du igjen ha rett til utbetaling av uføretrygd. Du vil da opparbeide deg retten til en ny periode med hvilende rett."
+                    Bokmal to "Har du en årlig inntekt under 80 prosent av oppjustert inntekt før uførhet i 2024 eller 2025, " +
+                            "vil du igjen ha rett til utbetaling av uføretrygd. Du vil da opparbeide deg retten til en ny periode med hvilende rett.",
                 )
             }
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
