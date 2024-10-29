@@ -122,7 +122,7 @@ object Edit {
                 override fun isEdited(): Boolean = isNew() || editedText != null || editedFontType != null
             }
 
-            data class Variable(override val id: Int?, override val text: String, override val fontType: FontType) : Text(Type.VARIABLE) {
+            data class Variable(override val id: Int?, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(Type.VARIABLE) {
                 override fun isEdited(): Boolean = false
             }
         }
