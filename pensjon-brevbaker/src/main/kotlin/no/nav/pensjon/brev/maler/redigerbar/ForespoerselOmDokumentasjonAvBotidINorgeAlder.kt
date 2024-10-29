@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.FoedselsnummerSelectors.value
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object ForespoerselOmDokumentasjonAvBotidINorge_Alder : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
