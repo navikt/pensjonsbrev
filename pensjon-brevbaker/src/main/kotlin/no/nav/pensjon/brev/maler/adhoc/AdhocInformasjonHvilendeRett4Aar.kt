@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 object AdhocInformasjonHvilendeRett4Aar : AutobrevTemplate<EmptyBrevdata> {
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_UT_ADHOC_2024_INFO_HVILENDE_RETT_4_AAR
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
@@ -46,7 +46,7 @@ object AdhocInformasjonHvilendeRett4Aar : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du har ikke hatt utbetaling av uføretrygd siden [dato]. Du kan derfor ha en hvilende rett til uføretrygd i ytterligere fem år før uføretrygden opphøres. Ved opphør av uføretrygden vil du få et eget varsel og vedtak om dette.",
+                    Bokmal to "Du har ikke hatt utbetaling av uføretrygd siden 2020. Du kan derfor ha en hvilende rett til uføretrygd i ytterligere fem år før uføretrygden opphøres. Ved opphør av uføretrygden vil du få et eget varsel og vedtak om dette.",
                 )
             }
             paragraph {

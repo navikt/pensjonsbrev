@@ -22,6 +22,8 @@ object ProductionTemplates {
         AdhocFeilEtteroppgjoer2023,
         AdhocUfoeretrygdEtterbetalingDagpenger,
         AdhocUfoeretrygdKombiDagpenger,
+        AdhocInformasjonHvilendeRett4Aar,
+        AdhocMidlertidigOpphoerHvilenderett10Aar,
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,

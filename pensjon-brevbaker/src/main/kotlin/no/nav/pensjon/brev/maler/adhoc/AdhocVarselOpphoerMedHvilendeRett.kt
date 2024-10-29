@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -41,7 +39,7 @@ object AdhocVarselOpphoerMedHvilendeRett : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Du har siden 2016 ikke fått utbetaling av uføretrygd fordi din inntekt har vært over 80 prosent " +
-                            "av oppjustert inntekt før uførhet.  Du har derfor hatt innvilget en hvilende rett."
+                            "av oppjustert inntekt før uførhet. Du har derfor hatt innvilget en hvilende rett."
                 )
             }
             paragraph {
@@ -72,6 +70,5 @@ object AdhocVarselOpphoerMedHvilendeRett : AutobrevTemplate<EmptyBrevdata> {
             }
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere)
     }
 }
