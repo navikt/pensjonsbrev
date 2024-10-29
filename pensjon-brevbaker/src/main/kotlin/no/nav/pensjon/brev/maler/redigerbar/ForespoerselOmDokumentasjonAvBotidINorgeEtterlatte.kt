@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -13,7 +14,10 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.saksnummer
+import no.nav.pensjon.brevbaker.api.model.FoedselsnummerSelectors.value
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -40,37 +44,54 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<E
             )
         }
         outline {
-            //[PE_IY_03_167]
-
-            //IF(PE_SaksData_Sakstype = "gjenlev" OR PE_SaksData_Sakstype = "barnep") THEN      INCLUDE ENDIF
             paragraph {
-                text(
-                    Bokmal to "Navn:",
-                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                )
-                text(
-                    Bokmal to " <Fritekst: avdødes navn>"
-                )
+                table(
+                    header = {
+                        column {  }
+                        column {  }
+                    }
+                ) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Navn:",
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            )
+                        }
+                        cell {
+                            text(
+                                Bokmal to " <Fritekst: avdødes navn>"
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Fødselsdato:",
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            )
+                        }
+                        cell {
+                            text(
+                                Bokmal to " <Fritekst: avdødes fødselsdato>"
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Saksnummer:",
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to felles.saksnummer
+                            )
+                        }
+                    }
+                }
             }
-            paragraph {
-                text(
-                    Bokmal to "Fødselsdato:",
-                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                )
-                text(
-                    Bokmal to " <Fritekst: avdødes fødselsdato>"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Saksnummer:",
-                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                )
-                textExpr(
-                    Bokmal to " ".expr() + felles.saksnummer,
-                )
-            }
-
 
             //IF(PE_SaksData_Sakstype = "gjenlev" OR PE_SaksData_Sakstype = "barnep") THEN      INCLUDE ENDIF
             paragraph {

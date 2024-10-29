@@ -43,33 +43,53 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyR
             )
         }
         outline {
-            //[PE_IY_03_167_tekst]
             paragraph {
-                text(
-                    Bokmal to "Navn:",
-                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                )
-                textExpr(
-                    Bokmal to " ".expr() + felles.bruker.fulltNavn()
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Fødselsdato:",
-                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                )
-                textExpr(
-                    Bokmal to " ".expr() + felles.bruker.foedselsnummer.value
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Saksnummer:",
-                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                )
-                textExpr(
-                    Bokmal to " ".expr() + felles.saksnummer,
-                )
+                table(
+                    header = {
+                        column {  }
+                        column {  }
+                    }
+                ) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Navn:",
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to felles.bruker.fulltNavn()
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Fødselsdato:",
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to felles.bruker.foedselsnummer.value
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Saksnummer:",
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to felles.saksnummer
+                            )
+                        }
+                    }
+                }
             }
 
             //[PE_IY_03_167_tekst]
