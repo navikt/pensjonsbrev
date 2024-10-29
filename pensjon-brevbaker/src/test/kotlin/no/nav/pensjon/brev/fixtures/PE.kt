@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrig
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.EoEndringEps
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.ForrigeEtteroppgjor
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.Kravhode
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.Kravlinje
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakList
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.Vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtak
@@ -64,7 +65,7 @@ fun createPE() =
             pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv = 1
         ),
         pebrevkode = "PE_UT_06_300",
-        personsak = PersonSak(PSfnr("01019878910"))
+        personsak = PersonSak(PSfnr("01019878910"), LocalDate.of(1998, 1, 1))
     )
 
 fun createVedtaksbrev(): Vedtaksbrev =
@@ -220,20 +221,36 @@ fun createVilkarsVedtak() =
 
 fun createVilkar() =
     Vilkar(
-        yrkesskaderesultat = null,
+        alderbegrunnelse = "stdbegr_12_4_1_i_1",
+        alderresultat = "oppfylt",
+        fortsattmedlemsskapresultat = "oppfylt",
+        forutgaendemedlemskapresultat = "oppfylt",
+        hensiktsmessigarbeidsrettedetiltakbegrunnelse = "stdbegr_12_5_2_i_3",
+        hensiktsmessigarbeidsrettedetiltakresultat = "ikke_oppfylt",
+        hensiktsmessigbehandlingbegrunnelse = "stdbegr_12_5_2_i_3",
+        hensiktsmessigbehandlingresultat = "oppfylt",
+        nedsattinntektsevnebegrunnelse = "stdbegr_12_7_2_i_2",
+        nedsattinntektsevneresultat = "ikke_oppfylt",
+        sykdomskadelytebegrunnelse = "stdbegr_12_5_2_i_3",
+        sykdomskadelyteresultat = "ikke_oppfylt",
+        unguforbegrunnelse = "stdbegr_12_13_1_i_3",
         unguforresultat = "unguforresultat",
+        yrkesskadebegrunnelse = "stdbegr_12_17_1_o_1",
+        yrkesskaderesultat = "ikke_oppfylt",
     )
 
 fun createBeregningsVilkar() =
     BeregningsVilkar(
         ieubegrunnelse = null,
+        ieuinntekt = Kroner(9939),
         ifubegrunnelse = null,
         ifuinntekt = Kroner(9938),
+        skadetidspunkt = LocalDate.of(2020, 1, 1),
         trygdetid = createTrygdetid(),
         uforegrad = 100,
+        uforetidspunkt = LocalDate.now().minusYears(5),
         virkningstidpunkt = LocalDate.of(2020, 2, 12),
-        ieuinntekt = Kroner(9939),
-        skadetidspunkt = LocalDate.of(2020,1,1),
+        yrkesskadegrad = 29,
     )
 
 fun createTrygdetid() =
@@ -264,7 +281,12 @@ fun createKravhode() =
         brukerkonvertertup = false,
         kravarsaktype = "endring_ifu",
         kravgjelder = "kravgjelder",
+        kravmottattdato = LocalDate.of(2020, 1, 1),
+        kravlinjeliste = listOf(createKravlinje()),
+        vurderetrygdeavtale = false,
     )
+
+fun createKravlinje() = Kravlinje(kravlinjetype = "ut")
 
 fun createBeregningsData() =
     BeregningsData(
@@ -276,7 +298,8 @@ fun createBeregningsData() =
 fun createBeregningUforePeriode() =
     listOf(
         BeregningUforePeriode(
-            createBeregningYtelsesKomp()
+            beregningytelseskomp = createBeregningYtelsesKomp(),
+            uforetrygdberegning = createUforetrygdberegning(),
         )
     )
 
