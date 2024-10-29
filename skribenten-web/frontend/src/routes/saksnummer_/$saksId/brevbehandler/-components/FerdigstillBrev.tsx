@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo } from "react";
@@ -15,7 +15,11 @@ import type { BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
 import { erBrevKlar } from "~/utils/brevUtils";
 
-import type { FerdigstillResponser } from "../../kvittering/-components/FerdigstillResultatContext";
+import type {
+  FerdigstillErrorResponse,
+  FerdigstillResponser,
+  FerdigstillSuccessResponse,
+} from "../../kvittering/-components/FerdigstillResultatContext";
 import { useFerdigstillResultatContext } from "../../kvittering/-components/FerdigstillResultatContext";
 import { Route } from "../route";
 
@@ -98,8 +102,15 @@ const validationSchema = z.object({
   valgteBrevSomSkalSendes: z.array(z.number()).min(1, "Du må velge minst 1 brev"),
 });
 
+const isFerdigstillSuccessResponse = (
+  res: FerdigstillSuccessResponse | FerdigstillErrorResponse,
+): res is FerdigstillSuccessResponse => {
+  return res.status === "fulfilledWithSuccess" && res.response.journalpostId !== null;
+};
+
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
+  const queryClient = useQueryClient();
 
   const ferdigstillBrevContext = useFerdigstillResultatContext();
 
@@ -159,6 +170,10 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
       }),
     );
     ferdigstillBrevContext.setResultat(resultat);
+    const sendteBrev = new Set(resultat.filter(isFerdigstillSuccessResponse).map((res) => res.brevInfo.id));
+    queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
+      currentBrevInfo.filter((brev) => !sendteBrev.has(brev.id)),
+    );
     navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
   };
 
