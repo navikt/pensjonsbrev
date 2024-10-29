@@ -105,7 +105,7 @@ const validationSchema = z.object({
 const isFerdigstillSuccessResponse = (
   res: FerdigstillSuccessResponse | FerdigstillErrorResponse,
 ): res is FerdigstillSuccessResponse => {
-  return res.status === "fulfilledWithSuccess" && res.response.journalpostId !== null;
+  return res.status === "fulfilledWithSuccess" && !!res.response.journalpostId;
 };
 
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
