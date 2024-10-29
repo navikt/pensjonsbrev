@@ -50,7 +50,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyR
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
                 textExpr(
-                    Bokmal to "				".expr() + felles.bruker.fulltNavn()
+                    Bokmal to " ".expr() + felles.bruker.fulltNavn()
                 )
             }
             paragraph {
@@ -59,7 +59,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyR
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
                 textExpr(
-                    Bokmal to "			".expr() + felles.bruker.foedselsnummer.value
+                    Bokmal to " ".expr() + felles.bruker.foedselsnummer.value
                 )
             }
             paragraph {
@@ -68,7 +68,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyR
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
                 textExpr(
-                    Bokmal to "			".expr() + felles.saksnummer,
+                    Bokmal to " ".expr() + felles.saksnummer,
                 )
             }
 

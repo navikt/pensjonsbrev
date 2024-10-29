@@ -49,7 +49,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<E
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
                 text(
-                    Bokmal to "				<Fritekst: avdødes navn>"
+                    Bokmal to " <Fritekst: avdødes navn>"
                 )
             }
             paragraph {
@@ -58,7 +58,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<E
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
                 text(
-                    Bokmal to "			<Fritekst: avdødes fødselsdato>"
+                    Bokmal to " <Fritekst: avdødes fødselsdato>"
                 )
             }
             paragraph {
@@ -67,7 +67,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<E
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
                 textExpr(
-                    Bokmal to "			".expr() + felles.saksnummer,
+                    Bokmal to " ".expr() + felles.saksnummer,
                 )
             }
 
