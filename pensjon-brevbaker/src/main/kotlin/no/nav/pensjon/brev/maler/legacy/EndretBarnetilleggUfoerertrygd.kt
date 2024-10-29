@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.pe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.generated.TBU1092_Generated
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.SjekkUtbetalingene
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.SkattForDegSomBorIUtlandet
