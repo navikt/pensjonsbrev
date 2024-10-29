@@ -15,14 +15,16 @@ import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
 import BekreftAvbrytelse from "./BekreftAvbrytelse";
-import type { EndreMottakerModalTabs, ManuellAdresseUtfyllingFormData } from "./EndreMottakerUtils";
+import type { ManuellAdresseUtfyllingFormData } from "./EndreMottakerUtils";
 import {
   type CombinedFormData,
   createSamhandlerValidationSchema,
+  EndreMottakerModalTabs,
   type FinnSamhandlerFormData,
   InnOgUtland,
   Søketype,
 } from "./EndreMottakerUtils";
+import Favoritter from "./Favoritter";
 import HentOgVisSamhandlerAdresse from "./HentOgVisSamhandlerAdresse";
 import OppsummeringAvValgtMottaker from "./OppsummeringAvValgtMottaker";
 import SøkOgVelgSamhandlerForm from "./SøkOgVelgSamhandlerForm";
@@ -102,7 +104,7 @@ export default EndreMottaker;
   TODO - flytt ut til generel components mappe siden den nå benyttes i flere steder
 
   litt om hvorfor denne er laget som den er:
-  Vi har 1 modal, som skal deles opp i 3 tabs. 2 av dem er velgbare, mens 1 tab (oppsummering) er intern.
+  Vi har 1 modal, som skal deles opp i 4 tabs. 3 av dem er velgbare, mens 1 tab (oppsummering) er intern.
   Modalen-bodyen skal reflektere 3 tilstander - Valg av mottaker, oppsummering, og avbrytelse
   Oppsummering og avbyrtelse skal 'fjerne' alt det andre, derfor kreves det at modal har en state som vet hva den skal rendre
   Vi klarer også å holde på diverse tilstander mye enklere, som f.eks sammhandler søk dersom dem navigerer seg tilbake fra oppsummering
@@ -116,7 +118,7 @@ export const EndreMottakerModal = (properties: {
   onClose: () => void;
   skalKunOppdatereSamhandler?: boolean;
 }) => {
-  const [tab, setTab] = useState<EndreMottakerModalTabs>("samhandler");
+  const [tab, setTab] = useState<EndreMottakerModalTabs>(EndreMottakerModalTabs.FAVORITTER);
   const [vilAvbryte, setVilAvbryte] = useState<boolean>(false);
   const [valgtSamhandler, setValgtSamhandler] = useState<Nullable<string>>(null);
 
@@ -211,12 +213,12 @@ export const EndreMottakerModal = (properties: {
           onSubmit={(event) => {
             event.stopPropagation();
             form.handleSubmit((values) => {
-              if (tab === "samhandler") {
+              if (tab === EndreMottakerModalTabs.SAMHANDLER) {
                 onFinnsamhandlerSubmit(values.finnSamhandler);
-              } else if (tab === "manuellAdresse") {
+              } else if (tab === EndreMottakerModalTabs.MANUELL_ADRESSE) {
                 setValgtSamhandler(null);
                 properties.resetOnBekreftState();
-                setTab("oppsummering");
+                setTab(EndreMottakerModalTabs.OPPSUMMERING);
               }
             })(event);
           }}
@@ -286,6 +288,7 @@ const ModalTabs = (properties: {
           value={properties.tab.tab}
         >
           <Tabs.List>
+            <Tabs.Tab label="Favoritter" value="favoritter" />
             <Tabs.Tab label="Finn samhandler" value="samhandler" />
 
             {properties.skalKunOppdatereSamhandler ? null : (
@@ -297,7 +300,7 @@ const ModalTabs = (properties: {
               margin-top: 1rem;
             `}
           >
-            <Tabs.Panel value="samhandler">
+            <Tabs.Panel value={EndreMottakerModalTabs.SAMHANDLER}>
               <SøkOgVelgSamhandlerForm
                 control={properties.control}
                 onCloseIntent={properties.onAvbrytClick}
@@ -305,18 +308,21 @@ const ModalTabs = (properties: {
                 onSamhandlerValg={(id) => {
                   properties.resetOnBekreftState();
                   properties.setSamhandler(id);
-                  properties.tab.setTab("oppsummering");
+                  properties.tab.setTab(EndreMottakerModalTabs.OPPSUMMERING);
                 }}
               />
             </Tabs.Panel>
-            <Tabs.Panel value="manuellAdresse">
+            <Tabs.Panel value={EndreMottakerModalTabs.MANUELL_ADRESSE}>
               <UtfyllingAvManuellAdresseForm
                 control={properties.control}
                 onCloseIntent={properties.onAvbrytClick}
                 onSubmit={() => {
-                  properties.tab.setTab("oppsummering");
+                  properties.tab.setTab(EndreMottakerModalTabs.OPPSUMMERING);
                 }}
               />
+            </Tabs.Panel>
+            <Tabs.Panel value={EndreMottakerModalTabs.FAVORITTER}>
+              <Favoritter />
             </Tabs.Panel>
           </div>
         </Tabs>
@@ -334,7 +340,7 @@ const OppsummeringsTab = (properties: {
   error: Nullable<AxiosError>;
   isPending: Nullable<boolean>;
   onCloseIntent: () => void;
-  onTilbake: (from: "samhandler" | "manuellAdresse") => void;
+  onTilbake: (from: EndreMottakerModalTabs.SAMHANDLER | EndreMottakerModalTabs.MANUELL_ADRESSE) => void;
 }) => {
   if (!properties.samhandlerValues && !properties.manuellAdresseValues) {
     throw new Error(
@@ -350,7 +356,7 @@ const OppsummeringsTab = (properties: {
         isPending={properties.isPending}
         onBekreftNyMottaker={() => properties.onBekreftNyMottaker(properties.samhandlerValues!.id)}
         onCloseIntent={properties.onCloseIntent}
-        onTilbakeTilSøk={() => properties.onTilbake("samhandler")}
+        onTilbakeTilSøk={() => properties.onTilbake(EndreMottakerModalTabs.SAMHANDLER)}
         samhandlerType={properties.samhandlerValues!.samhandlerType!}
       />
     );
@@ -370,7 +376,7 @@ const OppsummeringsTab = (properties: {
         onAvbryt={properties.onCloseIntent}
         onBekreft={() => properties.onBekreftNyMottaker(adresse)}
         onTilbake={{
-          fn: () => properties.onTilbake("manuellAdresse"),
+          fn: () => properties.onTilbake(EndreMottakerModalTabs.MANUELL_ADRESSE),
           plassering: "top",
         }}
         samhandlerType={null}

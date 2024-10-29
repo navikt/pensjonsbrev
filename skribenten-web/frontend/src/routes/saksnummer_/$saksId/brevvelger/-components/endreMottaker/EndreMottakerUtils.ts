@@ -235,10 +235,11 @@ export const combinedFormSchema = z.object({
   finnSamhandler: finnSamhandlerFormDataSchema,
 });
 
-export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "manuellAdresse" | "oppsummering") => {
+export const createSamhandlerValidationSchema = (tabToValidate: EndreMottakerModalTabs) => {
   return z.object({
-    finnSamhandler: tabToValidate === "samhandler" ? finnSamhandlerFormDataSchema : z.object({}),
-    manuellAdresse: tabToValidate === "manuellAdresse" ? leggTilManuellSamhandlerFormDataSchema : z.object({}),
+    finnSamhandler: tabToValidate === EndreMottakerModalTabs.SAMHANDLER ? finnSamhandlerFormDataSchema : z.object({}),
+    manuellAdresse:
+      tabToValidate === EndreMottakerModalTabs.MANUELL_ADRESSE ? leggTilManuellSamhandlerFormDataSchema : z.object({}),
   });
 };
 
@@ -250,4 +251,9 @@ export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseRespon
 export const erAdresseKontaktAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is KontaktAdresseResponse =>
   "adresseString" in adresse && "adresselinjer" in adresse && "type" in adresse;
 
-export type EndreMottakerModalTabs = "samhandler" | "manuellAdresse" | "oppsummering";
+export enum EndreMottakerModalTabs {
+  SAMHANDLER = "samhandler",
+  MANUELL_ADRESSE = "manuellAdresse",
+  OPPSUMMERING = "oppsummering",
+  FAVORITTER = "favoritter",
+}

@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet } from "@tanstack/react-router";
 
-import { getFavoritter, getKontaktAdresse, getNavn, getPreferredLanguage } from "~/api/skribenten-api-endpoints";
+import { getBrevFavoritter } from "~/api/me-endpoints";
+import { getKontaktAdresse, getNavn, getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/saksnummer/$saksId")({
       queryFn: () => getKontaktAdresse.queryFn(sakContext.sak.saksId.toString()),
     });
 
-    queryClient.prefetchQuery(getFavoritter);
+    queryClient.prefetchQuery(getBrevFavoritter);
     queryClient.prefetchQuery({
       queryKey: getPreferredLanguage.queryKey(sakContext.sak.saksId.toString()),
       queryFn: () => getPreferredLanguage.queryFn(sakContext.sak.saksId.toString()),

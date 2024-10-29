@@ -2,7 +2,7 @@ import { Select } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useFormContext } from "react-hook-form";
 
-import { getEnheter } from "~/api/skribenten-api-endpoints";
+import { getEnheter } from "~/api/me-endpoints";
 
 function SelectEnhet() {
   const enheterQuery = useQuery(getEnheter);

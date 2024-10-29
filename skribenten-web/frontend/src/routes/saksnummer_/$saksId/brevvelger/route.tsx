@@ -8,8 +8,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
 
+import { getBrevFavoritter } from "~/api/me-endpoints";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritter } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -34,7 +34,11 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
-    return { saksId: sakContext.sak.saksId, letterTemplates: sakContext.brevMetadata };
+    return {
+      saksId: sakContext.sak.saksId,
+      fødselsnummer: sakContext.sak.foedselsnr,
+      letterTemplates: sakContext.brevMetadata,
+    };
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
@@ -152,7 +156,7 @@ function Brevmaler({
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
   const { templateId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
-  const favoritter = useQuery(getFavoritter).data ?? [];
+  const favoritter = useQuery(getBrevFavoritter).data ?? [];
 
   const brevmalerMatchingSearchTerm = sortBy(
     letterTemplates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
