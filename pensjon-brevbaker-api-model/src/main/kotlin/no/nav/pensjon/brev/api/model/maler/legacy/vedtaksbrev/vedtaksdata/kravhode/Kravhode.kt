@@ -5,6 +5,7 @@ import java.time.LocalDate
 
 data class Kravhode(
     val boddarbeidutland: Boolean?,
+    val boddarbeidutlandavdod: Boolean?,
     val brukerkonvertertup: Boolean?,
     val kravarsaktype: String?,
     val kravgjelder: String?,

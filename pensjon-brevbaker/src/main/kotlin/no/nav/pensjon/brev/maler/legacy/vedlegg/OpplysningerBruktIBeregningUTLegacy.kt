@@ -142,7 +142,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(TBU047V)
         }
 
-        // TODO TBU1187_H, TBU1187_H, TBU1382, TBU1384_h, TBU1384 trengs ikke for brev:
+        includePhrase(TB1187(pe))
+
+        // TODO TBU1187_H, TBU1382, TBU1384_h, TBU1384 trengs ikke for brev:
         //  PE_UT_07_100, PE_UT_05_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200, PE_UT_06_300
 
         showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endring_ifu")){
