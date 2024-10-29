@@ -39,9 +39,9 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
     ) {
         title {
             text(
-                Bokmal to "NAV har mottatt søknaden din om uføretrygd",
-                Nynorsk to "NAV har motteke søknaden din om uføretrygd",
-                English to "NAV has received your application for disability benefit"
+                Bokmal to "Nav har mottatt søknaden din om uføretrygd",
+                Nynorsk to "Nav har motteke søknaden din om uføretrygd",
+                English to "Nav has received your application for disability benefit"
             )
         }
         outline {

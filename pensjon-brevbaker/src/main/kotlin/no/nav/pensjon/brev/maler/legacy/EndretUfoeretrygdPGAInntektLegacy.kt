@@ -54,8 +54,8 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
                         ))){
                     text (
-                        Bokmal to "NAV har endret utbetalingen av uføretrygden din",
-                        Nynorsk to "NAV har endra utbetalinga av uføretrygda di",
+                        Bokmal to "Nav har endret utbetalingen av uføretrygden din",
+                        Nynorsk to "Nav har endra utbetalinga av uføretrygda di",
                     )
                 }
 
@@ -68,8 +68,8 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
                         )))){
                     text (
-                        Bokmal to "NAV har endret utbetalingen av uføretrygden og ",
-                        Nynorsk to "NAV har endra utbetalinga av uføretrygda di og ",
+                        Bokmal to "Nav har endret utbetalingen av uføretrygden og ",
+                        Nynorsk to "Nav har endra utbetalinga av uføretrygda di og ",
                     )
                 }
 
@@ -110,8 +110,8 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
                         )))){
                     text (
-                        Bokmal to "NAV har endret utbetalingen av ",
-                        Nynorsk to "NAV har endra utbetalinga av ",
+                        Bokmal to "Nav har endret utbetalingen av ",
+                        Nynorsk to "Nav har endra utbetalinga av ",
                     )
                 }
 

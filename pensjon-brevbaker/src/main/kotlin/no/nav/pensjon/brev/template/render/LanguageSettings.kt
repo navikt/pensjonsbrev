@@ -145,9 +145,9 @@ val pensjonLatexSettings = languageSettings {
 val pensjonHTMLSettings = languageSettings(pensjonLatexSettings) {
     setting(LanguageSetting.HTML.altTextLogo) {
         Literal.create(
-            Bokmal to "NAV logo",
-            Nynorsk to "NAV logo",
-            English to "NAV logo",
+            Bokmal to "Nav logo",
+            Nynorsk to "Nav logo",
+            English to "Nav logo",
         )
     }
 }

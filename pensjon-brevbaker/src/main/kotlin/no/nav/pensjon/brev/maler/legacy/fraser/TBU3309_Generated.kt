@@ -23,14 +23,14 @@ data class TBU3309_Generated(
 
 		paragraph {
 			text (
-				Bokmal to "I etterbetalingen trekker vi skatt etter standardsatser fra Skatteetaten. På utbetalingsmeldingen ser du hvilken skattesats som er brukt. NAV kan redusere etterbetalingen din dersom du har:",
-				Nynorsk to "I etterbetalinga trekkjer vi skatt etter standardsatsar frå Skatteetaten. På utbetalingsmeldinga ser du kva skattesats som er brukt. NAV kan redusere etterbetalinga di dersom du har:",
+				Bokmal to "I etterbetalingen trekker vi skatt etter standardsatser fra Skatteetaten. På utbetalingsmeldingen ser du hvilken skattesats som er brukt. Nav kan redusere etterbetalingen din dersom du har:",
+				Nynorsk to "I etterbetalinga trekkjer vi skatt etter standardsatsar frå Skatteetaten. På utbetalingsmeldinga ser du kva skattesats som er brukt. Nav kan redusere etterbetalinga di dersom du har:",
 			)
 			list {
 				item {
 					text(
-						Bokmal to "Feilutbetalingsgjeld hos NAV",
-						Nynorsk to "feilutbetalingsgjeld hos NAV",
+						Bokmal to "Feilutbetalingsgjeld hos Nav",
+						Nynorsk to "feilutbetalingsgjeld hos Nav",
 					)
 				}
 
@@ -54,8 +54,8 @@ data class TBU3309_Generated(
 				}
 				item {
 					text(
-						Bokmal to "Bidragsgjeld hos NAV",
-						Nynorsk to "bidragsgjeld hos NAV",
+						Bokmal to "Bidragsgjeld hos Nav",
+						Nynorsk to "bidragsgjeld hos Nav",
 					)
 				}
 				item {

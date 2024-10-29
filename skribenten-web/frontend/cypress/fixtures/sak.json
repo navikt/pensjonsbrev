@@ -127,7 +127,7 @@
       "redigerbarBrevtittel": false
     },
     {
-      "name": "Klage - orientering om saksbehandlingstid ved NAV Klageinstans",
+      "name": "Klage - orientering om saksbehandlingstid ved Nav klageinstans",
       "id": "PE_IY_03_162",
       "brevsystem": "EXSTREAM",
       "spraak": [
@@ -422,7 +422,7 @@
       "redigerbarBrevtittel": false
     },
     {
-      "name": "Klage - følgeskriv til oversendelse til NAV Klageinstans",
+      "name": "Klage - følgeskriv til oversendelse til Nav klageinstans",
       "id": "PE_IY_03_154",
       "brevsystem": "EXSTREAM",
       "spraak": [
@@ -446,7 +446,7 @@
       "redigerbarBrevtittel": true
     },
     {
-      "name": "Klage - orientering om oversendelse til NAV Klageinstans",
+      "name": "Klage - orientering om oversendelse til Nav klageinstans",
       "id": "PE_IY_03_157",
       "brevsystem": "EXSTREAM",
       "spraak": [
@@ -484,7 +484,7 @@
       "redigerbarBrevtittel": false
     },
     {
-      "name": "Brev fra NAV",
+      "name": "Brev fra Nav",
       "id": "PE_IY_05_300",
       "brevsystem": "EXSTREAM",
       "spraak": [
@@ -496,7 +496,7 @@
       "redigerbarBrevtittel": true
     },
     {
-      "name": "Klage - oversendelse til NAV Klageinstans",
+      "name": "Klage - oversendelse til Nav klageinstans",
       "id": "PE_IY_03_150",
       "brevsystem": "EXSTREAM",
       "spraak": [

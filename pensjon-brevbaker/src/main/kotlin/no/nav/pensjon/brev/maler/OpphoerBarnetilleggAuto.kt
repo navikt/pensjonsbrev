@@ -87,15 +87,15 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
         title {
             showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
                 text(
-                    Language.Bokmal to "NAV har endret barnetillegget ditt",
-                    Language.Nynorsk to "NAV har endra barnetillegget ditt",
-                    Language.English to "NAV has changed the child supplement in your disability benefit"
+                    Language.Bokmal to "Nav har endret barnetillegget ditt",
+                    Language.Nynorsk to "Nav har endra barnetillegget ditt",
+                    Language.English to "Nav has changed the child supplement in your disability benefit"
                 )
             }.orShow {
                 text(
-                    Language.Bokmal to "NAV har vedtatt at barnetillegget ditt opphører",
-                    Language.Nynorsk to "NAV har stansa barnetillegget ditt",
-                    Language.English to "NAV has discontinued the child supplement in your disability benefit"
+                    Language.Bokmal to "Nav har vedtatt at barnetillegget ditt opphører",
+                    Language.Nynorsk to "Nav har stansa barnetillegget ditt",
+                    Language.English to "Nav has discontinued the child supplement in your disability benefit"
                 )
             }
         }
