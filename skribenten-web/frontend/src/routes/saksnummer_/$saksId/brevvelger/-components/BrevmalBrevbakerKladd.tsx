@@ -65,20 +65,19 @@ const Brevmal = (props: {
   letterMetadata?: LetterMetadata;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
+  const { saksId, brev, setOnFormSubmitClick } = props;
   const navigate = useNavigate({ from: Route.fullPath });
 
   useEffect(() => {
-    props.setOnFormSubmitClick({
+    setOnFormSubmitClick({
       onClick: () => {
         navigate({
           to: "/saksnummer/$saksId/brev/$brevId",
-          params: { saksId: props.saksId, brevId: props.brev.id },
+          params: { saksId: saksId, brevId: brev.id },
         });
       },
     });
-    //eslint vil at vi skal ha props som dependency - dette er noe vi egentlig ikke har behov for
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.setOnFormSubmitClick, props.saksId, props.brev.id, navigate]);
+  }, [setOnFormSubmitClick, saksId, brev.id, navigate]);
 
   return (
     <div

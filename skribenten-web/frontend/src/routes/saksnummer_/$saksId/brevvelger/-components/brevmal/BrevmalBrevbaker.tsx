@@ -133,9 +133,10 @@ const BrevmalBrevbaker = (props: {
     },
   });
 
+  const { setOnFormSubmitClick } = props;
   useEffect(() => {
     if (harEksisterendeKladd) {
-      props.setOnFormSubmitClick({
+      setOnFormSubmitClick({
         onClick: () => {
           form.trigger().then((isValid) => {
             if (isValid) {
@@ -145,11 +146,9 @@ const BrevmalBrevbaker = (props: {
         },
       });
     } else {
-      props.setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
+      setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
     }
-    //eslint vil at vi skal ha props som dependency - dette er noe vi egentlig ikke har behov for
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.setOnFormSubmitClick, harEksisterendeKladd, form]);
+  }, [setOnFormSubmitClick, harEksisterendeKladd, form]);
 
   return (
     <VStack
