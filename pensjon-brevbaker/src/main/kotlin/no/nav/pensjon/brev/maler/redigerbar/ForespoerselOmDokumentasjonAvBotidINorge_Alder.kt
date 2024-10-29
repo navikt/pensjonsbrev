@@ -44,14 +44,34 @@ object ForespoerselOmDokumentasjonAvBotidINorge_Alder : RedigerbarTemplate<Empty
         }
         outline {
             //[PE_IY_03_167_tekst]
-
             paragraph {
+                text(
+                    Bokmal to "Navn:",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                )
                 textExpr(
-                    Bokmal to "Navn:				".expr() + felles.bruker.fulltNavn()
-                            + "Fødselsdato:			" + felles.bruker.foedselsnummer.value
-                            + "Saksnummer:			" + felles.saksnummer,
+                    Bokmal to "				".expr() + felles.bruker.fulltNavn()
                 )
             }
+            paragraph {
+                text(
+                    Bokmal to "Fødselsdato:",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                )
+                textExpr(
+                    Bokmal to "			".expr() + felles.bruker.foedselsnummer.value
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Saksnummer:",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                )
+                textExpr(
+                    Bokmal to "			".expr() + felles.saksnummer,
+                )
+            }
+
             //[PE_IY_03_167_tekst]
 
             paragraph {
