@@ -9,10 +9,12 @@ import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import LetterTemplateTags from "~/components/LetterTemplateTags";
+import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { SlettBrev } from "~/components/SlettBrev";
 import { type LetterMetadata } from "~/types/apiTypes";
 import type { BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
+import { erBrevArkivert } from "~/utils/brevUtils";
 
 import Oppsummeringspar from "../../kvittering/-components/Oppsummeringspar";
 import type { SubmitTemplateOptions } from "../route";
@@ -71,13 +73,21 @@ const Brevmal = (props: {
   useEffect(() => {
     setOnFormSubmitClick({
       onClick: () => {
-        navigate({
-          to: "/saksnummer/$saksId/brev/$brevId",
-          params: { saksId: saksId, brevId: brev.id },
-        });
+        if (erBrevArkivert(brev)) {
+          navigate({
+            to: "/saksnummer/$saksId/brevbehandler",
+            params: { saksId: saksId },
+            search: { brevId: brev.id },
+          });
+        } else {
+          navigate({
+            to: "/saksnummer/$saksId/brev/$brevId",
+            params: { saksId: saksId, brevId: brev.id },
+          });
+        }
       },
     });
-  }, [setOnFormSubmitClick, saksId, brev.id, navigate]);
+  }, [setOnFormSubmitClick, saksId, brev, navigate]);
 
   return (
     <div
@@ -89,18 +99,22 @@ const Brevmal = (props: {
     >
       <VStack gap="4">
         <VStack gap="4">
-          <SlettBrev
-            brevId={props.brev.id}
-            buttonText="Slett kladd"
-            modalTexts={{
-              heading: "Vil du slette kladden?",
-              body: "Kladden vil bli slettet, og du kan ikke angre denne handlingen.",
-              buttonYes: "Ja, slett kladden",
-              buttonNo: "Nei, behold kladden",
-            }}
-            onSlettSuccess={() => navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: props.saksId } })}
-            sakId={props.saksId}
-          />
+          {!erBrevArkivert(props.brev) && (
+            <SlettBrev
+              brevId={props.brev.id}
+              buttonText="Slett kladd"
+              modalTexts={{
+                heading: "Vil du slette kladden?",
+                body: "Kladden vil bli slettet, og du kan ikke angre denne handlingen.",
+                buttonYes: "Ja, slett kladden",
+                buttonNo: "Nei, behold kladden",
+              }}
+              onSlettSuccess={() =>
+                navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: props.saksId } })
+              }
+              sakId={props.saksId}
+            />
+          )}
 
           <VStack gap="2">
             <Heading size="small">{props.brev.brevtittel}</Heading>
@@ -115,12 +129,17 @@ const Brevmal = (props: {
         <Divider />
 
         <VStack gap="8">
-          <EndreMottakerMedOppsummeringOgApiHåndtering
-            brev={props.brev}
-            saksId={props.saksId}
-            withGap
-            withOppsummeringTitle
-          />
+          {erBrevArkivert(props.brev) ? (
+            <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
+          ) : (
+            <EndreMottakerMedOppsummeringOgApiHåndtering
+              brev={props.brev}
+              saksId={props.saksId}
+              withGap
+              withOppsummeringTitle
+            />
+          )}
+
           <Oppsummeringspar
             boldedTitle
             size="small"

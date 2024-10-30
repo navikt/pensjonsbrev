@@ -11,11 +11,11 @@ import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/Model
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
-import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
+import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 import { Route } from "../../../route";
 import type { SubmitTemplateOptions } from "../../route";

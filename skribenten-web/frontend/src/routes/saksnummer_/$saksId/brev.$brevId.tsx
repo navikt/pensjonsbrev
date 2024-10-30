@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyLong, Button, Heading, HStack, Label, Modal, Tabs, VStack } from "@navikt/ds-react";
+import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -25,9 +25,11 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
+import { ApiError } from "~/components/ApiError";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
+import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
@@ -40,21 +42,62 @@ function RedigerBrevPage() {
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
     staleTime: Number.POSITIVE_INFINITY,
-    retry: (_, error: AxiosError) => error && error.response?.status !== 423,
-    throwOnError: (error: AxiosError) => error.response?.status !== 423,
+    retry: (_, error: AxiosError) => error && error.response?.status !== 423 && error.response?.status !== 409,
+    throwOnError: (error: AxiosError) => error.response?.status !== 423 && error.response?.status !== 409,
   });
-  if (brevQuery.error?.response?.data) {
-    return (
-      <ReservertBrevError
-        doRetry={brevQuery.refetch}
-        reservasjon={brevQuery.error.response.data as ReservasjonResponse}
-      />
-    );
-  } else if (brevQuery.data) {
-    return <RedigerBrev brev={brevQuery.data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={undefined} />;
-  } else {
-    return <div>Laster...</div>;
-  }
+
+  return queryFold(
+    brevQuery,
+    () => null,
+    () => (
+      <div
+        css={css`
+          display: flex;
+          flex: 1;
+        `}
+      >
+        <Skeleton height={"auto"} variant="rectangle" width={"33%"} />
+        <Skeleton height={"auto"} variant="rectangle" width={"66%"} />
+      </div>
+    ),
+    (error) => {
+      if (error.response?.status === 423 && error.response?.data) {
+        return (
+          <ReservertBrevError doRetry={brevQuery.refetch} reservasjon={error.response.data as ReservasjonResponse} />
+        );
+      }
+      if (error.response?.status === 409) {
+        return (
+          <Box
+            background="surface-default"
+            css={css`
+              display: flex;
+              flex: 1;
+            `}
+            padding="6"
+          >
+            <VStack align="start" gap="2">
+              <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
+              <Button
+                as={Link}
+                css={css`
+                  padding: 4px 0;
+                `}
+                params={{ saksId: saksId }}
+                size="small"
+                to="/saksnummer/$saksId/brevbehandler"
+                variant="tertiary"
+              >
+                Gå til brevbehandler
+              </Button>
+            </VStack>
+          </Box>
+        );
+      }
+      return <ApiError error={error} title={"En feil skjedde ved henting av brev"} />;
+    },
+    (data) => <RedigerBrev brev={data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={undefined} />,
+  );
 }
 
 const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: ReservasjonResponse; doRetry: () => void }) => {
