@@ -224,7 +224,7 @@ describe("Brevvelger spec", () => {
         cy.stub(window, "open").as("window-open");
       },
     });
-
+    cy.wait("@enheter");
     cy.getDataCy("avsenderenhet-select").should("have.value", "4815");
   });
 });
