@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pensjonsbrev-alerts
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  groups:
+  - name: alerts
+    rules:
+    - alert: pensjonsbrev-applikasjon-nede
+      expr: sum by(deployment) (kube_deployment_status_replicas_available{deployment=~"pensjon-brev*"} == 0)
+      for: 2m
+      annotations:
+        consequence: "App *\{{ $labels.deployment }}* er nede i namespace *\{{ $labels.kubernetes_namespace }}*"
+        action: "`kubectl describe pod -l app=\{{ $labels.deployment }} -n \{{ $labels.namespace }}` for events, og `kubectl logs -l app=\{{ $labels.deployment }} -n \{{ $labels.namespace }}` for logger"
+      labels:
+        namespace: pensjonsbrev
+        severity: critical

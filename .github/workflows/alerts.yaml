@@ -1,0 +1,32 @@
+name: Deploy alerts to NAIS
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'alerts.yaml'
+      - '.github/workflows/alerts.yaml'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  apply-alerts:
+    name: Apply alerts to cluster
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: deploy to dev
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: alerts.yaml
+          VAR: LOGS_URL=https://logs.adeo.no/app/r/s/PDhhw
+      - name: deploy to prod
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: alerts.yaml
+          VAR: https://logs.adeo.no/app/r/s/kapIb
