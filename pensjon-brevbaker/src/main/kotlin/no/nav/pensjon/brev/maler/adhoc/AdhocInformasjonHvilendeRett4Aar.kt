@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -83,9 +82,7 @@ object AdhocInformasjonHvilendeRett4Aar : AutobrevTemplate<EmptyBrevdata> {
                     }
                 }
             }
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }
