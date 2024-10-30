@@ -4,6 +4,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
@@ -127,6 +128,7 @@ class BrevmalService(
                 .map { result ->
                     result.filter { brev ->
                         when {
+                            brev.erMalMedFritekst() -> Features.brevMedFritekst.isEnabled()
                             brev.hasEmptyBrevData() -> Features.brevutendata.isEnabled()
                             else -> true
                         }
@@ -138,6 +140,11 @@ class BrevmalService(
                     emptyList()
                 }
         } else emptyList()
+
+    private fun TemplateDescription.erMalMedFritekst() = name in setOf(
+        Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
+        Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ETTERLATTE
+    ).map { it.name }
 
     private fun TemplateDescription.hasEmptyBrevData() = letterDataClass in setOf(
         EmptyRedigerbarBrevdata::class.java.name,
