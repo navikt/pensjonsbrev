@@ -152,7 +152,7 @@ describe("Kladd", () => {
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/2");
   });
 
-  it("arkiverte brev i brevvelger sin åpne brev skal navigere til brevbehandler", () => {
+  it("arkiverte brev i brevvelger skal ikke kunne gjøre endringer på brev, og kun navigere videre til brevbehandler", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
       req.reply([
         nyBrevInfo({ id: 1, opprettet: "2024-09-17T08:36:09.785Z", status: { type: "Klar" }, journalpostId: 123_456 }),
