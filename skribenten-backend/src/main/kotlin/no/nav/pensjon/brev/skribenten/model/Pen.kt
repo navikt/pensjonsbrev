@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import java.time.LocalDate
 import java.time.LocalDateTime
+import no.nav.pensjon.brev.api.model.Sakstype as BrevbakerSakstype
 
 object Pen {
     enum class SakType(val behandlingsnummer: Behandlingsnummer?) {
@@ -24,6 +25,21 @@ object Pen {
         KRIGSP(null),
         OMSORG(null),
         UFOREP(B255);
+
+        fun toBrevbaker(): BrevbakerSakstype = when(this) {
+            AFP -> BrevbakerSakstype.AFP
+            AFP_PRIVAT -> BrevbakerSakstype.AFP_PRIVAT
+            ALDER -> BrevbakerSakstype.ALDER
+            BARNEP -> BrevbakerSakstype.BARNEP
+            FAM_PL -> BrevbakerSakstype.FAM_PL
+            GAM_YRK -> BrevbakerSakstype.GAM_YRK
+            GENRL -> BrevbakerSakstype.GENRL
+            GJENLEV -> BrevbakerSakstype.GJENLEV
+            GRBL -> BrevbakerSakstype.GRBL
+            KRIGSP -> BrevbakerSakstype.KRIGSP
+            OMSORG -> BrevbakerSakstype.OMSORG
+            UFOREP -> BrevbakerSakstype.UFOREP
+        }
     }
 
     data class SakSelection(
@@ -95,7 +111,7 @@ object Pen {
     )
 
     data class SendRedigerbartBrevRequest(
-        val templateDescription: TemplateDescription,
+        val templateDescription: TemplateDescription.Redigerbar,
         val dokumentDato: LocalDate,
         val saksId: Long,
         val brevkode: Brevkode.Redigerbar,

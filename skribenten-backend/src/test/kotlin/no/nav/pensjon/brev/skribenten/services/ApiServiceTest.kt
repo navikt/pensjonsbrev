@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.ktor.server.application.*
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
@@ -26,7 +26,7 @@ class ApiServiceTest {
     private val samhandlerService = mockk<SamhandlerService>()
     private val dto2ApiService = Dto2ApiService(
         brevbakerService = mockk {
-            coEvery { getRedigerbarTemplate(eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)) } returns TemplateDescription(
+            coEvery { getRedigerbarTemplate(eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)) } returns TemplateDescription.Redigerbar(
                 name = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name,
                 letterDataClass = InformasjonOmSaksbehandlingstidDto::class.java.name,
                 languages = listOf(LanguageCode.BOKMAL),
@@ -37,6 +37,8 @@ class ApiServiceTest {
                     LetterMetadata.Brevtype.INFORMASJONSBREV
                 ),
                 kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+                brevkontekst = TemplateDescription.Brevkontekst.ALLE,
+                sakstyper = Sakstype.all,
             )
         },
         navansattService = navansattService,

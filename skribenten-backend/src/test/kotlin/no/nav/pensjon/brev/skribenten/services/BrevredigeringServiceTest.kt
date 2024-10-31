@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.mockk.*
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -66,12 +67,14 @@ class BrevredigeringServiceTest {
         brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
     )
     private val letterResponse = LetterResponse(file = stagetPDF, contentType = "pdf", letterMetadata = lettermetadata)
-    private val templateDescription = TemplateDescription(
+    private val templateDescription = TemplateDescription.Redigerbar(
         name = "template name",
         letterDataClass = "template letter data class",
         languages = listOf(LanguageCode.ENGLISH),
         metadata = lettermetadata,
-        kategori = null
+        kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+        brevkontekst = TemplateDescription.Brevkontekst.ALLE,
+        sakstyper = Sakstype.all,
     )
 
     private val brevbakerMock: BrevbakerService = mockk<BrevbakerService>()

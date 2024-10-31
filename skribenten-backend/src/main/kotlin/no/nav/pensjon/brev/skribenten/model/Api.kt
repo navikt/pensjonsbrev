@@ -6,9 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.services.LetterMetadata
-import no.nav.pensjon.brev.skribenten.services.NavEnhet
-import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import no.nav.pensjon.brev.skribenten.services.*
 import java.time.Duration
 import java.time.Instant
 
@@ -113,7 +111,18 @@ object Api {
 
     data class SakContext(
         val sak: Pen.SakSelection,
-        val brevMetadata: List<LetterMetadata>
+        val brevMetadata: List<Brevmal>
+    )
+
+    data class Brevmal(
+        val name: String,
+        val id: String,
+        val brevsystem: BrevSystem,
+        val spraak: List<SpraakKode>,
+        val brevkategori: String?,
+        val dokumentkategoriCode: BrevdataDto.DokumentkategoriCode?,
+        val redigerbart: Boolean,
+        val redigerbarBrevtittel: Boolean,
     )
 
     data class BestillDoksysBrevRequest(

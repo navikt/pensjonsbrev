@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.redigerbar
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
@@ -25,8 +26,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
+    // PE_UT_04_104
     override val kode: Brevkode.Redigerbar = Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
         name = kode.name, letterDataType = AvslagUfoeretrygdDto::class, languages = languages(Bokmal, Nynorsk, English), letterMetadata = LetterMetadata(
