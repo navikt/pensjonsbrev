@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
+import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
 import no.nav.pensjon.brev.maler.redigerbar.VarselOmMuligAvslag
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
@@ -40,6 +41,7 @@ object ProductionTemplates {
         VarselSaksbehandlingstidAuto,
     )
     val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+        AvslagUfoeretrygd,
         BekreftelsePaaFlyktningstatus,
         InformasjonOmSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
