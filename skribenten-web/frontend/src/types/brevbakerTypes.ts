@@ -57,11 +57,6 @@ export type Signatur = {
 
 export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
 
-export type ParagraphBlock = Block & {
-  readonly type: typeof PARAGRAPH;
-  readonly content: Content[];
-};
-
 export type Identifiable = {
   readonly id: number | null;
 };
@@ -72,7 +67,7 @@ export type LiteralValue = Identifiable & {
   readonly text: string;
   readonly editedText: string | null;
   readonly fontType: FontType;
-  readonly editedFontType: Nullable<string>;
+  readonly editedFontType: Nullable<FontType>;
 };
 export const VARIABLE = "VARIABLE";
 export type VariableValue = {
@@ -100,7 +95,7 @@ export type Item = Identifiable & {
 };
 
 export type TextContent = LiteralValue | VariableValue;
-export type Content = ItemList | LiteralValue | VariableValue;
+export type Content = ItemList | TextContent;
 
 export type Block = Identifiable & {
   readonly type: string;
@@ -111,6 +106,10 @@ export type Block = Identifiable & {
 };
 
 export const PARAGRAPH = "PARAGRAPH";
+export type ParagraphBlock = Block & {
+  readonly type: typeof PARAGRAPH;
+  readonly content: Content[];
+};
 
 export const TITLE1 = "TITLE1";
 export type Title1Block = Block & {

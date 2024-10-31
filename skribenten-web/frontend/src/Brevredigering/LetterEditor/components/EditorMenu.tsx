@@ -8,6 +8,7 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { FontType } from "~/types/brevbakerTypes";
+import { getLiteralEditedFontTypeForBlock } from "~/utils/brevbakerUtils";
 import { formatTime } from "~/utils/dateUtils";
 
 import type { CallbackReceiver } from "../lib/actions";
@@ -157,12 +158,6 @@ const LagretTidspunkt = memo(
   },
 );
 
-const getCurrentFontType = (editorState: LetterEditorState) => {
-  const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
-
-  console.log("block", block);
-};
-
 export const EditorFonts = (props: {
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
@@ -173,23 +168,33 @@ export const EditorFonts = (props: {
     ],
   );
 
-  getCurrentFontType(props.editorState);
+  const activeFontType = getLiteralEditedFontTypeForBlock(props.editorState);
 
   return (
     <div>
       <FontButton
+        active={activeFontType === FontType.BOLD}
         disabled={!changeableContent}
         onClick={() => {
-          applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.BOLD);
+          if (activeFontType === FontType.BOLD) {
+            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.PLAIN);
+          } else {
+            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.BOLD);
+          }
           //setter fokuset tilbake til editor etter valgt fonttype
           applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
         }}
         text="F"
       />
       <FontButton
+        active={activeFontType === FontType.ITALIC}
         disabled={!changeableContent}
         onClick={() => {
-          applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.ITALIC);
+          if (activeFontType === FontType.ITALIC) {
+            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.PLAIN);
+          } else {
+            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.ITALIC);
+          }
           //setter fokuset tilbake til editor etter valgt fonttype
           applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
         }}
@@ -199,11 +204,7 @@ export const EditorFonts = (props: {
   );
 };
 
-const FontButton = (props: {
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  text: string;
-  disabled: boolean;
-}) => {
+const FontButton = (props: { active: boolean; onClick: () => void; text: string; disabled: boolean }) => {
   return (
     <Button
       css={css`
@@ -214,9 +215,20 @@ const FontButton = (props: {
         &:hover {
           color: var(--a-text-default);
         }
+
+        /*
+          TODO - style knappen etter ønsket design.
+        */
+        ${props.active &&
+        css`
+          background-color: #ccc;
+          color: #000;
+          border-color: #999;
+          box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        `}
       `}
       disabled={props.disabled}
-      onClick={(e) => props.onClick(e)}
+      onClick={props.onClick}
       size="small"
       type="button"
       variant="tertiary"
