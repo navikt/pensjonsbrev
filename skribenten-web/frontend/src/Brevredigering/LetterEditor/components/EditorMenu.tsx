@@ -1,12 +1,13 @@
 import { css } from "@emotion/react";
 import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { Button, HStack, Loader, Select } from "@navikt/ds-react";
+import { Button, HStack, Label, Loader, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 import { memo, useEffect, useRef, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { VerticalDivider } from "~/components/Divider";
 import { FontType } from "~/types/brevbakerTypes";
 import { getLiteralEditedFontTypeForBlock } from "~/utils/brevbakerUtils";
 import { formatTime } from "~/utils/dateUtils";
@@ -72,8 +73,11 @@ export const EditorMenu = () => {
         justify-content: space-between;
       `}
     >
-      <EditorFonts editorState={editorState} setEditorState={setEditorState} />
-      <SelectTypography editorState={editorState} setEditorState={setEditorState} />
+      <HStack gap="5">
+        <EditorFonts editorState={editorState} setEditorState={setEditorState} />
+        <VerticalDivider />
+        <SelectTypography editorState={editorState} setEditorState={setEditorState} />
+      </HStack>
 
       <LagretTidspunkt
         datetime={editorState.info.sistredigert}
@@ -184,7 +188,7 @@ export const EditorFonts = (props: {
           //setter fokuset tilbake til editor etter valgt fonttype
           applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
         }}
-        text="F"
+        text={<Label>F</Label>}
       />
       <FontButton
         active={activeFontType === FontType.ITALIC}
@@ -198,13 +202,21 @@ export const EditorFonts = (props: {
           //setter fokuset tilbake til editor etter valgt fonttype
           applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
         }}
-        text="K"
+        text={
+          <Label
+            css={css`
+              font-style: italic;
+            `}
+          >
+            K
+          </Label>
+        }
       />
     </div>
   );
 };
 
-const FontButton = (props: { active: boolean; onClick: () => void; text: string; disabled: boolean }) => {
+const FontButton = (props: { active: boolean; onClick: () => void; text: React.ReactNode; disabled: boolean }) => {
   return (
     <Button
       css={css`
