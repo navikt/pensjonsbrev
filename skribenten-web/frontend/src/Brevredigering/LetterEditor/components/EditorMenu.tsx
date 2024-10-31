@@ -1,12 +1,13 @@
 import { css } from "@emotion/react";
 import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { HStack, Loader, Select } from "@navikt/ds-react";
+import { Button, HStack, Loader, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 import { memo, useEffect, useRef, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { FontType } from "~/types/brevbakerTypes";
 import { formatTime } from "~/utils/dateUtils";
 
 import type { CallbackReceiver } from "../lib/actions";
@@ -70,6 +71,7 @@ export const EditorMenu = () => {
         justify-content: space-between;
       `}
     >
+      <EditorFonts editorState={editorState} setEditorState={setEditorState} />
       <SelectTypography editorState={editorState} setEditorState={setEditorState} />
 
       <LagretTidspunkt
@@ -154,3 +156,72 @@ const LagretTidspunkt = memo(
     }
   },
 );
+
+const getCurrentFontType = (editorState: LetterEditorState) => {
+  const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
+
+  console.log("block", block);
+};
+
+export const EditorFonts = (props: {
+  editorState: LetterEditorState;
+  setEditorState: CallbackReceiver<LetterEditorState>;
+}) => {
+  const changeableContent = isTextContent(
+    props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex]?.content?.[
+      props.editorState.focus.contentIndex
+    ],
+  );
+
+  getCurrentFontType(props.editorState);
+
+  return (
+    <div>
+      <FontButton
+        disabled={!changeableContent}
+        onClick={() => {
+          applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.BOLD);
+          //setter fokuset tilbake til editor etter valgt fonttype
+          applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
+        }}
+        text="F"
+      />
+      <FontButton
+        disabled={!changeableContent}
+        onClick={() => {
+          applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.ITALIC);
+          //setter fokuset tilbake til editor etter valgt fonttype
+          applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
+        }}
+        text="K"
+      />
+    </div>
+  );
+};
+
+const FontButton = (props: {
+  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  text: string;
+  disabled: boolean;
+}) => {
+  return (
+    <Button
+      css={css`
+        color: var(--a-text-default);
+        width: 32px;
+        height: 32px;
+
+        &:hover {
+          color: var(--a-text-default);
+        }
+      `}
+      disabled={props.disabled}
+      onClick={(e) => props.onClick(e)}
+      size="small"
+      type="button"
+      variant="tertiary"
+    >
+      {props.text}
+    </Button>
+  );
+};

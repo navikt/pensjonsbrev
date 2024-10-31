@@ -1,3 +1,5 @@
+import type { Nullable } from "./Nullable";
+
 export type LetterModelSpecification = {
   readonly types: ObjectTypeSpecifications;
   readonly letterModelTypeName: string;
@@ -69,6 +71,8 @@ export type LiteralValue = Identifiable & {
   readonly type: typeof LITERAL;
   readonly text: string;
   readonly editedText: string | null;
+  readonly fontType: FontType;
+  readonly editedFontType: Nullable<string>;
 };
 export const VARIABLE = "VARIABLE";
 export type VariableValue = {
@@ -76,7 +80,14 @@ export type VariableValue = {
   readonly type: typeof VARIABLE;
   readonly name?: string;
   readonly text: string;
+  readonly fontType: FontType;
 };
+
+export enum FontType {
+  PLAIN = "PLAIN",
+  BOLD = "BOLD",
+  ITALIC = "ITALIC",
+}
 
 export const ITEM_LIST = "ITEM_LIST";
 export type ItemList = Identifiable & {
