@@ -178,6 +178,7 @@ export const EditorFonts = (props: {
     <div>
       <FontButton
         active={activeFontType === FontType.BOLD}
+        dataCy="fonttype-bold"
         disabled={!changeableContent}
         onClick={() => {
           if (activeFontType === FontType.BOLD) {
@@ -192,6 +193,7 @@ export const EditorFonts = (props: {
       />
       <FontButton
         active={activeFontType === FontType.ITALIC}
+        dataCy="fonttype-italic"
         disabled={!changeableContent}
         onClick={() => {
           if (activeFontType === FontType.ITALIC) {
@@ -216,7 +218,13 @@ export const EditorFonts = (props: {
   );
 };
 
-const FontButton = (props: { active: boolean; onClick: () => void; text: React.ReactNode; disabled: boolean }) => {
+const FontButton = (props: {
+  active: boolean;
+  onClick: () => void;
+  text: React.ReactNode;
+  disabled: boolean;
+  dataCy: string;
+}) => {
   return (
     <Button
       css={css`
@@ -229,7 +237,7 @@ const FontButton = (props: { active: boolean; onClick: () => void; text: React.R
         }
 
         /*
-          TODO - style knappen etter ønsket design.
+          TODO - style at knappen er aktiv etter ønsket design.
         */
         ${props.active &&
         css`
@@ -239,6 +247,7 @@ const FontButton = (props: { active: boolean; onClick: () => void; text: React.R
           box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
         `}
       `}
+      data-cy={props.dataCy}
       disabled={props.disabled}
       onClick={props.onClick}
       size="small"

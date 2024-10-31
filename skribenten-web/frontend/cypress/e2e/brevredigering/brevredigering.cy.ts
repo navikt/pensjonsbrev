@@ -163,4 +163,16 @@ describe("Brevredigering", () => {
     cy.contains("Gå til brevbehandler").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler");
   });
+
+  it("kan endre fontType for en block med tekst", () => {
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Dersom vi trenger").click();
+    cy.get('[data-cy="fonttype-bold"]').click();
+    cy.contains("Dersom vi trenger").should("have.css", "font-weight", "700");
+    cy.get('[data-cy="fonttype-italic"]').click();
+    cy.contains("Dersom vi trenger").should("have.css", "font-style", "italic");
+    cy.get('[data-cy="fonttype-italic"]').click();
+    cy.contains("Dersom vi trenger").should("not.have.css", "font-style", "italic");
+    cy.contains("Dersom vi trenger").should("not.have.css", "font-weight", "700");
+  });
 });
