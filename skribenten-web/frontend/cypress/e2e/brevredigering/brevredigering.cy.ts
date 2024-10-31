@@ -164,15 +164,43 @@ describe("Brevredigering", () => {
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler");
   });
 
-  it("kan endre fontType for en block med tekst", () => {
+  it("kan ikke redigere et arkivert brev", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", {
+      statusCode: 409,
+    }).as("brev");
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Brevet er arkivert, og kan derfor ikke redigeres.").should("exist");
+    cy.contains("Gå til brevbehandler").click();
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler");
+  });
+
+  it("kan endre tekst fonttype til bold", () => {
     cy.visit("/saksnummer/123456/brev/1");
     cy.contains("Dersom vi trenger").click();
-    cy.get('[data-cy="fonttype-bold"]').click();
+    cy.getDataCy("fonttype-bold").click();
     cy.contains("Dersom vi trenger").should("have.css", "font-weight", "700");
-    cy.get('[data-cy="fonttype-italic"]').click();
-    cy.contains("Dersom vi trenger").should("have.css", "font-style", "italic");
-    cy.get('[data-cy="fonttype-italic"]').click();
-    cy.contains("Dersom vi trenger").should("not.have.css", "font-style", "italic");
+    cy.getDataCy("fonttype-bold").click();
     cy.contains("Dersom vi trenger").should("not.have.css", "font-weight", "700");
+  });
+  it("kan endre tekst fonttype til italic", () => {
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Dersom vi trenger").click();
+    cy.getDataCy("fonttype-italic").click();
+    cy.contains("Dersom vi trenger").should("have.css", "font-style", "italic");
+    cy.getDataCy("fonttype-italic").click();
+    cy.contains("Dersom vi trenger").should("not.have.css", "font-style", "italic");
+  });
+  it("kan endre fonttype til et punkt i punktliste", () => {
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("punkt 1").click();
+    cy.getDataCy("fonttype-bold").click();
+    cy.contains("punkt 1").should("have.css", "font-weight", "700");
+
+    cy.getDataCy("fonttype-italic").click();
+    cy.contains("punkt 1").should("have.css", "font-style", "italic");
+    cy.getDataCy("fonttype-italic").click();
+
+    cy.contains("punkt 1").should("not.have.css", "font-style", "italic");
+    cy.contains("punkt 1").should("not.have.css", "font-weight", "700");
   });
 });

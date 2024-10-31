@@ -1,37 +1,46 @@
 import { produce } from "immer";
 
 import type { FontType } from "~/types/brevbakerTypes";
+import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
-import { isTextContent } from "../model/utils";
-import type { BlockContentIndex } from "./model";
+import { isItemContentIndex } from "../model/utils";
+import type { LiteralIndex } from "./model";
 
-export const switchFontType: Action<LetterEditorState, [literalIndex: BlockContentIndex, fontType: FontType]> = produce(
+export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
   (draft, literalIndex, fontType) => {
     const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-
-    if (!isTextContent(block.content[literalIndex.contentIndex])) {
-      return;
-    }
-
     draft.isDirty = true;
 
-    for (const content of block.content) {
-      switch (content.type) {
-        case "LITERAL": {
-          content.editedFontType = fontType;
-          break;
-        }
-        case "VARIABLE": {
+    for (const blockContent of block.content) {
+      handleSwitchContent({
+        content: blockContent,
+        onLiteral: (literal) => {
+          literal.editedFontType = fontType;
+        },
+        onVariable: () => {
           //Variable kan ikke endres på enda
-          break;
-        }
-        case "ITEM_LIST": {
-          //TODO - Implementer fonttype for itemlist
-          break;
-        }
-      }
+        },
+        onItemList: (itemList) => {
+          if (!isItemContentIndex(literalIndex)) {
+            return;
+          }
+          const singleItem = itemList.items[literalIndex.itemIndex];
+
+          for (const itemContent of singleItem.content) {
+            handleSwitchTextContent({
+              content: itemContent,
+              onLiteral: (literal) => {
+                literal.editedFontType = fontType;
+              },
+              onVariable: () => {
+                //Variable kan ikke endres på enda
+              },
+            });
+          }
+        },
+      });
     }
   },
 );

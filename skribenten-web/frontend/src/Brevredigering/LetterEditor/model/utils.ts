@@ -5,6 +5,7 @@ import type { AnyBlock, Content, Item, TextContent } from "~/types/brevbakerType
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import { MergeTarget } from "../actions/merge";
+import type { ItemContentIndex, LiteralIndex } from "../actions/model";
 import type { ContentGroup } from "./state";
 
 export function isTextContent(content?: Content | null): content is TextContent {
@@ -66,3 +67,6 @@ export function isEmptyContentList(content: Content[]) {
 export function isEmptyBlock(block: AnyBlock): boolean {
   return isEmptyContentList(block.content);
 }
+
+export const isItemContentIndex = (i: LiteralIndex): i is ItemContentIndex =>
+  "itemIndex" in i && "itemContentIndex" in i;

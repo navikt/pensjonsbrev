@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { Button, HStack, Label, Loader, Select } from "@navikt/ds-react";
+import { HStack, Loader, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 import { memo, useEffect, useRef, useState } from "react";
 
@@ -8,8 +8,6 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { VerticalDivider } from "~/components/Divider";
-import { FontType } from "~/types/brevbakerTypes";
-import { getLiteralEditedFontTypeForBlock } from "~/utils/brevbakerUtils";
 import { formatTime } from "~/utils/dateUtils";
 
 import type { CallbackReceiver } from "../lib/actions";
@@ -18,6 +16,7 @@ import type { LetterEditorState } from "../model/state";
 import { getCursorOffset } from "../services/caretUtils";
 import type { Typography } from "../utils";
 import { TypographyToText } from "../utils";
+import EditorFonts from "./EditorFonts";
 
 const SelectTypography = (props: {
   editorState: LetterEditorState;
@@ -161,100 +160,3 @@ const LagretTidspunkt = memo(
     }
   },
 );
-
-export const EditorFonts = (props: {
-  editorState: LetterEditorState;
-  setEditorState: CallbackReceiver<LetterEditorState>;
-}) => {
-  const changeableContent = isTextContent(
-    props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex]?.content?.[
-      props.editorState.focus.contentIndex
-    ],
-  );
-
-  const activeFontType = getLiteralEditedFontTypeForBlock(props.editorState);
-
-  return (
-    <div>
-      <FontButton
-        active={activeFontType === FontType.BOLD}
-        dataCy="fonttype-bold"
-        disabled={!changeableContent}
-        onClick={() => {
-          if (activeFontType === FontType.BOLD) {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.PLAIN);
-          } else {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.BOLD);
-          }
-          //setter fokuset tilbake til editor etter valgt fonttype
-          applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
-        }}
-        text={<Label>F</Label>}
-      />
-      <FontButton
-        active={activeFontType === FontType.ITALIC}
-        dataCy="fonttype-italic"
-        disabled={!changeableContent}
-        onClick={() => {
-          if (activeFontType === FontType.ITALIC) {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.PLAIN);
-          } else {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.ITALIC);
-          }
-          //setter fokuset tilbake til editor etter valgt fonttype
-          applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
-        }}
-        text={
-          <Label
-            css={css`
-              font-style: italic;
-            `}
-          >
-            K
-          </Label>
-        }
-      />
-    </div>
-  );
-};
-
-const FontButton = (props: {
-  active: boolean;
-  onClick: () => void;
-  text: React.ReactNode;
-  disabled: boolean;
-  dataCy: string;
-}) => {
-  return (
-    <Button
-      css={css`
-        color: var(--a-text-default);
-        width: 32px;
-        height: 32px;
-
-        &:hover {
-          color: var(--a-text-default);
-        }
-
-        /*
-          TODO - style at knappen er aktiv etter ønsket design.
-        */
-        ${props.active &&
-        css`
-          background-color: #ccc;
-          color: #000;
-          border-color: #999;
-          box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-        `}
-      `}
-      data-cy={props.dataCy}
-      disabled={props.disabled}
-      onClick={props.onClick}
-      size="small"
-      type="button"
-      variant="tertiary"
-    >
-      {props.text}
-    </Button>
-  );
-};
