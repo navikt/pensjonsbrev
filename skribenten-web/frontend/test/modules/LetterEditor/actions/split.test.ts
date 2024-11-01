@@ -310,6 +310,8 @@ describe("LetterEditorActions.split", () => {
         type: LITERAL,
         text: "",
         editedText: "",
+        fontType: "PLAIN",
+        editedFontType: null,
       });
 
       const splitFromEmptyLastContent = Actions.split(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 }, 0);
@@ -321,6 +323,8 @@ describe("LetterEditorActions.split", () => {
         type: LITERAL,
         text: "",
         editedText: "",
+        fontType: "PLAIN",
+        editedFontType: null,
       });
     });
 
