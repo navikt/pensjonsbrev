@@ -2,7 +2,7 @@ import { produce } from "immer";
 
 import { deleteElement, text } from "~/Brevredigering/LetterEditor/actions/common";
 import type { AnyBlock, Identifiable } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import { FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
@@ -80,7 +80,14 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
 
           const contentBeforeItemList = block.content[literalIndex.contentIndex - 1];
           if (contentBeforeItemList?.type === VARIABLE) {
-            block.content.splice(literalIndex.contentIndex, 1, { type: LITERAL, id: null, text: "", editedText: "" });
+            block.content.splice(literalIndex.contentIndex, 1, {
+              type: LITERAL,
+              id: null,
+              text: "",
+              editedText: "",
+              fontType: FontType.PLAIN,
+              editedFontType: null,
+            });
             draft.focus = {
               blockIndex: literalIndex.blockIndex,
               contentIndex: literalIndex.contentIndex,
@@ -167,7 +174,14 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
           blocks.splice(secondId, 1);
           deleteElement(second, blocks, editedLetter.deletedBlocks);
           if (first.content.at(-1)?.type === VARIABLE) {
-            first.content.push({ type: LITERAL, id: null, text: "", editedText: "" });
+            first.content.push({
+              type: LITERAL,
+              id: null,
+              text: "",
+              editedText: "",
+              fontType: FontType.PLAIN,
+              editedFontType: null,
+            });
           }
           draft.focus = focusEndOfBlock(firstId, first);
         } else {

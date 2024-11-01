@@ -1,6 +1,7 @@
 import { format, formatISO } from "date-fns";
 
 import type { BrevResponse } from "~/types/brev";
+import { FontType } from "~/types/brevbakerTypes";
 
 import {
   nyBrevInfo,

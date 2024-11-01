@@ -10,7 +10,7 @@ import type {
   ParagraphBlock,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { PARAGRAPH } from "~/types/brevbakerTypes";
+import { FontType, PARAGRAPH } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { LetterEditorState } from "../model/state";
@@ -76,7 +76,7 @@ export function newParagraph(...content: Content[]): ParagraphBlock {
 }
 
 export function newLiteral(text: string): LiteralValue {
-  return { type: LITERAL, id: null, text: "", editedText: text };
+  return { type: LITERAL, id: null, text: "", editedText: text, fontType: FontType.PLAIN, editedFontType: null };
 }
 
 export function newItem(text: string): Item {

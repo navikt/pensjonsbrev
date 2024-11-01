@@ -17,8 +17,9 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { TITLE2 } from "~/types/brevbakerTypes";
+import { FontType, TITLE2 } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, PARAGRAPH, TITLE1, VARIABLE } from "~/types/brevbakerTypes";
+import type { Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
@@ -94,12 +95,19 @@ export function title2(...content: TextContent[]): Title2Block {
   };
 }
 
-export function literal(text: string, editedText: string | null = null): LiteralValue {
+export function literal(
+  text: string,
+  editedText: string | null = null,
+  fontType: FontType = FontType.PLAIN,
+  editedFontType: Nullable<FontType> = null,
+): LiteralValue {
   return {
     id: randomInt(1000),
     type: LITERAL,
     text,
     editedText,
+    fontType,
+    editedFontType,
   };
 }
 
@@ -108,6 +116,7 @@ export function variable(text: string): VariableValue {
     id: randomInt(1000),
     type: VARIABLE,
     text,
+    fontType: FontType.PLAIN,
   };
 }
 

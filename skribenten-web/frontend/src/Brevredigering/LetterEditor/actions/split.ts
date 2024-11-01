@@ -3,7 +3,7 @@ import { produce } from "immer";
 
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import type { Content, Item, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import { FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
@@ -60,7 +60,14 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
         // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or move focus to ít).
         content.items.splice(literalIndex.itemIndex, 1);
         if (literalIndex.contentIndex >= block.content.length - 1) {
-          block.content.push({ type: LITERAL, id: null, text: "", editedText: "" });
+          block.content.push({
+            type: LITERAL,
+            id: null,
+            text: "",
+            editedText: "",
+            fontType: FontType.PLAIN,
+            editedFontType: null,
+          });
         }
         draft.focus = {
           blockIndex: literalIndex.blockIndex,

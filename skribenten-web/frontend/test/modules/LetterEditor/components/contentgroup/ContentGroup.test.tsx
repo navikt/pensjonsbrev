@@ -8,13 +8,13 @@ import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGr
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
-import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
+import { FontType, LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 
 const content: LiteralValue[] = [
-  { type: LITERAL, id: 1, text: "Heisann", editedText: null },
-  { type: LITERAL, id: 2, text: "Velkommen", editedText: null },
+  { type: LITERAL, id: 1, text: "Heisann", editedText: null, fontType: FontType.PLAIN, editedFontType: null },
+  { type: LITERAL, id: 2, text: "Velkommen", editedText: null, fontType: FontType.PLAIN, editedFontType: null },
 ];
 
 const block: ParagraphBlock = {
