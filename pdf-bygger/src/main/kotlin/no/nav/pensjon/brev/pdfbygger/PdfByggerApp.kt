@@ -128,7 +128,7 @@ fun Application.module() {
                 }
 
                 is PDFCompilationResponse.Failure.QueueTimeout -> {
-                    logger.error(result.reason)
+                    logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
                     call.respond(HttpStatusCode.ServiceUnavailable, result)
                 }
             }
