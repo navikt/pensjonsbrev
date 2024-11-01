@@ -46,10 +46,10 @@ function RedigerBrevPage() {
     throwOnError: (error: AxiosError) => error.response?.status !== 423 && error.response?.status !== 409,
   });
 
-  return queryFold(
-    brevQuery,
-    () => null,
-    () => (
+  return queryFold({
+    query: brevQuery,
+    initial: () => null,
+    pending: () => (
       <div
         css={css`
           display: flex;
@@ -60,7 +60,7 @@ function RedigerBrevPage() {
         <Skeleton height={"auto"} variant="rectangle" width={"66%"} />
       </div>
     ),
-    (error) => {
+    error: (error) => {
       if (error.response?.status === 423 && error.response?.data) {
         return (
           <ReservertBrevError doRetry={brevQuery.refetch} reservasjon={error.response.data as ReservasjonResponse} />
@@ -96,8 +96,8 @@ function RedigerBrevPage() {
       }
       return <ApiError error={error} title={"En feil skjedde ved henting av brev"} />;
     },
-    (data) => <RedigerBrev brev={data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={undefined} />,
-  );
+    success: (data) => <RedigerBrev brev={data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={undefined} />,
+  });
 }
 
 const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: ReservasjonResponse; doRetry: () => void }) => {
