@@ -88,7 +88,7 @@ const FontButton = (props: {
           background-color: #ccc;
           color: #000;
           border-color: #999;
-          box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+          box-shadow: inset 0 0 5px rgb(0 0 0 / 20%);
         `}
       `}
       data-cy={props.dataCy}
