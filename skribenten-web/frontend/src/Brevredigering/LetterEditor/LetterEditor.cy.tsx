@@ -29,6 +29,7 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
       mottaker: null,
       avsenderEnhet: null,
       spraak: SpraakKode.Bokmaal,
+      journalpostId: null,
     },
     redigertBrev: initial,
     redigertBrevHash: "hash1",

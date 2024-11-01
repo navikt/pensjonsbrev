@@ -7,8 +7,8 @@ import { useState } from "react";
 
 import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { EndreMottakerModal } from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/EndreMottaker";
-import { mapEndreMottakerValueTilMottaker } from "~/types/AdresseUtils";
 import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
+import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 import OppsummeringAvMottaker from "./OppsummeringAvMottaker";
 

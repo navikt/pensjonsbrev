@@ -39,6 +39,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       mottaker: null,
       avsenderEnhet: null,
       spraak: SpraakKode.Bokmaal,
+      journalpostId: null,
     },
     redigertBrev: {
       title: "tittel",

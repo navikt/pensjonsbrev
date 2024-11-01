@@ -27,7 +27,7 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { erBrevKlar } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
@@ -112,44 +112,7 @@ const BrevItem = (properties: {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
 }) => {
-  const queryClient = useQueryClient();
-  const sakContext = Route.useLoaderData();
   const gjeldendeBruker = useUserInfo();
-
-  const { data: navn } = useQuery({
-    queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sakContext.sak.saksId),
-  });
-
-  const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
-    mutationFn: (låst) =>
-      delvisOppdaterBrev({
-        saksId: properties.saksId,
-        brevId: properties.brev.id,
-        laastForRedigering: låst,
-      }),
-    onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
-      );
-    },
-  });
-
-  const distribusjonstypeMutation = useMutation<DelvisOppdaterBrevResponse, Error, Distribusjonstype, unknown>({
-    mutationFn: (distribusjonstype) =>
-      delvisOppdaterBrev({
-        saksId: properties.saksId,
-        brevId: properties.brev.id,
-        distribusjonstype: distribusjonstype,
-      }),
-    onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brev) => (brev.id === properties.brev.id ? response.info : brev)),
-      );
-    },
-  });
-
-  const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
 
   return (
     <>
@@ -162,104 +125,11 @@ const BrevItem = (properties: {
         </Accordion.Header>
         <Accordion.Content>
           <VStack gap="4">
-            <div
-              css={css`
-                display: flex;
-                flex-direction: column;
-                gap: 18px;
-              `}
-            >
-              <EndreMottakerMedOppsummeringOgApiHåndtering
-                brev={properties.brev}
-                endreAsIcon
-                kanTilbakestilleMottaker={!erLåst}
-                overrideOppsummering={(edit) => (
-                  <div>
-                    <Detail textColor="subtle">Mottaker</Detail>
-                    {properties.brev.mottaker ? (
-                      <HStack align={"center"} gap="2">
-                        <MottakerNavn mottaker={properties.brev.mottaker} /> {!erLåst && edit}
-                      </HStack>
-                    ) : (
-                      <HStack align={"center"} gap="2">
-                        <BodyShort size="small">{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {!erLåst && edit}
-                      </HStack>
-                    )}
-                  </div>
-                )}
-                saksId={properties.saksId}
-              />
-
-              <Switch
-                checked={erLåst}
-                // TODO - finn en måte å gi feedback på dersom kallet gir error. Jeg antar at switcehn ikke blir endret dersom det er en error
-                loading={låsForRedigeringMutation.isPending}
-                onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
-                size="small"
-              >
-                Brevet er klart for sending
-              </Switch>
-
-              {!erLåst && (
-                <VStack
-                  css={css`
-                    align-items: flex-start;
-                  `}
-                  gap="4"
-                >
-                  <Link
-                    params={{ saksId: properties.saksId, brevId: properties.brev.id }}
-                    to="/saksnummer/$saksId/brev/$brevId"
-                  >
-                    <Button as="a" size="small" variant="secondary-neutral">
-                      Fortsett redigering
-                    </Button>
-                  </Link>
-                </VStack>
-              )}
-
-              {erLåst && (
-                <RadioGroup
-                  data-cy="brevbehandler-distribusjonstype"
-                  description={
-                    <div
-                      css={css`
-                        display: flex;
-                        gap: 0.5rem;
-                      `}
-                    >
-                      Distribusjon
-                      <span
-                        css={css`
-                          display: flex;
-                        `}
-                      >
-                        {distribusjonstypeMutation.isPending && <Loader size="small" />}
-                        {distribusjonstypeMutation.isError && (
-                          <XMarkOctagonFillIcon
-                            css={css`
-                              align-self: center;
-                              color: var(--a-nav-red);
-                            `}
-                            title="error"
-                          />
-                        )}
-                      </span>
-                    </div>
-                  }
-                  legend=""
-                  onChange={(v) => distribusjonstypeMutation.mutate(v)}
-                  size="small"
-                  value={properties.brev.distribusjonstype}
-                >
-                  <Radio value={Distribusjonstype.SENTRALPRINT}>Sentralprint</Radio>
-                  <Radio value={Distribusjonstype.LOKALPRINT}>Lokalprint</Radio>
-                </RadioGroup>
-              )}
-
-              {properties.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && <LokalPrintInfoAlerts />}
-            </div>
-
+            {erBrevArkivert(properties.brev) ? (
+              <ArkivertBrev brev={properties.brev} />
+            ) : (
+              <ÅpentBrev brev={properties.brev} saksId={properties.saksId} />
+            )}
             <div>
               <Detail textColor="subtle">
                 Sist endret:{" "}
@@ -274,6 +144,184 @@ const BrevItem = (properties: {
         </Accordion.Content>
       </Accordion.Item>
     </>
+  );
+};
+
+const ArkivertBrev = (props: { brev: BrevInfo }) => {
+  const sakContext = Route.useLoaderData();
+  const { data: navn } = useQuery({
+    queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
+    queryFn: () => getNavn.queryFn(sakContext.sak.saksId),
+  });
+
+  return (
+    <VStack
+      css={css`
+        gap: 18px;
+      `}
+    >
+      {/* TODO - copy-pasted fra <ÅpentBrev /> - Ha denne biten som en del av <OppsummeringAvMottaker /> */}
+      <div>
+        <Detail textColor="subtle">Mottaker</Detail>
+        {props.brev.mottaker ? (
+          <HStack align={"center"} gap="2">
+            <MottakerNavn mottaker={props.brev.mottaker} />
+          </HStack>
+        ) : (
+          <HStack align={"center"} gap="2">
+            <BodyShort size="small">{navn ? humanizeName(navn) : "Bruker"}</BodyShort>
+          </HStack>
+        )}
+      </div>
+
+      <BodyShort size="small">
+        Brevet er journalført med id {props.brev.journalpostId}. Brevet kan ikke endres.
+      </BodyShort>
+      <BodyShort size="small">Brevet har ikke blitt sendt. Du kan prøve å sende brevet på nytt.</BodyShort>
+    </VStack>
+  );
+};
+
+const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
+  const queryClient = useQueryClient();
+  const sakContext = Route.useLoaderData();
+
+  const { data: navn } = useQuery({
+    queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
+    queryFn: () => getNavn.queryFn(sakContext.sak.saksId),
+  });
+
+  const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
+    mutationFn: (låst) =>
+      delvisOppdaterBrev({
+        saksId: props.saksId,
+        brevId: props.brev.id,
+        laastForRedigering: låst,
+      }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
+      );
+    },
+  });
+
+  const distribusjonstypeMutation = useMutation<DelvisOppdaterBrevResponse, Error, Distribusjonstype, unknown>({
+    mutationFn: (distribusjonstype) =>
+      delvisOppdaterBrev({
+        saksId: props.saksId,
+        brevId: props.brev.id,
+        distribusjonstype: distribusjonstype,
+      }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
+      );
+    },
+  });
+
+  const erLåst = useMemo(() => erBrevKlar(props.brev), [props.brev]);
+
+  return (
+    <div>
+      <div
+        css={css`
+          display: flex;
+          flex-direction: column;
+          gap: 18px;
+        `}
+      >
+        <EndreMottakerMedOppsummeringOgApiHåndtering
+          brev={props.brev}
+          endreAsIcon
+          kanTilbakestilleMottaker={!erLåst}
+          overrideOppsummering={(edit) => (
+            <div>
+              <Detail textColor="subtle">Mottaker</Detail>
+              {props.brev.mottaker ? (
+                <HStack align={"center"} gap="2">
+                  <MottakerNavn mottaker={props.brev.mottaker} /> {!erLåst && edit}
+                </HStack>
+              ) : (
+                <HStack align={"center"} gap="2">
+                  <BodyShort size="small">{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {!erLåst && edit}
+                </HStack>
+              )}
+            </div>
+          )}
+          saksId={props.saksId}
+        />
+
+        <Switch
+          checked={erLåst}
+          // TODO - finn en måte å gi feedback på dersom kallet gir error. Jeg antar at switcehn ikke blir endret dersom det er en error
+          loading={låsForRedigeringMutation.isPending}
+          onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
+          size="small"
+        >
+          Brevet er klart for sending
+        </Switch>
+
+        {!erLåst && (
+          <VStack
+            css={css`
+              align-items: flex-start;
+            `}
+            gap="4"
+          >
+            <Button
+              as={Link}
+              params={{ saksId: props.saksId, brevId: props.brev.id }}
+              size="small"
+              to="/saksnummer/$saksId/brev/$brevId"
+              variant="secondary-neutral"
+            >
+              Fortsett redigering
+            </Button>
+          </VStack>
+        )}
+
+        {erLåst && (
+          <RadioGroup
+            data-cy="brevbehandler-distribusjonstype"
+            description={
+              <div
+                css={css`
+                  display: flex;
+                  gap: 0.5rem;
+                `}
+              >
+                Distribusjon
+                <span
+                  css={css`
+                    display: flex;
+                  `}
+                >
+                  {distribusjonstypeMutation.isPending && <Loader size="small" />}
+                  {distribusjonstypeMutation.isError && (
+                    <XMarkOctagonFillIcon
+                      css={css`
+                        align-self: center;
+                        color: var(--a-nav-red);
+                      `}
+                      title="error"
+                    />
+                  )}
+                </span>
+              </div>
+            }
+            legend=""
+            onChange={(v) => distribusjonstypeMutation.mutate(v)}
+            size="small"
+            value={props.brev.distribusjonstype}
+          >
+            <Radio value={Distribusjonstype.SENTRALPRINT}>Sentralprint</Radio>
+            <Radio value={Distribusjonstype.LOKALPRINT}>Lokalprint</Radio>
+          </RadioGroup>
+        )}
+
+        {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && <LokalPrintInfoAlerts />}
+      </div>
+    </div>
   );
 };
 

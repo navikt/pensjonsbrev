@@ -151,4 +151,18 @@ describe("Kladd", () => {
     cy.contains("Lag nytt brev").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/2");
   });
+
+  it("arkiverte brev i brevvelger skal ikke kunne gjøre endringer på brev, og kun navigere videre til brevbehandler", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+      req.reply([
+        nyBrevInfo({ id: 1, opprettet: "2024-09-17T08:36:09.785Z", status: { type: "Klar" }, journalpostId: 123_456 }),
+      ]);
+    }).as("getAlleBrevForSak");
+
+    cy.visit('/saksnummer/123456/brevvelger?brevId="1"');
+    cy.contains("Endre mottaker").should("not.exist");
+    cy.contains("Slett brev").should("not.exist");
+    cy.contains("Åpne brev").click("left");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
+  });
 });
