@@ -121,6 +121,7 @@ class ApiServiceTest {
     ) = Dto.BrevInfo(
         id = 1,
         saksId = 11,
+        vedtaksId = null,
         opprettetAv = opprettetAv,
         opprettet = Instant.now(),
         sistredigertAv = sistredigertAv,

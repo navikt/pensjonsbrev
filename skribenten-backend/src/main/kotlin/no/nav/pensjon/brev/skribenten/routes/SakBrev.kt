@@ -26,13 +26,21 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             val spraak = request.spraak.toLanguageCode()
             val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
 
-            brevredigeringService.opprettBrev(sak, request.brevkode, spraak, avsenderEnhetsId, request.saksbehandlerValg, true, request.mottaker?.toDto())
-                .onOk { brev ->
-                    call.respond(HttpStatusCode.Created, dto2ApiService.toApi(brev))
-                }.onError { message, statusCode ->
-                    logger.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
-                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
-                }
+            brevredigeringService.opprettBrev(
+                sak = sak,
+                vedtaksId = request.vedtaksId,
+                brevkode = request.brevkode,
+                spraak = spraak,
+                avsenderEnhetsId = avsenderEnhetsId,
+                saksbehandlerValg = request.saksbehandlerValg,
+                reserverForRedigering = true,
+                mottaker = request.mottaker?.toDto(),
+            ).onOk { brev ->
+                call.respond(HttpStatusCode.Created, dto2ApiService.toApi(brev))
+            }.onError { message, statusCode ->
+                logger.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
+                call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
+            }
         }
 
         put<Api.OppdaterBrevRequest>("/{brevId}") { request ->

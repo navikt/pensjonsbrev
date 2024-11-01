@@ -22,6 +22,7 @@ object Api {
         val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean?,
         val mottaker: OverstyrtMottaker?,
+        val vedtaksId: Long?,
     )
 
     data class OppdaterBrevRequest(
