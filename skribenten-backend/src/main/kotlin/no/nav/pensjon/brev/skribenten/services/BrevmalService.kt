@@ -42,7 +42,7 @@ class BrevmalService(
                     logger.error("Feil ved henting av felt \"erKravPaaGammeltRegelverk\" fra vedtak. Status: $httpStatusCode, message: $message")
                     false
                 }
-        } else false
+        } else null
 
         return filter { it.isRelevantRegelverk(sakstype, erKravPaaGammeltRegelverk) }
     }

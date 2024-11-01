@@ -18,7 +18,15 @@ interface LetterMetadata {
     val isRedigerbart: Boolean
 
     fun isForSakstype(sakstype: Sakstype): Boolean
-    fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean): Boolean
+
+    /**
+     * Svarer på om brevmalen er relevant for angitt sakstype når regelverket brukt i saken
+     * er som angitt av forGammeltRegelverk.
+     *
+     * Om forGammeltRegelverk er null så betyr det at man ikke har hentet fra Pesys,
+     * dette er kun fordi det per nå bare er relevant for brevmaler for ALDER.
+     */
+    fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean?): Boolean
     fun toApi(): Api.Brevmal
 
     /**
@@ -36,20 +44,16 @@ interface LetterMetadata {
         override val isRedigerbart: Boolean get() = data.redigerbart
         override fun isForSakstype(sakstype: Sakstype) = sakstype == hasSakstype
 
-        override fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean): Boolean =
-            if (data.brevregeltype != null) {
-                when (sakstype) {
-                    ALDER -> if (forGammeltRegelverk) {
-                        data.brevregeltype.gjelderGammeltRegelverk()
-                    } else {
-                        data.brevregeltype.gjelderNyttRegelverk()
-                    }
-
-                    UFOREP -> data.brevregeltype.gjelderGammeltRegelverk()
-                    BARNEP, AFP, AFP_PRIVAT, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG -> true
+        override fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean?): Boolean =
+            when (sakstype) {
+                ALDER -> if (forGammeltRegelverk == true) {
+                    data.brevregeltype?.gjelderGammeltRegelverk() ?: true
+                } else {
+                    data.brevregeltype?.gjelderNyttRegelverk() ?: true
                 }
-            } else {
-                true
+
+                UFOREP -> data.brevregeltype?.gjelderGammeltRegelverk() ?: true
+                BARNEP, AFP, AFP_PRIVAT, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG -> true
             }
 
         override fun toApi(): Api.Brevmal = with(data) {
@@ -101,7 +105,7 @@ interface LetterMetadata {
         override val isRedigerbart: Boolean = true
         override val brevkode: String get() = data.name
         override fun isForSakstype(sakstype: Sakstype) = sakstype in data.sakstyper
-        override fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean) = true
+        override fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean?) = true
 
         private fun LanguageCode.toSpraakKode(): SpraakKode =
             when (this) {
