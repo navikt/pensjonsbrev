@@ -16,6 +16,7 @@ data class UnleashToggle(val name: String) {
 object Features {
     val brevbakerbrev = UnleashToggle("brevbakerbrev")
     val brevutendata = UnleashToggle("brevutendata")
+    val brevmalUTavslag = UnleashToggle("brevmal_ut_avslag")
     val brevMedFritekst = UnleashToggle("brevMedFritekst")
 
     private var unleash: Unleash? = null

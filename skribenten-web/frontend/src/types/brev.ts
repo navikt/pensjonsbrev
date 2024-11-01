@@ -72,7 +72,9 @@ export type BrevInfo = {
   mottaker: Nullable<Mottaker>;
   avsenderEnhet: Nullable<NAVEnhet>;
   spraak: SpraakKode;
+  journalpostId: Nullable<number>;
 };
+
 export type BrevStatus = Kladd | UnderRedigering | Klar;
 export type Kladd = { type: "Kladd" };
 export type UnderRedigering = { type: "UnderRedigering"; redigeresAv: NavAnsatt };

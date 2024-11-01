@@ -217,4 +217,14 @@ describe("Brevvelger spec", () => {
     );
     cy.getDataCy("order-letter-success-message");
   });
+
+  it("enhetsId som url param gjenspeiles i form og inputs", () => {
+    cy.visit('/saksnummer/123456/brevvelger?templateId=AP_INFO_STID_MAN&enhetsId="4815"', {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+    cy.wait("@enheter");
+    cy.getDataCy("avsenderenhet-select").should("have.value", "4815");
+  });
 });

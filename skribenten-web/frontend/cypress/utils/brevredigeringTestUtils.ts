@@ -134,6 +134,7 @@ export const nyBrevInfo = (args: {
   mottaker?: Nullable<Mottaker>;
   avsenderEnhet?: Nullable<NAVEnhet>;
   spraak?: SpraakKode;
+  journalpostId?: Nullable<number>;
 }): BrevInfo => {
   return {
     id: args.id ?? 1,
@@ -150,5 +151,6 @@ export const nyBrevInfo = (args: {
     mottaker: args.mottaker ?? null,
     avsenderEnhet: args.avsenderEnhet ?? null,
     spraak: args.spraak ?? SpraakKode.Engelsk,
+    journalpostId: args.journalpostId ?? null,
   };
 };

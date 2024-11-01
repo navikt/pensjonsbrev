@@ -35,9 +35,22 @@ enum class BorMedSivilstand{
 
 enum class Sakstype {
     AFP,
+    AFP_PRIVAT,
     ALDER,
-    UFOEREP,
     BARNEP,
+    FAM_PL,
+    GAM_YRK,
+    GENRL,
+    GJENLEV,
+    GRBL,
+    KRIGSP,
+    OMSORG,
+    UFOREP,
+    ;
+
+    companion object {
+        val all: Set<Sakstype> = entries.toSet()
+    }
 }
 
 enum class Institusjon {

@@ -130,6 +130,7 @@ class BrevmalService(
                         when {
                             brev.erMalMedFritekst() -> Features.brevMedFritekst.isEnabled()
                             brev.hasEmptyBrevData() -> Features.brevutendata.isEnabled()
+                            brev.name == Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD.name -> Features.brevmalUTavslag.isEnabled()
                             else -> true
                         }
                     }

@@ -362,4 +362,24 @@ describe("Brevbehandler", () => {
     cy.contains("Gå til brevbehandler").click();
     cy.get("label:contains('Informasjon om saksbehandlingstid')").should("have.length", 1);
   });
+
+  it("et arkivert brev kan ikke endre på noe informasjon, og kan kun sendes på nytt", () => {
+    const arkivertBrev = { ...klarBrev, journalpostId: 123_456 };
+
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
+      request.reply([arkivertBrev]);
+    });
+
+    cy.contains("Informasjon om saksbehandlingstid").click();
+
+    cy.contains("Brevet er klart for sending").should("not.exist");
+    cy.contains("Fortsett redigering").should("not.exist");
+    cy.contains("Distribusjon").should("not.exist");
+
+    cy.contains("Brevet er journalført med id 123456. Brevet kan ikke endres").should("be.visible");
+    cy.contains("Brevet har ikke blitt sendt. Du kan prøve å sende brevet på nytt.").should("be.visible");
+    cy.contains("Ferdigstill 1 brev").click("left");
+    cy.contains("Ja, send valgte brev").click();
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
+  });
 });

@@ -108,4 +108,14 @@ describe("Brevredigering", () => {
     cy.contains("Nei, behold brevet").click();
     cy.contains(" hello!").should("exist");
   });
+
+  it("kan ikke redigere et arkivert brev", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", {
+      statusCode: 409,
+    }).as("brev");
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Brevet er arkivert, og kan derfor ikke redigeres.").should("exist");
+    cy.contains("Gå til brevbehandler").click();
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler");
+  });
 });
