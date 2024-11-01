@@ -56,14 +56,14 @@ object InnhentningDokumentasjonFraBruker : RedigerbarTemplate<EmptyRedigerbarBre
             paragraph {
                 text(
                     Bokmal to "<Fritekst: Som dokumentasjon for inntekten, både person- og kapitalinntekten, kan du for eksempel sende kopi av ligningen, kopier av lønnsslipper fra de tre siste månedene, bekreftelse fra arbeidsgiveren, kopier av lønns- og trekkoppgaver, bekreftelse fra regnskapsfører eller årsoppgaver fra banken.>",
-                    English to "Valid documentation of income can be copy of tax assessment, copies of payslips, or the last three months copies of pay and tax deduction statements, confirmation from your employer, confirmation by your accountant or annual statements from your bank.",
+                    English to "<Free text: Valid documentation of income can be copy of tax assessment, copies of payslips, or the last three months copies of pay and tax deduction statements, confirmation from your employer, confirmation by your accountant or annual statements from your bank. Both personal and investment income should be documented.",
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "Dersom vi ikke har mottatt ny dokumentasjon innen den angitte fristen i dette brevet, kan vi ikke legge disse opplysningene til grunn for videre saksbehandling.",
-                    English to "Undocumented statements from yourself will not be taken into account. Please provide the required documentation by the deadline given in this letter.",
+                    English to "Undocumented statements from yourself will not be taken into account. Please provide the required documentation by the deadline given in this letter.>",
                 )
             }
 

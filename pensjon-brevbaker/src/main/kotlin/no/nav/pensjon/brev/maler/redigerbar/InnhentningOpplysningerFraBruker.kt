@@ -44,8 +44,8 @@ object InnhentningOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrev
 
             paragraph {
                 textExpr(
-                    Bokmal to felles.avsenderEnhet.navn + " har mottatt en <fritekst: blankett/brev/henvendelse> fra deg <fritekst: dato>. For å kunne behandle henvendelsen mangler vi følgende opplysninger:",
-                    English to felles.avsenderEnhet.navn + " received a <free text: form/letter/request> from you on <free text: date>. In order to process your request, we need the following information from you:",
+                    Bokmal to felles.avsenderEnhet.navn + " har mottatt en <fritekst: blankett/brev/henvendelse> fra deg <fritekst: dato>. For å kunne behandle henvendelsen mangler vi følgende opplysninger:<fritekst:",
+                    English to felles.avsenderEnhet.navn + " received a <free text: form/letter/request> from you on <free text: date>. In order to process your request, we need the following information from you:<free text:",
                 )
                 list {
                     item {
@@ -56,8 +56,8 @@ object InnhentningOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrev
                     }
                     item {
                         text(
-                            Bokmal to "Opplysning 2",
-                            English to "Details 2",
+                            Bokmal to "Opplysning 2>",
+                            English to "Details 2>",
                         )
                     }
                 }
