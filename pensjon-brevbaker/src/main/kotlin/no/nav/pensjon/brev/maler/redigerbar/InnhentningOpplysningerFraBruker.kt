@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDtoSelectors.BrevDataSelectors.avsenderEnhetNavn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -15,16 +13,18 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 
 @TemplateModelHelpers
-object InnhentningOpplysningerFraBruker : RedigerbarTemplate<InnhentningOpplysningerFraBrukerDto> {
+object InnhentningOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = Brevkode.Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = InnhentningOpplysningerFraBrukerDto::class,
+        letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Innhente opplysninger",
@@ -44,8 +44,8 @@ object InnhentningOpplysningerFraBruker : RedigerbarTemplate<InnhentningOpplysni
 
             paragraph {
                 textExpr(
-                    Bokmal to pesysData.avsenderEnhetNavn + " har mottatt en <fritekst: blankett/brev/henvendelse> fra deg <fritekst: dato>. For å kunne behandle henvendelsen mangler vi følgende opplysninger:",
-                    English to pesysData.avsenderEnhetNavn + " received a <free text: form/letter/request> from you on <free text: date>. In order to process your request, we need the following information from you:",
+                    Bokmal to felles.avsenderEnhet.navn + " har mottatt en <fritekst: blankett/brev/henvendelse> fra deg <fritekst: dato>. For å kunne behandle henvendelsen mangler vi følgende opplysninger:",
+                    English to felles.avsenderEnhet.navn + " received a <free text: form/letter/request> from you on <free text: date>. In order to process your request, we need the following information from you:",
                 )
                 list {
                     item {
@@ -76,7 +76,6 @@ object InnhentningOpplysningerFraBruker : RedigerbarTemplate<InnhentningOpplysni
             includePhrase(Alderspensjon.HarDuSpoersmaal)
         }
     }
-    override val kategori: TemplateDescription.Brevkategori
-        get() = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
 }
 

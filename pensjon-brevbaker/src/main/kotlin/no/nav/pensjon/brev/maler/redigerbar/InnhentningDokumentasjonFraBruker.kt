@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDtoSelectors.SaksbehandlerValgSelectors.innhentingAvInntekt
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentningOpplysningerFraBrukerDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -16,13 +14,13 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object InnhentningDokumentasjonFraBruker : RedigerbarTemplate<InnhentningOpplysningerFraBrukerDto> {
+object InnhentningDokumentasjonFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = Brevkode.Redigerbar.PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = InnhentningOpplysningerFraBrukerDto::class,
+        letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Innhente dokumentasjon",
@@ -55,14 +53,11 @@ object InnhentningDokumentasjonFraBruker : RedigerbarTemplate<InnhentningOpplysn
 
             includePhrase(Alderspensjon.Returadresse)
 
-            // Display name som "Tekst om innhenting av inntekt"
-            showIf(saksbehandlerValg.innhentingAvInntekt) {
-                paragraph {
-                    text(
-                        Bokmal to "Som dokumentasjon for inntekten, både person- og kapitalinntekten, kan du for eksempel sende kopi av ligningen, kopier av lønnsslipper fra de tre siste månedene, bekreftelse fra arbeidsgiveren, kopier av lønns- og trekkoppgaver, bekreftelse fra regnskapsfører eller årsoppgaver fra banken.",
-                        English to "Valid documentation of income can be copy of tax assessment, copies of payslips, or the last three months copies of pay and tax deduction statements, confirmation from your employer, confirmation by your accountant or annual statements from your bank.",
-                    )
-                }
+            paragraph {
+                text(
+                    Bokmal to "<Fritekst: Som dokumentasjon for inntekten, både person- og kapitalinntekten, kan du for eksempel sende kopi av ligningen, kopier av lønnsslipper fra de tre siste månedene, bekreftelse fra arbeidsgiveren, kopier av lønns- og trekkoppgaver, bekreftelse fra regnskapsfører eller årsoppgaver fra banken.>",
+                    English to "Valid documentation of income can be copy of tax assessment, copies of payslips, or the last three months copies of pay and tax deduction statements, confirmation from your employer, confirmation by your accountant or annual statements from your bank.",
+                )
             }
 
             paragraph {
@@ -75,7 +70,6 @@ object InnhentningDokumentasjonFraBruker : RedigerbarTemplate<InnhentningOpplysn
             includePhrase(Alderspensjon.HarDuSpoersmaal)
         }
     }
-    override val kategori: TemplateDescription.Brevkategori
-        get() = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
 }
 
