@@ -18,6 +18,7 @@ object LanguageSetting {
         const val greeting = "closinggreeting"
         const val saksbehandler = "closingsaksbehandlersuffix"
         const val automatiskInformasjonsbrev = "closingautomatisktextinfobrev"
+        const val kopimottakere = "closingkopimottakere"
     }
 
     object HTML {
@@ -95,6 +96,14 @@ val pensjonLatexSettings = languageSettings {
             Bokmal to "Med vennlig hilsen",
             Nynorsk to "Med vennleg helsing",
             English to "Yours sincerely",
+        )
+    }
+
+    setting(LanguageSetting.Closing.kopimottakere) {
+        Literal.create(
+            Bokmal to "Kopi sendt til",
+            Nynorsk to "Kopi sendt til",
+            English to "Copy sent to",
         )
     }
 

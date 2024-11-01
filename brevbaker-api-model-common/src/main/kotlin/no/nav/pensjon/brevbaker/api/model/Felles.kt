@@ -9,6 +9,7 @@ data class Felles(
     val bruker: Bruker,
     val vergeNavn: String?,
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
+    val kopimottakere: List<String>? = null,
 )
 
 data class SignerendeSaksbehandlere(val saksbehandler: String, val attesterendeSaksbehandler: String? = null)

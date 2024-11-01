@@ -17,7 +17,13 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
 
-    override fun render(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>, language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype): LatexDocument =
+    override fun render(
+        letter: LetterMarkup,
+        attachments: List<LetterMarkup.Attachment>,
+        language: Language,
+        felles: Felles,
+        brevtype: LetterMetadata.Brevtype,
+    ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
                 appendMasterTemplateParameters(attachments, brevtype, felles, language)
@@ -52,6 +58,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
             navEnhetCommands(avsenderEnhet)
             appendNewCmd("feltdato", dokumentDato.format(dateFormatter(language, FormatStyle.LONG)))
             signaturCommands(signerendeSaksbehandlere, brevtype)
+            kopimottakereCommands(kopimottakere)
         }
     }
 
@@ -77,10 +84,14 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         appenCmd("end", "document")
     }
 
-    private fun LatexAppendable.signaturCommands(saksbehandlere: SignerendeSaksbehandlere?, brevtype: LetterMetadata.Brevtype) {
+    private fun LatexAppendable.signaturCommands(
+        saksbehandlere: SignerendeSaksbehandlere?,
+        brevtype: LetterMetadata.Brevtype,
+    ) {
         appendNewCmd("closingbehandlet") {
             if (saksbehandlere != null) {
-                val attestant = saksbehandlere.attesterendeSaksbehandler?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+                val attestant =
+                    saksbehandlere.attesterendeSaksbehandler?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
                 if (attestant != null) {
                     appenCmd("doublesignature") {
                         arg { append(attestant) }
@@ -103,6 +114,22 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                     appenCmd("feltclosingautomatisktextinfobrev")
                 }
             }
+        }
+    }
+
+    private fun LatexAppendable.kopimottakereCommands(kopimottakere: List<String>?) {
+        appendNewCmd("feltclosingkopimottakere") {
+            if (!kopimottakere.isNullOrEmpty()) {
+                appenCmd("begin", "kopimottakere")
+
+                kopimottakere.forEach { kopimottaker ->
+                    append("""\item """, escape = false)
+                    append(kopimottaker)
+                }
+
+                appenCmd("end", "kopimottakere")
+            }
+
         }
     }
 

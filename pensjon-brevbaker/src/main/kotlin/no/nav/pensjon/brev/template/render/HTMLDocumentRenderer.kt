@@ -117,6 +117,15 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                     }
                 }
             }
+
+            val kopimottakere = felles.kopimottakere
+            if (!kopimottakere.isNullOrEmpty()) {
+                div(classes("closing-automatisk")) {
+                    kopimottakere.forEach {
+                        div { text(it) }
+                    }
+                }
+            }
         }
     }
 

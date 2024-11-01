@@ -40,7 +40,7 @@ object Fixtures {
         vergeNavn = null,
     )
 
-    val fellesAuto = felles.copy(signerendeSaksbehandlere = null)
+    val fellesAuto = felles.copy(signerendeSaksbehandlere = null, kopimottakere = listOf("Verg Vikernes"))
 
     inline fun <reified T: Any> create(): T = create(T::class)
 
