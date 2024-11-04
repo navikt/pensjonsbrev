@@ -59,6 +59,7 @@ private inline fun <reified T> readJsonColumn(json: String): T =
 
 object BrevredigeringTable : LongIdTable() {
     val saksId: Column<Long> = long("saksId").index()
+    val vedtaksId: Column<Long?> = long("vedtaksId").nullable()
     val brevkode: Column<Brevkode.Redigerbar> = varchar("brevkode", length = 50).transform(Brevkode.Redigerbar::valueOf, Brevkode.Redigerbar::name)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
@@ -79,6 +80,7 @@ object BrevredigeringTable : LongIdTable() {
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksId by BrevredigeringTable.saksId
+    var vedtaksId by BrevredigeringTable.vedtaksId
     var brevkode by BrevredigeringTable.brevkode
     var spraak by BrevredigeringTable.spraak
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId

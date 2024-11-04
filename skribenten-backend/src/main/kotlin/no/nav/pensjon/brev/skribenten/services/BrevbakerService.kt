@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
@@ -44,6 +45,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupModule)
                 registerModule(TemplateModelSpecificationModule)
+                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
         callIdAndOnBehalfOfClient(config.getString("scope"), authService)
@@ -93,17 +95,17 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             )
         }.toServiceResult()
 
-    suspend fun getTemplates(): ServiceResult<List<TemplateDescription>> =
+    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> =
         client.get("/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")
             }
         }.toServiceResult()
 
-    private val templateCache = Cache<Brevkode.Redigerbar, TemplateDescription>()
-    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbar): TemplateDescription? =
+    private val templateCache = Cache<Brevkode.Redigerbar, TemplateDescription.Redigerbar>()
+    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbar): TemplateDescription.Redigerbar? =
         templateCache.cached(brevkode) {
-            client.get("/templates/redigerbar/${brevkode.name}").toServiceResult<TemplateDescription>()
+            client.get("/templates/redigerbar/${brevkode.name}").toServiceResult<TemplateDescription.Redigerbar>()
                 .onError { error, statusCode -> logger.error("Feilet ved henting av templateDescription for $brevkode: $statusCode - $error") }
                 .resultOrNull()
         }

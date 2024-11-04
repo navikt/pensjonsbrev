@@ -121,11 +121,12 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> =
         client.get("brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 
-    suspend fun hentPesysBrevdata(saksId: Long, brevkode: Brevkode.Redigerbar, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> =
+    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbar, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> =
         client.get("brev/skribenten/sak/$saksId/brevdata/${brevkode.name}") {
             if (avsenderEnhetsId != null) {
                 url {
                     parameters.append("enhetsId", avsenderEnhetsId)
+                    vedtaksId?.let{ parameters.append("vedtaksId", it.toString()) }
                 }
             }
         }.toServiceResult<BrevdataResponse>(::handlePenErrorResponse)

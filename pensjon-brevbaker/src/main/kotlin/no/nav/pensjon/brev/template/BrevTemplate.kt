@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -15,24 +16,27 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Enum<Kode>> : 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> :
     BrevTemplate<LetterData, Brevkode.Redigerbar> {
         val kategori: TemplateDescription.Brevkategori
+        val brevkontekst: TemplateDescription.Brevkontekst
+        val sakstyper: Set<Sakstype>
 
-        override fun description(): TemplateDescription =
-            TemplateDescription(
+        override fun description(): TemplateDescription.Redigerbar =
+            TemplateDescription.Redigerbar(
                 name = template.name,
                 letterDataClass = template.letterDataType.java.name,
                 languages = template.language.all().map { it.toCode() },
                 metadata = template.letterMetadata,
                 kategori = kategori,
+                brevkontekst = brevkontekst,
+                sakstyper = sakstyper,
             )
     }
 
 interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.AutoBrev> {
-    override fun description(): TemplateDescription =
-        TemplateDescription(
+    override fun description(): TemplateDescription.Autobrev =
+        TemplateDescription.Autobrev(
             name = template.name,
             letterDataClass = template.letterDataType.java.name,
             languages = template.language.all().map { it.toCode() },
             metadata = template.letterMetadata,
-            kategori = null,
         )
 }
