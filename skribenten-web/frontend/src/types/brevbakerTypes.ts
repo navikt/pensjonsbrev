@@ -53,13 +53,6 @@ export type Signatur = {
   readonly navAvsenderEnhet: string;
 };
 
-export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
-
-export type ParagraphBlock = Block & {
-  readonly type: typeof PARAGRAPH;
-  readonly content: Content[];
-};
-
 export type Identifiable = {
   readonly id: number | null;
 };
@@ -100,6 +93,10 @@ export type Block = Identifiable & {
 };
 
 export const PARAGRAPH = "PARAGRAPH";
+export type ParagraphBlock = Block & {
+  readonly type: typeof PARAGRAPH;
+  readonly content: Content[];
+};
 
 export const TITLE1 = "TITLE1";
 export type Title1Block = Block & {
@@ -112,6 +109,8 @@ export type Title2Block = Block & {
   readonly type: typeof TITLE2;
   readonly content: TextContent[];
 };
+
+export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
 
 export interface EditedLetter {
   readonly title: string;
