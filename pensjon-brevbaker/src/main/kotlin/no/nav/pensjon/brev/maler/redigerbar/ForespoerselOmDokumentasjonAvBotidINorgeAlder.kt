@@ -24,6 +24,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
+    // PE_IY_03_167 - dette er delen for alder
     override val kode = Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK

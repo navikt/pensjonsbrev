@@ -25,6 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
+    // PE_IY_03_167 - dette er delen for barnep eller gjenlev
     override val kode = Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ETTERLATTE
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
