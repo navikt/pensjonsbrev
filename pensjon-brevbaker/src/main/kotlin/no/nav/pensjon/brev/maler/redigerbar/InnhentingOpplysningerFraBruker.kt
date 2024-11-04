@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 
 @TemplateModelHelpers
-object InnhentningOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     // PE_IY_03_048
     override val kode = Brevkode.Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER
