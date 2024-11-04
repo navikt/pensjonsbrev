@@ -34,7 +34,7 @@ object InnhentningOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrev
         letterMetadata = LetterMetadata(
             displayTitle = "Innhente opplysninger",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG, // TODO viktig eller annet?
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {

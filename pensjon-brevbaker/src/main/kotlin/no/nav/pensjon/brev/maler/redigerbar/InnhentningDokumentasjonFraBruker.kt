@@ -30,7 +30,7 @@ object InnhentningDokumentasjonFraBruker : RedigerbarTemplate<EmptyRedigerbarBre
         letterMetadata = LetterMetadata(
             displayTitle = "Innhente dokumentasjon",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG, // TODO viktig eller annet?
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
