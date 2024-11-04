@@ -32,7 +32,8 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, blockPosition: numb
   /*
     en block kan inneholde flere vars/literls som utgjør en setning, og punktliste.
     vi bygger opp setningen ved å legge til vars/literals til currentSentence-arrayet, og så legger det som et innslag
-    i resultatet når vi kommer til en punktliste / er ferdig med innholdet i blocken
+    i resultatet når vi kommer til en punktliste / er ferdig med innholdet i blocken.
+    Det vil også bevare rekkefølgen på elementene i blocken.
   */
   for (const content of theBlocksContent) {
     if (content.type === "VARIABLE" || content.type === "LITERAL") {
