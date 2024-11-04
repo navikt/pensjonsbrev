@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
@@ -20,7 +21,11 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 @TemplateModelHelpers
 object InnhentningOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
+    // PE_IY_03_048
     override val kode = Brevkode.Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER
+    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
+    override val sakstyper: Set<Sakstype> = Sakstype.all
 
     override val template = createTemplate(
         name = kode.name,
@@ -76,6 +81,5 @@ object InnhentningOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrev
             includePhrase(Alderspensjon.HarDuSpoersmaal)
         }
     }
-    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
 }
 
