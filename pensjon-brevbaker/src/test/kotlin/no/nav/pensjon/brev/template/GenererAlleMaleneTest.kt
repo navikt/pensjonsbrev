@@ -13,21 +13,32 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class GenererAlleMaleneTest {
 
+    private val filterForPDF = listOf<String>()
+
     @Tag(TestTags.MANUAL_TEST)
-    @ParameterizedTest(name = "{index} => template={0}, brevkode={1}, fixtures={2}, spraak={3}")
+    @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(
-        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
+        template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode,
         fixtures: T,
         spraak: Language,
     ) {
+        if (filterForPDF.isNotEmpty()) {
+            if (!filterForPDF.any { template.name.lowercase().contains(it.lowercase()) }) {
+                return
+            }
+        }
+        if (!template.language.supports(spraak)) {
+            println("Mal ${template.name} fins ikke på språk $spraak, tester ikke denne")
+            return
+        }
         val letter = Letter(template, fixtures, spraak, Fixtures.felles)
 
         letter.renderTestPDF(filnavn(brevkode, spraak))
     }
 
-    @ParameterizedTest(name = "{index} => template={0}, brevkode={1}, fixtures={2}, spraak={3}")
+    @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
         template: LetterTemplate<LanguageSupport, T>,
@@ -36,6 +47,7 @@ class GenererAlleMaleneTest {
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
+            println("Mal ${template.name} fins ikke på språk $spraak, tester ikke denne")
             return
         }
         Letter(
