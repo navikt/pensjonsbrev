@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
@@ -25,6 +26,8 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyR
 
     override val kode = Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
+    override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
 
     override val template = createTemplate(
         name = kode.name,
