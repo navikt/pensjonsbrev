@@ -65,6 +65,7 @@ class BrevmalService(
                 .map { result ->
                     result.filter { brev ->
                         when {
+                            brev.erMalMedFritekst() -> Features.brevMedFritekst.isEnabled()
                             brev.hasEmptyBrevData() -> Features.brevutendata.isEnabled()
                             brev.name == Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD.name -> Features.brevmalUTavslag.isEnabled()
                             else -> true
@@ -76,6 +77,11 @@ class BrevmalService(
                     emptyList()
                 }
         } else emptyList()
+
+    private fun TemplateDescription.erMalMedFritekst() = name in setOf(
+        Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
+        Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ETTERLATTE
+    ).map { it.name }
 
     private fun TemplateDescription.hasEmptyBrevData() = letterDataClass in setOf(
         EmptyRedigerbarBrevdata::class.java.name,
