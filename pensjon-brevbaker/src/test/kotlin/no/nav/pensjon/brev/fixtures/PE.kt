@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.fixtures
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Grunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Persongrunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagAvdod
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Trygdeavtaler
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateral
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOS
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateral
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOS
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOS
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagListeEOS
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNor
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.FratrekkListe
@@ -22,6 +24,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.Vedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsData
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.*
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.*
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.beregningsgrunnlagavdodordiner.BeregningsgrunnlagAvdodOrdiner
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.Uforetrygdberegning
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregninguforeperiode.BeregningUforePeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.etteroppgjorresultat.Etteroppgjoerresultat
@@ -29,7 +32,11 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrig
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.EoEndringEps
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrigeetteroppgjor.ForrigeEtteroppgjor
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.Kravhode
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.trygdetidavdod.TTutlandTrygdeavtale
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.trygdetidavdod.TrygdetidAvdod
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakList
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.FortsattMedlemskap
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.MedlemskapForUTetterTrygdeavtaler
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.Vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkar
@@ -68,7 +75,22 @@ fun createPE() =
             pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes = false,
             pe_ut_inntektsgrense_faktisk_minus_60000 = Kroner(100001),
             pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08 = Kroner(18276),
-
+            avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg = false,
+            avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg = false,
+            avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste = false,
+            avdod_fremtidig_trygdetid_under_40_aar = false,
+            harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg = false,
+            harOpptjeningUTMedFoerstegangstjenesteOgOmsorg = false,
+            harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste = false,
+            pe_ut_fattnorgeplusfatta10netto_avdod = 480,
+            pe_ut_fattnorgeplusfattbilateral_avdod = 480,
+            pe_ut_fattnorgeplusfatteos_avdod = 480,
+            pe_ut_forstegangstjenesteikkenull = false,
+            pe_ut_inntektslandtruehvorbruktlikfalse_avdod = false,
+            pe_ut_inntektslandtruehvorbruktliktrue_avdod = false,
+            pe_ut_sisteopptjeningarlikuforetidspunkt = false,
+            pe_ut_sum_fattnorge_framtidigttnorge_div_12_avdod = 12,
+            pe_ut_vilkargjelderpersonalder = 67,
         ),
         pebrevkode = "PE_UT_05_100",
         personsak = PersonSak(PSfnr("01019878910"))
@@ -82,7 +104,8 @@ fun createVedtaksbrev(): Vedtaksbrev =
 
 fun createGrunnlag() =
     Grunnlag(
-        listOf(createPersongrunnlag())
+        persongrunnlagsliste = listOf(createPersongrunnlag()),
+        persongrunnlagavdod = createPersongrunnlagAvdod()
     )
 
 fun createPersongrunnlag() =
@@ -93,7 +116,23 @@ fun createPersongrunnlag() =
         trygdetidsgrunnlaglisteeos = createTrygdetidsgrunnlagListeEOS(),
         trygdetidsgrunnlaglistenor = createTrygdetidsgrunnlagListeNor(),
         uforetrygdetteroppgjor = createUforetrygdEtteroppgjor(),
+        trygdeavtaler = createTrygdeavtaler(),
     )
+
+fun createTrygdeavtaler() =
+    Trygdeavtaler(
+        avtaleland = "usa"
+    )
+
+fun createPersongrunnlagAvdod() =
+    PersongrunnlagAvdod(
+        brukerflyktning = true,
+        trygdetidsgrunnlaglistebilateral = createTrygdetidsgrunnlagListeBilateral(),
+        trygdetidsgrunnlaglisteeos = createTrygdetidsgrunnlagListeEOS(),
+        trygdetidsgrunnlaglistenor = createTrygdetidsgrunnlagListeNor(),
+        fodselsnummer = "12345678910",
+    )
+
 
 fun createUforetrygdEtteroppgjor(): UforetrygdEtteroppgjor =
     UforetrygdEtteroppgjor(
@@ -208,6 +247,30 @@ fun createVedtaksdata() = Vedtaksdata(
         resultatforrigeeo = "",
         tidligereeoiverksatt = true
     ),
+    trygdetidavdod = createTrygdetidAvdod()
+)
+
+fun createTrygdetidAvdod() =
+    TrygdetidAvdod(
+        fatt = 40,
+        fatteos = 41,
+        fattnorge = 42,
+        framtidigtteos = 43,
+        framtidigttnorsk = 44,
+        ttnevnereos = 45,
+        ttnevnernordisk = 46,
+        ttnordisk = 47,
+        tttellereos = 48,
+        tttellernordisk = 49,
+        ttutlandtrygdeavtale = createTtUtlandTrygdeavtale(),
+        fatta10netto = 411
+    )
+
+private fun createTtUtlandTrygdeavtale(): TTutlandTrygdeavtale = TTutlandTrygdeavtale(
+    ttnevnerbilateral = 40,
+    fattbilateral = 41,
+    framtidigttavtaleland = 42,
+    tttellerbilateral = 43
 )
 
 fun createVilkarsVedtakList() =
@@ -219,13 +282,19 @@ fun createVilkarsVedtak() =
     VilkarsVedtak(
         beregningsvilkar = createBeregningsVilkar(),
         vilkar = createVilkar(),
-        vilkarVirkningFom = LocalDate.of(2020,1,1)
+        vilkarVirkningFom = LocalDate.of(2020, 1, 1)
     )
 
 fun createVilkar() =
     Vilkar(
         yrkesskaderesultat = null,
         unguforresultat = "unguforresultat",
+        fortsattmedlemskap = FortsattMedlemskap(
+            inngangunntak = "inngangunntak"
+        ),
+        medlemskapforutettertrygdeavtaler = MedlemskapForUTetterTrygdeavtaler(
+            oppfyltvedsammenlegging = false
+        ),
     )
 
 fun createBeregningsVilkar() =
@@ -237,7 +306,8 @@ fun createBeregningsVilkar() =
         uforegrad = 100,
         virkningstidpunkt = LocalDate.of(2020, 2, 12),
         ieuinntekt = Kroner(9939),
-        skadetidspunkt = LocalDate.of(2020,1,1),
+        skadetidspunkt = LocalDate.of(2020, 1, 1),
+        uforetidspunkt = LocalDate.of(2020, 1, 1),
     )
 
 fun createTrygdetid() =
@@ -268,6 +338,9 @@ fun createKravhode() =
         brukerkonvertertup = false,
         kravarsaktype = "endring_ifu",
         kravgjelder = "kravgjelder",
+        boddarbeidutlandavdod = false,
+        vurderetrygdeavtale = false,
+        onsketvirkningsdato = LocalDate.of(2020, 1, 1),
     )
 
 fun createBeregningsData() =
@@ -308,7 +381,7 @@ fun createUforetrygdberegning() =
         grunnbelop = Kroner(1010),
         instoppholdtype = "instoppholdtype",
         beregningsmetode = "beregningsmetode",
-        uforetidspunkt = LocalDate.of(2020,1,1),
+        uforetidspunkt = LocalDate.of(2020, 1, 1),
         proratabrokteller = 10,
         proratabroknevner = 11,
         instopphanvendt = true
@@ -360,7 +433,33 @@ fun createEktefelletillegg() =
     Ektefelletillegg(true)
 
 fun createGjenlevendetillegg() =
-    Gjenlevendetillegg(true)
+    Gjenlevendetillegg(
+        gtinnvilget = true,
+        nyttgjenlevendetillegg = false,
+        gjenlevendetillegginformasjon = GjenlevendetilleggInformasjon(
+            uforetidspunkt = LocalDate.of(2020, 1, 1),
+            anvendttrygdetid = 40,
+            minsteytelsebenyttetungufor = false,
+            beregningsgrunnlagavdodordiner = BeregningsgrunnlagAvdodOrdiner(
+                arsbelop = Kroner(1234),
+                opptjeningutliste = listOf(createOpptjeningUt())
+            ),
+            yrkesskadegrad = 43,
+            beregningsgrunnlagavdodyrkesskadearsbelop = Kroner(44),
+            inntektvedskadetidspunktet = Kroner(45),
+        )
+    )
+
+private fun createOpptjeningUt(): OpptjeningUT = OpptjeningUT(
+    forstegansgstjeneste = 120,
+    inntektiavtaleland = false,
+    ar = 121,
+    pgi = Kroner(122),
+    omsorgsaar = false,
+    justertbelop = Kroner(123),
+    avkortetbelop = Kroner(124),
+    brukt = false
+)
 
 fun createBarnetilleggSerkull() =
     BarnetilleggSerkull(
@@ -428,6 +527,7 @@ fun createBeregningsgrunnlagOrdinar() =
         antallarover1g = 10,
         antallarinntektiavtaleland = 11,
         beregningsgrunnlagordinerarsbelop = Kroner(10589),
+        opptjeningutliste = listOf(createOpptjeningUt()),
     )
 
 fun createAvkortningsInformasjon(): AvkortningsInformasjon =
@@ -445,4 +545,7 @@ fun createAvkortningsInformasjon(): AvkortningsInformasjon =
     )
 
 fun createMinsteytelse() =
-    Minsteytelse(3.5)
+    Minsteytelse(
+        sats = 3.5,
+        oppfyltungufor = true
+    )

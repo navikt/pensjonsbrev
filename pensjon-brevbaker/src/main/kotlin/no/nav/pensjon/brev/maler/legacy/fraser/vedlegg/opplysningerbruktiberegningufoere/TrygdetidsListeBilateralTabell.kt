@@ -13,8 +13,8 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-data class TBU046V_2(
-    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral: Expression<List<TrygdetidsgrunnlagBilateral>>
+data class TrygdetidsListeBilateralTabell(
+    val trygdetidsgrunnlagListeBilateral: Expression<List<TrygdetidsgrunnlagBilateral>>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -43,7 +43,7 @@ data class TBU046V_2(
                     }
                 }
             ) {
-                forEach(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeBilateral) { trygdetidBilateral ->
+                forEach(trygdetidsgrunnlagListeBilateral) { trygdetidBilateral ->
                     row {
                         cell {
                             ifNotNull(trygdetidBilateral.trygdetidbilateralland) {

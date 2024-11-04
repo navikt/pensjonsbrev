@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.trygdetidavdod
 
-import no.nav.pensjon.brevbaker.api.model.Kroner
-
 data class TrygdetidAvdod(
-    val fatt: Kroner?,
+    val fatt: Int?,
     val fatteos: Int?,
     val fattnorge: Int?,
     val framtidigtteos: Int?,
