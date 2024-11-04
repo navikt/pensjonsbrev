@@ -46,13 +46,6 @@ class Alderspensjon {
             paragraph {
                 text(
                     Bokmal to "",
-                    English to "",
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "",
                     English to "NORWAY",
                 )
             }
