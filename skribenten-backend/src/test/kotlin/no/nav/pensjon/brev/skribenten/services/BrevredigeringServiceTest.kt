@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.mockk.*
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -66,12 +67,14 @@ class BrevredigeringServiceTest {
         brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
     )
     private val letterResponse = LetterResponse(file = stagetPDF, contentType = "pdf", letterMetadata = lettermetadata)
-    private val templateDescription = TemplateDescription(
+    private val templateDescription = TemplateDescription.Redigerbar(
         name = "template name",
         letterDataClass = "template letter data class",
         languages = listOf(LanguageCode.ENGLISH),
         metadata = lettermetadata,
-        kategori = null
+        kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+        brevkontekst = TemplateDescription.Brevkontekst.ALLE,
+        sakstyper = Sakstype.all,
     )
 
     private val brevbakerMock: BrevbakerService = mockk<BrevbakerService>()
@@ -164,6 +167,7 @@ class BrevredigeringServiceTest {
         coEvery {
             penService.hentPesysBrevdata(
                 eq(sak.saksId),
+                any(),
                 eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 any()
             )
@@ -179,7 +183,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `can create and fetch brevredigering`(): Unit = runBlocking {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
-        val brev = opprettBrev(saksbehandlerValg = saksbehandlerValg, reserverForRedigering = true).resultOrNull()!!
+        val brev = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg).resultOrNull()!!
 
         coVerify {
             brevbakerMock.renderMarkup(
@@ -209,6 +213,33 @@ class BrevredigeringServiceTest {
                 eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 eq(LanguageCode.ENGLISH),
                 any(),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `can create brev for vedtak`(): Unit = runBlocking {
+        val vedtaksId: Long = 5678
+
+        val brev = opprettBrev(vedtaksId = vedtaksId).resultOrNull()!!
+        assertThat(brev.info.vedtaksId).isEqualTo(vedtaksId)
+        coVerify {
+            penService.hentPesysBrevdata(
+                eq(sak.saksId),
+                eq(vedtaksId),
+                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                any()
+            )
+        }
+
+        val hentet = brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)?.resultOrNull()!!
+        assertThat(hentet.info.vedtaksId).isEqualTo(vedtaksId)
+        coVerify {
+            penService.hentPesysBrevdata(
+                eq(sak.saksId),
+                eq(vedtaksId),
+                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 any()
             )
         }
@@ -263,11 +294,12 @@ class BrevredigeringServiceTest {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val result = withPrincipal(principalMock()) {
             brevredigeringService.opprettBrev(
-                sak,
-                Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
-                LanguageCode.ENGLISH,
-                "The Matrix",
-                saksbehandlerValg
+                sak = sak,
+                vedtaksId = null,
+                brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+                spraak = LanguageCode.ENGLISH,
+                avsenderEnhetsId = "The Matrix",
+                saksbehandlerValg = saksbehandlerValg
             )
         }
         assertThat(result).isInstanceOfSatisfying<ServiceResult.Error<*>> {
@@ -278,7 +310,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `can update brevredigering`(): Unit = runBlocking {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
-        val original = opprettBrev(saksbehandlerValg = saksbehandlerValg, reserverForRedigering = true).resultOrNull()!!
+        val original = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg).resultOrNull()!!
 
         clearMocks()
 
@@ -533,7 +565,7 @@ class BrevredigeringServiceTest {
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
         clearMocks(brevbakerMock, penService)
 
-        coEvery { penService.hentPesysBrevdata(any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
+        coEvery { penService.hentPesysBrevdata(any(), isNull(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
         coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
@@ -541,8 +573,8 @@ class BrevredigeringServiceTest {
         coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns templateDescription
 
         val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
-            reserverForRedigering = false
+            reserverForRedigering = false,
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
         ).resultOrNull()!!
 
         withPrincipal(principalMock()) {
@@ -559,6 +591,7 @@ class BrevredigeringServiceTest {
         coVerify {
             penService.hentPesysBrevdata(
                 eq(sak.saksId),
+                isNull(),
                 eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 eq(principalNavEnhetId),
             )
@@ -586,7 +619,7 @@ class BrevredigeringServiceTest {
     fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
         clearMocks(brevbakerMock, penService)
 
-        coEvery { penService.hentPesysBrevdata(any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
+        coEvery { penService.hentPesysBrevdata(any(), isNull(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
         coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
@@ -594,8 +627,8 @@ class BrevredigeringServiceTest {
         coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns templateDescription
 
         val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
-            reserverForRedigering = false
+            reserverForRedigering = false,
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
         ).resultOrNull()!!
 
         withPrincipal(principalMock()) {
@@ -612,6 +645,7 @@ class BrevredigeringServiceTest {
         coVerify {
             penService.hentPesysBrevdata(
                 eq(sak.saksId),
+                isNull(),
                 eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 eq(principalNavEnhetId),
             )
@@ -989,7 +1023,7 @@ class BrevredigeringServiceTest {
                     blocks = brev.redigertBrev.blocks + E_Paragraph(
                         null,
                         true,
-                        listOf(E_Literal(null, "", E_FontType.PLAIN,"and blue pill"))
+                        listOf(E_Literal(null, "", E_FontType.PLAIN, "and blue pill"))
                     )
                 ),
                 frigiReservasjon = false,
@@ -1026,9 +1060,11 @@ class BrevredigeringServiceTest {
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
         saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
+        vedtaksId: Long? = null,
     ) = withPrincipal(principal) {
         brevredigeringService.opprettBrev(
             sak = sak,
+            vedtaksId = vedtaksId,
             brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
             spraak = LanguageCode.ENGLISH,
             avsenderEnhetsId = principalNavEnhetId,

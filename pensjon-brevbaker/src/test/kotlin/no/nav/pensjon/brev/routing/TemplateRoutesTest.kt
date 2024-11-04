@@ -4,7 +4,6 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import no.nav.pensjon.brev.api.description
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
@@ -46,28 +45,28 @@ class TemplateRoutesTest {
     fun `can get description of all autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.autobrev.map { it.description() }, response.body<List<TemplateDescription>>())
+        assertEquals(ProductionTemplates.autobrev.map { it.description() }, response.body<List<TemplateDescription.Autobrev>>())
     }
 
     @Test
     fun `can get description of all redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.redigerbare.map { it.description() }, response.body<List<TemplateDescription>>())
+        assertEquals(ProductionTemplates.redigerbare.map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>())
     }
 
     @Test
     fun `can get description of autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev/${OmsorgEgenAuto.kode.name}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(OmsorgEgenAuto.template.description(), response.body<TemplateDescription>())
+        assertEquals(OmsorgEgenAuto.description(), response.body<TemplateDescription.Autobrev>())
     }
 
     @Test
     fun `can get description of redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription>())
+        assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
     }
 
     @Test
