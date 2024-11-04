@@ -33,8 +33,8 @@ class Alderspensjon {
         override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "NAV Familie- og pensjonsytelser",
-                    English to "NAV Familie- og pensjonsytelser",
+                    Bokmal to "Nav Familie- og pensjonsytelser",
+                    English to "Nav Familie- og pensjonsytelser",
                 )
             }
             paragraph {
