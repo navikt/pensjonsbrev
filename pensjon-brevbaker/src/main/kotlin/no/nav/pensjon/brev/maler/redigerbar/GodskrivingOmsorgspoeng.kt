@@ -54,49 +54,44 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        //IF(FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
+        val erFoer1991 = pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
+            .lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(
+            1948
+        ) and FUNKSJON_Year(
+            pesysData.pe.personsak.foedselsdato
+        ).lessThanOrEqual(1953)
+
+        //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF
+        val erEtter1991 = pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
+            .greaterThan(1991) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThan(1948) or FUNKSJON_Year(
+            pesysData.pe.personsak.foedselsdato
+        ).greaterThan(1953)
+
+
         title {
             //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF
-            showIf(
-                pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                    .greaterThan(1991) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThan(1948) or FUNKSJON_Year(
-                    pesysData.pe.personsak.foedselsdato
-                ).greaterThan(1953)
-            ) {
+            showIf(erEtter1991) {
                 //[PE_IY_05_Overskrift1]
 
-                    text(
-                        Bokmal to "Godskriving av pensjonsopptjening (omsorgsopptjening) fordi du har omsorg for små barn",
-                        English to "Accredited pension earning (for care work) because you care for young children",
-                    )
+                text(
+                    Bokmal to "Godskriving av pensjonsopptjening (omsorgsopptjening) fordi du har omsorg for små barn",
+                    English to "Accredited pension earning (for care work) because you care for young children",
+                )
             }
 
             //IF(PE_pebrevkode = "PE_IY_05_201" AND FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-            showIf(
-                pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                    .lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(
-                    1948
-                ) and FUNKSJON_Year(
-                    pesysData.pe.personsak.foedselsdato
-                ).lessThanOrEqual(1953)
-            ) {
+            showIf(erFoer1991) {
                 //[PE_IY_05_Overskrift1 2]
 
-                    text(
-                        Bokmal to "Godskriving av pensjonsopptjening for omsorg for barn under sju år før 1992 - melding om vedtak",
-                        English to "Accreditation of acquired rights for the care of children below the age of seven prior to 1992 - notification of decision",
-                    )
+                text(
+                    Bokmal to "Godskriving av pensjonsopptjening for omsorg for barn under sju år før 1992 - melding om vedtak",
+                    English to "Accreditation of acquired rights for the care of children below the age of seven prior to 1992 - notification of decision",
+                )
             }
         }
         outline {
-            //IF(FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-            showIf(
-                pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                    .lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(
-                    1948
-                ) and FUNKSJON_Year(
-                    pesysData.pe.personsak.foedselsdato
-                ).lessThanOrEqual(1953)
-            ) {
+            showIf(erFoer1991) {
                 //[PE_IY_05_TB1125,TB1131]
 
                 paragraph {
@@ -110,14 +105,7 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
             }
 
             //IF(FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-            showIf(
-                pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                    .lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(
-                    1948
-                ) and FUNKSJON_Year(
-                    pesysData.pe.personsak.foedselsdato
-                ).lessThanOrEqual(1953)
-            ) {
+            showIf(erFoer1991) {
                 //[PE_IY_05_TB1125,TB1131]
 
                 paragraph {
@@ -129,14 +117,7 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
             }
 
             //IF(FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-            showIf(
-                pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                    .lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(
-                    1948
-                ) and FUNKSJON_Year(
-                    pesysData.pe.personsak.foedselsdato
-                ).lessThanOrEqual(1953)
-            ) {
+            showIf(erFoer1991) {
                 //[PE_IY_05_TB1125,TB1131]
 
                 paragraph {
@@ -146,14 +127,7 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
                     )
                 }
             }
-
-            //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF
-            showIf(
-                pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                    .greaterThan(1991) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThan(1948) or FUNKSJON_Year(
-                    pesysData.pe.personsak.foedselsdato
-                ).greaterThan(1953)
-            ) {
+            showIf(erEtter1991) {
                 //[PE_IY_05_TB1125,TB1131]
 
                 paragraph {
@@ -173,12 +147,7 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
             }
 
             //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF
-            showIf(
-                pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                    .greaterThan(1991) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThan(1948) or FUNKSJON_Year(
-                    pesysData.pe.personsak.foedselsdato
-                ).greaterThan(1953)
-            ) {
+            showIf(erEtter1991) {
                 //[PE_IY_05_TB1126,TB1124,TB1127]
 
                 paragraph {
@@ -244,14 +213,7 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
             }
 
             //IF(PE_pebrevkode = "PE_IY_05_201" AND FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-            showIf(
-                pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                    .lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(
-                    1948
-                ) and FUNKSJON_Year(
-                    pesysData.pe.personsak.foedselsdato
-                ).lessThanOrEqual(1953)
-            ) {
+            showIf(erFoer1991) {
                 //[PE_IY_05_TB1126,TB1124,TB1127 2]
 
 
