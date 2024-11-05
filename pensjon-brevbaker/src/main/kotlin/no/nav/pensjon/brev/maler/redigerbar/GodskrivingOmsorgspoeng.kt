@@ -1,21 +1,30 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.personsak
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSakSelectors.foedselsdato
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDtoSelectors.PesysDataSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.FUNKSJON_Year
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravmottatdato
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -43,14 +52,17 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 //fun Expression<PE>.vedtaksdata_kravhode_kravmottatdato(): Expression<LocalDate> =
 //    vedtaksbrev_safe.vedtaksdata_safe.kravhode_safe.kravmottatdato_safe.ifNull(TODO)
 @TemplateModelHelpers
-object GodskrivingOmsorgspoeng : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
 
+    // PE_IY_
 override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS // TODO skal bli eigen
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.OMSORGSOPPTJENING // trur eg?
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val sakstyper = setOf(Sakstype.OMSORG)
 
     override val template = createTemplate(
     name = kode.name,
-    letterDataType = EmptyRedigerbarBrevdata::class,
+    letterDataType = PEDto::class,
     languages = languages(Bokmal, English),
     letterMetadata = LetterMetadata(
         displayTitle = "", // TODO
@@ -68,7 +80,7 @@ override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS // TO
     outline {
 
         //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF
-        showIf((pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().greaterThan(1991) or FUNKSJON_Year(pe.personsak_fodselsdato()).lessThan(1948) or FUNKSJON_Year(pe.personsak_fodselsdato()).greaterThan(1953))){
+        showIf((pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().greaterThan(1991) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThan(1948) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThan(1953))){
             //[PE_IY_05_Overskrift1]
 
             paragraph {
@@ -80,7 +92,7 @@ override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS // TO
         }
 
         //IF(PE_pebrevkode = "PE_IY_05_201" AND FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-        showIf(pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pe.personsak_fodselsdato()).greaterThanOrEqual(1948) and FUNKSJON_Year(pe.personsak_fodselsdato()).lessThanOrEqual(1953)){
+        showIf(pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(1948) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThanOrEqual(1953)){
             //[PE_IY_05_Overskrift1 2]
 
             paragraph {
@@ -92,19 +104,19 @@ override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS // TO
         }
 
         //IF(FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-        showIf((pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pe.personsak_fodselsdato()).greaterThanOrEqual(1948) and FUNKSJON_Year(pe.personsak_fodselsdato()).lessThanOrEqual(1953))){
+        showIf((pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(1948) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThanOrEqual(1953))){
         //[PE_IY_05_TB1125,TB1131]
 
             paragraph {
                 textExpr (
-                    Bokmal to "NAV har innvilget din søknad mottatt ".expr() + pe.vedtaksdata_kravhode_kravmottatdato().format() + " om pensjonsopptjening for omsorg for barn under sju år før 1992. ",
-                    English to "NAV has granted your application received on ".expr() + pe.vedtaksdata_kravhode_kravmottatdato().format() + " for acquired rights for the care of children below the age of seven prior to 1992. ",
+                    Bokmal to "NAV har innvilget din søknad mottatt ".expr() + pesysData.pe.vedtaksdata_kravhode_kravmottatdato().format() + " om pensjonsopptjening for omsorg for barn under sju år før 1992. ",
+                    English to "NAV has granted your application received on ".expr() + pesysData.pe.vedtaksdata_kravhode_kravmottatdato().format() + " for acquired rights for the care of children below the age of seven prior to 1992. ",
                 )
             }
         }
 
         //IF(FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-        showIf((pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pe.personsak_fodselsdato()).greaterThanOrEqual(1948) and FUNKSJON_Year(pe.personsak_fodselsdato()).lessThanOrEqual(1953))){
+        showIf((pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(1948) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThanOrEqual(1953))){
             //[PE_IY_05_TB1125,TB1131]
 
             paragraph {
@@ -116,7 +128,7 @@ override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS // TO
         }
 
         //IF(FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-        showIf((pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pe.personsak_fodselsdato()).greaterThanOrEqual(1948) and FUNKSJON_Year(pe.personsak_fodselsdato()).lessThanOrEqual(1953))){
+        showIf((pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(1948) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThanOrEqual(1953))){
             //[PE_IY_05_TB1125,TB1131]
 
             paragraph {
@@ -128,7 +140,7 @@ override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS // TO
         }
 
         //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF
-        showIf((pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().greaterThan(1991) or FUNKSJON_Year(pe.personsak_fodselsdato()).lessThan(1948) or FUNKSJON_Year(pe.personsak_fodselsdato()).greaterThan(1953))){
+        showIf((pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().greaterThan(1991) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThan(1948) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThan(1953))){
             //[PE_IY_05_TB1125,TB1131]
 
             paragraph {
@@ -142,13 +154,13 @@ override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS // TO
 
         paragraph {
             textExpr (
-                Bokmal to pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().format(),
-                English to pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().format(),
+                Bokmal to pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().format(),
+                English to pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().format(),
             )
         }
 
         //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF
-        showIf(pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().greaterThan(1991) or FUNKSJON_Year(pe.personsak_fodselsdato()).lessThan(1948) or FUNKSJON_Year(pe.personsak_fodselsdato()).greaterThan(1953)){
+        showIf(pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().greaterThan(1991) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThan(1948) or FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThan(1953)){
             //[PE_IY_05_TB1126,TB1124,TB1127]
 
             paragraph {
@@ -200,7 +212,7 @@ override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS // TO
         }
 
         //IF(PE_pebrevkode = "PE_IY_05_201" AND FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
-        showIf(pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pe.personsak_fodselsdato()).greaterThanOrEqual(1948) and FUNKSJON_Year(pe.personsak_fodselsdato()).lessThanOrEqual(1953)){
+        showIf(pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().lessThanOrEqual(1991) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).greaterThanOrEqual(1948) and FUNKSJON_Year(pesysData.pe.personsak.foedselsdato).lessThanOrEqual(1953)){
             //[PE_IY_05_TB1126,TB1124,TB1127 2]
 
             paragraph {

@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-class PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.OMSORGSOPPTJENING
     override val kode = Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD // TODO skal lage ny
 
