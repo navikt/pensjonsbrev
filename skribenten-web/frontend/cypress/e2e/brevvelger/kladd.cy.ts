@@ -131,6 +131,7 @@ describe("Kladd", () => {
           ytelse: "Alderspensjon",
           svartidUker: "4",
         },
+        vedtaksId: null,
       });
       req.reply(nyBrevResponse({ info: nyBrevInfo({ id: 2 }) }));
     }).as("createBrev");

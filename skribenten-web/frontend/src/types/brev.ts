@@ -9,6 +9,7 @@ export type OpprettBrevRequest = {
   avsenderEnhetsId: Nullable<string>;
   saksbehandlerValg: SaksbehandlerValg;
   mottaker: Nullable<Mottaker>;
+  vedtaksId: Nullable<number>;
 };
 
 export type SaksbehandlerValg = {

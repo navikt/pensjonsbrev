@@ -52,6 +52,7 @@ describe("Oppretter brevbakerbrev", () => {
           ytelse: "Alderspensjon",
           svartidUker: "4",
         },
+        vedtaksId: null,
       });
 
       req.reply({ fixture: "brevResponse.json" });
@@ -84,6 +85,7 @@ describe("Oppretter brevbakerbrev", () => {
           mottattSøknad: "2024-10-09",
           søknadOversendesTilUtlandet: false,
         },
+        vedtaksId: null,
       });
       req.reply({ fixture: "brevResponse.json" });
     }).as("createBrev");
@@ -114,6 +116,7 @@ describe("Oppretter brevbakerbrev", () => {
         avsenderEnhetsId: "",
         mottaker: null,
         saksbehandlerValg: {},
+        vedtaksId: null,
       });
       req.reply({ fixture: "brevResponse.json" });
     }).as("createBrev");
