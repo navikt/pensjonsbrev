@@ -33,25 +33,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-//
-////Selectors used in this letter(Copy into LegacySelectors as needed):
-//fun Expression<PE>.ff01_telefonnrpensjon(): Expression<String> =
-//    ff01_safe.telefonnrpensjon_safe.ifNull("")
-//
-//fun Expression<PE>.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar(): Expression<Int> =
-//    grunnlag_safe.omsorggodskrgrunnlagliste_safe.omsorggodskrgrunnlagar_safe.ifNull(0)
-//
-//fun Expression<PE>.kontaktinformasjon_navnavsenderenhet(): Expression<String> =
-//    kontaktinformasjon_safe.navnavsenderenhet_safe.ifNull("")
-//
-//fun Expression<PE>.pebrevkode(): Expression<String> =
-//    pebrevkode_safe.ifNull("")
-//
-//fun Expression<PE>.personsak_fodselsdato(): Expression<LocalDate> =
-//    personsak_safe.fodselsdato_safe.ifNull(TODO)
-//
-//fun Expression<PE>.vedtaksdata_kravhode_kravmottatdato(): Expression<LocalDate> =
-//    vedtaksbrev_safe.vedtaksdata_safe.kravhode_safe.kravmottatdato_safe.ifNull(TODO)
 @TemplateModelHelpers
 object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
 
