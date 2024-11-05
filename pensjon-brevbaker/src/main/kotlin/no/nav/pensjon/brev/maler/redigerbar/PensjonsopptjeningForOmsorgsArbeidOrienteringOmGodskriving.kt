@@ -40,8 +40,8 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
         letterMetadata = LetterMetadata(
             displayTitle = "Pensjonsopptjening for omsorgsarbeid (omsorgsopptjening) - orientering om godskriving",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     )
     {
