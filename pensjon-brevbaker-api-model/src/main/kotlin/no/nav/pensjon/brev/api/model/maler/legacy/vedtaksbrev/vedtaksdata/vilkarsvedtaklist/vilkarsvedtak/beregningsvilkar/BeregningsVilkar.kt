@@ -6,14 +6,13 @@ import java.time.LocalDate
 
 data class BeregningsVilkar(
     val ieubegrunnelse: String?,
+    val ieuinntekt: Kroner?,
     val ifubegrunnelse: String?,
     val ifuinntekt: Kroner?,
+    val skadetidspunkt: LocalDate?,
     val trygdetid: Trygdetid?,
     val uforegrad: Int?,
     val uforetidspunkt: LocalDate?,
     val virkningstidpunkt: LocalDate?,
-    val uforetidspunkt: LocalDate?,
-    val ieuinntekt: Kroner?,
-    val skadetidspunkt: LocalDate?,
     val yrkesskadegrad: Int?
 )

@@ -323,7 +323,6 @@ fun createBeregningsVilkar() =
         uforetidspunkt = LocalDate.now().minusYears(5),
         virkningstidpunkt = LocalDate.of(2020, 2, 12),
         yrkesskadegrad = 29,
-        uforetidspunkt = LocalDate.of(2020, 1, 1),
     )
 
 fun createTrygdetid() =

@@ -1,22 +1,19 @@
 package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.pe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.generated.TBU1216_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_1_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_2_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU1288_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2368_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2490_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2530_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU3224_Generated
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1091_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1092_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1120_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1121_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1122_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1123_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1133_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1201_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1203_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1204_Generated
@@ -25,14 +22,23 @@ import no.nav.pensjon.brev.maler.legacy.fraser.TBU1206_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1207_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1208_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1210_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1214_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1216_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1253_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1254_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1284_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1285_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_1_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_2_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1288_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1296_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2222_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2223_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2251_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2261_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2279_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2280_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2357_Generated
@@ -43,20 +49,14 @@ import no.nav.pensjon.brev.maler.legacy.fraser.TBU2364_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2365_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2366_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2367_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2368_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2490_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2530_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3224_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3740_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3800_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3801_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1120_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1121_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1122_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1123_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1133_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1214_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1253_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1254_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2279_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2280_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU3740_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU_3803_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -551,12 +551,12 @@ override val kode = Brevkode.AutoBrev.UT_ENDRET_PGA_OPPTJENING
             }
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Ufoeretrygd.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsynPesys)
+            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("nor") or pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("")))
-            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
 
         }
 
