@@ -146,4 +146,31 @@ object Felles {
             operation = UnaryOperation.BrukerFulltNavn
         )
 
+    object BokmalEnglish {
+        data class HarDuSpoersmaal(val merInformasjonUrl: String, val telefonnummer: String): OutlinePhrase<LangBokmalEnglish>() {
+            override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+                title1 {
+                    text(
+                        Bokmal to "Har du spørsmål?",
+                        English to "Do you have questions?"
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Du finner mer informasjon på $merInformasjonUrl."
+                                + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                                + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
+                                + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                        English to "You can find more information at $merInformasjonUrl."
+                                + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
+                                + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 $telefonnummer,"
+                                + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                    )
+                }
+            }
+            companion object {
+                val pensjon = HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
+            }
+        }
+    }
 }

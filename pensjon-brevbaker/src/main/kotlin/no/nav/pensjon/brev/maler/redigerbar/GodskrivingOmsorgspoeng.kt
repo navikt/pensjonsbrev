@@ -287,7 +287,7 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
             }
             //[PE_IY_05_TB1888,TB1181]
 
-            includePhrase(Felles.HarDuSpoersmaal.pensjon)
+            includePhrase(Felles.BokmalEnglish.HarDuSpoersmaal.pensjon)
         }
     }
 }

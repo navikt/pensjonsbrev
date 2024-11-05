@@ -133,7 +133,7 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
                 )
             }
 
-            includePhrase(Felles.HarDuSpoersmaal.pensjon)
+            includePhrase(Felles.BokmalEnglish.HarDuSpoersmaal.pensjon)
         }
     }
 }
