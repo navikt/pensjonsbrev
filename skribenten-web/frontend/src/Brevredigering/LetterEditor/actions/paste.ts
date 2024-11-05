@@ -29,6 +29,7 @@ export function logPastedClipboard(clipboardData: DataTransfer) {
 }
 
 function insertTextInLetter(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number, str: string) {
+  draft.isDirty = true;
   const content = draft.redigertBrev.blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex];
   if (content?.type === ITEM_LIST && "itemContentIndex" in literalIndex) {
     const itemContent = content.items[literalIndex.itemIndex]?.content[literalIndex?.itemContentIndex];
@@ -67,7 +68,7 @@ function insertHtmlClipboardInLetter(
 ) {
   const parser = new DOMParser();
   const document = parser.parseFromString(clipboard.getData("text/html"), "text/html");
-
+  draft.isDirty = true;
   insertElement(draft, literalIndex, offset, document.body);
 }
 

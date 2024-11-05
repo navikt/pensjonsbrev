@@ -235,12 +235,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
-    // TODO: for debugging frem til vi er ferdig å teste liming
-    logPastedClipboard(event.clipboardData);
+    if (!freeze) {
+      // TODO: for debugging frem til vi er ferdig å teste liming
+      logPastedClipboard(event.clipboardData);
 
-    const offset = getCursorOffset();
-    if (offset >= 0) {
-      applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
+      const offset = getCursorOffset();
+      if (offset >= 0) {
+        applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
+      }
     }
   };
 
