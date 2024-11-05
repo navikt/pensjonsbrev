@@ -59,29 +59,27 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
     // PE_IY_05_201
     override val kode = Brevkode.Redigerbar.GODSKRIVING_AV_PENSJONSOPPTJENING_FOR_OMSORG_BARN
     override val kategori: TemplateDescription.Brevkategori =
-        TemplateDescription.Brevkategori.OMSORGSOPPTJENING // trur eg?
+        TemplateDescription.Brevkategori.OMSORGSOPPTJENING
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.OMSORG)
+
+    val tittel = mapOf( // TODO
+        Bokmal to "Godskriving av pensjonsopptjening for omsorg for barn",
+        English to "",
+    )
 
     override val template: LetterTemplate<*, PEDto> = createTemplate(
         name = kode.name,
         letterDataType = PEDto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "", // TODO
+            displayTitle = tittel[Bokmal]!!,
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG, // TODO
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
         title {
-            text(
-                Bokmal to "",
-                English to "", // TODO
-            )
-        }
-        outline {
-
             //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF
             showIf(
                 (pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
@@ -91,12 +89,10 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
             ) {
                 //[PE_IY_05_Overskrift1]
 
-                paragraph {
                     text(
                         Bokmal to "Godskriving av pensjonsopptjening (omsorgsopptjening) fordi du har omsorg for små barn",
                         English to "Accredited pension earning (for care work) because you care for young children",
                     )
-                }
             }
 
             //IF(PE_pebrevkode = "PE_IY_05_201" AND FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
@@ -110,14 +106,13 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
             ) {
                 //[PE_IY_05_Overskrift1 2]
 
-                paragraph {
                     text(
                         Bokmal to "Godskriving av pensjonsopptjening for omsorg for barn under sju år før 1992 - melding om vedtak",
                         English to "Accreditation of acquired rights for the care of children below the age of seven prior to 1992 - notification of decision",
                     )
-                }
             }
-
+        }
+        outline {
             //IF(FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
             showIf(
                 (pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()

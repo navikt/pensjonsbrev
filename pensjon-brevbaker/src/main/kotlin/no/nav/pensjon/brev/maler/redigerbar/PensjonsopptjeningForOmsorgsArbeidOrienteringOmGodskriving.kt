@@ -37,10 +37,10 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
         letterDataType = PEDto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "", // TODO
+            displayTitle = "Pensjonsopptjening for omsorgsarbeid (omsorgsopptjening) - orientering om godskriving",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG, // TODO
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     )
     {
