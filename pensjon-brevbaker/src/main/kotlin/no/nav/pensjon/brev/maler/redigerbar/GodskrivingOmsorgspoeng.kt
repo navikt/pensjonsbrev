@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.maler.legacy.grunnlag_omsorggodskrgrunnlagliste_omsor
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravmottatdato
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -63,17 +62,12 @@ object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.OMSORG)
 
-    val tittel = mapOf( // TODO
-        Bokmal to "Godskriving av pensjonsopptjening for omsorg for barn",
-        English to "",
-    )
-
-    override val template: LetterTemplate<*, PEDto> = createTemplate(
+    override val template = createTemplate(
         name = kode.name,
         letterDataType = PEDto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
-            displayTitle = tittel[Bokmal]!!,
+            displayTitle = "Godskriving av pensjonsopptjening (omsorgsopptjening) fordi du har omsorg for små barn",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
