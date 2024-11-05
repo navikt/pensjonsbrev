@@ -56,8 +56,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object GodskrivingOmsorgspoeng : RedigerbarTemplate<PEDto> {
 
-    // PE_IY_
-    override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS // TODO skal bli eigen
+    // PE_IY_05_201
+    override val kode = Brevkode.Redigerbar.GODSKRIVING_AV_PENSJONSOPPTJENING_FOR_OMSORG_BARN
     override val kategori: TemplateDescription.Brevkategori =
         TemplateDescription.Brevkategori.OMSORGSOPPTJENING // trur eg?
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

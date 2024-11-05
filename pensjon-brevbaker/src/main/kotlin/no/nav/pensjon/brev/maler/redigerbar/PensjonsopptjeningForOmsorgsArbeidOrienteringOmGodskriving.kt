@@ -28,7 +28,9 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.OMSORGSOPPTJENING
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.OMSORG)
-    override val kode = Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD // TODO skal lage ny
+
+    // PE_IY_05_200
+    override val kode = Brevkode.Redigerbar.PENSJONSOPPTJENING_FOR_OMSORGSARBEID_ORIENTERING_OM_GODSKRIVING
 
     override val template = createTemplate(
         name = kode.name,
