@@ -35,6 +35,7 @@ class Dto2ApiService(
             brevkode = info.brevkode,
             brevtittel = template?.metadata?.displayTitle ?: info.brevkode.name,
             status = when {
+                info.journalpostId != null -> BrevStatus.Arkivert
                 info.laastForRedigering -> BrevStatus.Klar
                 info.redigeresAv != null -> BrevStatus.UnderRedigering(hentNavAnsatt(info.redigeresAv))
                 else -> BrevStatus.Kladd

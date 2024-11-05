@@ -57,11 +57,13 @@ object Api {
         JsonSubTypes.Type(BrevStatus.Kladd::class, name = "Kladd"),
         JsonSubTypes.Type(BrevStatus.UnderRedigering::class, name = "UnderRedigering"),
         JsonSubTypes.Type(BrevStatus.Klar::class, name = "Klar"),
+        JsonSubTypes.Type(BrevStatus.Arkivert::class, name = "Arkivert"),
     )
     sealed class BrevStatus {
         data object Kladd : BrevStatus()
         data class UnderRedigering(val redigeresAv: NavAnsatt) : BrevStatus()
         data object Klar : BrevStatus()
+        data object Arkivert : BrevStatus()
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
