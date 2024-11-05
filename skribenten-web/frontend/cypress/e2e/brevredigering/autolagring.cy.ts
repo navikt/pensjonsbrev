@@ -2,7 +2,17 @@ import { format, formatISO } from "date-fns";
 
 import type { BrevResponse } from "~/types/brev";
 
-import { nyBrevInfo, nyBrevResponse, nyRedigertBrev } from "../../utils/brevredigeringTestUtils";
+import {
+  nyBrevInfo,
+  nyBrevResponse,
+  nyItem,
+  nyItemList,
+  nyLiteral,
+  nyParagraphBlock,
+  nyRedigertBrev,
+  nyTitle1Block,
+  nyVariable,
+} from "../../utils/brevredigeringTestUtils";
 
 describe("autolagring", () => {
   const hurtiglagreTidspunkt = formatISO(new Date());
@@ -228,170 +238,45 @@ describe("autolagring", () => {
       });
       req.reply(
         nyBrevResponse({
-          info: nyBrevInfo({
-            sistredigert: hurtiglagreTidspunkt,
-          }),
+          info: nyBrevInfo({ sistredigert: hurtiglagreTidspunkt }),
           redigertBrev: nyRedigertBrev({
             blocks: [
-              {
-                id: -2_030_215_963,
-                editable: true,
+              nyParagraphBlock({
                 content: [
-                  {
-                    id: 1_507_865_607,
-                    text: "We received your application for ",
-                    editedText: "Wae received your application for ",
-                    type: "LITERAL",
-                  },
-                  {
-                    id: -726_051_414,
-                    text: "Supplerende stønad",
-                    type: "VARIABLE",
-                  },
-                  {
-                    id: -142_236_915,
-                    text: " from the National Insurance authorities in ",
-                    editedText: null,
-                    type: "LITERAL",
-                  },
-                  {
-                    id: -1_660_311_050,
-                    text: "Spania",
-                    type: "VARIABLE",
-                  },
-                  {
-                    id: 1_063_425,
-                    text: " on ",
-                    editedText: null,
-                    type: "LITERAL",
-                  },
-                  {
-                    id: -694_080_035,
-                    text: "10 September 2024",
-                    type: "VARIABLE",
-                  },
-                  {
-                    id: 46,
-                    text: ".",
-                    editedText: null,
-                    type: "LITERAL",
-                  },
-                  {
-                    id: -1_894_607_013,
+                  nyLiteral({ text: "We received your application for " }),
+                  nyVariable({ text: "Supplerende stønad" }),
+                  nyLiteral({ text: " from the National Insurance authorities in " }),
+                  nyVariable({ text: "Spania" }),
+                  nyLiteral({ text: " on " }),
+                  nyVariable({ text: "10 September 2024" }),
+                  nyLiteral({ text: "." }),
+                  nyItemList({
                     items: [
-                      {
-                        id: -503_413_477,
-                        content: [
-                          {
-                            id: -503_413_508,
-                            text: "item 1 - TODO remove itemlist",
-                            editedText: "item 1 - TODO remove itemlist hei hei",
-                            type: "LITERAL",
-                          },
-                        ],
-                      },
-                      {
-                        id: 886_663_488,
-                        content: [
-                          {
-                            id: 886_663_457,
-                            text: "item 2 - TODO remove itemlist",
-                            editedText: null,
-                            type: "LITERAL",
-                          },
-                        ],
-                      },
-                      {
-                        id: -867_386_911,
-                        content: [
-                          {
-                            id: -867_386_942,
-                            text: "item 3 - TODO remove itemlist",
-                            editedText: null,
-                            type: "LITERAL",
-                          },
-                        ],
-                      },
+                      nyItem({ content: [nyLiteral({ text: "item 1 - TODO remove itemlist" })] }),
+                      nyItem({ content: [nyLiteral({ text: "item 2 - TODO remove itemlist" })] }),
+                      nyItem({ content: [nyLiteral({ text: "item 3 - TODO remove itemlist" })] }),
                     ],
-                    deletedItems: [],
-                    type: "ITEM_LIST",
-                  },
+                  }),
                 ],
-                deletedContent: [],
-
-                type: "PARAGRAPH",
-              },
-              {
-                id: 822_540_105,
-                editable: true,
+              }),
+              nyParagraphBlock({
                 content: [
-                  {
-                    id: -1_114_690_237,
-                    text: "Our processing time for this type of application is usually ",
-                    editedText: null,
-                    type: "LITERAL",
-                  },
-                  {
-                    id: 1_834_595_758,
-                    text: "3",
-                    type: "VARIABLE",
-                  },
-                  {
-                    id: 1_838_606_639,
-                    text: " weeks.",
-                    editedText: null,
-                    type: "LITERAL",
-                  },
+                  nyLiteral({ text: "Our processing time for this type of application is usually " }),
+                  nyVariable({ text: "3" }),
+                  nyLiteral({ text: " weeks." }),
                 ],
-                deletedContent: [],
-
-                type: "PARAGRAPH",
-              },
-              {
-                id: -1_153_661_566,
-                editable: true,
+              }),
+              nyParagraphBlock({
+                content: [nyLiteral({ text: "We will contact you if we need you to provide more information." })],
+              }),
+              nyTitle1Block({ content: [nyLiteral({ text: "Duty to report changes" })] }),
+              nyParagraphBlock({
                 content: [
-                  {
-                    id: -1_153_661_597,
-                    text: "We will contact you if we need you to provide more information.",
-                    editedText: null,
-                    type: "LITERAL",
-                  },
-                ],
-                deletedContent: [],
-
-                type: "PARAGRAPH",
-              },
-              {
-                id: 1_767_516_329,
-                editable: true,
-                content: [
-                  {
-                    id: 1_767_516_298,
-                    text: "Duty to report changes",
-                    editedText: null,
-                    type: "LITERAL",
-                  },
-                ],
-                deletedContent: [],
-
-                type: "TITLE1",
-              },
-              {
-                id: 173_660_319,
-                editable: true,
-                content: [
-                  {
-                    id: 173_660_288,
+                  nyLiteral({
                     text: "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move.",
-                    editedText: null,
-                    type: "LITERAL",
-                  },
+                  }),
                 ],
-                deletedContent: [],
-
-                type: "PARAGRAPH",
-              },
+              }),
             ],
           }),
           saksbehandlerValg: {
@@ -453,7 +338,14 @@ describe("autolagring", () => {
           },
         });
         req.reply(saksbehandlerValgResponse);
-      }).as("autoLagring");
+      }).as("autoLagringSaksbehandlerValg");
+    });
+
+    cy.fixture("saksbehandlerValgResponse.json").then((saksbehandlerValgResponse) => {
+      cy.intercept("PUT", "/bff/skribenten-backend/brev/1/signatur", (req) => {
+        expect(req.body).deep.equal("Sak S. Behandler");
+        req.reply(saksbehandlerValgResponse);
+      }).as("autoLagringSignatur");
     });
 
     cy.visit("/saksnummer/123456/brev/1");
@@ -462,13 +354,11 @@ describe("autolagring", () => {
     cy.contains("Inkluder venter svar afp").click();
     cy.getDataCy("datepicker-editor").eq(0).should("have.value", "");
     cy.getDataCy("datepicker-editor").eq(0).click().clear().type("10.09.2024");
-    cy.wait(4000);
     //verifiserer at autolagring ikke har skjedd enda
-    cy.get("@autoLagring.all").then((interceptions) => {
-      expect(interceptions).to.have.length(0);
-    });
+    cy.get("@autoLagringSaksbehandlerValg.all").should("have.length", 0);
     cy.contains("Uttak alderspensjon prosent").click().type("55");
     cy.contains("Your accumulated pension capital").should("exist");
+    cy.get("@autoLagringSaksbehandlerValg.all").should("have.length", 1);
   });
 
   it("autolagrer signatur", () => {
@@ -526,6 +416,12 @@ describe("autolagring", () => {
       cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
         req.reply(response);
       }).as("autoLagring");
+    });
+    cy.fixture("orienteringOmSaksbehandlingstidResponseMedSoknadOversendesTilUtlandet.json").then((response) => {
+      cy.intercept("PUT", "/bff/skribenten-backend/brev/1/signatur", (req) => {
+        expect(req.body).contains("F_Z990297 E_Z990297");
+        req.reply(response);
+      }).as("signatur");
     });
 
     cy.visit("/saksnummer/123456/brev/1");

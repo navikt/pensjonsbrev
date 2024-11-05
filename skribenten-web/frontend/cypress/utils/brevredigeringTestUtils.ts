@@ -7,7 +7,22 @@ import type {
   NAVEnhet,
   SaksbehandlerValg,
 } from "~/types/brev";
-import type { AnyBlock, EditedLetter, Sakspart, Signatur } from "~/types/brevbakerTypes";
+import type {
+  Content,
+  Item,
+  ItemList,
+  ParagraphBlock,
+  TextContent,
+  Title1Block,
+  VariableValue,
+} from "~/types/brevbakerTypes";
+import {
+  type AnyBlock,
+  type EditedLetter,
+  type LiteralValue,
+  type Sakspart,
+  type Signatur,
+} from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import { SpraakKode } from "../../src/types/apiTypes";
@@ -154,3 +169,53 @@ export const nyBrevInfo = (args: {
     journalpostId: args.journalpostId ?? null,
   };
 };
+
+export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): LiteralValue => ({
+  type: "LITERAL",
+  id: args.id ?? null,
+  text: args.text ?? "ny literal default text",
+  editedText: args.text ?? "ny literal default edited-text",
+});
+
+export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: string }): VariableValue => ({
+  type: "VARIABLE",
+  id: args.id ?? 1,
+  name: args.name,
+  text: args.text ?? "ny variable default text",
+});
+
+export const nyItem = (args: { id?: Nullable<number>; content?: TextContent[] }): Item => ({
+  id: args.id ?? null,
+  content: args.content ?? [nyVariable({})],
+});
+
+export const nyItemList = (args: { id?: Nullable<number>; items?: Item[] }): ItemList => ({
+  type: "ITEM_LIST",
+  id: args.id ?? null,
+  items: args.items ?? [nyItem({})],
+  deletedItems: [],
+});
+
+export const nyTitle1Block = (args: {
+  id?: Nullable<number>;
+  editable?: boolean;
+  content?: TextContent[];
+}): Title1Block => ({
+  type: "TITLE1",
+  id: args.id ?? null,
+  editable: args.editable ?? true,
+  content: args.content ?? [nyVariable({})],
+  deletedContent: [],
+});
+
+export const nyParagraphBlock = (args: {
+  id?: Nullable<number>;
+  editable?: boolean;
+  content?: Content[];
+}): ParagraphBlock => ({
+  type: "PARAGRAPH",
+  id: args.id ?? null,
+  editable: args.editable ?? true,
+  content: args.content ?? [nyVariable({})],
+  deletedContent: [],
+});
