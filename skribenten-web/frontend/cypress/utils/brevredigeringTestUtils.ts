@@ -170,6 +170,7 @@ export const nyBrevInfo = (args: {
   };
 };
 
+//TODO - kan heller bruke newLiteral fra common.ts
 export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): LiteralValue => ({
   type: "LITERAL",
   id: args.id ?? null,
@@ -184,11 +185,13 @@ export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: 
   text: args.text ?? "ny variable default text",
 });
 
+//TODO - kan heller bruke newItem fra common.ts
 export const nyItem = (args: { id?: Nullable<number>; content?: TextContent[] }): Item => ({
   id: args.id ?? null,
   content: args.content ?? [nyVariable({})],
 });
 
+//TODO - kan heller bruke newItemList fra common.ts
 export const nyItemList = (args: { id?: Nullable<number>; items?: Item[] }): ItemList => ({
   type: "ITEM_LIST",
   id: args.id ?? null,
@@ -208,6 +211,7 @@ export const nyTitle1Block = (args: {
   deletedContent: [],
 });
 
+//TODO - kan heller bruke newParagraph fra common.ts
 export const nyParagraphBlock = (args: {
   id?: Nullable<number>;
   editable?: boolean;
