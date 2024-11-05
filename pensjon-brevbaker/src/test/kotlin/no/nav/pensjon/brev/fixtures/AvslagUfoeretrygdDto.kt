@@ -7,6 +7,5 @@ fun createAvslagUfoeretrygdDto() = AvslagUfoeretrygdDto(
     saksbehandlerValg = EmptyBrevdata,
     pesysData = AvslagUfoeretrygdDto.PesysData(
         pe = createPE(),
-        orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto()
     )
 )

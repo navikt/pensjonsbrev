@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import java.time.LocalDate
 import kotlin.reflect.KClass
@@ -45,6 +46,7 @@ sealed class Expression<out Out> : StableHash {
                 is String -> StableHash.of(v)
                 is Number -> StableHash.of(v)
                 is IntValue -> StableHash.of(v.value)
+                is Telefonnummer -> StableHash.of(v.value)
                 is Boolean -> StableHash.of(v)
                 is Collection<*> -> StableHash.of(v.map { stableHash(it) })
                 is Pair<*, *> -> StableHash.of(stableHash(v.first), stableHash(v.second))

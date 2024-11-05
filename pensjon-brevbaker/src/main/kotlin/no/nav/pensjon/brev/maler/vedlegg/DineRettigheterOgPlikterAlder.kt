@@ -19,6 +19,8 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 
 // Conditional for showing the attachment is: sakstype = ALDER && vedtakResultat = INNVL
 
@@ -179,7 +181,7 @@ val dineRettigheterOgPlikterAlder =
 
         includePhrase(InfoAlderspensjonGiBeskjed)
         includePhrase(VedleggVeiledning)
-        includePhrase(VedleggInnsynSakPensjon)
+        includePhrase(VedleggInnsynSakPensjon(felles.avsenderEnhet.telefonnummer))
         includePhrase(VedleggHjelpFraAndre)
         includePhrase(VedleggKlagePesys)
     }

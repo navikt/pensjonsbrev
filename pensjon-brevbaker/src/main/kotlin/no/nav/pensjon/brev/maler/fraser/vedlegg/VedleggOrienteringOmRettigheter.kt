@@ -7,13 +7,16 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.FULLMAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.model.*
+import no.nav.pensjon.brev.model.bestemtForm
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 
 
 // VedleggPlikter_001, VedleggPlikterUT_001
@@ -756,11 +759,11 @@ object VedleggVeiledning : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
+// TODO: Hvorfor har vi to versjoner av Innsyn (VedleggInnsynSakPensjon og VedleggInnsynSakUfoeretrygdPesys)
 
 // VedleggInnsynSakPensjon_001
-object VedleggInnsynSakPensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class VedleggInnsynSakPensjon(val telefonnummer: Expression<Telefonnummer>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
                 Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
@@ -770,9 +773,9 @@ object VedleggInnsynSakPensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             textExpr(
-                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på $NAV_URL for å se all kommunikasjon som har vært mellom deg og Nav i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på $NAV_URL for å sjå all kommunikasjon som har vore mellom deg og Nav i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to $NAV_URL to review the communication between you and Nav in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på $NAV_URL for å se all kommunikasjon som har vært mellom deg og Nav i saken din. Du kan også ringe oss på telefon ".expr() + telefonnummer.format() + ".".expr(),
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på $NAV_URL for å sjå all kommunikasjon som har vore mellom deg og Nav i saka di. Du kan også ringje oss på telefon ".expr() + telefonnummer.format() + ".".expr(),
+                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to $NAV_URL to review the communication between you and Nav in connection with your case. You can also call us at tel.: ".expr() + telefonnummer.format() + ".".expr()
             )
         }
     }
@@ -818,10 +821,11 @@ object VedleggHjelpFraAndre : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
+// TODO: Hvorfor er det forskjell på VedleggKlagePensjon og VedleggKlagePesys
+
 // VedleggKlagePensjon_001
-object VedleggKlagePensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class VedleggKlagePaaVedtaket(val telefonnummer: Expression<Telefonnummer>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
                 Bokmal to "Klage på vedtaket - folketrygdloven § 21-12",
@@ -845,9 +849,9 @@ object VedleggKlagePensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             textExpr(
-                Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                Nynorsk to "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkomen til å ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                English to "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at $KLAGE_URL. Should you need assistance in writing the appeal, please call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
+                Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon ".expr() + telefonnummer.format() + ".".expr(),
+                Nynorsk to "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkomen til å ringje oss på telefon ".expr() + telefonnummer.format() + ".".expr(),
+                English to "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at $KLAGE_URL. Should you need assistance in writing the appeal, please call us at tel.: ".expr() + telefonnummer.format() + ".".expr()
             )
         }
         paragraph {
