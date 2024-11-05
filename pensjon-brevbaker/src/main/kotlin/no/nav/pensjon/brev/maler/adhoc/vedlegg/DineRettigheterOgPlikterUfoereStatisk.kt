@@ -6,6 +6,8 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 
 val vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk =
     createAttachment<LangBokmalNynorskEnglish, EmptyBrevdata>(
@@ -19,5 +21,5 @@ val vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk =
         includePhrase(VedleggVeiledning)
         includePhrase(VedleggInnsynSakUfoeretrygdPesys)
         includePhrase(VedleggHjelpFraAndre)
-        includePhrase(VedleggKlagePensjon)
+        includePhrase(VedleggKlagePaaVedtaket(felles.avsenderEnhet.telefonnummer))
     }
