@@ -229,6 +229,59 @@ describe("autolagring", () => {
   });
 
   it("lagrer endring av tekst-felt automatisk", () => {
+    const brevResponse = nyBrevResponse({
+      info: nyBrevInfo({ sistredigert: hurtiglagreTidspunkt }),
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          nyParagraphBlock({
+            content: [
+              nyLiteral({ text: "We received your application for " }),
+              nyVariable({ text: "Supplerende stønad" }),
+              nyLiteral({ text: " from the National Insurance authorities in " }),
+              nyVariable({ text: "Spania" }),
+              nyLiteral({ text: " on " }),
+              nyVariable({ text: "10 September 2024" }),
+              nyLiteral({ text: "." }),
+              nyItemList({
+                items: [
+                  nyItem({ content: [nyLiteral({ text: "item 1 - TODO remove itemlist" })] }),
+                  nyItem({ content: [nyLiteral({ text: "item 2 - TODO remove itemlist" })] }),
+                  nyItem({ content: [nyLiteral({ text: "item 3 - TODO remove itemlist" })] }),
+                ],
+              }),
+            ],
+          }),
+          nyParagraphBlock({
+            content: [
+              nyLiteral({ text: "Our processing time for this type of application is usually " }),
+              nyVariable({ text: "3" }),
+              nyLiteral({ text: " weeks." }),
+            ],
+          }),
+          nyParagraphBlock({
+            content: [nyLiteral({ text: "We will contact you if we need you to provide more information." })],
+          }),
+          nyTitle1Block({ content: [nyLiteral({ text: "Duty to report changes" })] }),
+          nyParagraphBlock({
+            content: [
+              nyLiteral({
+                text: "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move.",
+              }),
+            ],
+          }),
+        ],
+      }),
+      saksbehandlerValg: {
+        mottattSoeknad: "2024-09-10",
+        ytelse: "Supplerende stønad",
+        land: "Spania",
+        svartidUker: "3",
+      },
+    });
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/signatur", (req) => {
+      req.reply(brevResponse);
+    }).as("autoLagreSignarur");
+
     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
       expect(req.body).contains({
         mottattSoeknad: "2024-07-24",
@@ -236,57 +289,7 @@ describe("autolagring", () => {
         land: "Spania",
         svartidUker: "10",
       });
-      req.reply(
-        nyBrevResponse({
-          info: nyBrevInfo({ sistredigert: hurtiglagreTidspunkt }),
-          redigertBrev: nyRedigertBrev({
-            blocks: [
-              nyParagraphBlock({
-                content: [
-                  nyLiteral({ text: "We received your application for " }),
-                  nyVariable({ text: "Supplerende stønad" }),
-                  nyLiteral({ text: " from the National Insurance authorities in " }),
-                  nyVariable({ text: "Spania" }),
-                  nyLiteral({ text: " on " }),
-                  nyVariable({ text: "10 September 2024" }),
-                  nyLiteral({ text: "." }),
-                  nyItemList({
-                    items: [
-                      nyItem({ content: [nyLiteral({ text: "item 1 - TODO remove itemlist" })] }),
-                      nyItem({ content: [nyLiteral({ text: "item 2 - TODO remove itemlist" })] }),
-                      nyItem({ content: [nyLiteral({ text: "item 3 - TODO remove itemlist" })] }),
-                    ],
-                  }),
-                ],
-              }),
-              nyParagraphBlock({
-                content: [
-                  nyLiteral({ text: "Our processing time for this type of application is usually " }),
-                  nyVariable({ text: "3" }),
-                  nyLiteral({ text: " weeks." }),
-                ],
-              }),
-              nyParagraphBlock({
-                content: [nyLiteral({ text: "We will contact you if we need you to provide more information." })],
-              }),
-              nyTitle1Block({ content: [nyLiteral({ text: "Duty to report changes" })] }),
-              nyParagraphBlock({
-                content: [
-                  nyLiteral({
-                    text: "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move.",
-                  }),
-                ],
-              }),
-            ],
-          }),
-          saksbehandlerValg: {
-            mottattSoeknad: "2024-09-10",
-            ytelse: "Supplerende stønad",
-            land: "Spania",
-            svartidUker: "3",
-          },
-        }),
-      );
+      req.reply(brevResponse);
     }).as("autoLagring");
 
     cy.visit("/saksnummer/123456/brev/1");
