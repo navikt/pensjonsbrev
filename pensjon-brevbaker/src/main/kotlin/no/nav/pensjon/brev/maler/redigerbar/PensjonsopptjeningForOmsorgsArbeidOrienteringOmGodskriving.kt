@@ -1,16 +1,21 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDtoSelectors.PesysDataSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.legacy.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -19,13 +24,15 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTemplate<PEDto> {
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.OMSORGSOPPTJENING
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val sakstyper: Set<Sakstype> = setOf(Sakstype.OMSORG)
     override val kode = Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD // TODO skal lage ny
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EmptyRedigerbarBrevdata::class,
+        letterDataType = PEDto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "", // TODO
@@ -47,9 +54,9 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
 
             paragraph {
                 textExpr(
-                    Bokmal to "Vi har registrert at du utfører omsorgsarbeid for barn med rett til forhøyet hjelpestønad etter sats 3 eller 4. Du har derfor fått godskrevet pensjonsopptjening for omsorgsarbeid for ".expr() + pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
+                    Bokmal to "Vi har registrert at du utfører omsorgsarbeid for barn med rett til forhøyet hjelpestønad etter sats 3 eller 4. Du har derfor fått godskrevet pensjonsopptjening for omsorgsarbeid for ".expr() + pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
                         .format() + ". ",
-                    English to "We have noted that you carry out care work with children and are entitled to the higher auxiliary benefit at rate 3 or 4. You have therefore been credited with acquired rights for care work in ".expr() + pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
+                    English to "We have noted that you carry out care work with children and are entitled to the higher auxiliary benefit at rate 3 or 4. You have therefore been credited with acquired rights for care work in ".expr() + pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
                         .format() + ". ",
                 )
             }
