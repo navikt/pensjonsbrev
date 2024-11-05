@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -57,17 +58,24 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
             paragraph {
                 textExpr(
                     Bokmal to "Vi har registrert at du utfører omsorgsarbeid for barn med rett til forhøyet hjelpestønad etter sats 3 eller 4. Du har derfor fått godskrevet pensjonsopptjening for omsorgsarbeid for ".expr() + pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                        .format() + ".",
+                        .format(LocalizedFormatter.AarFormat) + ".",
                     English to "We have noted that you carry out care work with children and are entitled to the higher auxiliary benefit at rate 3 or 4. You have therefore been credited with acquired rights for care work in ".expr() + pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
-                        .format() + ".",
+                        .format(LocalizedFormatter.AarFormat) + ".",
                 )
             }
             //[PE_IY_05_TB250,]
 
+            title1 {
+                text(
+                    Bokmal to "Hva er omsorgsopptjening?",
+                    English to "What are acquired rights for care work?"
+                )
+            }
+
             paragraph {
                 text(
-                    Bokmal to "Hva er omsorgsopptjening?Omsorgsopptjeningen tilsvarte for hvert år før 2010 en inntekt på 4 ganger folketrygdens grunnbeløp. Fra og med 2010 tilsvarer omsorgsopptjeningen 4,5 ganger grunnbeløpet. Omsorgsopptjening kan bidra til at du får høyere pensjon enn du ellers ville fått.",
-                    English to "What are acquired rights for care work?In years before 2010, acquired rights for care work were calculated as an income of four times the national insurance basic amount (G) per year. From 2010, acquired rights for care work equal 4.5 times the national insurance basic amount. Acquired rights for care work may help ensure that you receive a higher pension than you would have done otherwise.",
+                    Bokmal to "Omsorgsopptjeningen tilsvarte for hvert år før 2010 en inntekt på 4 ganger folketrygdens grunnbeløp. Fra og med 2010 tilsvarer omsorgsopptjeningen 4,5 ganger grunnbeløpet. Omsorgsopptjening kan bidra til at du får høyere pensjon enn du ellers ville fått.",
+                    English to "In years before 2010, acquired rights for care work were calculated as an income of four times the national insurance basic amount (G) per year. From 2010, acquired rights for care work equal 4.5 times the national insurance basic amount. Acquired rights for care work may help ensure that you receive a higher pension than you would have done otherwise.",
                 )
             }
             //[PE_IY_05_TB250,]
@@ -88,10 +96,17 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
             }
             //[PE_IY_05_TB250,]
 
+            title1 {
+                text(
+                    Bokmal to "Vilkårene for å få omsorgsopptjening",
+                    English to "Conditions for receiving acquired rights for care work"
+                )
+            }
+
             paragraph {
                 text(
-                    Bokmal to "Vilkårene for å få omsorgsopptjeningEn person som utfører ubetalt pleie- og omsorgsarbeid, kan ha rett til å få godskrevet omsorgsopptjening i folketrygden. Kravet er at pleie- og omsorgsarbeidet utgjør minst 22 timer i uken. Omsorgsarbeidet må også ha vart i til sammen minst seks måneder av et kalenderår.",
-                    English to "Conditions for receiving acquired rights for care workA person who carries out nursing and care work may be entitled to have acquired rights for care work credited with national insurance. The requirement is that nursing and care work amounts to at least 22 hours a week. In all, care work must also have amounted to at least six months of a calendar year.",
+                    Bokmal to "En person som utfører ubetalt pleie- og omsorgsarbeid, kan ha rett til å få godskrevet omsorgsopptjening i folketrygden. Kravet er at pleie- og omsorgsarbeidet utgjør minst 22 timer i uken. Omsorgsarbeidet må også ha vart i til sammen minst seks måneder av et kalenderår.",
+                    English to "A person who carries out nursing and care work may be entitled to have acquired rights for care work credited with national insurance. The requirement is that nursing and care work amounts to at least 22 hours a week. In all, care work must also have amounted to at least six months of a calendar year.",
                 )
             }
             //[PE_IY_05_TB250,]
@@ -120,10 +135,17 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
             }
             //[PE_IY_05_TB250,]
 
+            title1 {
+                text(
+                    Bokmal to "Automatisk godskriving eller søknad om omsorgsopptjening",
+                    English to "Automatic crediting of, or application for, acquired rights for care work"
+                )
+            }
+
             paragraph {
                 text(
-                    Bokmal to "Automatisk godskriving eller søknad om omsorgsopptjeningOmsorgsopptjening blir godskrevet automatisk hvert år til og med kalenderåret retten til forhøyet hjelpestønad faller bort.",
-                    English to "Automatic crediting of, or application for, acquired rights for care workAcquired rights for care work will automatically be credited each year, up to and including the calendar year when the entitlement to higher rate auxiliary benefit ceases.",
+                    Bokmal to "Omsorgsopptjening blir godskrevet automatisk hvert år til og med kalenderåret retten til forhøyet hjelpestønad faller bort.",
+                    English to "Acquired rights for care work will automatically be credited each year, up to and including the calendar year when the entitlement to higher rate auxiliary benefit ceases.",
                 )
             }
             //[PE_IY_05_TB250,]

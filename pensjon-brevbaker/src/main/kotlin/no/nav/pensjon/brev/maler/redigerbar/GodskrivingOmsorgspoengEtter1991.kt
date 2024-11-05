@@ -10,11 +10,11 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEF
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -60,14 +60,17 @@ object GodskrivingOmsorgspoengEtter1991 : RedigerbarTemplate<PEDto> {
                     Bokmal to "Du har fått godskrevet omsorgsopptjening for følgende inntektsår fordi du har eller har hatt omsorg for små barn.",
                     English to "You have been accredited acquired rights for care work for the following years because you care for/have cared for young children.",
                 )
-            }
-            //[PE_IY_05_TB1125,TB1131]
-
-            paragraph {
-                textExpr(
-                    Bokmal to pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().format(),
-                    English to pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().format(),
-                )
+                list {
+                    //[PE_IY_05_TB1125,TB1131]
+                    forEach(pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()) {
+                        item {
+                            textExpr(
+                                Bokmal to it.format(),
+                                English to it.format()
+                            )
+                        }
+                    }
+                }
             }
 
             //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF

@@ -9,7 +9,7 @@ import no.nav.pensjon.brevbaker.api.model.Year
 
 data class Persongrunnlag(
     val brukerflyktning: Boolean?,
-    val omsorgAar: Year?,
+    val omsorgAar: List<Year>?,
     val personbostedsland: String?,
     val trygdetidsgrunnlaglistebilateral: TrygdetidsgrunnlagListeBilateral?,
     val trygdetidsgrunnlaglisteeos: TrygdetidsgrunnlagListeEOS?,

@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.ttutlandtrygdeavtaleliste.TTUtlandTrygdeAvtale
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.ttutlandtrygdeavtaleliste.TTUtlandTrygdeAvtaleListe
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
 fun createPE() =
@@ -82,7 +83,7 @@ fun createGrunnlag() =
 fun createPersongrunnlag() =
     Persongrunnlag(
         brukerflyktning = true,
-        omsorgAar = null,
+        omsorgAar = listOf(Year(1990), Year(1989)),
         personbostedsland = "nor",
         trygdetidsgrunnlaglistebilateral = createTrygdetidsgrunnlagListeBilateral(),
         trygdetidsgrunnlaglisteeos = createTrygdetidsgrunnlagListeEOS(),

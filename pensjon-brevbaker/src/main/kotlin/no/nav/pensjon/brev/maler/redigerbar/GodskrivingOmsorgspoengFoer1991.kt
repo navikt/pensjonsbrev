@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDtoSelectors.pesy
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravmottatdato
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -82,24 +83,32 @@ object GodskrivingOmsorgspoengFoer1991 : RedigerbarTemplate<PEDto> {
                     Bokmal to "Du har fått godskrevet pensjonsopptjening for følgende inntektsår:",
                     English to "You have been accredited acquired rights for the following year(s):",
                 )
+                list {
+                    //[PE_IY_05_TB1125,TB1131]
+                    forEach(pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()) {
+                        item {
+                            textExpr(
+                                Bokmal to it.format(),
+                                English to it.format()
+                            )
+                        }
+                    }
+                }
             }
-            //[PE_IY_05_TB1125,TB1131]
-
-            paragraph {
-                textExpr(
-                    Bokmal to pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().format(),
-                    English to pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar().format(),
-                )
-            }
-
             //IF(PE_pebrevkode = "PE_IY_05_201" AND FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) <= 1991 AND Year(PE_PersonSak_Fodselsdato) >= 1948 AND Year(PE_PersonSak_Fodselsdato) <= 1953) THEN      INCLUDE ENDIF
             //[PE_IY_05_TB1126,TB1124,TB1127 2]
 
+            title1 {
+                text(
+                    Bokmal to "Din rett til innsyn og klage",
+                    English to "Your right to inspection and to file an appeal"
+                )
+        }
 
             paragraph {
                 text(
-                    Bokmal to "Din rett til innsyn og klageDu har som hovedregel rett til å se sakens dokumenter etter bestemmelsene i forvaltningsloven, paragraf 18.",
-                    English to "Your right to inspection and to file an appealAs a main rule, you are entitled to see all case documents, pursuant to section 18 of the Public Administration Act.",
+                    Bokmal to "Du har som hovedregel rett til å se sakens dokumenter etter bestemmelsene i forvaltningsloven, paragraf 18.",
+                    English to "As a main rule, you are entitled to see all case documents, pursuant to section 18 of the Public Administration Act.",
                 )
             }
             //[PE_IY_05_TB1126,TB1124,TB1127 2]
