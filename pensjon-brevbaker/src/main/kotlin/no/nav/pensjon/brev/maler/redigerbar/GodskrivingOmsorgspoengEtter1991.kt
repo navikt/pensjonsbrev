@@ -38,8 +38,8 @@ object GodskrivingOmsorgspoengEtter1991 : RedigerbarTemplate<PEDto> {
         letterMetadata = LetterMetadata(
             displayTitle = "Godskriving av pensjonsopptjening (omsorgsopptjening) fordi du har omsorg for små barn",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
         //IF(   PE_pebrevkode = "PE_IY_05_201"    AND      (FF_GetArrayElement_Integer(PE_Grunnlag_OmsorgGodskrGrunnlagListe_OmsorgGodskrGrunnlagAr,1) > 1991      OR Year(PE_PersonSak_Fodselsdato) < 1948      OR Year(PE_PersonSak_Fodselsdato) > 1953)    )THEN      INCLUDE ENDIF
