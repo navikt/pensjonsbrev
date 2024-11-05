@@ -82,6 +82,7 @@ fun createGrunnlag() =
 fun createPersongrunnlag() =
     Persongrunnlag(
         brukerflyktning = true,
+        omsorgAar = null,
         personbostedsland = "nor",
         trygdetidsgrunnlaglistebilateral = createTrygdetidsgrunnlagListeBilateral(),
         trygdetidsgrunnlaglisteeos = createTrygdetidsgrunnlagListeEOS(),
