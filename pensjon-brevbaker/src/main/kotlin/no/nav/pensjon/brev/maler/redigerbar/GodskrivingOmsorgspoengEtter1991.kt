@@ -26,9 +26,8 @@ object GodskrivingOmsorgspoengEtter1991 : RedigerbarTemplate<PEDto> {
 
     // PE_IY_05_201
     override val kode = Brevkode.Redigerbar.GODSKRIVING_AV_PENSJONSOPPTJENING_FOR_OMSORG_BARN_ETTER_1991
-    override val kategori: TemplateDescription.Brevkategori =
-        TemplateDescription.Brevkategori.OMSORGSOPPTJENING
-    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val kategori = TemplateDescription.Brevkategori.OMSORGSOPPTJENING
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.OMSORG)
 
     override val template = createTemplate(
