@@ -10,7 +10,8 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeAlder
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
-import no.nav.pensjon.brev.maler.redigerbar.GodskrivingOmsorgspoeng
+import no.nav.pensjon.brev.maler.redigerbar.GodskrivingOmsorgspoengEtter1991
+import no.nav.pensjon.brev.maler.redigerbar.GodskrivingOmsorgspoengFoer1991
 import no.nav.pensjon.brev.maler.redigerbar.VarselOmMuligAvslag
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.redigerbar.InnhentingDokumentasjonFraBruker
@@ -54,7 +55,8 @@ object ProductionTemplates {
         BekreftelsePaaFlyktningstatus,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
-        GodskrivingOmsorgspoeng,
+        GodskrivingOmsorgspoengFoer1991,
+        GodskrivingOmsorgspoengEtter1991,
         InformasjonOmSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
         InnhentingOpplysningerFraBruker,
