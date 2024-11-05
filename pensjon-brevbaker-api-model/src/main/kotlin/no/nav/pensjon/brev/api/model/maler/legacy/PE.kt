@@ -15,7 +15,6 @@ data class PE(
         val avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg: Boolean,
         val avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg: Boolean,
         val avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste: Boolean,
-        val avdod_fremtidig_trygdetid_under_40_aar: Boolean, // (FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTNorsk,1) / 12) < 40)
         val fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj: Boolean,
         val fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt: Boolean,
         val harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg: Boolean,

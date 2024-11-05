@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.trygdetidavdod
 
 data class TrygdetidAvdod(
-    val fatt: Int?,
     val fatteos: Int?,
     val fattnorge: Int?,
     val framtidigtteos: Int?,

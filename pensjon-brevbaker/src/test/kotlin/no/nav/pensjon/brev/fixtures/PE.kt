@@ -74,7 +74,6 @@ fun createPE() =
             avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg = false,
             avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg = false,
             avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste = false,
-            avdod_fremtidig_trygdetid_under_40_aar = false,
             harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg = false,
             harOpptjeningUTMedFoerstegangstjenesteOgOmsorg = false,
             harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste = false,
@@ -102,7 +101,7 @@ fun createVedtaksbrev(): Vedtaksbrev =
 fun createGrunnlag() =
     Grunnlag(
         persongrunnlagsliste = listOf(createPersongrunnlag()),
-        persongrunnlagavdod = createPersongrunnlagAvdod()
+        persongrunnlagavdod = listOf(createPersongrunnlagAvdod())
     )
 
 fun createPersongrunnlag() =
@@ -249,7 +248,6 @@ fun createVedtaksdata() = Vedtaksdata(
 
 fun createTrygdetidAvdod() =
     TrygdetidAvdod(
-        fatt = 40,
         fatteos = 41,
         fattnorge = 42,
         framtidigtteos = 43,
@@ -280,7 +278,6 @@ fun createVilkarsVedtak() =
         beregningsvilkar = createBeregningsVilkar(),
         vilkar = createVilkar(),
         vilkarvirkningfom = LocalDate.of(2020, 1, 1),
-        vilkarVirkningFom = LocalDate.of(2020, 1, 1), // TODO: fjern
         vilkarkravlinjekode = "bt",
         vilkarvedtakresultat = "avsl",
     )

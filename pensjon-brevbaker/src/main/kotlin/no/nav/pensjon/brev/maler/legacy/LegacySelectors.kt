@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.avdod_fremtidig_trygdetid_under_40_aar
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg
@@ -283,7 +282,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.yrkesskadebegrunnelse_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.yrkesskaderesultat_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.beregningsvilkar_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkarVirkningFom_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkarvirkningfom_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.ieubegrunnelse_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.ieuinntekt_safe
@@ -312,6 +311,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.getOrNull
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -321,16 +321,16 @@ fun Expression<PE>.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg(): Ex
 fun Expression<PE>.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg(): Expression<Boolean> = functions.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg
 fun Expression<PE>.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste(): Expression<Boolean> = functions.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste
 fun Expression<PE>.ut_inntektslandtruehvorbruktlikfalse_avdod(): Expression<Boolean> = functions.pe_ut_inntektslandtruehvorbruktlikfalse_avdod
-fun Expression<PE>.avdod_fremtidig_trygdetid_under_40_aar(): Expression<Boolean> = functions.avdod_fremtidig_trygdetid_under_40_aar
+fun Expression<PE>.avdod_fremtidig_trygdetid_under_40_aar(): Expression<Boolean> = vedtaksdata_trygdetidavdod_framtidigttnorsk().lessThan(480)
 fun Expression<PE>.barnetilleggfelles_justeringsbelopperarutenminus(): Expression<Kroner> = vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
 fun Expression<PE>.barnetilleggserkull_justeringsbelopperarutenminus(): Expression<Kroner> = vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus()
-fun Expression<PE>.grunnlag_persongrunnlagavdod_brukerflyktning(): Expression<Boolean> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.brukerflyktning_safe.ifNull(false)
-fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe.getOrNull().trygdetidfom_safe
-fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag(): Expression<List<Trygdetidsgrunnlag>> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe.ifNull(emptyList())
-fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral(): Expression<List<TrygdetidsgrunnlagBilateral>> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe.ifNull(emptyList())
-fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlageos_trygdetidsgrunnlageos(): Expression<List<TrygdetidsgrunnlagEOS>> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.trygdetidsgrunnlaglisteeos_safe.trygdetidsgrunnlageos_safe.ifNull(emptyList())
-fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe.getOrNull().trygdetidfombilateral_safe
-fun Expression<PE>.grunnlag_persongrunnlagavdod_fodselsnummer(): Expression<String> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.fodselsnummer_safe.ifNull("")
+fun Expression<PE>.grunnlag_persongrunnlagavdod_brukerflyktning(): Expression<Boolean> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.getOrNull().brukerflyktning_safe.ifNull(false)
+fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.getOrNull().trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe.getOrNull().trygdetidfom_safe
+fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag(): Expression<List<Trygdetidsgrunnlag>> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.getOrNull().trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe.ifNull(emptyList())
+fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral(): Expression<List<TrygdetidsgrunnlagBilateral>> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.getOrNull().trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe.ifNull(emptyList())
+fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlageos_trygdetidsgrunnlageos(): Expression<List<TrygdetidsgrunnlagEOS>> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.getOrNull().trygdetidsgrunnlaglisteeos_safe.trygdetidsgrunnlageos_safe.ifNull(emptyList())
+fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.getOrNull().trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe.getOrNull().trygdetidfombilateral_safe
+fun Expression<PE>.grunnlag_persongrunnlagavdod_fodselsnummer(): Expression<String> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagavdod_safe.getOrNull().fodselsnummer_safe.ifNull("")
 fun Expression<PE>.grunnlag_persongrunnlagsliste_brukerflyktning(): Expression<Boolean> = vedtaksbrev.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().brukerflyktning_safe.ifNull(false)
 fun Expression<PE>.grunnlag_persongrunnlagsliste_personbostedsland(): Expression<String> = vedtaksbrev.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().personbostedsland_safe.ifNull("")
 fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaleland(): Expression<String> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdeavtaler_safe.avtaleland_safe.ifNull("")
@@ -559,7 +559,7 @@ fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt(): Expression<LocalDate?> = vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.virkningstidpunkt_safe
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat(): Expression<String> = vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkar_safe.unguforresultat_safe.ifNull("")
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat(): Expression<String> = vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkar_safe.yrkesskaderesultat_safe.ifNull("")
-fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom(): Expression<LocalDate?> = vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkarVirkningFom_safe
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom(): Expression<LocalDate?> = vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkarvirkningfom_safe
 fun Expression<PE>.vedtaksdata_virkningfom(): Expression<LocalDate?> = vedtaksbrev_safe.vedtaksdata_safe.virkningfom_safe
 fun Expression<PE>.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv(): Expression<Int> = functions.pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv.ifNull(0)
 fun Expression<PE>.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt(): Expression<Boolean> = vedtaksbrev.vedtaksdata.beregningsdata_safe.beregningufore_safe.uforetrygdberegning_safe.instopphanvendt_safe.ifNull(false)
