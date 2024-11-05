@@ -1,5 +1,3 @@
-import { requireEnvironment } from "@navikt/backend-for-frontend-utils";
-
 const app = {
   nodeEnv: requireEnvironment("NODE_ENV"),
   host: requireEnvironment("EXPRESS_HOST"),
@@ -14,3 +12,11 @@ export default {
   app,
   brevbakerApiProxy,
 };
+
+function requireEnvironment(environmentName: string) {
+  const environmentContent = process.env[environmentName];
+  if (!environmentContent) {
+    throw new Error("Missing environment variable with name: " + environmentName);
+  }
+  return environmentContent;
+}

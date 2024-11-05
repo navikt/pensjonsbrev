@@ -53,5 +53,6 @@ data class PE(
         val pe_ut_virkningfomar: Int,
         val pe_ut_virkningstidpunktarminus1ar: Int,
         val pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08: Kroner,
-    )
+        val pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv: Int,
+        )
 }

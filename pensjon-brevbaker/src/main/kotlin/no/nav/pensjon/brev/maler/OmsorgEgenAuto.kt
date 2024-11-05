@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarInnvilgetOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.egenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.model.format
@@ -63,7 +64,7 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
                     English to
                             "We need you to confirm that you have provided nursing and care work in ".expr()
                             + aarEgenerklaringOmsorgspoeng
-                            + ". Therefore, it is required that you complete the enclosed form and return it to NAV within four weeks.",
+                            + ". Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks.",
                 )
             }
             paragraph {
@@ -74,7 +75,7 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
                     English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                 )
             }
-            includePhrase(Felles.HarDuSpoersmaalOmsorgsarbeid)
+            includePhrase(Felles.HarDuSpoersmaal.omsorg)
         }
         includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, egenerklaeringOmsorgsarbeidDto)
     }

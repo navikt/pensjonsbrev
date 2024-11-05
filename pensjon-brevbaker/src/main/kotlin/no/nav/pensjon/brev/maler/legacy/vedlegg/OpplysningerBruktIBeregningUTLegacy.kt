@@ -163,9 +163,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         }
         includePhrase(TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
 
-        // TODO TBU052V-TBU073V_del7("slik beregner vi gjenlevendetillegget ditt" til tittel "For deg som mottar ektefelletillegg")
-        //  trengs kun for brev som ikke er:
-        //  PE_UT_04_300, PE_UT_14_300, PE_UT_05_100, PE_UT_07_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200
+        includePhrase(TBU052V_TBU073V_SlikBeregnerViGjenlevendetilleggetDitt(pe))
 
         includePhrase(TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(pe))
 

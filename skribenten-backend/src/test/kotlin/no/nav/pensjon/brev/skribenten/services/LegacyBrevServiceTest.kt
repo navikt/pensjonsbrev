@@ -22,7 +22,7 @@ class LegacyBrevServiceTest {
 
     private val principalIdent = NavIdent("kulIdent1234")
     private val principal = MockPrincipal(principalIdent, "Kul saksbehandler")
-    private val principalSinNAVEnhet = NAVAnsattEnhet("1111", "NAV Ozzzlo")
+    private val principalSinNAVEnhet = NAVAnsattEnhet("1111", "Nav Ozzzlo")
 
 
     private val exstreamBrevMetadata = BrevdataDto(

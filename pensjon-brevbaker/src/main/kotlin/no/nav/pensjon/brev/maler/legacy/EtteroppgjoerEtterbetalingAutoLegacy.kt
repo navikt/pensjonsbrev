@@ -5,13 +5,14 @@ import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDtoSelectors.pe
 import no.nav.pensjon.brev.maler.legacy.fraser.*
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.HarDuSpoersmaalEtteroppgjoer
-import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2278_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.opplysningerOmETteroppgjoeretUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -39,8 +40,8 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
 
         title {
             text(
-                Bokmal to "NAV har gjort et ",
-                Nynorsk to "NAV har gjort eit ",
+                Bokmal to "Nav har gjort et ",
+                Nynorsk to "Nav har gjort eit ",
             )
 
             //IF(PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_TidligereEOIverksatt_New = true     AND (PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_ResultatForrigeEO_New = 'etterbet'            OR PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_ResultatForrigeEO_New = 'tilbakekr'            )    AND (PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_eoEndringBruker_EndretPGI_New = true              OR PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_eoEndringEPS_EndretPGI_New = true              OR PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_eoEndringBruker_EndretPensjonOgAndreYtelser_New = true              OR PE_Vedtaksbrev_Vedtaksdata_ForrigeEtteroppgjor_eoEndringEPS_EndretPensjonOgAndreYtelser_New = true            ) ) THEN      INCLUDE ENDIF
@@ -153,7 +154,7 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
             includePhrase(TBU3309_Generated(pe))
             includePhrase(TBU2366_Generated)
             includePhrase(TBU2278_Generated(pe))
-            includePhrase(Ufoeretrygd.RettTilAAKlage)
+            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(HarDuSpoersmaalEtteroppgjoer)
         }
         includeAttachment(opplysningerOmETteroppgjoeretUTLegacy, pe, pe.inkludervedleggopplysningerometteroppgjoeret())

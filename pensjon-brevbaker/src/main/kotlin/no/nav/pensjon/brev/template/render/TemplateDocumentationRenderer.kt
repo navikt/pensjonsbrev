@@ -252,6 +252,11 @@ object TemplateDocumentationRenderer {
                 operator = Operation(text = "isEmpty", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value)
             )
+
+            is UnaryOperation.BrukerFulltNavn -> TemplateDocumentation.Expression.Invoke(
+                operator = Operation("fulltNavn", Documentation.Notation.FUNCTION),
+                first = renderExpression(expr.value),
+            )
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =

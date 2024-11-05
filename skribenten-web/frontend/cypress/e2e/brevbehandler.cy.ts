@@ -28,10 +28,10 @@ describe("Brevbehandler", () => {
     cy.visit("/saksnummer/123456/brevbehandler");
   });
 
-  /*it("saken inneholder ingen brev", () => {
+  it("saken inneholder ingen brev", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", { body: [] });
     cy.contains("Fant ingen brev som er under behandling").should("be.visible");
-  });*/
+  });
 
   it("kan ferdigstille og sende brev med sentralprint", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (request) => {
@@ -338,5 +338,48 @@ describe("Brevbehandler", () => {
     cy.contains("Sentral print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
+  });
+
+  it("brev som blir sendt blir fjernet fra brevbehandler", () => {
+    const brevSomIkkeSkalSendes = { ...klarBrev, id: 2 };
+
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/2/pdf/send", (request) => {
+      request.reply({ journalpostId: 80_912, error: null });
+    });
+    let requestNo = 0;
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
+      //vi henter brevene ved sidelast, men også når i åpner modalen
+      if (requestNo === 0 || requestNo === 1) {
+        requestNo++;
+        request.reply([klarBrev, brevSomIkkeSkalSendes]);
+      } else {
+        request.reply([brevSomIkkeSkalSendes]);
+      }
+    });
+    cy.contains("Send 2 ferdigstilte brev").click("left");
+    cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).click();
+    cy.contains("Ja, send valgte brev").click();
+    cy.contains("Gå til brevbehandler").click();
+    cy.get("label:contains('Informasjon om saksbehandlingstid')").should("have.length", 1);
+  });
+
+  it("et arkivert brev kan ikke endre på noe informasjon, og kan kun sendes på nytt", () => {
+    const arkivertBrev = { ...klarBrev, journalpostId: 123_456 };
+
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
+      request.reply([arkivertBrev]);
+    });
+
+    cy.contains("Informasjon om saksbehandlingstid").click();
+
+    cy.contains("Brevet er klart for sending").should("not.exist");
+    cy.contains("Fortsett redigering").should("not.exist");
+    cy.contains("Distribusjon").should("not.exist");
+
+    cy.contains("Brevet er journalført med id 123456. Brevet kan ikke endres").should("be.visible");
+    cy.contains("Brevet har ikke blitt sendt. Du kan prøve å sende brevet på nytt.").should("be.visible");
+    cy.contains("Ferdigstill 1 brev").click("left");
+    cy.contains("Ja, send valgte brev").click();
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
   });
 });

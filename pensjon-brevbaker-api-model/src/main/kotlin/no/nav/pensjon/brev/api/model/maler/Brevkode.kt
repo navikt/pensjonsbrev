@@ -1,11 +1,14 @@
 package no.nav.pensjon.brev.api.model.maler
 
-object Brevkode {
-    enum class AutoBrev {
+interface Brevkode {
+    enum class AutoBrev : Brevkode {
         PE_ADHOC_2024_FEIL_INFOBREV_AP_SENDT_BRUKER,
+        PE_ADHOC_2024_FEIL_ETTEROPPGJOER_2023,
         PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970,
         PE_AP_ADHOC_2024_REGLERENDRET_GJR_AP_MNTINDV,
         PE_AP_ADHOC_2024_GJR_AP_MNTINDV_2,
+        PE_UT_ADHOC_2024_INFO_HVILENDE_RETT_4_AAR,
+        PE_UT_ADHOC_2024_MIDL_OPPHOER_HVILENDE_RETT_10_AAR,
         PE_OMSORG_EGEN_AUTO,
         PE_OMSORG_HJELPESTOENAD_AUTO,
         UT_ADHOC_UFOERETRYGD_ETTERBETALING_DAGPENGER,
@@ -21,13 +24,23 @@ object Brevkode {
         UT_OPPHOER_BT_AUTO,
         UT_UNG_UFOER_20_AAR_AUTO,
         UT_VARSEL_SAKSBEHANDLINGSTID_AUTO,
-        ;
+        UT_BARNETILLEGG_ENDRET_AUTO;
+
+        override fun kode(): String = this.name
     }
 
-    enum class Redigerbar {
+    enum class Redigerbar : Brevkode {
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
+        PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS,
+        PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
+        PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ETTERLATTE,
         PE_VARSEL_OM_MULIG_AVSLAG,
+        UT_AVSLAG_UFOERETRYGD,
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
         ;
+
+        override fun kode(): String = this.name
     }
+
+    fun kode(): String
 }

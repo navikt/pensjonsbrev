@@ -54,8 +54,8 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
                         ))){
                     text (
-                        Bokmal to "NAV har endret utbetalingen av uføretrygden din",
-                        Nynorsk to "NAV har endra utbetalinga av uføretrygda di",
+                        Bokmal to "Nav har endret utbetalingen av uføretrygden din",
+                        Nynorsk to "Nav har endra utbetalinga av uføretrygda di",
                     )
                 }
 
@@ -68,8 +68,8 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
                         )))){
                     text (
-                        Bokmal to "NAV har endret utbetalingen av uføretrygden og ",
-                        Nynorsk to "NAV har endra utbetalinga av uføretrygda di og ",
+                        Bokmal to "Nav har endret utbetalingen av uføretrygden og ",
+                        Nynorsk to "Nav har endra utbetalinga av uføretrygda di og ",
                     )
                 }
 
@@ -110,8 +110,8 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
                         )))){
                     text (
-                        Bokmal to "NAV har endret utbetalingen av ",
-                        Nynorsk to "NAV har endra utbetalinga av ",
+                        Bokmal to "Nav har endret utbetalingen av ",
+                        Nynorsk to "Nav har endra utbetalinga av ",
                     )
                 }
 
@@ -270,42 +270,32 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
             }
 
-            //Failed to convert with error: Exstream logikk har innhold før if. Tolkes ikke.
-
             //Integer iYear  iYear = FF_getYear(PE_VedtaksData_VirkningFOM)  IF(  PE_VedtaksData_VirkningFOM = FF_getFirstDayOfYear(iYear) AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT)  ) THEN      INCLUDE ENDIF
-
             //[TBU3403NN, TBU3403]
-            showIf(
-                FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())){
+            showIf(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())){
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi vil bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                            .format() + " kroner når vi reduserer uføretrygden din for " + pe.ut_virkningfomar()
-                            .format() + ". Har du ikke meldt inn ny inntekt for " + pe.ut_virkningfomar()
-                            .format() + ", er inntekten justert opp til dagens verdi.",
-                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                            .format() + " kroner når vi reduserer uføretrygda di for " + pe.ut_virkningfomar()
-                            .format() + ". Har du ikkje meldt inn ny inntekt for " + pe.ut_virkningfomar()
-                            .format() + ", er inntekta justert opp til dagens verdi.",
+                        Bokmal to "Vi vil bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " kroner når vi reduserer uføretrygden din for " + pe.ut_virkningfomar().format() + ". Har du ikke meldt inn ny inntekt for " + pe.ut_virkningfomar().format() + ", er inntekten justert opp til dagens verdi.",
+                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " kroner når vi reduserer uføretrygda di for " + pe.ut_virkningfomar().format() + ". Har du ikkje meldt inn ny inntekt for " + pe.ut_virkningfomar().format() + ", er inntekta justert opp til dagens verdi.",
                     )
+                }
 
-                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) THEN      INCLUDE ENDIF
-                    showIf(
-                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
-                            .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad())
-                    ) {
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) THEN      INCLUDE ENDIF
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad())) {
+                    paragraph {
                         textExpr(
-                            Bokmal to " Fikk du innvilget uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar().format() + ", er inntekten justert opp slik at den gjelder for hele " + pe.ut_virkningfomar().format() + ".",
-                            Nynorsk to " Fekk du innvilga uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar().format() + ", er inntekta også justert opp slik at den gjeld for heile " + pe.ut_virkningfomar().format() + ".",
+                            Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar().format() + ", er inntekten justert opp slik at den gjelder for hele " + pe.ut_virkningfomar().format() + ".",
+                            Nynorsk to "Fekk du innvilga uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar().format() + ", er inntekta også justert opp slik at den gjeld for heile " + pe.ut_virkningfomar().format() + ".",
                         )
                     }
+                }
 
-                    //PE_UT_VilFylle67iVirkningFomAr = true
-                    showIf(pe.ut_vilfylle67ivirkningfomar()) {
+                //PE_UT_VilFylle67iVirkningFomAr = true
+                showIf(pe.ut_vilfylle67ivirkningfomar()) {
+                    paragraph {
                         textExpr(
-                            Bokmal to " Fordi du fyller 67 år i ".expr() + pe.ut_virkningfomar().format() + ", er inntekten justert i forhold til antall måneder du mottar uføretrygd.",
-                            Nynorsk to " Fordi du fyljer 67 år i ".expr() + pe.ut_virkningfomar().format() + ", er inntekta justert ut frå talet på månadar du får uføretrygd.",
+                            Bokmal to "Fordi du fyller 67 år i ".expr() + pe.ut_virkningfomar().format() + ", er inntekten justert i forhold til antall måneder du mottar uføretrygd.",
+                            Nynorsk to "Fordi du fyljer 67 år i ".expr() + pe.ut_virkningfomar().format() + ", er inntekta justert ut frå talet på månadar du får uføretrygd.",
                         )
                     }
                 }
@@ -2182,12 +2172,12 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 )
             }
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Ufoeretrygd.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsynPesys)
+            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("nor") or pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("")))
-            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)

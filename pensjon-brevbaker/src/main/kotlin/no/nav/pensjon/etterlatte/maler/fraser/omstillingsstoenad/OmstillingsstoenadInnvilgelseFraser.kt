@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
@@ -31,7 +32,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 object OmstillingsstoenadInnvilgelseFraser {
     data class Vedtak(
-        val avdoed: Expression<Avdoed>,
+        val avdoed: Expression<Avdoed?>,
         val omstillingsstoenadBeregning: Expression<OmstillingsstoenadBeregning>,
         val harUtbetaling: Expression<Boolean>,
         val tidligereFamiliepleier: Expression<Boolean>,
@@ -40,7 +41,6 @@ object OmstillingsstoenadInnvilgelseFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val harFlerePerioder = omstillingsstoenadBeregning.beregningsperioder.size().greaterThan(1)
             val formatertVirkningsdato = omstillingsstoenadBeregning.virkningsdato.format()
-            val formatertDoedsdato = avdoed.doedsdato.format()
 
 
                 showIf(tidligereFamiliepleier) {
@@ -75,30 +75,25 @@ object OmstillingsstoenadInnvilgelseFraser {
                                     "We have now received information from foreign social security authorities, which means you are entitled to the allowance under the EEA rules.",
                         )
                     }
+                }
 
-                    // TODO: ta ut i fellesFraser
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                                    " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ".",
-                            Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
-                                    ", ettersom " + avdoed.navn + " døydde " + formatertDoedsdato + ".",
-                            English to "You have been granted adjustment allowance starting ".expr() +
-                                    formatertVirkningsdato + " because " + avdoed.navn + " died on " + formatertDoedsdato + ".",
-                        )
+                showIf(tidligereFamiliepleier.not()) {
+                    ifNotNull(avdoed){
+                        val formatertDoedsdato = it.doedsdato.format()
+
+                        // TODO: ta ut i fellesFraser
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
+                                        " fordi " + it.navn + " døde " + formatertDoedsdato + ".",
+                                Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
+                                        ", ettersom " + it.navn + " døydde " + formatertDoedsdato + ".",
+                                English to "You have been granted adjustment allowance starting ".expr() +
+                                        formatertVirkningsdato + " because " + it.navn + " died on " + formatertDoedsdato + ".",
+                            )
+                        }
                     }
-                }.orShow {
-                    // TODO: gjennbruk fra fellesFraser
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                                " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ".",
-                            Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
-                                ", ettersom " + avdoed.navn + " døydde " + formatertDoedsdato + ".",
-                            English to "You have been granted adjustment allowance starting ".expr() +
-                                formatertVirkningsdato + " because " + avdoed.navn + " died on " + formatertDoedsdato + ".",
-                        )
-                    }
+
                 }
 
             showIf(harUtbetaling) {
@@ -343,11 +338,11 @@ object OmstillingsstoenadInnvilgelseFraser {
             paragraph {
                 text(
                     Bokmal to "Utbetalingen kan bli forsinket hvis den skal samordnes med ytelser du mottar " +
-                        "fra NAV eller andre, som for eksempel tjenestepensjonsordninger.",
+                        "fra Nav eller andre, som for eksempel tjenestepensjonsordninger.",
                     Nynorsk to "Utbetalinga kan bli forseinka dersom ho skal samordnast med ytingar du får " +
-                        "frå NAV eller andre (t.d. tenestepensjonsordningar).",
+                        "frå Nav eller andre (t.d. tenestepensjonsordningar).",
                     English to "The payment may be delayed if they are coordination with benefits you receive " +
-                        "from NAV or others, such as a pension from an occupational pension scheme.",
+                        "from Nav or others, such as a pension from an occupational pension scheme.",
                 )
             }
             ifNotNull(etterbetaling) {
@@ -368,13 +363,13 @@ object OmstillingsstoenadInnvilgelseFraser {
                 paragraph {
                     text(
                         Bokmal to "Det trekkes vanligvis skatt av etterbetaling. Gjelder " +
-                            "etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
+                            "etterbetalingen tidligere år trekker Nav skatt etter Skatteetatens standardsatser. " +
                             "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
                         Nynorsk to "Det blir normalt sett bli trekt skatt av etterbetaling. Dersom " +
-                            "etterbetalinga gjeld tidlegare år, vil NAV trekkje skatt etter standardsatsane til " +
+                            "etterbetalinga gjeld tidlegare år, vil Nav trekkje skatt etter standardsatsane til " +
                             "Skatteetaten. Du kan lese meir om satsane på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
                         English to "Tax is usually deducted from back payments. If the back payment " +
-                            "applies to previous years, NAV will deduct the tax at the Tax Administration's " +
+                            "applies to previous years, Nav will deduct the tax at the Tax Administration's " +
                             "standard rates. You can read more about the rates here: " +
                             "${Constants.SKATTETREKK_ETTERBETALING_URL}. ",
                     )

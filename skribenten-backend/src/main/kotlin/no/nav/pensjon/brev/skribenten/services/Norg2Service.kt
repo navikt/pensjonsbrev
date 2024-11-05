@@ -35,7 +35,7 @@ class Norg2Service(val config: Config) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
             client.get("api/v1/enhet/$enhetId")
                 .toServiceResult<NavEnhet>()
-                .onError { error, statusCode -> logger.error("Fant ikke NAV Enhet $enhetId: $statusCode - $error") }
+                .onError { error, statusCode -> logger.error("Fant ikke Nav-enhet $enhetId: $statusCode - $error") }
                 .resultOrNull()
         }
 }

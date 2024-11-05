@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.db
 
+import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
@@ -47,13 +48,23 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(BrevbakerBrevdataModule)
 }
 
+class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)
+
+private inline fun <reified T> readJsonColumn(json: String): T =
+    try {
+        databaseObjectMapper.readValue<T>(json)
+    } catch (e: JacksonException) {
+        throw DatabaseJsonDeserializeException(e)
+    }
+
 object BrevredigeringTable : LongIdTable() {
     val saksId: Column<Long> = long("saksId").index()
+    val vedtaksId: Column<Long?> = long("vedtaksId").nullable()
     val brevkode: Column<Brevkode.Redigerbar> = varchar("brevkode", length = 50).transform(Brevkode.Redigerbar::valueOf, Brevkode.Redigerbar::name)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
-    val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
-    val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, databaseObjectMapper::readValue)
+    val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
+    val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
@@ -69,6 +80,7 @@ object BrevredigeringTable : LongIdTable() {
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksId by BrevredigeringTable.saksId
+    var vedtaksId by BrevredigeringTable.vedtaksId
     var brevkode by BrevredigeringTable.brevkode
     var spraak by BrevredigeringTable.spraak
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId

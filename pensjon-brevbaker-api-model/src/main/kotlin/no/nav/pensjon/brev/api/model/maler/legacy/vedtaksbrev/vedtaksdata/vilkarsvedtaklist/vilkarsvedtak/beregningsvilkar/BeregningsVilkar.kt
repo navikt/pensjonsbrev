@@ -10,8 +10,10 @@ data class BeregningsVilkar(
     val ifuinntekt: Kroner?,
     val trygdetid: Trygdetid?,
     val uforegrad: Int?,
+    val uforetidspunkt: LocalDate?,
     val virkningstidpunkt: LocalDate?,
     val uforetidspunkt: LocalDate?,
     val ieuinntekt: Kroner?,
     val skadetidspunkt: LocalDate?,
+    val yrkesskadegrad: Int?
 )

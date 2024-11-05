@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.legacy.fraser
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.model.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -100,8 +102,8 @@ data class TBU4029_Generated(
                 //IF(PE_UT_EtteroppgjorFratrekkListeBrukerEtterbetaling("etterbetaling") = true) THEN      INCLUDE ENDIF
                 showIf((pe.ut_etteroppgjorfratrekklistebrukeretterbetaling())){
                     text (
-                        Bokmal to "Etterbetaling du har fått fra NAV trekkes fra dette beløpet. ",
-                        Nynorsk to "Etterbetalinga du fekk frå NAV blir trekt frå dette beløpet. ",
+                        Bokmal to "Etterbetaling du har fått fra Nav trekkes fra dette beløpet. ",
+                        Nynorsk to "Etterbetalinga du fekk frå Nav blir trekt frå dette beløpet. ",
                     )
                 }
 

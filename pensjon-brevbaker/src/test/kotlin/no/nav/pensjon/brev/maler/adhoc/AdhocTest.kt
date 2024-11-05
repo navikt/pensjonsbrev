@@ -41,6 +41,33 @@ class AdhocTest {
     }
 
     @Test
+    fun `test adhoc hvilende rett 4 aar pdf`() {
+        testAdhocPdf(
+            AdhocInformasjonHvilendeRett4Aar.template,
+            pdfName = "PE_UT_ADHOC_2024_INFO_HVILENDE_RETT_4_AAR",
+            Bokmal
+        )
+    }
+
+    @Test
+    fun `test adhoc hvilende rett 10 aar pdf`() {
+        testAdhocPdf(
+            AdhocMidlertidigOpphoerHvilenderett10Aar.template,
+            pdfName = "PE_UT_ADHOC_2024_MIDL_OPPHOER_HVILENDE_RETT_10_AAR",
+            Bokmal
+        )
+    }
+
+    @Test
+    fun `test adhoc hvilende rett 10 aar varsel pdf`() {
+        testAdhocPdf(
+            AdhocVarselOpphoerMedHvilendeRett.template,
+            pdfName = "UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT",
+            Bokmal
+        )
+    }
+
+    @Test
     fun `testAdhocUfoeretrygdEtterbatalingDagpenger pdf`() {
         testAdhocPdf(
             AdhocUfoeretrygdEtterbetalingDagpenger.template,

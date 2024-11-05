@@ -1,6 +1,9 @@
-@file:Suppress("ClassName")package no.nav.pensjon.brev.maler.legacy.fraser
+@file:Suppress("ClassName")
+
+package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag
@@ -9,6 +12,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
@@ -38,7 +42,40 @@ object LegacyFunksjonsfraser {
                 )
             }
         }
+    }
 
+    data class PE_UT_inntekt_hoyere_lavere(val pe: Expression<PE>) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+        override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(
+                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().greaterThan(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop())
+            ) {
+                text(
+                    Bokmal to "høyere",
+                    Nynorsk to "høgare",
+                    English to "higher"
+                )
+            }.orShowIf(
+                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().lessThanOrEqual(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop())
+            ) {
+                text(
+                    Bokmal to "lavere",
+                    Nynorsk to "lågare",
+                    English to "lower"
+                )
+            }
+        }
+    }
+
+    data class PE_UT_ikke(val pe: Expression<PE>) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+        override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto())) {
+                text(
+                    Bokmal to "ikke ",
+                    Nynorsk to "ikkje ",
+                    English to "not "
+                )
+            }
+        }
     }
 
     data class PE_UT_bruttoetterreduksjonbt_hoyere_lavere(val pe: Expression<PE>) : ParagraphPhrase<LangBokmalNynorskEnglish>() {

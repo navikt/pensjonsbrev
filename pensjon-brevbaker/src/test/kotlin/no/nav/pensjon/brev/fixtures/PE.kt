@@ -11,12 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagListeEOS
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNor
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.FratrekkListe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektListe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjor
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljBruker
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPS
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.*
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PSfnr
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
@@ -34,6 +29,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.forrig
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.Kravhode
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.trygdetidavdod.TTutlandTrygdeavtale
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.trygdetidavdod.TrygdetidAvdod
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.Kravlinje
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakList
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.FortsattMedlemskap
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.MedlemskapForUTetterTrygdeavtaler
@@ -91,9 +87,10 @@ fun createPE() =
             pe_ut_sisteopptjeningarlikuforetidspunkt = false,
             pe_ut_sum_fattnorge_framtidigttnorge_div_12_avdod = 12,
             pe_ut_vilkargjelderpersonalder = 67,
+            pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv = 1,
         ),
-        pebrevkode = "PE_UT_05_100",
-        personsak = PersonSak(PSfnr("01019878910"))
+        pebrevkode = "PE_UT_06_300",
+        personsak = PersonSak(PSfnr("01019878910"), LocalDate.of(1998, 1, 1))
     )
 
 fun createVedtaksbrev(): Vedtaksbrev =
@@ -282,12 +279,27 @@ fun createVilkarsVedtak() =
     VilkarsVedtak(
         beregningsvilkar = createBeregningsVilkar(),
         vilkar = createVilkar(),
-        vilkarVirkningFom = LocalDate.of(2020, 1, 1)
+        vilkarvirkningfom = LocalDate.of(2020, 1, 1),
+        vilkarVirkningFom = LocalDate.of(2020, 1, 1), // TODO: fjern
+        vilkarkravlinjekode = "bt",
+        vilkarvedtakresultat = "avsl",
     )
 
 fun createVilkar() =
     Vilkar(
-        yrkesskaderesultat = null,
+        alderbegrunnelse = "stdbegr_12_4_1_i_1",
+        alderresultat = "oppfylt",
+        fortsattmedlemsskapresultat = "oppfylt",
+        forutgaendemedlemskapresultat = "oppfylt",
+        hensiktsmessigarbeidsrettedetiltakbegrunnelse = "stdbegr_12_5_2_i_3",
+        hensiktsmessigarbeidsrettedetiltakresultat = "ikke_oppfylt",
+        hensiktsmessigbehandlingbegrunnelse = "stdbegr_12_5_2_i_3",
+        hensiktsmessigbehandlingresultat = "oppfylt",
+        nedsattinntektsevnebegrunnelse = "stdbegr_12_7_2_i_2",
+        nedsattinntektsevneresultat = "ikke_oppfylt",
+        sykdomskadelytebegrunnelse = "stdbegr_12_5_2_i_3",
+        sykdomskadelyteresultat = "ikke_oppfylt",
+        unguforbegrunnelse = "stdbegr_12_13_1_i_3",
         unguforresultat = "unguforresultat",
         fortsattmedlemskap = FortsattMedlemskap(
             inngangunntak = "inngangunntak"
@@ -295,18 +307,22 @@ fun createVilkar() =
         medlemskapforutettertrygdeavtaler = MedlemskapForUTetterTrygdeavtaler(
             oppfyltvedsammenlegging = false
         ),
+        yrkesskadebegrunnelse = "stdbegr_12_17_1_o_1",
+        yrkesskaderesultat = "ikke_oppfylt",
     )
 
 fun createBeregningsVilkar() =
     BeregningsVilkar(
         ieubegrunnelse = null,
+        ieuinntekt = Kroner(9939),
         ifubegrunnelse = null,
         ifuinntekt = Kroner(9938),
+        skadetidspunkt = LocalDate.of(2020, 1, 1),
         trygdetid = createTrygdetid(),
         uforegrad = 100,
+        uforetidspunkt = LocalDate.now().minusYears(5),
         virkningstidpunkt = LocalDate.of(2020, 2, 12),
-        ieuinntekt = Kroner(9939),
-        skadetidspunkt = LocalDate.of(2020, 1, 1),
+        yrkesskadegrad = 29,
         uforetidspunkt = LocalDate.of(2020, 1, 1),
     )
 
@@ -341,7 +357,11 @@ fun createKravhode() =
         boddarbeidutlandavdod = false,
         vurderetrygdeavtale = false,
         onsketvirkningsdato = LocalDate.of(2020, 1, 1),
+        kravmottattdato = LocalDate.of(2020, 1, 1),
+        kravlinjeliste = listOf(createKravlinje()),
     )
+
+fun createKravlinje() = Kravlinje(kravlinjetype = "ut")
 
 fun createBeregningsData() =
     BeregningsData(
@@ -353,7 +373,8 @@ fun createBeregningsData() =
 fun createBeregningUforePeriode() =
     listOf(
         BeregningUforePeriode(
-            createBeregningYtelsesKomp()
+            beregningytelseskomp = createBeregningYtelsesKomp(),
+            uforetrygdberegning = createUforetrygdberegning(),
         )
     )
 

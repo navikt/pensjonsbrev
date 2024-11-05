@@ -75,9 +75,9 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
 
         title {
             text(
-                Bokmal to "NAV har regnet om uføretrygden din",
-                Nynorsk to "NAV har rekna om uføretrygda di",
-                English to "NAV has altered your disability benefit",
+                Bokmal to "Nav har regnet om uføretrygden din",
+                Nynorsk to "Nav har rekna om uføretrygda di",
+                English to "Nav has altered your disability benefit",
             )
         }
 
@@ -321,12 +321,12 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
             }
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Ufoeretrygd.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsynPesys)
+            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(bruker.borINorge))
-            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)

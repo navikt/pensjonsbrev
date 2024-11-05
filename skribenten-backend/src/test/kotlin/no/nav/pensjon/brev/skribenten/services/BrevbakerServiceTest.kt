@@ -52,7 +52,7 @@ class BrevbakerServiceTest {
                 saksbehandlerRolleTekst = "case worker",
                 saksbehandlerNavn = "case worker name",
                 attesterendeSaksbehandlerNavn = "case worker name2",
-                navAvsenderEnhet = "NAV abc"
+                navAvsenderEnhet = "Nav abc"
             )
         )
         val mapper = jacksonObjectMapper().apply {

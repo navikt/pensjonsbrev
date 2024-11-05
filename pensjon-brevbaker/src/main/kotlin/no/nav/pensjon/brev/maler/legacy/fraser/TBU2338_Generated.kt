@@ -1,22 +1,24 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
-import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner
-import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 data class TBU2338_Generated(
     val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-		//[TBU2338NN, TBU2338, TBU2338EN]
 
 		paragraph {
 			text (
@@ -35,6 +37,7 @@ data class TBU2338_Generated(
 			}
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt <> "enslig" AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt <> "enslig separert") THEN      INCLUDE ENDIF
+			// Bokmål var egentlig: sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall
 			showIf((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"))){
 				textExpr (
 					Bokmal to "Inntekten til ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din har ikke betydning for størrelsen på barnetillegget.",

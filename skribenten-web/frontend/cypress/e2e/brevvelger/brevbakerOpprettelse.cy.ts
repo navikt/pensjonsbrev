@@ -59,7 +59,7 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=INFORMASJON_OM_SAKSBEHANDLINGSTID");
 
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
     cy.contains("Mottatt soeknad").click().type("09.10.2024");
@@ -90,10 +90,35 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=UT_ORIENTERING_OM_SAKSBEHANDLINGSTID");
 
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
     cy.contains("Mottatt soknad").click().type("09.10.2024");
+    cy.contains("Åpne brev").click("left");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+  });
+
+  it("kan opprette brev som har tom saksbehandlerValg", () => {
+    cy.intercept(
+      "GET",
+      "/bff/skribenten-backend/brevmal/PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS/modelSpecification",
+      (req) => {
+        req.reply({ types: {}, letterModelTypeName: null });
+      },
+    );
+
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+      expect(req.body).deep.equal({
+        brevkode: "PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS",
+        spraak: "NB",
+        avsenderEnhetsId: "",
+        mottaker: null,
+        saksbehandlerValg: {},
+      });
+      req.reply({ fixture: "brevResponse.json" });
+    }).as("createBrev");
+
+    cy.visit("saksnummer/123456/brevvelger?templateId=PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS");
     cy.contains("Åpne brev").click("left");
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
   });

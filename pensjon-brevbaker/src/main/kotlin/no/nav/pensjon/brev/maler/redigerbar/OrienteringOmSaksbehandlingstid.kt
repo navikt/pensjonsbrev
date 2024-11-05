@@ -1,12 +1,13 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattSoeknad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.soeknadOversendesTilUtlandet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -24,8 +25,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object OrienteringOmSaksbehandlingstid : RedigerbarTemplate<OrienteringOmSaksbehandlingstidDto> {
 
+    // PE_UP_07_105
     override val kode = Brevkode.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID
     override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
+    override val brevkontekst = TemplateDescription.Brevkontekst.SAK
+    override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
         name = kode.name,
@@ -93,7 +97,7 @@ object OrienteringOmSaksbehandlingstid : RedigerbarTemplate<OrienteringOmSaksbeh
                 )
             }
 
-            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }
 }

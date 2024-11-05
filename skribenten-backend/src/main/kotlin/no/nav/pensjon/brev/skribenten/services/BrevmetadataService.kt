@@ -11,11 +11,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
-import no.nav.pensjon.brev.skribenten.model.Pen
 import org.slf4j.LoggerFactory
 
 class BrevmetadataService(
@@ -35,15 +32,8 @@ class BrevmetadataService(
         install(CallIdFromContext)
     }
 
-    suspend fun hentMaler(sakType: Pen.SakType, includeEblanketter: Boolean): Brevmaler =
-        coroutineScope {
-            val eblanketterAsync: Deferred<List<BrevdataDto>> = async { if (includeEblanketter) getEblanketter() else emptyList() }
-            val malerAsync: Deferred<List<BrevdataDto>> = async { getBrevmalerForSakstype(sakType) }
-            return@coroutineScope Brevmaler(eblanketterAsync.await(), malerAsync.await())
-        }
-
-    private suspend fun getBrevmalerForSakstype(sakstype: Pen.SakType): List<BrevdataDto> {
-        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
+    suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {
+        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.name}?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {
@@ -54,8 +44,8 @@ class BrevmetadataService(
         }
     }
 
-    private suspend fun getEblanketter(): List<BrevdataDto> {
-        return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
+    suspend fun getEblanketter(): List<BrevdataDto> {
+        return httpClient.get("/api/brevdata/eblanketter") {
             contentType(ContentType.Application.Json)
         }.body<List<BrevdataDto>>()
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
@@ -71,10 +61,14 @@ class BrevmetadataService(
     override suspend fun ping(): ServiceResult<Boolean> =
         httpClient.get("/api/internal/isReady").toServiceResult<String>().map { true }
 
-    data class Brevmaler(
-        val eblanketter: List<BrevdataDto>,
-        val maler: List<BrevdataDto>,
-    )
+}
+
+enum class SpraakKode {
+    EN, // Engelsk
+    NB, // Bokmaal
+    NN, // Nynorsk
+    FR, // Fransk
+    SE, // Nord-samisk
 }
 
 data class BrevdataDto(
@@ -133,8 +127,13 @@ data class BrevdataDto(
                 GG, NN, ON -> false
             }
     }
-
 }
 
+object Brevkoder {
+    const val FRITEKSTBREV_KODE = "PE_IY_05_300"
+    const val POSTERINGSGRUNNLAG_KODE = "PE_OK_06_100"
+    const val POSTERINGSGRUNNLAG_VIRK0101_KODE = "PE_OK_06_101"
+    const val POSTERINGSGRUNNLAG_VIRK0102_KODE = "PE_OK_06_102"
 
-
+    val ikkeRedigerbarBrevtittel = setOf(POSTERINGSGRUNNLAG_KODE, POSTERINGSGRUNNLAG_VIRK0101_KODE, POSTERINGSGRUNNLAG_VIRK0102_KODE)
+}

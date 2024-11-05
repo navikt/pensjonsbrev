@@ -51,14 +51,14 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.duKanFaaDekketUtgift
         text(
             Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige " +
                     "for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. " +
-                    "Informasjon om denne ordningen kan du få hos statsforvalteren, advokater eller NAV.",
+                    "Informasjon om denne ordningen kan du få hos statsforvalteren, advokater eller Nav.",
             Nynorsk to "Dersom du får medhald, kan du få dekt vesentlege utgifter som har vore nødvendige " +
                     "for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. " +
-                    "Statsforvaltaren, ein advokat eller NAV kan gi deg meir informasjon om denne ordninga.",
+                    "Statsforvaltaren, ein advokat eller Nav kan gi deg meir informasjon om denne ordninga.",
             English to "If your appeal is accepted and the decision reversed, " +
                     "you may be reimbursed for substantial expenses that have been necessary to amend the decision. " +
                     "You may be entitled to free legal aid pursuant to the Legal Aid Act. " +
-                    "Information about this scheme can be obtained from the County Governor, an attorney or NAV."
+                    "Information about this scheme can be obtained from the County Governor, an attorney or Nav."
         )
     }
     paragraph {
@@ -128,11 +128,11 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvaMaaKlagenInnehold
     }
     paragraph {
         text(
-            Bokmal to "NAV kan hjelpe deg med å skrive ned klagen. Trenger du hjelp, er du velkommen til å " +
+            Bokmal to "Nav kan hjelpe deg med å skrive ned klagen. Trenger du hjelp, er du velkommen til å " +
                     "ringe oss på telefon ",
-            Nynorsk to "NAV kan hjelpe deg med å skrive ned klaga. Viss du treng hjelp, " +
+            Nynorsk to "Nav kan hjelpe deg med å skrive ned klaga. Viss du treng hjelp, " +
                     "må du gjerne ringje oss på telefon ",
-            English to "The NAV office can help you with the wording of your appeal. " +
+            English to "The Nav office can help you with the wording of your appeal. " +
                     "If you need help, you are welcome to call us by phone ("
         )
         kontakttelefonPensjon(bosattUtland)
@@ -195,16 +195,16 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.klagePaaVedtaket() {
         text(
             Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har " +
                     "fattet vedtaket vil da vurdere saken din på nytt. Hvis du ikke får gjennomslag for klagen din, " +
-                    "blir den sendt videre til NAV Klageinstans for ny vurdering og avgjørelse. Dersom du heller " +
+                    "blir den sendt videre til Nav klageinstans for ny vurdering og avgjørelse. Dersom du heller " +
                     "ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
             Nynorsk to "Du kan klage på vedtaket innan seks veker frå du får det. Kontoret som " +
                     "fatta vedtaket, vil då vurdere saka di på nytt. Dersom du ikkje får gjennomslag for klaga di, " +
-                    "blir ho send vidare til NAV Klageinstans for ny vurdering og avgjerd. " +
+                    "blir ho send vidare til Nav klageinstans for ny vurdering og avgjerd. " +
                     "Dersom du ikkje får gjennomslag hos klageinstansen heller, kan du anke saka inn for Trygderetten.",
             English to "You may appeal a decision within six weeks of receiving it. The office that " +
                     "made the decision will then reconsider your case. If your appeal is not successful, " +
-                    "it will be forwarded to the NAV Appeals for reconsideration and decision. " +
-                    "If your appeal is also rejected by NAV Appeals, " +
+                    "it will be forwarded to the Nav appeals for reconsideration and decision. " +
+                    "If your appeal is also rejected by Nav appeals, " +
                     "you can appeal to the National Insurance Court (Trygderetten)."
         )
     }
@@ -239,9 +239,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hjelpFraAndre() {
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.veiledning() {
     title2 {
         text(
-            Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
-            Nynorsk to "Rettleiing frå NAV – forvaltingslova § 11",
-            English to "Guidance from NAV – Section 11 of the Public Administration Act"
+            Bokmal to "Veiledning fra Nav - forvaltningsloven § 11",
+            Nynorsk to "Rettleiing frå Nav – forvaltingslova § 11",
+            English to "Guidance from Nav – Section 11 of the Public Administration Act"
         )
     }
     paragraph {
@@ -277,15 +277,15 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.tilbakekreving() {
 	}
 	paragraph {
 		text(
-			Bokmal to "NAV kan av eget tiltak bestemme at tilbakekrevingen skal utsettes til klagen er behandlet, " +
+			Bokmal to "Nav kan av eget tiltak bestemme at tilbakekrevingen skal utsettes til klagen er behandlet, " +
 					"for eksempel hvis vi ser at det er sannsynlig at det påklagede vedtaket blir omgjort. " +
 					"Du kan også søke om utsettelse av tilbakebetaling til klagen er behandlet. " +
 					"Vi gjør deg oppmerksom på at det ikke gis utsettelse bare av økonomiske grunner.",
-			Nynorsk to "NAV kan etter eige tiltak bestemme at innkrevjinga skal utsetjast fram til klaga er behandla. " +
+			Nynorsk to "Nav kan etter eige tiltak bestemme at innkrevjinga skal utsetjast fram til klaga er behandla. " +
                     "Dette kan vere aktuelt til dømes dersom vi forventar at vedtaket vil bli gjort om. " +
                     "Du kan også søkje om å få utsett tilbakebetalinga fram til klaga er behandla. " +
                     "Vi gjer merksam på at det ikkje blir gitt utsetjing av reint økonomiske grunnar.",
-			English to "NAV may, on its own initiative, decide that recovery of owed payments shall be postponed " +
+			English to "Nav may, on its own initiative, decide that recovery of owed payments shall be postponed " +
                     "until the appeal has been processed, for example if we see that it is likely that the appealed decision will be reversed. " +
                     "You may also apply for a repayment extension until the appeal has been processed. " +
                     "Please be aware that deferments are not granted merely for financial reasons."

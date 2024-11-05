@@ -20,7 +20,6 @@ data class TBU2490_Generated(
     val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-		//[TBU2490NN, TBU2490, TBU2490EN]
 
 		paragraph {
 			textExpr (
@@ -31,4 +30,3 @@ data class TBU2490_Generated(
 		}
     }
 }
-        

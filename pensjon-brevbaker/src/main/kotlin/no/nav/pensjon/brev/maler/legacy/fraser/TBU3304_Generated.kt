@@ -40,8 +40,8 @@ data class TBU3304_Generated(
 			//IF(PE_UT_EtteroppgjorFratrekkListeBrukerEtterbetaling("etterbetaling") = true) THEN      INCLUDE ENDIF
 			showIf((pe.ut_etteroppgjorfratrekklistebrukeretterbetaling())){
 				text (
-					Bokmal to "Etterbetaling du har fått fra NAV trekkes fra dette beløpet. ",
-					Nynorsk to "Etterbetalinga du fekk frå NAV blir trekt frå dette beløpet. ",
+					Bokmal to "Etterbetaling du har fått fra Nav trekkes fra dette beløpet. ",
+					Nynorsk to "Etterbetalinga du fekk frå Nav blir trekt frå dette beløpet. ",
 				)
 			}
 			textExpr (

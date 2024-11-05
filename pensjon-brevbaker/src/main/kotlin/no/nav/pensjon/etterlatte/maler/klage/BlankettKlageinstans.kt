@@ -155,7 +155,7 @@ object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseBlankettDTO>, 
             formaterPunktMedSvar("Utfall", "Oppretthold vedtak".expr())
             formaterPunktMedSvar("Hjemmel", hjemmel)
 
-            formaterTekstlinjer("Innstilling til NAV Klageinstans", oversendelseLinjer)
+            formaterTekstlinjer("Innstilling til Nav klageinstans", oversendelseLinjer)
             ifNotNull(internKommentarLinjer) {
                 formaterTekstlinjer("Intern kommentar", it)
             }

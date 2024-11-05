@@ -22,6 +22,7 @@ object Dto {
     data class BrevInfo(
         val id: Long,
         val saksId: Long,
+        val vedtaksId: Long?,
         val opprettetAv: NavIdent,
         val opprettet: Instant,
         val sistredigertAv: NavIdent,

@@ -138,8 +138,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         paragraph {
             text(
-                Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra NAV regnes dette også med som personinntekt.",
-                Nynorsk to "Dersom den andre forelderen får uføretrygd eller alderspensjon frå NAV, blir også dette rekna med som personinntekt.",
+                Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra Nav regnes dette også med som personinntekt.",
+                Nynorsk to "Dersom den andre forelderen får uføretrygd eller alderspensjon frå Nav, blir også dette rekna med som personinntekt.",
             )
         }
     }
@@ -178,8 +178,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         paragraph {
             text(
-                Bokmal to "Uføretrygden blir justert ut fra pensjonsgivende inntekt. Pensjonsgivende inntekt er for eksempel arbeidsinntekt, næringsinntekt og utlandsinntekt. Ytelser fra NAV som erstatter arbeidsinntekt er også pensjonsgivende inntekt. Dette står i § 3-15 i folketrygdloven. ",
-                Nynorsk to "Uføretrygda blir justert ut frå pensjonsgivande inntekt. Pensjonsgivande inntekt er for eksempel arbeidsinntekt, næringsinntekt og utanlandsinntekt. Ytingar frå NAV som erstattar arbeidsinntekt, er også pensjonsgivande inntekt. Dette står i § 3-15 i folketrygdlova. ",
+                Bokmal to "Uføretrygden blir justert ut fra pensjonsgivende inntekt. Pensjonsgivende inntekt er for eksempel arbeidsinntekt, næringsinntekt og utlandsinntekt. Ytelser fra Nav som erstatter arbeidsinntekt er også pensjonsgivende inntekt. Dette står i § 3-15 i folketrygdloven. ",
+                Nynorsk to "Uføretrygda blir justert ut frå pensjonsgivande inntekt. Pensjonsgivande inntekt er for eksempel arbeidsinntekt, næringsinntekt og utanlandsinntekt. Ytingar frå Nav som erstattar arbeidsinntekt, er også pensjonsgivande inntekt. Dette står i § 3-15 i folketrygdlova. ",
             )
         }
     }
@@ -213,8 +213,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
                 )
             }
             text(
-                Bokmal to "Personinntekt er for eksempel: lønn, inkludert bonus og overtid fra arbeidsgiver, næringsinntekt, utlandsinntekt, uføretrygd og andre ytelser fra NAV.",
-                Nynorsk to "Personinntekt er for eksempel: lønn, inkludert bonus og overtid frå arbeidsgivar, næringsinntekt, utanlandsinntekt, uføretrygd og andre ytingar frå NAV.",
+                Bokmal to "Personinntekt er for eksempel: lønn, inkludert bonus og overtid fra arbeidsgiver, næringsinntekt, utlandsinntekt, uføretrygd og andre ytelser fra Nav.",
+                Nynorsk to "Personinntekt er for eksempel: lønn, inkludert bonus og overtid frå arbeidsgivar, næringsinntekt, utanlandsinntekt, uføretrygd og andre ytingar frå Nav.",
             )
         }
         //[Table 8, Table 9, Table 7]
@@ -421,8 +421,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles >= 1 AND Year(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_PeriodeFom) >= 2023)  AND PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "tilbakekr"  AND (PE_pebrevkode = "PE_UT_23_001"  OR  PE_pebrevkode = "PE_UT_04_402") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().greaterThanOrEqual(1) and FUNKSJON_Year(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom()).greaterThanOrEqual(2023)) and pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("tilbakekr") and (pe.pebrevkode().equalTo("PE_UT_23_001") or pe.pebrevkode().equalTo("PE_UT_04_402"))) {
                     text(
-                        Bokmal to "I tillegg kan vi se bort fra følgende inntekt for deg, og annen forelder som mottar uføretrygd eller alderspensjon fra NAV:",
-                        Nynorsk to "Vi kan også sjå bort frå følgjande inntekt for deg og den andre forelderen som mottek uføretrygd eller alderspensjon frå NAV:",
+                        Bokmal to "I tillegg kan vi se bort fra følgende inntekt for deg, og annen forelder som mottar uføretrygd eller alderspensjon fra Nav:",
+                        Nynorsk to "Vi kan også sjå bort frå følgjande inntekt for deg og den andre forelderen som mottek uføretrygd eller alderspensjon frå Nav:",
                     )
 
                     list {

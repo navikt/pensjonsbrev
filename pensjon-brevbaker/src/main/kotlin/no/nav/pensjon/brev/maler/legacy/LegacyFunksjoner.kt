@@ -5,6 +5,8 @@ package no.nav.pensjon.brev.maler.legacy
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.beregningsdata_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.kravhode_safe
@@ -25,9 +27,12 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.barnetilleggfelles_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.barnetilleggserkull_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravmottattdato_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravmottattdato_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakListSelectors.vilkarsvedtak_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.beregningsvilkar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.virkningstidpunkt_safe
+import no.nav.pensjon.brev.maler.legacy.aarstall_trygdetid
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -182,6 +187,16 @@ fun Expression<PE>.ut_sum_inntekterbt_totalbeloput(): Expression<Kroner> = vedta
 
 fun Expression<PE>.ut_firstday(): Expression<LocalDate?> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().ifNull(LocalDate.of(2014,10,14)).firstDayOfYear
 fun Expression<PE>.ut_lastday(): Expression<LocalDate?> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().ifNull(LocalDate.of(2014,10,14)).lastDayOfYear
+
+fun Expression<PE>.aarstall_trygdetid(): Expression<Int> =
+    vedtaksbrev.vedtaksdata.kravhode_safe.kravmottattdato_safe.ifNull(LocalDate.now()).year
+
+fun Expression<PE>.aars_trygdetid(): Expression<String> {
+    val erEngelsk = Expression.FromScope.Language.equalTo(English)
+
+    return ifElse(aarstall_trygdetid() lessThan 2021, ifElse(erEngelsk, "three", "tre"), ifElse(erEngelsk, "five", "fem"))
+}
+
 
 fun Expression<PE>.ut_ikke(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())

@@ -85,9 +85,9 @@ object Omsorgsopptjening {
             }
             paragraph {
                 text(
-                    Bokmal to "Den av foreldrene som får barnetrygden vil automatisk få omsorgsopptjeningen. Opptjeningen kan overføres til den andre forelderen hvis dere er sammen om omsorgen for barnet. Da må dere fylle ut skjemaet «Overføring av omsorgsopptjening» (NAV 03-16.10), som dere finner på ${Constants.SKJEMA_URL}.",
-                    Nynorsk to "Den av foreldra som får barnetrygda, får automatisk omsorgsoppteninga. Oppteninga kan overførast til den andre forelderen dersom de er saman om omsorga for barnet. Då må de fylle ut skjemaet «Overføring av omsorgsopptening» (NAV 03-16.10), som de finn på ${Constants.SKJEMA_URL}.",
-                    English to "The child benefit recipient will automatically be credited the pension earnings for care work. The pension earnings can be transferred to the other parent if you share the care of the child. To transfer pension earnings, complete the form “Transfer of pension earnings for care work” (form no. NAV 03-16.10), which you will find at ${Constants.SKJEMA_URL}."
+                    Bokmal to "Den av foreldrene som får barnetrygden vil automatisk få omsorgsopptjeningen. Opptjeningen kan overføres til den andre forelderen hvis dere er sammen om omsorgen for barnet. Da må dere fylle ut skjemaet «Overføring av omsorgsopptjening» (Nav 03-16.10), som dere finner på ${Constants.SKJEMA_URL}.",
+                    Nynorsk to "Den av foreldra som får barnetrygda, får automatisk omsorgsoppteninga. Oppteninga kan overførast til den andre forelderen dersom de er saman om omsorga for barnet. Då må de fylle ut skjemaet «Overføring av omsorgsopptening» (Nav 03-16.10), som de finn på ${Constants.SKJEMA_URL}.",
+                    English to "The child benefit recipient will automatically be credited the pension earnings for care work. The pension earnings can be transferred to the other parent if you share the care of the child. To transfer pension earnings, complete the form “Transfer of pension earnings for care work” (form no. Nav 03-16.10), which you will find at ${Constants.SKJEMA_URL}."
                 )
             }
         }
@@ -106,7 +106,7 @@ object Omsorgsopptjening {
             paragraph {
                 text(
                     Bokmal to "Omsorgsopptjening blir godkjent automatisk hvert år, så lenge barnet har rett til forhøyet hjelpestønad sats 3 eller 4. Denne stønaden kan gis fram til barnet har fylt 18 år. Hvis du fortsatt utfører ulønnet omsorgsarbeid når hjelpestønaden opphører, må du selv sette fram søknad om omsorgsopptjening.",
-                    Nynorsk to "Omsorgsopptening blir godkjent automatisk kvart år så lenge barnet har rett til forhøgd hjelpestønad sats 3 eller 4. NAV kan gi denne stønaden fram til barnet har fylt 18 år. Dersom du framleis utfører ulønt omsorgsarbeid når hjelpestønaden tek slutt, må du sjølv søkje om omsorgsopptening.",
+                    Nynorsk to "Omsorgsopptening blir godkjent automatisk kvart år så lenge barnet har rett til forhøgd hjelpestønad sats 3 eller 4. Nav kan gi denne stønaden fram til barnet har fylt 18 år. Dersom du framleis utfører ulønt omsorgsarbeid når hjelpestønaden tek slutt, må du sjølv søkje om omsorgsopptening.",
                     English to "Pension earnings for care work are credited automatically each year for as long as the child is entitled to higher rate assistance allowance at rate 3 or rate 4. This allowance can be granted until the child turns 18 years. If you continue to care for the child after it is eligible for assistance allowance, you must submit a separate application to earn pension savings for care work."
                 )
             }

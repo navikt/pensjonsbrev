@@ -19,7 +19,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-search").click();
     cy.focused().type("b");
     cy.getDataCy("category-item").should("have.length", 7).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 22);
+    cy.getDataCy("brevmal-button").should("have.length", 23);
 
     cy.focused().type("r");
     cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
@@ -92,7 +92,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-button").contains("Varsel - tilbakekreving").click();
 
     cy.get("select[name=spraak]").select("Nynorsk");
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
 
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
@@ -122,7 +122,7 @@ describe("Brevvelger spec", () => {
 
     cy.getDataCy("is-sensitive").should("not.exist");
 
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
     cy.getDataCy("order-letter").click("left");
     cy.get("@window-open").should(
@@ -156,7 +156,7 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("språk-velger-select").should("not.exist");
 
     cy.getDataCy("brev-title-textfield").click().type("GGMU");
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
     cy.getDataCy("order-letter").click("left");
 
@@ -195,7 +195,7 @@ describe("Brevvelger spec", () => {
 
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
     cy.getDataCy("order-letter").click("left");
-    cy.get("select[name=enhetsId]").select("NAV Arbeid og ytelser Innlandet");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
 
     cy.getDataCy("is-sensitive").find(".navds-error-message");
     cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
@@ -216,5 +216,15 @@ describe("Brevvelger spec", () => {
       "mbdok://PE2@brevklient/dokument/453864284?token=1711101230605&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
     );
     cy.getDataCy("order-letter-success-message");
+  });
+
+  it("enhetsId som url param gjenspeiles i form og inputs", () => {
+    cy.visit('/saksnummer/123456/brevvelger?templateId=AP_INFO_STID_MAN&enhetsId="4815"', {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+    cy.wait("@enheter");
+    cy.getDataCy("avsenderenhet-select").should("have.value", "4815");
   });
 });

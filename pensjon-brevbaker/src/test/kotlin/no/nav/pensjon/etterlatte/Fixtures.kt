@@ -29,6 +29,7 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtf
 import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBrukerDTO
 import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktInformasjon6mndDto
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO
@@ -74,6 +75,7 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
@@ -103,7 +105,7 @@ object Fixtures {
             avsenderEnhet =
                 NAVEnhet(
                     nettside = "nav.no",
-                    navn = "NAV Familie- og pensjonsytelser Porsgrunn",
+                    navn = "Nav familie- og pensjonsytelser Porsgrunn",
                     telefonnummer = Telefonnummer("55553334"),
                 ),
             bruker =
@@ -161,6 +163,7 @@ object Fixtures {
             OmstillingsstoenadOpphoerRedigerbartUtfallDTO::class -> createOmstillingsstoenadpphoerRedigerbartUtfallDTO() as T
             OmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO() as T
             OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO() as T
+            OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO() as T
             OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon6mndDto() as T
             OmstillingsstoenadVarselAktivitetspliktDTO::class -> createOmstillingsstoenadVarselAktivitetspliktDTO() as T
             OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO::class -> createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() as T

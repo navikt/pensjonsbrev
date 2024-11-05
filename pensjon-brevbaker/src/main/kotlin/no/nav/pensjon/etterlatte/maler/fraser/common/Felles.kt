@@ -111,7 +111,7 @@ object Felles {
                 text(
                     Bokmal to "Hvordan sende opplysninger til oss?",
                     Nynorsk to "Korleis melder du frå om endringar?",
-                    English to "How to submit information to NAV?",
+                    English to "How to submit information to Nav?",
                 )
             }
             paragraph {
@@ -148,9 +148,9 @@ object Felles {
             showIf(utland) {
                 paragraph {
                     text(
-                        Bokmal to "NAV Familie- og pensjonsytelser",
-                        Nynorsk to "NAV Familie- og pensjonsytelser",
-                        English to "NAV Familie- og pensjonsytelser",
+                        Bokmal to "Nav familie- og pensjonsytelser",
+                        Nynorsk to "Nav familie- og pensjonsytelser",
+                        English to "Nav familie- og pensjonsytelser",
                     )
                 }
                 paragraph {
@@ -177,9 +177,9 @@ object Felles {
             }.orShow {
                 paragraph {
                     text(
-                        Bokmal to "NAV skanning",
-                        Nynorsk to "NAV skanning",
-                        English to "NAV skanning",
+                        Bokmal to "Nav skanning",
+                        Nynorsk to "Nav skanning",
+                        English to "Nav skanning",
                     )
                 }
                 paragraph {

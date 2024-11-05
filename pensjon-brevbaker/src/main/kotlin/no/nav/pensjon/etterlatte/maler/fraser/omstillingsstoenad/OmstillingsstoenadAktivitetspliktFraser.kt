@@ -37,7 +37,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     Nynorsk to "Vi minner om at du pliktar å melde frå om endringar som kan ha betydning for " +
                             "stønaden du får frå oss. Du må melde frå dersom",
                     English to "Please remember that you are obligated to notify us about changes that may have significance " +
-                            "to the benefits or allowances you receive from NAV. You must report any changes if",
+                            "to the benefits or allowances you receive from Nav. You must report any changes if",
                 )
 
                 list {
@@ -57,9 +57,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                     item {
                         text(
-                            Bokmal to "du får innvilget andre stønader fra NAV",
-                            Nynorsk to "du får innvilga andre stønader frå NAV",
-                            English to "you are granted other benefits from NAV",
+                            Bokmal to "du får innvilget andre stønader fra Nav",
+                            Nynorsk to "du får innvilga andre stønader frå Nav",
+                            English to "you are granted other benefits from Nav",
                         )
                     }
                     item {
@@ -121,7 +121,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     English to "You can report changes in the following ways:",
                 )
 
-                val postadresse = ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), Constants.POSTADRESSE, Constants.Utland.POSTADRESSE)
+                val postadresse = ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
 
                 list {
                     item {
@@ -165,7 +165,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                 text(
                     Bokmal to "Hvis du ikke melder fra om endringer og får utbetalt for mye stønad, kan stønad som er utbetalt feil kreves tilbake.",
                     Nynorsk to "Dersom du får utbetalt for mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake det du ikkje hadde rett på.",
-                    English to "If you fail to report changes and/or are paid too much benefits/allowance, NAV has the right to collect the incorrect amount.",
+                    English to "If you fail to report changes and/or are paid too much benefits/allowance, Nav has the right to collect the incorrect amount.",
                 )
             }
 
@@ -185,11 +185,11 @@ class OmstillingsstoenadAktivitetspliktFraser {
             paragraph {
                 text(
                     Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser " +
-                            "eller støtteordninger ved ditt lokale NAV-kontor og på ${Constants.HELSE_URL}.",
+                            "eller støtteordninger ved ditt lokale Nav-kontor og på ${Constants.HELSE_URL}.",
                     Nynorsk to "Viss du har helseutfordringar, kan du undersøkje moglegheitene for andre ytingar " +
-                            "eller støtteordningar ved ditt lokale NAV-kontor og på ${Constants.HELSE_URL}.",
+                            "eller støtteordningar ved ditt lokale Nav-kontor og på ${Constants.HELSE_URL}.",
                     English to "If you are faced with difficult health challenges, you can investigate the possibilities " +
-                            "for other benefits or support schemes through your local NAV office, or check out various " +
+                            "for other benefits or support schemes through your local Nav office, or check out various " +
                             "opportunities online: ${Constants.HELSE_URL}.",
                 )
             }
@@ -208,11 +208,11 @@ class OmstillingsstoenadAktivitetspliktFraser {
 
             paragraph {
                 text(
-                    Bokmal to "NAV tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. " +
+                    Bokmal to "Nav tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. " +
                             "Du kan finne flere jobbsøkertips og informasjon på ${Constants.ARBEID_URL}.",
-                    Nynorsk to "NAV tilbyr ulike tenester og støtteordningar for deg som treng hjelp med å kome i " +
+                    Nynorsk to "Nav tilbyr ulike tenester og støtteordningar for deg som treng hjelp med å kome i " +
                             "arbeid. Du finn fleire jobbsøkjartips og informasjon på ${Constants.ARBEID_URL}.",
-                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and " +
+                    English to "The Norwegian Labour and Welfare Administration (Nav) offers various services and " +
                             "support schemes for those who need help finding a job. You can find more job seeker's tips " +
                             "and information online: ${Constants.ARBEID_URL}.",
                 )
@@ -318,6 +318,182 @@ class OmstillingsstoenadAktivitetspliktFraser {
                             "about final settlements online: ${Constants.OMS_ETTEROPPGJOER_URL}.",
                 )
             }
+        }
+    }
+
+    data class FellesOppfyllelseAktivitetsplikt(
+        val nasjonalEllerUtland: Expression<NasjonalEllerUtland>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+
+            title2 {
+                text(
+                    Bokmal to "Hvordan oppfylle aktivitetsplikten?",
+                    Nynorsk to "Korleis oppfyller du aktivitetsplikta?",
+                    English to "How do I comply with the activity obligation?",
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Du fyller aktivitetsplikten hvis du er minst 50 prosent aktiv ved å",
+                    Nynorsk to "Du oppfyller aktivitetsplikta dersom du er minst 50 prosent aktiv ved å",
+                    English to "You are in compliance with the activity obligation if you are at least 50 percent active",
+                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "jobbe",
+                            Nynorsk to "jobbe",
+                            English to "working",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "være selvstendig næringsdrivende",
+                            Nynorsk to "vere sjølvstendig næringsdrivande",
+                            English to "being self-employed/sole proprietor",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "etablere egen virksomhet (må godkjennes av Nav)",
+                            Nynorsk to "etablere eiga verksemd (må godkjennast av Nav)",
+                            English to "setting up your own business (must be approved by Nav)",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "ta utdanning som er nødvendig og hensiktsmessig (må godkjennes av Nav)",
+                            Nynorsk to "ta utdanning som er nødvendig og føremålstenleg (må godkjennast av Nav)",
+                            English to "taking a necessary and suitable education (must be approved by Nav)",
+                        )
+                    }
+                    item {
+                        textExpr(
+                            Bokmal to "være reell arbeidssøker".expr() + ifElse(
+                                nasjonalEllerUtland.equalTo(
+                                    NasjonalEllerUtland.UTLAND
+                                ), " i bostedslandet ditt", ""
+                            ),
+                            Nynorsk to "vere reell arbeidssøkjar".expr() + ifElse(
+                                nasjonalEllerUtland.equalTo(
+                                    NasjonalEllerUtland.UTLAND
+                                ), " i landet der du er busett", ""
+                            ),
+                            English to "being a genuine job seeker".expr() + ifElse(
+                                nasjonalEllerUtland.equalTo(
+                                    NasjonalEllerUtland.UTLAND
+                                ), " in your country of residence", ""
+                            ),
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "ha fått tilbud om jobb",
+                            Nynorsk to "ha fått tilbod om jobb",
+                            English to "have received a job offer",
+                        )
+                    }
+                }
+            }
+
+        }
+    }
+
+    object FellesOppfyllelseUnntakFraAktivitetsplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Unntak fra aktivitetsplikten",
+                    Nynorsk to "Unntak frå aktivitetsplikta",
+                    English to "Exemption from the activity obligation",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Det er mulig å få unntak fra aktivitetsplikten, men fortsatt ha rett til omstillingsstønad. Dette gjelder hvis du",
+                    Nynorsk to "Det er mogleg å få unntak frå aktivitetsplikta, og framleis ha rett på omstillingsstønad. Dette gjeld dersom du",
+                    English to "It is possible to be exempt from the activity obligation and still have the right to an adjustment allowance. This applies if you",
+                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "har omsorgen for barn under ett år",
+                            Nynorsk to "har ansvar for barn under eitt år",
+                            English to "are caring for child under one year of age",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "har sykdom eller helseutfordringer som hindrer deg fra å være i minst 50 " +
+                                    "prosent arbeid eller arbeidsrettet aktivitet, og du benytter din gjenværende arbeidsevne.",
+                            Nynorsk to "har sjukdom eller helseutfordringar som hindrar deg i å vere i minst 50 " +
+                                    "prosent arbeid eller arbeidsretta aktivitet, og du nyttar di attverande arbeidsevne",
+                            English to "have an illness or health problems that hinder you from working at least 50 " +
+                                    "percent or being involved in a work-related activity, and you use your residual ability to work",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "mottar sykepenger for full arbeidsuførhet",
+                            Nynorsk to "får sjukepengar for full arbeidsuførleik",
+                            English to "are receiving sickness benefits for full disability",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "mottar arbeidsavklaringspenger",
+                            Nynorsk to "får arbeidsavklaringspengar",
+                            English to "are receiving Work Assessment Allowance (AAP)",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "er forhindret fra å være i arbeid eller arbeidsrettet aktivitet på grunn av " +
+                                    "sykdom, skade eller funksjonsnedsettelse hos barnet ditt. Barnets tilstand må " +
+                                    "dokumenteres av lege. Det må også dokumenteres at barnets tilstand er årsaken til " +
+                                    "at du er forhindret fra å være i arbeid eller arbeidsrettet aktivitet",
+                            Nynorsk to "er hindra i å vere i arbeid eller arbeidsretta aktivitet fordi du har eit " +
+                                    "barn med sjukdom, skade eller funksjonsnedsetjing. Tilstanden til barnet må vere " +
+                                    "dokumentert av lege. Det må også dokumenterast at tilstanden til barnet er årsaka " +
+                                    "til at du er hindra i å vere i arbeid eller arbeidsretta aktivitet",
+                            English to "are prevented from working or work-related activity due to illness, injury or " +
+                                    "reduced functionality of your child. The child's condition must be documented by a medical doctor. " +
+                                    "You must also document that the child's condition is the reason why you are being prevented " +
+                                    "from working or being involved in a work-related activity",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "er forhindret fra å være i slik aktivitet på grunn av omsorg for barn som " +
+                                    "mangler tilfredsstillende tilsynsordning, og den manglende tilsynsordningen ikke skyldes deg selv",
+                            Nynorsk to "er hindra i å vere i ein slik aktivitet grunna omsorg for barn som manglar " +
+                                    "tilfredsstillande tilsynsordning, og du ikkje sjølv er skuld i den manglande tilsynsordninga",
+                            English to "are prevented from engaging in such activity due to caring for a child who " +
+                                    "lacks satisfactory supervision, and the lack of supervision is not your fault",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "har kortvarig fravær fra aktivitet på grunn av sykdom eller skade hos deg " +
+                                    "eller barn du har omsorg for",
+                            Nynorsk to "har kortvarig fråvær frå aktivitet fordi anten du sjølv eller eit barn du " +
+                                    "har omsorg for, har sjukdom eller skade",
+                            English to "are absent from the activity temporarily due to illness or injury, either " +
+                                    "yours or the child you are caring for",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "har en arbeidsevnevurdering fra ditt lokale Nav-kontor som sier at du ikke kan arbeide",
+                            Nynorsk to "har ei arbeidsevnevurdering frå det lokale Nav-kontoret ditt på at du ikkje kan jobbe",
+                            English to "have completed the work capability assessment from your local Nav office that proves you cannot be employed",
+                        )
+                    }
+                }
+            }
+
         }
     }
 

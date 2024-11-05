@@ -46,8 +46,8 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
     ) {
         title {
             text(
-                Bokmal to "NAV har regnet om uføretrygden din",
-                Nynorsk to "NAV har endra uføretrygda di",
+                Bokmal to "Nav har regnet om uføretrygden din",
+                Nynorsk to "Nav har endra uføretrygda di",
             )
         }
 
@@ -89,10 +89,10 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
             includePhrase(Ufoeretrygd.VirkningFraOgMed(kravVirkningFraOgMed))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Ufoeretrygd.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsynPesys)
+            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)

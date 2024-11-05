@@ -15,8 +15,8 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.newText
-
-// Conditional for showing the attachment is: sakstype = UFOEREP && vedtakResultat = AVSLG
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 
 val vedleggDineRettigheterOgPlikterUfoere =
     createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
@@ -66,5 +66,5 @@ val vedleggDineRettigheterOgPlikterUfoere =
         includePhrase(VedleggVeiledning)
         includePhrase(VedleggInnsynSakUfoeretrygdPesys)
         includePhrase(VedleggHjelpFraAndre)
-        includePhrase(VedleggKlagePensjon)
+        includePhrase(VedleggKlagePaaVedtaket(felles.avsenderEnhet.telefonnummer))
     }
