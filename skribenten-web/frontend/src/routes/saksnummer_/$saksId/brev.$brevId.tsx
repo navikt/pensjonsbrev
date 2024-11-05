@@ -224,10 +224,16 @@ function RedigerBrev({
   );
 
   const onSubmit = (values: RedigerBrevSidemenyFormData) => {
-    saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
-      onSuccess: () => {
-        signaturMutation.mutate(values.signatur);
-      },
+    return new Promise((resolve, reject) => {
+      saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
+        onError: (error) => reject(error),
+        onSuccess: () => {
+          signaturMutation.mutate(values.signatur, {
+            onError: (error) => reject(error),
+            onSuccess: () => resolve("success - saksbehandlerValgMutation & signaturMutation"),
+          });
+        },
+      });
     });
   };
 
@@ -275,7 +281,7 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const requestSubmit = useCallback(() => {
+  const requestSubmit = useCallback(async () => {
     formRef.current?.requestSubmit();
   }, [formRef]);
 
@@ -373,20 +379,24 @@ function RedigerBrev({
                 Tilbake til brevvelger
               </Button>
               <Button
-                loading={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
+                loading={
+                  redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending
+                }
                 onClick={async () => {
-                  await redigertBrevMutation.mutateAsync(
-                    { redigertBrev: editorState.redigertBrev, frigiReservasjon: true },
-                    {
-                      onSuccess: () => {
-                        navigate({
-                          to: "/saksnummer/$saksId/brevbehandler",
-                          params: { saksId },
-                          search: { brevId: brev.info.id },
-                        });
+                  await onSubmit(form.getValues()).then(async () => {
+                    await redigertBrevMutation.mutateAsync(
+                      { redigertBrev: editorState.redigertBrev, frigiReservasjon: true },
+                      {
+                        onSuccess: () => {
+                          navigate({
+                            to: "/saksnummer/$saksId/brevbehandler",
+                            params: { saksId },
+                            search: { brevId: brev.info.id },
+                          });
+                        },
                       },
-                    },
-                  );
+                    );
+                  });
                 }}
                 size="small"
                 type="button"

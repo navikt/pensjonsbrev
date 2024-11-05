@@ -2,6 +2,8 @@ import { format, formatISO } from "date-fns";
 
 import type { BrevResponse } from "~/types/brev";
 
+import { nyBrevResponse } from "../../utils/brevredigeringTestUtils";
+
 describe("Brevredigering", () => {
   const hurtiglagreTidspunkt = formatISO(new Date());
   beforeEach(() => {
@@ -40,6 +42,49 @@ describe("Brevredigering", () => {
     cy.contains("hello!").should("exist");
   });
 
+  it("lagrer signatur og saksbehandlerValg ved fortsett klikk", () => {
+    const brev = nyBrevResponse({});
+
+    cy.intercept("put", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+      expect(req.body).deep.equal({
+        mottattSoeknad: "2024-07-24",
+        ytelse: "alderspensjon",
+        land: "Mars",
+        svartidUker: "10",
+      });
+      req.reply(brev);
+    }).as("lagreSaksbehandlerValg");
+
+    cy.intercept("put", "/bff/skribenten-backend/brev/1/signatur", (req) => {
+      expect(req.body).deep.equal("Det nye saksbehandlernavnet");
+      req.reply(brev);
+    }).as("lagreSignatur");
+
+    cy.intercept("put", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=true", (req) => {
+      req.reply(brev);
+    }).as("lagreRedigertBrev");
+
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Land").click().type("{selectall}{backspace}").type("Mars");
+    cy.contains("Signatur").click().type("{selectall}{backspace}").type("Det nye saksbehandlernavnet");
+    cy.contains("Fortsett").click();
+
+    cy.wait("@lagreSaksbehandlerValg").should((req) => {
+      expect(req.response?.statusCode).to.equal(200);
+    });
+    cy.wait("@lagreSignatur").should((req) => {
+      expect(req.response?.statusCode).to.equal(200);
+    });
+    cy.wait("@lagreRedigertBrev").should((req) => {
+      expect(req.response?.statusCode).to.equal(200);
+    });
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
+
+    //verifiserer at dem har bare blitt kalt 1 gang
+    cy.get("@lagreSaksbehandlerValg.all").should("have.length", 1);
+    cy.get("@lagreSignatur.all").should("have.length", 1);
+    cy.get("@lagreRedigertBrev.all").should("have.length", 1);
+  });
   it("Blokkerer redigering om brev er reservert av noen andre", () => {
     cy.visit("/saksnummer/123456/brev/1");
     cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", { fixture: "brevreservasjon_opptatt.json" }).as(
