@@ -79,6 +79,10 @@ export function newLiteral(text: string): LiteralValue {
   return { type: LITERAL, id: null, text: "", editedText: text };
 }
 
+export const newVariable = (args: { id?: number; text: string; name?: string }): VariableValue => {
+  return { type: VARIABLE, id: args.id ?? -1, ...args };
+};
+
 export function newItem(text: string): Item {
   return { id: null, content: [newLiteral(text)] };
 }
