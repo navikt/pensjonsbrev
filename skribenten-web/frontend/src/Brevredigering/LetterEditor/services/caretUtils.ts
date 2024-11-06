@@ -10,11 +10,17 @@ type Coordinates = {
  *
  */
 export function getCursorOffset() {
+  console.log("getCursorOffset");
   const selection = window.getSelection();
+
   if ((selection?.rangeCount ?? 0) > 0) {
+    console.log("selection:", selection);
     const range = selection?.getRangeAt(0);
+    console.log("range:", range);
+    console.log("range.collapesed:", range?.collapsed, "range.startOffset", range?.endOffset);
     return range?.collapsed ? range.startOffset : -1;
   }
+
   return -1;
 }
 
@@ -38,9 +44,12 @@ export const getCursorOffsetOrRange = () => {
  * @param offset the offset in the node
  */
 export function focusAtOffset(node: ChildNode, offset: number) {
+  //console.log("length:", node.length);
+  console.log("trying to set offset", offset, "for node", node, "with length", node.length);
+
   if (offset >= 0) {
     const range = document.createRange();
-    range.setStart(node, offset);
+    range.setStart(node, offset > node.length ? node.length : offset);
     range.collapse();
     node.parentElement?.focus();
 

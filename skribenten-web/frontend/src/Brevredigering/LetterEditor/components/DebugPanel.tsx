@@ -65,21 +65,6 @@ export function DebugPanel() {
         <b>X: {caretRect?.x}</b>
         <b>Y: {caretRect?.y}</b>
       </HStack>
-      <HStack gap={"4"}>
-        Edited:
-        <ul>
-          {findEdits(editorState.redigertBrev.blocks).map((litIndex, index) => (
-            <li key={index}>
-              {Object.entries(litIndex).map(([key, value]) => (
-                <div key={key}>
-                  <b>{key}: </b>
-                  <span>{value}</span>
-                </div>
-              ))}
-            </li>
-          ))}
-        </ul>
-      </HStack>
     </div>
   );
 }
