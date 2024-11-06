@@ -23,6 +23,8 @@ import {
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { ElementTags, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
+import { literal } from "../../../../test/modules/LetterEditor/utils";
+
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
  * If y-coord is exactly at the edge it sometimes misses. To avoid that we move the point a little bit away from the line.
@@ -98,15 +100,28 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   );
 }
 
-function hasFocus(focus: Focus, literalIndex: LiteralIndex) {
-  const basicMatch = focus.blockIndex === literalIndex.blockIndex && focus.contentIndex === literalIndex.contentIndex;
-  if ("itemIndex" in literalIndex && "itemIndex" in focus) {
-    const itemMatch =
-      focus.itemIndex === literalIndex.itemIndex && focus.itemContentIndex === literalIndex.itemContentIndex;
-    return itemMatch && basicMatch;
+const isFocusingItemContentIndex = (focus: Focus) => {
+  return "itemIndex" in focus && "itemContentIndex" in focus;
+};
+
+const isFocusingBlockContentIndex = (focus: Focus) => {
+  return !isFocusingItemContentIndex(focus);
+};
+
+const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
+  if (isFocusingBlockContentIndex(focus) && isFocusingBlockContentIndex(literalIndex)) {
+    return focus.blockIndex === literalIndex.blockIndex && focus.contentIndex === literalIndex.contentIndex;
+  } else if (isFocusingItemContentIndex(focus) && isFocusingItemContentIndex(literalIndex)) {
+    return (
+      focus.blockIndex === literalIndex.blockIndex &&
+      focus.contentIndex === literalIndex.contentIndex &&
+      focus.itemIndex === literalIndex.itemIndex &&
+      focus.itemContentIndex === literalIndex.itemContentIndex
+    );
   }
-  return basicMatch;
-}
+
+  return false;
+};
 
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);

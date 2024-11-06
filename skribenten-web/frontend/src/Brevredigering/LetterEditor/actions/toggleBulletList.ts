@@ -1,5 +1,6 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
+import { isEqual } from "lodash";
 
 import type { Content, Item, ItemList, TextContent } from "~/types/brevbakerTypes";
 
@@ -104,22 +105,46 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
     block.content,
     sentence[0].originalIndex,
     sentence.at(-1)!.originalIndex,
-    {
-      type: "ITEM_LIST",
-      id: null,
-      deletedItems: [],
-      items: [
-        {
-          id: null,
-          content: sentence.map((r) => r.element),
-        },
-      ],
-    },
+    newItemList({ id: null, content: sentence.map((r) => r.element) }),
   );
 
   const mergedItemLists = mergeItemLists(replacedWithItemList);
 
+  /**
+   * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass-
+   */
+
+  //asserter typen til ItemList fordi at hvis den er udnefined, så er det en programmeringsfeil. Elementet våres skal finnes inni
+  const theItemListThatHasMySentence = mergedItemLists.find(
+    (content) =>
+      content.type === "ITEM_LIST" &&
+      content.items.some((item) =>
+        isEqual(
+          item.content,
+          sentence.map((r) => r.element),
+        ),
+      ),
+  ) as ItemList;
+
+  const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((item) =>
+    isEqual(
+      item.content,
+      sentence.map((r) => r.element),
+    ),
+  );
+
+  const newContentIndex = mergedItemLists.indexOf(theItemListThatHasMySentence);
+  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
+  //-------------------
+
   draft.redigertBrev.blocks[literalIndex.blockIndex].content = mergedItemLists;
+  draft.focus = {
+    blockIndex: literalIndex.blockIndex,
+    contentIndex: newContentIndex,
+    itemIndex: theIndexOfMySentenceInItemList,
+    itemContentIndex: newItemContentIndex,
+    cursorPosition: draft.focus.cursorPosition,
+  };
 };
 
 const toggleBulletListOff = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex) => {

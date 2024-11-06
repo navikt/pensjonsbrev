@@ -248,6 +248,22 @@ function RedigerBrev({
             deletedContent: [],
             type: "PARAGRAPH",
           },
+          {
+            id: 173_660_319,
+            editable: true,
+            content: [
+              newItemList(
+                newItem("Punkt 1 - avsnitt etter punktliste"),
+                newItem("Punkt 2 - avsnitt etter punktliste"),
+                newItem("Punkt 3 - avsnitt etter punktliste"),
+              ),
+              newLiteral("Avsnitt etter punktliste i samme block"),
+              newVariable({ text: " og en variable" }),
+              newLiteral("slutt text"),
+            ],
+            deletedContent: [],
+            type: "PARAGRAPH",
+          },
         ],
       }),
       saksbehandlerValg: {
