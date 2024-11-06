@@ -1,0 +1,4 @@
+package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering
+
+class OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfall {
+}
