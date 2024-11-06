@@ -13,6 +13,7 @@ object Constants {
     const val DITT_NAV = "$NAV_URL/dittnav"
     const val ETTEROPPGJOR_URL = "$NAV_URL/etteroppgjor"
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
+    const val FORSOERGINGSTILLEGG_URL = "$NAV_URL/forsorgingstillegg"
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
     const val GJENLEVENDEPENSJON_URL = "$NAV_URL/gjenlevendepensjon"
     const val GJENLEVENDETILLEGG_URL = "$NAV_URL/gjenlevendetillegg"

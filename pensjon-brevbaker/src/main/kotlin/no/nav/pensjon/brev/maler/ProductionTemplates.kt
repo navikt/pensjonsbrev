@@ -30,6 +30,7 @@ object ProductionTemplates {
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
+        AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
         EndretBarnetilleggUfoerertrygd,
         EndretUfoeretrygdPGAInntektLegacy,
         EtteroppgjoerEtterbetalingAutoLegacy,
