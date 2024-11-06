@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.OmsorgLegacyData
 
-data class PEDto(
+data class OmsorgLegacyDataDto(
     override val saksbehandlerValg: EmptyBrevdata,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptyBrevdata, PEDto.PesysData> {
-    data class PesysData(val pe: PE) : BrevbakerBrevdata
+) : RedigerbarBrevdata<EmptyBrevdata, OmsorgLegacyDataDto.PesysData> {
+    data class PesysData(val omsorgLegacyData: OmsorgLegacyData) : BrevbakerBrevdata
 }

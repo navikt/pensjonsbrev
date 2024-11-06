@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmsorgLegacyDataDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmsorgLegacyDataDtoSelectors.PesysDataSelectors.omsorgLegacyData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmsorgLegacyDataDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -25,7 +25,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTemplate<PEDto> {
+object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTemplate<OmsorgLegacyDataDto> {
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.OMSORGSOPPTJENING
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.OMSORG)
@@ -35,7 +35,7 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = PEDto::class,
+        letterDataType = OmsorgLegacyDataDto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Pensjonsopptjening for omsorgsarbeid (omsorgsopptjening) - orientering om godskriving",
@@ -57,9 +57,9 @@ object PensjonsopptjeningForOmsorgsArbeidOrienteringOmGodskriving : RedigerbarTe
 
             paragraph {
                 textExpr(
-                    Bokmal to "Vi har registrert at du utfører omsorgsarbeid for barn med rett til forhøyet hjelpestønad etter sats 3 eller 4. Du har derfor fått godskrevet pensjonsopptjening for omsorgsarbeid for ".expr() + pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
+                    Bokmal to "Vi har registrert at du utfører omsorgsarbeid for barn med rett til forhøyet hjelpestønad etter sats 3 eller 4. Du har derfor fått godskrevet pensjonsopptjening for omsorgsarbeid for ".expr() + pesysData.omsorgLegacyData.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
                         .format(LocalizedFormatter.AarFormat) + ".",
-                    English to "We have noted that you carry out care work with children and are entitled to the higher auxiliary benefit at rate 3 or 4. You have therefore been credited with acquired rights for care work in ".expr() + pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
+                    English to "We have noted that you carry out care work with children and are entitled to the higher auxiliary benefit at rate 3 or 4. You have therefore been credited with acquired rights for care work in ".expr() + pesysData.omsorgLegacyData.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()
                         .format(LocalizedFormatter.AarFormat) + ".",
                 )
             }

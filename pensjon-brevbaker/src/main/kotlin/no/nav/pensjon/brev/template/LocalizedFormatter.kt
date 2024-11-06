@@ -44,9 +44,9 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun stableHashCode(): Int = "TelefonnummerFormat".hashCode()
         override fun apply(first: Telefonnummer, second: Language): String = first.format()
     }
-    object AarFormat : LocalizedFormatter<List<Year>>() {
+    object AarFormat : LocalizedFormatter<Collection<Year>>() {
         override fun stableHashCode(): Int = "AarFormat".hashCode()
-        override fun apply(first: List<Year>, second: Language): String = formaterListe(first.map { it.value.toString() }, second)
+        override fun apply(first: Collection<Year>, second: Language): String = formaterListe(first.map { it.value.toString() }, second)
     }
 
     object CollectionFormat : LocalizedFormatter<Collection<String>>() {

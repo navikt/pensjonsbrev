@@ -3,12 +3,12 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PEDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmsorgLegacyDataDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmsorgLegacyDataDtoSelectors.PesysDataSelectors.omsorgLegacyData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmsorgLegacyDataDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravmottatdato
+import no.nav.pensjon.brev.maler.legacy.omsorg_vedtaksdata_kravhode_kravmottatdato
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -24,7 +24,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object GodskrivingOmsorgspoengFoer1991 : RedigerbarTemplate<PEDto> {
+object GodskrivingOmsorgspoengFoer1991 : RedigerbarTemplate<OmsorgLegacyDataDto> {
 
     // PE_IY_05_201
     override val kode = Brevkode.Redigerbar.GODSKRIVING_AV_PENSJONSOPPTJENING_FOR_OMSORG_BARN_FOER_1991
@@ -34,7 +34,7 @@ object GodskrivingOmsorgspoengFoer1991 : RedigerbarTemplate<PEDto> {
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = PEDto::class,
+        letterDataType = OmsorgLegacyDataDto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Godskriving av pensjonsopptjening (omsorgsopptjening) fordi du har omsorg for små barn",
@@ -57,9 +57,9 @@ object GodskrivingOmsorgspoengFoer1991 : RedigerbarTemplate<PEDto> {
 
             paragraph {
                 textExpr(
-                    Bokmal to "NAV har innvilget din søknad mottatt ".expr() + pesysData.pe.vedtaksdata_kravhode_kravmottatdato()
+                    Bokmal to "NAV har innvilget din søknad mottatt ".expr() + pesysData.omsorgLegacyData.omsorg_vedtaksdata_kravhode_kravmottatdato()
                         .format() + " om pensjonsopptjening for omsorg for barn under sju år før 1992.",
-                    English to "NAV has granted your application received on ".expr() + pesysData.pe.vedtaksdata_kravhode_kravmottatdato()
+                    English to "NAV has granted your application received on ".expr() + pesysData.omsorgLegacyData.omsorg_vedtaksdata_kravhode_kravmottatdato()
                         .format() + " for acquired rights for the care of children below the age of seven prior to 1992.",
                 )
             }
@@ -84,7 +84,7 @@ object GodskrivingOmsorgspoengFoer1991 : RedigerbarTemplate<PEDto> {
                 )
                 list {
                     //[PE_IY_05_TB1125,TB1131]
-                    forEach(pesysData.pe.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()) {
+                    forEach(pesysData.omsorgLegacyData.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar()) {
                         item {
                             textExpr(
                                 Bokmal to it.format(),
