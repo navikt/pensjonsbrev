@@ -32,7 +32,7 @@ object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTempla
             text(
                 Bokmal to "Du får ikke lenger forsørgingstillegg fra 1. januar 2025",
                 Nynorsk to "Du får ikkje lenger forsørgingstillegg frå 1. januar 2025",
-                English to "You will no longer receive dependant supplement from 1 January 2025"
+                English to "You will no longer receive a dependant supplement from 1 January 2025"
             )
         }
         outline {
@@ -40,7 +40,7 @@ object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTempla
                 text(
                     Bokmal to "Forhåndsvarsel",
                     Nynorsk to "Førehandsvarsel",
-                    English to "Advance notice"
+                    English to "Notice"
                 )
             }
             paragraph {
@@ -54,7 +54,7 @@ object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTempla
                 text(
                     Bokmal to "Fra januar 2025 vil ingen lenger få utbetalt forsørgingstillegg. Dette gjelder både barnetillegg og ektefelletillegg. Dette følger av folketrygdloven § 3- 24 tredje avsnitt og § 3-25 andre avsnitt.",
                     Nynorsk to "Frå januar 2025 vil ingen lenger få utbetalt forsørgingstillegg. Dette gjeld både barnetillegg og ektefelletillegg. Dette følger av folketrygdlova § 3- 24 tredje avsnitt og § 3-25 andre avsnitt.",
-                    English to "From January 2025, no one will receive any more dependant supplements. This applies to both child supplements and spouse supplements. This follows from sections 3-24, third paragraph, and 3-25, second paragraph of the National Insurance Act."
+                    English to "From January 2025, no one will no longer be paid a dependant supplement. This applies to both child supplements and spouse supplements. This follows from sections 3-24, third paragraph, and 3-25, second paragraph of the National Insurance Act."
                 )
             }
 
@@ -69,14 +69,14 @@ object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTempla
                 text(
                     Bokmal to "I desember 2024 får du et vedtak fra oss. I vedtaket ser du hva du får i alderspensjon før skatt fra 2025.",
                     Nynorsk to "I desember 2024 får du eit vedtak frå oss. I vedtaket ser du kva du får i alderspensjon før skatt frå januar 2025.",
-                    English to "In December 2024, you will receive a written decision from us. The decision will show you what your pre-tax pension will be from January 2025."
+                    English to "In December 2024, you will receive a written decision from us. In the decision, you can see what you will receive in retirement pension before tax from January 2025."
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Du har for tiden ikke utbetalt forsørgingstillegg fordi den samlede inntekten er for høy. Endringen fra 1. januar 2025 vil derfor ikke ha noen innvirkning på utbetalingen din.",
                     Nynorsk to "Du har for tida ikkje utbetalt forsørgingstillegg fordi den samla inntekta er for høg. Endringa frå 1. januar 2025 vil derfor ikkje ha noko å seie for utbetalinga di.",
-                    English to "You will no longer receive a dependant supplement. The rest of your pension will not be affected by this."
+                    English to "At present the supplement is not paid out to you, as your total income is too high. Therefore, the change from 1 January 2025 will not have any impact on your payout."
                 )
             }
             paragraph {
