@@ -229,41 +229,64 @@ function RedigerBrev({
             deletedContent: [],
             type: "PARAGRAPH",
           },
-          {
-            id: 822_540_105,
-            editable: true,
-            content: [
-              newLiteral("Dette er et avsnitt"),
-              newVariable({ text: " og en variable" }),
-              newLiteral(" med en punktliste i samme blocken"),
-              newItemList(newItem("Punkt 1"), newItem("Punkt 2"), newItem("Punkt 3")),
-            ],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-          {
-            id: 173_660_319,
-            editable: true,
-            content: [newItemList(newItem("Punkt 1"), newItem("Punkt 2"), newItem("Punkt 3"))],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-          {
-            id: 173_660_319,
-            editable: true,
-            content: [
-              newItemList(
-                newItem("Punkt 1 - avsnitt etter punktliste"),
-                newItem("Punkt 2 - avsnitt etter punktliste"),
-                newItem("Punkt 3 - avsnitt etter punktliste"),
-              ),
-              newLiteral("Avsnitt etter punktliste i samme block"),
-              newVariable({ text: " og en variable" }),
-              newLiteral("slutt text"),
-            ],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
+          // {
+          //   id: 822_540_105,
+          //   editable: true,
+          //   content: [
+          //     newLiteral("Dette er et avsnitt"),
+          //     newVariable({ text: " og en variable" }),
+          //     newLiteral(" med en punktliste i samme blocken"),
+          //     newItemList(newItem("Punkt 1"), newItem("Punkt 2"), newItem("Punkt 3")),
+          //   ],
+          //   deletedContent: [],
+          //   type: "PARAGRAPH",
+          // },
+          // {
+          //   id: 173_660_319,
+          //   editable: true,
+          //   content: [
+          //     newItemList(newItem("Kun punktliste 1"), newItem("kun punktliste 2"), newItem("kun punktliste 3")),
+          //   ],
+          //   deletedContent: [],
+          //   type: "PARAGRAPH",
+          // },
+          // {
+          //   id: 173_660_319,
+          //   editable: true,
+          //   content: [
+          //     newItemList(
+          //       newItem("Punkt 1 - avsnitt etter punktliste"),
+          //       newItem("Punkt 2 - avsnitt etter punktliste"),
+          //       newItem("Punkt 3 - avsnitt etter punktliste"),
+          //     ),
+          //     newLiteral("Avsnitt etter punktliste i samme block"),
+          //     newVariable({ text: " og en variable" }),
+          //     newLiteral("slutt text"),
+          //   ],
+          //   deletedContent: [],
+          //   type: "PARAGRAPH",
+          // },
+          // {
+          //   id: 173_660_319,
+          //   editable: true,
+          //   content: [newItemList(newItem("itemList som skal merges på starten"))],
+          //   deletedContent: [],
+          //   type: "PARAGRAPH",
+          // },
+          // {
+          //   id: 173_660_319,
+          //   editable: true,
+          //   content: [newLiteral("Skal merges i midten")],
+          //   deletedContent: [],
+          //   type: "PARAGRAPH",
+          // },
+          // {
+          //   id: 173_660_319,
+          //   editable: true,
+          //   content: [newItemList(newItem("itemList som skal merges på slutten"))],
+          //   deletedContent: [],
+          //   type: "PARAGRAPH",
+          // },
         ],
       }),
       saksbehandlerValg: {
@@ -316,14 +339,14 @@ function RedigerBrev({
     refetchInterval: 10_000,
   });*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     const timoutId = setTimeout(() => {
       if (editorState.isDirty) {
         redigertBrevMutation.mutate({ redigertBrev: editorState.redigertBrev });
       }
     }, 5000);
     return () => clearTimeout(timoutId);
-  }, [editorState.isDirty, editorState.redigertBrev, redigertBrevMutation]);
+  }, [editorState.isDirty, editorState.redigertBrev, redigertBrevMutation]);*/
 
   useEffect(() => {
     if (editorState.redigertBrevHash !== brev.redigertBrevHash) {
