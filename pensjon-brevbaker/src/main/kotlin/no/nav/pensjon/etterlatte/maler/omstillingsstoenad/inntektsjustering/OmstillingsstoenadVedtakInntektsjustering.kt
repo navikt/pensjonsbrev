@@ -43,7 +43,10 @@ object OmstillingsstoenadVedtakInntektsjustering : EtterlatteTemplate<Omstilling
                 )
             }
 
-            // TODO: implementere brev
+            outline {
+                // TODO: implementere brev
+            }
+
         }
 
     }
