@@ -19,6 +19,7 @@ data class PE(
         val fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt: Boolean,
         val harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg: Boolean,
         val harOpptjeningUTMedFoerstegangstjenesteOgOmsorg: Boolean,
+        val harOpptjeningUTMedOmsorg: Boolean,
         val harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste: Boolean,
         val pe_sivilstand_ektefelle_partner_samboer_bormed_ut: String,
         val pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en: String,
@@ -53,5 +54,6 @@ data class PE(
         val pe_ut_virkningstidpunktarminus1ar: Int,
         val pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08: Kroner,
         val pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv: Int,
+        val harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste: Boolean,
         )
 }

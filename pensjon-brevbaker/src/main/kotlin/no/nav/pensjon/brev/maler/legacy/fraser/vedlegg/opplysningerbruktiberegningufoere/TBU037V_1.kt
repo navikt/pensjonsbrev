@@ -58,28 +58,28 @@ data class TBU037V_1(
 
                 paragraph {
                     table(header = {
-                        column {
+                        column(columnSpan = 1) {
                             text(
                                 Bokmal to "År",
                                 Nynorsk to "År",
                                 English to "Year",
                             )
                         }
-                        column {
+                        column(columnSpan = 2) {
                             text(
                                 Bokmal to "Pensjonsgivende inntekt",
                                 Nynorsk to "Pensjonsgivande inntekt",
                                 English to "Pensionable income",
                             )
                         }
-                        column {
+                        column(columnSpan = 2) {
                             text(
                                 Bokmal to "Inntekt justert med folketrygdens grunnbeløp",
                                 Nynorsk to "Inntekt justert med grunnbeløpet i folketrygda",
                                 English to "Income adjusted in accordance with the National Insurance basic amount",
                             )
                         }
-                        column {
+                        column(columnSpan = 2) {
                             text(
                                 Bokmal to "Merknad",
                                 Nynorsk to "Merknad",

@@ -37,13 +37,13 @@ data class TBU037V_2(
                     English to "The emphasized income has been selected, because this will yield a higher payout for you.",
                 )
             }
-            //Failed to convert with error: Exstream logikk har innhold før if. Tolkes ikke.
 
             //Integer i i = 1
             // FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar)
             //      IF( FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,i) <> 0  AND FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,i) = true ) THEN      INCLUDE ENDIF
             //      NEXT
 
+            // manuellt konvertert
             //[TBU037V_2]
 
             showIf(pe.harOpptjeningUTMedFoerstegangstjenesteOgOmsorg()) {
@@ -55,15 +55,12 @@ data class TBU037V_2(
                     )
                 }
             }
-            //Failed to convert with error: Exstream logikk har innhold før if. Tolkes ikke.
-
             //Integer i i = 1
             // FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar)
             //      IF(  FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,i) = true AND FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,i) = 0  ) THEN      INCLUDE ENDIF NEXT
 
-            // TODO denne sjekker om du har år ett år med omsorg og ikke førstegangstjeneste.
             //[TBU037V_2]
-
+            // manuellt konvertert
             showIf(pe.harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste()) {
                 paragraph {
                     text(
@@ -73,11 +70,11 @@ data class TBU037V_2(
                     )
                 }
             }
-            //Failed to convert with error: Exstream logikk har innhold før if. Tolkes ikke.
 
             //Integer i i = 1 FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste)  IF(  FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,i) = false AND FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,i) <> 0    ) THEN      INCLUDE ENDIF NEXT
             // har ett år med førstegangstjeneste og ikke omsorg:
             //[TBU037V_2]
+            // manuellt konvertert
 
             showIf(pe.harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg()) {
                 paragraph {

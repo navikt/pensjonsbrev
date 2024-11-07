@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.harOpptjeningUTMedOmsorg
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GRUNNBELOEP_URL
 import no.nav.pensjon.brev.maler.legacy.FUNKSJON_Month
 import no.nav.pensjon.brev.maler.legacy.FUNKSJON_Year
+import no.nav.pensjon.brev.maler.legacy.harOpptjeningUTMedOmsorg
+import no.nav.pensjon.brev.maler.legacy.harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.ut_forstegangstjenesteikkenull
 import no.nav.pensjon.brev.maler.legacy.ut_sisteopptjeningarlikuforetidspunkt
@@ -59,7 +62,9 @@ data class TBU011V_TBU016V(val pe: Expression<PE>): OutlinePhrase<LangBokmalNyno
             }
 
             //IF( ( Year(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforetidspunkt(1))=Year(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Virkningstidpunkt(1))  AND Month(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforetidspunkt(1)) < 06 AND Month(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Virkningstidpunkt(1)) < 06 ) AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd" )THEN INCLUDE ENDIF
-            showIf(((FUNKSJON_Year(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()).equalTo(FUNKSJON_Year(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt())) and FUNKSJON_Month(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()).lessThan(6) and FUNKSJON_Month(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt()).lessThan(6)) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd"))){
+            showIf(((FUNKSJON_Year(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()).equalTo(FUNKSJON_Year(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt()))
+                    and FUNKSJON_Month(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()).lessThan(6) and FUNKSJON_Month(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt()).lessThan(6))
+                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd"))){
                 //[TBU011V-TBU016V]
 
                 paragraph {
@@ -107,15 +112,23 @@ data class TBU011V_TBU016V(val pe: Expression<PE>): OutlinePhrase<LangBokmalNyno
                         Nynorsk to "Når vi bereknar uføretrygda di, bruker vi som hovudregel gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Du har vore i militæret, eller hatt sivil førstegongsteneste. Inntekt i denne perioden skal utgjere minst tre gonger gjennomsnittleg G (grunnbeløpet i folketrygda). ",
                         English to "In calculating your disability benefit, calculations are, as a main rule, based on your average income for the best three of the last five years prior to the onset of your disability. You have served in the military, or completed your initial service as a civilian. Income during this period must total no less than three times the average G (National Insurance basic amount). ",
                     )
-                    //Failed to convert with error: Unexpected character: - at line 6 :
 
-                    //Integer i FOR i = 2 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Ar) 	IF( 		FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste) <> 0 		AND 		FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Brukt,i-1) = true  	) THEN      		INCLUDE 	ENDIF NEXT
+                    //Integer i
+                    // FOR i = 2 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Ar)
+                        // IF( 		FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste) <> 0
+                            // AND 		FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Brukt,i-1) = true  	)
+                                // THEN INCLUDE
+                            // ENDIF
+                    // NEXT
 
-                    text (
-                        Bokmal to "Du hadde en høyere inntekt i året før du avtjente førstegangstjeneste, og vi bruker derfor denne inntekten i beregningen.",
-                        Nynorsk to "Du hadde ei høgare inntekt i året før du avtente førstegongstenesta, og vi bruker derfor denne inntekta i berekninga.",
-                        English to "Your income was higher in the year prior to your initial service, and we have thus applied this incomed in the calculations.",
-                    )
+                    // Manuellt konvertert
+                    showIf(pe.harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste()){
+                        text (
+                            Bokmal to "Du hadde en høyere inntekt i året før du avtjente førstegangstjeneste, og vi bruker derfor denne inntekten i beregningen.",
+                            Nynorsk to "Du hadde ei høgare inntekt i året før du avtente førstegongstenesta, og vi bruker derfor denne inntekta i berekninga.",
+                            English to "Your income was higher in the year prior to your initial service, and we have thus applied this incomed in the calculations.",
+                        )
+                    }
                 }
             }
 
@@ -131,31 +144,30 @@ data class TBU011V_TBU016V(val pe: Expression<PE>): OutlinePhrase<LangBokmalNyno
                     )
                 }
             }
-            //Failed to convert with error: Exstream logikk har innhold før if. Tolkes ikke.
 
             //Integer i  IF( 	PE_UT_SisteOpptjeningArLikUforetidspunkt() 	AND 	PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd") 	THEN 	 	FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Ar) 		IF(                                                 FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar, i) = TRUE                                 ) 		THEN 			INCLUDE 		ENDIF 	NEXT ENDIF
-
             //[TBU011V-TBU016V]
 
-            paragraph {
-                text (
-                    Bokmal to "Når vi beregner uføretrygden din, bruker vi som hovedregel gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Du har hatt pensjonsopptjening på grunnlag av omsorgsarbeid i ett eller flere av disse årene. Vi bruker disse årene i beregningen, hvis dette er en fordel for deg.",
-                    Nynorsk to "Når vi bereknar uføretrygda di, bruker vi som hovudregel gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Du har hatt pensjonsopptening på grunnlag av omsorgsarbeid i eitt eller fleire av desse åra. Vi bruker desse åra i berekninga dersom dette er ein fordel for deg.",
-                    English to "In calculating your disability benefit, calculations are, as a main rule, based on your average income for the best three of the last five years prior to the onset of your disability. You have earned pension points due to care work during one or more of these years. We will include these years in the calculation, if this is to your advantage.",
-                )
-            }
-            //Failed to convert with error: Exstream logikk har innhold før if. Tolkes ikke.
+            // Manuellt konvertert
+            showIf(pe.ut_sisteopptjeningarlikuforetidspunkt()
+                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")
+                    and pe.harOpptjeningUTMedOmsorg()
+            ){
+                paragraph {
+                    text (
+                        Bokmal to "Når vi beregner uføretrygden din, bruker vi som hovedregel gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Du har hatt pensjonsopptjening på grunnlag av omsorgsarbeid i ett eller flere av disse årene. Vi bruker disse årene i beregningen, hvis dette er en fordel for deg.",
+                        Nynorsk to "Når vi bereknar uføretrygda di, bruker vi som hovudregel gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Du har hatt pensjonsopptening på grunnlag av omsorgsarbeid i eitt eller fleire av desse åra. Vi bruker desse åra i berekninga dersom dette er ein fordel for deg.",
+                        English to "In calculating your disability benefit, calculations are, as a main rule, based on your average income for the best three of the last five years prior to the onset of your disability. You have earned pension points due to care work during one or more of these years. We will include these years in the calculation, if this is to your advantage.",
+                    )
+                }
 
-            //Integer i  IF( 	PE_UT_SisteOpptjeningArLikUforetidspunkt() 	AND 	PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd") 	THEN 	 	FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Ar) 		IF(                                                 FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar, i) = TRUE                                 ) 		THEN 			INCLUDE 		ENDIF 	NEXT ENDIF
-
-            //[TBU011V-TBU016V]
-
-            paragraph {
-                text (
-                    Bokmal to "Bare inntekt opptil seks ganger folketrygdens grunnbeløp (G) regnes med. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på $GRUNNBELOEP_URL.",
-                    Nynorsk to "Berre inntekt opptil seks gonger grunnbeløpet (G) i folketrygda blir rekna med. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på $GRUNNBELOEP_URL.",
-                    English to "The calculations only include income up to six times the National Insurance basic amount (G). The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at $GRUNNBELOEP_URL.",
-                )
+                paragraph {
+                    text (
+                        Bokmal to "Bare inntekt opptil seks ganger folketrygdens grunnbeløp (G) regnes med. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på $GRUNNBELOEP_URL.",
+                        Nynorsk to "Berre inntekt opptil seks gonger grunnbeløpet (G) i folketrygda blir rekna med. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på $GRUNNBELOEP_URL.",
+                        English to "The calculations only include income up to six times the National Insurance basic amount (G). The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at $GRUNNBELOEP_URL.",
+                    )
+                }
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos") THEN      INCLUDE ENDIF

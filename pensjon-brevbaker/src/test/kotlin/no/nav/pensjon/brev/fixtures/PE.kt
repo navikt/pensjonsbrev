@@ -87,6 +87,8 @@ fun createPE() =
             pe_ut_sum_fattnorge_framtidigttnorge_div_12_avdod = 12,
             pe_ut_vilkargjelderpersonalder = 67,
             pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv = 1,
+            harOpptjeningUTMedOmsorg = false,
+            harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste = false,
         ),
         pebrevkode = "PE_UT_06_300",
         personsak = PersonSak(PSfnr("01019878910"), LocalDate.of(1998, 1, 1))
