@@ -8,7 +8,7 @@ object TBU1201_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU1201NN, TBU1201, TBU1201EN]
 
-		paragraph {
+		title1 {
 			text (
 				Bokmal to "Skal du kombinere uføretrygd og inntekt?",
 				Nynorsk to "Skal du kombinere uføretrygd og inntekt?",

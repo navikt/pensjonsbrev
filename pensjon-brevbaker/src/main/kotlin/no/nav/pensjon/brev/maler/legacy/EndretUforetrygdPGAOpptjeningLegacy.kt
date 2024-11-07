@@ -160,15 +160,23 @@ override val kode = Brevkode.AutoBrev.UT_ENDRET_PGA_OPPTJENING
                 text (
                     Bokmal to "Uføretrygden blir beregnet ut fra inntektsårene før du ble ufør. Vi beregner uføretrygden på nytt dersom du får endringer i:",
                 )
-                text (
-                    Bokmal to "Pensjonsgivende inntekt",
-                )
-                text (
-                    Bokmal to "Omsorgspoeng",
-                )
-                text (
-                    Bokmal to "År med inntekt i utlandet",
-                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "Pensjonsgivende inntekt",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Omsorgspoeng",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "År med inntekt i utlandet",
+                        )
+                    }
+                }
             }
 
             //PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true
@@ -182,7 +190,6 @@ override val kode = Brevkode.AutoBrev.UT_ENDRET_PGA_OPPTJENING
                         )
                     }
                 }
-
             }
 
             //PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = true
@@ -196,7 +203,6 @@ override val kode = Brevkode.AutoBrev.UT_ENDRET_PGA_OPPTJENING
                         )
                     }
                 }
-
             }
             //[TBU2227]
 

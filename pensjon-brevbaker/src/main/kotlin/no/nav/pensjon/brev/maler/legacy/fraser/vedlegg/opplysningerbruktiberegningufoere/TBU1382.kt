@@ -31,11 +31,8 @@ data class TBU1382(
                     English to "The period of national insurance coverage for the decedent in other EEA countries has been establsihed on the basis of the following periods:",
                 )
             }
-
             includePhrase(TrygdetidsListeEOSTabell(pe.grunnlag_persongrunnlagavdod_trygdetidsgrunnlageos_trygdetidsgrunnlageos()))
         }
-
-
     }
 
 }

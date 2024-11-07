@@ -53,7 +53,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt"  AND PE_pebrevkode <> "PE_UT_07_100"  AND PE_pebrevkode <> "PE_UT_05_100"  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd"  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg = true  AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109"  AND PE_pebrevkode <> "PE_UT_04_500" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))) THEN      INCLUDE ENDIF
         showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg() and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))))){
-            //[TBUxx1V]
 
             ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) { virkFom ->
                 title1 {
@@ -73,20 +72,19 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
             }
 
             paragraph {
-                table(                header = {
-                    column(4) {
-                        text(
-                            Bokmal to "Opplysning",
-                            Nynorsk to "Opplysning",
-                            English to "Information",
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                        )
+                table(
+                    header = {
+                        column(4) {
+                            text(
+                                Bokmal to "Opplysning",
+                                Nynorsk to "Opplysning",
+                                English to "Information",
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            )
+                        }
+                        column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
                     }
-                    column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
-                }
-                ){
-
-                    //[TBUxx1V]
+                ) {
                     row {
                         cell {
                             text(
@@ -106,8 +104,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(IsNull(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Uforetidspunkt) = false) THEN      INCLUDE ENDIF
                     ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_uforetidspunkt()){uforetidspunkt ->
-                        //[TBUxx1V]
-
                         row {
                             cell {
                                 text(
@@ -125,7 +121,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                             }
                         }
                     }
-                    //[TBUxx1V]
 
                     row {
                         cell {
@@ -146,7 +141,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                             )
                         }
                     }
-                    //[TBUxx1V]
 
                     row {
                         cell {
@@ -167,7 +161,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(PE_Grunnlag_PersongrunnlagAvdod_BrukerFlyktning = true) THEN      INCLUDE ENDIF
                     showIf((pe.grunnlag_persongrunnlagavdod_brukerflyktning())){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -189,7 +182,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(PE_Grunnlag_PersongrunnlagAvdod_BrukerFlyktning = false) THEN      INCLUDE ENDIF
                     showIf((not(pe.grunnlag_persongrunnlagavdod_brukerflyktning()))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -214,7 +206,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_MinsteYtelseBenyttetUngUfor = true) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_minsteytelsebenyttetungufor())){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -236,7 +227,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Yrkesskadegrad <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_yrkesskadegrad().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -261,7 +251,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodYrkesskadeArsbelop > 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodyrkesskadearsbelop().greaterThan(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -286,7 +275,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_InntektVedSkadetidspunktet > 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_inntektvedskadetidspunktet().greaterThan(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -311,7 +299,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_fattnorge().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -333,7 +320,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF( FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FaTTEOS, 1) <> 0 ) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_fatteos().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -355,7 +341,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTEOS,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_framtidigtteos().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -377,7 +362,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge,1) <> 0 AND FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FaTTEOS,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_fattnorge().notEqualTo(0) and pe.vedtaksdata_trygdetidavdod_fatteos().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -399,7 +383,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTTellerEOS,1) <> 0 AND FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTNevnerEOS,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_tttellereos().notEqualTo(0) and pe.vedtaksdata_trygdetidavdod_ttnevnereos().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -424,7 +407,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTNordisk,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_ttnordisk().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -444,7 +426,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                         }
                     }
 
-                    //[TBUxx1V]
                     showIf(pe.avdod_fremtidig_trygdetid_under_40_aar()){
                         row {
                             cell {
@@ -466,7 +447,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTTellerNordisk,1) <> 0 AND FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTNevnerNordisk,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_tttellernordisk().notEqualTo(0) and pe.vedtaksdata_trygdetidavdod_ttnevnernordisk().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -491,7 +471,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge,1) <> 0 AND FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FaTT_A10_netto,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_fattnorge().notEqualTo(0) and pe.vedtaksdata_trygdetidavdod_fatt_a10_netto().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -513,7 +492,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF( FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTBilateral, 1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_fattbilateral().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -535,7 +513,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FramtidigTTAvtaleland,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_framtidigttavtaleland().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -557,7 +534,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge,1) <> 0 AND FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTBilateral,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_fattnorge().notEqualTo(0) and pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_fattbilateral().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {
@@ -579,7 +555,6 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
 
                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_TTTellerBilateral,1) <> 0 AND FF_GetArrayElement_Float(PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_TTNevnerBilateral,1) <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_tttellerbilateral().notEqualTo(0) and pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_ttnevnerbilateral().notEqualTo(0))){
-                        //[TBUxx1V]
 
                         row {
                             cell {

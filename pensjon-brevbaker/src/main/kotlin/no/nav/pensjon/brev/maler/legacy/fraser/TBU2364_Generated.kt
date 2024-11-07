@@ -8,7 +8,7 @@ object TBU2364_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU2364NN, TBU2364, TBU2364EN]
 
-		paragraph {
+		title1 {
 			text (
 				Bokmal to "Du må melde fra om eventuell inntekt",
 				Nynorsk to "Du må melde frå om eventuell inntekt",

@@ -15,7 +15,7 @@ data class TBU039V_TBU044V_1(
     val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
+        title1 {
             text(
                 Bokmal to "Dette er trygdetiden din",
                 Nynorsk to "Dette er trygdetida di",
