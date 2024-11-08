@@ -1,6 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering
 
-import no.nav.pensjon.brev.maler.fraser.ufoer.HarDuSpoersmaalEtteroppgjoer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -16,15 +15,14 @@ import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser.Utbetaling
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.endringIUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.informasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.inntektsaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
@@ -39,7 +37,6 @@ data class OmstillingsstoenadInntektsjusteringVedtakDTO(
     val omsRettUtenTidsbegrensning: Boolean = false,
     val tidligereFamiliepleier: Boolean = false,
     val inntektsaar: Int,
-    val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean = false,
     val harUtbetaling: Boolean,
     val endringIUtbetaling: Boolean,
     val virkningstidspunkt: LocalDate,
@@ -68,43 +65,47 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<Omstilling
         ) {
             title {
                 textExpr(
-                    Bokmal to "Vedtak om omstillingsstønad fra 1. januar ".expr() + inntektsaar.format(),
-                    Nynorsk to "Vedtak om omstillingsstønad frå 1. januar  ".expr() + inntektsaar.format(),
-                    English to "Decision regarding adjustment allowance from January 1, ".expr() + inntektsaar.format(),
+                    Bokmal to "Utkast - Vedtak om omstillingsstønad fra 1. januar ".expr() + inntektsaar.format(),
+                    Nynorsk to "Utkast - Vedtak om omstillingsstønad frå 1. januar ".expr() + inntektsaar.format(),
+                    English to "Draft document - decision regarding adjustment allowance from January 1, ".expr() + inntektsaar.format(),
                 )
             }
             outline {
-
                 showIf(endringIUtbetaling){
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Omstillingsstønaden din er endret fra 1. januar ".expr() + inntektsaar.format() + ".",
+                            Nynorsk to "Omstillingsstønaden din er endra frå 1. januar  ".expr() + inntektsaar.format() + ".",
+                            English to "Your adjustment allowance has changed from January 1, ".expr() + inntektsaar.format() + ".",
+                        )
+                    }
+
+                    includePhrase(Utbetaling(harUtbetaling, beregning))
+                }.orShow {
                     val sisteUtbetalteBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
                     paragraph {
                         textExpr(
-                            Bokmal to "Omstillingsstønaden din er vurdert på nytt fra 1. januar ".expr() + inntektsaar.format() + "."
+                            Bokmal to "Omstillingsstønaden din er vurdert på nytt fra 1. januar ".expr() + inntektsaar.format() + ". "
                                     + ifElse(harUtbetaling, "Du får fortsatt ".expr()+ sisteUtbetalteBeloep +" kroner per måned før skatt.","Du får fortsatt ikke utbetalt stønad.".expr()),
-                            Nynorsk to "Omstillingsstønaden din er vurdert på nytt frå 1. januar  ".expr() + inntektsaar.format() + "."
+                            Nynorsk to "Omstillingsstønaden din er vurdert på nytt frå 1. januar  ".expr() + inntektsaar.format() + ". "
                                     + ifElse(harUtbetaling, "Du får framleis ".expr()+ sisteUtbetalteBeloep +" kroner per månad før skatt.", "Du får framleis ikkje utbetalt stønad.".expr()),
-                            English to "Your adjustment allowance has been reassessed from January 1, ".expr() + inntektsaar.format() + "."
+                            English to "Your adjustment allowance has been reassessed from January 1, ".expr() + inntektsaar.format() + ". "
                                     + ifElse(harUtbetaling, "You will continue to receive NOK ".expr()+ sisteUtbetalteBeloep +" per month before tax.", "You will still not be paid the allowance.".expr()),
                         )
                     }
+
                     paragraph {
                         text(
-                            Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget «Beregning av omstillingsstønad».",
-                            Nynorsk to "I vedlegget «Utrekning av omstillingsstønad» kan du sjå korleis vi har rekna ut omstillingsstønaden din.",
-                            English to "See how we have calculated your adjustment allowance in the attachment «Calculation of adjustment allowance».",
-                        )
-                    }
-                }.orShow {
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Vedtak om omstillingsstønad fra 1. januar ".expr() + inntektsaar.format(),
-                            Nynorsk to "Vedtak om omstillingsstønad frå 1. januar  ".expr() + inntektsaar.format(),
-                            English to "Decision regarding adjustment allowance from January 1, ".expr() + inntektsaar.format(),
+                            Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget «Beregning av " +
+                                    "omstillingsstønad».",
+                            Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» korleis vi har " +
+                                    "rekna ut omstillingsstønaden din.",
+                            English to
+                                    "You can see how we calculated your adjustment allowance in the attachment: Calculation of adjustment allowance.",
                         )
                     }
                 }
 
-                includePhrase(Utbetaling(harUtbetaling, beregning))
 
                 title2 {
                     text(
@@ -128,20 +129,14 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<Omstilling
                     ),
                 )
 
-                showIf(omsRettUtenTidsbegrensning.not()){
-                    includePhrase(
-                        OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(
-                            innvilgetMindreEnnFireMndEtterDoedsfall,
-                            tidligereFamiliepleier
-                        )
-                    )
+                showIf(omsRettUtenTidsbegrensning.not()) {
+                    includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt(tidligereFamiliepleier))
                 }
-
                 includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
                 includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
                 includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
                 includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
-                includePhrase(HarDuSpoersmaalEtteroppgjoer)
+                includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
 
             includeAttachment(

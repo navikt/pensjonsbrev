@@ -10,26 +10,11 @@ fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = OmstillingsstoenadInn
     beregning =
     OmstillingsstoenadBeregning(
         innhold = createPlaceholderForRedigerbartInnhold(),
-        virkningsdato = LocalDate.of(2024, 1, 1),
+        virkningsdato = LocalDate.of(2025, 1, 1),
         beregningsperioder =
         listOf(
             OmstillingsstoenadBeregningsperiode(
-                datoFOM = LocalDate.of(2024, 1, 1),
-                datoTOM = LocalDate.of(2024, 1, 31),
-                inntekt = Kroner(500000),
-                oppgittInntekt = Kroner(600000),
-                fratrekkInnAar = Kroner(100000),
-                innvilgaMaaneder = 12,
-                grunnbeloep = Kroner(118620),
-                utbetaltBeloep = Kroner(10000),
-                restanse = Kroner(300),
-                ytelseFoerAvkorting = Kroner(20000),
-                trygdetid = 40,
-                sanksjon = false,
-                institusjon = false,
-            ),
-            OmstillingsstoenadBeregningsperiode(
-                datoFOM = LocalDate.of(2024, 2, 1),
+                datoFOM = LocalDate.of(2025, 1, 1),
                 datoTOM = null,
                 inntekt = Kroner(500000),
                 oppgittInntekt = Kroner(600000),
@@ -46,7 +31,7 @@ fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = OmstillingsstoenadInn
         ),
         sisteBeregningsperiode =
         OmstillingsstoenadBeregningsperiode(
-            datoFOM = LocalDate.of(2024, 2, 1),
+            datoFOM = LocalDate.of(2025, 1, 1),
             datoTOM = null,
             inntekt = Kroner(500000),
             oppgittInntekt = Kroner(600000),
@@ -93,7 +78,6 @@ fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = OmstillingsstoenadInn
     omsRettUtenTidsbegrensning = false,
     tidligereFamiliepleier = false,
     inntektsaar = 2025,
-    innvilgetMindreEnnFireMndEtterDoedsfall = false,
     harUtbetaling = true,
     endringIUtbetaling = false,
     virkningstidspunkt = LocalDate.of(2024,1,1),
