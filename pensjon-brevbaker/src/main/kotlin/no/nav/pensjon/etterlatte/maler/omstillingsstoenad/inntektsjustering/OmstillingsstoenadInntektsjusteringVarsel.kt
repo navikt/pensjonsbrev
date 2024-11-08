@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Element
@@ -27,7 +26,6 @@ data class OmstillingsstoenadInntektsjusteringVarselDTO(
     val inntektsaar: Int,
     val bosattUtland: Boolean,
     val virkningstidspunkt: LocalDate,
-    val avsenderEnhet: NAVEnhet
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -81,7 +79,7 @@ object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<Omstilling
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Du kan se hvordan vi har beregnet omstillingsstønaden din i vedlegg til “Utkast – Vedtak om omstillingsstønad fra ".expr() + virkningstidspunkt.format() +".",
+                        Bokmal to "Du kan se hvordan vi har beregnet omstillingsstønaden din i vedlegg til «Utkast – Vedtak om omstillingsstønad fra ".expr() + virkningstidspunkt.format() +"».",
                         Nynorsk to "I vedlegget «Utkast – Vedtak om omstillingsstønad frå ".expr() + virkningstidspunkt.format() +"» kan du sjå korleis vi har rekna ut omstillingsstønaden din.",
                         English to "You can see how we have calculated your adjustment allowance in the attachment to «Draft document – Decision regarding adjustment allowance from ".expr() + virkningstidspunkt.format() +"».",
                     )
@@ -139,7 +137,7 @@ object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<Omstilling
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du kan også sende beskjed på nav.no/send-beskjed. Her får du ikke lagt ved dokumentasjon på inntekten din. /omstillingsstonad#har-inntekt.",
+                        Bokmal to "Du kan også sende beskjed på nav.no/send-beskjed. Her får du ikke lagt ved dokumentasjon på inntekten din.",
                         Nynorsk to "Alternativt kan du sende beskjed på nav.no/send-beskjed. Ver merksam på at du her ikkje kan leggje ved dokumentasjon på inntekta di.",
                         English to "You can also send as a message via: nav.no/send-beskjed. However you cannot attach documentation of your income using this method.",
                     )
@@ -172,15 +170,14 @@ object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<Omstilling
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Etter at vedtaket har tredd i kraft 1. januar <år>, har du seks ukers klagefrist på vedtaket. Du finner informasjon om hvordan du klager i «Utkast – Vedtak om omstillingsstønad fra ".expr() + virkningstidspunkt.format() + "».",
-                        Nynorsk to "Etter at vedtaket har tredd i kraft 1. januar <år>, har du seks veker på deg til å klage på vedtaket. Sjå «Utkast – Vedtak om omstillingsstønad frå ".expr() + virkningstidspunkt.format() + "» for meir informasjon om korleis du går fram for å klage.   ",
-                        English to "After the decision becomes effective on 1 January  <år>, you have a deadline of six weeks to appeal against the decision. You can find further information on how to submit an appeal in «Draft document – Decision regarding adjustment allowance from ".expr() + virkningstidspunkt.format() + "»",
+                        Bokmal to "Etter at vedtaket har tredd i kraft 1. januar ".expr() + inntektsaar.format() + ", har du seks ukers klagefrist på vedtaket. Du finner informasjon om hvordan du klager i «Utkast – Vedtak om omstillingsstønad fra " + virkningstidspunkt.format() + "».",
+                        Nynorsk to "Etter at vedtaket har tredd i kraft 1. januar ".expr() + inntektsaar.format() + ", har du seks veker på deg til å klage på vedtaket. Sjå «Utkast – Vedtak om omstillingsstønad frå " + virkningstidspunkt.format() + "» for meir informasjon om korleis du går fram for å klage.   ",
+                        English to "After the decision becomes effective on 1 January ".expr() + inntektsaar.format() + ", you have a deadline of six weeks to appeal against the decision. You can find further information on how to submit an appeal in «Draft document – Decision regarding adjustment allowance from " + virkningstidspunkt.format() + "»",
                     )
                 }
 
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
 
-                // TODO: legge til avsenderenhet
             }
         }
 
