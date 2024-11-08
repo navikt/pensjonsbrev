@@ -50,9 +50,9 @@ object OmstillingsstoenadVarselInntektsjustering : EtterlatteTemplate<Omstilling
         ) {
             title {
                 textExpr(
-                    Bokmal to "Forhåndsvarsel om vurdering av omstillingsstønad for ".expr() + inntektsaar.toString() ,
-                    Nynorsk to "Førehandsvarsel om vurdering av omstillingsstønad for ".expr() + inntektsaar.toString(),
-                    English to "Advance notice of assessment of adjustment allowance for ".expr() + inntektsaar.toString(),
+                    Bokmal to "Forhåndsvarsel om vurdering av omstillingsstønad for ".expr() + inntektsaar.format() ,
+                    Nynorsk to "Førehandsvarsel om vurdering av omstillingsstønad for ".expr() + inntektsaar.format(),
+                    English to "Advance notice of assessment of adjustment allowance for ".expr() + inntektsaar.format(),
                 )
             }
 
@@ -61,7 +61,7 @@ object OmstillingsstoenadVarselInntektsjustering : EtterlatteTemplate<Omstilling
                     textExpr(
                         Bokmal to "Dette er et forhåndsvarsel om at vi vil fatte et nytt vedtak om omstillingsstønad fra 1. januar ".expr() + inntektsaar.format()+", fordi omstillingsstønaden din skal beregnes ut fra inntekten du forventer å ha neste kalenderår.",
                         Nynorsk to "Dette er eit førehandsvarsel om at vi vil fatte eit nytt vedtak om omstillingsstønad frå 1. januar ".expr() + inntektsaar.format()+", då omstillingsstønaden din skal reknast ut med utgangspunkt i inntekta du forventar å ha neste kalenderår.",
-                        English to "This is an advance notice that we will be passing a new decision regarding adjustment allowance from 1 January ".expr() + inntektsaar.format()+", as your adjustment allowance will be calculated based on the income you are expecting in the next calendar year. \n",
+                        English to "This is an advance notice that we will be passing a new decision regarding adjustment allowance from 1 January ".expr() + inntektsaar.format()+", as your adjustment allowance will be calculated based on the income you are expecting in the next calendar year.",
                     )
                 }
 
