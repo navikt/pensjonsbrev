@@ -223,17 +223,13 @@ function RedigerBrev({
     },
   );
 
-  const onSubmit = (values: RedigerBrevSidemenyFormData) => {
-    return new Promise((resolve, reject) => {
-      saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
-        onError: (error) => reject(error),
-        onSuccess: () => {
-          signaturMutation.mutate(values.signatur, {
-            onError: (error) => reject(error),
-            onSuccess: () => resolve("success - saksbehandlerValgMutation & signaturMutation"),
-          });
-        },
-      });
+  const onSubmit = (values: RedigerBrevSidemenyFormData, onSuccess?: () => void) => {
+    saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
+      onSuccess: () => {
+        signaturMutation.mutate(values.signatur, {
+          onSuccess: onSuccess,
+        });
+      },
     });
   };
 
@@ -287,7 +283,7 @@ function RedigerBrev({
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
+      <form onSubmit={form.handleSubmit((v) => onSubmit(v))} ref={formRef}>
         <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
@@ -383,8 +379,8 @@ function RedigerBrev({
                   redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending
                 }
                 onClick={async () => {
-                  await onSubmit(form.getValues()).then(async () => {
-                    await redigertBrevMutation.mutateAsync(
+                  onSubmit(form.getValues(), () => {
+                    redigertBrevMutation.mutate(
                       { redigertBrev: editorState.redigertBrev, frigiReservasjon: true },
                       {
                         onSuccess: () => {
