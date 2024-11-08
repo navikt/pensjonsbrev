@@ -11,12 +11,10 @@ type Coordinates = {
  */
 export function getCursorOffset() {
   const selection = window.getSelection();
-
   if ((selection?.rangeCount ?? 0) > 0) {
     const range = selection?.getRangeAt(0);
     return range?.collapsed ? range.startOffset : -1;
   }
-
   return -1;
 }
 
