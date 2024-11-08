@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object ProductionTemplates {
     val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
+        AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
         AdhocGjenlevendEtter1970,
