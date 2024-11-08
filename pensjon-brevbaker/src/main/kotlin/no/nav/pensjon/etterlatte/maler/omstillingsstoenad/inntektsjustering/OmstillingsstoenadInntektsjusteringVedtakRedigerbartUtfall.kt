@@ -26,7 +26,7 @@ data class OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO(
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
-object OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO>,
+object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO>,
     Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VEDTAK_UTFALL
 

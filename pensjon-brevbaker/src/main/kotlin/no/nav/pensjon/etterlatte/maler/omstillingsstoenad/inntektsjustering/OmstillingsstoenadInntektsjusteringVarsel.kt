@@ -17,12 +17,12 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVarselInntektsjusteringDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVarselInntektsjusteringDTOSelectors.inntektsaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVarselInntektsjusteringDTOSelectors.virkningstidspunkt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVarselDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVarselDTOSelectors.inntektsaar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVarselDTOSelectors.virkningstidspunkt
 import java.time.LocalDate
 
-data class OmstillingsstoenadVarselInntektsjusteringDTO(
+data class OmstillingsstoenadInntektsjusteringVarselDTO(
     override val innhold: List<Element>,
     val inntektsaar: Int,
     val bosattUtland: Boolean,
@@ -31,14 +31,14 @@ data class OmstillingsstoenadVarselInntektsjusteringDTO(
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
-object OmstillingsstoenadVarselInntektsjustering : EtterlatteTemplate<OmstillingsstoenadVarselInntektsjusteringDTO>,
+object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<OmstillingsstoenadInntektsjusteringVarselDTO>,
     Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VARSEL
 
     override val template =
         createTemplate(
             name = kode.name,
-            letterDataType = OmstillingsstoenadVarselInntektsjusteringDTO::class,
+            letterDataType = OmstillingsstoenadInntektsjusteringVarselDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(

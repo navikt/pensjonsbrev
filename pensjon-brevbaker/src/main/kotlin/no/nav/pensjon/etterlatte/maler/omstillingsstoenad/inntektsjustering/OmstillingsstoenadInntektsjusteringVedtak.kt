@@ -18,22 +18,22 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser.Utbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.endringIUtbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.informasjonOmOmstillingsstoenadData
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.inntektsaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.omsRettUtenTidsbegrensning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.tidligereFamiliepleier
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.endringIUtbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.informasjonOmOmstillingsstoenadData
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.inntektsaar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.omsRettUtenTidsbegrensning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 import java.time.LocalDate
 
-data class OmstillingsstoenadVedtakInntektsjusteringDTO(
+data class OmstillingsstoenadInntektsjusteringVedtakDTO(
     override val innhold: List<Element>,
     val beregning: OmstillingsstoenadBeregning,
     val omsRettUtenTidsbegrensning: Boolean = false,
@@ -49,14 +49,14 @@ data class OmstillingsstoenadVedtakInntektsjusteringDTO(
 }
 
 @TemplateModelHelpers
-object OmstillingsstoenadVedtakInntektsjustering : EtterlatteTemplate<OmstillingsstoenadVedtakInntektsjusteringDTO>,
+object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<OmstillingsstoenadInntektsjusteringVedtakDTO>,
     Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VEDTAK
 
     override val template =
         createTemplate(
             name = kode.name,
-            letterDataType = OmstillingsstoenadVedtakInntektsjusteringDTO::class,
+            letterDataType = OmstillingsstoenadInntektsjusteringVedtakDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(
@@ -76,16 +76,15 @@ object OmstillingsstoenadVedtakInntektsjustering : EtterlatteTemplate<Omstilling
             outline {
 
                 showIf(endringIUtbetaling){
-                    val formatertBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
-
+                    val sisteUtbetalteBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
                     paragraph {
                         textExpr(
                             Bokmal to "Omstillingsstønaden din er vurdert på nytt fra 1. januar ".expr() + inntektsaar.format() + "."
-                                    + ifElse(harUtbetaling, "Du får fortsatt ".expr()+ formatertBeloep +" kroner per måned før skatt.","Du får fortsatt ikke utbetalt stønad.".expr()),
+                                    + ifElse(harUtbetaling, "Du får fortsatt ".expr()+ sisteUtbetalteBeloep +" kroner per måned før skatt.","Du får fortsatt ikke utbetalt stønad.".expr()),
                             Nynorsk to "Omstillingsstønaden din er vurdert på nytt frå 1. januar  ".expr() + inntektsaar.format() + "."
-                                    + ifElse(harUtbetaling, "Du får framleis ".expr()+ formatertBeloep +" kroner per månad før skatt.", "Du får framleis ikkje utbetalt stønad.".expr()),
+                                    + ifElse(harUtbetaling, "Du får framleis ".expr()+ sisteUtbetalteBeloep +" kroner per månad før skatt.", "Du får framleis ikkje utbetalt stønad.".expr()),
                             English to "Your adjustment allowance has been reassessed from January 1, ".expr() + inntektsaar.format() + "."
-                                    + ifElse(harUtbetaling, "You will continue to receive NOK ".expr()+ formatertBeloep +" per month before tax.", "You will still not be paid the allowance.".expr()),
+                                    + ifElse(harUtbetaling, "You will continue to receive NOK ".expr()+ sisteUtbetalteBeloep +" per month before tax.", "You will still not be paid the allowance.".expr()),
                         )
                     }
                     paragraph {
