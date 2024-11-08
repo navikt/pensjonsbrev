@@ -19,7 +19,6 @@ import {
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { newItem, newItemList, newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -31,8 +30,6 @@ import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelge
 import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
-
-import { nyBrevInfo, nyBrevResponse, nyRedigertBrev } from "../../../../cypress/utils/brevredigeringTestUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
@@ -191,113 +188,16 @@ interface RedigerBrevSidemenyFormData {
 }
 
 function RedigerBrev({
-  //brev,
+  brev,
   doReload,
   saksId,
   vedtaksId,
 }: {
-  //brev: BrevResponse;
+  brev: BrevResponse;
   doReload: () => void;
   saksId: string;
   vedtaksId: string | undefined;
 }) {
-  const brev = useMemo(() => {
-    return nyBrevResponse({
-      info: nyBrevInfo({
-        id: 8,
-      }),
-      redigertBrev: nyRedigertBrev({
-        blocks: [
-          {
-            id: null,
-            editable: true,
-            content: [
-              newLiteral(
-                "Dette er kun et avsnitt. Et langt avsnitt. lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst lang tekst",
-              ),
-            ],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-          {
-            id: 822_540_105,
-            editable: true,
-            content: [
-              newLiteral("Dette er et avsnitt, med en punktliste i samme blocken"),
-              newItemList(newItem("Punkt 1"), newItem("Punkt 2"), newItem("Punkt 3")),
-            ],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-          {
-            id: 822_540_105,
-            editable: true,
-            content: [
-              newLiteral("Dette er et avsnitt"),
-              newVariable({ text: " og en variable" }),
-              newLiteral(" med en punktliste i samme blocken"),
-              newItemList(newItem("Punkt 1"), newItem("Punkt 2"), newItem("Punkt 3")),
-            ],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-          {
-            id: 173_660_319,
-            editable: true,
-            content: [
-              newItemList(newItem("Kun punktliste 1"), newItem("kun punktliste 2"), newItem("kun punktliste 3")),
-            ],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-          {
-            id: 173_660_319,
-            editable: true,
-            content: [
-              newItemList(
-                newItem("Punkt 1 - avsnitt etter punktliste", "variable 1", "tekst etter variable 1"),
-                newItem("Punkt 2 - avsnitt etter punktliste", "variable 2", "tekst etter variable 2"),
-                newItem("Punkt 3 - avsnitt etter punktliste", "variable 3", "tekst etter variable 3"),
-              ),
-              newLiteral("Avsnitt etter punktliste i samme block"),
-              newVariable({ text: " og en variable" }),
-              newLiteral("slutt text"),
-            ],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-          {
-            id: 173_660_319,
-            editable: true,
-            content: [newItemList(newItem("itemList som skal merges på starten"))],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-          {
-            id: 173_660_319,
-            editable: true,
-            content: [newLiteral("skal merges i midten")],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-          {
-            id: 173_660_319,
-            editable: true,
-            content: [newItemList(newItem("itemList som skal merges på slutten"))],
-            deletedContent: [],
-            type: "PARAGRAPH",
-          },
-        ],
-      }),
-      saksbehandlerValg: {
-        mottattSoeknad: "2024-09-10",
-        ytelse: "Supplerende stønad",
-        land: "Spania",
-        svartidUker: "3",
-      },
-    });
-  }, []);
-
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
   const brevmal = useQuery({
@@ -333,20 +233,20 @@ function RedigerBrev({
     });
   };
 
-  /*const reservasjonQuery = useQuery({
+  const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
     queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
     refetchInterval: 10_000,
-  });*/
+  });
 
-  /*useEffect(() => {
+  useEffect(() => {
     const timoutId = setTimeout(() => {
       if (editorState.isDirty) {
         redigertBrevMutation.mutate({ redigertBrev: editorState.redigertBrev });
       }
     }, 5000);
     return () => clearTimeout(timoutId);
-  }, [editorState.isDirty, editorState.redigertBrev, redigertBrevMutation]);*/
+  }, [editorState.isDirty, editorState.redigertBrev, redigertBrevMutation]);
 
   useEffect(() => {
     if (editorState.redigertBrevHash !== brev.redigertBrevHash) {
@@ -384,7 +284,7 @@ function RedigerBrev({
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit((v) => onSubmit(v))} ref={formRef}>
-        {/* <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} /> */}
+        <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
             brevId={brev.info.id}

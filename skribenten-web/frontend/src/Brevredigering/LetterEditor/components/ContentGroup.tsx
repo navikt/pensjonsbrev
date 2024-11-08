@@ -23,8 +23,6 @@ import {
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { ElementTags, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
-import { literal } from "../../../../test/modules/LetterEditor/utils";
-
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
  * If y-coord is exactly at the edge it sometimes misses. To avoid that we move the point a little bit away from the line.
