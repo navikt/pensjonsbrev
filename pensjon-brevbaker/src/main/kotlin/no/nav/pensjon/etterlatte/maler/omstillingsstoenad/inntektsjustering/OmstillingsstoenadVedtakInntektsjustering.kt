@@ -76,16 +76,16 @@ object OmstillingsstoenadVedtakInntektsjustering : EtterlatteTemplate<Omstilling
             outline {
 
                 showIf(endringIUtbetaling){
-                    val sisteUtbetaltBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep
+                    val formatertBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
 
                     paragraph {
                         textExpr(
                             Bokmal to "Omstillingsstønaden din er vurdert på nytt fra 1. januar ".expr() + inntektsaar.format() + "."
-                                    + ifElse(harUtbetaling, "Du får fortsatt "+sisteUtbetaltBeloep.format()+" kroner per måned før skatt.","Du får fortsatt ikke utbetalt stønad."),
+                                    + ifElse(harUtbetaling, "Du får fortsatt ".expr()+ formatertBeloep +" kroner per måned før skatt.","Du får fortsatt ikke utbetalt stønad.".expr()),
                             Nynorsk to "Omstillingsstønaden din er vurdert på nytt frå 1. januar  ".expr() + inntektsaar.format() + "."
-                                    + ifElse(harUtbetaling, "Du får framleis "+sisteUtbetaltBeloep.format()+" kroner per månad før skatt.", "Du får framleis ikkje utbetalt stønad."),
+                                    + ifElse(harUtbetaling, "Du får framleis ".expr()+ formatertBeloep +" kroner per månad før skatt.", "Du får framleis ikkje utbetalt stønad.".expr()),
                             English to "Your adjustment allowance has been reassessed from January 1, ".expr() + inntektsaar.format() + "."
-                                    + ifElse(harUtbetaling, "You will continue to receive NOK "+sisteUtbetaltBeloep.format()+" per month before tax.", "You will still not be paid the allowance."),
+                                    + ifElse(harUtbetaling, "You will continue to receive NOK ".expr()+ formatertBeloep +" per month before tax.", "You will still not be paid the allowance.".expr()),
                         )
                     }
                     paragraph {
