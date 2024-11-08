@@ -14,20 +14,19 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser.Utbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.harEndringIUtbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.endringIUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.informasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.inntektsaar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.omsRettUtenTidsbegrensning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringDTOSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
@@ -40,12 +39,10 @@ data class OmstillingsstoenadVedtakInntektsjusteringDTO(
     val beregning: OmstillingsstoenadBeregning,
     val omsRettUtenTidsbegrensning: Boolean = false,
     val tidligereFamiliepleier: Boolean = false,
-    val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,
-    val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
     val inntektsaar: Int,
     val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean = false,
     val harUtbetaling: Boolean,
-    val harEndringIUtbetaling: Boolean,
+    val endringIUtbetaling: Boolean,
     val virkningstidspunkt: LocalDate,
     val bosattUtland: Boolean,
 ) : FerdigstillingBrevDTO {
@@ -78,11 +75,10 @@ object OmstillingsstoenadVedtakInntektsjustering : EtterlatteTemplate<Omstilling
                 )
             }
             outline {
-                val harFlerePerioder: Expression<Boolean> = beregningsperioder.size().greaterThan(1)
-                val sisteUtbetaltBeloep = sisteBeregningsperiode.utbetaltBeloep
-                val datoFomSisteBeregningsperiode = sisteBeregningsperiode.datoFOM
 
-                showIf(harEndringIUtbetaling){
+                showIf(endringIUtbetaling){
+                    val sisteUtbetaltBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep
+
                     paragraph {
                         textExpr(
                             Bokmal to "Omstillingsstønaden din er vurdert på nytt fra 1. januar ".expr() + inntektsaar.format() + "."
@@ -110,55 +106,7 @@ object OmstillingsstoenadVedtakInntektsjustering : EtterlatteTemplate<Omstilling
                     }
                 }
 
-                // TODO: denne finnes allerede i OmstillingsstoenadInnvilgelseFraser
-                showIf(harUtbetaling) {
-                    showIf(harFlerePerioder) {
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner hver måned før skatt fra "+ datoFomSisteBeregningsperiode.format() +".",
-                                Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før skatt frå "+ datoFomSisteBeregningsperiode.format() +".",
-                                English to "You will receive  NOK ".expr() + sisteUtbetaltBeloep.format() + " each month before tax from "+ datoFomSisteBeregningsperiode.format() +".",
-                            )
-                        }
-                        paragraph {
-                            text(
-                                Bokmal to "Se beløp for tidligere perioder og hvordan vi har beregnet omstillingsstønaden i vedlegg «Beregning av omstillingsstønad».",
-                                Nynorsk to "I vedlegget «Utrekning av omstillingsstønad» kan du sjå beløp for tidlegare periodar og korleis vi har rekna ut omstillingsstønaden.",
-                                English to "See amounts for previous periods and how we have calculated the adjustment allowance in the attachment «Calculation of adjustment allowance».",
-                            )
-                        }
-                    }.orShow {
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner hver måned før skatt.",
-                                Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før skatt.",
-                                English to "You will receive  NOK ".expr() + sisteUtbetaltBeloep.format() + " each month before tax.",
-                            )
-                        }
-                        paragraph {
-                            text(
-                                Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget «Beregning av omstillingsstønad».",
-                                Nynorsk to "I vedlegget «Utrekning av omstillingsstønad» kan du sjå korleis vi har rekna ut omstillingsstønaden din.",
-                                English to "See how we have calculated your adjustment allowance in the attachment «Calculation of adjustment allowance».",
-                            )
-                        }
-                    }
-                }.orShow {
-                    paragraph {
-                        text(
-                            Bokmal to "Du får ikke utbetalt stønad fordi du har inntekt som er høyere enn grensen for å få utbetalt stønaden.",
-                            Nynorsk to "Du får ikkje utbetalt stønad, då inntekta di er over grensa for utbetaling av stønad.",
-                            English to "You will not receive the allowance, as you have an income that is higher than the threshold for payment of the allowance.",
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget «Beregning av omstillingsstønad».",
-                            Nynorsk to "I vedlegget «Utrekning av omstillingsstønad» kan du sjå korleis vi har rekna ut omstillingsstønaden din.",
-                            English to "See how we have calculated your adjustment allowance in the attachment «Calculation of adjustment allowance».",
-                        )
-                    }
-                }
+                includePhrase(Utbetaling(harUtbetaling, beregning))
 
                 title2 {
                     text(
