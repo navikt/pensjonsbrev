@@ -34,14 +34,20 @@ class Alderspensjon {
         override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "Nav Familie- og pensjonsytelser",
-                    English to "Nav Familie- og pensjonsytelser",
+                    Bokmal to "Nav Familie-og pensjonsytelser Oslo 2",
+                    English to "NAV Familie-og pensjonsytelser Oslo 2",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Postboks 6600, Etterstad",
-                    English to "Postboks 6600, Etterstad",
+                    Bokmal to "Postboks 6600 Etterstad",
+                    English to "Postboks 6600 Etterstad",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "0607 Oslo",
+                    English to "0607 Oslo"
                 )
             }
             paragraph {
