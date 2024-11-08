@@ -314,7 +314,7 @@ object OmstillingsstoenadInnvilgelseFraser {
         }
     }
 
-    data class Utbetaling(
+    data class UtbetalingMedEtterbetaling(
         val etterbetaling: Expression<OmstillingsstoenadEtterbetaling?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

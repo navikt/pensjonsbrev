@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering
 
+import no.nav.pensjon.brev.maler.fraser.ufoer.HarDuSpoersmaalEtteroppgjoer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.*
@@ -13,29 +14,33 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.beloep
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.harEndringIUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.inntektsaar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.sisteBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.virkningstidspunkt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.tidligereFamiliepleier
 import java.time.LocalDate
 
 data class OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO(
     override val innhold: List<Element>,
-    val inntektsaar: Int,
-    val harUtbetaling: Boolean,
-    val harEndringIUtbetaling: Boolean,
+    val beregning: OmstillingsstoenadBeregning,
+    val omsRettUtenTidsbegrensning: Boolean = false,
+    val tidligereFamiliepleier: Boolean = false,
     val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,
     val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
-    val opphoerFoerDesemberNesteAar: Boolean,
-    val tidligereFamiliepleier: Boolean,
-    val lavEllerIngenInntekt: Boolean,
+    val inntektsaar: Int,
+    val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean = false,
+    val harUtbetaling: Boolean,
+    val harEndringIUtbetaling: Boolean,
     val virkningstidspunkt: LocalDate,
 ) : FerdigstillingBrevDTO
 
@@ -58,8 +63,6 @@ object OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfall : EtterlatteTe
             ),
         ) {
 
-            val harFlerePerioder: Expression<Boolean> = beregningsperioder.size().greaterThan(1)
-
             title {
                 textExpr(
                     Bokmal to "Vedtak om omstillingsstønad fra 1. januar ".expr() + inntektsaar.format(),
@@ -68,7 +71,7 @@ object OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfall : EtterlatteTe
                 )
             }
             outline {
-
+                val harFlerePerioder: Expression<Boolean> = beregningsperioder.size().greaterThan(1)
                 val sisteUtbetaltBeloep = sisteBeregningsperiode.utbetaltBeloep
                 val datoFomSisteBeregningsperiode = sisteBeregningsperiode.datoFOM
 
@@ -90,7 +93,6 @@ object OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfall : EtterlatteTe
                             English to "See how we have calculated your adjustment allowance in the attachment «Calculation of adjustment allowance».",
                         )
                     }
-
                 }.orShow {
                     paragraph {
                         textExpr(
@@ -120,9 +122,9 @@ object OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfall : EtterlatteTe
                     }.orShow {
                         paragraph {
                             textExpr(
-                                Bokmal to "Du får ".expr() + beloep.format() + " kroner hver måned før skatt.",
-                                Nynorsk to "Du får ".expr() + beloep.format() + " kroner kvar månad før skatt.",
-                                English to "You will receive  NOK ".expr() + beloep.format() + " each month before tax.",
+                                Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner hver måned før skatt.",
+                                Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før skatt.",
+                                English to "You will receive  NOK ".expr() + sisteUtbetaltBeloep.format() + " each month before tax.",
                             )
                         }
                         paragraph {
@@ -133,7 +135,6 @@ object OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfall : EtterlatteTe
                             )
                         }
                     }
-
                 }.orShow {
                     paragraph {
                         text(
@@ -161,6 +162,32 @@ object OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfall : EtterlatteTe
 
                 konverterElementerTilBrevbakerformat(innhold)
 
+                showIf(harUtbetaling) {
+                    includePhrase(OmstillingsstoenadFellesFraser.Utbetaling)
+                }
+
+                includePhrase(
+                    OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(
+                        beregning,
+                        omsRettUtenTidsbegrensning,
+                        tidligereFamiliepleier,
+                    ),
+                )
+
+                showIf(omsRettUtenTidsbegrensning.not()){
+                    includePhrase(
+                        OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(
+                            innvilgetMindreEnnFireMndEtterDoedsfall,
+                            tidligereFamiliepleier
+                        )
+                    )
+                }
+
+                includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
+                includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
+                includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(HarDuSpoersmaalEtteroppgjoer)
             }
         }
 

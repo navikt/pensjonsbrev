@@ -49,7 +49,7 @@ object OmstillingsstoenadRevurderingRedigerbartUtfall : EtterlatteTemplate<Omsti
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(OmstillingsstoenadRevurderingFraser.UtfallRedigerbart(erEtterbetaling, feilutbetaling))
             showIf(harUtbetaling) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.Utbetaling(erEtterbetaling))
+                includePhrase(OmstillingsstoenadRevurderingFraser.UtbetalingMedEtterbetaling(erEtterbetaling))
             }
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingMedVarselRevurdering)
