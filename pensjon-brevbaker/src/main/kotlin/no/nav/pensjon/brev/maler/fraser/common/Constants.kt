@@ -7,6 +7,7 @@ object Constants {
     const val NAV_URL = "nav.no"
 
     const val ALDERSPENSJON_GJENLEVENDE_URL = "$NAV_URL/alderspensjon-gjenlevende"
+    const val AFP_OFFENTLIG_URL = "$NAV_URL/afp-offentlig"
     const val ARBEID_URL= "$NAV_URL/arbeid"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
     const val DIN_UFOERETRYGD_URL = "$NAV_URL/dinuføretrygd"
@@ -14,6 +15,7 @@ object Constants {
     const val DITT_NAV = "$NAV_URL/dittnav"
     const val ETTEROPPGJOR_URL = "$NAV_URL/etteroppgjor"
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
+    const val FORSOERGINGSTILLEGG_URL = "$NAV_URL/forsorgingstillegg"
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
     const val GJENLEVENDEPENSJON_URL = "$NAV_URL/gjenlevendepensjon"
     const val GJENLEVENDETILLEGG_URL = "$NAV_URL/gjenlevendetillegg"
@@ -32,6 +34,7 @@ object Constants {
     const val PENSJON_ENDRING_URL = "$NAV_URL/pensjon-endring"
     const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelop"
     const val REGULERING_ALDERSPENSJON_URL = "$NAV_URL/reguleringalderspensjon"
+    const val SEND_BESKJED_URL = "$NAV_URL/send-beskjed"
     const val SKATTEETATEN_URL = "skatteetaten.no"
     const val SKJEMA_URL = "$NAV_URL/skjema"
     const val SKRIV_TIL_OSS_URL = "$NAV_URL/skriv-til-oss"

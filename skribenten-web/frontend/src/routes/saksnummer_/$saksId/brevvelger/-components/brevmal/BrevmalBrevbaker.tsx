@@ -17,8 +17,8 @@ import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/type
 import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
-import { Route } from "../../../route";
 import type { SubmitTemplateOptions } from "../../route";
+import { Route } from "../../route";
 import { EndreMottakerModal } from "../endreMottaker/EndreMottaker";
 import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
@@ -89,6 +89,7 @@ const BrevmalBrevbaker = (props: {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
   const [åpnerNyttBrevOgHarKladd, setÅpnerNyttBrevOgHarKladd] = useState<boolean>(false);
+  const { vedtaksId } = Route.useSearch();
 
   const alleSaksbrevQuery = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(props.saksId.toString()),
@@ -113,6 +114,7 @@ const BrevmalBrevbaker = (props: {
         avsenderEnhetsId: values.enhetsId,
         saksbehandlerValg: values.saksbehandlerValg,
         mottaker: values.mottaker,
+        vedtaksId: vedtaksId ? Number.parseInt(vedtaksId) : null,
       }),
 
     onSuccess: async (response) => {
