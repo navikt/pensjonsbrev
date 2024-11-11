@@ -12,6 +12,8 @@ import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidIN
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
 import no.nav.pensjon.brev.maler.redigerbar.VarselOmMuligAvslag
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.redigerbar.InnhentingDokumentasjonFraBruker
+import no.nav.pensjon.brev.maler.redigerbar.InnhentingOpplysningerFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -52,6 +54,8 @@ object ProductionTemplates {
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
+        InnhentingOpplysningerFraBruker,
+        InnhentingDokumentasjonFraBruker,
         VarselOmMuligAvslag,
     )
 }

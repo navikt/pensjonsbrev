@@ -1,7 +1,7 @@
 FROM debian
 USER root
 LABEL org.opencontainers.image.source="https://github.com/navikt/pensjonsbrev/latexinstallation"
-LABEL org.opencontainers.image.description="XeLaTeX installation with required packages for NAVs letter template"
+LABEL org.opencontainers.image.description="XeLaTeX installation with required packages for Navs letter template"
 LABEL org.opencontainers.image.title="XeLaTeX"
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
