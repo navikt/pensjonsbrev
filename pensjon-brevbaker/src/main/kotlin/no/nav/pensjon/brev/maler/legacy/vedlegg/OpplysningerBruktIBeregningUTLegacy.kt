@@ -159,6 +159,8 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         showIf(pe.pe_ut_tbu601v_tbu604v()) {
             includePhrase(TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(pe))
         }
+        includePhrase(TBU052V_TBU073V_ForDegSomHarRettTilBarnetillegg(pe))
+
         includePhrase(TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
 
         includePhrase(TBU052V_TBU073V_SlikBeregnerViGjenlevendetilleggetDitt(pe))

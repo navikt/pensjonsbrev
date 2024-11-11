@@ -89,6 +89,7 @@ fun createPE() =
             pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv = 1,
             harOpptjeningUTMedOmsorg = false,
             harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste = false,
+            foedselsdatoTilBarnTilleggErInnvilgetFor = listOf(LocalDate.of(2010,1,1))
         ),
         pebrevkode = "PE_UT_06_300",
         personsak = PersonSak(PSfnr("01019878910"), LocalDate.of(1998, 1, 1))

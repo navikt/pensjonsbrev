@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import java.time.LocalDate
 
 data class PE(
     val vedtaksbrev: Vedtaksbrev,
@@ -55,5 +56,6 @@ data class PE(
         val pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08: Kroner,
         val pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv: Int,
         val harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste: Boolean,
+        val foedselsdatoTilBarnTilleggErInnvilgetFor: List<LocalDate>,
         )
 }
