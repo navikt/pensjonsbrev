@@ -118,6 +118,7 @@ object Edit {
                 override val fontType: FontType = FontType.PLAIN,
                 val editedText: String? = null,
                 val editedFontType: FontType? = null,
+                val tags: Set<String>? = null,
             ) : Text(Type.LITERAL) {
                 override fun isEdited(): Boolean = isNew() || editedText != null || editedFontType != null
             }
@@ -202,7 +203,7 @@ fun ParagraphContent.toEdit(): Edit.ParagraphContent =
 
 fun ParagraphContent.Text.toEdit(): Edit.ParagraphContent.Text =
     when (this) {
-        is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id, text, fontType.toEdit())
+        is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id = id, text = text, fontType = fontType.toEdit(), tags = tags)
         is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id, text, fontType.toEdit())
         is ParagraphContent.Text.NewLine -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
     }
@@ -260,7 +261,8 @@ fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
         is Edit.ParagraphContent.Text.Literal -> ParagraphContent.Text.Literal(
             id = id ?: 0,
             text = editedText ?: text,
-            fontType = (editedFontType ?: fontType).toMarkup()
+            fontType = (editedFontType ?: fontType).toMarkup(),
+            tags = tags,
         )
 
         is Edit.ParagraphContent.Text.Variable -> ParagraphContent.Text.Variable(

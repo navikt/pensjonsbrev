@@ -40,9 +40,18 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         sealed class Text(id: Int, type: Type) : ParagraphContent(id, type) {
             abstract val text: String
             abstract val fontType: FontType
+
             enum class FontType { PLAIN, BOLD, ITALIC }
-            data class Literal(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.LITERAL)
+
+            data class Literal(
+                override val id: Int,
+                override val text: String,
+                override val fontType: FontType = FontType.PLAIN,
+                val tags: Set<String>? = null,
+            ) : Text(id, Type.LITERAL)
+
             data class Variable(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.VARIABLE)
+
             data class NewLine(override val id: Int) : Text(id, Type.NEW_LINE) {
                 override val fontType = FontType.PLAIN
                 override val text: String = ""
