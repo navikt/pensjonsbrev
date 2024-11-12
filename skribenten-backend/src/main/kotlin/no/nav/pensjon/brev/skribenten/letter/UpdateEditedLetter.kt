@@ -13,7 +13,7 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  */
 fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
     renderedLetter.toEdit().let { renderedAsEdit ->
-        val variableValues = VariableValuesVisitor(renderedAsEdit).build()
+        val variableValues = renderedAsEdit.variablesValueMap()
         copy(
             title = renderedLetter.title,
             sakspart = renderedLetter.sakspart,

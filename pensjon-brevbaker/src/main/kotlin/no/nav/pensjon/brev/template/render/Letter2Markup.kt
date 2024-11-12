@@ -8,6 +8,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.*
 import java.time.format.FormatStyle
 import java.util.*
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
@@ -172,7 +174,7 @@ object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
 
     private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> =
         if (this is Expression.Literal) {
-            listOf(Literal(stableHashCode(), eval(scope), fontType))
+            listOf(Literal(stableHashCode(), eval(scope), fontType, tags))
         } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat) {
             // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
             @Suppress("UNCHECKED_CAST")
@@ -186,10 +188,16 @@ object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             val previous = acc.lastOrNull()
             if (acc.isEmpty()) {
                 listOf(current)
-            } else if (previous is Literal && current is Literal) {
+            } else if (canMergeAsLiterals(previous, current)) {
                 acc.subList(0, acc.size - 1) + Literal(Objects.hash(previous.id, current.id), previous.text + current.text, fontType)
             } else {
                 acc + current
             }
         }
+
+    @OptIn(ExperimentalContracts::class)
+    private fun canMergeAsLiterals(first: Text?, second: Text): Boolean {
+        contract { returns() implies (first != null) }
+        return first is Literal && second is Literal && first.tags.isEmpty() && second.tags.isEmpty()
+    }
 }

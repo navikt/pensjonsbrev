@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.6.0")
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.7.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }
 
