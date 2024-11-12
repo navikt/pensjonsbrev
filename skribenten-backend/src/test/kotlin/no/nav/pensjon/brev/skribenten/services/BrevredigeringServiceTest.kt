@@ -1086,7 +1086,7 @@ class BrevredigeringServiceTest {
                 Paragraph(
                     1,
                     true,
-                    listOf(Literal(12, "Vi har "), Literal(13, "dato", tags = setOf("FRITEKST")), Literal(14, " mottatt søknad."))
+                    listOf(Literal(12, "Vi har "), Literal(13, "dato", tags = setOf(ElementTags.FRITEKST)), Literal(14, " mottatt søknad."))
                 )
             )
         )
@@ -1116,7 +1116,7 @@ class BrevredigeringServiceTest {
                 Paragraph(
                     1,
                     true,
-                    listOf(Literal(12, "Vi har "), Literal(13, "dato", tags = setOf("FRITEKST")), Literal(14, " mottatt søknad."))
+                    listOf(Literal(12, "Vi har "), Literal(13, "dato", tags = setOf(ElementTags.FRITEKST)), Literal(14, " mottatt søknad."))
                 )
             )
         )
@@ -1131,7 +1131,7 @@ class BrevredigeringServiceTest {
                             true,
                             listOf(
                                 E_Literal(12, "Vi har "),
-                                E_Literal(13, "dato", tags = setOf("FRITEKST"), editedText = "redigert"),
+                                E_Literal(13, "dato", tags = setOf(ElementTags.FRITEKST), editedText = "redigert"),
                                 E_Literal(14, " mottatt søknad.")
                             )
                         )

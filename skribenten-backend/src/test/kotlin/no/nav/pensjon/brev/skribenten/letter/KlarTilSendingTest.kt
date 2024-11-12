@@ -2,13 +2,14 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
+import no.nav.pensjon.brevbaker.api.model.ElementTags
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class KlarTilSendingTest {
 
-    private val fritekst = setOf("FRITEKST")
+    private val fritekst = setOf(ElementTags.FRITEKST)
 
     @Test
     fun `tomt brev er klar til sending`() {

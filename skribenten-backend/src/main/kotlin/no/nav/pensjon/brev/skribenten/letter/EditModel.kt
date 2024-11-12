@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
+import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
@@ -118,7 +119,7 @@ object Edit {
                 override val fontType: FontType = FontType.PLAIN,
                 val editedText: String? = null,
                 val editedFontType: FontType? = null,
-                val tags: Set<String>? = null,
+                val tags: Set<ElementTags> = emptySet(),
             ) : Text(Type.LITERAL) {
                 override fun isEdited(): Boolean = isNew() || editedText != null || editedFontType != null
             }

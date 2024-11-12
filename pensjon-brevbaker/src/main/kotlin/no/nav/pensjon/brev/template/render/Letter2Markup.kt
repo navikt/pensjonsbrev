@@ -198,6 +198,6 @@ object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     @OptIn(ExperimentalContracts::class)
     private fun canMergeAsLiterals(first: Text?, second: Text): Boolean {
         contract { returns() implies (first != null) }
-        return first is Literal && second is Literal && first.tags.isNullOrEmpty() && second.tags.isNullOrEmpty()
+        return first is Literal && second is Literal && first.tags.isEmpty() && second.tags.isEmpty()
     }
 }

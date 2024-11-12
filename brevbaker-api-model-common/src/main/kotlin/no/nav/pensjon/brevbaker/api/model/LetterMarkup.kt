@@ -47,7 +47,7 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
                 override val id: Int,
                 override val text: String,
                 override val fontType: FontType = FontType.PLAIN,
-                val tags: Set<String>? = null,
+                val tags: Set<ElementTags> = emptySet(),
             ) : Text(id, Type.LITERAL)
 
             data class Variable(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.VARIABLE)

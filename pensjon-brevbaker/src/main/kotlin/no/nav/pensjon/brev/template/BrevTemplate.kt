@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.toCode
 import no.nav.pensjon.brev.template.dsl.TextScope
+import no.nav.pensjon.brevbaker.api.model.ElementTags
 
 interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Enum<Kode>> : HasModel<LetterData> {
     val template: LetterTemplate<*, LetterData>
@@ -31,7 +32,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
         )
 
     fun TextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
-        Expression.Literal(beskrivelse, setOf("FRITEKST"))
+        Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
 }
 
 interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.AutoBrev> {
