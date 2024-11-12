@@ -16,6 +16,8 @@ data class Vilkar(
     val sykdomskadelyteresultat: String?,
     val unguforbegrunnelse: String?,
     val unguforresultat: String?,
+    val fortsattmedlemskap: FortsattMedlemskap?,
+    val medlemskapforutettertrygdeavtaler: MedlemskapForUTetterTrygdeavtaler?,
     val yrkesskadebegrunnelse: String?,
     val yrkesskaderesultat: String?,
 )

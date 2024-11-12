@@ -7,8 +7,6 @@ import java.time.LocalDate
 data class VilkarsVedtak(
     val beregningsvilkar: BeregningsVilkar?,
     val vilkar: Vilkar?,
-    // TODO: fjerne denne
-    val vilkarVirkningFom: LocalDate?,
     val vilkarvirkningfom: LocalDate?,
     val vilkarkravlinjekode: String?,
     val vilkarvedtakresultat: String?,
