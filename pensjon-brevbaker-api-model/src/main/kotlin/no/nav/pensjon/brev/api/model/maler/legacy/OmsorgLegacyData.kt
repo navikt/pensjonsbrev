@@ -19,4 +19,4 @@ data class OmsorgGodskrGrunnlag(val aar: Year)
 
 data class Vedtaksdata(val kravhode: Kravhode)
 
-data class Kravhode(val kravmottattdato: LocalDate)
+data class Kravhode(val kravmottattdato: LocalDate?)
