@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -138,7 +139,7 @@ object GodskrivingOmsorgspoengEtter1991 : RedigerbarTemplate<OmsorgLegacyDataDto
 
             //[PE_IY_05_TB1888,TB1181]
 
-            includePhrase(Felles.BokmalEnglish.HarDuSpoersmaal.pensjon)
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
     }
 }
