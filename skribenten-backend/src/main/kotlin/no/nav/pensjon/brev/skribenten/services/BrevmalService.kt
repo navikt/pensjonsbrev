@@ -68,6 +68,10 @@ class BrevmalService(
                             brev.erMalMedFritekst() -> Features.brevMedFritekst.isEnabled()
                             brev.hasEmptyBrevData() -> Features.brevutendata.isEnabled()
                             brev.name == Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD.name -> Features.brevmalUTavslag.isEnabled()
+                            brev.name in setOf(
+                                Brevkode.Redigerbar.PENSJONSOPPTJENING_FOR_OMSORGSARBEID_ORIENTERING_OM_GODSKRIVING.name,
+                                Brevkode.Redigerbar.GODSKRIVING_AV_PENSJONSOPPTJENING_FOR_OMSORG_BARN_FOER_1991.name,
+                                Brevkode.Redigerbar.GODSKRIVING_AV_PENSJONSOPPTJENING_FOR_OMSORG_BARN_ETTER_1991.name) -> Features.brevmalGodskrivingOmsorgsopptjening.isEnabled()
                             else -> true
                         }
                     }

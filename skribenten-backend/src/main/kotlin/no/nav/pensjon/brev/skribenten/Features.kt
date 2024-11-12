@@ -18,6 +18,7 @@ object Features {
     val brevutendata = UnleashToggle("brevutendata")
     val brevmalUTavslag = UnleashToggle("brevmal_ut_avslag")
     val brevMedFritekst = UnleashToggle("brevMedFritekst")
+    val brevmalGodskrivingOmsorgsopptjening = UnleashToggle("brevmal_godskriving_omsorgsopptjening")
 
     private var unleash: Unleash? = null
     private val overrides = mutableMapOf<String, Boolean>()
