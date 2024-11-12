@@ -90,7 +90,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     paragraph {
         textExpr(
             Bokmal to "For at du skal få full stønad må ".expr() +
-                ifElse(tidligereFamiliepleier, "trygdetiden din", "avødes trygdetid") +
+                ifElse(tidligereFamiliepleier, "trygdetiden din", "avdødes trygdetid") +
                 " være minst 40 år. Er trygdetiden mindre enn 40 år vil stønaden avkortes.",
             Nynorsk to "For at du skal få full stønad må ".expr() +
                 ifElse(tidligereFamiliepleier, "du", "avdøde") +
@@ -427,7 +427,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
         paragraph {
             textExpr(
                 Bokmal to "For å få full omstillingsstønad må ".expr() +
-                    ifElse(tidligereFamiliepleier, "trygdetiden din", "avødes trygdetid") +
+                    ifElse(tidligereFamiliepleier, "trygdetiden din", "avdødes trygdetid") +
                     " være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. " +
                     ifElse(tidligereFamiliepleier, "Din", "Avdødes") +
                     " samlede trygdetid er beregnet til " + trygdetid.beregnetTrygdetidAar.format() + " år.",
