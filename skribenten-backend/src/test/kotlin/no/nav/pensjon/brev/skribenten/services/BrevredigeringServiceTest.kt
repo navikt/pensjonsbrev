@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
@@ -783,6 +784,9 @@ class BrevredigeringServiceTest {
 
         val pdf = brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)?.resultOrNull()
         assertThat(pdf).isNotNull()
+        withPrincipal(principalMock()) {
+            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
+        }
 
         coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(
             Pen.BestillBrevResponse(
@@ -816,8 +820,18 @@ class BrevredigeringServiceTest {
     }
 
     @Test
+    fun `kan ikke sende brev som ikke er markert klar til sending`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)?.resultOrNull()
+
+        assertThrows<BrevIkkeKlartTilSendingException> {
+            brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
+        }
+    }
+
+    @Test
     fun `arkivert brev men ikke distribuert kan sendes`(): Unit = runBlocking {
-        val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
+        val brev = opprettBrev().resultOrNull()!!
 
         val pdf = brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)?.resultOrNull()
         assertThat(pdf).isNotNull()
@@ -828,7 +842,10 @@ class BrevredigeringServiceTest {
                 Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
             )
         )
-        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)?.resultOrNull()
+        withPrincipal(principalMock()) {
+            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
+        }
+        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)?.resultOrNull()!!
         assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)?.resultOrNull()).isNotNull()
 
         coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(991, null))
@@ -972,8 +989,11 @@ class BrevredigeringServiceTest {
 
         val mottaker = Dto.Mottaker.samhandler("987")
         val brev = opprettBrev(mottaker = mottaker).resultOrNull()!!
-
         brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)
+        withPrincipal(principalMock()) {
+            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
+        }
+
         brevredigeringService.sendBrev(sak.saksId, brev.info.id)
 
         coVerify {
@@ -1053,6 +1073,73 @@ class BrevredigeringServiceTest {
             put("inkluderAfpTekst", false)
             put("land", null)
         })
+    }
+
+    @Test
+    fun `kan ikke markere brev klar til sending om ikke alle fritekst er fylt ut`(): Unit = runBlocking {
+        coEvery {
+            brevbakerMock.renderMarkup(
+                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any(), any(), any()
+            )
+        } returns ServiceResult.Ok(
+            letter(
+                Paragraph(
+                    1,
+                    true,
+                    listOf(Literal(12, "Vi har "), Literal(13, "dato", tags = setOf(ElementTags.FRITEKST)), Literal(14, " mottatt søknad."))
+                )
+            )
+        )
+        val brev = opprettBrev().resultOrNull()!!
+
+        // sjekk at delvis oppdatering fungerer uten å sette brevet til låst
+        withPrincipal(principalMock()) {
+            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = false)
+            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, distribusjonstype = Distribusjonstype.SENTRALPRINT)
+        }
+
+        assertThrows<BrevIkkeKlartTilSendingException> {
+            withPrincipal(principalMock()) {
+                brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
+            }
+        }
+    }
+
+    @Test
+    fun `kan markere brev klar til sending om alle fritekst er fylt ut`(): Unit = runBlocking {
+        coEvery {
+            brevbakerMock.renderMarkup(
+                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any(), any(), any()
+            )
+        } returns ServiceResult.Ok(
+            letter(
+                Paragraph(
+                    1,
+                    true,
+                    listOf(Literal(12, "Vi har "), Literal(13, "dato", tags = setOf(ElementTags.FRITEKST)), Literal(14, " mottatt søknad."))
+                )
+            )
+        )
+        val brev = opprettBrev().resultOrNull()!!
+
+        withPrincipal(principalMock()) {
+            brevredigeringService.oppdaterBrev(
+                brev.info.saksId, brev.info.id, nyeSaksbehandlerValg = null, nyttRedigertbrev = brev.redigertBrev.copy(
+                    blocks = listOf(
+                        E_Paragraph(
+                            1,
+                            true,
+                            listOf(
+                                E_Literal(12, "Vi har "),
+                                E_Literal(13, "dato", tags = setOf(ElementTags.FRITEKST), editedText = "redigert"),
+                                E_Literal(14, " mottatt søknad.")
+                            )
+                        )
+                    )
+                )
+            )?.resultOrNull()!!
+            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
+        }
     }
 
     private suspend fun opprettBrev(
