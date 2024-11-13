@@ -5,7 +5,6 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.Omst
 import java.time.LocalDate
 
 fun createOmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfallDTO() = OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO(
-    innhold = createPlaceholderForRedigerbartInnhold(),
     inntektsbeloep = Kroner(20000),
     opphoerDato = LocalDate.of(2025, 8, 1),
 )

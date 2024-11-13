@@ -20,12 +20,11 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.Omst
 import java.time.LocalDate
 
 data class OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO(
-    override val innhold: List<Element>,
     val inntektsbeloep: Kroner,
     // Hvis denne settes, så viser vi mal for at du ikke er innvilget hele neste år. Så hvis opphør er i 2026 og vi
     // vi varsler for 2025 blir det feil å sende med datoen for 2026. Dette bør klart framgå av kode / navn på felt
     val opphoerDato: LocalDate?
-) : FerdigstillingBrevDTO
+)
 
 @TemplateModelHelpers
 object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO>,
