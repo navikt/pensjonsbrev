@@ -1,4 +1,4 @@
-name: "Build and deploy brevbaker and pdf-bygger"
+name: "Build and deploy pdf-bygger"
 on:
   workflow_dispatch:
   pull_request:
@@ -6,9 +6,8 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "template-model-generator/**"
-      - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
-      - ".github/workflows/pdfbygger-brevbaker.yml"
+      - ".github/workflows/pdfbygger.yml"
   push:
     branches:
       - "main"
@@ -16,64 +15,12 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "template-model-generator/**"
-      - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
-      - ".github/workflows/pdfbygger-brevbaker.yml"
+      - ".github/workflows/pdfbygger.yml"
 env:
-  "IMAGE_BREVBAKER": "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
-  "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
+  "IMAGE_BREVBAKER": europe-north1-docker.pkg.dev/nais-management-233d/pensjonsbrev/pensjonsbrev-brevbaker:main
 
 jobs:
-  "build-brevbaker":
-    name: "build brevbaker"
-    runs-on: "ubuntu-latest"
-    permissions:
-      packages: "write"
-      id-token: "write"
-    outputs:
-      image: ${{ steps.docker-push.outputs.image }}
-    steps:
-      - uses: "actions/checkout@v4"
-      - uses: "gradle/actions/wrapper-validation@v3"
-      - uses: "actions/cache@v4"
-        with:
-          "path": "~/.gradle/caches"
-          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
-          "restore-keys": "${{ runner.os }}-gradle-"
-      - uses: "actions/setup-java@v4"
-        with:
-          "distribution": "temurin"
-          "java-version": "17"
-      - name: "compile and run tests"
-        run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
-          ./gradlew :pensjon-brevbaker:build
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-      - name: "Build and publish container image to GAR"
-        uses: nais/docker-build-push@v0
-        env:
-          TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
-        id: docker-push
-        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-        with:
-          team: pensjonsbrev
-          image_suffix: brevbaker
-          push_image: true
-          pull: true
-          docker_context: ./pensjon-brevbaker
-          dockerfile: pensjon-brevbaker/Dockerfile
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      - name: "Publish container image to ghcr.io"
-        run: |
-          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${{ steps.docker-push.outputs.image }}" ] && docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_BREVBAKER} || docker build --pull --tag ${IMAGE_BREVBAKER} pensjon-brevbaker
-          docker push ${IMAGE_BREVBAKER}
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-
   "build-pdfbygger":
     name: "build pdfbygger"
     runs-on: "ubuntu-latest"
@@ -83,20 +30,22 @@ jobs:
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
-      - uses: "actions/checkout@v4"
-      - uses: "gradle/actions/wrapper-validation@v3"
-      - uses: "actions/cache@v4"
+      - uses: actions/checkout@v4
+      - uses: gradle/actions/wrapper-validation@v3
+      - uses: actions/cache@v4
         with:
           "path": "~/.gradle/caches"
           "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
           "restore-keys": "${{ runner.os }}-gradle-"
-      - uses: "actions/setup-java@v4"
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
+      - uses: actions/setup-java@v4
         with:
-          "distribution": "temurin"
-          "java-version": "17"
+          "distribution": temurin
+          "java-version": 17
       - name: "compile and run tests"
         run: "./gradlew :pdf-bygger:build"
-      - name: "Build and publish container image to GAR"
+      - name: "Build and publish container image"
         uses: nais/docker-build-push@v0
         id: docker-push
         if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
@@ -109,13 +58,6 @@ jobs:
           dockerfile: pdf-bygger/Dockerfile
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      - name: "Publish container image to ghcr.io"
-        run: |
-          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${{ steps.docker-push.outputs.image }}" ] && docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
-          docker push ${IMAGE_PDF_BYGGER}
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
   changes:
     runs-on: ubuntu-latest
@@ -132,14 +74,14 @@ jobs:
 
   runIntegrationTests:
     name: "Integration tests"
-    needs: [ build-brevbaker, build-pdfbygger, changes ]
+    needs: [ build-pdfbygger, changes ]
     services:
       pdf-bygger:
         env:
           PDF_BYGGER_COMPILE_TMP_DIR: "/tmp"
         ports:
           - 8081:8080
-        image: "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
+        image: ${{ needs.build-pdfbygger.outputs.image }}
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -152,7 +94,7 @@ jobs:
           JAVA_TOOL_OPTIONS: "-Dio.ktor.development=true"
         ports:
           - 8080:8080
-        image: "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
+        image: ${{ env.IMAGE_BREVBAKER }}
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -213,25 +155,6 @@ jobs:
           issue-number: ${{ github.event.number }}
           body-path: percy-build-url
 
-  "deployBrevbakerToDev":
-    name: "Deploy brevbaker to dev"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    needs: ["runIntegrationTests", "build-brevbaker"]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: "actions/checkout@v4"
-      - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "dev-gcp:brevbaker"
-          "CLUSTER": "dev-gcp"
-          "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-brevbaker.outputs.image }}
-          "VARS": "pensjon-brevbaker/.nais/dev.yaml"
-
   "deployPdfByggerToDev":
     name: "Deploy pdf-bygger to dev"
     permissions:
@@ -250,25 +173,6 @@ jobs:
           "RESOURCE": "pdf-bygger/.nais/nais.yaml"
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
-
-  "deployBrevbakerToProduction":
-    name: "Deploy brevbaker to production"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: ["runIntegrationTests", "build-brevbaker"]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: "actions/checkout@v4"
-      - name: "Deploy to production"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "prod-gcp:brevbaker"
-          "CLUSTER": "prod-gcp"
-          "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-brevbaker.outputs.image }}
-          "VARS": "pensjon-brevbaker/.nais/prod.yaml"
 
   "deployPdfByggerToProduction":
     name: "Deploy pdf-bygger to production"
