@@ -262,16 +262,15 @@ class OmstillingsstoenadRevurderingFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Language.Bokmal to "Fordi stønaden din er redusert tilbake i tid, har du fått for " +
-                            "mye utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår " +
-                            "av folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt. ",
-                    Language.Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått " +
-                            "for mykje utbetalt. Beløpet er under den nedre grensa for tilbakekrevjing som går " +
-                            "fram av folketrygdlova § 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
-                    Language.English to "Because your allowance has been reduced retroactively, you " +
-                            "received more than you were owed. The amount is below the lower limit for " +
-                            "demanding repayment, as stated in Section 22-15(6) of the National Insurance Act, " +
-                            "so no repayment will be demanded of you. ",
+                    Bokmal to "Fordi stønaden din er redusert tilbake i tid, har du fått for " +
+                            "mye utbetalt. Du skal ikke betale tilbake noe, fordi vilkårene for tilbakekreving i " +
+                            "folketrygdloven § 22-15 ikke er oppfylt.",
+                    Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått " +
+                            "for mykje utbetalt. Du skal ikkje betala noko tilbake, fordi vilkåra for tilbakekrevjing i " +
+                            "folketrygdloven § 22-15 ikkje er oppfylt.",
+                    English to "Because your allowance has been reduced retroactively, you " +
+                            "received more than you were owed. No repayment will be demanded of you because the conditions " +
+                            "for recovery under the National Insurance Act, section 22-15, are not met.",
                 )
             }
         }
