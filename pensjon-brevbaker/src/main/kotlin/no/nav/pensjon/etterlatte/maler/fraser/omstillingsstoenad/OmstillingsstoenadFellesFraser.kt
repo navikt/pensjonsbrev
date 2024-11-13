@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -19,6 +20,33 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 object OmstillingsstoenadFellesFraser {
+
+    object Utbetaling : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Utbetaling av omstillingsstønad",
+                    Language.Nynorsk to "Utbetaling av omstillingsstønad",
+                    Language.English to "Payment of adjustment allowance",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Omstillingsstønad blir utbetalt innen den 20. i hver måned. Du finner " +
+                            "utbetalingsdatoer på ${Constants.UTBETALING_URL}. Utbetalingen kan bli forsinket hvis " +
+                            "den skal samordnes med ytelser du mottar fra Nav eller andre, som for eksempel " +
+                            "tjenestepensjonsordninger.",
+                    Language.Nynorsk to "Omstillingsstønad blir utbetalt innan den 20. i kvar månad. Du finn " +
+                            "utbetalingsdatoane på ${Constants.UTBETALING_URL}. Utbetalinga kan bli forseinka dersom " +
+                            "ho skal samordnast med ytingar du får frå Nav eller andre (t.d. tenestepensjonsordningar).",
+                    Language.English to "The adjustment allowance is paid on or before the 20th of each month. " +
+                            "You can find payout dates online: ${Constants.UTBETALING_URL}. The payment may be delayed " +
+                            "if it is to be  coordinated with benefits you receive from Nav or others, such as a " +
+                            "pension from an occupational pension scheme.",
+                )
+            }
+        }
+    }
 
     object MeldFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

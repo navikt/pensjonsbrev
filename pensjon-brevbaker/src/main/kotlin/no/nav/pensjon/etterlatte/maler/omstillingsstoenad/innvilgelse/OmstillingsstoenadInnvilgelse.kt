@@ -76,7 +76,7 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
                 konverterElementerTilBrevbakerformat(innhold)
 
                 showIf(harUtbetaling) {
-                    includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
+                    includePhrase(OmstillingsstoenadInnvilgelseFraser.UtbetalingMedEtterbetaling(etterbetaling))
                 }
                 includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad(tidligereFamiliepleier))
                 includePhrase(
