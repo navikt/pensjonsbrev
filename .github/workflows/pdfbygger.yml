@@ -18,7 +18,7 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger.yml"
 env:
-  "IMAGE_BREVBAKER": europe-north1-docker.pkg.dev/nais-management-233d/pensjonsbrev/pensjonsbrev-brevbaker:main
+  "IMAGE_BREVBAKER": europe-north1-docker.pkg.dev/nais-management-233d/pensjonsbrev/pensjonsbrev-brevbaker:splitte_byggejobbar
 
 jobs:
   "build-pdfbygger":
