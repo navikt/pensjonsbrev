@@ -22,11 +22,10 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.Omst
 import java.time.LocalDate
 
 data class OmstillingsstoenadInntektsjusteringVarselDTO(
-    override val innhold: List<Element>,
     val inntektsaar: Int,
     val bosattUtland: Boolean,
     val virkningstidspunkt: LocalDate,
-) : FerdigstillingBrevDTO
+)
 
 @TemplateModelHelpers
 object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<OmstillingsstoenadInntektsjusteringVarselDTO>,
