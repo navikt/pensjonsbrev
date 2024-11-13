@@ -10,7 +10,7 @@ on:
       - ".github/workflows/pdfbygger.yml"
   push:
     branches:
-      - "main"
+      - "splitte_byggejobbar"
     paths:
       - "build.gradle.kts"
       - "gradle.properties"
