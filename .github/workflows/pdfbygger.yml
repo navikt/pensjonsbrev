@@ -17,8 +17,6 @@ on:
       - "template-model-generator/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger.yml"
-env:
-  "IMAGE_BREVBAKER": europe-north1-docker.pkg.dev/nais-management-233d/pensjonsbrev/pensjonsbrev-brevbaker:splitte_byggejobbar
 
 jobs:
   "build-pdfbygger":
@@ -94,7 +92,7 @@ jobs:
           JAVA_TOOL_OPTIONS: "-Dio.ktor.development=true"
         ports:
           - 8080:8080
-        image: ${{ env.IMAGE_BREVBAKER }}
+        image: "europe-north1-docker.pkg.dev/nais-management-233d/pensjonsbrev/pensjonsbrev-brevbaker:splitte_byggejobbar"
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}

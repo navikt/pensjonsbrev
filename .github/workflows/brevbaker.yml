@@ -17,8 +17,6 @@ on:
       - "template-model-generator/**"
       - "pensjon-brevbaker/**"
       - ".github/workflows/brevbaker.yml"
-env:
-  "IMAGE_PDF_BYGGER": europe-north1-docker.pkg.dev/nais-management-233d/pensjonsbrev/pensjonsbrev-pdf-bygger:splitte_byggejobbar
 
 jobs:
   "build-brevbaker":
@@ -76,7 +74,7 @@ jobs:
           PDF_BYGGER_COMPILE_TMP_DIR: "/tmp"
         ports:
           - 8081:8080
-        image: ${{ env.IMAGE_PDF_BYGGER }}
+        image: "europe-north1-docker.pkg.dev/nais-management-233d/pensjonsbrev/pensjonsbrev-pdf-bygger:splitte_byggejobbar"
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
