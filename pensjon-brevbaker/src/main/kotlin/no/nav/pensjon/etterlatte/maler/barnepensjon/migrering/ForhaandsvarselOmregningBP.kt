@@ -166,13 +166,13 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
                 text(
                     Language.Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
                     Language.Nynorsk to "Les meir på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ",
-                    Language.English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ("
+                    Language.English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone "
                 )
                 kontakttelefonPensjon(erBosattUtlandet)
                 text(
                     Language.Bokmal to " hverdager mellom kl. 09.00-15.00.",
                     Language.Nynorsk to ", kvardagar mellom kl. 09.00–15.00. ",
-                    Language.English to ") weekdays between 09.00-15.00."
+                    Language.English to " weekdays between 09.00-15.00."
                 )
             }
 
