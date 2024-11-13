@@ -175,14 +175,14 @@ object BarnepensjonRevurderingFraser {
             paragraph {
                 text(
                     Language.Bokmal to "Fordi pensjonen din er opphørt tilbake i tid, har du fått for mye " +
-                            "utbetalt. Beløpet er under den nedre grensen for tilbakekreving som fremgår av " +
-                            "folketrygdloven § 22-15 sjette ledd, og kreves derfor ikke tilbakebetalt.",
+                            "utbetalt. Du skal ikke betale noe tilbake, fordi vilkårene for tilbakekreving i " +
+                            "folketrygdloven § 22-15 ikke er oppfylt. ",
                     Language.Nynorsk to "Fordi pensjonen din blei avvikla tilbake i tid, har du fått for " +
-                            "mykje utbetalt. Beløpet er under den nedre grensa for tilbakekrevjing som går fram av " +
-                            "folketrygdlova § 22-15 sjette ledd, og blir difor ikkje kravd tilbakebetalt.",
+                            "mykje utbetalt. Du skal ikkje betala noko tilbake, fordi vilkåra for tilbakekrevjing i " +
+                            "folketrygdloven § 22-15 ikkje er oppfylt.",
                     Language.English to "You have been overpaid because your pension has been terminated " +
-                            "retroactively. The amount is below the lower limit for demanding repayment, as stated " +
-                            "in the National Insurance Act - Section 22-15(6). So no repayment will be demanded of you.",
+                            "retroactively. No repayment will be demanded of you because the conditions for recovery " +
+                            "under the National Insurance Act, section 22-15, are not met.",
                 )
             }
         }
