@@ -12,30 +12,21 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVarselDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVarselDTOSelectors.inntektsaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVarselDTOSelectors.virkningstidspunkt
-import java.time.LocalDate
-
-data class OmstillingsstoenadInntektsjusteringVarselDTO(
-    val inntektsaar: Int,
-    val bosattUtland: Boolean,
-    val virkningstidspunkt: LocalDate,
-)
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.inntektsaar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.virkningstidspunkt
 
 @TemplateModelHelpers
-object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<OmstillingsstoenadInntektsjusteringVarselDTO>,
+object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<OmstillingsstoenadInntektsjusteringVedtakDTO>,
     Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VARSEL
 
     override val template =
         createTemplate(
             name = kode.name,
-            letterDataType = OmstillingsstoenadInntektsjusteringVarselDTO::class,
+            letterDataType = OmstillingsstoenadInntektsjusteringVedtakDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(
@@ -47,7 +38,7 @@ object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<Omstilling
         ) {
             title {
                 textExpr(
-                    Bokmal to "Forhåndsvarsel om vurdering av omstillingsstønad for ".expr() + inntektsaar.format() ,
+                    Bokmal to "Forhåndsvarsel om vurdering av omstillingsstønad for ".expr() + inntektsaar.format(),
                     Nynorsk to "Førehandsvarsel om vurdering av omstillingsstønad for ".expr() + inntektsaar.format(),
                     English to "Advance notice of assessment of adjustment allowance for ".expr() + inntektsaar.format(),
                 )
@@ -56,9 +47,9 @@ object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<Omstilling
             outline {
                 paragraph {
                     textExpr(
-                        Bokmal to "Dette er et forhåndsvarsel om at vi vil fatte et nytt vedtak om omstillingsstønad fra 1. januar ".expr() + inntektsaar.format()+", fordi omstillingsstønaden din skal beregnes ut fra inntekten du forventer å ha neste kalenderår.",
-                        Nynorsk to "Dette er eit førehandsvarsel om at vi vil fatte eit nytt vedtak om omstillingsstønad frå 1. januar ".expr() + inntektsaar.format()+", då omstillingsstønaden din skal reknast ut med utgangspunkt i inntekta du forventar å ha neste kalenderår.",
-                        English to "This is an advance notice that we will be passing a new decision regarding adjustment allowance from 1 January ".expr() + inntektsaar.format()+", as your adjustment allowance will be calculated based on the income you are expecting in the next calendar year.",
+                        Bokmal to "Dette er et forhåndsvarsel om at vi vil fatte et nytt vedtak om omstillingsstønad fra 1. januar ".expr() + inntektsaar.format() + ", fordi omstillingsstønaden din skal beregnes ut fra inntekten du forventer å ha neste kalenderår.",
+                        Nynorsk to "Dette er eit førehandsvarsel om at vi vil fatte eit nytt vedtak om omstillingsstønad frå 1. januar ".expr() + inntektsaar.format() + ", då omstillingsstønaden din skal reknast ut med utgangspunkt i inntekta du forventar å ha neste kalenderår.",
+                        English to "This is an advance notice that we will be passing a new decision regarding adjustment allowance from 1 January ".expr() + inntektsaar.format() + ", as your adjustment allowance will be calculated based on the income you are expecting in the next calendar year.",
                     )
                 }
 
@@ -71,16 +62,16 @@ object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<Omstilling
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi forhåndsvarsler deg slik at du kan sjekke om beregningen av omstillingsstønaden din fra 1. januar ".expr() + inntektsaar.format()+" er korrekt. Dette er en foreløpig beregning som vi har gjort på bakgrunn av opplysningene vi har om inntekten din i år.",
-                        Nynorsk to "Vi varslar deg på førehand, slik at du kan sjekke at utrekninga av omstillingsstønaden din frå 1. januar ".expr() + inntektsaar.format()+" stemmer. Dette er ei førebels utrekning som vi har gjort på bakgrunn av opplysningane vi har om inntekta di i år.",
-                        English to "We notify you in advance so that you can check whether the calculation of your adjustment allowance from 1 January ".expr() + inntektsaar.format()+" is correct. This is a preliminary calculation, based on the information we hold about your income this year.",
+                        Bokmal to "Vi forhåndsvarsler deg slik at du kan sjekke om beregningen av omstillingsstønaden din fra 1. januar ".expr() + inntektsaar.format() + " er korrekt. Dette er en foreløpig beregning som vi har gjort på bakgrunn av opplysningene vi har om inntekten din i år.",
+                        Nynorsk to "Vi varslar deg på førehand, slik at du kan sjekke at utrekninga av omstillingsstønaden din frå 1. januar ".expr() + inntektsaar.format() + " stemmer. Dette er ei førebels utrekning som vi har gjort på bakgrunn av opplysningane vi har om inntekta di i år.",
+                        English to "We notify you in advance so that you can check whether the calculation of your adjustment allowance from 1 January ".expr() + inntektsaar.format() + " is correct. This is a preliminary calculation, based on the information we hold about your income this year.",
                     )
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Du kan se hvordan vi har beregnet omstillingsstønaden din i vedlegg til «Utkast – Vedtak om omstillingsstønad fra ".expr() + virkningstidspunkt.format() +"».",
-                        Nynorsk to "I vedlegget «Utkast – Vedtak om omstillingsstønad frå ".expr() + virkningstidspunkt.format() +"» kan du sjå korleis vi har rekna ut omstillingsstønaden din.",
-                        English to "You can see how we have calculated your adjustment allowance in the attachment to «Draft document – Decision regarding adjustment allowance from ".expr() + virkningstidspunkt.format() +"».",
+                        Bokmal to "Du kan se hvordan vi har beregnet omstillingsstønaden din i vedlegg til «Utkast – Vedtak om omstillingsstønad fra ".expr() + virkningstidspunkt.format() + "».",
+                        Nynorsk to "I vedlegget «Utkast – Vedtak om omstillingsstønad frå ".expr() + virkningstidspunkt.format() + "» kan du sjå korleis vi har rekna ut omstillingsstønaden din.",
+                        English to "You can see how we have calculated your adjustment allowance in the attachment to «Draft document – Decision regarding adjustment allowance from ".expr() + virkningstidspunkt.format() + "».",
                     )
                 }
                 paragraph {
@@ -99,9 +90,9 @@ object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<Omstilling
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Hvis du ikke har gitt oss nye opplysninger eller innsigelser til «Utkast – Vedtak om omstillingsstønad fra ".expr() + virkningstidspunkt.format() +"» som er vedlagt, vil vedlegget anses som et vedtak fra 1. januar "+inntektsaar.format()+". Du vil da ikke motta et nytt vedtaksbrev.",
-                        Nynorsk to "Dersom du ikkje har nye opplysningar eller innvendingar til «Utkast – Vedtak om omstillingsstønad frå ".expr() + virkningstidspunkt.format() +"» som er lagt ved, vil vedlegget bli rekna som vedtak frå og med 1. januar "+inntektsaar.format()+". Du vil då ikkje få eit nytt vedtaksbrev.",
-                        English to "If have not provided us with new information or objections to  the attached «Draft document – Decision regarding adjustment allowance from ".expr() + virkningstidspunkt.format() +"», the attachment will be considered a decision effective from 1 January "+inntektsaar.format()+". You will then not receive a new decision letter.",
+                        Bokmal to "Hvis du ikke har gitt oss nye opplysninger eller innsigelser til «Utkast – Vedtak om omstillingsstønad fra ".expr() + virkningstidspunkt.format() + "» som er vedlagt, vil vedlegget anses som et vedtak fra 1. januar " + inntektsaar.format() + ". Du vil da ikke motta et nytt vedtaksbrev.",
+                        Nynorsk to "Dersom du ikkje har nye opplysningar eller innvendingar til «Utkast – Vedtak om omstillingsstønad frå ".expr() + virkningstidspunkt.format() + "» som er lagt ved, vil vedlegget bli rekna som vedtak frå og med 1. januar " + inntektsaar.format() + ". Du vil då ikkje få eit nytt vedtaksbrev.",
+                        English to "If have not provided us with new information or objections to  the attached «Draft document – Decision regarding adjustment allowance from ".expr() + virkningstidspunkt.format() + "», the attachment will be considered a decision effective from 1 January " + inntektsaar.format() + ". You will then not receive a new decision letter.",
                     )
                 }
 
@@ -179,5 +170,5 @@ object OmstillingsstoenadInntektsjusteringVarsel : EtterlatteTemplate<Omstilling
 
             }
         }
+}
 
-    }
