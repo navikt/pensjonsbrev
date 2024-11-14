@@ -136,6 +136,24 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
+  /letter/autobrev/utenKode/pdf:
+    post:
+      summary: Bestill brev i PDF-format, men uten brevkode i API-modellen vår
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se dataklasse `no.nav.pensjon.brev.api.model.BestillBrevUtenDataRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevUtenDataRequest"
+      responses:
+        '200':
+          $ref: "#/components/responses/LetterResponse_PDF"
+        '404':
+          description: Malen eksisterer ikke
+
   /letter/redigerbar/markup:
     post:
       summary: Bestill brev i redigerbart LetterMarkup format
@@ -282,6 +300,22 @@ components:
         letterData:
           type: object
           description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon-brevbaker-api-model)
+        felles:
+          type: object
+          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon-brevbaker-api-model)
+        language:
+          $ref: "#/components/schemas/LanguageCode"
+    BestillBrevUtenDataRequest:
+      type: object
+      description: Se `no.nav.pensjon.brev.api.model.BestillBrevUtenDataRequest`
+      required:
+        - kode
+        - felles
+        - language
+      properties:
+        kode:
+          type: string
+          description: Brevkode (name på enum)
         felles:
           type: object
           description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon-brevbaker-api-model)
