@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.maler.redigerbar.InnhentingOpplysningerFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.BrevUtenKode
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object ProductionTemplates {
@@ -57,5 +58,7 @@ object ProductionTemplates {
         InnhentingOpplysningerFraBruker,
         InnhentingDokumentasjonFraBruker,
         VarselOmMuligAvslag,
+    )
+    val brevUtenKode: Set<BrevUtenKode<*>> = setOf(
     )
 }

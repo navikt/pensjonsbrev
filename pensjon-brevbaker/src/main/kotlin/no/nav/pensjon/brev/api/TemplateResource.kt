@@ -5,10 +5,13 @@ import io.ktor.server.plugins.*
 import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillBrevUtenDataRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
@@ -34,6 +37,18 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
             renderPDF(createLetter(kode, letterData, language, felles))
         }
 
+    suspend fun renderPDF(brevbestilling: BestillBrevUtenDataRequest): LetterResponse =
+        with(brevbestilling) {
+            renderPDF(
+                Letter(
+                    template = ProductionTemplates.brevUtenKode.first { it.kode.name == brevbestilling.kode }.template,
+                    argument = EmptyBrevdata,
+                    language = language.toLanguage(),
+                    felles = felles,
+                )
+            )
+        }
+
     suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
             renderPDF(createLetter(kode, letterData, language, felles), letterMarkup)
@@ -53,10 +68,12 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
         createLetter(brevbestilling.kode, brevbestilling.letterData, brevbestilling.language, brevbestilling.felles)
             .let { Letter2Markup.renderLetterOnly(it.toScope(), it.template) }
 
-    fun countLetter(brevkode: Kode): Unit =
+    fun countLetter(brevkode: Kode) = countLetter(brevkode.name)
+
+    fun countLetter(brevkode: String): Unit =
         Metrics.prometheusRegistry.counter(
             "pensjon_brevbaker_letter_request_count",
-            listOf(Tag.of("brevkode", brevkode.name))
+            listOf(Tag.of("brevkode", brevkode))
         ).increment()
 
     private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
