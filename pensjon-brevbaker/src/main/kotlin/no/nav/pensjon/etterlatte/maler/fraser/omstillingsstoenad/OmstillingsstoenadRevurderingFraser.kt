@@ -247,7 +247,7 @@ class OmstillingsstoenadRevurderingFraser {
                             "folketrygdloven § 22-15 ikke er oppfylt.",
                     Nynorsk to "Ettersom stønaden din blei redusert tilbake i tid, har du fått " +
                             "for mykje utbetalt. Du skal ikkje betala noko tilbake, fordi vilkåra for tilbakekrevjing i " +
-                            "folketrygdloven § 22-15 ikkje er oppfylt.",
+                            "folketrygdlova § 22-15 ikkje er oppfylt.",
                     English to "Because your allowance has been reduced retroactively, you " +
                             "received more than you were owed. No repayment will be demanded of you because the conditions " +
                             "for recovery under the National Insurance Act, section 22-15, are not met.",
@@ -319,7 +319,7 @@ class OmstillingsstoenadRevurderingFraser {
                             "folketrygdloven § 22-15 ikke er oppfylt.",
                     Nynorsk to "Fordi omstillingsstønaden din blei avvikla tilbake i tid, har du fått " +
                             "for mykje utbetalt. Du skal ikkje betala noko tilbake, fordi vilkåra for tilbakekrevjing " +
-                            "i folketrygdloven § 22-15 ikkje er oppfylt.",
+                            "i folketrygdlova § 22-15 ikkje er oppfylt.",
                     English to "You have been overpaid because your adjustment allowance has been " +
                             "terminated retroactively. No repayment will be demanded of you because the conditions for " +
                             "recovery under the National Insurance Act, section 22-15, are not met.",
