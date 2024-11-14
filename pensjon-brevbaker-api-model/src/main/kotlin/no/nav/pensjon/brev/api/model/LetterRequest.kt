@@ -7,6 +7,13 @@ import no.nav.pensjon.brevbaker.api.model.*
 data class BestillBrevRequest<T : Enum<T>>(val kode: T, val letterData: BrevbakerBrevdata, val felles: Felles, val language: LanguageCode)
 
 @Suppress("unused")
+data class BestillBrevUtenDataRequest(
+    val kode: String,
+    val felles: Felles,
+    val language: LanguageCode,
+)
+
+@Suppress("unused")
 data class BestillRedigertBrevRequest<T : Enum<T>>(
     val kode: T,
     val letterData: BrevbakerBrevdata,
