@@ -179,7 +179,7 @@ object BarnepensjonRevurderingFraser {
                             "folketrygdloven § 22-15 ikke er oppfylt. ",
                     Language.Nynorsk to "Fordi pensjonen din blei avvikla tilbake i tid, har du fått for " +
                             "mykje utbetalt. Du skal ikkje betala noko tilbake, fordi vilkåra for tilbakekrevjing i " +
-                            "folketrygdloven § 22-15 ikkje er oppfylt.",
+                            "folketrygdlova § 22-15 ikkje er oppfylt.",
                     Language.English to "You have been overpaid because your pension has been terminated " +
                             "retroactively. No repayment will be demanded of you because the conditions for recovery " +
                             "under the National Insurance Act, section 22-15, are not met.",
@@ -250,7 +250,7 @@ object BarnepensjonRevurderingFraser {
                             "folketrygdloven § 22-15 ikke er oppfylt.",
                     Language.Nynorsk to "Ettersom pensjonen din blei redusert tilbake i tid, har du fått " +
                             "for mykje utbetalt. Du skal ikkje betala noko tilbake, fordi vilkåra for tilbakekrevjing " +
-                            "i folketrygdloven § 22-15 ikkje er oppfylt.",
+                            "i folketrygdlova § 22-15 ikkje er oppfylt.",
                     Language.English to "Because your pension has been reduced retroactively, you " +
                             "received more than you were owed. No repayment will be demanded of you because the " +
                             "conditions for recovery under the National Insurance Act, section 22-15, are not met.",
