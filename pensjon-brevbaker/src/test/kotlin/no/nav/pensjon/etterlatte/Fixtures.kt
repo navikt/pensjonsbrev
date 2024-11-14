@@ -127,7 +127,6 @@ object Fixtures {
             OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO::class -> createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() as T
 
             OmstillingsstoenadInntektsjusteringVedtakDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
-            OmstillingsstoenadInntektsjusteringVarselDTO::class -> createOmstillingsstoenadInntektsjusteringVarselDTO() as T
             OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfallDTO() as T
 
             TilbakekrevingBrevDTO::class -> createTilbakekrevingFerdigDTO() as T
