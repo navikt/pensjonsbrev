@@ -126,7 +126,9 @@ fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderin
         inneholderKrav = true,
         etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
     ),
-    harUtbetaling = false,
+    harUtbetaling = true,
     feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
-    brukerUnder18Aar = true
+    brukerUnder18Aar = true,
+    bosattUtland = false,
+    frivilligSkattetrekk = false
 )
