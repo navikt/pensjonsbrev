@@ -103,6 +103,16 @@ fun Application.brevbakerModule() {
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
+    FeatureToggleInitializer.initUnleash(brevbakerConfig.config("unleash").let {
+        UnleashConfig(
+            appName = it.property("appName").getString(),
+            environment = it.property("environment").getString(),
+            host = it.property("host").getString(),
+            apiToken = it.property("apiToken").getString(),
+            overrides = mapOf()
+        )
+    })
+
     configureMetrics()
     brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService)
 }
