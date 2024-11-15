@@ -105,7 +105,7 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<Omstillings
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis opplysningene ikke stemmer, må du gi beskjed til oss snarest og innen fire uker fra du får dette forhåndsvarselet.",
+                        Bokmal to "Hvis opplysningene ikke stemmer, må du gi beskjed til oss senest innen fire uker fra du får dette forhåndsvarselet.",
                         Nynorsk to "Dersom opplysningane ikkje stemmer, må du gi oss beskjed seinast innan fire veker frå du får dette førehandsvarselet.",
                         English to "If the information is not correct, you must notify us as soon as possible, no later than four weeks from the date you received this advance notice.",
                     )
