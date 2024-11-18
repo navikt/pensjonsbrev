@@ -44,9 +44,11 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun stableHashCode(): Int = "TelefonnummerFormat".hashCode()
         override fun apply(first: Telefonnummer, second: Language): String = first.format()
     }
+
     object AarFormat : LocalizedFormatter<Collection<Year>>() {
         override fun stableHashCode(): Int = "AarFormat".hashCode()
-        override fun apply(first: Collection<Year>, second: Language): String = formaterListe(first.map { it.value.toString() }, second)
+        override fun apply(first: Collection<Year>, second: Language): String =
+            formaterListe(first.map { it.value.toString() }, second)
     }
 
     object CollectionFormat : LocalizedFormatter<Collection<String>>() {
@@ -57,13 +59,16 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
     }
 }
 
-private fun formaterListe(first: Collection<String>, second: Language): String = if (first.size == 1) {
-    first.first()
-} else {
-    val lastSeparator = when (second) {
-        Language.Bokmal -> " og "
-        Language.Nynorsk -> " og "
-        Language.English -> " and "
+private fun formaterListe(first: Collection<String>, second: Language): String =
+    when {
+        first.isEmpty() -> ""
+        first.size == 1 -> first.first()
+        else -> {
+            val lastSeparator = when (second) {
+                Language.Bokmal -> " og "
+                Language.Nynorsk -> " og "
+                Language.English -> " and "
+            }
+            first.take(first.size - 1).joinToString(", ") + lastSeparator + first.last()
+        }
     }
-    first.take(first.size - 1).joinToString(", ") + lastSeparator + first.last()
-}
