@@ -8,14 +8,10 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.FeatureToggleConfig
-import no.nav.pensjon.brev.FeatureToggleHandler
-import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
@@ -25,7 +21,6 @@ import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.maler.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
-import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.DocumentFile
@@ -44,13 +39,7 @@ class TemplateResourceTest {
     private val latexMock = mockk<LaTeXCompilerService> {
         coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
     }
-    private val autobrev: TemplateResource<Brevkode.AutoBrev, AutobrevTemplate<BrevbakerBrevdata>>
-    init {
-        FeatureToggleHandler.Builder().override(FeatureToggles.varselVersjon2, true)
-            .setConfig(FeatureToggleConfig("a", "b", "http://localhost", "d"))
-            .build()
-        autobrev = TemplateResource("autobrev", ProductionTemplates.autobrev, latexMock)
-    }
+    private val autobrev = TemplateResource("autobrev", ProductionTemplates.autobrev, latexMock)
     private val redigerbar = TemplateResource("autobrev", ProductionTemplates.redigerbare, latexMock)
 
     private val validAutobrevRequest = BestillBrevRequest(
