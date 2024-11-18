@@ -2,17 +2,7 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 import { isEqual } from "lodash";
 
-import type {
-  Content,
-  Item,
-  ItemList,
-  LiteralValue,
-  ParagraphBlock,
-  TextContent,
-  Title1Block,
-  Title2Block,
-  VariableValue,
-} from "~/types/brevbakerTypes";
+import type { Content, ItemList, TextContent } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
@@ -127,6 +117,8 @@ const mergeItemLists = (content: Content[]): Content[] => {
 
 /**
  * Lager en ny punktliste, som er uten noen eksisterende punktliste før eller etter
+ *
+ * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOnWithoutSurroundingElements = (args: {
   draft: Draft<LetterEditorState>;
@@ -172,6 +164,8 @@ const toggleBulletListOnWithoutSurroundingElements = (args: {
 /**
  * Lager en ny punktliste, som er mellom to eksisterende punktlister.
  * Disse punktlistene skal merges til en punktliste.
+ *
+ * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOnBetweenElemenets = (args: { draft: Draft<LetterEditorState>; literalIndex: LiteralIndex }) => {
   const blocksUntilPrevBlock = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.literalIndex.blockIndex - 2));
@@ -260,12 +254,14 @@ const toggleBulletListOnBetweenElemenets = (args: { draft: Draft<LetterEditorSta
 /**
  * Lager en ny punktliste, som har en eksisterende punktliste før seg.
  * Merger disse 2 punktlistene til en punktliste.
+ *
+ * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOnWithItemListBefore = (args: {
   draft: Draft<LetterEditorState>;
   literalIndex: LiteralIndex;
 }) => {
-  const blocksUntilPrevBlock = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.literalIndex.blockIndex - 2));
+  const blocksUntilPrevBlock = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.literalIndex.blockIndex - 1));
   const prevBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex - 1];
   const thisBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
   const nextBlocks = args.draft.redigertBrev.blocks.slice(args.literalIndex.blockIndex + 1);
@@ -341,6 +337,12 @@ const toggleBulletListOnWithItemListBefore = (args: {
   };
 };
 
+/**
+ * Lager en ny punktliste, som har en eksisterende punktliste etter seg.
+ * Merger disse 2 punktlistene til en punktliste.
+ *
+ * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
+ */
 const toggleBulletListOnWithItemListAfter = (args: { draft: Draft<LetterEditorState>; literalIndex: LiteralIndex }) => {
   const prevBlocks = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.literalIndex.blockIndex));
   const thisBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
@@ -425,56 +427,15 @@ const toggleBulletListOnWithItemListAfter = (args: { draft: Draft<LetterEditorSt
  * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOff = (draft: Draft<LetterEditorState>, itemContentIndex: ItemContentIndex) => {
-  const dokumentBlocks = draft.redigertBrev.blocks;
-  const thisBlock = dokumentBlocks[itemContentIndex.blockIndex];
+  const thisBlock = draft.redigertBrev.blocks[itemContentIndex.blockIndex];
   const thisItemList = thisBlock.content[itemContentIndex.contentIndex] as ItemList;
-  const thisItem = thisItemList.items[itemContentIndex.itemIndex];
-  const existingParagraphContent = thisItem.content;
-
-  console.log("thisBlockDeletedItems", JSON.parse(JSON.stringify(thisBlock.deletedContent)));
-  console.log("itemListDeletedcontent", JSON.parse(JSON.stringify(thisItemList.deletedItems)));
-
-  const blockContentBeforeItemList = thisBlock.content.slice(0, itemContentIndex.contentIndex);
-  const blockContentAfterItemList = thisBlock.content.slice(itemContentIndex.contentIndex + 1);
-
-  const listItemsBeforeNewParagraph = thisItemList.items.slice(0, itemContentIndex.itemIndex);
-  const listItemsAfterNewParagraph = thisItemList.items.slice(itemContentIndex.itemIndex + 1);
 
   if (itemContentIndex.itemIndex === 0) {
-    //eslint-disable-next-line no-console
-    console.log("start");
-    toggleBulletListOffAtTheStartOfItemList({
-      dokumentBlocks,
-      draft,
-      itemContentIndex,
-      existingParagraphContent,
-      listItemsAfterNewParagraph,
-      blockContentBeforeItemList,
-    });
+    toggleBulletListOffAtTheStartOfItemList({ draft, itemContentIndex });
   } else if (itemContentIndex.itemIndex > 0 && itemContentIndex.itemIndex < thisItemList.items.length - 1) {
-    //eslint-disable-next-line no-console
-    console.log("middle");
-    toggleBulletListOffBetweenListElements({
-      dokumentBlocks,
-      draft,
-      itemContentIndex,
-      existingParagraphContent,
-      listItemsAfterNewParagraph,
-      blockContentBeforeItemList,
-      listItemsBeforeNewParagraph,
-    });
+    toggleBulletListOffBetweenListElements({ draft, itemContentIndex });
   } else if (itemContentIndex.itemIndex === thisItemList.items.length - 1) {
-    //eslint-disable-next-line no-console
-    console.log("end");
-    toggleBulletListOffAtTheEndOfItemList({
-      dokumentBlocks,
-      draft,
-      itemContentIndex,
-      existingParagraphContent,
-      blockContentBeforeItemList,
-      listItemsBeforeNewParagraph,
-      blockContentAfterItemList,
-    });
+    toggleBulletListOffAtTheEndOfItemList({ draft, itemContentIndex });
   }
 };
 
@@ -482,36 +443,35 @@ const toggleBulletListOff = (draft: Draft<LetterEditorState>, itemContentIndex: 
  * Fjerner det første punktet fra en punktliste
  * Bygger dette punktet som en ny block, og setter den inn i dokumentet
  * Legger tilbake resten av punktene i punktlisten
+ *
+ * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOffAtTheStartOfItemList = (args: {
-  dokumentBlocks: (Draft<Title1Block> | Draft<Title2Block> | Draft<ParagraphBlock>)[];
   draft: Draft<LetterEditorState>;
   itemContentIndex: ItemContentIndex;
-  existingParagraphContent: TextContent[];
-  listItemsAfterNewParagraph: Item[];
-  blockContentBeforeItemList: (Draft<ItemList> | Draft<LiteralValue> | Draft<VariableValue>)[];
 }) => {
-  const hasBlockContentBeforeItemList = args.blockContentBeforeItemList.length > 0;
-  const newParagraphBlock = newParagraph({ id: null, content: args.existingParagraphContent });
-  const hasListItemsAfter = args.listItemsAfterNewParagraph.length > 0;
-  const blockContentAfter = newParagraph({ content: [newItemList({ items: [...args.listItemsAfterNewParagraph] })] });
+  const prevBlocks = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.itemContentIndex.blockIndex));
+  const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
+  const nextBlocks = args.draft.redigertBrev.blocks.slice(args.itemContentIndex.blockIndex + 1);
 
-  const newBlockContents = [
-    ...(hasBlockContentBeforeItemList ? [newParagraph({ content: args.blockContentBeforeItemList })] : []),
-    newParagraphBlock,
-    ...(hasListItemsAfter ? [blockContentAfter] : []),
-  ];
+  const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
+  const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
+  const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
 
-  const newBlockContentList = [
-    ...args.dokumentBlocks.slice(0, args.itemContentIndex.blockIndex),
-    ...newBlockContents,
-    ...args.dokumentBlocks.slice(args.itemContentIndex.blockIndex + 1),
-  ].filter((block) => block.content.length > 0);
+  const newThisBlock = newParagraph({ content: thisItem.content });
+  const newNextBlock = newParagraph({ content: [newItemList({ items: itemsAfter })] });
+
+  const newBlocks = [...prevBlocks, newThisBlock, newNextBlock, ...nextBlocks].filter(
+    (block) => block.content.length > 0,
+  );
 
   //TODO - bug - hvis det eksisterer blocker som er lik den nye (for eksempel et tom literal, og en tomt punkt, vil vi treffe literalen)
-  const newParagraphBlockIndex = newBlockContentList.findIndex((block) => isEqual(block, newParagraphBlock));
+  const newParagraphBlockIndex = newBlocks.findIndex((block) => isEqual(block, newThisBlock));
 
-  args.draft.redigertBrev.blocks = newBlockContentList;
+  args.draft.redigertBrev.blocks = newBlocks;
+  args.draft.redigertBrev.deletedBlocks = [...args.draft.redigertBrev.deletedBlocks, thisBlock.id].filter(
+    (id) => id !== null,
+  );
   args.draft.focus = {
     blockIndex: newParagraphBlockIndex,
     contentIndex: args.itemContentIndex.itemContentIndex,
@@ -523,38 +483,37 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
  * Fjerner et punkt fra en punktliste, som ikke er det første eller siste punktet i punktlisten
  * Bygger en ny block med punktene før det punktet som skal fjernes, og setter den inn i dokumentet
  * Bygger 2 nye blocks, med innhold som er før og etter det punktet som skal fjernes, og setter de inn i dokumentet
+ *
+ * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOffBetweenListElements = (args: {
-  dokumentBlocks: (Draft<Title1Block> | Draft<Title2Block> | Draft<ParagraphBlock>)[];
   draft: Draft<LetterEditorState>;
   itemContentIndex: ItemContentIndex;
-  existingParagraphContent: TextContent[];
-  listItemsBeforeNewParagraph: Item[];
-  listItemsAfterNewParagraph: Item[];
-  blockContentBeforeItemList: (Draft<ItemList> | Draft<LiteralValue> | Draft<VariableValue>)[];
 }) => {
-  const hasBlockContentBeforeItemList = args.blockContentBeforeItemList.length > 0;
-  const newBeforeBlock: ParagraphBlock = hasBlockContentBeforeItemList
-    ? newParagraph({
-        content: [...args.blockContentBeforeItemList, newItemList({ items: args.listItemsBeforeNewParagraph })],
-      })
-    : newParagraph({ content: [newItemList({ items: args.listItemsBeforeNewParagraph })] });
+  const prevBlocks = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.itemContentIndex.blockIndex - 1));
+  const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
+  const nextBlocks = args.draft.redigertBrev.blocks.slice(args.itemContentIndex.blockIndex + 1);
 
-  const newParagraphBlock = newParagraph({ content: args.existingParagraphContent });
-  const blockContentAfter = newParagraph({ content: [newItemList({ items: args.listItemsAfterNewParagraph })] });
+  const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
+  const itemsBefore = thisItemList.items.slice(0, args.itemContentIndex.itemIndex);
+  const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
+  const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
 
-  const newBlockContents = [newBeforeBlock, newParagraphBlock, blockContentAfter];
+  const newPrevBlock = newParagraph({ content: [newItemList({ items: itemsBefore })] });
+  const newThisBlock = newParagraph({ content: thisItem.content });
+  const newNextBlock = newParagraph({ content: [newItemList({ items: itemsAfter })] });
 
-  const newBlockContentList = [
-    ...args.dokumentBlocks.slice(0, args.itemContentIndex.blockIndex),
-    ...newBlockContents,
-    ...args.dokumentBlocks.slice(args.itemContentIndex.blockIndex + 1),
-  ].filter((block) => block.content.length > 0);
+  const newBlocks = [...prevBlocks, newPrevBlock, newThisBlock, newNextBlock, ...nextBlocks].filter(
+    (block) => block.content.length > 0,
+  );
 
   //TODO - bug - hvis det eksisterer blocker som er lik den nye (for eksempel et tom literal, og en tomt punkt, vil vi treffe literalen)
-  const newParagraphBlockIndex = newBlockContentList.findIndex((block) => isEqual(block, newParagraphBlock));
+  const newParagraphBlockIndex = newBlocks.findIndex((block) => isEqual(block, newThisBlock));
 
-  args.draft.redigertBrev.blocks = newBlockContentList;
+  args.draft.redigertBrev.blocks = newBlocks;
+  args.draft.redigertBrev.deletedBlocks = [...args.draft.redigertBrev.deletedBlocks, thisBlock.id].filter(
+    (id) => id !== null,
+  );
   args.draft.focus = {
     blockIndex: newParagraphBlockIndex,
     contentIndex: args.itemContentIndex.itemContentIndex,
@@ -566,36 +525,35 @@ const toggleBulletListOffBetweenListElements = (args: {
  * Fjerner det siste punktet fra en punktliste
  * Bygger dette punktet som en ny block, og setter den inn i dokumentet
  * Legger tilbake resten av punktene i punktlisten før den nye blocken
+ *
+ * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOffAtTheEndOfItemList = (args: {
-  dokumentBlocks: (Draft<Title1Block> | Draft<Title2Block> | Draft<ParagraphBlock>)[];
   draft: Draft<LetterEditorState>;
   itemContentIndex: ItemContentIndex;
-  existingParagraphContent: TextContent[];
-  blockContentBeforeItemList: (Draft<ItemList> | Draft<LiteralValue> | Draft<VariableValue>)[];
-  listItemsBeforeNewParagraph: Item[];
-  blockContentAfterItemList: (Draft<ItemList> | Draft<LiteralValue> | Draft<VariableValue>)[];
 }) => {
-  const hasBlockContentAfterItemList = args.blockContentAfterItemList.length > 0;
-  const newBlockContentBefore = newParagraph({
-    content: [...args.blockContentBeforeItemList, newItemList({ items: args.listItemsBeforeNewParagraph })],
-  });
-  const newParagraphBlock = newParagraph({ content: args.existingParagraphContent });
+  const prevBlocks = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.itemContentIndex.blockIndex));
+  const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
+  const nextBlocks = args.draft.redigertBrev.blocks.slice(args.itemContentIndex.blockIndex + 1);
 
-  const newBlockContents = hasBlockContentAfterItemList
-    ? [newBlockContentBefore, newParagraphBlock, newParagraph({ content: args.blockContentAfterItemList })]
-    : [newBlockContentBefore, newParagraphBlock];
+  const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
+  const itemsBefore = thisItemList.items.slice(0, args.itemContentIndex.itemIndex);
+  const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
 
-  const newBlockContentList = [
-    ...args.dokumentBlocks.slice(0, args.itemContentIndex.blockIndex),
-    ...newBlockContents,
-    ...args.dokumentBlocks.slice(args.itemContentIndex.blockIndex + 1),
-  ].filter((block) => block.content.length > 0);
+  const newPrevBlock = newParagraph({ content: [newItemList({ items: itemsBefore })] });
+  const newThisBlock = newParagraph({ content: thisItem.content });
+
+  const newBlocks = [...prevBlocks, newPrevBlock, newThisBlock, ...nextBlocks].filter(
+    (block) => block.content.length > 0,
+  );
 
   //TODO - bug - hvis det eksisterer blocker som er lik den nye (for eksempel et tom literal, og en tomt punkt, vil vi treffe literalen)
-  const newParagraphBlockIndex = newBlockContentList.findIndex((block) => isEqual(block, newParagraphBlock));
+  const newParagraphBlockIndex = newBlocks.findIndex((block) => isEqual(block, newThisBlock));
 
-  args.draft.redigertBrev.blocks = newBlockContentList;
+  args.draft.redigertBrev.blocks = newBlocks;
+  args.draft.redigertBrev.deletedBlocks = [...args.draft.redigertBrev.deletedBlocks, thisBlock.id].filter(
+    (id) => id !== null,
+  );
   args.draft.focus = {
     blockIndex: newParagraphBlockIndex,
     contentIndex: args.itemContentIndex.itemContentIndex,
