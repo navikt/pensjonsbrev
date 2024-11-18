@@ -1,3 +1,4 @@
+import { is } from "cypress/types/bluebird";
 import { id } from "date-fns/locale";
 import type { Draft } from "immer";
 import { produce } from "immer";
@@ -328,45 +329,106 @@ const toggleBulletListOnWithItemListBefore = (args: {
   };
 };
 
-const toggleBulletListOnWithItemListAfter = (args: {
-  draft: Draft<LetterEditorState>;
-  literalIndex: LiteralIndex;
-  blockAfterThisBlock: ParagraphBlock;
-  theItemListThatHasMySentence: ItemList;
-  sentenceElements: TextContent[];
-  newContentIndex: number;
-  newItemContentIndex: number;
-}) => {
-  const theItemListAfter = args.blockAfterThisBlock!.content.at(0) as ItemList;
+const toggleBulletListOnWithItemListAfter = (args: { draft: Draft<LetterEditorState>; literalIndex: LiteralIndex }) => {
+  const prevBlocks = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.literalIndex.blockIndex));
+  const thisBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
+  const nextBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex + 1];
+  const blocksAfterNextBlock = args.draft.redigertBrev.blocks.slice(args.literalIndex.blockIndex + 2);
 
-  const mergedItems = newItemList({
-    items: [...args.theItemListThatHasMySentence.items, ...theItemListAfter.items],
+  const nextBlockItemList = nextBlock.content.at(0) as ItemList;
+
+  const newNextBlock = newParagraph({
+    ...nextBlock,
+    content: nextBlock.content.slice(1),
   });
 
-  const newBlockContent = [
-    ...(args.literalIndex.blockIndex === 0
-      ? []
-      : args.draft.redigertBrev.blocks.slice(0, args.literalIndex.blockIndex)),
-    newParagraph({ content: [mergedItems] }),
-    newParagraph({ content: args.blockAfterThisBlock.content.slice(0, -1) || [] }),
-    ...args.draft.redigertBrev.blocks.slice(args.literalIndex.blockIndex + 2),
-  ].filter((block) => block.content.length > 0);
+  const theIdexOfTheContent = args.literalIndex.contentIndex;
 
-  const newBlockContentIndex = newBlockContent.findIndex((block) => {
-    const blockItemLists = block.content.filter((content) => content.type === "ITEM_LIST") as ItemList[];
-    return blockItemLists.some((block) => isEqual(block, mergedItems));
+  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
+  const sentenceElements = sentence.map((r) => r.element);
+
+  const thisBlockWithItemList = newParagraph({
+    ...thisBlock,
+    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null),
+    content: mergeItemLists(
+      replaceElementsBetweenIncluding(
+        thisBlock.content,
+        sentence[0].originalIndex,
+        sentence.at(-1)!.originalIndex,
+        newItemList({ items: [{ id: null, content: sentenceElements }] }),
+      ),
+    ),
   });
 
-  const itemIndex = mergedItems.items.findIndex((i) => isEqual(i.content, args.sentenceElements));
+  //asserter typen til ItemList fordi at hvis den er udnefined, så er det en programmeringsfeil. Elementet våres skal finnes inni
+  const theItemListThatHasMySentence = thisBlockWithItemList.content.find(
+    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
+  ) as ItemList;
 
-  args.draft.redigertBrev.blocks = newBlockContent;
+  const newThisBlock = newParagraph({
+    ...thisBlock,
+    content: [
+      newItemList({
+        items: [...theItemListThatHasMySentence.items, ...nextBlockItemList.items],
+      }),
+    ],
+    deletedContent: thisBlockWithItemList.deletedContent,
+  });
+
+  const isNextBlockEmpty = newNextBlock.content.length === 0;
+
+  const newBlocks = [...prevBlocks, newThisBlock, ...(isNextBlockEmpty ? [] : [newNextBlock]), ...blocksAfterNextBlock];
+
+  const newBlockContentIndex = newBlocks.findIndex((block) => isEqual(block, newThisBlock));
+
+  const thisBlocksItemLists = newThisBlock.content
+    .filter((c) => c.type === "ITEM_LIST")
+    .find((itemList) => itemList.items.some((i) => isEqual(i.content, sentenceElements)))!;
+
+  const itemIndex = thisBlocksItemLists.items.findIndex((i) => isEqual(i.content, sentenceElements));
+  const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
+    isEqual(i.content, sentenceElements),
+  );
+  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
+
+  args.draft.redigertBrev.blocks = newBlocks;
+  args.draft.redigertBrev.deletedBlocks = isNextBlockEmpty
+    ? [...args.draft.redigertBrev.deletedBlocks, nextBlock.id].filter((id) => id !== null)
+    : args.draft.redigertBrev.deletedBlocks;
+
   args.draft.focus = {
     blockIndex: newBlockContentIndex,
-    contentIndex: args.newContentIndex,
+    contentIndex: theIndexOfMySentenceInItemList,
     itemIndex: itemIndex,
-    itemContentIndex: args.newItemContentIndex,
+    itemContentIndex: newItemContentIndex,
     cursorPosition: args.draft.focus.cursorPosition,
   };
+
+  // const theItemListAfter = args.blockAfterThisBlock!.content.at(0) as ItemList;
+  // const mergedItems = newItemList({
+  //   items: [...args.theItemListThatHasMySentence.items, ...theItemListAfter.items],
+  // });
+  // const newBlockContent = [
+  //   ...(args.literalIndex.blockIndex === 0
+  //     ? []
+  //     : args.draft.redigertBrev.blocks.slice(0, args.literalIndex.blockIndex)),
+  //   newParagraph({ content: [mergedItems] }),
+  //   newParagraph({ content: args.blockAfterThisBlock.content.slice(0, -1) || [] }),
+  //   ...args.draft.redigertBrev.blocks.slice(args.literalIndex.blockIndex + 2),
+  // ].filter((block) => block.content.length > 0);
+  // const newBlockContentIndex = newBlockContent.findIndex((block) => {
+  //   const blockItemLists = block.content.filter((content) => content.type === "ITEM_LIST") as ItemList[];
+  //   return blockItemLists.some((block) => isEqual(block, mergedItems));
+  // });
+  // const itemIndex = mergedItems.items.findIndex((i) => isEqual(i.content, args.sentenceElements));
+  // args.draft.redigertBrev.blocks = newBlockContent;
+  // args.draft.focus = {
+  //   blockIndex: newBlockContentIndex,
+  //   contentIndex: args.newContentIndex,
+  //   itemIndex: itemIndex,
+  //   itemContentIndex: args.newItemContentIndex,
+  //   cursorPosition: args.draft.focus.cursorPosition,
+  // };
 };
 
 /**
@@ -393,6 +455,7 @@ const toggleBulletListOff = (draft: Draft<LetterEditorState>, itemContentIndex: 
   const listItemsAfterNewParagraph = thisItemList.items.slice(itemContentIndex.itemIndex + 1);
 
   if (itemContentIndex.itemIndex === 0) {
+    //eslint-disable-next-line no-console
     console.log("start");
     toggleBulletListOffAtTheStartOfItemList({
       dokumentBlocks,
@@ -403,6 +466,7 @@ const toggleBulletListOff = (draft: Draft<LetterEditorState>, itemContentIndex: 
       blockContentBeforeItemList,
     });
   } else if (itemContentIndex.itemIndex > 0 && itemContentIndex.itemIndex < thisItemList.items.length - 1) {
+    //eslint-disable-next-line no-console
     console.log("middle");
     toggleBulletListOffBetweenListElements({
       dokumentBlocks,
@@ -414,6 +478,7 @@ const toggleBulletListOff = (draft: Draft<LetterEditorState>, itemContentIndex: 
       listItemsBeforeNewParagraph,
     });
   } else if (itemContentIndex.itemIndex === thisItemList.items.length - 1) {
+    //eslint-disable-next-line no-console
     console.log("end");
     toggleBulletListOffAtTheEndOfItemList({
       dokumentBlocks,
