@@ -5,6 +5,7 @@ data class UnleashToggle(val name: String) {
 }
 
 object FeatureToggles {
+    val varselVersjon2 = UnleashToggle("varselVersjon2")
     // Sett inn featuretoggles her
     // val minFeature = UnleashToggle("minFeature")
 }

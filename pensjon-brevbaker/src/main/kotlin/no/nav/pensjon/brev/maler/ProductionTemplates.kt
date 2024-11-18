@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
@@ -16,6 +17,7 @@ import no.nav.pensjon.brev.maler.redigerbar.InnhentingDokumentasjonFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.InnhentingOpplysningerFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAutoV2
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
@@ -45,7 +47,7 @@ object ProductionTemplates {
         OpptjeningVedForhoeyetHjelpesats,
         UfoerOmregningEnslig,
         UngUfoerAuto,
-        VarselSaksbehandlingstidAuto,
+         if (FeatureToggles.varselVersjon2.isEnabled()) { VarselSaksbehandlingstidAutoV2 } else { VarselSaksbehandlingstidAuto },
     )
     val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagUfoeretrygd,
