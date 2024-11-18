@@ -51,25 +51,34 @@ fun Application.brevbakerModule() {
         // Work-around to print proper error message when call.receive<T> fails.
         exception<BadRequestException> { call, cause ->
             if (cause.cause is JacksonException) {
-                call.respond(HttpStatusCode.BadRequest, cause.cause?.message ?: "Failed to deserialize json body: unknown reason")
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    cause.cause?.message ?: "Failed to deserialize json body: unknown reason"
+                )
             } else {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
         }
-        exception<LatexTimeoutException>{ call, cause ->
+        exception<LatexTimeoutException> { call, cause ->
             call.application.log.info("Latex compilation timed out", cause)
             call.respond(HttpStatusCode.ServiceUnavailable, cause.message ?: "Timed out while compiling latex")
         }
-        exception<LatexCompileException>{ call, cause ->
+        exception<LatexCompileException> { call, cause ->
             call.application.log.info("Latex compilation failed with internal server error", cause)
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Latex compilation failed")
         }
-        exception<LatexInvalidException>{ call, cause ->
+        exception<LatexInvalidException> { call, cause ->
             call.application.log.info("Latex compilation failed due to invalid latex", cause)
-            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Latex compilation failed due to invalid latex")
+            call.respond(
+                HttpStatusCode.InternalServerError,
+                cause.message ?: "Latex compilation failed due to invalid latex"
+            )
         }
         exception<ParameterConversionException> { call, cause ->
-            call.respond(HttpStatusCode.BadRequest, cause.message?: "Failed to convert path parameter to required type: unknown cause")
+            call.respond(
+                HttpStatusCode.BadRequest,
+                cause.message ?: "Failed to convert path parameter to required type: unknown cause"
+            )
         }
         exception<ParseLetterDataException> { call, cause ->
             call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize letterData: Unknown cause")
@@ -103,15 +112,14 @@ fun Application.brevbakerModule() {
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
-    FeatureToggleInitializer.initUnleash(brevbakerConfig.config("unleash").let {
-        UnleashConfig(
+    FeatureToggleHandler.Builder.setConfig(brevbakerConfig.config("unleash").let {
+        FeatureToggleConfig(
             appName = it.property("appName").getString(),
             environment = it.property("environment").getString(),
             host = it.property("host").getString(),
             apiToken = it.property("apiToken").getString(),
-            overrides = mapOf()
         )
-    })
+    }).build()
 
     configureMetrics()
     brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService)
