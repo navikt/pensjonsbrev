@@ -255,9 +255,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjo
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPSSelectors.sumfratrekkbt_safe as eps_sumfratrekkbt_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.UforetrygdEtteroppgjorDetaljEPSSelectors.suminntekterbt_safe as eps_suminntekterbt_safe
 
-
-fun Expression<OmsorgLegacyData>.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar() = vedtaksbrev.grunnlag.omsorgGodskrGrunnlagListe.map(OmsorgGodskrGrunnlagSelectors.aarSelector).ifNull(listOf())
-fun Expression<OmsorgLegacyData>.omsorg_vedtaksdata_kravhode_kravmottatdato() = vedtaksbrev.vedtaksdata.kravhode_safe.kravmottattdato_safe.ifNull(LocalDate.now())
 fun Expression<PE>.barnetilleggfelles_justeringsbelopperarutenminus() = vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
 fun Expression<PE>.barnetilleggserkull_justeringsbelopperarutenminus() = vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus()
 fun Expression<PE>.grunnlag_persongrunnlagsliste_brukerflyktning(): Expression<Boolean> = vedtaksbrev.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().brukerflyktning_safe.ifNull(false)
@@ -461,3 +458,11 @@ fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskade
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat(): Expression<String> = vedtaksbrev.vedtaksdata.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkar_safe.yrkesskaderesultat_safe.ifNull("")
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom(): Expression<LocalDate?> = vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkarvirkningfom_safe
 fun Expression<PE>.vedtaksdata_virkningfom(): Expression<LocalDate?> = vedtaksbrev.vedtaksdata.virkningfom_safe
+
+object OmsorgLegacyData {
+    fun Expression<OmsorgLegacyData>.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar() =
+        vedtaksbrev.grunnlag.omsorgGodskrGrunnlagListe.map(OmsorgGodskrGrunnlagSelectors.aarSelector).ifNull(emptyList())
+
+    fun Expression<OmsorgLegacyData>.omsorg_vedtaksdata_kravhode_kravmottatdato() =
+        vedtaksbrev.vedtaksdata.kravhode_safe.kravmottattdato_safe.ifNull(LocalDate.now())
+}

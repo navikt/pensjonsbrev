@@ -7,8 +7,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmsorgLegacyDataDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmsorgLegacyDataDtoSelectors.PesysDataSelectors.omsorgLegacyData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmsorgLegacyDataDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.legacy.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar
-import no.nav.pensjon.brev.maler.legacy.omsorg_vedtaksdata_kravhode_kravmottatdato
+import no.nav.pensjon.brev.maler.legacy.OmsorgLegacyData.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar
+import no.nav.pensjon.brev.maler.legacy.OmsorgLegacyData.omsorg_vedtaksdata_kravhode_kravmottatdato
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
