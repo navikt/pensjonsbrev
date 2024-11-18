@@ -57,11 +57,19 @@ object GodskrivingOmsorgspoengFoer1991 : RedigerbarTemplate<OmsorgLegacyDataDto>
             //[PE_IY_05_TB1125,TB1131]
 
             paragraph {
-                textExpr(
-                    Bokmal to "NAV har innvilget din søknad mottatt ".expr() + pesysData.omsorgLegacyData.omsorg_vedtaksdata_kravhode_kravmottatdato()
-                        .format() + " om pensjonsopptjening for omsorg for barn under sju år før 1992.",
-                    English to "NAV has granted your application received on ".expr() + pesysData.omsorgLegacyData.omsorg_vedtaksdata_kravhode_kravmottatdato()
-                        .format() + " for acquired rights for the care of children below the age of seven prior to 1992.",
+                text(
+                    Bokmal to "Nav har innvilget din søknad mottatt ",
+                    English to "Nav has granted your application received on "
+                )
+                ifNotNull(pesysData.omsorgLegacyData.omsorg_vedtaksdata_kravhode_kravmottatdato()) {
+                    textExpr(
+                        Bokmal to it.format(),
+                        English to it.format()
+                    )
+                }
+                text(
+                    Bokmal to " om pensjonsopptjening for omsorg for barn under sju år før 1992.",
+                    English to " for acquired rights for the care of children below the age of seven prior to 1992."
                 )
             }
 

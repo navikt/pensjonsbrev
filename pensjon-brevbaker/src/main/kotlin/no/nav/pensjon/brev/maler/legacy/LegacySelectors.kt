@@ -464,5 +464,5 @@ object OmsorgLegacyData {
         vedtaksbrev.grunnlag.omsorgGodskrGrunnlagListe.map(OmsorgGodskrGrunnlagSelectors.aarSelector).ifNull(emptyList())
 
     fun Expression<OmsorgLegacyData>.omsorg_vedtaksdata_kravhode_kravmottatdato() =
-        vedtaksbrev.vedtaksdata.kravhode_safe.kravmottattdato_safe.ifNull(LocalDate.now())
+        vedtaksbrev.vedtaksdata.kravhode_safe.kravmottattdato_safe
 }
