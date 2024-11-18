@@ -403,32 +403,6 @@ const toggleBulletListOnWithItemListAfter = (args: { draft: Draft<LetterEditorSt
     itemContentIndex: newItemContentIndex,
     cursorPosition: args.draft.focus.cursorPosition,
   };
-
-  // const theItemListAfter = args.blockAfterThisBlock!.content.at(0) as ItemList;
-  // const mergedItems = newItemList({
-  //   items: [...args.theItemListThatHasMySentence.items, ...theItemListAfter.items],
-  // });
-  // const newBlockContent = [
-  //   ...(args.literalIndex.blockIndex === 0
-  //     ? []
-  //     : args.draft.redigertBrev.blocks.slice(0, args.literalIndex.blockIndex)),
-  //   newParagraph({ content: [mergedItems] }),
-  //   newParagraph({ content: args.blockAfterThisBlock.content.slice(0, -1) || [] }),
-  //   ...args.draft.redigertBrev.blocks.slice(args.literalIndex.blockIndex + 2),
-  // ].filter((block) => block.content.length > 0);
-  // const newBlockContentIndex = newBlockContent.findIndex((block) => {
-  //   const blockItemLists = block.content.filter((content) => content.type === "ITEM_LIST") as ItemList[];
-  //   return blockItemLists.some((block) => isEqual(block, mergedItems));
-  // });
-  // const itemIndex = mergedItems.items.findIndex((i) => isEqual(i.content, args.sentenceElements));
-  // args.draft.redigertBrev.blocks = newBlockContent;
-  // args.draft.focus = {
-  //   blockIndex: newBlockContentIndex,
-  //   contentIndex: args.newContentIndex,
-  //   itemIndex: itemIndex,
-  //   itemContentIndex: args.newItemContentIndex,
-  //   cursorPosition: args.draft.focus.cursorPosition,
-  // };
 };
 
 /**
