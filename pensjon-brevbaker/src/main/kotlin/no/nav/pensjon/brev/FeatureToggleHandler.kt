@@ -17,7 +17,7 @@ object FeatureToggleHandler {
 
     private fun context(): UnleashContext = UnleashContext.builder().build()
 
-    object Builder {
+    class Builder {
         private val builderOverrides: MutableMap<UnleashToggle, Boolean> = mutableMapOf()
         private lateinit var config: FeatureToggleConfig
         private var state: InitState = InitState.NEW
@@ -47,7 +47,6 @@ object FeatureToggleHandler {
             )
             state = InitState.DONE
         }
-
     }
 }
 
