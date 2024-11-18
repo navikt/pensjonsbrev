@@ -69,8 +69,7 @@ export type LiteralValue = Identifiable & {
   readonly tags: ElementTags[];
 };
 export const VARIABLE = "VARIABLE";
-export type VariableValue = {
-  readonly id: number;
+export type VariableValue = Identifiable & {
   readonly type: typeof VARIABLE;
   readonly name?: string;
   readonly text: string;
