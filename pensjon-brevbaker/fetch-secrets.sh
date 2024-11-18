@@ -60,6 +60,10 @@ function getSecret() {
 
 mkdir -p secrets
 
+# AzureAD
+secret_name="$(kubectl --context $KUBE_CLUSTER -n pensjonsbrev get azureapp pensjon-brevbaker -o=jsonpath='{.spec.secretName}')"
+getSecret "$secret_name" azuread
+
 # Unleash ApiToken
 getSecret pensjon-brevmetadata-q2-unleash-api-token unleash
 
