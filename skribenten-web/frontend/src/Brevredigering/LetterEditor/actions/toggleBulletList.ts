@@ -1,8 +1,6 @@
-import { is } from "cypress/types/bluebird";
-import { id } from "date-fns/locale";
 import type { Draft } from "immer";
 import { produce } from "immer";
-import { isEqual, map } from "lodash";
+import { isEqual } from "lodash";
 
 import type {
   Content,
@@ -18,7 +16,7 @@ import type {
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
-import { newItem, newItemList, newParagraph } from "./common";
+import { newItemList, newParagraph } from "./common";
 import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = produce(
@@ -45,33 +43,6 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
  * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex) => {
-  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  const theIdexOfTheContent = literalIndex.contentIndex;
-
-  const sentence = getSurroundingLiteralsAndVariables(block.content, theIdexOfTheContent);
-  const sentenceElements = sentence.map((r) => r.element);
-
-  const replacedWithItemList = replaceElementsBetweenIncluding(
-    block.content,
-    sentence[0].originalIndex,
-    sentence.at(-1)!.originalIndex,
-    newItemList({ items: [{ id: null, content: sentenceElements }] }),
-  );
-
-  const mergedItemListsWithinBlock = mergeItemLists(replacedWithItemList);
-
-  //asserter typen til ItemList fordi at hvis den er udnefined, så er det en programmeringsfeil. Elementet våres skal finnes inni
-  const theItemListThatHasMySentence = mergedItemListsWithinBlock.find(
-    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
-  ) as ItemList;
-
-  const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
-    isEqual(i.content, sentenceElements),
-  );
-
-  const newContentIndex = mergedItemListsWithinBlock.indexOf(theItemListThatHasMySentence);
-  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
-
   const blockBeforeThisblock = draft.redigertBrev.blocks[literalIndex.blockIndex - 1];
   const hasItemListBlockBefore =
     blockBeforeThisblock?.type === "PARAGRAPH" && blockBeforeThisblock.content.at(-1)?.type === "ITEM_LIST";
@@ -81,57 +52,13 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
     blockAfterThisBlock?.type === "PARAGRAPH" && blockAfterThisBlock.content.at(0)?.type === "ITEM_LIST";
 
   if (hasItemListBlockBefore && hasItemListBlockAfter) {
-    //eslint-disable-next-line no-console
-    console.log("between");
-    toggleBulletListOnBetweenElemenets({
-      draft,
-      literalIndex,
-      blockBeforeThisblock,
-      blockAfterThisBlock,
-      theItemListThatHasMySentence,
-      sentenceElements,
-      newContentIndex,
-      newItemContentIndex,
-    });
+    toggleBulletListOnBetweenElemenets({ draft, literalIndex });
   } else if (hasItemListBlockBefore) {
-    //eslint-disable-next-line no-console
-    console.log("before");
-    toggleBulletListOnWithItemListBefore({
-      draft,
-      literalIndex,
-      blockBeforeThisblock,
-      theItemListThatHasMySentence,
-      sentenceElements,
-      newContentIndex,
-      newItemContentIndex,
-    });
+    toggleBulletListOnWithItemListBefore({ draft, literalIndex });
   } else if (hasItemListBlockAfter) {
-    //eslint-disable-next-line no-console
-    console.log("after");
-    toggleBulletListOnWithItemListAfter({
-      draft,
-      literalIndex,
-      blockAfterThisBlock,
-      theItemListThatHasMySentence,
-      sentenceElements,
-      newContentIndex,
-      newItemContentIndex,
-    });
+    toggleBulletListOnWithItemListAfter({ draft, literalIndex });
   } else {
-    //eslint-disable-next-line no-console
-    console.log("none");
-    draft.redigertBrev.blocks[literalIndex.blockIndex].content = mergedItemListsWithinBlock;
-
-    draft.redigertBrev.blocks[literalIndex.blockIndex].deletedContent = sentenceElements
-      .filter((s) => !!s.id)
-      .map((r) => r.id!);
-    draft.focus = {
-      blockIndex: literalIndex.blockIndex,
-      contentIndex: newContentIndex,
-      itemIndex: theIndexOfMySentenceInItemList,
-      itemContentIndex: newItemContentIndex,
-      cursorPosition: draft.focus.cursorPosition,
-    };
+    toggleBulletListOnWithoutSurroundingElements({ draft, literalIndex });
   }
 };
 
@@ -196,6 +123,50 @@ const mergeItemLists = (content: Content[]): Content[] => {
   }
 
   return result;
+};
+
+/**
+ * Lager en ny punktliste, som er uten noen eksisterende punktliste før eller etter
+ */
+const toggleBulletListOnWithoutSurroundingElements = (args: {
+  draft: Draft<LetterEditorState>;
+  literalIndex: LiteralIndex;
+}) => {
+  const block = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
+  const theIdexOfTheContent = args.literalIndex.contentIndex;
+  const sentence = getSurroundingLiteralsAndVariables(block.content, theIdexOfTheContent);
+  const sentenceElements = sentence.map((r) => r.element);
+
+  const replacedWithItemList = replaceElementsBetweenIncluding(
+    block.content,
+    sentence[0].originalIndex,
+    sentence.at(-1)!.originalIndex,
+    newItemList({ items: [{ id: null, content: sentenceElements }] }),
+  );
+
+  const mergedItemListsWithinBlock = mergeItemLists(replacedWithItemList);
+
+  //asserter typen til ItemList fordi at hvis den er udnefined, så er det en programmeringsfeil. Elementet våres skal finnes inni
+  const theItemListThatHasMySentence = mergedItemListsWithinBlock.find(
+    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
+  ) as ItemList;
+  const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
+    isEqual(i.content, sentenceElements),
+  );
+  const newContentIndex = mergedItemListsWithinBlock.indexOf(theItemListThatHasMySentence);
+  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
+
+  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].content = mergedItemListsWithinBlock;
+  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].deletedContent = sentenceElements
+    .filter((s) => !!s.id)
+    .map((r) => r.id!);
+  args.draft.focus = {
+    blockIndex: args.literalIndex.blockIndex,
+    contentIndex: newContentIndex,
+    itemIndex: theIndexOfMySentenceInItemList,
+    itemContentIndex: newItemContentIndex,
+    cursorPosition: args.draft.focus.cursorPosition,
+  };
 };
 
 /**
