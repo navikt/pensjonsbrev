@@ -29,7 +29,11 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
 ) {
     val templates: Map<Kode, T> = templates.associateBy { it.kode }
 
-    fun getTemplate(kode: Kode) = templates[kode]
+    fun getTemplate(kode: Kode) = when {
+        // Legg inn her hvis du ønsker å styre forskjellige versjoner, feks
+        // kode == DinBrevmal.kode && FeatureToggles.dinToggle.isEnabled() -> DinBrevmalV2
+        else -> templates[kode]
+    }
 
     suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
