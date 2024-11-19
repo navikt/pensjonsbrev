@@ -27,7 +27,11 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
     templates: Set<T>,
     private val laTeXCompilerService: LaTeXCompilerService,
 ) {
-    val templates: Map<Kode, T> = templates.associateBy { it.kode }
+    private val templates: Map<Kode, T> = templates.associateBy { it.kode }
+
+    fun listTemplatesWithMetadata() = templates.map { it.value.description() }
+
+    fun listTemplatekeys() = templates.keys
 
     fun getTemplate(kode: Kode) = when {
         // Legg inn her hvis du ønsker å styre forskjellige versjoner, feks
