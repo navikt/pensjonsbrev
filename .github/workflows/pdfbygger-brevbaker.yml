@@ -145,6 +145,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       brevbaker:
         env:
+          NAIS_APP_NAME: brevbaker
           PDF_BUILDER_URL: "http://pdf-bygger:8080"
           AZURE_OPENID_CONFIG_JWKS_URI: "http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri"
           AZURE_OPENID_CONFIG_ISSUER: "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0"
