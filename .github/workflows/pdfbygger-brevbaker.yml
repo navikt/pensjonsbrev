@@ -232,7 +232,7 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:brevbaker"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "pensjon-backend/.nais/unleash-api-token-dev-q2.yaml,pensjon-backend/.nais/nais.yaml"
+          "RESOURCE": "pensjon-brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon-brevbaker/.nais/nais.yaml"
           "VAR": image=${{ needs.build-brevbaker.outputs.image }}
           "VARS": "pensjon-brevbaker/.nais/dev.yaml"
 
@@ -270,7 +270,7 @@ jobs:
         env:
           "ENVIRONMENT": "prod-gcp:brevbaker"
           "CLUSTER": "prod-gcp"
-          "RESOURCE": "pensjon-backend/.nais/unleash-api-token-prod.yaml,pensjon-backend/.nais/nais.yaml"
+          "RESOURCE": "pensjon-brevbaker/.nais/unleash-api-token-prod.yaml,pensjon-brevbaker/.nais/nais.yaml"
           "VAR": image=${{ needs.build-brevbaker.outputs.image }}
           "VARS": "pensjon-brevbaker/.nais/prod.yaml"
 
