@@ -41,7 +41,13 @@ val httpClient = HttpClient(CIO) {
             registerModule(JavaTimeModule())
         }
     }
+    settOppFakeUnleash()
 }
+
+private fun settOppFakeUnleash() = FeatureToggleHandler.Builder()
+        .setConfig(FeatureToggleConfig("a", "b", "http://localhost", "d"))
+        .setUnleash { FakeUnleash(mutableMapOf()) }
+        .build()
 
 fun requestLetter(letterRequest: BestillBrevRequest<Brevkode.AutoBrev>): LetterResponse =
     runBlocking {

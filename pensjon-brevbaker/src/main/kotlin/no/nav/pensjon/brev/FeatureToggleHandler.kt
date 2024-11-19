@@ -10,25 +10,27 @@ object FeatureToggleHandler {
 
     private lateinit var unleashAction: () -> Unleash
     private val unleash: Unleash by lazy { unleashAction() }
-    private lateinit var overrides: Map<UnleashToggle, Boolean>
 
-    fun isEnabled(toggle: UnleashToggle): Boolean =
-        overrides[toggle]
-            ?: unleash.isEnabled(unleashTogglePrefix + toggle.name, context())
-
-    private fun context(): UnleashContext = UnleashContext.builder().build()
+    fun isEnabled(toggle: UnleashToggle): Boolean = unleash.isEnabled(unleashTogglePrefix + toggle.name, UnleashContext.builder().build())
 
     class Builder {
-        private val builderOverrides: MutableMap<UnleashToggle, Boolean> = mutableMapOf()
         private lateinit var config: FeatureToggleConfig
         private var state: InitState = InitState.NEW
-
-        fun override(key: UnleashToggle, value: Boolean) = apply {
-            builderOverrides[key] = value
-        }
+        private lateinit var unleashBuilder: ((FeatureToggleConfig) -> Unleash)
 
         fun setConfig(config: FeatureToggleConfig) = apply {
             this.config = config
+        }
+
+        fun setUnleash(action: ((config: FeatureToggleConfig) -> Unleash)?) = apply {
+            this.unleashBuilder = action
+                ?: { DefaultUnleash(
+                    io.getunleash.util.UnleashConfig.builder()
+                        .appName(config.appName)
+                        .environment(config.environment)
+                        .unleashAPI(config.host + "/api")
+                        .apiKey(config.apiToken).build()
+                ) }
         }
 
         fun build() = FeatureToggleHandler.apply {
@@ -38,14 +40,6 @@ object FeatureToggleHandler {
             if (!::config.isInitialized) {
                 throw IllegalStateException("Må sette konfig")
             }
-            overrides = builderOverrides.toMap()
-            unleashAction = { DefaultUnleash(
-                io.getunleash.util.UnleashConfig.builder()
-                    .appName(config.appName)
-                    .environment(config.environment)
-                    .unleashAPI(config.host + "/api")
-                    .apiKey(config.apiToken).build()
-            ) }
             state = InitState.DONE
         }
     }
