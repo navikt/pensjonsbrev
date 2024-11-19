@@ -65,6 +65,6 @@ secret_name="$(kubectl --context $KUBE_CLUSTER -n pensjonsbrev get azureapp pens
 getSecret "$secret_name" azuread
 
 # Unleash ApiToken
-getSecret pensjon-brevmetadata-q2-unleash-api-token unleash
+getSecret pensjon-brevbaker-q2-unleash-api-token unleash
 
 echo "All secrets are fetched and stored in the \"secrets\" folder."
