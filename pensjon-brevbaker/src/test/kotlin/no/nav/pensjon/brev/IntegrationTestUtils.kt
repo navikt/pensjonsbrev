@@ -33,7 +33,9 @@ object TestTags {
     const val MANUAL_TEST = "manual-test"
 }
 
-val httpClient = HttpClient(CIO) {
+val httpClient = try {
+    println("Setter opp httpclient for test")
+    HttpClient(CIO) {
     install(HttpTimeout) {
         requestTimeoutMillis = 40000
     }
@@ -42,7 +44,12 @@ val httpClient = HttpClient(CIO) {
             registerModule(JavaTimeModule())
         }
     }
+    println("Setter opp fake Unleash for test")
     settOppFakeUnleash()
+    println("Ferdig satt opp httpclient for test")
+} } catch (e: Exception) {
+    e.printStackTrace()
+    throw e
 }
 
 private fun settOppFakeUnleash() = FeatureToggleHandler.Builder()
