@@ -7,15 +7,8 @@ import type {
   NAVEnhet,
   SaksbehandlerValg,
 } from "~/types/brev";
-import { type
-  Content,
-  Item,
-  ItemList,
-  ParagraphBlock,
-  TextContent,
-  Title1Block,
-  VariableValue,
-} from "~/types/brevbakerTypes";
+import type { Item, ItemList, ParagraphBlock, TextContent, Title1Block, VariableValue } from "~/types/brevbakerTypes";
+import { type Content } from "~/types/brevbakerTypes";
 import {
   type AnyBlock,
   type EditedLetter,
@@ -190,6 +183,8 @@ export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): Liter
   id: args.id ?? null,
   text: args.text ?? "ny literal default text",
   editedText: args.text ?? "ny literal default edited-text",
+  fontType: FontType.PLAIN,
+  editedFontType: null,
 });
 
 export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: string }): VariableValue => ({
@@ -197,6 +192,7 @@ export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: 
   id: args.id ?? 1,
   name: args.name,
   text: args.text ?? "ny variable default text",
+  fontType: FontType.PLAIN,
 });
 
 //TODO - kan heller bruke newItem fra common.ts
