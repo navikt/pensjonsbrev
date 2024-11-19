@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import io.getunleash.FakeUnleash
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -46,7 +47,7 @@ val httpClient = HttpClient(CIO) {
 
 private fun settOppFakeUnleash() = FeatureToggleHandler.Builder()
         .setConfig(FeatureToggleConfig("a", "b", "http://localhost", "d"))
-        .setUnleash { FakeUnleash(mutableMapOf()) }
+        .setUnleash { FakeUnleash() }
         .build()
 
 fun requestLetter(letterRequest: BestillBrevRequest<Brevkode.AutoBrev>): LetterResponse =
