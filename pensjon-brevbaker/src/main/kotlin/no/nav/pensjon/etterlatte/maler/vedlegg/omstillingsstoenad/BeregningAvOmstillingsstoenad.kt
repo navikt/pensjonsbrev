@@ -343,6 +343,37 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 )
             }
         }
+        showIf(
+            sisteBeregningsperiode.restanse.notEqualTo(0) and
+            sisteBeregningsperiode.utbetaltBeloep.equalTo(0)
+        ) {
+            title2 {
+                text(
+                    Bokmal to "Feilutbetalt ytelse vil bli behandlet i et etteroppgjør",
+                    Nynorsk to "Feilutbetalt yting vil bli behandla i eit etteroppgjer",
+                    English to "Incorrectly paid benefit will be dealt with in a final settlement",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Den forventede inntekten din for inneværende år er blitt justert. " +
+                            "Siden du ikke får utbetalt stønad, kan vi ikke trekke inn for mye utbetalt stønad " +
+                            "i utbetalingene for resten av året. " +
+                            "Feilutbetalt stønad vil derfor bli behandlet i etteroppgjøret for i år, " +
+                            "som blir gjort etter at skatteåret er ferdig lignet neste år.",
+                    Nynorsk to "Den forventa inntekta di for inneverande år har vorte justert. " +
+                            "Sidan du ikkje får utbetalt stønad, kan vi ikkje trekkja inn for mykje utbetalt stønad " +
+                            "i utbetalingane for resten av året. " +
+                            "Feilutbetalt stønad vil derfor bli behandla i etteroppgjeret for i år, " +
+                            "som blir gjort etter at skatteåret er ferdig likna neste år.",
+                    English to "Your estimated income for the current year has been adjusted. Since you are " +
+                            "not receiving any allowance for the rest of the year, we cannot deduct any overpaid " +
+                            "benefits from payments during this period. Any overpaid benefits will therefore be " +
+                            "addressed in the final settlement for this year, which will be completed after " +
+                            "the tax settlement for this year is finalized next year."
+                )
+            }
+        }
     }.orShow {
         paragraph {
             text(
