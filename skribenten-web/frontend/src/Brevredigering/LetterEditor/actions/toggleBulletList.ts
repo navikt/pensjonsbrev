@@ -135,7 +135,6 @@ const toggleBulletListOnWithoutSurroundingElements = (args: {
     sentence.at(-1)!.originalIndex,
     newItemList({
       items: [{ id: null, content: sentenceElements }],
-      deletedItems: sentenceElements.filter((s) => !!s.id).map((r) => r.id!),
     }),
   );
 
@@ -152,9 +151,9 @@ const toggleBulletListOnWithoutSurroundingElements = (args: {
   const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
 
   args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].content = mergedItemListsWithinBlock;
-  // args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].deletedContent = sentenceElements
-  //   .filter((s) => !!s.id)
-  //   .map((r) => r.id!);
+  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].deletedContent = sentenceElements
+    .filter((s) => !!s.id)
+    .map((r) => r.id!);
   args.draft.focus = {
     blockIndex: args.literalIndex.blockIndex,
     contentIndex: newContentIndex,
@@ -458,10 +457,11 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
   const nextBlocks = args.draft.redigertBrev.blocks.slice(args.itemContentIndex.blockIndex + 1);
 
   const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
+  const hasOnlyOneItem = thisItemList.items.length === 1;
   const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
   const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
 
-  const newThisBlock = newParagraph({ content: thisItem.content });
+  const newThisBlock = newParagraph({ id: hasOnlyOneItem ? thisBlock.id : null, content: thisItem.content });
   const hasItemsAfter = itemsAfter.length > 0;
   const newNextBlock = newParagraph({ content: [newItemList({ items: itemsAfter })] });
 
