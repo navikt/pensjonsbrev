@@ -364,7 +364,11 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                             "i utbetalingane for resten av året. " +
                             "Feilutbetalt stønad vil derfor bli behandla i etteroppgjeret for i år, " +
                             "som blir gjort etter at skatteåret er ferdig likna neste år.",
-                    English to "Your estimated income for the current year has been adjusted."
+                    English to "Your estimated income for the current year has been adjusted. Since you are " +
+                            "not receiving any allowance for the rest of the year, we cannot deduct any overpaid " +
+                            "benefits from payments during this period. Any overpaid benefits will therefore be " +
+                            "addressed in the final settlement for this year, which will be completed after " +
+                            "the tax settlement for this year is finalized next year."
                 )
             }
         }
