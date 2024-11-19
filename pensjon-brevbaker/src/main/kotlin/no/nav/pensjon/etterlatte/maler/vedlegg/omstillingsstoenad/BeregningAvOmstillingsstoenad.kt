@@ -47,6 +47,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 fun beregningAvOmstillingsstoenad(
     tidligereFamiliepleier: Boolean,
+    inntektsjustering: Boolean = false
 ): AttachmentTemplate<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning> =
     createAttachment(
         title =
@@ -57,7 +58,7 @@ fun beregningAvOmstillingsstoenad(
         ),
         includeSakspart = false,
     ) {
-        beregning(tidligereFamiliepleier.expr())
+        beregning(tidligereFamiliepleier.expr(), inntektsjustering.expr())
         trygdetid(trygdetid, tidligereFamiliepleier.expr())
         perioderMedRegistrertTrygdetid(trygdetid, tidligereFamiliepleier.expr())
         meldFraTilNav()
@@ -65,6 +66,7 @@ fun beregningAvOmstillingsstoenad(
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning>.beregning(
     tidligereFamiliepleier: Expression<Boolean>,
+    inntektsjustering: Expression<Boolean>,
 ) {
     val sisteInntekt = sisteBeregningsperiode.inntekt
     val sisteGrunnbeloep = sisteBeregningsperiode.grunnbeloep
@@ -219,7 +221,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     )
                 }
             }
-            showIf(sisteInnvilgaMaaneder.lessThan(12)) {
+            showIf(inntektsjustering.not() and sisteInnvilgaMaaneder.lessThan(12)) {
                 textExpr(
                     Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har en inntekt på " +
