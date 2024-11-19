@@ -8,7 +8,8 @@ private const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
 
 object FeatureToggleHandler {
 
-    private lateinit var unleash: Unleash
+    private lateinit var unleashAction: () -> Unleash
+    private val unleash: Unleash by lazy { unleashAction() }
     private lateinit var overrides: Map<UnleashToggle, Boolean>
 
     fun isEnabled(toggle: UnleashToggle): Boolean =
@@ -38,13 +39,13 @@ object FeatureToggleHandler {
                 throw IllegalStateException("Må sette konfig")
             }
             overrides = builderOverrides.toMap()
-            unleash = DefaultUnleash(
+            unleashAction = { DefaultUnleash(
                 io.getunleash.util.UnleashConfig.builder()
                     .appName(config.appName)
                     .environment(config.environment)
                     .unleashAPI(config.host + "/api")
                     .apiKey(config.apiToken).build()
-            )
+            ) }
             state = InitState.DONE
         }
     }
