@@ -4,7 +4,7 @@ import type { BrevResponse } from "~/types/brev";
 
 import { nyBrevResponse, nyRedigertBrev } from "../../../../cypress/utils/brevredigeringTestUtils";
 import Actions from "../actions";
-import { newItem, newItemList, newLiteral, newParagraph } from "../actions/common";
+import { newItem, newItemList, newItems, newLiteral, newParagraph } from "../actions/common";
 import { LetterEditor } from "../LetterEditor";
 import type { LetterEditorState } from "../model/state";
 
@@ -30,7 +30,7 @@ describe("toggle bullet-liet", () => {
     it("toggler et enkelt avsnitt", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph(newLiteral("Dette er kun et avsnitt"))],
+          blocks: [newParagraph({ content: [newLiteral("Dette er kun et avsnitt")] })],
         }),
       });
 
@@ -46,7 +46,11 @@ describe("toggle bullet-liet", () => {
     it("toggler et avsnitt med en eksisterende punktliste i samme blokk (avsnitt før punktliste)", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph(newLiteral("Avsnitt med punktliste"), newItemList(newItem("Punkt 1")))],
+          blocks: [
+            newParagraph({
+              content: [newLiteral("Avsnitt med punktliste"), newItemList({ items: [newItem("Punkt 1")] })],
+            }),
+          ],
         }),
       });
 
@@ -61,7 +65,11 @@ describe("toggle bullet-liet", () => {
     it("toggler et avsnitt med en eksisterende punktliste i samme blokk (avsnitt etter punktliste)", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph(newItemList(newItem("Punkt 1")), newLiteral("Avsnitt med punktliste"))],
+          blocks: [
+            newParagraph({
+              content: [newItemList({ items: [newItem("Punkt 1")] }), newLiteral("Avsnitt med punktliste")],
+            }),
+          ],
         }),
       });
       cy.mount(<EditorWithState brev={brev} />);
@@ -74,7 +82,10 @@ describe("toggle bullet-liet", () => {
     it("toggler et avsnitt med en eksisterende punktliste i en annen blokk", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph(newItemList(newItem("Punkt 1"))), newParagraph(newLiteral("Avsnitt uten punktliste"))],
+          blocks: [
+            newParagraph({ content: [newItemList({ items: [newItem("Punkt 1")] })] }),
+            newParagraph({ content: [newLiteral("Avsnitt uten punktliste")] }),
+          ],
         }),
       });
 
@@ -91,9 +102,9 @@ describe("toggle bullet-liet", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
-            newParagraph(newItemList(newItem("Punkt 1"))),
-            newParagraph(newLiteral("Avsnitt uten punktliste")),
-            newParagraph(newItemList(newItem("Punkt 2"))),
+            newParagraph({ content: [newItemList({ items: [newItem("Punkt 1")] })] }),
+            newParagraph({ content: [newLiteral("Avsnitt uten punktliste")] }),
+            newParagraph({ content: [newItemList({ items: [newItem("Punkt 2")] })] }),
           ],
         }),
       });
@@ -111,7 +122,7 @@ describe("toggle bullet-liet", () => {
     it("toggler av et enkelt avsnitt", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph(newItemList(newItem("Dette er kun et avsnitt")))],
+          blocks: [newParagraph({ content: [newItemList({ items: [newItem("Dette er kun et avsnitt")] })] })],
         }),
       });
 
@@ -125,10 +136,11 @@ describe("toggle bullet-liet", () => {
       cy.get("li").should("have.length", 0);
       cy.contains("Dette er kun et avsnitt").should("exist");
     });
+
     it("toggler av et avsnitt med en eksisterende punktliste i samme blokk (avsnitt før punktliste)", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph(newItemList(newItem("skal brytes ut"), newItem("Punkt 1")))],
+          blocks: [newParagraph({ content: [newItemList({ items: newItems("skal brytes ut", "Punkt 1") })] })],
         }),
       });
 
@@ -142,10 +154,11 @@ describe("toggle bullet-liet", () => {
       cy.get("li").should("have.length", 1);
       cy.get(".PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
     });
+
     it("toggler av et avsnitt med en eksisterende punktliste i samme blokk (avsnitt før punktliste)", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph(newItemList(newItem("Punkt 1"), newItem("skal brytes ut")))],
+          blocks: [newParagraph({ content: [newItemList({ items: newItems("Punkt 1", "skal brytes ut") })] })],
         }),
       });
 
@@ -159,10 +172,13 @@ describe("toggle bullet-liet", () => {
       cy.get("li").should("have.length", 1);
       cy.get(".PARAGRAPH").eq(1).contains("skal brytes ut").should("exist");
     });
+
     it("fjerner punkt fra midten av en punktliste", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph(newItemList(newItem("Punkt 1"), newItem("skal brytes ut"), newItem("Punkt 3")))],
+          blocks: [
+            newParagraph({ content: [newItemList({ items: newItems("Punkt 1", "skal brytes ut", "Punkt 2") })] }),
+          ],
         }),
       });
       cy.mount(<EditorWithState brev={brev} />);

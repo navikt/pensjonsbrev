@@ -459,9 +459,10 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
   const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
 
   const newThisBlock = newParagraph({ content: thisItem.content });
+  const hasItemsAfter = itemsAfter.length > 0;
   const newNextBlock = newParagraph({ content: [newItemList({ items: itemsAfter })] });
 
-  const newBlocks = [...prevBlocks, newThisBlock, newNextBlock, ...nextBlocks].filter(
+  const newBlocks = [...prevBlocks, newThisBlock, ...(hasItemsAfter ? [newNextBlock] : []), ...nextBlocks].filter(
     (block) => block.content.length > 0,
   );
 
