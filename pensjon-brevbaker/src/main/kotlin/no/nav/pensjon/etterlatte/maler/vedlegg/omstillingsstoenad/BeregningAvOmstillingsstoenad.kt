@@ -351,7 +351,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 text(
                     Bokmal to "Feilutbetalt ytelse vil bli behandlet i et etteroppgjør",
                     Nynorsk to "Feilutbetalt yting vil bli behandla i eit etteroppgjer",
-                    English to "Incorrectly paid benefit will be dealt with in a final settlement",
+                    English to "Incorrectly paid allowance will be dealt with in a final settlement",
                 )
             }
             paragraph {
