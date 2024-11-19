@@ -133,7 +133,10 @@ const toggleBulletListOnWithoutSurroundingElements = (args: {
     block.content,
     sentence[0].originalIndex,
     sentence.at(-1)!.originalIndex,
-    newItemList({ items: [{ id: null, content: sentenceElements }] }),
+    newItemList({
+      items: [{ id: null, content: sentenceElements }],
+      deletedItems: sentenceElements.filter((s) => !!s.id).map((r) => r.id!),
+    }),
   );
 
   const mergedItemListsWithinBlock = mergeItemLists(replacedWithItemList);
@@ -149,9 +152,9 @@ const toggleBulletListOnWithoutSurroundingElements = (args: {
   const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
 
   args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].content = mergedItemListsWithinBlock;
-  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].deletedContent = sentenceElements
-    .filter((s) => !!s.id)
-    .map((r) => r.id!);
+  // args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].deletedContent = sentenceElements
+  //   .filter((s) => !!s.id)
+  //   .map((r) => r.id!);
   args.draft.focus = {
     blockIndex: args.literalIndex.blockIndex,
     contentIndex: newContentIndex,
@@ -186,7 +189,7 @@ const toggleBulletListOnBetweenElemenets = (args: { draft: Draft<LetterEditorSta
 
   const thisBlockWithItemList = newParagraph({
     ...thisBlock,
-    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null),
+    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null) as number[],
     content: mergeItemLists(
       replaceElementsBetweenIncluding(
         thisBlock.content,
@@ -227,9 +230,9 @@ const toggleBulletListOnBetweenElemenets = (args: { draft: Draft<LetterEditorSta
 
   const thisBlocksItemLists = newThisBlock.content
     .filter((c) => c.type === "ITEM_LIST")
-    .find((itemList) => itemList.items.some((i) => isEqual(i.content, sentenceElements)))!;
+    .find((itemList) => (itemList as ItemList).items.some((i) => isEqual(i.content, sentenceElements)))!;
 
-  const itemIndex = thisBlocksItemLists.items.findIndex((i) => isEqual(i.content, sentenceElements));
+  const itemIndex = (thisBlocksItemLists as ItemList).items.findIndex((i) => isEqual(i.content, sentenceElements));
   const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
     isEqual(i.content, sentenceElements),
   );
@@ -240,7 +243,7 @@ const toggleBulletListOnBetweenElemenets = (args: { draft: Draft<LetterEditorSta
     ...args.draft.redigertBrev.deletedBlocks,
     ...(isPrevBlockEmpty ? [newPrevBlock.id] : []),
     ...(isNextBlockEmpty ? [nextBlock.id] : []),
-  ].filter((id) => id !== null);
+  ].filter((id) => id !== null) as number[];
 
   args.draft.focus = {
     blockIndex: newBlockContentIndex,
@@ -279,7 +282,7 @@ const toggleBulletListOnWithItemListBefore = (args: {
 
   const thisBlockWithItemList = newParagraph({
     ...thisBlock,
-    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null),
+    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null) as number[],
     content: mergeItemLists(
       replaceElementsBetweenIncluding(
         thisBlock.content,
@@ -315,9 +318,9 @@ const toggleBulletListOnWithItemListBefore = (args: {
 
   const thisBlocksItemLists = newThisBlock.content
     .filter((c) => c.type === "ITEM_LIST")
-    .find((itemList) => itemList.items.some((i) => isEqual(i.content, sentenceElements)))!;
+    .find((itemList) => (itemList as ItemList).items.some((i) => isEqual(i.content, sentenceElements)))!;
 
-  const itemIndex = thisBlocksItemLists.items.findIndex((i) => isEqual(i.content, sentenceElements));
+  const itemIndex = (thisBlocksItemLists as ItemList).items.findIndex((i) => isEqual(i.content, sentenceElements));
   const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
     isEqual(i.content, sentenceElements),
   );
@@ -325,7 +328,7 @@ const toggleBulletListOnWithItemListBefore = (args: {
 
   args.draft.redigertBrev.blocks = newBlocks;
   args.draft.redigertBrev.deletedBlocks = isPrevBlockEmpty
-    ? [...args.draft.redigertBrev.deletedBlocks, newPrevBlock.id].filter((id) => id !== null)
+    ? ([...args.draft.redigertBrev.deletedBlocks, newPrevBlock.id].filter((id) => id !== null) as number[])
     : args.draft.redigertBrev.deletedBlocks;
 
   args.draft.focus = {
@@ -363,7 +366,7 @@ const toggleBulletListOnWithItemListAfter = (args: { draft: Draft<LetterEditorSt
 
   const thisBlockWithItemList = newParagraph({
     ...thisBlock,
-    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null),
+    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null) as number[],
     content: mergeItemLists(
       replaceElementsBetweenIncluding(
         thisBlock.content,
@@ -397,9 +400,9 @@ const toggleBulletListOnWithItemListAfter = (args: { draft: Draft<LetterEditorSt
 
   const thisBlocksItemLists = newThisBlock.content
     .filter((c) => c.type === "ITEM_LIST")
-    .find((itemList) => itemList.items.some((i) => isEqual(i.content, sentenceElements)))!;
+    .find((itemList) => (itemList as ItemList).items.some((i) => isEqual(i.content, sentenceElements)))!;
 
-  const itemIndex = thisBlocksItemLists.items.findIndex((i) => isEqual(i.content, sentenceElements));
+  const itemIndex = (thisBlocksItemLists as ItemList).items.findIndex((i) => isEqual(i.content, sentenceElements));
   const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
     isEqual(i.content, sentenceElements),
   );
@@ -407,7 +410,7 @@ const toggleBulletListOnWithItemListAfter = (args: { draft: Draft<LetterEditorSt
 
   args.draft.redigertBrev.blocks = newBlocks;
   args.draft.redigertBrev.deletedBlocks = isNextBlockEmpty
-    ? [...args.draft.redigertBrev.deletedBlocks, nextBlock.id].filter((id) => id !== null)
+    ? ([...args.draft.redigertBrev.deletedBlocks, nextBlock.id].filter((id) => id !== null) as number[])
     : args.draft.redigertBrev.deletedBlocks;
 
   args.draft.focus = {
@@ -472,7 +475,7 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
   args.draft.redigertBrev.blocks = newBlocks;
   args.draft.redigertBrev.deletedBlocks = [...args.draft.redigertBrev.deletedBlocks, thisBlock.id].filter(
     (id) => id !== null,
-  );
+  ) as number[];
   args.draft.focus = {
     blockIndex: newParagraphBlockIndex,
     contentIndex: args.itemContentIndex.itemContentIndex,
@@ -514,7 +517,7 @@ const toggleBulletListOffBetweenListElements = (args: {
   args.draft.redigertBrev.blocks = newBlocks;
   args.draft.redigertBrev.deletedBlocks = [...args.draft.redigertBrev.deletedBlocks, thisBlock.id].filter(
     (id) => id !== null,
-  );
+  ) as number[];
   args.draft.focus = {
     blockIndex: newParagraphBlockIndex,
     contentIndex: args.itemContentIndex.itemContentIndex,
@@ -554,7 +557,7 @@ const toggleBulletListOffAtTheEndOfItemList = (args: {
   args.draft.redigertBrev.blocks = newBlocks;
   args.draft.redigertBrev.deletedBlocks = [...args.draft.redigertBrev.deletedBlocks, thisBlock.id].filter(
     (id) => id !== null,
-  );
+  ) as number[];
   args.draft.focus = {
     blockIndex: newParagraphBlockIndex,
     contentIndex: args.itemContentIndex.itemContentIndex,

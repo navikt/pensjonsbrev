@@ -30,7 +30,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
       if (isAtStartOfBlock) {
         // Since we're at the very beginning of a block, it makes sense that we create a new block and push `block`
         // one position.
-        const newBlock: ParagraphBlock = newParagraph(newLiteral({ text: "" }));
+        const newBlock: ParagraphBlock = newParagraph({ content: [newLiteral({ text: "" })] });
         editedLetter.blocks.splice(literalIndex.blockIndex, 0, newBlock);
       } else {
         // We're splitting a block somewhere inside it, so we modify `block` and move content after cursor to a new block.
@@ -43,7 +43,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
           if (c.id !== null) block.deletedContent.push(c.id);
         }
 
-        const nextBlock: ParagraphBlock = newParagraph(...nextContent);
+        const nextBlock: ParagraphBlock = newParagraph({ content: nextContent });
         editedLetter.blocks.splice(literalIndex.blockIndex + 1, 0, nextBlock);
       }
 
