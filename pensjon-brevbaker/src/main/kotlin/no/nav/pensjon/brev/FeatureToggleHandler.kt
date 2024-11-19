@@ -23,14 +23,7 @@ object FeatureToggleHandler {
         }
 
         fun setUnleash(action: ((config: FeatureToggleConfig) -> Unleash)?) = apply {
-            this.unleashBuilder = action
-                ?: { DefaultUnleash(
-                    io.getunleash.util.UnleashConfig.builder()
-                        .appName(config.appName)
-                        .environment(config.environment)
-                        .unleashAPI(config.host + "/api")
-                        .apiKey(config.apiToken).build()
-                ) }
+            action?.let { unleashBuilder = it }
         }
 
         fun build() = FeatureToggleHandler.apply {
@@ -39,6 +32,15 @@ object FeatureToggleHandler {
             }
             if (!::config.isInitialized) {
                 throw IllegalStateException("Må sette konfig")
+            }
+            if (!::unleashBuilder.isInitialized) {
+                unleashBuilder = { DefaultUnleash(
+                    io.getunleash.util.UnleashConfig.builder()
+                        .appName(config.appName)
+                        .environment(config.environment)
+                        .unleashAPI(config.host + "/api")
+                        .apiKey(config.apiToken).build()
+                ) }
             }
             state = InitState.DONE
         }
