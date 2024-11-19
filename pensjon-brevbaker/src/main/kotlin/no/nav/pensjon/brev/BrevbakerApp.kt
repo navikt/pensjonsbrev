@@ -131,4 +131,5 @@ fun Application.brevbakerModule() {
 
     configureMetrics()
     brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService)
+    log.warn("Ferdig med å sette opp applikasjonen")
 }
