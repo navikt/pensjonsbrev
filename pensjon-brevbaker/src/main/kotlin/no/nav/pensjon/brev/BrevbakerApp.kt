@@ -9,6 +9,7 @@ import io.ktor.server.application.ApplicationStopPreparing
 import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.auth.Authentication
+import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.ParameterConversionException
 import io.ktor.server.plugins.callid.CallId
@@ -120,16 +121,18 @@ fun Application.brevbakerModule() {
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
-    FeatureToggleHandler.Builder().setConfig(brevbakerConfig.config("unleash").let {
-        FeatureToggleConfig(
-            appName = it.property("appName").getString(),
-            environment = it.property("environment").getString(),
-            host = it.property("host").getString(),
-            apiToken = it.property("apiToken").getString(),
-        )
-    }).build()
+    FeatureToggleHandler.configure {
+        with(brevbakerConfig.config("unleash")) {
+            appName = stringProperty("appName")
+            environment = stringProperty("environment")
+            this@configure.host = stringProperty("host")
+            apiToken = stringProperty("apiToken")
+        }
+    }
 
     configureMetrics()
     brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService)
     log.warn("Ferdig med å sette opp applikasjonen")
 }
+
+private fun ApplicationConfig.stringProperty(path: String): String = this.property(path).getString()

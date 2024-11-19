@@ -3,6 +3,7 @@ package no.nav.pensjon.brev
 import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
+import io.getunleash.util.UnleashConfig
 
 private const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
 
@@ -11,19 +12,19 @@ object FeatureToggleHandler {
     private lateinit var unleashAction: () -> Unleash
     private val unleash: Unleash by lazy { unleashAction() }
 
-    fun isEnabled(toggle: UnleashToggle): Boolean = unleash.isEnabled(unleashTogglePrefix + toggle.name, UnleashContext.builder().build())
+    fun isEnabled(toggle: UnleashToggle): Boolean =
+        unleash.isEnabled(unleashTogglePrefix + toggle.name, UnleashContext.builder().build())
 
-    class Builder {
+    fun configure(block: FeatureToggleConfig.() -> Unit) {
+        Builder().setConfig(FeatureToggleConfig().apply(block)).build()
+    }
+
+    private class Builder {
         private lateinit var config: FeatureToggleConfig
         private var state: InitState = InitState.NEW
-        private lateinit var unleashBuilder: ((FeatureToggleConfig) -> Unleash)
 
         fun setConfig(config: FeatureToggleConfig) = apply {
             this.config = config
-        }
-
-        fun setUnleash(action: ((config: FeatureToggleConfig) -> Unleash)?) = apply {
-            action?.let { unleashBuilder = it }
         }
 
         fun build() = FeatureToggleHandler.apply {
@@ -33,15 +34,7 @@ object FeatureToggleHandler {
             if (!::config.isInitialized) {
                 throw IllegalStateException("Må sette konfig")
             }
-            if (!::unleashBuilder.isInitialized) {
-                unleashBuilder = { DefaultUnleash(
-                    io.getunleash.util.UnleashConfig.builder()
-                        .appName(config.appName)
-                        .environment(config.environment)
-                        .unleashAPI(config.host + "/api")
-                        .apiKey(config.apiToken).build()
-                ) }
-            }
+            unleashAction = { config.unleash(config) }
             state = InitState.DONE
         }
     }
@@ -49,10 +42,19 @@ object FeatureToggleHandler {
 
 enum class InitState { NEW, DONE }
 
-data class FeatureToggleConfig(
-    val appName: String,
-    val environment: String,
-    val host: String,
-    val apiToken: String,
-)
+class FeatureToggleConfig {
+    internal lateinit var appName: String
+    internal lateinit var environment: String
+    internal lateinit var host: String
+    internal lateinit var apiToken: String
+    internal var unleash: ((FeatureToggleConfig) -> Unleash) = {
+        DefaultUnleash(
+            UnleashConfig.builder()
+                .appName(appName)
+                .environment(environment)
+                .unleashAPI("$host/api")
+                .apiKey(apiToken).build()
+        )
+    }
+}
 

@@ -52,10 +52,10 @@ val httpClient = try {
     throw e
 }
 
-private fun settOppFakeUnleash() = FeatureToggleHandler.Builder()
-        .setConfig(FeatureToggleConfig("a", "b", "http://localhost", "d"))
-        .setUnleash { FakeUnleash() }
-        .build()
+private fun settOppFakeUnleash() =
+    FeatureToggleHandler.configure {
+        unleash = { FakeUnleash() }
+    }
 
 fun requestLetter(letterRequest: BestillBrevRequest<Brevkode.AutoBrev>): LetterResponse =
     runBlocking {
