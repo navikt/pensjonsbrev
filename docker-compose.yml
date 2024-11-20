@@ -12,6 +12,7 @@ services:
       - "5016:5006"
   pensjon-brevbaker:
     environment:
+      - NAIS_APP_NAME=brevbaker
       - PDF_BUILDER_URL=http://pdf-bygger:8080
       - AZURE_OPENID_CONFIG_JWKS_URI=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
@@ -23,6 +24,8 @@ services:
     ports:
       - "8080:8080"
       - "5015:5005" # debug port
+    env_file:
+      - ./pensjon-brevbaker/secrets/unleash.env
   skribenten-backend:
     profiles:
       - skribenten

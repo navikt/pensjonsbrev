@@ -1,14 +1,18 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
+import io.getunleash.FakeUnleash
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.serialization.jackson.jackson
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -20,7 +24,7 @@ import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import java.nio.file.Path
-import java.util.*
+import java.util.Base64
 import kotlin.io.path.Path
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
@@ -28,20 +32,32 @@ const val PDF_BUILDER_URL = "http://localhost:8081"
 
 object TestTags {
     const val INTEGRATION_TEST = "integration-test"
+
     // For visual inspection of documents/design
     const val MANUAL_TEST = "manual-test"
 }
 
-val httpClient = HttpClient(CIO) {
-    install(HttpTimeout) {
-        requestTimeoutMillis = 40000
-    }
-    install(ContentNegotiation) {
-        jackson {
-            registerModule(JavaTimeModule())
+val httpClient = try {
+    HttpClient(CIO) {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 40000
         }
+        install(ContentNegotiation) {
+            jackson {
+                registerModule(JavaTimeModule())
+            }
+        }
+        settOppFakeUnleash()
     }
+} catch (e: Exception) {
+    e.printStackTrace()
+    throw e
 }
+
+private fun settOppFakeUnleash() =
+    FeatureToggleHandler.configure {
+        unleash = { FakeUnleash() }
+    }
 
 fun requestLetter(letterRequest: BestillBrevRequest<Brevkode.AutoBrev>): LetterResponse =
     runBlocking {
@@ -64,9 +80,20 @@ fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("buil
 
 private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
 
-fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(pdfFileName: String, path: Path = Path.of("build", "test_pdf")): Letter<ParameterType> {
+fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
+    pdfFileName: String,
+    path: Path = Path.of("build", "test_pdf"),
+): Letter<ParameterType> {
     Letter2Markup.render(this)
-        .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, language, felles, template.letterMetadata.brevtype) }
+        .let {
+            LatexDocumentRenderer.render(
+                it.letterMarkup,
+                it.attachments,
+                language,
+                felles,
+                template.letterMetadata.brevtype
+            )
+        }
         .let { runBlocking { laTeXCompilerService.producePDF(it).base64PDF } }
         .also { writeTestPDF(pdfFileName, Base64.getDecoder().decode(it), path) }
     return this
@@ -84,7 +111,15 @@ fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: Str
 
 fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
     Letter2Markup.render(this)
-        .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, language, felles, template.letterMetadata.brevtype) }
+        .let {
+            HTMLDocumentRenderer.render(
+                it.letterMarkup,
+                it.attachments,
+                language,
+                felles,
+                template.letterMetadata.brevtype
+            )
+        }
         .also { writeTestHTML(htmlFileName, it) }
 
     return this

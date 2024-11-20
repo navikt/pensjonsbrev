@@ -18,7 +18,7 @@ class TemplateResourceITest {
     @Test
     fun `can render and compile a template`() {
         requestTemplates()
-            .associateWith { templateResource.templates[it]!! }
+            .associateWith { templateResource.getTemplate(it)!! }
             .firstNotNullOf { it }
             .let { testTemplate(it.key, it.value.template) }
     }

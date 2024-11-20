@@ -27,7 +27,17 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
     templates: Set<T>,
     private val laTeXCompilerService: LaTeXCompilerService,
 ) {
-    val templates: Map<Kode, T> = templates.associateBy { it.kode }
+    private val templates: Map<Kode, T> = templates.associateBy { it.kode }
+
+    fun listTemplatesWithMetadata() = templates.map { getTemplate(it.key)!!.description() }
+
+    fun listTemplatekeys() = templates.keys
+
+    fun getTemplate(kode: Kode) = when {
+        // Legg inn her hvis du ønsker å styre forskjellige versjoner, feks
+        // kode == DinBrevmal.kode && FeatureToggles.dinToggle.isEnabled() -> DinBrevmalV2
+        else -> templates[kode]
+    }
 
     suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
@@ -60,7 +70,7 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
         ).increment()
 
     private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
-        val template = templates[brevkode]?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
+        val template = getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
 
         val language = spraak.toLanguage()
         if (!template.language.supports(language)) {
