@@ -6,7 +6,14 @@ import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
-import { getMergeIds, isEmptyBlock, isEmptyItem, isTextContent, mergeContentArrays } from "../model/utils";
+import {
+  getMergeIds,
+  isEmptyBlock,
+  isEmptyContent,
+  isEmptyItem,
+  isTextContent,
+  mergeContentArrays,
+} from "../model/utils";
 import type { LiteralIndex } from "./model";
 
 export enum MergeTarget {
@@ -128,6 +135,24 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
         .filter(isTextContent);
 
       lastItem.content = mergeContentArrays(lastItem.content, textContentAfterList);
+    } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === LITERAL) {
+      const block = blocks[literalIndex.blockIndex];
+      const content = block?.content[literalIndex.contentIndex];
+      if (isEmptyContent(content)) {
+        block.content.splice(literalIndex.contentIndex, 1);
+        deleteElement(content, block.content, block.deletedContent);
+        draft.focus = {
+          blockIndex: 1,
+          contentIndex: literalIndex.contentIndex - 1,
+          cursorPosition: text(previousContentSameBlock).length,
+        };
+      } else {
+        draft.focus = {
+          blockIndex: 1,
+          contentIndex: literalIndex.contentIndex - 1,
+          cursorPosition: text(previousContentSameBlock).length,
+        };
+      }
     } else {
       const [firstId, secondId] = getMergeIds(literalIndex.blockIndex, target);
       const first = blocks[firstId];
