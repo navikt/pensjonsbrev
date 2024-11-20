@@ -165,7 +165,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                 text(
                     Bokmal to "Hvis du ikke melder fra om endringer og får utbetalt for mye stønad, kan stønad som er utbetalt feil kreves tilbake.",
                     Nynorsk to "Dersom du får utbetalt for mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake det du ikkje hadde rett på.",
-                    English to "If you fail to report changes and/or are paid too much benefits/allowance, Nav has the right to collect the incorrect amount.",
+                    English to "If you fail to report changes and/or are paid too much allowance, Nav has the right to collect the incorrect amount.",
                 )
             }
 
