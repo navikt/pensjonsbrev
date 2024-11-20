@@ -146,7 +146,7 @@ describe("backspaceHandler", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.merge(editorState, { blockIndex: 0, contentIndex: 1 }, MergeTarget.PREVIOUS),
+      Actions.merge(editorState, { blockIndex: 0, contentIndex: 0 }, MergeTarget.PREVIOUS),
     );
   });
   test("backspace at beginning of block, but not before first character of TextContent, does not trigger merge", async () => {
