@@ -29,7 +29,7 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
 ) {
     private val templates: Map<Kode, T> = templates.associateBy { it.kode }
 
-    fun listTemplatesWithMetadata() = templates.map { it.value.description() }
+    fun listTemplatesWithMetadata() = templates.map { getTemplate(it.key)!!.description() }
 
     fun listTemplatekeys() = templates.keys
 
