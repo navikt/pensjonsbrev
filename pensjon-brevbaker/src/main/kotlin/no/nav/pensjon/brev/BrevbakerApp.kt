@@ -6,6 +6,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStopPreparing
+import io.ktor.server.application.ServerReady
 import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.auth.Authentication
@@ -132,7 +133,7 @@ fun Application.brevbakerModule() {
 
     configureMetrics()
     brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService)
-    log.warn("Ferdig med å sette opp applikasjonen")
+    monitor.subscribe(ServerReady) { it.log.info("Ferdig med å sette opp applikasjonen") }
 }
 
 private fun ApplicationConfig.stringProperty(path: String): String = this.property(path).getString()
