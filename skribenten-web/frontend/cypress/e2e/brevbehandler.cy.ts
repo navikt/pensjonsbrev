@@ -1,17 +1,20 @@
+import { type BrevInfo, Distribusjonstype } from "../../src/types/brev";
+import { nyBrevInfo } from "../utils/brevredigeringTestUtils";
+
 describe("Brevbehandler", () => {
-  const kladdBrev = {
+  const kladdBrev = nyBrevInfo({
     id: 1,
-    opprettetAv: "Ola Nordmann",
+    opprettetAv: { id: "Z990297", navn: "Ola Nordmann" },
     opprettet: "2021-09-01T12:00:00",
-    sistredigertAv: "Ola Nordmann",
+    sistredigertAv: { id: "Z990297", navn: "Ola Nordmann" },
     sistredigert: "2021-09-01T12:00:00",
     brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
     brevtittel: "Informasjon om saksbehandlingstid",
     status: { type: "Kladd" },
-    distribusjonstype: "SENTRALPRINT",
-  };
+    distribusjonstype: Distribusjonstype.SENTRALPRINT,
+  });
 
-  const klarBrev = { ...kladdBrev, status: { type: "Klar" } };
+  const klarBrev: BrevInfo = { ...kladdBrev, status: { type: "Klar" } };
 
   const brevSomSendesSomLokalPrint = {
     ...klarBrev,
@@ -364,7 +367,7 @@ describe("Brevbehandler", () => {
   });
 
   it("et arkivert brev kan ikke endre på noe informasjon, og kan kun sendes på nytt", () => {
-    const arkivertBrev = { ...klarBrev, journalpostId: 123_456 };
+    const arkivertBrev: BrevInfo = { ...klarBrev, status: { type: "Arkivert" }, journalpostId: 123_456 };
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([arkivertBrev]);

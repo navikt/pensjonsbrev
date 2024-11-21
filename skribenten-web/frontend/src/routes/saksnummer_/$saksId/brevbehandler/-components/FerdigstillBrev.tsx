@@ -13,7 +13,7 @@ import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
-import { erBrevKlar } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar } from "~/utils/brevUtils";
 
 import type {
   FerdigstillErrorResponse,
@@ -29,7 +29,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
   brevInfo: BrevInfo[];
   åpneFerdigstillModal: () => void;
 }) => {
-  const antallBrevSomErKlarTilSending = properties.brevInfo.filter(erBrevKlar).length;
+  const antallBrevSomErKlarTilSending = properties.brevInfo.filter((b) => erBrevKlar(b) || erBrevArkivert(b)).length;
   if (properties.valgtBrevId) {
     const valgtBrev = properties.brevInfo.find((brev) => brev.id === properties.valgtBrevId);
 
@@ -49,7 +49,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
   }
 
   //hvis ingen spesifikk brev er valgt, og noen står klar til å sendes, vis knapp for å sende
-  if (!properties.valgtBrevId && properties.brevInfo.some(erBrevKlar)) {
+  if (!properties.valgtBrevId && properties.brevInfo.some((b) => erBrevKlar(b) || erBrevArkivert(b))) {
     return (
       <Button onClick={properties.åpneFerdigstillModal} size="small" type="button">
         <HStack gap="2">
@@ -74,7 +74,7 @@ const FerdigstillValgtBrev = (properties: {
   åpneFerdigstillModal: () => void;
   antallBrevKlarTilSending: number;
 }) => {
-  const erLåst = useMemo(() => erBrevKlar(properties.brev), [properties.brev]);
+  const erLåst = useMemo(() => erBrevKlar(properties.brev) || erBrevArkivert(properties.brev), [properties.brev]);
 
   if (erLåst) {
     return (
@@ -118,17 +118,13 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
   });
 
-  const alleBrevForSak = useQuery({
+  const alleFerdigstileBrevResult = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
     queryFn: () => hentAlleBrevForSak.queryFn(properties.sakId),
+    select: (data) => data.filter((b) => erBrevKlar(b) || erBrevArkivert(b)),
   });
 
-  const alleFerdigstilteBrev = useMemo(() => {
-    if (alleBrevForSak.isSuccess) {
-      return alleBrevForSak.data.filter(erBrevKlar);
-    }
-    return [];
-  }, [alleBrevForSak.data, alleBrevForSak.isSuccess]);
+  const alleFerdigstilteBrev = useMemo(() => alleFerdigstileBrevResult.data ?? [], [alleFerdigstileBrevResult.data]);
 
   const form = useForm<z.infer<typeof validationSchema>>({
     defaultValues: { valgteBrevSomSkalSendes: [] },
@@ -207,11 +203,14 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
             </div>
             <br />
             <div>
-              {alleBrevForSak.isPending && <Label>Henter alle ferdigstilte brev...</Label>}
-              {alleBrevForSak.isError && (
-                <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />
+              {alleFerdigstileBrevResult.isPending && <Label>Henter alle ferdigstilte brev...</Label>}
+              {alleFerdigstileBrevResult.isError && (
+                <ApiError
+                  error={alleFerdigstileBrevResult.error}
+                  title={"Klarte ikke å hente alle ferdigstilte for saken"}
+                />
               )}
-              {alleBrevForSak.isSuccess && (
+              {alleFerdigstileBrevResult.isSuccess && (
                 <Controller
                   control={form.control}
                   name="valgteBrevSomSkalSendes"
