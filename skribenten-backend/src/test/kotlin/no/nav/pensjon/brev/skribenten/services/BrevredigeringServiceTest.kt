@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
@@ -609,6 +610,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer og sender vedtaksbrev hvis avsender har attestantrolle`(): Unit = runBlocking {
+        Features.override(Features.attestant, true)
         clearMocks(brevbakerMock, penService)
 
         coEvery { penService.hentPesysBrevdata(any(), any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
@@ -652,6 +654,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer ikke og sender ikke vedtaksbrev hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
+        Features.override(Features.attestant, true)
         clearMocks(brevbakerMock, penService)
 
         coEvery { penService.hentPesysBrevdata(any(), any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
