@@ -148,6 +148,21 @@ class BrevredigeringService(
             }
         }
 
+    suspend fun attesterBrev(
+        saksId: SaksId,
+        brevId: BrevId,
+        attestantId: NavIdent
+    ) = hentBrevMedReservasjon(brevId = brevId.id, saksId = saksId.id) {
+        validerErKlarTilSending(brevDto)
+
+        transaction {
+            brevDb.apply {
+                this.attestertAvNavIdent = attestantId
+            }.also { Brevredigering.reload(it, true) }.toDto()
+        }
+    }
+
+
     suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId) {
             rendreBrev(brev = brevDto, signaturSignerende = signaturSignerende).map { rendretBrev ->
@@ -235,6 +250,16 @@ class BrevredigeringService(
                 throw BrevIkkeKlartTilSendingException("Brev må være markert som klar til sending")
             }
             validerErKlarTilSending(brev)
+
+            if (brev.erVedtaksbrev() && brev.info.attestertAv == null) {
+                // TODO: verifiser at den som sender no har attestant-rolle
+
+                attesterBrev(
+                    saksId = SaksId(saksId),
+                    brevId = BrevId(brevId),
+                    attestantId = PrincipalInContext.require().navIdent,
+                )
+            }
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
@@ -478,6 +503,7 @@ private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
         sistReservert = sistReservert,
         signaturSignerende = signaturSignerende,
         journalpostId = journalpostId,
+        attestertAv = attestertAvNavIdent
     )
 
 private fun Mottaker.toDto(): Dto.Mottaker =
