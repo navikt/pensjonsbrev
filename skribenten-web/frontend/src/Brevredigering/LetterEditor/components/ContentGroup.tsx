@@ -113,6 +113,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
+  const erFritekst = content.tags.includes(ElementTags.FRITEKST);
+
   const text = (content.editedText ?? content.text) || "​";
   useEffect(() => {
     if (contentEditableReference.current !== null && contentEditableReference.current.textContent !== text) {
@@ -245,7 +247,33 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
-  const erFritekst = content.tags.includes(ElementTags.FRITEKST);
+  const handleOnclick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!erFritekst) return;
+    handleWordSelect(e.target as HTMLSpanElement);
+  };
+
+  const handleOnFocus = (e: React.FocusEvent) => {
+    e.preventDefault();
+    setEditorState((oldState) => ({
+      ...oldState,
+      focus: literalIndex,
+    }));
+    if (!erFritekst) return;
+    //TODO - vent til alexander fikser bug med backspace etter tab.
+    //handleWordSelect(e.target as HTMLSpanElement);
+  };
+
+  const handleWordSelect = (element: HTMLSpanElement) => {
+    const range = document.createRange();
+    const selection = window.getSelection();
+
+    if (selection) {
+      selection.removeAllRanges();
+      range.selectNodeContents(element);
+      selection.addRange(range);
+    }
+  };
 
   return (
     <span
@@ -261,12 +289,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           text-decoration: underline;
         `
       }
-      onFocus={() => {
-        setEditorState((oldState) => ({
-          ...oldState,
-          focus: literalIndex,
-        }));
-      }}
+      onClick={handleOnclick}
+      onFocus={handleOnFocus}
       onInput={(event) => {
         applyAction(
           Actions.updateContentText,

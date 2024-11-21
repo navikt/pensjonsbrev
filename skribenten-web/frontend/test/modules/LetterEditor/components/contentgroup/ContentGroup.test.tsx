@@ -9,7 +9,7 @@ import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGr
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
-import { PARAGRAPH } from "~/types/brevbakerTypes";
+import { ElementTags, PARAGRAPH } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 
@@ -45,7 +45,7 @@ const complexEditorState = letter(
     variable("Dokumentet starter med variable"),
     literal("første literal"),
     variable("X"),
-    literal("andre literal"),
+    newLiteral({ text: "andre literal", tags: [ElementTags.FRITEKST] }),
   ),
   paragraph(variable("Paragraf med kun variable")),
   paragraph(literal("paragraf med kun tekst")),
@@ -327,5 +327,16 @@ describe("ArrowRight will move focus to next editable content", () => {
       itemIndex: 3,
       itemContentIndex: 0,
     });
+  });
+});
+
+describe("onClickHandler", () => {
+  test("clicking on a fritekst variable will select the whole element", async () => {
+    const { user } = setupComplex();
+
+    await user.click(screen.getByText("andre literal"));
+    const selection = window.getSelection();
+    expect(selection).not.toBeNull();
+    expect(selection?.toString()).toBe("andre literal");
   });
 });
