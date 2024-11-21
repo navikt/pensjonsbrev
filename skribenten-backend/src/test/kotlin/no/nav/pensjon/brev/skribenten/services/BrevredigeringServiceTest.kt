@@ -18,7 +18,9 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.auth.lesInnADGrupper
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.Document
@@ -31,12 +33,10 @@ import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.ArkivertBrevException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevIkkeKlartTilSendingException
@@ -608,6 +608,87 @@ class BrevredigeringServiceTest {
     }
 
     @Test
+    fun `attesterer og sender vedtaksbrev hvis avsender har attestantrolle`(): Unit = runBlocking {
+        clearMocks(brevbakerMock, penService)
+
+        coEvery { penService.hentPesysBrevdata(any(), any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
+        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+
+        coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
+        coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
+        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns templateDescription
+
+        ADGroups.init(lesInnADGrupper())
+        val brev = opprettBrev(
+            reserverForRedigering = false,
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            vedtaksId = 1
+        ).resultOrNull()!!
+
+        val navident = NavIdent("A12345")
+        withPrincipal(MockPrincipal(navident, "Peder Ås", mutableSetOf(ADGroups.attestant))) {
+            brevredigeringService.delvisOppdaterBrev(
+                saksId = sak.saksId,
+                brevId = brev.info.id,
+                laastForRedigering = true,
+                distribusjonstype = Distribusjonstype.SENTRALPRINT
+            )
+            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
+            brevredigeringService.sendBrev(sak.saksId, brev.info.id).also { assertTrue(it is ServiceResult.Ok) }
+        }
+
+        coVerify {
+            penService.hentPesysBrevdata(
+                eq(sak.saksId),
+                eq(1),
+                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                eq(principalNavEnhetId),
+            )
+        }
+        coVerify {
+            penService.sendbrev(any(), any())
+        }
+    }
+
+    @Test
+    fun `attesterer ikke og sender ikke vedtaksbrev hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
+        clearMocks(brevbakerMock, penService)
+
+        coEvery { penService.hentPesysBrevdata(any(), any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
+        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+
+        coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
+        coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
+        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns templateDescription
+
+        ADGroups.init(lesInnADGrupper())
+        val brev = opprettBrev(
+            reserverForRedigering = false,
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            vedtaksId = 1
+        ).resultOrNull()!!
+
+        val navident = NavIdent("A12345")
+        withPrincipal(MockPrincipal(navident, "Peder Ås", mutableSetOf())) {
+            brevredigeringService.delvisOppdaterBrev(
+                saksId = sak.saksId,
+                brevId = brev.info.id,
+                laastForRedigering = true,
+                distribusjonstype = Distribusjonstype.SENTRALPRINT
+            )
+            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
+            brevredigeringService.sendBrev(sak.saksId, brev.info.id).also { assertTrue(it is ServiceResult.Error) }
+        }
+
+        coVerify {
+            penService.hentPesysBrevdata(any(), any(), any(), any())
+        }
+        coVerify(exactly = 0) {
+            penService.sendbrev(any(), any())
+        }
+    }
+
+    @Test
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
         clearMocks(brevbakerMock, penService)
 
@@ -1066,17 +1147,6 @@ class BrevredigeringServiceTest {
         withPrincipal(principalMock()) { brevredigeringService.oppdaterSignatur(brev.info.id, "en ny signatur") }
 
         assertEquals("en ny signatur", transaction { Brevredigering[brev.info.id].signaturSignerende })
-    }
-
-    @Test
-    fun `kan sette attestant`(): Unit = runBlocking {
-        val brev = opprettBrev().resultOrNull()!!
-        val attestant = NavIdent("A12345")
-        withPrincipal(principalMock()) {
-            brevredigeringService.attesterBrev(saksId = SaksId(sak.saksId), brevId = BrevId(brev.info.id), attestant)
-        }
-
-        assertEquals(attestant, transaction { Brevredigering[brev.info.id].attestertAvNavIdent })
     }
 
     @Test

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.auth
 
 
+import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions.defaults
 import com.typesafe.config.ConfigResolveOptions
@@ -9,14 +10,9 @@ import org.junit.jupiter.api.Test
 
 class ADGroupsTest {
 
-    private val groupsConfig = ConfigFactory
-        .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-        .getConfig("skribenten")
-        .getConfig("groups")
-
     @Test
     fun `groups config loads with init`() {
-        ADGroups.init(groupsConfig)
+        ADGroups.init(lesInnADGrupper())
         assertThat(ADGroups.pensjonUtland.id).isNotBlank()
         assertThat(ADGroups.pensjonSaksbehandler.id).isNotBlank()
         assertThat(ADGroups.fortroligAdresse.id).isNotBlank()
@@ -26,3 +22,8 @@ class ADGroupsTest {
     }
 
 }
+
+fun lesInnADGrupper(): Config = ConfigFactory
+    .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
+    .getConfig("skribenten")
+    .getConfig("groups")

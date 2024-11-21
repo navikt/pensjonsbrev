@@ -152,19 +152,6 @@ class BrevredigeringService(
             }
         }
 
-    suspend fun attesterBrev(
-        saksId: SaksId,
-        brevId: BrevId,
-        attestantId: NavIdent
-    ) = hentBrevMedReservasjon(brevId = brevId.id, saksId = saksId.id) {
-        validerErKlarTilSending(brevDto)
-
-        transaction {
-            brevDb.apply {
-                this.attestertAvNavIdent = attestantId
-            }.also { Brevredigering.reload(it, true) }.toDto()
-        }
-    }
 
 
     suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): ServiceResult<Dto.Brevredigering>? =
@@ -257,7 +244,7 @@ class BrevredigeringService(
 
             attesterHvisVedtaksbrevSomIkkeErAttestert(brev, saksId, brevId)
                 .takeIf { it is ServiceResult.Error }
-                ?.let { return@sendBrev it as ServiceResult<Pen.BestillBrevResponse>?}
+                ?.let { return@sendBrev it }
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
@@ -294,11 +281,11 @@ class BrevredigeringService(
         } else null
     }
 
-    private suspend fun BrevredigeringService.attesterHvisVedtaksbrevSomIkkeErAttestert(
+    private suspend fun attesterHvisVedtaksbrevSomIkkeErAttestert(
         brev: Dto.Brevredigering,
         saksId: Long,
         brevId: Long,
-    ): ServiceResult<Unit> {
+    ): ServiceResult<Pen.BestillBrevResponse>? {
         if (brev.erVedtaksbrev()) {
             if (brev.info.attestertAv == null) {
                 val userPrincipal = PrincipalInContext.require()
@@ -315,16 +302,20 @@ class BrevredigeringService(
                     )
                 }
 
-                attesterBrev(
-                    saksId = SaksId(saksId),
-                    brevId = BrevId(brevId),
-                    attestantId = userPrincipal.navIdent,
-                )
+                hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
+                    validerErKlarTilSending(brevDto)
+
+                    transaction {
+                        brevDb.apply {
+                            this.attestertAvNavIdent = userPrincipal.navIdent
+                        }.also { Brevredigering.reload(it, true) }.toDto()
+                    }
+                }
             } else {
                 logger.info("Brev ${brev.info.id} er allerede attestert. Fortsetter utsending")
             }
         }
-        return Ok(Unit)
+        return null
     }
 
     fun fjernOverstyrtMottaker(brevId: Long, saksId: Long): Boolean =
