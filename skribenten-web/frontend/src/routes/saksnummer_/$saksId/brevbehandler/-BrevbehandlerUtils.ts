@@ -17,6 +17,10 @@ export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeB
         text: `Redigeres av ${forkortetSaksbehandlernavn(status.redigeresAv, gjeldendeBruker)}`,
       };
     }
+    case "Arkivert": {
+      //TODO - finn ut av farge og text
+      return { variant: "info" as const, text: "Arkivert" };
+    }
   }
 };
 
@@ -24,7 +28,7 @@ export const forkortetSaksbehandlernavn = (navAnsatt: NavAnsatt, gjeldendeBruker
   return navAnsatt.id === gjeldendeBruker?.navident ? "deg" : navAnsatt.navn ?? navAnsatt.id;
 };
 
-const sorteringsRekkefølge = { Kladd: 1, UnderRedigering: 2, Klar: 3 };
+const sorteringsRekkefølge = { Arkivert: 1, Kladd: 2, UnderRedigering: 3, Klar: 4 };
 
 export const sortBrevmeny = (brev: BrevInfo[]): BrevInfo[] =>
   brev.toSorted((a, b) => {
