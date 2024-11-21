@@ -21,6 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -47,6 +48,8 @@ class BrevredigeringService(
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
     }
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     suspend fun opprettBrev(
         sak: Pen.SakSelection,
@@ -253,6 +256,8 @@ class BrevredigeringService(
             validerErKlarTilSending(brev)
 
             attesterHvisVedtaksbrevSomIkkeErAttestert(brev, saksId, brevId)
+                .takeIf { it is ServiceResult.Error }
+                ?.let { return@sendBrev it as ServiceResult<Pen.BestillBrevResponse>?}
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
@@ -293,19 +298,33 @@ class BrevredigeringService(
         brev: Dto.Brevredigering,
         saksId: Long,
         brevId: Long,
-    ) {
-        if (brev.erVedtaksbrev() && brev.info.attestertAv == null) {
-            val userPrincipal = PrincipalInContext.require()
-            if (!userPrincipal.isInGroup(ADGroups.attestant)) {
-                throw IllegalStateException("Bruker ${userPrincipal.navIdent} har ikke attestantrolle")
-            }
+    ): ServiceResult<Unit> {
+        if (brev.erVedtaksbrev()) {
+            if (brev.info.attestertAv == null) {
+                val userPrincipal = PrincipalInContext.require()
+                if (!userPrincipal.isInGroup(ADGroups.attestant)) {
+                    return ServiceResult.Error(
+                        "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${brev.info.id}",
+                        HttpStatusCode.Forbidden
+                    )
+                }
+                if (userPrincipal.navIdent == brev.info.opprettetAv) {
+                    return ServiceResult.Error(
+                        "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${brev.info.id}",
+                        HttpStatusCode.Forbidden
+                    )
+                }
 
-            attesterBrev(
-                saksId = SaksId(saksId),
-                brevId = BrevId(brevId),
-                attestantId = userPrincipal.navIdent,
-            )
+                attesterBrev(
+                    saksId = SaksId(saksId),
+                    brevId = BrevId(brevId),
+                    attestantId = userPrincipal.navIdent,
+                )
+            } else {
+                logger.info("Brev ${brev.info.id} er allerede attestert. Fortsetter utsending")
+            }
         }
+        return Ok(Unit)
     }
 
     fun fjernOverstyrtMottaker(brevId: Long, saksId: Long): Boolean =
