@@ -170,7 +170,7 @@ describe("Kladd", () => {
     //det er visst noe timing issues her, selv om vi venter på aki-kallet, så er ikke ting ferdig rendret når vi begynner sjekkene
     cy.wait(1000);
     cy.contains("Endre mottaker").should("not.exist");
-    cy.get("Slett kladd").should("not.exist");
+    cy.contains("Slett brev").should("not.exist");
     cy.contains("Åpne brev").click("left");
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
   });
