@@ -3,7 +3,6 @@ import type { BrevInfo } from "~/types/brev";
 import { type BrevStatus, type NavAnsatt } from "~/types/brev";
 
 export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeBruker?: UserInfo) => {
-  console.log("status", status);
   switch (status.type) {
     case "Kladd": {
       return { variant: "warning" as const, text: "Kladd" };
