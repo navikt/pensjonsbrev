@@ -6,6 +6,7 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.*
@@ -251,15 +252,7 @@ class BrevredigeringService(
             }
             validerErKlarTilSending(brev)
 
-            if (brev.erVedtaksbrev() && brev.info.attestertAv == null) {
-                // TODO: verifiser at den som sender no har attestant-rolle
-
-                attesterBrev(
-                    saksId = SaksId(saksId),
-                    brevId = BrevId(brevId),
-                    attestantId = PrincipalInContext.require().navIdent,
-                )
-            }
+            attesterHvisVedtaksbrevSomIkkeErAttestert(brev, saksId, brevId)
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
@@ -294,6 +287,25 @@ class BrevredigeringService(
                 }
             }
         } else null
+    }
+
+    private suspend fun BrevredigeringService.attesterHvisVedtaksbrevSomIkkeErAttestert(
+        brev: Dto.Brevredigering,
+        saksId: Long,
+        brevId: Long,
+    ) {
+        if (brev.erVedtaksbrev() && brev.info.attestertAv == null) {
+            val userPrincipal = PrincipalInContext.require()
+            if (!userPrincipal.isInGroup(ADGroups.attestant)) {
+                throw IllegalStateException("Bruker ${userPrincipal.navIdent} har ikke attestantrolle")
+            }
+
+            attesterBrev(
+                saksId = SaksId(saksId),
+                brevId = BrevId(brevId),
+                attestantId = userPrincipal.navIdent,
+            )
+        }
     }
 
     fun fjernOverstyrtMottaker(brevId: Long, saksId: Long): Boolean =
