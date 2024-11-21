@@ -3,19 +3,17 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
-import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
+import { PARAGRAPH } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 
-const content: LiteralValue[] = [
-  { type: LITERAL, id: 1, text: "Heisann", editedText: null },
-  { type: LITERAL, id: 2, text: "Velkommen", editedText: null },
-];
+const content: LiteralValue[] = [newLiteral({ id: 1, text: "Heisann" }), newLiteral({ id: 2, text: "Velkommen" })];
 
 const block: ParagraphBlock = {
   id: 1,

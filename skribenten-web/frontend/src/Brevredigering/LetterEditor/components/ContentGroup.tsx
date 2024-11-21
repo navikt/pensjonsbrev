@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -19,7 +20,7 @@ import {
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import { ElementTags, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -244,12 +245,22 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  const erFritekst = content.tags.includes(ElementTags.FRITEKST);
+
   return (
     <span
       // NOTE: ideally this would be "plaintext-only", and it works in practice.
       // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
       // This is not documented anywhere I could find and caused a day of frustration, beware
-      contentEditable={!freeze}
+      contentEditable
+      css={
+        erFritekst &&
+        content.editedText === null &&
+        css`
+          color: var(--a-blue-500);
+          text-decoration: underline;
+        `
+      }
       onFocus={() => {
         setEditorState((oldState) => ({
           ...oldState,
@@ -289,6 +300,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       }}
       onPaste={handlePaste}
       ref={contentEditableReference}
+      tabIndex={erFritekst ? 1 : undefined}
     />
   );
 }
