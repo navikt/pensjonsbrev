@@ -70,9 +70,9 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
             } orShow {
                 paragraph {
                     text(
-                        Bokmal to "Omstillingsstønaden din er i dag ikke redusert etter arbeidsinntekt eller annen inntekt som er likestilt med arbeidsinntekt.",
-                        Nynorsk to "Omstillingsstønaden din er i dag ikkje redusert ut frå arbeidsinntekt eller anna inntekt som er likestilt med arbeidsinntekt.",
-                        English to "Your current adjustment allowance is not reduced based on income from employment or other income that is equivalent to income from employment.",
+                        Bokmal to "Du mottar omstillingsstønad. Du får utbetalt <BELØP> kroner per måned før skatt.",
+                        Nynorsk to "Du mottar omstillingsstønad. Du får utbetalt <BELØP> kroner i stønad kvar månad før skatt.",
+                        English to "You are receiving an adjustment allowance.  You will receive NOK <AMOUNT> each month before tax.",
                     )
                 }
             }
@@ -173,14 +173,6 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                         English to "If your situation has changed, you must provide us with information about your new situation as soon as possible and no later than three weeks from the date of this letter. Read more about how you can comply with the activity obligation and exemption from the activity obligation farther down in this letter.",
                     )
                 }
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "Er du fortsatt i full jobb eller annen aktivitet med sikte på å komme i arbeid, fyller du aktivitetskravet og vil få omstillingsstønad som før.",
-                    Nynorsk to "Viss du framleis er i full jobb eller annan aktivitet med sikte på å kome i arbeid, oppfyller du aktivitetskravet og vil få omstillingsstønad som før.",
-                    English to "If you are still working full time or participating in other activity with the goal of returning to work, you are meeting the activity requirement and will continue to receive the adjustment allowance.",
-                )
             }
 
             paragraph {
