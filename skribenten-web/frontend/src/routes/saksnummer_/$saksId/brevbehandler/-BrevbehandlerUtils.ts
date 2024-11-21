@@ -18,8 +18,7 @@ export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeB
       };
     }
     case "Arkivert": {
-      //TODO - finn ut av farge og text
-      return { variant: "info" as const, text: "Arkivert" };
+      return { variant: "error" as const, text: "Kunne ikke sende brev" };
     }
   }
 };
