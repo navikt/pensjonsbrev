@@ -153,8 +153,6 @@ class BrevredigeringService(
             }
         }
 
-
-
     suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId) {
             rendreBrev(brev = brevDto, signaturSignerende = signaturSignerende).map { rendretBrev ->
