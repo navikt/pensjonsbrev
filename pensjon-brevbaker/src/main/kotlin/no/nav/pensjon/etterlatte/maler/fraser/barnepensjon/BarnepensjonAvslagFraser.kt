@@ -32,11 +32,11 @@ object BarnepensjonAvslagFraser {
                 paragraph {
                     text(
                         Bokmal to
-                            "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du ikke har rett på stønaden vurdert etter EØS-reglene heller.",
+                            "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du ikke har rett på stønaden vurdert etter EØS/avtalelandreglene heller.",
                         Nynorsk to
-                            "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på stønaden vurdert etter EØS-reglane heller.",
+                            "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på stønaden vurdert etter EØS/avtalelandreglane heller.",
                         English to
-                            "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA rules either.",
+                            "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA/agreement country rules either.",
                     )
                 }
                 paragraph {
