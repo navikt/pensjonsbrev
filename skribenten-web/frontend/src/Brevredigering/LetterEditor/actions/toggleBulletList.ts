@@ -16,7 +16,7 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
       return;
     }
 
-    draft.isDirty = true;
+    //draft.isDirty = true;
     const theContentTheUserIsOn = block.content[literalIndex.contentIndex];
     if (theContentTheUserIsOn.type === "LITERAL" || theContentTheUserIsOn.type === "VARIABLE") {
       toggleBulletListOn(draft, literalIndex);
@@ -456,18 +456,28 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
   const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
   const nextBlocks = args.draft.redigertBrev.blocks.slice(args.itemContentIndex.blockIndex + 1);
 
+  const thisBlockContentBeforeItemList = thisBlock.content.slice(0, args.itemContentIndex.contentIndex);
+  const hasContentBefore = thisBlockContentBeforeItemList.length > 0;
   const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
   const hasOnlyOneItem = thisItemList.items.length === 1;
   const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
   const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
+  const thisBlockContentAfterItemList = thisBlock.content.slice(args.itemContentIndex.contentIndex + 1);
 
+  const newPrevBlock = newParagraph({ content: thisBlockContentBeforeItemList });
   const newThisBlock = newParagraph({ id: hasOnlyOneItem ? thisBlock.id : null, content: thisItem.content });
   const hasItemsAfter = itemsAfter.length > 0;
-  const newNextBlock = newParagraph({ content: [newItemList({ items: itemsAfter })] });
+  const newNextBlock = newParagraph({
+    content: [newItemList({ items: itemsAfter }), ...thisBlockContentAfterItemList],
+  });
 
-  const newBlocks = [...prevBlocks, newThisBlock, ...(hasItemsAfter ? [newNextBlock] : []), ...nextBlocks].filter(
-    (block) => block.content.length > 0,
-  );
+  const newBlocks = [
+    ...prevBlocks,
+    ...(hasContentBefore ? [newPrevBlock] : []),
+    newThisBlock,
+    ...(hasItemsAfter ? [newNextBlock] : []),
+    ...nextBlocks,
+  ].filter((block) => block.content.length > 0);
 
   //TODO - bug - hvis det eksisterer blocker som er lik den nye (for eksempel et tom literal, og en tomt punkt, vil vi treffe literalen)
   const newParagraphBlockIndex = newBlocks.findIndex((block) => isEqual(block, newThisBlock));
@@ -498,14 +508,20 @@ const toggleBulletListOffBetweenListElements = (args: {
   const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
   const nextBlocks = args.draft.redigertBrev.blocks.slice(args.itemContentIndex.blockIndex + 1);
 
+  const thisBlockContentBeforeItemList = thisBlock.content.slice(0, args.itemContentIndex.contentIndex);
   const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
   const itemsBefore = thisItemList.items.slice(0, args.itemContentIndex.itemIndex);
   const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
   const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
+  const thisBlockContentAfterItemList = thisBlock.content.slice(args.itemContentIndex.contentIndex + 1);
 
-  const newPrevBlock = newParagraph({ content: [newItemList({ items: itemsBefore })] });
+  const newPrevBlock = newParagraph({
+    content: [...thisBlockContentBeforeItemList, newItemList({ items: itemsBefore })],
+  });
   const newThisBlock = newParagraph({ content: thisItem.content });
-  const newNextBlock = newParagraph({ content: [newItemList({ items: itemsAfter })] });
+  const newNextBlock = newParagraph({
+    content: [newItemList({ items: itemsAfter }), ...thisBlockContentAfterItemList],
+  });
 
   const newBlocks = [...prevBlocks, newPrevBlock, newThisBlock, newNextBlock, ...nextBlocks].filter(
     (block) => block.content.length > 0,
@@ -540,14 +556,19 @@ const toggleBulletListOffAtTheEndOfItemList = (args: {
   const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
   const nextBlocks = args.draft.redigertBrev.blocks.slice(args.itemContentIndex.blockIndex + 1);
 
+  const thisBlockContentBeforeItemList = thisBlock.content.slice(0, args.itemContentIndex.contentIndex);
   const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
   const itemsBefore = thisItemList.items.slice(0, args.itemContentIndex.itemIndex);
   const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
+  const thisBlockContentAfterItemList = thisBlock.content.slice(args.itemContentIndex.contentIndex + 1);
 
-  const newPrevBlock = newParagraph({ content: [newItemList({ items: itemsBefore })] });
+  const newPrevBlock = newParagraph({
+    content: [...thisBlockContentBeforeItemList, newItemList({ items: itemsBefore })],
+  });
   const newThisBlock = newParagraph({ content: thisItem.content });
+  const newNextBlock = newParagraph({ content: thisBlockContentAfterItemList });
 
-  const newBlocks = [...prevBlocks, newPrevBlock, newThisBlock, ...nextBlocks].filter(
+  const newBlocks = [...prevBlocks, newPrevBlock, newThisBlock, newNextBlock, ...nextBlocks].filter(
     (block) => block.content.length > 0,
   );
 
