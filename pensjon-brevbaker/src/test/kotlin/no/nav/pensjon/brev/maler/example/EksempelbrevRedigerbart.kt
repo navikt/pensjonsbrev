@@ -5,33 +5,36 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto.PesysData
+import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.datoAvslaatt
+import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.datoInnvilget
+import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.navneliste
+import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.pensjonInnvilget
+import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.tilleggEksempel
+import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg2
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg3
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoAvslaatt
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoInnvilget
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.navneliste
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.pensjonInnvilget
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.tilleggEksempel
-import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
-import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
 import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
 @TemplateModelHelpers
@@ -104,7 +107,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
             }
 
             paragraph {
-                forEach(tilleggEksempel) {
+                forEach(pesysData.tilleggEksempel) {
                     textExpr(
                         Bokmal to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
                         Nynorsk to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
@@ -115,7 +118,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
             // Fetch a value from the letter arguments
             paragraph {
                 //ShowIf shows the content of the block if the boolean expression resolves to true
-                showIf(pensjonInnvilget) {
+                showIf(pesysData.pensjonInnvilget) {
                     textExpr(
                         // Text expressions can use variables as expressions, but the text literals also need to be expressions
                         Bokmal to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
@@ -124,7 +127,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                 }
 
                 list {
-                    forEach(tilleggEksempel) { tillegg ->
+                    forEach(pesysData.tilleggEksempel) { tillegg ->
                         ifNotNull(tillegg.tillegg1) {
                             item {
                                 textExpr(
@@ -138,7 +141,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                     item {
                         text(Bokmal to "Test1", Nynorsk to "Test1")
                     }
-                    ifNotNull(datoAvslaatt) { dato ->
+                    ifNotNull(pesysData.datoAvslaatt) { dato ->
                         item {
                             textExpr(
                                 Bokmal to "Du har fått avslag på noe ".expr() + dato.format(),
@@ -161,7 +164,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                     }
                     item {
                         //Any type of phrase can also require data
-                        includePhrase(TextOnlyPhraseTestWithParams(datoInnvilget))
+                        includePhrase(TextOnlyPhraseTestWithParams(pesysData.datoInnvilget))
                     }
                 }
                 text(Bokmal to lipsums[0], Nynorsk to lipsums[0])
@@ -184,7 +187,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                         column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4", FontType.BOLD) }
                     }
                 ) {
-                    forEach(tilleggEksempel) { tillegg ->
+                    forEach(pesysData.tilleggEksempel) { tillegg ->
                         val navn = tillegg.navn
                         val tillegg1 = tillegg.tillegg1
                         val tillegg2 = tillegg.tillegg2
@@ -241,7 +244,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                         cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr") }
                         cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr") }
                     }
-                    ifNotNull(datoAvslaatt) { dato ->
+                    ifNotNull(pesysData.datoAvslaatt) { dato ->
                         row {
                             cell {
                                 textExpr(
@@ -257,7 +260,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                 }
             }
             // Repeat content for each element in list
-            forEach(navneliste) {
+            forEach(pesysData.navneliste) {
                 title1 {
                     textExpr(Bokmal to it, Nynorsk to it)
                 }
@@ -270,7 +273,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
             }
 
             //Include outline phrase
-            includePhrase(OutlinePhraseTest(datoInnvilget, pensjonInnvilget))
+            includePhrase(OutlinePhraseTest(pesysData.datoInnvilget, pesysData.pensjonInnvilget))
 
             //Print some lipsum paragraphs.
             for (lipsum in lipsums) {
