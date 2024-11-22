@@ -336,10 +336,10 @@ class OmstillingsstoenadAktivitetspliktFraser {
             }
 
             paragraph {
-                text(
-                    Bokmal to "Du fyller aktivitetsplikten hvis du er " + ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent" ) + " aktiv ved å",
-                    Nynorsk to "Du oppfyller aktivitetsplikta dersom du er "+ ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent") + " aktiv ved å",
-                    English to "You are in compliance with the activity obligation if you are " + ifElse(tolvMaanederEtterDoedsfall, "100 percent", "at least 50 percent") + " active",
+                textExpr(
+                    Bokmal to "Du fyller aktivitetsplikten hvis du er ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent" ) + " aktiv ved å",
+                    Nynorsk to "Du oppfyller aktivitetsplikta dersom du er ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent") + " aktiv ved å",
+                    English to "You are in compliance with the activity obligation if you are ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 percent", "at least 50 percent") + " active",
                 )
                 list {
                     item {
