@@ -20,10 +20,10 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-// Gammel brevkode: PE_UT_06_200
 @TemplateModelHelpers
 object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidAutoDto> {
 
+    // PE_UT_06_200
     override val kode = Brevkode.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO
 
     override val template = createTemplate(

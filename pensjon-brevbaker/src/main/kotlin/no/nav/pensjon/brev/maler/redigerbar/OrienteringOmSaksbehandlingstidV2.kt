@@ -7,6 +7,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlin
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattSoeknad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.soeknadOversendesTilUtlandet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SAKSBEHANDLINGSTID_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -63,8 +65,8 @@ object OrienteringOmSaksbehandlingstidV2 : RedigerbarTemplate<OrienteringOmSaksb
 
             paragraph {
                 text(
-                    Bokmal to "Søknaden vil bli behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på «Min side» på nav.no. Du kan sjekke saksbehandlingstidene på nav.no/saksbehandlingstider. ",
-                    Nynorsk to "Søknaden vil bli behandla så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på «Mi side» på nav.no. Du kan sjekke saksbehandlingstidene på nav.no/saksbehandlingstider. ",
+                    Bokmal to "Søknaden vil bli behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på «Min side» på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL. ",
+                    Nynorsk to "Søknaden vil bli behandla så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på «Mi side» på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL. ",
                 )
             }
 
