@@ -322,7 +322,8 @@ class OmstillingsstoenadAktivitetspliktFraser {
     }
 
     data class FellesOppfyllelseAktivitetsplikt(
-        val nasjonalEllerUtland: Expression<NasjonalEllerUtland>
+        val nasjonalEllerUtland: Expression<NasjonalEllerUtland>,
+        val tolvMaanederEtterDoedsfall: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
@@ -336,9 +337,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
 
             paragraph {
                 text(
-                    Bokmal to "Du fyller aktivitetsplikten hvis du er minst 50 prosent aktiv ved å",
-                    Nynorsk to "Du oppfyller aktivitetsplikta dersom du er minst 50 prosent aktiv ved å",
-                    English to "You are in compliance with the activity obligation if you are at least 50 percent active",
+                    Bokmal to "Du fyller aktivitetsplikten hvis du er " + ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent" ) + " aktiv ved å",
+                    Nynorsk to "Du oppfyller aktivitetsplikta dersom du er "+ ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent") + " aktiv ved å",
+                    English to "You are in compliance with the activity obligation if you are " + ifElse(tolvMaanederEtterDoedsfall, "100 percent", "at least 50 percent") + " active",
                 )
                 list {
                     item {
