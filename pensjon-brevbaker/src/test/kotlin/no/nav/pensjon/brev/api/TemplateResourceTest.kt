@@ -13,14 +13,13 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.maler.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ProductionTemplates
+import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
@@ -51,8 +50,8 @@ class TemplateResourceTest {
         LanguageCode.BOKMAL
     )
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
-        Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
-        Fixtures.create<InformasjonOmSaksbehandlingstidDto>(),
+        EksempelbrevRedigerbart.kode,
+        createEksempelbrevRedigerbartDto(),
         Fixtures.felles,
         LanguageCode.BOKMAL,
         LetterMarkup(
@@ -93,7 +92,7 @@ class TemplateResourceTest {
     @Test
     fun `fails renderPDF with invalid letterData`(): Unit = runBlocking {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderPDF(validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+            autobrev.renderPDF(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
         }
     }
 
