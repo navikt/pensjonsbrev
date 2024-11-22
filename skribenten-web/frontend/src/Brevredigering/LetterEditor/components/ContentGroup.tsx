@@ -260,8 +260,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       focus: literalIndex,
     }));
     if (!erFritekst) return;
-    //TODO - vent til alexander fikser bug med backspace etter tab.
-    //handleWordSelect(e.target as HTMLSpanElement);
+    handleWordSelect(e.target as HTMLSpanElement);
   };
 
   const handleWordSelect = (element: HTMLSpanElement) => {
@@ -287,6 +286,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         css`
           color: var(--a-blue-500);
           text-decoration: underline;
+          cursor: pointer;
         `
       }
       onClick={handleOnclick}
@@ -324,7 +324,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       }}
       onPaste={handlePaste}
       ref={contentEditableReference}
-      tabIndex={erFritekst ? 1 : undefined}
+      tabIndex={erFritekst ? 0 : -1}
     />
   );
 }

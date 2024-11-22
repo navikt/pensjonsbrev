@@ -340,3 +340,15 @@ describe("onClickHandler", () => {
     expect(selection?.toString()).toBe("andre literal");
   });
 });
+
+describe("onFocusHandler", () => {
+  test("tabbing through a fritkest variable will select the whole element", async () => {
+    const { user } = setupComplex();
+
+    await user.click(screen.getByText("Dokumentet starter med variable"));
+    await user.tab();
+    const selection = window.getSelection();
+    expect(selection).not.toBeNull();
+    expect(selection?.toString()).toBe("andre literal");
+  });
+});
