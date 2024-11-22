@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
 
 @Tag(TestTags.INTEGRATION_TEST)
 class TemplateResourceITest {
-    private val templateResource = TemplateResource("autobrev", ProductionTemplates.autobrev, mockk())
+    private val templateResource = TemplateResource("autobrev", ProductionTemplates.hentAutobrevmaler(), mockk())
 
     @Test
     fun `can render and compile a template`() {

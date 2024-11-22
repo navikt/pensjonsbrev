@@ -64,14 +64,14 @@ class GenererAlleMaleneTest {
     companion object {
         @JvmStatic
         fun alleMalene() = listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
-                ProductionTemplates.autobrev.map {
+                ProductionTemplates.hentAutobrevmaler().map {
                     Arguments.of(
                         it.template,
                         it.kode,
                         Fixtures.create(it.template.letterDataType),
                         spraak,
                     )
-                } + ProductionTemplates.redigerbare.map {
+                } + ProductionTemplates.hentRedigerbareMaler().map {
                     Arguments.of(
                         it.template,
                         it.kode,

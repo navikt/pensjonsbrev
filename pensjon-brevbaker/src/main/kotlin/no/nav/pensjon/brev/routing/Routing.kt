@@ -14,8 +14,8 @@ import no.nav.pensjon.etterlatte.etterlatteRouting
 
 fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService) =
     routing {
-        val autobrev = TemplateResource("autobrev", ProductionTemplates.autobrev, latexCompilerService)
-        val redigerbareBrev = TemplateResource("redigerbar", ProductionTemplates.redigerbare, latexCompilerService)
+        val autobrev = TemplateResource("autobrev", ProductionTemplates.hentAutobrevmaler(), latexCompilerService)
+        val redigerbareBrev = TemplateResource("redigerbar", ProductionTemplates.hentRedigerbareMaler(), latexCompilerService)
 
         route("/templates") {
             templateRoutes(autobrev)

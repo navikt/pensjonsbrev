@@ -39,8 +39,8 @@ class TemplateResourceTest {
     private val latexMock = mockk<LaTeXCompilerService> {
         coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
     }
-    private val autobrev = TemplateResource("autobrev", ProductionTemplates.autobrev, latexMock)
-    private val redigerbar = TemplateResource("autobrev", ProductionTemplates.redigerbare, latexMock)
+    private val autobrev = TemplateResource("autobrev", ProductionTemplates.hentAutobrevmaler(), latexMock)
+    private val redigerbar = TemplateResource("autobrev", ProductionTemplates.hentRedigerbareMaler(), latexMock)
 
     private val validAutobrevRequest = BestillBrevRequest(
         Brevkode.AutoBrev.UT_OPPHOER_BT_AUTO,

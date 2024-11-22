@@ -31,28 +31,28 @@ class TemplateRoutesTest {
     fun `can get names of all autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.autobrev.map { it.kode.name }.toSet(), response.body<Set<String>>())
+        assertEquals(ProductionTemplates.hentAutobrevmaler().map { it.kode.name }.toSet(), response.body<Set<String>>())
     }
 
     @Test
     fun `can get names of all redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.redigerbare.map { it.kode.name }.toSet(), response.body<Set<String>>())
+        assertEquals(ProductionTemplates.hentRedigerbareMaler().map { it.kode.name }.toSet(), response.body<Set<String>>())
     }
 
     @Test
     fun `can get description of all autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.autobrev.map { it.description() }, response.body<List<TemplateDescription.Autobrev>>())
+        assertEquals(ProductionTemplates.hentAutobrevmaler().map { it.description() }, response.body<List<TemplateDescription.Autobrev>>())
     }
 
     @Test
     fun `can get description of all redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.redigerbare.map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>())
+        assertEquals(ProductionTemplates.hentRedigerbareMaler().map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>())
     }
 
     @Test

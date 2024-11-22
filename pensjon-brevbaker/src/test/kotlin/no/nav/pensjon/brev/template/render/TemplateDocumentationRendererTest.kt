@@ -25,7 +25,7 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun canRenderDocumentationForAllTemplates() {
-        ProductionTemplates.autobrev.forEach {
+        ProductionTemplates.hentAutobrevmaler().forEach {
             TemplateDocumentationRenderer.render(it.template, it.template.language.all().first())
         }
     }
