@@ -1,11 +1,10 @@
 package no.nav.pensjon.brev.api
 
-import io.mockk.mockk
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.maler.ProductionTemplates
+import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.*
@@ -13,14 +12,10 @@ import kotlin.reflect.KClass
 
 @Tag(TestTags.INTEGRATION_TEST)
 class TemplateResourceITest {
-    private val templateResource = TemplateResource("autobrev", ProductionTemplates.hentAutobrevmaler(), mockk())
 
     @Test
     fun `can render and compile a template`() {
-        requestTemplates()
-            .associateWith { templateResource.getTemplate(it)!! }
-            .firstNotNullOf { it }
-            .let { testTemplate(it.key, it.value.template) }
+        testTemplate(LetterExample.kode, LetterExample.template)
     }
 
     private fun testTemplate(kode: Brevkode.AutoBrev, template: LetterTemplate<*, *>?) {
