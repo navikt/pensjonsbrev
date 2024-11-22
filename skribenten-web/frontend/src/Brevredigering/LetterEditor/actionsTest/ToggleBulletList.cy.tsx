@@ -228,6 +228,35 @@ describe("toggle bullet-liet", () => {
       cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
     });
 
+    it("bevarer content som er rundt en punktliste når man toggler av på starten av en punktliste som kun inneholder 1 punkt", () => {
+      const brev = nyBrevResponse({
+        redigertBrev: nyRedigertBrev({
+          blocks: [
+            newParagraph({
+              content: [
+                newLiteral("Denne skal ikke forsvinne når man trigger av punktliste"),
+                newItemList({ items: newItems("skal brytes ut") }),
+                newLiteral("Denne skal heller ikke forsvinne når man trigger av punktliste"),
+              ],
+            }),
+          ],
+        }),
+      });
+
+      cy.mount(<EditorWithState brev={brev} />);
+      cy.get("ul").should("have.length", 1);
+      cy.get("li").should("have.length", 1);
+      cy.contains("Denne skal ikke forsvinne når man trigger av punktliste").should("be.visible");
+      cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
+      cy.contains("skal brytes ut").click();
+      cy.getDataCy("editor-bullet-list").click();
+      cy.get("ul").should("have.length", 0);
+      cy.get("li").should("have.length", 0);
+      cy.contains("skal brytes ut").should("be.visible");
+      cy.contains("Denne skal ikke forsvinne når man trigger av punktliste").should("be.visible");
+      cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
+    });
+
     it("bevarer content som er rundt en punktliste når man toggler av på midten av en punktliste", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
@@ -281,6 +310,35 @@ describe("toggle bullet-liet", () => {
       cy.getDataCy("editor-bullet-list").click();
       cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 1);
+      cy.contains("skal brytes ut").should("be.visible");
+      cy.contains("Denne skal ikke forsvinne når man trigger av punktliste").should("be.visible");
+      cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
+    });
+
+    it("bevarer content som er rundt en punktliste når man toggler av på slutten av en punktliste som kun inneholder 1 punkt", () => {
+      const brev = nyBrevResponse({
+        redigertBrev: nyRedigertBrev({
+          blocks: [
+            newParagraph({
+              content: [
+                newLiteral("Denne skal ikke forsvinne når man trigger av punktliste"),
+                newItemList({ items: newItems("skal brytes ut") }),
+                newLiteral("Denne skal heller ikke forsvinne når man trigger av punktliste"),
+              ],
+            }),
+          ],
+        }),
+      });
+
+      cy.mount(<EditorWithState brev={brev} />);
+      cy.get("ul").should("have.length", 1);
+      cy.get("li").should("have.length", 1);
+      cy.contains("Denne skal ikke forsvinne når man trigger av punktliste").should("be.visible");
+      cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
+      cy.contains("skal brytes ut").click();
+      cy.getDataCy("editor-bullet-list").click();
+      cy.get("ul").should("have.length", 0);
+      cy.get("li").should("have.length", 0);
       cy.contains("skal brytes ut").should("be.visible");
       cy.contains("Denne skal ikke forsvinne når man trigger av punktliste").should("be.visible");
       cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
