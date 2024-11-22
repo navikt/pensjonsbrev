@@ -12,14 +12,16 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.maler.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ProductionTemplates
+import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
@@ -43,8 +45,8 @@ class TemplateResourceTest {
     private val redigerbar = TemplateResource("autobrev", ProductionTemplates.hentRedigerbareMaler(), latexMock)
 
     private val validAutobrevRequest = BestillBrevRequest(
-        Brevkode.AutoBrev.UT_OPPHOER_BT_AUTO,
-        Fixtures.create<OpphoerBarnetilleggAutoDto>(),
+        LetterExample.kode,
+        createLetterExampleDto(),
         Fixtures.fellesAuto,
         LanguageCode.BOKMAL
     )
@@ -98,7 +100,7 @@ class TemplateResourceTest {
     @Test
     fun `fails renderHTML with invalid letterData`() {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderHTML(validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+            autobrev.renderHTML(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
         }
     }
 
@@ -142,3 +144,5 @@ class TemplateResourceTest {
     }
 
 }
+
+data class RandomLetterdata(val v1: Boolean) : BrevbakerBrevdata
