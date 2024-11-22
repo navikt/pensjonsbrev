@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexCompileException
 import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
+import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.routing.brevbakerRouting
 import no.nav.pensjon.brev.template.brevbakerConfig
 
@@ -132,7 +133,7 @@ fun Application.brevbakerModule() {
     }
 
     configureMetrics()
-    brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService)
+    brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, ProductionTemplates)
     monitor.subscribe(ServerReady) { it.log.info("Ferdig med å sette opp applikasjonen") }
 }
 
