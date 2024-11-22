@@ -96,7 +96,7 @@ export function newLiteral(args: {
 }
 
 export const newVariable = (args: { id?: number; text: string; name?: string }): VariableValue => {
-  return { type: VARIABLE, id: args.id ?? -1, ...args };
+  return { type: VARIABLE, id: args.id ?? -1, name: args.name, text: args.text };
 };
 
 export function newItem(text: string, variable?: string, text2?: string): Item {

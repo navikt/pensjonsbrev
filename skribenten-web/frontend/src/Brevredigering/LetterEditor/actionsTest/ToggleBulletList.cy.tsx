@@ -44,26 +44,7 @@ describe("toggle bullet-liet", () => {
       cy.get("ul").should("have.length", 1);
     });
 
-    it("toggler et avsnitt med en eksisterende punktliste i samme blokk (avsnitt før punktliste)", () => {
-      const brev = nyBrevResponse({
-        redigertBrev: nyRedigertBrev({
-          blocks: [
-            newParagraph({
-              content: [newLiteral("Avsnitt med punktliste"), newItemList({ items: [newItem("Punkt 1")] })],
-            }),
-          ],
-        }),
-      });
-
-      cy.mount(<EditorWithState brev={brev} />);
-
-      cy.get("li").should("have.length", 1);
-      cy.contains("Avsnitt med punktliste").click();
-      cy.getDataCy("editor-bullet-list").click();
-      cy.get("li").should("have.length", 2);
-      cy.get("li div span").eq(0).contains("Avsnitt med punktliste");
-    });
-    it("toggler et avsnitt med en eksisterende punktliste i samme blokk (avsnitt etter punktliste)", () => {
+    it("lager en punktliste når man allerede har en ItemList i samme blokk før", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -80,7 +61,51 @@ describe("toggle bullet-liet", () => {
       cy.get("li").should("have.length", 2);
       cy.get("li div span").eq(1).contains("Avsnitt med punktliste");
     });
-    it("toggler et avsnitt med en eksisterende punktliste i en annen blokk", () => {
+
+    it("lager en punktliste når man allerede har en ItemList i samme blokk etter", () => {
+      const brev = nyBrevResponse({
+        redigertBrev: nyRedigertBrev({
+          blocks: [
+            newParagraph({
+              content: [newLiteral("Avsnitt med punktliste"), newItemList({ items: [newItem("Punkt 1")] })],
+            }),
+          ],
+        }),
+      });
+
+      cy.mount(<EditorWithState brev={brev} />);
+      cy.get("li").should("have.length", 1);
+      cy.contains("Avsnitt med punktliste").click();
+      cy.getDataCy("editor-bullet-list").click();
+      cy.get("li").should("have.length", 2);
+      cy.get("li div span").eq(0).contains("Avsnitt med punktliste");
+    });
+
+    it("lager en punktliste når man allerede har en ItemList i samme blokk før og etter", () => {
+      const brev = nyBrevResponse({
+        redigertBrev: nyRedigertBrev({
+          blocks: [
+            newParagraph({
+              content: [
+                newItemList({ items: [newItem("Punkt 1")] }),
+                newLiteral("Avsnitt med punktliste"),
+                newItemList({ items: [newItem("Punkt 2")] }),
+              ],
+            }),
+          ],
+        }),
+      });
+      cy.mount(<EditorWithState brev={brev} />);
+      cy.get("ul").should("have.length", 2);
+      cy.get("li").should("have.length", 2);
+      cy.contains("Avsnitt med punktliste").click();
+      cy.getDataCy("editor-bullet-list").click();
+      cy.get("ul").should("have.length", 1);
+      cy.get("li").should("have.length", 3);
+      cy.get("li div span").eq(1).contains("Avsnitt med punktliste");
+    });
+
+    it("lager en punktliste når man allerede har en itemList i en annen blokk før", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -91,7 +116,6 @@ describe("toggle bullet-liet", () => {
       });
 
       cy.mount(<EditorWithState brev={brev} />);
-
       cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 1);
       cy.contains("Avsnitt uten punktliste").click();
@@ -99,6 +123,25 @@ describe("toggle bullet-liet", () => {
       cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 2);
     });
+
+    it("lager en punktliste når man allerede har en itemList i en annen blokk etter", () => {
+      const brev = nyBrevResponse({
+        redigertBrev: nyRedigertBrev({
+          blocks: [
+            newParagraph({ content: [newLiteral("Avsnitt uten punktliste")] }),
+            newParagraph({ content: [newItemList({ items: [newItem("Punkt 1")] })] }),
+          ],
+        }),
+      });
+      cy.mount(<EditorWithState brev={brev} />);
+      cy.get("ul").should("have.length", 1);
+      cy.get("li").should("have.length", 1);
+      cy.contains("Avsnitt uten punktliste").click();
+      cy.getDataCy("editor-bullet-list").click();
+      cy.get("ul").should("have.length", 1);
+      cy.get("li").should("have.length", 2);
+    });
+
     it("toggler punktliste mellom 2 punktlister", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
@@ -119,6 +162,7 @@ describe("toggle bullet-liet", () => {
       cy.contains("Avsnitt uten punktliste").should("exist");
     });
   });
+
   describe("toggle off", () => {
     it("toggler av et enkelt avsnitt", () => {
       const brev = nyBrevResponse({
@@ -128,7 +172,6 @@ describe("toggle bullet-liet", () => {
       });
 
       cy.mount(<EditorWithState brev={brev} />);
-
       cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 1);
       cy.contains("Dette er kun et avsnitt").click();
@@ -251,7 +294,6 @@ describe("toggle bullet-liet", () => {
       });
 
       cy.mount(<EditorWithState brev={brev} />);
-
       cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 2);
       cy.contains("skal brytes ut").click();

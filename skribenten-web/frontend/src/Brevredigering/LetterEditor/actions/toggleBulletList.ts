@@ -2,10 +2,11 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 import { isEqual } from "lodash";
 
-import type { Content, ItemList, TextContent } from "~/types/brevbakerTypes";
+import type { Content, Item, ItemList, TextContent } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
+import { isTextContent } from "../model/utils";
 import { newItemList, newParagraph } from "./common";
 import type { ItemContentIndex, LiteralIndex } from "./model";
 
@@ -48,7 +49,7 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
   } else if (hasItemListBlockAfter) {
     toggleBulletListOnWithItemListAfter({ draft, literalIndex });
   } else {
-    toggleBulletListOnWithoutSurroundingElements({ draft, literalIndex });
+    toggleBulletListOnWithoutSurroundingItemListBlocks({ draft, literalIndex });
   }
 };
 
@@ -66,14 +67,14 @@ const getSurroundingLiteralsAndVariables = (
   // Loop backwards from index until an ITEM_LIST is encountered
   for (let i = index; i >= 0; i--) {
     const current = content[i];
-    if (current.type === "ITEM_LIST") break;
+    if (!isTextContent(current)) break;
     result.unshift({ element: current, originalIndex: i });
   }
 
   // Loop forwards from index + 1 until an ITEM_LIST is encountered
   for (let i = index + 1; i < content.length; i++) {
     const current = content[i];
-    if (current.type === "ITEM_LIST") break;
+    if (!isTextContent(current)) break;
     result.push({ element: current, originalIndex: i });
   }
 
@@ -93,19 +94,17 @@ function replaceElementsBetweenIncluding<T>(array: T[], A: number, B: number, C:
  */
 const mergeItemLists = (content: Content[]): Content[] => {
   const result: Content[] = [];
+  let mergedItems: Item[] = [];
 
   for (let i = 0; i < content.length; i++) {
     const current = content[i];
 
     if (current.type === "ITEM_LIST") {
-      const next = content[i + 1];
+      mergedItems.push(...current.items);
 
-      if (next?.type === "ITEM_LIST") {
-        const mergedItemList = newItemList({ items: [...current.items, ...next.items] });
-        result.push(mergedItemList);
-        i++; // skipper neste item_list
-      } else {
-        result.push(current);
+      if (i + 1 >= content.length || content[i + 1].type !== "ITEM_LIST") {
+        result.push(newItemList({ items: mergedItems }));
+        mergedItems = [];
       }
     } else {
       result.push(current);
@@ -120,17 +119,17 @@ const mergeItemLists = (content: Content[]): Content[] => {
  *
  * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
-const toggleBulletListOnWithoutSurroundingElements = (args: {
+const toggleBulletListOnWithoutSurroundingItemListBlocks = (args: {
   draft: Draft<LetterEditorState>;
   literalIndex: LiteralIndex;
 }) => {
-  const block = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
+  const thisBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
   const theIdexOfTheContent = args.literalIndex.contentIndex;
-  const sentence = getSurroundingLiteralsAndVariables(block.content, theIdexOfTheContent);
+  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
   const sentenceElements = sentence.map((r) => r.element);
 
   const replacedWithItemList = replaceElementsBetweenIncluding(
-    block.content,
+    thisBlock.content,
     sentence[0].originalIndex,
     sentence.at(-1)!.originalIndex,
     newItemList({
