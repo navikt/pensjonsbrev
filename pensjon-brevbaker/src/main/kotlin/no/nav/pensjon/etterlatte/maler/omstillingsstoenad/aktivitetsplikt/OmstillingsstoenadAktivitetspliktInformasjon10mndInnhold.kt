@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -78,7 +79,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 }
             }
 
-            showIf(redusertEtterInntekt) {
+            showIf(redusertEtterInntekt.and(utbetaling)) {
                 paragraph {
                     text(
                         Bokmal to "Omstillingsstønaden din er redusert etter en forventet arbeidsinntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET> kroner i år. LEGG TIL ETTER KRONER HVIS INNVILGET FRA FEBRUAR-AUGUST: fra <måned> og ut året.",
@@ -86,7 +87,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                         English to "Your adjustment allowance is reduced based on your income from employment of NOK <FORVENTET INNTEKT TOTALT, AVRUNDET> this year. LEGG TIL ETTER BELØP HVIS INNVILGET FRA FEBRUAR-AUGUST: from <måned> until the end of this year.",
                     )
                 }
-            } orShow {
+            }.orShowIf(utbetaling) {
                 paragraph {
                     text(
                         Bokmal to "Omstillingsstønaden din er i dag ikke redusert etter arbeidsinntekt eller annen inntekt som er likestilt med arbeidsinntekt.",
@@ -132,7 +133,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 }
             }
 
-            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.UNDER_100_PROSENT) and utbetaling) {
+            showIf(aktivitetsgrad.notEqualTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
                 paragraph {
                     text(
                         Bokmal to "For å motta omstillingsstønad videre bør du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, bør du melde deg som reell arbeidssøker hos NAV. Dette innebærer at du sender meldekort, er aktiv med å søke jobber, samt deltar på de kurs som NAV tilbyr.",
