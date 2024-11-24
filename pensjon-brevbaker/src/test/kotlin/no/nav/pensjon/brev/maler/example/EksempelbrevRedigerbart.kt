@@ -40,7 +40,7 @@ import java.time.LocalDate
 @TemplateModelHelpers
 object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
-    override val kode: Brevkode.Redigerbar = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID
+    override val kode: Brevkode.Redigerbar = Brevkode.Redigerbar.TESTBREV
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = Sakstype.all
