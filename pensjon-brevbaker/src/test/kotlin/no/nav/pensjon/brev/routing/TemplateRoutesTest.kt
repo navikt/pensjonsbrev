@@ -4,10 +4,11 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import no.nav.pensjon.brev.alleAutobrevmaler
+import no.nav.pensjon.brev.alleRedigerbareMaler
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
@@ -31,28 +32,28 @@ class TemplateRoutesTest {
     fun `can get names of all autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.hentAutobrevmaler().map { it.kode.name }.toSet(), response.body<Set<String>>())
+        assertEquals(alleAutobrevmaler.map { it.kode.name }.toSet(), response.body<Set<String>>())
     }
 
     @Test
     fun `can get names of all redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.hentRedigerbareMaler().map { it.kode.name }.toSet(), response.body<Set<String>>())
+        assertEquals(alleRedigerbareMaler.map { it.kode.name }.toSet(), response.body<Set<String>>())
     }
 
     @Test
     fun `can get description of all autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.hentAutobrevmaler().map { it.description() }, response.body<List<TemplateDescription.Autobrev>>())
+        assertEquals(alleAutobrevmaler.map { it.description() }, response.body<List<TemplateDescription.Autobrev>>())
     }
 
     @Test
     fun `can get description of all redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(ProductionTemplates.hentRedigerbareMaler().map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>())
+        assertEquals(alleRedigerbareMaler.map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>())
     }
 
     @Test
