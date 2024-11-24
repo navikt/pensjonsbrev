@@ -23,15 +23,18 @@ class TemplateResourceITest {
         }
         val argument = createLetterExampleDto()
         try {
-            val rendered = requestLetter(
-                BestillBrevRequest(
-                    kode = kode,
-                    letterData = argument,
-                    felles = Fixtures.felles.copy(signerendeSaksbehandlere = null),
-                    language = LanguageCode.BOKMAL
+            testBrevbakerApp { client ->
+                val rendered = requestLetter(
+                    client,
+                    BestillBrevRequest(
+                        kode = kode,
+                        letterData = argument,
+                        felles = Fixtures.felles.copy(signerendeSaksbehandlere = null),
+                        language = LanguageCode.BOKMAL
+                    )
                 )
-            )
-            writeTestPDF(kode.name, rendered.file)
+                writeTestPDF(kode.name, rendered.file)
+            }
         } catch (failedCompile: Exception) {
             fail("Failed to compile template($kode) with argument: $argument", failedCompile)
         }
