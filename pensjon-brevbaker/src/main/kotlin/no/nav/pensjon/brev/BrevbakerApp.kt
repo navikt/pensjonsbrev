@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexCompileException
 import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
+import no.nav.pensjon.brev.maler.AllTemplates
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.routing.brevbakerRouting
 import no.nav.pensjon.brev.template.brevbakerConfig
@@ -37,7 +38,7 @@ import no.nav.pensjon.brev.template.brevbakerConfig
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Referenced in application.conf
-fun Application.brevbakerModule() {
+fun Application.brevbakerModule(templates: AllTemplates = ProductionTemplates) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
     monitor.subscribe(ApplicationStopPreparing) {
@@ -133,7 +134,7 @@ fun Application.brevbakerModule() {
     }
 
     configureMetrics()
-    brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, ProductionTemplates)
+    brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
     monitor.subscribe(ServerReady) { it.log.info("Ferdig med å sette opp applikasjonen") }
 }
 
