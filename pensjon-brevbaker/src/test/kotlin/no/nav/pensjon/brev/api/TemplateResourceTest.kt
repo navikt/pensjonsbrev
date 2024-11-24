@@ -17,10 +17,9 @@ import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PDFCompilationOutput
-import no.nav.pensjon.brev.maler.OpphoerBarnetilleggAuto
-import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
@@ -40,8 +39,8 @@ class TemplateResourceTest {
     private val latexMock = mockk<LaTeXCompilerService> {
         coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
     }
-    private val autobrev = TemplateResource("autobrev", ProductionTemplates.hentAutobrevmaler(), latexMock)
-    private val redigerbar = TemplateResource("autobrev", ProductionTemplates.hentRedigerbareMaler(), latexMock)
+    private val autobrev = TemplateResource("autobrev", Testmaler.hentAutobrevmaler(), latexMock)
+    private val redigerbar = TemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), latexMock)
 
     private val validAutobrevRequest = BestillBrevRequest(
         LetterExample.kode,
@@ -77,7 +76,7 @@ class TemplateResourceTest {
     fun `can renderPDF with valid letterData`(): Unit = runBlocking {
         val result = autobrev.renderPDF(validAutobrevRequest)
         assertEquals(
-            LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), OpphoerBarnetilleggAuto.template.letterMetadata),
+            LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
             result
         )
     }
@@ -86,7 +85,7 @@ class TemplateResourceTest {
     fun `can renderHTML with valid letterData`() {
         val result = autobrev.renderHTML(validAutobrevRequest)
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), result.contentType)
-        assertEquals(OpphoerBarnetilleggAuto.template.letterMetadata, result.letterMetadata)
+        assertEquals(LetterExample.template.letterMetadata, result.letterMetadata)
     }
 
     @Test
