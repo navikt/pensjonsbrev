@@ -261,6 +261,30 @@ describe("LetterEditorActions.merge", () => {
           });
         });
       });
+
+      describe("current literal is not first in block", () => {
+        test("does not merge blocks", () => {
+          const state = letter(paragraph(literal("p1")), paragraph(literal("p2-l1"), literal("p2-l2")));
+          const result = Actions.merge(state, { blockIndex: 1, contentIndex: 1 }, MergeTarget.PREVIOUS);
+          expect(result.redigertBrev.blocks).toHaveLength(2);
+        });
+        test("removes empty literal", () => {
+          const state = letter(paragraph(literal("p1")), paragraph(literal("p2-l1"), literal("")));
+          const result = Actions.merge(state, { blockIndex: 1, contentIndex: 1 }, MergeTarget.PREVIOUS);
+          const resultBlock = select<ParagraphBlock>(result, { blockIndex: 1 });
+          expect(resultBlock.content).toHaveLength(1);
+          expect(resultBlock.deletedContent).toContain(
+            select<LiteralValue>(state, { blockIndex: 1, contentIndex: 1 }).id,
+          );
+          expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: "p2-l1".length });
+        });
+        test("does not remove non-empty literal, but shifts focus", () => {
+          const state = letter(paragraph(literal("p1")), paragraph(literal("p2-l1"), literal("p2-l2")));
+          const result = Actions.merge(state, { blockIndex: 1, contentIndex: 1 }, MergeTarget.PREVIOUS);
+          expect(select<ParagraphBlock>(result, { blockIndex: 1 }).content).toHaveLength(2);
+          expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: "p2-l1".length });
+        });
+      });
     });
   });
 
