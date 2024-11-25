@@ -15,6 +15,8 @@ export const Text = ({ content }: TextProperties) => {
     case VARIABLE: {
       return (
         <span
+          className="protected"
+          contentEditable={false}
           css={css`
             border-radius: 4px;
             border: 1px solid var(--a-border-default);
@@ -24,6 +26,7 @@ export const Text = ({ content }: TextProperties) => {
             margin: 0 1px;
             cursor: default;
           `}
+          data-protected
         >
           {content.text}
         </span>
