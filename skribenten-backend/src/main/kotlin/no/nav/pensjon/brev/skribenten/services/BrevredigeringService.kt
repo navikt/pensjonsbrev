@@ -273,6 +273,8 @@ class BrevredigeringService(
 
             attesterHvisVedtaksbrevSomIkkeErAttestert(brev, saksId, brevId)
                 .takeIf { it is ServiceResult.Error }
+                ?.let { it as ServiceResult.Error }
+                ?.let { ServiceResult.Error<Pen.BestillBrevResponse>(it.error, it.statusCode) }
                 ?.let { return@sendBrev it }
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
@@ -316,10 +318,10 @@ class BrevredigeringService(
         brev: Dto.Brevredigering,
         saksId: Long,
         brevId: Long,
-    ): ServiceResult<Pen.BestillBrevResponse>? {
+    ): ServiceResult<Unit> {
         if (!Features.attestant.isEnabled()) {
             logger.debug("Attestering er skrudd av")
-            return null
+            return Ok(Unit)
         }
 
         if (brev.erVedtaksbrev()) {
@@ -351,7 +353,7 @@ class BrevredigeringService(
                 logger.info("Brev ${brev.info.id} er allerede attestert. Fortsetter utsending")
             }
         }
-        return null
+        return Ok(Unit)
     }
 
     fun fjernOverstyrtMottaker(brevId: Long, saksId: Long): Boolean =
