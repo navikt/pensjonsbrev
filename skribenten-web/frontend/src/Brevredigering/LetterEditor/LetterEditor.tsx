@@ -66,7 +66,13 @@ export const LetterEditor = ({
           >
             {letter.title}
           </Heading>
-          <div onKeyDown={editorKeyboardShortcuts}>
+          <div
+            // NOTE: ideally this would be "plaintext-only", and it works in practice.
+            // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
+            // This is not documented anywhere I could find and caused a day of frustration, beware
+            contentEditable={!freeze}
+            onKeyDown={editorKeyboardShortcuts}
+          >
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
                 <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
