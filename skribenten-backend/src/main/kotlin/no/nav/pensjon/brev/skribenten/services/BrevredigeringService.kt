@@ -323,7 +323,7 @@ class BrevredigeringService(
                     transaction {
                         brevDb.apply {
                             this.attestertAvNavIdent = userPrincipal.navIdent
-                        }.also { Brevredigering.reload(it, true) }.toDto()
+                        }.toDto()
                     }
                 }
             } else {
