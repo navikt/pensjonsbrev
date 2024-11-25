@@ -680,7 +680,9 @@ class BrevredigeringServiceTest {
                 distribusjonstype = Distribusjonstype.SENTRALPRINT
             )
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
-            brevredigeringService.sendBrev(sak.saksId, brev.info.id).also { assertTrue(it is ServiceResult.Error) }
+            assertThrows<BrevredigeringException.HarIkkeAttestantrolleException> {
+                brevredigeringService.sendBrev(sak.saksId, brev.info.id).also { assertTrue(it is ServiceResult.Error) }
+            }
         }
 
         coVerify {
