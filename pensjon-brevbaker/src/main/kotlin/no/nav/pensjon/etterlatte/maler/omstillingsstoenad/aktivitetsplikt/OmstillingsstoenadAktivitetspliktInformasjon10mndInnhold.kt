@@ -159,7 +159,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 }
             }
 
-            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.AKKURAT_100_PROSENT)) {
+            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
                 paragraph {
                     text(
                         Bokmal to "Er du fortsatt i full jobb eller annen aktivitet med sikte på å komme i arbeid, fyller du aktivitetskravet og vil få omstillingsstønad som før.",
