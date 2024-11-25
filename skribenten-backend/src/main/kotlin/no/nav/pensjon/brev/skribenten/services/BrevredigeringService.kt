@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -156,6 +155,18 @@ class BrevredigeringService(
     suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId) {
             rendreBrev(brev = brevDto, signaturSignerende = signaturSignerende).map { rendretBrev ->
+                transaction {
+                    brevDb.apply {
+                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
+                        this.signaturSignerende = signaturSignerende
+                    }.toDto()
+                }
+            }
+        }
+
+    suspend fun oppdaterSignaturAttestant(brevId: Long, signaturAttestant: String): ServiceResult<Dto.Brevredigering>? =
+        hentBrevMedReservasjon(brevId = brevId) {
+            rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant).map { rendretBrev ->
                 transaction {
                     brevDb.apply {
                         redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
@@ -379,7 +390,7 @@ class BrevredigeringService(
         }
     }
 
-    private suspend fun rendreBrev(brev: Dto.Brevredigering, saksbehandlerValg: SaksbehandlerValg? = null, signaturSignerende: String? = null) =
+    private suspend fun rendreBrev(brev: Dto.Brevredigering, saksbehandlerValg: SaksbehandlerValg? = null, signaturSignerende: String? = null, signaturAttestant: String? = null) =
         rendreBrev(
             brevkode = brev.info.brevkode,
             spraak = brev.info.spraak,
@@ -388,6 +399,7 @@ class BrevredigeringService(
             saksbehandlerValg = saksbehandlerValg ?: brev.saksbehandlerValg,
             avsenderEnhetsId = brev.info.avsenderEnhetId,
             signaturSignerende = signaturSignerende ?: brev.info.signaturSignerende,
+            signaturAttestant = signaturAttestant ?: brev.info.signaturAttestant,
         )
 
     private suspend fun rendreBrev(
@@ -399,8 +411,9 @@ class BrevredigeringService(
         avsenderEnhetsId: String?,
         signaturSignerende: String,
         attesterendeSaksbehandler: NavIdent? = null,
+        signaturAttestant: String? = null,
     ): ServiceResult<LetterMarkup> = coroutineScope {
-        val signaturAttesterende = async { attesterendeSaksbehandler?.let { navansattService.hentNavansatt(it.id) } }
+        val signaturAttesterende = signaturAttestant ?: attesterendeSaksbehandler?.let { navansattService.hentNavansatt(it.id)?.navn }
 
         penService.hentPesysBrevdata(saksId = saksId, vedtaksId = vedtaksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
             .then { pesysData ->
@@ -411,7 +424,7 @@ class BrevredigeringService(
                         pesysData = pesysData.brevdata,
                         saksbehandlerValg = saksbehandlerValg,
                     ),
-                    felles = pesysData.felles.copy(signerendeSaksbehandlere = SignerendeSaksbehandlere(signaturSignerende, signaturAttesterende.await()?.navn))
+                    felles = pesysData.felles.copy(signerendeSaksbehandlere = SignerendeSaksbehandlere(signaturSignerende, signaturAttesterende))
                 )
             }
     }
@@ -529,7 +542,8 @@ private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
         sistReservert = sistReservert,
         signaturSignerende = signaturSignerende,
         journalpostId = journalpostId,
-        attestertAv = attestertAvNavIdent
+        attestertAv = attestertAvNavIdent,
+        signaturAttestant = signaturAttestant,
     )
 
 private fun Mottaker.toDto(): Dto.Mottaker =

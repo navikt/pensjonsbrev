@@ -61,6 +61,14 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
             }
         }
 
+        put<String>("/{brevId}/attestant") { signatur ->
+            if (signatur.trim().isNotEmpty()) {
+                respond(brevredigeringService.oppdaterSignaturAttestant(brevId = call.parameters.getOrFail<Long>("brevId"), signaturAttestant = signatur))
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Signatur kan ikke være tom")
+            }
+        }
+
         get("/{brevId}/reservasjon") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
             brevredigeringService.fornyReservasjon(brevId)

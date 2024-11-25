@@ -136,7 +136,8 @@ class ApiServiceTest {
         spraak = LanguageCode.BOKMAL,
         signaturSignerende = "Z 123",
         journalpostId = null,
-        attestertAv = null,
+        attestertAv = NavIdent("A 456"),
+        signaturAttestant = "Peder Ås",
     )
 
     private fun stageAnsatt(id: NavIdent, fornavn: String, etternavn: String) {

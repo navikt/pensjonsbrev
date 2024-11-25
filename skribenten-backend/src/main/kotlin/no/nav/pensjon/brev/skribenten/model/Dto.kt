@@ -40,6 +40,7 @@ object Dto {
         val signaturSignerende: String,
         val journalpostId: Long?,
         val attestertAv: NavIdent?,
+        val signaturAttestant: String?,
     )
 
     data class Document(
