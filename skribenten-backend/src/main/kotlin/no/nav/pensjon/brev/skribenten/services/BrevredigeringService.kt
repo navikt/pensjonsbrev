@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -8,10 +8,29 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.letter.*
-import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
+import no.nav.pensjon.brev.skribenten.db.Brevredigering
+import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.db.Document
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.db.EditLetterHash
+import no.nav.pensjon.brev.skribenten.db.Mottaker
+import no.nav.pensjon.brev.skribenten.db.MottakerType
+import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.klarTilSending
+import no.nav.pensjon.brev.skribenten.letter.toEdit
+import no.nav.pensjon.brev.skribenten.letter.toMarkup
+import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.model.toPen
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.ArkivertBrevException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevIkkeKlartTilSendingException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevLaastForRedigeringException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.KanIkkeReservereBrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -264,25 +283,27 @@ class BrevredigeringService(
                     HttpStatusCode.InternalServerError
                 )
             } else {
-                penService.sendbrev(
-                    sendRedigerbartBrevRequest = Pen.SendRedigerbartBrevRequest(
-                        dokumentDato = document.dokumentDato,
-                        saksId = brev.info.saksId,
-                        enhetId = brev.info.avsenderEnhetId,
-                        templateDescription = template,
-                        brevkode = brev.info.brevkode,
-                        pdf = document.pdf,
-                        eksternReferanseId = "skribenten:${brev.info.id}",
-                        mottaker = brev.info.mottaker?.toPen(),
-                    ),
-                    distribuer = brev.info.distribusjonstype == Distribusjonstype.SENTRALPRINT,
-                ).onOk {
-                    transaction {
-                        if (it.journalpostId != null) {
-                            if (it.error == null) {
-                                Brevredigering[brevId].delete()
-                            } else {
-                                Brevredigering[brevId].journalpostId = it.journalpostId
+                hentEllerOpprettPdf(brev.info.saksId, brev.info.id)?.then {
+                    penService.sendbrev(
+                        sendRedigerbartBrevRequest = Pen.SendRedigerbartBrevRequest(
+                            dokumentDato = document.dokumentDato,
+                            saksId = brev.info.saksId,
+                            enhetId = brev.info.avsenderEnhetId,
+                            templateDescription = template,
+                            brevkode = brev.info.brevkode,
+                            pdf = it,
+                            eksternReferanseId = "skribenten:${brev.info.id}",
+                            mottaker = brev.info.mottaker?.toPen(),
+                        ),
+                        distribuer = brev.info.distribusjonstype == Distribusjonstype.SENTRALPRINT,
+                    ).onOk {
+                        transaction {
+                            if (it.journalpostId != null) {
+                                if (it.error == null) {
+                                    Brevredigering[brevId].delete()
+                                } else {
+                                    Brevredigering[brevId].journalpostId = it.journalpostId
+                                }
                             }
                         }
                     }
