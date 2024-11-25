@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Document
@@ -273,7 +274,11 @@ class BrevredigeringService(
             }
             validerErKlarTilSending(brev)
 
-            attesterHvisVedtaksbrevSomIkkeErAttestert(brev, saksId, brevId)
+            medAttestertVedtaksbrev(brev) {
+                hentBrevMedReservasjon(brevId = brev.info.id, saksId = brev.info.saksId) {
+                    transaction { brevDb.apply { this.attestertAvNavIdent = it.navIdent }.toDto() }
+                }
+            }
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
@@ -312,11 +317,7 @@ class BrevredigeringService(
         } else null
     }
 
-    private suspend fun attesterHvisVedtaksbrevSomIkkeErAttestert(
-        brev: Dto.Brevredigering,
-        saksId: Long,
-        brevId: Long,
-    ) {
+    private suspend fun medAttestertVedtaksbrev(brev: Dto.Brevredigering, attester: suspend (UserPrincipal) -> Dto.Brevredigering?) {
         if (!Features.attestant.isEnabled()) {
             logger.debug("Attestering er skrudd av")
             return
@@ -335,16 +336,8 @@ class BrevredigeringService(
                         "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${brev.info.id}",
                     )
                 }
-
-                hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                    validerErKlarTilSending(brevDto)
-
-                    transaction {
-                        brevDb.apply {
-                            this.attestertAvNavIdent = userPrincipal.navIdent
-                        }.toDto()
-                    }
-                }
+                validerErKlarTilSending(brev)
+                attester(userPrincipal)
             } else {
                 logger.info("Brev ${brev.info.id} er allerede attestert. Fortsetter utsending")
             }
