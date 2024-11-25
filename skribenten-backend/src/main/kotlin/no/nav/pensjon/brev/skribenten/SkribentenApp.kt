@@ -74,6 +74,8 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
                 is BrevredigeringException.BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is BrevredigeringException.BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
                 is BrevredigeringException.KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
+                is BrevredigeringException.HarIkkeAttestantrolleException -> call.respond(HttpStatusCode.Forbidden, cause.message)
+                is BrevredigeringException.KanIkkeAttestereEgetBrevException -> call.respond(HttpStatusCode.Forbidden, cause.message)
             }
         }
         exception<Exception> { call, cause ->

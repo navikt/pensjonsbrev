@@ -57,6 +57,8 @@ sealed class BrevredigeringException(message: String) : Exception(message) {
     class ArkivertBrevException(val brevId: Long, val journalpostId: Long) : BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
     class BrevIkkeKlartTilSendingException(override val message: String) : BrevredigeringException(message)
     class BrevLaastForRedigeringException(override val message: String) : BrevredigeringException(message)
+    class HarIkkeAttestantrolleException(override val message: String) : BrevredigeringException(message)
+    class KanIkkeAttestereEgetBrevException(override val message: String) : BrevredigeringException(message)
 }
 
 class BrevredigeringService(
@@ -328,15 +330,13 @@ class BrevredigeringService(
             if (brev.info.attestertAv == null) {
                 val userPrincipal = PrincipalInContext.require()
                 if (!userPrincipal.isInGroup(ADGroups.attestant)) {
-                    return ServiceResult.Error(
+                    throw BrevredigeringException.HarIkkeAttestantrolleException(
                         "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${brev.info.id}",
-                        HttpStatusCode.Forbidden
                     )
                 }
                 if (userPrincipal.navIdent == brev.info.opprettetAv) {
-                    return ServiceResult.Error(
+                    throw BrevredigeringException.KanIkkeAttestereEgetBrevException(
                         "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${brev.info.id}",
-                        HttpStatusCode.Forbidden
                     )
                 }
 
