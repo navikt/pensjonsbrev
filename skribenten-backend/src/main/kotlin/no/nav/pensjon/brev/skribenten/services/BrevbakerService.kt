@@ -54,11 +54,11 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
     /**
      * Get model specification for a template.
      */
-    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbar): ServiceResult<TemplateModelSpecification> =
-        client.get("/templates/redigerbar/${brevkode.name}/modelSpecification").toServiceResult()
+    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> =
+        client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification").toServiceResult()
 
     suspend fun renderMarkup(
-        brevkode: Brevkode.Redigerbar,
+        brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
@@ -76,7 +76,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
         }.toServiceResult()
 
     suspend fun renderPdf(
-        brevkode: Brevkode.Redigerbar,
+        brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
@@ -102,10 +102,10 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             }
         }.toServiceResult()
 
-    private val templateCache = Cache<Brevkode.Redigerbar, TemplateDescription.Redigerbar>()
-    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbar): TemplateDescription.Redigerbar? =
+    private val templateCache = Cache<Brevkode.Redigerbart, TemplateDescription.Redigerbar>()
+    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         templateCache.cached(brevkode) {
-            client.get("/templates/redigerbar/${brevkode.name}").toServiceResult<TemplateDescription.Redigerbar>()
+            client.get("/templates/redigerbar/${brevkode.kode()}").toServiceResult<TemplateDescription.Redigerbar>()
                 .onError { error, statusCode -> logger.error("Feilet ved henting av templateDescription for $brevkode: $statusCode - $error") }
                 .resultOrNull()
         }

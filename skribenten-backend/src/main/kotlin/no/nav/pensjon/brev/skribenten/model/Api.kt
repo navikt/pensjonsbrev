@@ -16,7 +16,7 @@ object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata
 
     data class OpprettBrevRequest(
-        val brevkode: Brevkode.Redigerbar,
+        val brevkode: Brevkode.Redigerbart,
         val spraak: SpraakKode,
         val avsenderEnhetsId: String?,
         val saksbehandlerValg: SaksbehandlerValg,
@@ -42,7 +42,7 @@ object Api {
         val opprettet: Instant,
         val sistredigertAv: NavAnsatt,
         val sistredigert: Instant,
-        val brevkode: Brevkode.Redigerbar,
+        val brevkode: Brevkode.Redigerbart,
         val brevtittel: String,
         val status: BrevStatus,
         val distribusjonstype: Distribusjonstype,
