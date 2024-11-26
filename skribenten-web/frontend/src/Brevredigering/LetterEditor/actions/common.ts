@@ -11,9 +11,10 @@ import type {
   ParagraphBlock,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { FontType, PARAGRAPH } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "../../../types/brevbakerTypes";
 import type { LetterEditorState } from "../model/state";
 
 export function cleanseText(text: string): string {
@@ -87,9 +88,20 @@ export function newLiteral(args: {
     id: args.id ?? null,
     text: args.text,
     editedText: args.editedText ?? null,
+    editedFontType: null,
+    fontType: FontType.PLAIN,
     tags: args.tags ?? [],
   };
 }
+
+export const newVariable = (args: { id?: Nullable<number>; text: string }): VariableValue => {
+  return {
+    type: VARIABLE,
+    id: args.id ?? null,
+    text: args.text,
+    fontType: FontType.PLAIN,
+  };
+};
 
 export function newItem(text: string): Item {
   return { id: null, content: [newLiteral({ text })] };

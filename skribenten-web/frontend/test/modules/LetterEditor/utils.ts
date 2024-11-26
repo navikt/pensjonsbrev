@@ -1,5 +1,6 @@
 import { randomInt } from "node:crypto";
 
+import { newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
 import type { ItemContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { SpraakKode } from "~/types/apiTypes";
@@ -18,7 +19,7 @@ import type {
   VariableValue,
 } from "~/types/brevbakerTypes";
 import { TITLE2 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, PARAGRAPH, TITLE1, VARIABLE } from "~/types/brevbakerTypes";
+import { ITEM_LIST, PARAGRAPH, TITLE1 } from "~/types/brevbakerTypes";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
@@ -95,21 +96,11 @@ export function title2(...content: TextContent[]): Title2Block {
 }
 
 export function literal(text: string, editedText: string | null = null): LiteralValue {
-  return {
-    id: randomInt(1000),
-    type: LITERAL,
-    text,
-    editedText,
-    tags: [],
-  };
+  return newLiteral({ id: randomInt(1000), text, editedText });
 }
 
 export function variable(text: string): VariableValue {
-  return {
-    id: randomInt(1000),
-    type: VARIABLE,
-    text,
-  };
+  return newVariable({ id: randomInt(1000), text });
 }
 
 export function itemList(...items: Item[]): ItemList {

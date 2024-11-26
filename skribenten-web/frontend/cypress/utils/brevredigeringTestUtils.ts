@@ -1,3 +1,4 @@
+import { newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
 import type {
   BrevInfo,
   BrevResponse,
@@ -19,6 +20,7 @@ import type {
 import {
   type AnyBlock,
   type EditedLetter,
+  FontType,
   type LiteralValue,
   type Sakspart,
   type Signatur,
@@ -67,37 +69,11 @@ export const nyRedigertBrev = (args: {
         id: 272_720_182,
         editable: true,
         content: [
-          {
-            id: 1_507_865_607,
-            text: "We received your application for ",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
-          {
-            id: -726_051_414,
-            text: "alderspensjon",
-            type: "VARIABLE",
-          },
-          {
-            id: -711_242_333,
-            text: " from the Norwegian National Insurance Scheme on ",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
-          {
-            id: -694_080_035,
-            text: "24 July 2024",
-            type: "VARIABLE",
-          },
-          {
-            id: 46,
-            text: ".",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
+          newLiteral({ id: 1_507_865_607, text: "We received your application for " }),
+          newVariable({ id: -726_051_414, text: "alderspensjon" }),
+          newLiteral({ id: -711_242_333, text: " from the Norwegian National Insurance Scheme on " }),
+          newVariable({ id: -694_080_035, text: "24 July 2024" }),
+          newLiteral({ id: -1_114_690_237, text: "." }),
         ],
         deletedContent: [],
         type: "PARAGRAPH",
@@ -106,25 +82,9 @@ export const nyRedigertBrev = (args: {
         id: 822_540_105,
         editable: true,
         content: [
-          {
-            id: -1_114_690_237,
-            text: "Our processing time for this type of application is usually ",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
-          {
-            id: 1_834_595_758,
-            text: "10",
-            type: "VARIABLE",
-          },
-          {
-            id: 1_838_606_639,
-            text: " weeks.",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
+          newLiteral({ id: -1_114_690_237, text: "Our processing time for this type of application is usually " }),
+          newVariable({ id: 1_834_595_758, text: "10" }),
+          newLiteral({ id: 1_838_606_639, text: " weeks." }),
         ],
         deletedContent: [],
         type: "PARAGRAPH",
@@ -181,6 +141,8 @@ export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): Liter
   id: args.id ?? null,
   text: args.text ?? "ny literal default text",
   editedText: args.text ?? "ny literal default edited-text",
+  fontType: FontType.PLAIN,
+  editedFontType: null,
   tags: [],
 });
 
@@ -189,6 +151,7 @@ export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: 
   id: args.id ?? 1,
   name: args.name,
   text: args.text ?? "ny variable default text",
+  fontType: FontType.PLAIN,
 });
 
 //TODO - kan heller bruke newItem fra common.ts
