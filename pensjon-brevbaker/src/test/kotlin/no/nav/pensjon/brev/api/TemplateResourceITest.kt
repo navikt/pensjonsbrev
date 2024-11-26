@@ -17,7 +17,7 @@ class TemplateResourceITest {
         testTemplate(LetterExample.kode, LetterExample.template)
     }
 
-    private fun testTemplate(kode: Brevkode.AutoBrev, template: LetterTemplate<*, *>?) {
+    private fun testTemplate(kode: Brevkode.Automatisk, template: LetterTemplate<*, *>?) {
         if (template == null) {
             fail { "TemplateResource.getTemplates() returned a template name that doesnt exist: $kode" }
         }
@@ -33,7 +33,7 @@ class TemplateResourceITest {
                         language = LanguageCode.BOKMAL
                     )
                 )
-                writeTestPDF(kode.name, rendered.file)
+                writeTestPDF(kode.kode(), rendered.file)
             }
         } catch (failedCompile: Exception) {
             fail("Failed to compile template($kode) with argument: $argument", failedCompile)
