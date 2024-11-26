@@ -30,7 +30,6 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexCompileException
 import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
-import no.nav.pensjon.brev.maler.AllTemplates
 import no.nav.pensjon.brev.routing.brevbakerRouting
 import no.nav.pensjon.brev.template.brevbakerConfig
 

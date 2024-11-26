@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.pensjon.brev.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
@@ -18,11 +19,6 @@ import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-
-interface AllTemplates {
-    fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>>
-    fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>>
-}
 
 object ProductionTemplates : AllTemplates {
     private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(

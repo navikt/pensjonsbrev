@@ -9,7 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.maler.AllTemplates
+import no.nav.pensjon.brev.AllTemplates
 import no.nav.pensjon.etterlatte.etterlatteRouting
 
 fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService, brevProvider: AllTemplates) =
