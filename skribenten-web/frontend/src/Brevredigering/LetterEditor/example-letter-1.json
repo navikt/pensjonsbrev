@@ -14,7 +14,8 @@
         {
           "id": 2054713812,
           "text": "Denne blokken[CP1-1] ",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         },
         {
           "id": -169301316,
@@ -24,7 +25,8 @@
         {
           "id": -1820992704,
           "text": "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
@@ -37,7 +39,8 @@
         {
           "id": -1505022304,
           "text": "[CP2-1]Her vil vi teste om piltast opp/ned",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         },
         {
           "id": 1762521580,
@@ -47,7 +50,8 @@
         {
           "id": 1027473067,
           "text": "fungerer mellom egne avsnitt",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
@@ -60,7 +64,8 @@
         {
           "id": -1505022304,
           "text": "[CP2-2]Her vil vi",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         },
         {
           "id": 1762521580,
@@ -70,7 +75,8 @@
         {
           "id": 1027473067,
           "text": " teste om piltast opp/ned fungerer mellom egne avsnitt[CP2-3]",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
@@ -83,7 +89,8 @@
         {
           "id": 1620092138,
           "text": "Tittel over punktliste",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
@@ -101,7 +108,8 @@
                 {
                   "id": -1890568417,
                   "text": "Punkt 1. Dette er et veldig langt punkt kun av den grunn at vi ønsker helst, mest sannsynlig, at denne skal brekke over to linjer[CP3-1]",
-                  "type": "LITERAL"
+                  "type": "LITERAL",
+                  "tags": []
                 }
               ]
             },
@@ -110,7 +118,8 @@
                 {
                   "id": 935219458,
                   "text": "Punkt 2. Migrere brev[CP3-2]",
-                  "type": "LITERAL"
+                  "type": "LITERAL",
+                  "tags": []
                 }
               ]
             },
@@ -119,7 +128,8 @@
                 {
                   "id": -1163733415,
                   "text": "Punkt 3. Øk budjsettet[CP3-3]",
-                  "type": "LITERAL"
+                  "type": "LITERAL",
+                  "tags": []
                 }
               ]
             }
@@ -137,7 +147,8 @@
         {
           "id": 1620092138,
           "text": "Tittel under punktliste",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
@@ -150,7 +161,8 @@
         {
           "id": -349491855,
           "text": "Siste avsnitt for å teste at pil ned tar oss til end of line.[CP4-1]",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
