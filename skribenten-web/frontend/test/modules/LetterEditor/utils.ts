@@ -1,5 +1,6 @@
 import { randomInt } from "node:crypto";
 
+import { newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
 import type { ItemContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { SpraakKode } from "~/types/apiTypes";
@@ -116,23 +117,18 @@ export function literal(args: {
   editedText?: Nullable<string>;
   tags?: ElementTags[];
 }): LiteralValue {
-  return {
+  return newLiteral({
     id: args.id ?? randomId(),
     parentId: args.parentId ?? null,
-    type: LITERAL,
     text: args.text,
     editedText: args.editedText ?? null,
     tags: args.tags ?? [],
-  };
+  });
+
 }
 
 export function variable(text: string): VariableValue {
-  return {
-    id: randomId(),
-    parentId: null,
-    type: VARIABLE,
-    text,
-  };
+  return newVariable({id: randomId(), text});
 }
 
 export function newLine(): NewLine {
