@@ -59,7 +59,7 @@ fun settOppFakeUnleash() =
         unleash = { FakeUnleash() }
     }
 
-fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode.AutoBrev>): LetterResponse =
+fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode.Automatisk>): LetterResponse =
     runBlocking {
         client.post("letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)

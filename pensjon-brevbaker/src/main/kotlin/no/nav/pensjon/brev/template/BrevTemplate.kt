@@ -9,13 +9,13 @@ import no.nav.pensjon.brev.api.toCode
 import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 
-interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Enum<Kode>> : HasModel<LetterData> {
+interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
     val template: LetterTemplate<*, LetterData>
     val kode: Kode
     fun description(): TemplateDescription
 }
 
-interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbar> {
+interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
     val kategori: TemplateDescription.Brevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<Sakstype>
@@ -35,7 +35,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
         Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
 }
 
-interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.AutoBrev> {
+interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {
     override fun description(): TemplateDescription.Autobrev =
         TemplateDescription.Autobrev(
             name = template.name,
