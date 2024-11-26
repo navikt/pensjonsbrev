@@ -192,7 +192,7 @@ class BrevredigeringService(
                 transaction {
                     brevDb.apply {
                         redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
-                        this.signaturSignerende = signaturSignerende
+                        this.signaturAttestant = signaturAttestant
                     }.toDto()
                 }
             }

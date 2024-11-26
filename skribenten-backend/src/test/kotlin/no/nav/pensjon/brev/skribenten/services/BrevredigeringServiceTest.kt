@@ -629,6 +629,7 @@ class BrevredigeringServiceTest {
 
         val navident = NavIdent("A12345")
         withPrincipal(MockPrincipal(navident, "Peder Ås", mutableSetOf(ADGroups.attestant))) {
+            brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
             brevredigeringService.delvisOppdaterBrev(
                 saksId = sak.saksId,
                 brevId = brev.info.id,
@@ -673,6 +674,7 @@ class BrevredigeringServiceTest {
 
         val navident = NavIdent("A12345")
         withPrincipal(MockPrincipal(navident, "Peder Ås", mutableSetOf())) {
+            brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
             brevredigeringService.delvisOppdaterBrev(
                 saksId = sak.saksId,
                 brevId = brev.info.id,
