@@ -17,9 +17,7 @@ object Dto {
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: EditLetterHash,
         val saksbehandlerValg: SaksbehandlerValg,
-    ) {
-        fun erVedtaksbrev() = info.vedtaksId != null
-    }
+    )
 
     data class BrevInfo(
         val id: Long,

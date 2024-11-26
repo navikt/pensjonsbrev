@@ -618,7 +618,8 @@ class BrevredigeringServiceTest {
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
         coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
-        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns templateDescription
+        val meta = templateDescription.copy(metadata = lettermetadata.copy(brevtype = LetterMetadata.Brevtype.VEDTAKSBREV))
+        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns meta
 
         ADGroups.init(lesInnADGrupper())
         val brev = opprettBrev(
@@ -663,7 +664,8 @@ class BrevredigeringServiceTest {
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
         coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
-        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns templateDescription
+        val meta = templateDescription.copy(metadata = lettermetadata.copy(brevtype = LetterMetadata.Brevtype.VEDTAKSBREV))
+        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns meta
 
         ADGroups.init(lesInnADGrupper())
         val brev = opprettBrev(

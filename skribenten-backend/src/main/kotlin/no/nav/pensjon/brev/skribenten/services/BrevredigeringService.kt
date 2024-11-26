@@ -36,6 +36,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.R
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -274,13 +275,13 @@ class BrevredigeringService(
             }
             validerErKlarTilSending(brev)
 
-            medAttestertVedtaksbrev(brev) {
+            val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
+
+            medAttestertVedtaksbrev(brev, template?.metadata?.brevtype) {
                 hentBrevMedReservasjon(brevId = brev.info.id, saksId = brev.info.saksId) {
                     transaction { brevDb.apply { this.attestertAvNavIdent = it.navIdent }.toDto() }
                 }
             }
-
-            val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
             if (template == null) {
                 ServiceResult.Error(
@@ -317,13 +318,13 @@ class BrevredigeringService(
         } else null
     }
 
-    private suspend fun medAttestertVedtaksbrev(brev: Dto.Brevredigering, attester: suspend (UserPrincipal) -> Dto.Brevredigering?) {
+    private suspend fun medAttestertVedtaksbrev(brev: Dto.Brevredigering, brevtype: LetterMetadata.Brevtype?, attester: suspend (UserPrincipal) -> Dto.Brevredigering?) {
         if (!Features.attestant.isEnabled()) {
             logger.debug("Attestering er skrudd av")
             return
         }
 
-        if (brev.erVedtaksbrev()) {
+        if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
             if (brev.info.attestertAv == null) {
                 val userPrincipal = PrincipalInContext.require()
                 if (!userPrincipal.isInGroup(ADGroups.attestant)) {
