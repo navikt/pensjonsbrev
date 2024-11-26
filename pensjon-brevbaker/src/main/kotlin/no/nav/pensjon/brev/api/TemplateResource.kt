@@ -27,17 +27,13 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
     templates: Set<T>,
     private val laTeXCompilerService: LaTeXCompilerService,
 ) {
-    private val templates: Map<Kode, T> = templates.associateBy { it.kode }
+    private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
 
-    fun listTemplatesWithMetadata() = templates.map { getTemplate(it.key)!!.description() }
+    fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
 
-    fun listTemplatekeys() = templates.keys
+    fun listTemplatekeys() = templateLibrary.listTemplatekeys()
 
-    fun getTemplate(kode: Kode) = when {
-        // Legg inn her hvis du ønsker å styre forskjellige versjoner, feks
-        // kode == DinBrevmal.kode && FeatureToggles.dinToggle.isEnabled() -> DinBrevmalV2
-        else -> templates[kode]
-    }
+    fun getTemplate(kode: Kode) = templateLibrary.getTemplate(kode)
 
     suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
