@@ -124,7 +124,7 @@ jobs:
 
   runIntegrationTests:
     name: "Integration tests"
-    needs: [ build-brevbaker, build-pdfbygger, changes ]
+    needs: [ build-pdfbygger, changes ]
     services:
       pdf-bygger:
         env:
