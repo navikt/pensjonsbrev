@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
+import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
@@ -24,12 +25,12 @@ object ProductionTemplates {
         AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
-        AdhocGjenlevendEtter1970,
         AdhocFeilEtteroppgjoer2023,
-        AdhocUfoeretrygdEtterbetalingDagpenger,
-        AdhocUfoeretrygdKombiDagpenger,
+        AdhocGjenlevendEtter1970,
         AdhocInformasjonHvilendeRett4Aar,
         AdhocMidlertidigOpphoerHvilenderett10Aar,
+        AdhocUfoeretrygdEtterbetalingDagpenger,
+        AdhocUfoeretrygdKombiDagpenger,
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
@@ -40,6 +41,7 @@ object ProductionTemplates {
         EtteroppgjoerEtterbetalingAutoLegacy,
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
+        InfoAldersovergang67AarAuto,
         OmsorgEgenAuto,
         OpphoerBarnetilleggAuto,
         OpptjeningVedForhoeyetHjelpesats,
