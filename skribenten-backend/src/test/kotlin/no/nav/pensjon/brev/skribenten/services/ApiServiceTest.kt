@@ -5,8 +5,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.skribenten.EksempelRedigerbartDto
+import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -26,12 +26,12 @@ class ApiServiceTest {
     private val samhandlerService = mockk<SamhandlerService>()
     private val dto2ApiService = Dto2ApiService(
         brevbakerService = mockk {
-            coEvery { getRedigerbarTemplate(eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)) } returns TemplateDescription.Redigerbar(
-                name = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name,
-                letterDataClass = InformasjonOmSaksbehandlingstidDto::class.java.name,
+            coEvery { getRedigerbarTemplate(eq(Testbrevkoder.TESTBREV)) } returns TemplateDescription.Redigerbar(
+                name = Testbrevkoder.TESTBREV.name,
+                letterDataClass = EksempelRedigerbartDto::class.java.name,
                 languages = listOf(LanguageCode.BOKMAL),
                 metadata = LetterMetadata(
-                    "Informasjon om saksbehandlingstid",
+                    "Redigerbart eksempelbrev",
                     false,
                     LetterMetadata.Distribusjonstype.VIKTIG,
                     LetterMetadata.Brevtype.INFORMASJONSBREV
@@ -94,7 +94,7 @@ class ApiServiceTest {
     @Test
     fun `henter brevtittel fra brevbaker`(): Unit = runBlocking {
         val brev = createBrev()
-        assertThat(dto2ApiService.toApi(brev).brevtittel).isEqualTo("Informasjon om saksbehandlingstid")
+        assertThat(dto2ApiService.toApi(brev).brevtittel).isEqualTo("Redigerbart eksempelbrev")
     }
 
     @Test
@@ -128,7 +128,7 @@ class ApiServiceTest {
         sistredigert = Instant.now(),
         redigeresAv = redigeresAv,
         sistReservert = Instant.now(),
-        brevkode = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+        brevkode = Testbrevkoder.TESTBREV,
         laastForRedigering = laastForRedigering,
         distribusjonstype = Distribusjonstype.SENTRALPRINT,
         mottaker = mottaker,

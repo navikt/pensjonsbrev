@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.db
 
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -85,7 +85,7 @@ class MottakerTest {
         Brevredigering.new {
             saksId = 123L
             opprettetAvNavIdent = principal
-            this.brevkode = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID
+            this.brevkode = Testbrevkoder.TESTBREV
             this.spraak = LanguageCode.BOKMAL
             this.avsenderEnhetId = "1111"
             this.saksbehandlerValg = Api.GeneriskBrevdata()
