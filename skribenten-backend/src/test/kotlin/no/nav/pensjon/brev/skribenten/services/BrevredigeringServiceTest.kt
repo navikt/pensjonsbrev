@@ -6,8 +6,8 @@ import kotlinx.coroutines.*
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
@@ -189,7 +189,7 @@ class BrevredigeringServiceTest {
 
         coVerify {
             brevbakerMock.renderMarkup(
-                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 eq(LanguageCode.ENGLISH),
                 any(),
                 any()
@@ -207,12 +207,12 @@ class BrevredigeringServiceTest {
                 )?.resultOrNull()?.let { it.copy(info = it.info.copy(sistReservert = null)) }
             }
         )
-        assertEquals(brev.info.brevkode, RedigerbarBrevkode(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name))
+        assertEquals(brev.info.brevkode, RedigerbarBrevkode(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name))
         assertEquals(brev.redigertBrev, letter.toEdit())
 
         coVerify {
             brevbakerMock.renderMarkup(
-                eq(RedigerbarBrevkode(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name)),
+                eq(RedigerbarBrevkode(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name)),
                 eq(LanguageCode.ENGLISH),
                 any(),
                 any()
@@ -230,7 +230,7 @@ class BrevredigeringServiceTest {
             penService.hentPesysBrevdata(
                 eq(sak.saksId),
                 eq(vedtaksId),
-                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 any()
             )
         }
@@ -241,7 +241,7 @@ class BrevredigeringServiceTest {
             penService.hentPesysBrevdata(
                 eq(sak.saksId),
                 eq(vedtaksId),
-                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 any()
             )
         }
@@ -298,7 +298,7 @@ class BrevredigeringServiceTest {
             brevredigeringService.opprettBrev(
                 sak = sak,
                 vedtaksId = null,
-                brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+                brevkode = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
                 spraak = LanguageCode.ENGLISH,
                 avsenderEnhetsId = "The Matrix",
                 saksbehandlerValg = saksbehandlerValg
@@ -328,7 +328,7 @@ class BrevredigeringServiceTest {
 
         coVerify(exactly = 1) {
             brevbakerMock.renderMarkup(
-                eq(RedigerbarBrevkode(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name)),
+                eq(RedigerbarBrevkode(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name)),
                 eq(LanguageCode.ENGLISH),
                 any(),
                 any()
@@ -352,7 +352,7 @@ class BrevredigeringServiceTest {
         val freshRender = letter.copy(blocks = letter.blocks + Paragraph(2, true, listOf(Variable(21, "ny paragraph"))))
         coEvery {
             brevbakerMock.renderMarkup(
-                eq(RedigerbarBrevkode(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name)),
+                eq(RedigerbarBrevkode(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name)),
                 any(),
                 eq(GeneriskRedigerbarBrevdata(Api.GeneriskBrevdata(), nyeValg)),
                 any()
@@ -396,7 +396,7 @@ class BrevredigeringServiceTest {
 
         coEvery {
             brevbakerMock.renderMarkup(
-                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 any(),
                 eq(GeneriskRedigerbarBrevdata(EmptyBrevdata, saksbehandlerValg)),
                 any()
@@ -594,7 +594,7 @@ class BrevredigeringServiceTest {
             penService.hentPesysBrevdata(
                 eq(sak.saksId),
                 isNull(),
-                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 eq(principalNavEnhetId),
             )
         }
@@ -605,7 +605,7 @@ class BrevredigeringServiceTest {
                         templateDescription = templateDescription,
                         dokumentDato = LocalDate.now(),
                         saksId = 1234,
-                        brevkode = RedigerbarBrevkode(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name),
+                        brevkode = RedigerbarBrevkode(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name),
                         enhetId = principalNavEnhetId,
                         pdf = stagetPDF,
                         eksternReferanseId = "skribenten:${brev.info.id}",
@@ -648,7 +648,7 @@ class BrevredigeringServiceTest {
             penService.hentPesysBrevdata(
                 eq(sak.saksId),
                 isNull(),
-                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                 eq(principalNavEnhetId),
             )
         }
@@ -659,7 +659,7 @@ class BrevredigeringServiceTest {
                         templateDescription = templateDescription,
                         dokumentDato = LocalDate.now(),
                         saksId = 1234,
-                        brevkode = RedigerbarBrevkode(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name),
+                        brevkode = RedigerbarBrevkode(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name),
                         enhetId = principalNavEnhetId,
                         pdf = stagetPDF,
                         eksternReferanseId = "skribenten:${brev.info.id}",
@@ -724,7 +724,7 @@ class BrevredigeringServiceTest {
 
             coEvery {
                 brevbakerMock.renderMarkup(
-                    eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
+                    eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID),
                     any(),
                     any(),
                     any()
@@ -1004,7 +1004,7 @@ class BrevredigeringServiceTest {
                         templateDescription = templateDescription,
                         dokumentDato = LocalDate.now(),
                         saksId = sak.saksId,
-                        brevkode = RedigerbarBrevkode(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name),
+                        brevkode = RedigerbarBrevkode(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name),
                         enhetId = principalNavEnhetId,
                         pdf = stagetPDF,
                         eksternReferanseId = "skribenten:${brev.info.id}",
@@ -1080,7 +1080,7 @@ class BrevredigeringServiceTest {
     fun `kan ikke markere brev klar til sending om ikke alle fritekst er fylt ut`(): Unit = runBlocking {
         coEvery {
             brevbakerMock.renderMarkup(
-                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any(), any(), any()
+                eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any(), any(), any()
             )
         } returns ServiceResult.Ok(
             letter(
@@ -1110,7 +1110,7 @@ class BrevredigeringServiceTest {
     fun `kan markere brev klar til sending om alle fritekst er fylt ut`(): Unit = runBlocking {
         coEvery {
             brevbakerMock.renderMarkup(
-                eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any(), any(), any()
+                eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID), any(), any(), any()
             )
         } returns ServiceResult.Ok(
             letter(
@@ -1153,7 +1153,7 @@ class BrevredigeringServiceTest {
         brevredigeringService.opprettBrev(
             sak = sak,
             vedtaksId = vedtaksId,
-            brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+            brevkode = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
             spraak = LanguageCode.ENGLISH,
             avsenderEnhetsId = principalNavEnhetId,
             saksbehandlerValg = saksbehandlerValg,

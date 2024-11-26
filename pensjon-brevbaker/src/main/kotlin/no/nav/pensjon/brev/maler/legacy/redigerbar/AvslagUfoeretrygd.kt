@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDtoSelectors.pesysData
@@ -27,7 +27,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
     // PE_UT_04_104
-    override val kode = Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD
+    override val kode = Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)

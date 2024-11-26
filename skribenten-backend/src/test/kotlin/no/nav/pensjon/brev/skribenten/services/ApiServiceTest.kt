@@ -5,7 +5,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -26,8 +26,8 @@ class ApiServiceTest {
     private val samhandlerService = mockk<SamhandlerService>()
     private val dto2ApiService = Dto2ApiService(
         brevbakerService = mockk {
-            coEvery { getRedigerbarTemplate(eq(Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)) } returns TemplateDescription.Redigerbar(
-                name = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name,
+            coEvery { getRedigerbarTemplate(eq(Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID)) } returns TemplateDescription.Redigerbar(
+                name = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID.name,
                 letterDataClass = InformasjonOmSaksbehandlingstidDto::class.java.name,
                 languages = listOf(LanguageCode.BOKMAL),
                 metadata = LetterMetadata(
@@ -128,7 +128,7 @@ class ApiServiceTest {
         sistredigert = Instant.now(),
         redigeresAv = redigeresAv,
         sistReservert = Instant.now(),
-        brevkode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
+        brevkode = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
         laastForRedigering = laastForRedigering,
         distribusjonstype = Distribusjonstype.SENTRALPRINT,
         mottaker = mottaker,

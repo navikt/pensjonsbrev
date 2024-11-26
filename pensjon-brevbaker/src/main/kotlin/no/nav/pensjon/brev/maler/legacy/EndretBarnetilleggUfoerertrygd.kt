@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.orienteringOmRettigheterUfoere
@@ -28,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndretBarnetilleggUfoerertrygd : AutobrevTemplate<EndretBarnetilleggUfoeretrygdDto> {
 
-    override val kode = Brevkode.AutoBrev.UT_BARNETILLEGG_ENDRET_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.UT_BARNETILLEGG_ENDRET_AUTO
 
     override val template = createTemplate(
         name = kode.name,

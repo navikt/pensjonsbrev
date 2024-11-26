@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -10,7 +10,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
