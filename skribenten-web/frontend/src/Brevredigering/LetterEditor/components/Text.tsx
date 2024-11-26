@@ -15,7 +15,6 @@ export const Text = ({ content }: TextProperties) => {
     case VARIABLE: {
       return (
         <span
-          className="protected"
           contentEditable={false}
           css={css`
             border-radius: 4px;
