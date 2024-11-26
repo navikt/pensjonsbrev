@@ -63,7 +63,7 @@ paths:
       - $ref: "#/components/parameters/includeMetadataQuery"
     get:
       summary: Hent alle tilgjengelige brevkoder, eller brevmetadata for alle malene
-      description: Brevkodene vil være gyldige verdier av enum `no.nav.pensjon.brev.api.model.maler.Brevkode.Autobrev`
+      description: Brevkodene vil være gyldige implementasjoner av interface `no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk`
       responses:
         '200':
           $ref: "#/components/responses/GetTemplateList"

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattSoeknad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.soeknadOversendesTilUtlandet
@@ -28,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object OrienteringOmSaksbehandlingstidV2 : RedigerbarTemplate<OrienteringOmSaksbehandlingstidDto> {
 
     // PE_UP_07_105
-    override val kode = Brevkode.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID
+    override val kode = Pesysbrevkoder.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID
     override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)

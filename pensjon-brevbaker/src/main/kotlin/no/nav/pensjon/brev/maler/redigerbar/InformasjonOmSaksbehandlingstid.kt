@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.InkluderVenterSvarAFPSelectors.uttakAlderspensjonProsent
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.InkluderVenterSvarAFPSelectors.uttaksDato
@@ -28,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbehandlingstidDto> {
 
     // AP_INFO_STID_MAN (MF 000130)
-    override val kode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID
+    override val kode = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID
     override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = Sakstype.all

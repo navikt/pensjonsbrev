@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarInnvilgetOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.egenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
@@ -24,7 +24,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBR
 @TemplateModelHelpers
 object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
 
-    override val kode = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = kode.name,
