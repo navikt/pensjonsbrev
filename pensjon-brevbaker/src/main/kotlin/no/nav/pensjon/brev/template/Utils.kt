@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.converters.BrevbakerBrevdataModule
+import no.nav.pensjon.brev.converters.BrevkodeModule
 import no.nav.pensjon.brev.converters.LetterMarkupModule
 import no.nav.pensjon.brev.converters.TemplateModelSpecificationModule
 import java.time.format.*
@@ -11,6 +12,7 @@ import kotlin.reflect.KClass
 fun ObjectMapper.brevbakerConfig() {
     registerModule(JavaTimeModule())
     registerModule(BrevbakerBrevdataModule)
+    registerModule(BrevkodeModule)
     registerModule(LetterMarkupModule)
     registerModule(TemplateModelSpecificationModule)
     enable(SerializationFeature.INDENT_OUTPUT)
