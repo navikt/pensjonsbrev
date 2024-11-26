@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import no.nav.pensjon.brev.api.model.PesysBrevkategori
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -124,20 +125,22 @@ interface LetterMetadata {
 
 private fun Brevkategori.toKategoriTekst() =
     when (this) {
-        Brevkategori.ETTEROPPGJOER -> "Etteroppgjør"
-        Brevkategori.FOERSTEGANGSBEHANDLING -> "Førstegangsbehandling"
-        Brevkategori.VEDTAK_ENDRING_OG_REVURDERING -> "Vedtak - endring og revurdering"
-        Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND -> "Vedtak - flytte mellom land"
-        Brevkategori.SLUTTBEHANDLING -> "Sluttbehandling"
-        Brevkategori.INFORMASJONSBREV -> "Informasjonsbrev"
-        Brevkategori.VARSEL -> "Varsel"
-        Brevkategori.VEDTAK_EKSPORT -> "Vedtak - eksport"
-        Brevkategori.OMSORGSOPPTJENING -> "Omsorgsopptjening"
-        Brevkategori.UFOEREPENSJON -> "Uførepensjon"
-        Brevkategori.INNHENTE_OPPLYSNINGER -> "Innhente opplysninger"
-        Brevkategori.LEVEATTEST -> "Leveattest"
-        Brevkategori.FEILUTBETALING -> "Feilutbetaling"
-        Brevkategori.KLAGE_OG_ANKE -> "Klage og anke"
-        Brevkategori.POSTERINGSGRUNNLAG -> "Posteringsgrunnlag"
-        Brevkategori.FRITEKSTBREV -> "Fritekstbrev"
+        PesysBrevkategori.ETTEROPPGJOER -> "Etteroppgjør"
+        PesysBrevkategori.FOERSTEGANGSBEHANDLING -> "Førstegangsbehandling"
+        PesysBrevkategori.VEDTAK_ENDRING_OG_REVURDERING -> "Vedtak - endring og revurdering"
+        PesysBrevkategori.VEDTAK_FLYTTE_MELLOM_LAND -> "Vedtak - flytte mellom land"
+        PesysBrevkategori.SLUTTBEHANDLING -> "Sluttbehandling"
+        PesysBrevkategori.INFORMASJONSBREV -> "Informasjonsbrev"
+        PesysBrevkategori.VARSEL -> "Varsel"
+        PesysBrevkategori.VEDTAK_EKSPORT -> "Vedtak - eksport"
+        PesysBrevkategori.OMSORGSOPPTJENING -> "Omsorgsopptjening"
+        PesysBrevkategori.UFOEREPENSJON -> "Uførepensjon"
+        PesysBrevkategori.INNHENTE_OPPLYSNINGER -> "Innhente opplysninger"
+        PesysBrevkategori.LEVEATTEST -> "Leveattest"
+        PesysBrevkategori.FEILUTBETALING -> "Feilutbetaling"
+        PesysBrevkategori.KLAGE_OG_ANKE -> "Klage og anke"
+        PesysBrevkategori.POSTERINGSGRUNNLAG -> "Posteringsgrunnlag"
+        PesysBrevkategori.FRITEKSTBREV -> "Fritekstbrev"
+        // TODO: Finne på noko lurt her. Kanskje ta dette inn i enum-objektet?
+        else -> throw NotImplementedError("Ikke implementert for kategori ${this.kode()}")
     }

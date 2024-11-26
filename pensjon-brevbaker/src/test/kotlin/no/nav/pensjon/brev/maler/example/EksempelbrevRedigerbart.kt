@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
+import no.nav.pensjon.brev.api.model.PesysBrevkategori
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -47,7 +48,7 @@ enum class EksempelbrevRedigerbartBrevkode : Brevkode.Redigerbart {
 object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
     override val kode: Brevkode.Redigerbart = EksempelbrevRedigerbartBrevkode.TESTBREV
-    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = PesysBrevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = Sakstype.all
 

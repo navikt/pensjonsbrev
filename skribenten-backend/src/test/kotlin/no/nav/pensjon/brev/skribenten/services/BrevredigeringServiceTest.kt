@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.mockk.*
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.PesysBrevkategori
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -74,7 +75,7 @@ class BrevredigeringServiceTest {
         letterDataClass = "template letter data class",
         languages = listOf(LanguageCode.ENGLISH),
         metadata = lettermetadata,
-        kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+        kategori = PesysBrevkategori.INFORMASJONSBREV,
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
         sakstyper = Sakstype.all,
     )

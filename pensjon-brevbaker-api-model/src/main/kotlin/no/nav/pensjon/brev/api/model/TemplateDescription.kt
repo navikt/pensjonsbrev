@@ -29,22 +29,7 @@ interface TemplateDescription {
 
     enum class Brevkontekst { ALLE, SAK, VEDTAK }
 
-    enum class Brevkategori {
-        ETTEROPPGJOER,
-        FOERSTEGANGSBEHANDLING,
-        VEDTAK_ENDRING_OG_REVURDERING,
-        VEDTAK_FLYTTE_MELLOM_LAND,
-        SLUTTBEHANDLING,
-        INFORMASJONSBREV,
-        VARSEL,
-        VEDTAK_EKSPORT,
-        OMSORGSOPPTJENING,
-        UFOEREPENSJON,
-        INNHENTE_OPPLYSNINGER,
-        LEVEATTEST,
-        FEILUTBETALING,
-        KLAGE_OG_ANKE,
-        POSTERINGSGRUNNLAG,
-        FRITEKSTBREV,
+    interface Brevkategori {
+        fun kode(): String
     }
 }

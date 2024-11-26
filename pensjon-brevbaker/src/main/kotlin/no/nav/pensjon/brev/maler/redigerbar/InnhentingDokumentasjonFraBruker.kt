@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.PesysBrevkategori
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
@@ -24,7 +25,7 @@ object InnhentingDokumentasjonFraBruker : RedigerbarTemplate<EmptyRedigerbarBrev
 
     // PE_IY_03_047
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER
-    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = PesysBrevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = Sakstype.all
 

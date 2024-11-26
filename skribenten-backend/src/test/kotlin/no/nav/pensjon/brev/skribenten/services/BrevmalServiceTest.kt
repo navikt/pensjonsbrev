@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.api.model.PesysBrevkategori
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
@@ -33,7 +34,7 @@ class BrevmalServiceTest {
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG,
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
             ),
-            kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+            kategori = PesysBrevkategori.INFORMASJONSBREV,
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
             sakstyper = Sakstype.all,
         )

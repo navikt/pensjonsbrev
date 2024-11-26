@@ -1,0 +1,22 @@
+package no.nav.pensjon.brev.api.model
+
+enum class PesysBrevkategori : TemplateDescription.Brevkategori {
+    ETTEROPPGJOER,
+    FOERSTEGANGSBEHANDLING,
+    VEDTAK_ENDRING_OG_REVURDERING,
+    VEDTAK_FLYTTE_MELLOM_LAND,
+    SLUTTBEHANDLING,
+    INFORMASJONSBREV,
+    VARSEL,
+    VEDTAK_EKSPORT,
+    OMSORGSOPPTJENING,
+    UFOEREPENSJON,
+    INNHENTE_OPPLYSNINGER,
+    LEVEATTEST,
+    FEILUTBETALING,
+    KLAGE_OG_ANKE,
+    POSTERINGSGRUNNLAG,
+    FRITEKSTBREV;
+
+    override fun kode() = name
+}
