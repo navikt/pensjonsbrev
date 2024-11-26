@@ -142,13 +142,13 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
         block.content.splice(literalIndex.contentIndex, 1);
         deleteElement(content, block.content, block.deletedContent);
         draft.focus = {
-          blockIndex: 1,
+          blockIndex: literalIndex.blockIndex,
           contentIndex: literalIndex.contentIndex - 1,
           cursorPosition: text(previousContentSameBlock).length,
         };
       } else {
         draft.focus = {
-          blockIndex: 1,
+          blockIndex: literalIndex.blockIndex,
           contentIndex: literalIndex.contentIndex - 1,
           cursorPosition: text(previousContentSameBlock).length,
         };
