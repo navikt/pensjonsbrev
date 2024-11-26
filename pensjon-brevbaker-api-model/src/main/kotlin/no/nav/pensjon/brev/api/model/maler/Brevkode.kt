@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.api.model.maler
 
-interface Brevkode {
-    enum class AutoBrev : Brevkode {
+interface Brevkode<T: Brevkode<T>> {
+
+    interface Automatisk : Brevkode<Automatisk>
+    enum class AutoBrev : Automatisk {
         PE_ADHOC_2024_FEIL_INFOBREV_AP_SENDT_BRUKER,
         PE_ADHOC_2024_FEIL_ETTEROPPGJOER_2023,
         PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970,
@@ -32,7 +34,8 @@ interface Brevkode {
         override fun kode(): String = this.name
     }
 
-    enum class Redigerbar : Brevkode {
+    interface Redigerbart : Brevkode<Redigerbart>
+    enum class Redigerbar : Redigerbart {
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
         PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS,
         PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
