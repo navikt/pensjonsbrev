@@ -19,7 +19,8 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
+import { FontType, PARAGRAPH } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import type { LetterEditorState } from "../model/state";
@@ -183,13 +184,14 @@ export function newTitle(args: {
 
 export function newParagraph(args: {
   id?: Nullable<number>;
+  parentId?: Nullable<number>
   content: Content[];
   deletedContent?: number[];
 }): ParagraphBlock {
   return {
     type: PARAGRAPH,
     id: args.id ?? null,
-    parentId: null,
+    parentId: args.parentId ?? null,
     editable: true,
     deletedContent: args.deletedContent ?? [],
     content: args.content,
@@ -198,6 +200,7 @@ export function newParagraph(args: {
 
 export function newLiteral(args: {
   id?: Nullable<number>;
+  parentId?: Nullable<number>
   text: string;
   editedText?: Nullable<string>;
   tags?: ElementTags[];
@@ -205,12 +208,25 @@ export function newLiteral(args: {
   return {
     type: LITERAL,
     id: args.id ?? null,
-    parentId: null,
+    parentId: args.parentId ?? null,
     text: args.text,
     editedText: args.editedText ?? null,
+    editedFontType: null,
+    fontType: FontType.PLAIN,
     tags: args.tags ?? [],
   };
 }
+
+export const newVariable = (args: { id?: Nullable<number>; text: string; parentId?: Nullable<number>  }): VariableValue => {
+  return {
+    type: VARIABLE,
+    id: args.id ?? null,
+    parentId: args.parentId ?? null,
+    text: args.text,
+    fontType: FontType.PLAIN,
+  };
+};
+
 
 export function newItem({ content }: { content: TextContent[] }): Item {
   return {
