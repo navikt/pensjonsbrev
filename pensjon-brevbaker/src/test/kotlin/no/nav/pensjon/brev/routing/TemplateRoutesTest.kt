@@ -32,14 +32,14 @@ class TemplateRoutesTest {
     fun `can get names of all autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(alleAutobrevmaler.map { it.kode.name }.toSet(), response.body<Set<String>>())
+        assertEquals(alleAutobrevmaler.map { it.kode.kode() }.toSet(), response.body<Set<String>>())
     }
 
     @Test
     fun `can get names of all redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(alleRedigerbareMaler.map { it.kode.name }.toSet(), response.body<Set<String>>())
+        assertEquals(alleRedigerbareMaler.map { it.kode.kode() }.toSet(), response.body<Set<String>>())
     }
 
     @Test

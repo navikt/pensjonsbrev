@@ -26,7 +26,7 @@ import java.util.*
 private val objectMapper = jacksonObjectMapper()
 private val base64Decoder = Base64.getDecoder()
 
-class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
+class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     val name: String,
     templates: Set<T>,
     private val laTeXCompilerService: LaTeXCompilerService,
@@ -66,7 +66,7 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
     fun countLetter(brevkode: Kode): Unit =
         Metrics.prometheusRegistry.counter(
             "pensjon_brevbaker_letter_request_count",
-            listOf(Tag.of("brevkode", brevkode.name))
+            listOf(Tag.of("brevkode", brevkode.kode()))
         ).increment()
 
     private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
