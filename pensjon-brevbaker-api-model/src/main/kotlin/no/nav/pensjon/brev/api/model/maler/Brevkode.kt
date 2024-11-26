@@ -54,3 +54,13 @@ interface Brevkode<T: Brevkode<T>> {
 
     fun kode(): String
 }
+
+@JvmInline
+value class RedigerbarBrevkode(private val kode: String) : Brevkode.Redigerbart {
+    override fun kode(): String = kode
+}
+
+@JvmInline
+value class AutomatiskBrevkode(private val kode: String): Brevkode.Automatisk {
+    override fun kode(): String = kode
+}
