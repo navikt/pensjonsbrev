@@ -17,11 +17,12 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadAktivitetspliktVarselbrevInnholdDTOSelectors.aktivitetsgrad
 
 data class OmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO(
     val aktivitetsgrad: Aktivitetsgrad,
-)
+) : RedigerbartUtfallBrevDTO
 
 enum class Aktivitetsgrad { IKKE_I_AKTIVITET, UNDER_50_PROSENT, OVER_50_PROSENT };
 

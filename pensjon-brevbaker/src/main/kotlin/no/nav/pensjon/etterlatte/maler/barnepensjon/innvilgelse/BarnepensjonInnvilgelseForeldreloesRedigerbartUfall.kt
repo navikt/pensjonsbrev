@@ -11,6 +11,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erGjenoppretting
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erSluttbehandling
@@ -35,7 +36,7 @@ data class BarnepensjonForeldreloesRedigerbarDTO(
     val vedtattIPesys: Boolean,
     val forskjelligAvdoedPeriode: ForskjelligAvdoedPeriode? = null,
     val erSluttbehandling: Boolean = false
-)
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :

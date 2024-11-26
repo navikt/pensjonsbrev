@@ -11,6 +11,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.erEtterbetaling
@@ -21,7 +22,7 @@ data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
     val erEtterbetaling: Boolean,
     val harUtbetaling: Boolean,
     val feilutbetaling: FeilutbetalingType
-)
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadRevurderingRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadRevurderingRedigerbartUtfallDTO>, Delmal {
