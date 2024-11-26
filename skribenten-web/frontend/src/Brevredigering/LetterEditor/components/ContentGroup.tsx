@@ -17,6 +17,7 @@ import {
   focusAtOffset,
   getCaretRect,
   getCursorOffset,
+  getCursorOffsetOrRange,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
@@ -166,7 +167,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
-    const cursorIsAtBeginning = getCursorOffset() === 0;
+
+    const cursorOffsetOrRange = getCursorOffsetOrRange();
+
+    if (cursorOffsetOrRange === undefined) return;
+
+    const cursorIsAtBeginning =
+      typeof cursorOffsetOrRange === "number" ? cursorOffsetOrRange === 0 : cursorOffsetOrRange.startOffset === 0;
+
     if (!cursorIsAtBeginning) return;
 
     const previousSpanIndex = thisSpanIndex - 1;
@@ -184,7 +192,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
-    const cursorIsAtEnd = getCursorOffset() >= text.length;
+    const cursorOffsetOrRange = getCursorOffsetOrRange();
+    if (cursorOffsetOrRange === undefined) return;
+
+    const cursorIsAtEnd =
+      typeof cursorOffsetOrRange === "number"
+        ? cursorOffsetOrRange >= text.length
+        : cursorOffsetOrRange.endOffset >= text.length;
+
     if (!cursorIsAtEnd) return;
 
     const nextSpanIndex = thisSpanIndex + 1;
@@ -264,12 +279,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleWordSelect = (element: HTMLSpanElement) => {
-    const range = document.createRange();
     const selection = window.getSelection();
+    const range = document.createRange();
 
     if (selection) {
       selection.removeAllRanges();
-      range.selectNodeContents(element);
+      range.selectNodeContents(element.childNodes[0]);
       selection.addRange(range);
     }
   };
