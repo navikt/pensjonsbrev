@@ -58,7 +58,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 @TemplateModelHelpers
 object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_OMREGNING_ENSLIG_AUTO
+    override val kode = Brevkode.AutoBrev.UT_OMREGNING_ENSLIG_AUTO
 
     override val template = createTemplate(
         name = kode.name,

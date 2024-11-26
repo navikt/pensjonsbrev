@@ -66,7 +66,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 @TemplateModelHelpers
 object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_OPPHOER_BT_AUTO
+    override val kode = Brevkode.AutoBrev.UT_OPPHOER_BT_AUTO
 
     override val template = createTemplate(
         name = kode.name,

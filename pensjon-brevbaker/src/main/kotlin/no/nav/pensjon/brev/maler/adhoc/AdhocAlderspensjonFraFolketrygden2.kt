@@ -11,7 +11,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_AP_ADHOC_2024_GJR_AP_MNTINDV_2
+    override val kode = Brevkode.AutoBrev.PE_AP_ADHOC_2024_GJR_AP_MNTINDV_2
 
     override val template = createTemplate(
         name = kode.name,
