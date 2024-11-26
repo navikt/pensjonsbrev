@@ -60,7 +60,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
         // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or move focus to ít).
         content.items.splice(literalIndex.itemIndex, 1);
         if (literalIndex.contentIndex >= block.content.length - 1) {
-          block.content.push({ type: LITERAL, id: null, text: "", editedText: "", tags: [] });
+          block.content.push(newLiteral({ text: "" }));
         }
         draft.focus = {
           blockIndex: literalIndex.blockIndex,
