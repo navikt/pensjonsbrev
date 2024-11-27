@@ -1,7 +1,5 @@
 package no.nav.pensjon.etterlatte
 
-import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.etterlatte.EtterlatteMaler.prodAutobrevTemplates
 import no.nav.pensjon.etterlatte.maler.andre.TomDelmal
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
 import no.nav.pensjon.etterlatte.maler.andre.TomMalInformasjonsbrev
@@ -31,15 +29,17 @@ import no.nav.pensjon.etterlatte.maler.klage.BlankettKlageinstans
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelsesbrevBruker
 import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstid
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslagRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadAktivitetspliktVarselInnhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInformasjonDoedsfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysninger
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknad
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVarsel
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtak
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelse
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoer
@@ -57,12 +57,75 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.Barnepens
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.OmstillingsstoenadVedleggBeregningRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall
 
-class TemplateResource(
-    autobrevTemplates: Set<EtterlatteTemplate<*>> = prodAutobrevTemplates,
-) {
-    private val autoBrevMap: Map<EtterlatteBrevKode, EtterlatteTemplate<*>> =
-        autobrevTemplates.associateBy { it.kode }
+object EtterlatteMaler {
+    val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
+        setOf(
+            // Barnepensjon
+            BarnepensjonAvslag,
+            BarnepensjonAvslagRedigerbartUtfall,
+            BarnepensjonInnvilgelse,
+            BarnepensjonInnvilgelseRedigerbartUfall,
+            BarnepensjonInnvilgelseForeldreloes,
+            BarnepensjonInnvilgelseForeldreloesRedigerbartUfall,
+            BarnepensjonOpphoer,
+            BarnepensjonOpphoerRedigerbartUtfall,
+            BarnepensjonRevurdering,
+            BarnepensjonRevurderingRedigerbartUtfall,
+            BarnepensjonVarsel,
+            BarnepensjonVarselRedigerbartUtfall,
+            BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall,
+            BarnepensjonVedleggForhaandsvarselRedigerbartUtfall,
+            BarnepensjonInformasjonDoedsfall,
+            BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt,
+            BarnepensjonMottattSoeknad,
+            BarnepensjonInnhentingAvOpplysninger,
 
-    fun getAutoBrev(kode: EtterlatteBrevKode): LetterTemplate<*, *>? = autoBrevMap[kode]?.template
+            // Omstillingsstønad
+            OmstillingsstoenadAvslag,
+            OmstillingsstoenadAvslagRedigerbartUtfall,
+            OmstillingsstoenadInnvilgelse,
+            OmstillingsstoenadInnvilgelseRedigerbartUtfall,
+            OmstillingsstoenadOpphoer,
+            OmstillingsstoenadOpphoerRedigerbartUtfall,
+            OmstillingsstoenadRevurdering,
+            OmstillingsstoenadRevurderingRedigerbartUtfall,
+            OmstillingsstoenadVedleggBeregningRedigerbartUtfall,
+            OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall,
+            OmstillingsstoenadVarsel,
+            OmstillingsstoenadVarselRedigerbartUtfall,
+            OmstillingsstoenadVarselAktivitetsplikt,
+            OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall,
+            OmstillingsstoenadInformasjonDoedsfall,
+            OmstillingsstoenadMottattSoeknad,
+            OmstillingsstoenadInnhentingAvOpplysninger,
+            OmstillingsstoenadAktivitetspliktVarselInnhold,
+            OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold,
+            OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold,
+            OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold,
+            OmstillingsstoenadInntektsjusteringVedtak,
+            OmstillingsstoenadInntektsjusteringVarsel,
+            OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall,
 
+            // Tilbakekreving
+            TilbakekrevingInnhold,
+            TilbakekrevingFerdig,
+
+            // Klage
+            AvvistKlageInnhold,
+            AvvistKlageFerdigstilling,
+            BlankettKlageinstans,
+            KlageOversendelsesbrevBruker,
+            KlageSaksbehandlingstid,
+
+            // Informasjonsbrev
+            TomMal,
+            TomDelmal,
+            TomMalInformasjonsbrev,
+            UtsattKlagefrist,
+
+            // Div migrering mm.
+            ForhaandsvarselOmregningBP,
+            EnkeltVedtakOmregningNyttRegelverk,
+            EnkeltVedtakOmregningNyttRegelverkFerdig,
+        )
 }
