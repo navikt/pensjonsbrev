@@ -39,7 +39,13 @@ fun Route.letterRoutesTemp(
 ) {
     route("/${autobrev.name}") {
         post<BestillBrevRequest<Brevkode.Automatisk>>("/pdf") { brevbestilling ->
-            call.respond(autobrev.renderPDF(brevbestilling))
+            call.respond(autobrev.renderPDF(brevbestilling).let {
+                LetterResponse(
+                    base64pdf = it.file,
+                    contentType = it.contentType,
+                    letterMetadata = it.letterMetadata
+                )
+            })
             autobrev.countLetter(brevbestilling.kode)
         }
 

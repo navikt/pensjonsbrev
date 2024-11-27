@@ -30,7 +30,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
             route("etterlatte") {
                 letterRoutesTemp(
                     autobrev = TemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService),
-                    redigerbareBrev = TemplateResource("", EtterlatteMaler.hentRedigerbareMaler(), latexCompilerService)
+                    redigerbareBrev = TemplateResource("etterlatteRedigerbare", EtterlatteMaler.hentRedigerbareMaler(), latexCompilerService)
                 )
             }
             get("/ping_authorized") {
