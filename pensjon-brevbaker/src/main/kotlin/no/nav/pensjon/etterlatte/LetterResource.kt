@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte
 
 import io.ktor.server.plugins.*
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.Language
@@ -13,10 +14,10 @@ import no.nav.pensjon.etterlatte.EtterlatteMaler.prodAutobrevTemplates
 class LetterResource(autobrevTemplates: Set<EtterlatteTemplate<*>> = prodAutobrevTemplates) {
     private val objectMapper = jacksonObjectMapper()
 
-    private val autoBrevMap: Map<EtterlatteBrevKode, EtterlatteTemplate<*>> =
+    private val autoBrevMap: Map<Brevkode.Automatisk, EtterlatteTemplate<*>> =
         autobrevTemplates.associateBy { it.kode }
 
-    private fun getAutoBrev(kode: EtterlatteBrevKode): LetterTemplate<*, *>? = autoBrevMap[kode]?.template
+    private fun getAutoBrev(kode: Brevkode.Automatisk): LetterTemplate<*, *>? = autoBrevMap[kode]?.template
 
     fun create(letterRequest: EtterlatteBrevRequest): Letter<*> {
         val template: LetterTemplate<*, *> = getAutoBrev(letterRequest.kode)

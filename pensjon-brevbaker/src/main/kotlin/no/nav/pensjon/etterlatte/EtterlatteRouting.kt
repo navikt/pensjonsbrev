@@ -35,7 +35,7 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         // Om dere vil ha det
         Metrics.prometheusRegistry.counter(
             "pensjon_brevbaker_etterlatte_request_count",
-            listOf(Tag.of("brevkode", letterRequest.kode.name))
+            listOf(Tag.of("brevkode", letterRequest.kode.kode()))
         ).increment()
     }
 
