@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.etterlatte.EtterlatteMaler.prodAutobrevTemplates
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
