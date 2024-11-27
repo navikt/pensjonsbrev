@@ -28,7 +28,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
             }
 
             route("etterlatte") {
-                letterRoutes(
+                letterRoutesTemp(
                     autobrev = TemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService),
                     redigerbareBrev = TemplateResource("", EtterlatteMaler.hentRedigerbareMaler(), latexCompilerService)
                 )
