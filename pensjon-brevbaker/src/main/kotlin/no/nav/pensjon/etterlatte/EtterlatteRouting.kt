@@ -6,6 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
+import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
@@ -19,7 +20,7 @@ data class LetterResponse(val file: String, val contentType: String, val letterM
 fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
 
     post("/pdf") {
-        val letterRequest = call.receive<EtterlatteBrevRequest<*>>()
+        val letterRequest = call.receive<BestillBrevRequest<*>>()
 
         val letter = letterResource.create(letterRequest)
         val pdfBase64 = Letter2Markup.render(letter)
@@ -40,7 +41,7 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
     }
 
     post("/html") {
-        val letterRequest = call.receive<EtterlatteBrevRequest<*>>()
+        val letterRequest = call.receive<BestillBrevRequest<*>>()
         val letter = letterResource.create(letterRequest)
         val html = Letter2Markup.render(letter)
             .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
@@ -50,7 +51,7 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
     }
 
     post("/json") {
-        val letterRequest = call.receive<EtterlatteBrevRequest<*>>()
+        val letterRequest = call.receive<BestillBrevRequest<*>>()
         val letter = letterResource.create(letterRequest)
 
         call.respond(Letter2Markup.render(letter).letterMarkup)
