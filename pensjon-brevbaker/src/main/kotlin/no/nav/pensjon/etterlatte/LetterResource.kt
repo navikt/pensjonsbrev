@@ -15,7 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 
 class ParseLetterDataException(msg: String, cause: Exception): Exception(msg, cause)
 
-class LetterResource(templates: AllTemplates = EtterlatteMaler) {
+class LetterResource(templates: AllTemplates) {
     private val objectMapper = jacksonObjectMapper()
 
     private val autoBrevMap: Map<Brevkode<*>, AutobrevTemplate<BrevbakerBrevdata>> =
