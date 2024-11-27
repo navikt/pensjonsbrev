@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-private val letterResource = LetterResource()
+private val letterResource = LetterResource(EtterlatteMaler)
 
 data class LetterResponse(val file: String, val contentType: String, val letterMetadata: LetterMetadata)
 

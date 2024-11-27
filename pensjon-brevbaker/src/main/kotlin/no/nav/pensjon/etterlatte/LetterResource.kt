@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.Felles
 
-class LetterResource(templates: AllTemplates = EtterlatteMaler) {
+class LetterResource(templates: AllTemplates) {
     private val objectMapper = jacksonObjectMapper()
 
     private val autoBrevMap: Map<Brevkode<*>, AutobrevTemplate<BrevbakerBrevdata>> =
