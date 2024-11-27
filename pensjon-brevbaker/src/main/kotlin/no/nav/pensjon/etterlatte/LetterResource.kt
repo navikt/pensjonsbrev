@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte
 
-import io.ktor.server.plugins.*
+import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.plugins.NotFoundException
 import no.nav.pensjon.brev.AllTemplates
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -8,11 +9,9 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.jacksonObjectMapper
-import no.nav.pensjon.brevbaker.api.model.Felles
 
 class LetterResource(templates: AllTemplates) {
     private val objectMapper = jacksonObjectMapper()
@@ -26,19 +25,17 @@ class LetterResource(templates: AllTemplates) {
         val template: LetterTemplate<*, *> = getAutoBrev(letterRequest.kode)
             ?: throw NotFoundException("Template '${letterRequest.kode}' doesn't exist")
 
-        return create(template, letterRequest.language.toLanguage(), letterRequest.letterData, letterRequest.felles)
-    }
+        val language = letterRequest.language.toLanguage()
 
-    private fun create(template: LetterTemplate<*, *>, language: Language, letterData: BrevbakerBrevdata, felles: Felles): Letter<*> {
         if (!template.language.supports(language)) {
             throw BadRequestException("Template '${template.name}' doesn't support language: $language")
         }
 
         return Letter(
             template = template,
-            argument = parseArgument(letterData, template),
+            argument = parseArgument(letterRequest.letterData, template),
             language = language,
-            felles = felles,
+            felles = letterRequest.felles,
         )
     }
 
