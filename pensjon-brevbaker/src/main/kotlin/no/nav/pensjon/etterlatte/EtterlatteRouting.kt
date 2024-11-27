@@ -1,11 +1,11 @@
 package no.nav.pensjon.etterlatte
 
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
@@ -17,9 +17,7 @@ data class LetterResponse(val base64pdf: String, val letterMetadata: LetterMetad
 
 fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
 
-    post("/pdf") {
-        val letterRequest = call.receive<BestillBrevRequest<*>>()
-
+    post<BestillBrevRequest<Brevkode.Automatisk>>("/pdf") { letterRequest ->
         val letter = letterResource.create(letterRequest)
         val pdfBase64 = Letter2Markup.render(letter)
             .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
@@ -34,8 +32,7 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         ).increment()
     }
 
-    post("/json") {
-        val letterRequest = call.receive<BestillBrevRequest<*>>()
+    post<BestillBrevRequest<Brevkode.Automatisk>>("/json") { letterRequest ->
         val letter = letterResource.create(letterRequest)
 
         call.respond(Letter2Markup.render(letter).letterMarkup)
