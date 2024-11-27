@@ -8,7 +8,6 @@ import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -40,16 +39,6 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         ).increment()
     }
 
-    post("/html") {
-        val letterRequest = call.receive<BestillBrevRequest<*>>()
-        val letter = letterResource.create(letterRequest)
-        val html = Letter2Markup.render(letter)
-            .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
-
-        // egen response eller noe sånnt. Html brev går veldig fort å rendre.
-        call.respond(HTMLResponse(html.base64EncodedFiles(), letter.template.letterMetadata))
-    }
-
     post("/json") {
         val letterRequest = call.receive<BestillBrevRequest<*>>()
         val letter = letterResource.create(letterRequest)
@@ -58,4 +47,3 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
     }
 }
 
-data class HTMLResponse(val html: Map<String, String>, val letterMetadata: LetterMetadata)
