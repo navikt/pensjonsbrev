@@ -30,7 +30,7 @@ class LetterResource(templates: AllTemplates) {
         return create(template, letterRequest.language.toLanguage(), letterRequest.letterData, letterRequest.felles)
     }
 
-    private fun create(template: LetterTemplate<*, *>, language: Language, letterData: Any, felles: Felles): Letter<*> {
+    private fun create(template: LetterTemplate<*, *>, language: Language, letterData: BrevbakerBrevdata, felles: Felles): Letter<*> {
         if (!template.language.supports(language)) {
             throw BadRequestException("Template '${template.name}' doesn't support language: $language")
         }
@@ -43,7 +43,7 @@ class LetterResource(templates: AllTemplates) {
         )
     }
 
-    private fun parseArgument(letterData: Any, template: LetterTemplate<*, *>): Any =
+    private fun parseArgument(letterData: BrevbakerBrevdata, template: LetterTemplate<*, *>): Any =
         try {
             objectMapper.convertValue(letterData, template.letterDataType.java)
         } catch (e: IllegalArgumentException) {
