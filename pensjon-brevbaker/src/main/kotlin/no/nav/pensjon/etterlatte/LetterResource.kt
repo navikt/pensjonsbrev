@@ -7,14 +7,20 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.etterlatte.EtterlatteMaler.prodAutobrevTemplates
 
 class ParseLetterDataException(msg: String, cause: Exception): Exception(msg, cause)
 
-class LetterResource(private val templateResource: TemplateResource = TemplateResource()) {
+class LetterResource(autobrevTemplates: Set<EtterlatteTemplate<*>> = prodAutobrevTemplates) {
     private val objectMapper = jacksonObjectMapper()
 
+    private val autoBrevMap: Map<EtterlatteBrevKode, EtterlatteTemplate<*>> =
+        autobrevTemplates.associateBy { it.kode }
+
+    private fun getAutoBrev(kode: EtterlatteBrevKode): LetterTemplate<*, *>? = autoBrevMap[kode]?.template
+
     fun create(letterRequest: EtterlatteBrevRequest): Letter<*> {
-        val template: LetterTemplate<*, *> = templateResource.getAutoBrev(letterRequest.kode)
+        val template: LetterTemplate<*, *> = getAutoBrev(letterRequest.kode)
             ?: throw NotFoundException("Template '${letterRequest.kode}' doesn't exist")
 
         return create(template, letterRequest.language.toLanguage(), letterRequest.letterData, letterRequest.felles)
