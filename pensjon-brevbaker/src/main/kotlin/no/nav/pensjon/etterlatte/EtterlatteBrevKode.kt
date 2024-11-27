@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte
 
-enum class EtterlatteBrevKode {
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+
+enum class EtterlatteBrevKode : Brevkode.Automatisk {
     AVVIST_KLAGE_INNHOLD,
     AVVIST_KLAGE_FERDIG,
     BARNEPENSJON_AVSLAG,
@@ -56,5 +58,7 @@ enum class EtterlatteBrevKode {
     UTSATT_KLAGEFRIST,
     KLAGE_OVERSENDELSE_BLANKETT,
     KLAGE_OVERSENDELSE_BRUKER,
-    INGEN_REDIGERBAR_DEL, // Til bruk for å modellere at brevet ikke har en redigerbar del
+    INGEN_REDIGERBAR_DEL; // Til bruk for å modellere at brevet ikke har en redigerbar del
+
+    override fun kode() = name
 }
