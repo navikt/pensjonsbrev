@@ -19,7 +19,7 @@ class LetterResource(autobrevTemplates: Set<EtterlatteTemplate<*>> = prodAutobre
 
     private fun getAutoBrev(kode: Brevkode.Automatisk): LetterTemplate<*, *>? = autoBrevMap[kode]?.template
 
-    fun create(letterRequest: EtterlatteBrevRequest): Letter<*> {
+    fun create(letterRequest: EtterlatteBrevRequest<*>): Letter<*> {
         val template: LetterTemplate<*, *> = getAutoBrev(letterRequest.kode)
             ?: throw NotFoundException("Template '${letterRequest.kode}' doesn't exist")
 
