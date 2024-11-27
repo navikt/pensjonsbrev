@@ -1,7 +1,10 @@
 package no.nav.pensjon.etterlatte
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.maler.AllTemplates
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.etterlatte.maler.andre.TomDelmal
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
 import no.nav.pensjon.etterlatte.maler.andre.TomMalInformasjonsbrev
@@ -59,8 +62,8 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.Barnepens
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.OmstillingsstoenadVedleggBeregningRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall
 
-object EtterlatteMaler {
-    val prodAutobrevTemplates: Set<AutobrevTemplate<BrevbakerBrevdata>> =
+object EtterlatteMaler : AllTemplates {
+    private val prodAutobrevTemplates: Set<AutobrevTemplate<BrevbakerBrevdata>> =
         setOf(
             // Barnepensjon
             BarnepensjonAvslag,
@@ -130,4 +133,8 @@ object EtterlatteMaler {
             EnkeltVedtakOmregningNyttRegelverk,
             EnkeltVedtakOmregningNyttRegelverkFerdig,
         )
+
+    override fun hentAutobrevmaler() = prodAutobrevTemplates
+
+    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf()
 }

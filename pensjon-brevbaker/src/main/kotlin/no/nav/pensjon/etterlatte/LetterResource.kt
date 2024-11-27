@@ -6,19 +6,19 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.toLanguage
+import no.nav.pensjon.brev.maler.AllTemplates
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.etterlatte.EtterlatteMaler.prodAutobrevTemplates
 
-class LetterResource(autobrevTemplates: Set<AutobrevTemplate<BrevbakerBrevdata>> = prodAutobrevTemplates) {
+class LetterResource(templates: AllTemplates = EtterlatteMaler) {
     private val objectMapper = jacksonObjectMapper()
 
     private val autoBrevMap: Map<Brevkode<*>, AutobrevTemplate<BrevbakerBrevdata>> =
-        autobrevTemplates.associateBy { it.kode }
+        templates.hentAutobrevmaler().associateBy { it.kode }
 
     private fun getAutoBrev(kode: Brevkode<*>): LetterTemplate<*, *>? = autoBrevMap[kode]?.template
 
