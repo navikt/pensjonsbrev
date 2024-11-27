@@ -281,8 +281,45 @@ data class InfoSivilstandAP(
     }
 }
 
+// infoAPft_002
+data class InfoFTAP(
+    val harYtelseFullUforetrygd: Expression<Boolean>,
+    val harYtelseGradertUforetrygd: Expression<Boolean>,
+    val harYtelseGradertUforetrygdKombinertAlderspensjon: Expression<Boolean>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(harYtelseFullUforetrygd or harYtelseGradertUforetrygd or harYtelseGradertUforetrygdKombinertAlderspensjon) {
+            title1 {
+                text(
+                    Bokmal to "For deg som har forsørgingstillegg",
+                    Nynorsk to "Forsørgingstillegg",
+                    English to "If you have dependant supplement"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Fra 1. januar 2022 er regelverket endret og det blir ikke lenger innvilget nye forsørgingstillegg til alderspensjon. " +
+                            "Derfor vil du ikke få ektefelletillegg og/eller barnetillegg i alderspensjonen din.",
+                    Nynorsk to "Frå 1. januar 2022 er regelverket endra og det blir ikkje lenger innvilga nye forsørgingstillegg til alderspensjon. " +
+                            "Derfor vil du ikkje få ektefelletillegg og/eller barnetillegg i alderspensjonen din.",
+                    English to "From 1 January 2022 the regulations change and new dependant supplement will no longer be granted in a retirement pension. " +
+                            "Therefore, you will not be granted dependant supplement for your spouse or child in your retirement pension."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du finner mer informasjon om dette på $ALDERSPENSJON",
+                    Nynorsk to "Du finn meir informasjon om dette på $ALDERSPENSJON",
+                    English to "You will find more information at $ALDERSPENSJON"
+                )
+            }
+        }
+    }
+}
+
+
 // infoAPAfpPrivat_001
-data class InfoAFPprivat(
+data class InfoAFPprivatAP(
     val harYtelseAvkortetGjenlevendepensjon: Expression<Boolean>,
     val harYtelseIngen: Expression<Boolean>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {

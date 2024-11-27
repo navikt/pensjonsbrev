@@ -82,7 +82,14 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
                     )
                 )
                 includePhrase(
-                    InfoAFPprivat(
+                    InfoFTAP(
+                        harYtelseFullUforetrygd = harYtelseFullUforetrygd,
+                        harYtelseGradertUforetrygd = harYtelseGradertUforetrygd,
+                        harYtelseGradertUforetrygdKombinertAlderspensjon = harYtelseGradertUforetrygdKombinertAlderspensjon
+                    )
+                )
+                includePhrase(
+                    InfoAFPprivatAP(
                         harYtelseIngen = harYtelseIngen,
                         harYtelseAvkortetGjenlevendepensjon = harYtelseFullGjenlevendepensjon
                     )
