@@ -1,10 +1,11 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.pensjon.brev.api.model.PesysBrevkategori
-import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.Sakstype.*
+import no.nav.pensjon.brev.api.model.PesysSakstype
+import no.nav.pensjon.brev.api.model.PesysSakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
+import no.nav.pensjon.brev.api.model.TemplateDescription.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -55,6 +56,8 @@ interface LetterMetadata {
 
                 UFOREP -> data.brevregeltype?.gjelderGammeltRegelverk() ?: true
                 BARNEP, AFP, AFP_PRIVAT, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG -> true
+                is PesysSakstype -> throw NotImplementedError("Skulle vært en av Pesys-sakstypene, var $sakstype")
+                else -> false
             }
 
         override fun toApi(): Api.Brevmal = with(data) {

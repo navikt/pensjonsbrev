@@ -4,7 +4,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.PesysBrevkategori
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.PesysSakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.EksempelRedigerbartDto
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -39,7 +39,7 @@ class ApiServiceTest {
                 ),
                 kategori = PesysBrevkategori.INFORMASJONSBREV,
                 brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-                sakstyper = Sakstype.all,
+                sakstyper = PesysSakstype.all,
             )
         },
         navansattService = navansattService,

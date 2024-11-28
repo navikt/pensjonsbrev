@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -18,7 +17,7 @@ sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkod
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
     val kategori: TemplateDescription.Brevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
-    val sakstyper: Set<Sakstype>
+    val sakstyper: Set<TemplateDescription.Sakstype>
 
     override fun description(): TemplateDescription.Redigerbar =
         TemplateDescription.Redigerbar(

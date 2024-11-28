@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.PesysBrevkategori
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.PesysSakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -20,7 +20,7 @@ object VarselOmMuligAvslag : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_MULIG_AVSLAG
     override val kategori = PesysBrevkategori.VARSEL
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
-    override val sakstyper = Sakstype.all
+    override val sakstyper = PesysSakstype.all
 
     override val template = createTemplate(
         name = kode.name,

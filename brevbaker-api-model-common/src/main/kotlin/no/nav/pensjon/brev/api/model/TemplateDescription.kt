@@ -32,4 +32,8 @@ interface TemplateDescription {
     interface Brevkategori {
         fun kode(): String
     }
+
+    interface Sakstype {
+        fun kode(): String
+    }
 }

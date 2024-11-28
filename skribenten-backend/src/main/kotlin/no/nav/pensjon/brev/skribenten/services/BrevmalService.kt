@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.PesysSakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
@@ -21,13 +21,13 @@ class BrevmalService(
 ) {
     private val logger = LoggerFactory.getLogger(BrevmalService::class.java)
 
-    suspend fun hentBrevmalerForSak(sakType: Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
+    suspend fun hentBrevmalerForSak(sakType: TemplateDescription.Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
         hentMaler(sakType, includeEblanketter)
             .filter { it.isForSakskontekst }
             .map { it.toApi() }
             .toList()
 
-    suspend fun hentBrevmalerForVedtak(sakstype: Sakstype, includeEblanketter: Boolean, vedtaksId: String): List<Api.Brevmal> =
+    suspend fun hentBrevmalerForVedtak(sakstype: TemplateDescription.Sakstype, includeEblanketter: Boolean, vedtaksId: String): List<Api.Brevmal> =
         hentMaler(sakstype, includeEblanketter)
             .filter { it.isForVedtakskontekst }
             .filterIsRelevantRegelverk(sakstype, vedtaksId)
@@ -35,8 +35,8 @@ class BrevmalService(
             .toList()
 
 
-    private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: Sakstype, vedtaksId: String): Sequence<LetterMetadata> {
-        val erKravPaaGammeltRegelverk = if (sakstype == Sakstype.ALDER) {
+    private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: TemplateDescription.Sakstype, vedtaksId: String): Sequence<LetterMetadata> {
+        val erKravPaaGammeltRegelverk = if (sakstype == PesysSakstype.ALDER) {
             penService.hentIsKravPaaGammeltRegelverk(vedtaksId)
                 .catch { message, httpStatusCode ->
                     logger.error("Feil ved henting av felt \"erKravPaaGammeltRegelverk\" fra vedtak. Status: $httpStatusCode, message: $message")
@@ -47,7 +47,7 @@ class BrevmalService(
         return filter { it.isRelevantRegelverk(sakstype, erKravPaaGammeltRegelverk) }
     }
 
-    private suspend fun hentMaler(sakstype: Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> = coroutineScope {
+    private suspend fun hentMaler(sakstype: TemplateDescription.Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> = coroutineScope {
         val brevbaker = async { hentBrevakerMaler().asSequence().map { LetterMetadata.Brevbaker(it) } }
         val legacy = async { brevmetadataService.getBrevmalerForSakstype(sakstype).asSequence().map { LetterMetadata.Legacy(it, sakstype) } }
         val eblanketter = async {

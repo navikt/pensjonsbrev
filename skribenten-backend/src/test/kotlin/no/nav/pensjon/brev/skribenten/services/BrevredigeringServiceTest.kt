@@ -5,7 +5,7 @@ import io.mockk.*
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.PesysBrevkategori
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.PesysSakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
@@ -77,7 +77,7 @@ class BrevredigeringServiceTest {
         metadata = lettermetadata,
         kategori = PesysBrevkategori.INFORMASJONSBREV,
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-        sakstyper = Sakstype.all,
+        sakstyper = PesysSakstype.all,
     )
 
     private val brevbakerMock: BrevbakerService = mockk<BrevbakerService>()

@@ -11,7 +11,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.Sakstype
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
@@ -33,7 +33,7 @@ class BrevmetadataService(
     }
 
     suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {
-        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.name}?includeXsd=false") {
+        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.kode()}?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {

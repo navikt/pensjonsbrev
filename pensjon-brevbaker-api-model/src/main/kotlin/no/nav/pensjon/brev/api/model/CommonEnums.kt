@@ -33,7 +33,7 @@ enum class BorMedSivilstand{
     SAMBOER3_2,
 }
 
-enum class Sakstype {
+enum class PesysSakstype : TemplateDescription.Sakstype {
     AFP,
     AFP_PRIVAT,
     ALDER,
@@ -48,8 +48,10 @@ enum class Sakstype {
     UFOREP,
     ;
 
+    override fun kode() = name
+
     companion object {
-        val all: Set<Sakstype> = entries.toSet()
+        val all: Set<PesysSakstype> = entries.toSet()
     }
 }
 

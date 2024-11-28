@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import java.time.LocalDate
 import java.time.LocalDateTime
-import no.nav.pensjon.brev.api.model.Sakstype as BrevbakerSakstype
+import no.nav.pensjon.brev.api.model.PesysSakstype as BrevbakerSakstype
 
 object Pen {
     enum class SakType(val behandlingsnummer: Behandlingsnummer?) {
