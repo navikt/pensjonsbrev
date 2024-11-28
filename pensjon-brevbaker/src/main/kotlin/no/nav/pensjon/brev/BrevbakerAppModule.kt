@@ -34,7 +34,7 @@ import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.brevbakerRouting
 import no.nav.pensjon.brev.template.brevbakerConfig
 
-fun Application.brevbakerModule(templates: AllTemplates) {
+fun Application.brevbakerModule(vararg templates: AllTemplates) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
     monitor.subscribe(ApplicationStopPreparing) {
@@ -130,8 +130,11 @@ fun Application.brevbakerModule(templates: AllTemplates) {
     }
 
     configureMetrics()
-    brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
-    brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray())
+    val authenticationNames = jwtConfigs.map { it.name }.toTypedArray()
+    templates.forEach {
+        brevRouting(authenticationNames, latexCompilerService, it)
+    }
+    brevbakerRouting(authenticationNames)
     monitor.subscribe(ServerReady) { it.log.info("Ferdig med å sette opp applikasjonen") }
 }
 

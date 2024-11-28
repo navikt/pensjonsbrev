@@ -136,4 +136,6 @@ object EtterlatteMaler : AllTemplates {
     override fun hentAutobrevmaler() = prodAutobrevTemplates
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf()
+
+    override fun urlPrefiks() = "etterlatte"
 }

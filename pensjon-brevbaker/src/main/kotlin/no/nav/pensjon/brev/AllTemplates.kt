@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 interface AllTemplates {
+    fun urlPrefiks(): String
     fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>>
     fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>>
 }

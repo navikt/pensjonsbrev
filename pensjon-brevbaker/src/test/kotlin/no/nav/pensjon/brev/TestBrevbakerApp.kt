@@ -10,7 +10,8 @@ val alleAutobrevmaler = ProductionTemplates.hentAutobrevmaler() + LetterExample
 val alleRedigerbareMaler = ProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart
 
 fun Application.brevbakerTestModule() = this.brevbakerModule(
-    templates = object : AllTemplates {
+    object : AllTemplates {
+        override fun urlPrefiks() = ""
         override fun hentAutobrevmaler() = alleAutobrevmaler
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler

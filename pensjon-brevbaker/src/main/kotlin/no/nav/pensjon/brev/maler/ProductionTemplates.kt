@@ -63,4 +63,6 @@ object ProductionTemplates : AllTemplates {
     override fun hentAutobrevmaler() = autobrev
 
     override fun hentRedigerbareMaler() = redigerbare
+
+    override fun urlPrefiks() = "pensjon"
 }
