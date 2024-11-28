@@ -19,7 +19,6 @@ import {
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -29,11 +28,8 @@ import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/Model
 import { ApiError } from "~/components/ApiError";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import { type EditedLetter, ElementTags } from "~/types/brevbakerTypes";
+import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
-
-import { nyBrevResponse } from "../../../../cypress/utils/brevredigeringTestUtils";
-import { item, itemList, literal, paragraph, variable } from "../../../../test/modules/LetterEditor/utils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
@@ -192,7 +188,7 @@ interface RedigerBrevSidemenyFormData {
 }
 
 function RedigerBrev({
-  brev: brevz,
+  brev,
   doReload,
   saksId,
   vedtaksId,
@@ -202,32 +198,6 @@ function RedigerBrev({
   saksId: string;
   vedtaksId: string | undefined;
 }) {
-  const brev = nyBrevResponse({
-    ...brevz,
-    redigertBrev: {
-      ...brevz.redigertBrev,
-      blocks: [
-        paragraph(
-          variable("Dokumentet starter med variable"),
-          literal("første literal"),
-          variable("X"),
-          newLiteral({ text: "andre literal", tags: [ElementTags.FRITEKST] }),
-        ),
-        paragraph(variable("Paragraf med kun variable")),
-        paragraph(literal("paragraf med kun tekst")),
-        paragraph(
-          itemList(
-            item(literal("1. item")),
-            item(variable("2. item variable")),
-            item(literal("3. item"), variable("med variable")),
-            item(literal("nth item")),
-          ),
-        ),
-        paragraph(literal("Dokumentet avsluttes med literal")),
-      ],
-    },
-  });
-
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
   const brevmal = useQuery({
