@@ -8,6 +8,7 @@ import type {
   AnyBlock,
   Cell,
   Content,
+  ElementTags,
   Identifiable,
   Item,
   ItemList,
@@ -21,6 +22,7 @@ import type {
   VariableValue,
 } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, PARAGRAPH, TABLE, TITLE1, TITLE2, VARIABLE } from "~/types/brevbakerTypes";
+import type { Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
@@ -96,13 +98,18 @@ export function title2(...content: TextContent[]): Title2Block {
   };
 }
 
-export function literal(text: string, editedText: string | null = null): LiteralValue {
+export function literal(args: {
+  id?: Nullable<number>;
+  text: string;
+  editedText?: Nullable<string>;
+  tags?: ElementTags[];
+}): LiteralValue {
   return {
-    id: randomInt(1000),
+    id: args.id ?? randomInt(1000),
     type: LITERAL,
-    text,
-    editedText,
-    tags: [],
+    text: args.text,
+    editedText: args.editedText ?? null,
+    tags: args.tags ?? [],
   };
 }
 
@@ -114,11 +121,11 @@ export function variable(text: string): VariableValue {
   };
 }
 
-export function itemList(...items: Item[]): ItemList {
+export function itemList(args: { id?: Nullable<number>; items: Item[] }): ItemList {
   return {
-    id: randomInt(1000),
+    id: args.id ?? randomInt(1000),
     type: ITEM_LIST,
-    items,
+    items: args.items,
     deletedItems: [],
   };
 }

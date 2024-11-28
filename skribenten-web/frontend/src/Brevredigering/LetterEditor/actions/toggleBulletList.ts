@@ -2,7 +2,7 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 import { isEqual } from "lodash";
 
-import type { Content, Item, ItemList, TextContent } from "~/types/brevbakerTypes";
+import type { Content, ItemList, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
@@ -29,28 +29,156 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
 
 /**
  * Når vi lager et punkt, så må vi ta høyde for at det kan være en punktliste før, etter, eller ingen punktliste.
- *  Hvis det finnes en punktlisten før/etter/begge, må vi merge blockene til kun 1 block.
+ * Det kan finnes punktliste i blokk før, blokk etter, eller begge. Det kan også være punktliste i samme blokk, før / etter / begge, på literalen vi er på
+ *
+ * Det vil si at når vi converterer en literal til en ny punktliste, merger vi med nabo-punktlistene, hvis de eksisterer
+ * Så må vi sjekke om det finnes nabo-punktlister på blokk-nivå, og merge de også
  *
  * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex) => {
-  const blockBeforeThisblock = draft.redigertBrev.blocks[literalIndex.blockIndex - 1];
-  const hasItemListBlockBefore =
-    blockBeforeThisblock?.type === "PARAGRAPH" && blockBeforeThisblock.content.at(-1)?.type === "ITEM_LIST";
+  //-------------- Convertering av literal til punktliste ----------------
+  const thisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const theIdexOfTheContent = literalIndex.contentIndex;
+  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
+  const sentenceElements = sentence.map((r) => r.element);
 
-  const blockAfterThisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex + 1];
-  const hasItemListBlockAfter =
-    blockAfterThisBlock?.type === "PARAGRAPH" && blockAfterThisBlock.content.at(0)?.type === "ITEM_LIST";
+  const replacedWithItemList = replaceElementsBetweenIncluding(
+    thisBlock.content,
+    sentence[0].originalIndex,
+    sentence.at(-1)!.originalIndex,
+    newItemList({
+      items: [{ id: null, content: sentenceElements }],
+    }),
+  );
 
-  if (hasItemListBlockBefore && hasItemListBlockAfter) {
-    toggleBulletListOnBetweenElemenets({ draft, literalIndex });
-  } else if (hasItemListBlockBefore) {
-    toggleBulletListOnWithItemListBefore({ draft, literalIndex });
-  } else if (hasItemListBlockAfter) {
-    toggleBulletListOnWithItemListAfter({ draft, literalIndex });
-  } else {
-    toggleBulletListOnWithoutSurroundingItemListBlocks({ draft, literalIndex });
+  const { newcontent, newDeleted } = mergeItemLists(replacedWithItemList);
+
+  const newThisParagraph: ParagraphBlock = newParagraph({
+    id: thisBlock.id,
+    content: newcontent,
+    deletedContent: [...sentenceElements.filter((s) => !!s.id).map((r) => r.id!), ...newDeleted],
+  });
+
+  draft.redigertBrev.blocks[literalIndex.blockIndex] = newThisParagraph;
+  //---------------------------------------------
+
+  //---- Merging av punktlister dersom det finnes en punktliste-blokk før ----------------
+  const doesPreviousBlockEndWithAnItemList =
+    draft.redigertBrev.blocks[literalIndex.blockIndex - 1]?.content.at(-1)?.type === "ITEM_LIST";
+
+  const doesThisBlockStartWithAnItemList = newThisParagraph.content[0].type === "ITEM_LIST";
+
+  if (doesPreviousBlockEndWithAnItemList && doesThisBlockStartWithAnItemList) {
+    console.log("before");
+    const previousBlock = draft.redigertBrev.blocks[literalIndex.blockIndex - 1];
+
+    const previousBlockContentBeforeItemList = previousBlock.content.slice(0, -1);
+    const previousBlockContentItemList = previousBlock.content.at(-1) as ItemList;
+
+    const thisBlockContentItemList = newThisParagraph.content[0] as ItemList;
+    const thisBlockContentAfterItemList = newThisParagraph.content.slice(1);
+
+    const thisBlockMergedWithPreviousBlock = newParagraph({
+      id: previousBlock.id,
+      content: [
+        ...previousBlockContentBeforeItemList,
+        newItemList({
+          items: [...previousBlockContentItemList.items, ...thisBlockContentItemList.items],
+          deletedItems: [...previousBlockContentItemList.deletedItems, ...thisBlockContentItemList.deletedItems],
+        }),
+        ...thisBlockContentAfterItemList,
+      ],
+      deletedContent: [...previousBlock.deletedContent, ...newThisParagraph.deletedContent],
+    });
+
+    const newBlocksWhereMergedWithPrevious = [
+      ...draft.redigertBrev.blocks.slice(0, literalIndex.blockIndex - 1),
+      thisBlockMergedWithPreviousBlock,
+      ...draft.redigertBrev.blocks.slice(literalIndex.blockIndex + 1),
+    ];
+
+    draft.redigertBrev.blocks = newBlocksWhereMergedWithPrevious;
+    draft.redigertBrev.deletedBlocks = [
+      ...draft.redigertBrev.deletedBlocks,
+      ...(newThisParagraph.id ? [newThisParagraph.id] : []),
+    ];
   }
+  //---------------------------------------------
+
+  //her tar vi høyde for at det kan potensielt ha skjedd en merge eller ikke
+  const possibleNewThisBlockIndex = draft.redigertBrev.blocks.findIndex((block) =>
+    block.content.some(
+      (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
+    ),
+  );
+  const possibleNewThisBlock = draft.redigertBrev.blocks[possibleNewThisBlockIndex];
+
+  const doesNextBlockStartWithAnItemList =
+    draft.redigertBrev.blocks[possibleNewThisBlockIndex + 1]?.content[0]?.type === "ITEM_LIST";
+  const doesThisBlockEndWithAnItemList = possibleNewThisBlock.content.at(-1)?.type === "ITEM_LIST";
+
+  //-- Merging av punktlister dersom det finnes en punktliste-blokk etter (merk at her bygger vi videre på det som potensielt er allerede blitt merget fra før)
+  if (doesThisBlockEndWithAnItemList && doesNextBlockStartWithAnItemList) {
+    console.log("after");
+    const nextBlock = draft.redigertBrev.blocks[possibleNewThisBlockIndex + 1];
+
+    const thisBlockContentBeforeItemList = possibleNewThisBlock.content.slice(0, -1);
+    const thisBlockContentItemList = possibleNewThisBlock.content.at(-1) as ItemList;
+
+    const nextBlockContentItemList = nextBlock.content[0] as ItemList;
+    const nextBlockContentAfterItemList = nextBlock.content.slice(1);
+
+    const thisBlockMergedWithNextBlock = newParagraph({
+      id: nextBlock.id,
+      content: [
+        ...thisBlockContentBeforeItemList,
+        newItemList({
+          items: [...thisBlockContentItemList.items, ...nextBlockContentItemList.items],
+          deletedItems: [...thisBlockContentItemList.deletedItems, ...nextBlockContentItemList.deletedItems],
+        }),
+        ...nextBlockContentAfterItemList,
+      ],
+      deletedContent: [...possibleNewThisBlock.deletedContent, ...nextBlock.deletedContent],
+    });
+
+    const newBlocksWhereMergedWithNext = [
+      ...draft.redigertBrev.blocks.slice(0, possibleNewThisBlockIndex),
+      thisBlockMergedWithNextBlock,
+      ...draft.redigertBrev.blocks.slice(possibleNewThisBlockIndex + 2),
+    ];
+    draft.redigertBrev.deletedBlocks = [
+      ...draft.redigertBrev.deletedBlocks,
+      ...(possibleNewThisBlock.id ? [possibleNewThisBlock.id] : []),
+    ];
+
+    draft.redigertBrev.blocks = newBlocksWhereMergedWithNext;
+  }
+  //---------------------------------------------
+
+  //-------------- Index finder ----------------
+  const newBlockIndex = draft.redigertBrev.blocks.findIndex((block) =>
+    block.content.some(
+      (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
+    ),
+  );
+  const newContentIndex = draft.redigertBrev.blocks[newBlockIndex].content.findIndex(
+    (content) =>
+      content.type === "ITEM_LIST" && (content as ItemList).items.some((i) => isEqual(i.content, sentenceElements)),
+  );
+  const newItemIndex = (draft.redigertBrev.blocks[newBlockIndex].content[newContentIndex] as ItemList).items.findIndex(
+    (i) => isEqual(i.content, sentenceElements),
+  );
+  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
+  //---------------------------------------------
+
+  draft.focus = {
+    blockIndex: newBlockIndex,
+    contentIndex: newContentIndex,
+    itemIndex: newItemIndex,
+    itemContentIndex: newItemContentIndex,
+    cursorPosition: draft.focus.cursorPosition,
+  };
 };
 
 /**
@@ -89,335 +217,53 @@ function replaceElementsBetweenIncluding<T>(array: T[], A: number, B: number, C:
   return [...array.slice(0, A), C, ...array.slice(B + 1)];
 }
 
-/**
- * Slår sammen tilstøtende ITEM_LISTs
- */
-const mergeItemLists = (content: Content[]): Content[] => {
-  const result: Content[] = [];
-  let mergedItems: Item[] = [];
+const mergeItemLists = (content: Content[]): { newcontent: Content[]; newDeleted: number[] } => {
+  const result: { newcontent: Content[]; newDeleted: number[] } = { newcontent: [], newDeleted: [] };
+  let temp: ItemList[] = [];
 
   for (let i = 0; i < content.length; i++) {
     const current = content[i];
+    const hasNext = content[i + 1] as Content | undefined;
 
     if (current.type === "ITEM_LIST") {
-      mergedItems.push(...current.items);
-
-      if (i + 1 >= content.length || content[i + 1].type !== "ITEM_LIST") {
-        result.push(newItemList({ items: mergedItems }));
-        mergedItems = [];
+      if (hasNext) {
+        temp.push(current);
+      } else {
+        const ids = temp.filter((il) => !!il.id).map((il) => il.id!);
+        result.newcontent.push(
+          newItemList({
+            id: ids.length > 0 ? ids[0] : null,
+            items: [...temp.flatMap((i) => i.items), ...current.items],
+            deletedItems: temp
+              .slice(1)
+              .filter((i) => !!i.id)
+              .map((i) => i.id!),
+          }),
+        );
       }
     } else {
-      result.push(current);
+      if (temp.length > 0) {
+        const ids = temp.filter((il) => !!il.id).map((il) => il.id!);
+        result.newcontent.push(
+          newItemList({
+            id: ids.length > 0 ? ids[0] : null,
+            items: temp.flatMap((i) => i.items),
+            deletedItems: temp
+              .slice(1)
+              .filter((i) => !!i.id)
+              .map((i) => i.id!),
+          }),
+        );
+        result.newDeleted.push(...ids.slice(1).filter((id) => id !== null));
+        temp = [];
+        result.newcontent.push(current);
+      } else {
+        result.newcontent.push(current);
+      }
     }
   }
 
   return result;
-};
-
-/**
- * Lager en ny punktliste, som er uten noen eksisterende punktliste før eller etter
- *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
- */
-const toggleBulletListOnWithoutSurroundingItemListBlocks = (args: {
-  draft: Draft<LetterEditorState>;
-  literalIndex: LiteralIndex;
-}) => {
-  const thisBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
-  const theIdexOfTheContent = args.literalIndex.contentIndex;
-  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
-  const sentenceElements = sentence.map((r) => r.element);
-
-  const replacedWithItemList = replaceElementsBetweenIncluding(
-    thisBlock.content,
-    sentence[0].originalIndex,
-    sentence.at(-1)!.originalIndex,
-    newItemList({
-      items: [{ id: null, content: sentenceElements }],
-    }),
-  );
-
-  const mergedItemListsWithinBlock = mergeItemLists(replacedWithItemList);
-
-  //asserter typen til ItemList fordi at hvis den er udnefined, så er det en programmeringsfeil. Elementet våres skal finnes inni
-  const theItemListThatHasMySentence = mergedItemListsWithinBlock.find(
-    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
-  ) as ItemList;
-  const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
-    isEqual(i.content, sentenceElements),
-  );
-  const newContentIndex = mergedItemListsWithinBlock.indexOf(theItemListThatHasMySentence);
-  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
-
-  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].content = mergedItemListsWithinBlock;
-  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].deletedContent = sentenceElements
-    .filter((s) => !!s.id)
-    .map((r) => r.id!);
-  args.draft.focus = {
-    blockIndex: args.literalIndex.blockIndex,
-    contentIndex: newContentIndex,
-    itemIndex: theIndexOfMySentenceInItemList,
-    itemContentIndex: newItemContentIndex,
-    cursorPosition: args.draft.focus.cursorPosition,
-  };
-};
-
-/**
- * Lager en ny punktliste, som er mellom to eksisterende punktlister.
- * Disse punktlistene skal merges til en punktliste.
- *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
- */
-const toggleBulletListOnBetweenElemenets = (args: { draft: Draft<LetterEditorState>; literalIndex: LiteralIndex }) => {
-  const blocksUntilPrevBlock = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.literalIndex.blockIndex - 2));
-  const prevBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex - 1];
-  const thisBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
-  const nextBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex + 1];
-  const blocksAfterNextBlock = args.draft.redigertBrev.blocks.slice(args.literalIndex.blockIndex + 2);
-  const theIdexOfTheContent = args.literalIndex.contentIndex;
-
-  const theItemListBefore = prevBlock.content.at(-1) as ItemList;
-  const theItemListAfter = nextBlock.content.at(0) as ItemList;
-
-  const newPrevBlock = newParagraph({ ...prevBlock, content: prevBlock.content.slice(0, -1) });
-  const newNextBlock = newParagraph({ ...nextBlock, content: nextBlock.content.slice(1) });
-
-  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
-  const sentenceElements = sentence.map((r) => r.element);
-
-  const thisBlockWithItemList = newParagraph({
-    ...thisBlock,
-    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null) as number[],
-    content: mergeItemLists(
-      replaceElementsBetweenIncluding(
-        thisBlock.content,
-        sentence[0].originalIndex,
-        sentence.at(-1)!.originalIndex,
-        newItemList({ items: [{ id: null, content: sentenceElements }] }),
-      ),
-    ),
-  });
-
-  //asserter typen til ItemList fordi at hvis den er udnefined, så er det en programmeringsfeil. Elementet våres skal finnes inni
-  const theItemListThatHasMySentence = thisBlockWithItemList.content.find(
-    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
-  ) as ItemList;
-
-  const newThisBlock = newParagraph({
-    ...thisBlock,
-    content: [
-      newItemList({
-        items: [...theItemListBefore.items, ...theItemListThatHasMySentence.items, ...theItemListAfter.items],
-      }),
-    ],
-    deletedContent: thisBlockWithItemList.deletedContent,
-  });
-
-  const isPrevBlockEmpty = newPrevBlock.content.length === 0;
-  const isNextBlockEmpty = newNextBlock.content.length === 0;
-
-  const newBlocks = [
-    ...blocksUntilPrevBlock,
-    ...(isPrevBlockEmpty ? [] : [newPrevBlock]),
-    newThisBlock,
-    ...(isNextBlockEmpty ? [] : [newNextBlock]),
-    ...blocksAfterNextBlock,
-  ];
-
-  const newBlockContentIndex = newBlocks.findIndex((block) => isEqual(block, newThisBlock));
-
-  const thisBlocksItemLists = newThisBlock.content
-    .filter((c) => c.type === "ITEM_LIST")
-    .find((itemList) => (itemList as ItemList).items.some((i) => isEqual(i.content, sentenceElements)))!;
-
-  const itemIndex = (thisBlocksItemLists as ItemList).items.findIndex((i) => isEqual(i.content, sentenceElements));
-  const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
-    isEqual(i.content, sentenceElements),
-  );
-  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
-
-  args.draft.redigertBrev.blocks = newBlocks;
-  args.draft.redigertBrev.deletedBlocks = [
-    ...args.draft.redigertBrev.deletedBlocks,
-    ...(isPrevBlockEmpty ? [newPrevBlock.id] : []),
-    ...(isNextBlockEmpty ? [nextBlock.id] : []),
-  ].filter((id) => id !== null) as number[];
-
-  args.draft.focus = {
-    blockIndex: newBlockContentIndex,
-    contentIndex: theIndexOfMySentenceInItemList,
-    itemIndex: itemIndex,
-    itemContentIndex: newItemContentIndex,
-    cursorPosition: args.draft.focus.cursorPosition,
-  };
-};
-
-/**
- * Lager en ny punktliste, som har en eksisterende punktliste før seg.
- * Merger disse 2 punktlistene til en punktliste.
- *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
- */
-const toggleBulletListOnWithItemListBefore = (args: {
-  draft: Draft<LetterEditorState>;
-  literalIndex: LiteralIndex;
-}) => {
-  const blocksUntilPrevBlock = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.literalIndex.blockIndex - 1));
-  const prevBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex - 1];
-  const thisBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
-  const nextBlocks = args.draft.redigertBrev.blocks.slice(args.literalIndex.blockIndex + 1);
-  const theIdexOfTheContent = args.literalIndex.contentIndex;
-
-  const theItemListBefore = prevBlock.content.at(-1) as ItemList;
-
-  const newPrevBlock = newParagraph({
-    ...prevBlock,
-    content: prevBlock.content.slice(0, -1),
-  });
-
-  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
-  const sentenceElements = sentence.map((r) => r.element);
-
-  const thisBlockWithItemList = newParagraph({
-    ...thisBlock,
-    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null) as number[],
-    content: mergeItemLists(
-      replaceElementsBetweenIncluding(
-        thisBlock.content,
-        sentence[0].originalIndex,
-        sentence.at(-1)!.originalIndex,
-        newItemList({ items: [{ id: null, content: sentenceElements }] }),
-      ),
-    ),
-  });
-
-  //asserter typen til ItemList fordi at hvis den er udnefined, så er det en programmeringsfeil. Elementet våres skal finnes inni
-  const theItemListThatHasMySentence = thisBlockWithItemList.content.find(
-    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
-  ) as ItemList;
-
-  const newThisBlock = newParagraph({
-    ...thisBlock,
-    content: [
-      newItemList({
-        items: [...theItemListBefore.items, ...theItemListThatHasMySentence.items],
-      }),
-    ],
-    deletedContent: thisBlockWithItemList.deletedContent,
-  });
-
-  const isPrevBlockEmpty = newPrevBlock.content.length === 0;
-
-  const newBlocks = [...blocksUntilPrevBlock, ...(isPrevBlockEmpty ? [] : [newPrevBlock]), newThisBlock, ...nextBlocks];
-
-  const newBlockContentIndex = newBlocks.findIndex((block) => {
-    return isEqual(block, newThisBlock);
-  });
-
-  const thisBlocksItemLists = newThisBlock.content
-    .filter((c) => c.type === "ITEM_LIST")
-    .find((itemList) => (itemList as ItemList).items.some((i) => isEqual(i.content, sentenceElements)))!;
-
-  const itemIndex = (thisBlocksItemLists as ItemList).items.findIndex((i) => isEqual(i.content, sentenceElements));
-  const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
-    isEqual(i.content, sentenceElements),
-  );
-  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
-
-  args.draft.redigertBrev.blocks = newBlocks;
-  args.draft.redigertBrev.deletedBlocks = isPrevBlockEmpty
-    ? ([...args.draft.redigertBrev.deletedBlocks, newPrevBlock.id].filter((id) => id !== null) as number[])
-    : args.draft.redigertBrev.deletedBlocks;
-
-  args.draft.focus = {
-    blockIndex: newBlockContentIndex,
-    contentIndex: theIndexOfMySentenceInItemList,
-    itemIndex: itemIndex,
-    itemContentIndex: newItemContentIndex,
-    cursorPosition: args.draft.focus.cursorPosition,
-  };
-};
-
-/**
- * Lager en ny punktliste, som har en eksisterende punktliste etter seg.
- * Merger disse 2 punktlistene til en punktliste.
- *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
- */
-const toggleBulletListOnWithItemListAfter = (args: { draft: Draft<LetterEditorState>; literalIndex: LiteralIndex }) => {
-  const prevBlocks = args.draft.redigertBrev.blocks.slice(0, Math.max(0, args.literalIndex.blockIndex));
-  const thisBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex];
-  const nextBlock = args.draft.redigertBrev.blocks[args.literalIndex.blockIndex + 1];
-  const blocksAfterNextBlock = args.draft.redigertBrev.blocks.slice(args.literalIndex.blockIndex + 2);
-
-  const nextBlockItemList = nextBlock.content.at(0) as ItemList;
-
-  const newNextBlock = newParagraph({
-    ...nextBlock,
-    content: nextBlock.content.slice(1),
-  });
-
-  const theIdexOfTheContent = args.literalIndex.contentIndex;
-
-  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
-  const sentenceElements = sentence.map((r) => r.element);
-
-  const thisBlockWithItemList = newParagraph({
-    ...thisBlock,
-    deletedContent: sentenceElements.map((s) => s.id).filter((id) => id !== null) as number[],
-    content: mergeItemLists(
-      replaceElementsBetweenIncluding(
-        thisBlock.content,
-        sentence[0].originalIndex,
-        sentence.at(-1)!.originalIndex,
-        newItemList({ items: [{ id: null, content: sentenceElements }] }),
-      ),
-    ),
-  });
-
-  //asserter typen til ItemList fordi at hvis den er udnefined, så er det en programmeringsfeil. Elementet våres skal finnes inni
-  const theItemListThatHasMySentence = thisBlockWithItemList.content.find(
-    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
-  ) as ItemList;
-
-  const newThisBlock = newParagraph({
-    ...thisBlock,
-    content: [
-      newItemList({
-        items: [...theItemListThatHasMySentence.items, ...nextBlockItemList.items],
-      }),
-    ],
-    deletedContent: thisBlockWithItemList.deletedContent,
-  });
-
-  const isNextBlockEmpty = newNextBlock.content.length === 0;
-
-  const newBlocks = [...prevBlocks, newThisBlock, ...(isNextBlockEmpty ? [] : [newNextBlock]), ...blocksAfterNextBlock];
-
-  const newBlockContentIndex = newBlocks.findIndex((block) => isEqual(block, newThisBlock));
-
-  const thisBlocksItemLists = newThisBlock.content
-    .filter((c) => c.type === "ITEM_LIST")
-    .find((itemList) => (itemList as ItemList).items.some((i) => isEqual(i.content, sentenceElements)))!;
-
-  const itemIndex = (thisBlocksItemLists as ItemList).items.findIndex((i) => isEqual(i.content, sentenceElements));
-  const theIndexOfMySentenceInItemList = theItemListThatHasMySentence?.items.findIndex((i) =>
-    isEqual(i.content, sentenceElements),
-  );
-  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
-
-  args.draft.redigertBrev.blocks = newBlocks;
-  args.draft.redigertBrev.deletedBlocks = isNextBlockEmpty
-    ? ([...args.draft.redigertBrev.deletedBlocks, nextBlock.id].filter((id) => id !== null) as number[])
-    : args.draft.redigertBrev.deletedBlocks;
-
-  args.draft.focus = {
-    blockIndex: newBlockContentIndex,
-    contentIndex: theIndexOfMySentenceInItemList,
-    itemIndex: itemIndex,
-    itemContentIndex: newItemContentIndex,
-    cursorPosition: args.draft.focus.cursorPosition,
-  };
 };
 
 /**

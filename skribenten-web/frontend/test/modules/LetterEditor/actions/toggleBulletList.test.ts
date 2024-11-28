@@ -9,8 +9,12 @@ describe("LetterEditorActions.toggleBulletList", () => {
   describe("has adjoining itemList", () => {
     test("should not merge with itemList in previous block if not first in current block", () => {
       const state = letter(
-        paragraph(itemList(item(literal("b1-p1")))),
-        paragraph(literal("b2-l1"), itemList(item(literal("b2-p1"))), literal("b2-l2")),
+        paragraph(itemList({ items: [item(literal({ text: "b1-p1" }))] })),
+        paragraph(
+          literal({ text: "b2-l1" }),
+          itemList({ items: [item(literal({ text: "b2-p1" }))] }),
+          literal({ text: "b2-l2" }),
+        ),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
       expect(result.redigertBrev.blocks).toHaveLength(2);
@@ -20,7 +24,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
       const toggledInBlock = select<ParagraphBlock>(result, { blockIndex: 1 });
       expect(toggledInBlock.content).toHaveLength(2);
-      expect(toggledInBlock.deletedContent).toEqual([toggledContent.id]);
+      expect(toggledInBlock.deletedContent).toEqual(toggledContent.id ? [toggledContent.id] : []);
       expect(toggledInBlock?.content[0]).toEqual(state.redigertBrev.blocks[1].content[0]);
 
       expect(
@@ -29,8 +33,12 @@ describe("LetterEditorActions.toggleBulletList", () => {
     });
     test("should not merge with itemList in next block if not last in current block", () => {
       const state = letter(
-        paragraph(literal("b1-l1"), itemList(item(literal("b1-p1"))), literal("b1-l2")),
-        paragraph(itemList(item(literal("b2-p1")))),
+        paragraph(
+          literal({ text: "b1-l1" }),
+          itemList({ items: [item(literal({ text: "b1-p1" }))] }),
+          literal({ text: "b1-l2" }),
+        ),
+        paragraph(itemList({ items: [item(literal({ text: "b2-p1" }))] })),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0 });
       expect(result.redigertBrev.blocks).toHaveLength(2);
@@ -40,7 +48,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
       const toggledInBlock = select<ParagraphBlock>(result, { blockIndex: 0 });
       expect(toggledInBlock.content).toHaveLength(2);
-      expect(toggledInBlock.deletedContent).toEqual([toggledContent.id]);
+      expect(toggledInBlock.deletedContent).toEqual(toggledContent.id ? [toggledContent.id] : []);
       expect(toggledInBlock?.content.at(-1)).toEqual(state.redigertBrev.blocks[0].content.at(-1));
 
       expect(
@@ -49,16 +57,17 @@ describe("LetterEditorActions.toggleBulletList", () => {
     });
     test("should not merge with itemList in previous and next block if not first and last in block", () => {
       const state = letter(
-        paragraph(itemList(item(literal("b1-p1")))),
+        paragraph(itemList({ id: 1, items: [item(literal({ text: "b1-p1" }))] })),
         paragraph(
-          literal("b2-l1"),
-          itemList(item(literal("b2-ul1-p1"))),
-          literal("b2-l2"),
-          itemList(item(literal("b2-ul2-p1"))),
-          literal("b2-l3"),
+          literal({ text: "b2-l1" }),
+          itemList({ id: 2, items: [item(literal({ text: "b2-ul1-p1" }))] }),
+          literal({ id: 22, text: "b2-l2" }),
+          itemList({ id: 3, items: [item(literal({ text: "b2-ul2-p1" }))] }),
+          literal({ text: "b2-l3" }),
         ),
-        paragraph(itemList(item(literal("b3-p1")))),
+        paragraph(itemList({ id: 4, items: [item(literal({ text: "b3-p1" }))] })),
       );
+
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
 
       // blocks and content that should be untouched
@@ -73,6 +82,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
       // deletedContent should contain the literal that was toggled and the itemList that we merged into the one we kept
       expect(toggledInBlock.deletedContent).toHaveLength(2);
+      expect(toggledInBlock.deletedContent).toEqual([22, 3]);
       const shouldBeDeleted = state.redigertBrev.blocks[1].content
         .map((c) => c.id)
         .filter((id) => toggledInBlock.content.findIndex((keptContent) => keptContent.id === id) === -1);

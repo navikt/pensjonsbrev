@@ -11,21 +11,21 @@ describe("LetterEditorActions.merge", () => {
   describe("at literal", () => {
     describe("next", () => {
       test("the specified blocks are merged and the number of blocks reduced", () => {
-        const state = letter(paragraph(literal("p1")), paragraph(literal("p2")));
+        const state = letter(paragraph(literal({ text: "p1" })), paragraph(literal({ text: "p2" })));
         const result = Actions.merge(state, { blockIndex: 0, contentIndex: 0 }, MergeTarget.NEXT);
 
         expect(result.redigertBrev.blocks).toHaveLength(state.redigertBrev.blocks.length - 1);
       });
 
       test("merge is ignored if the specified block is the last", () => {
-        const state = letter(paragraph(literal("p1")), paragraph(literal("p2")));
+        const state = letter(paragraph(literal({ text: "p1" })), paragraph(literal({ text: "p2" })));
 
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.NEXT);
         expect(result.redigertBrev).toBe(state.redigertBrev);
       });
 
       test("the content of the next block is added to the end of the specified", () => {
-        const state = letter(paragraph(variable("p1")), paragraph(literal("p2")));
+        const state = letter(paragraph(variable("p1")), paragraph(literal({ text: "p2" })));
 
         const mergeId = { blockIndex: 0 };
         const result = Actions.merge(state, { ...mergeId, contentIndex: 0 }, MergeTarget.NEXT);
@@ -38,8 +38,8 @@ describe("LetterEditorActions.merge", () => {
 
       test("adjoining literal content in merging blocks are joined", () => {
         const state = letter(
-          paragraph(variable("var1"), literal("lit1")),
-          paragraph(literal("lit2"), variable("var2")),
+          paragraph(variable("var1"), literal({ text: "lit1" })),
+          paragraph(literal({ text: "lit2" }), variable("var2")),
         );
         const mergeId = { blockIndex: 0 };
 
@@ -53,7 +53,7 @@ describe("LetterEditorActions.merge", () => {
       });
 
       test("id of specified block is kept if the next is empty", () => {
-        const state = letter(paragraph(literal("p1")), paragraph());
+        const state = letter(paragraph(literal({ text: "p1" })), paragraph());
 
         const mergeId = { blockIndex: 0 };
         const result = Actions.merge(state, { ...mergeId, contentIndex: 0 }, MergeTarget.NEXT);
@@ -62,7 +62,7 @@ describe("LetterEditorActions.merge", () => {
       });
 
       test("id of next block is kept if the specified is empty", () => {
-        const state = letter(paragraph(), paragraph(literal("p2")));
+        const state = letter(paragraph(), paragraph(literal({ text: "p2" })));
 
         const mergeId = { blockIndex: 0 };
         const result = Actions.merge(state, { ...mergeId, contentIndex: 0 }, MergeTarget.NEXT);
@@ -73,10 +73,10 @@ describe("LetterEditorActions.merge", () => {
       });
 
       test("updates deletedContent", () => {
-        const movedContent = [literal("third"), variable("fourth")];
+        const movedContent = [literal({ text: "third" }), variable("fourth")];
         const state = letter(
           withDeleted(
-            paragraph(literal("first"), variable("second")),
+            paragraph(literal({ text: "first" }), variable("second")),
             movedContent.map((c) => c.id!),
           ),
           asNew(paragraph(...movedContent)),
@@ -89,20 +89,20 @@ describe("LetterEditorActions.merge", () => {
 
     describe("previous", () => {
       test("the specified blocks are merged and the number of blocks reduced", () => {
-        const state = letter(paragraph(literal("p1")), paragraph(variable("p2")));
+        const state = letter(paragraph(literal({ text: "p1" })), paragraph(variable("p2")));
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
         expect(result.redigertBrev.blocks).toHaveLength(state.redigertBrev.blocks.length - 1);
       });
 
       test("merge is ignored if the specified block is the first", () => {
-        const state = letter(paragraph(literal("p1")), paragraph(variable("p2")));
+        const state = letter(paragraph(literal({ text: "p1" })), paragraph(variable("p2")));
 
         const result = Actions.merge(state, { blockIndex: 0, contentIndex: 0 }, MergeTarget.PREVIOUS);
         expect(result.redigertBrev).toBe(state.redigertBrev);
       });
 
       test("the content of the specified block is added to the end of the previous", () => {
-        const state = letter(paragraph(variable("p1")), paragraph(literal("p2")));
+        const state = letter(paragraph(variable("p1")), paragraph(literal({ text: "p2" })));
 
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
         const resultBlock = select<ParagraphBlock>(result, { blockIndex: 0 });
@@ -116,8 +116,8 @@ describe("LetterEditorActions.merge", () => {
 
       test("adjoining literal content in merging blocks are joined", () => {
         const state = letter(
-          paragraph(variable("var1"), literal("lit1")),
-          paragraph(literal("lit2"), variable("var2")),
+          paragraph(variable("var1"), literal({ text: "lit1" })),
+          paragraph(literal({ text: "lit2" }), variable("var2")),
         );
 
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
@@ -130,22 +130,22 @@ describe("LetterEditorActions.merge", () => {
       });
 
       test("id of specified block is kept if the previous is empty", () => {
-        const state = letter(paragraph(), paragraph(literal("p2")));
+        const state = letter(paragraph(), paragraph(literal({ text: "p2" })));
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
         expect(select<AnyBlock>(result, { blockIndex: 0 }).id).toEqual(select<AnyBlock>(state, { blockIndex: 1 }).id);
       });
 
       test("id of previous block is kept if the specified is empty", () => {
-        const state = letter(paragraph(literal("p1")), paragraph());
+        const state = letter(paragraph(literal({ text: "p1" })), paragraph());
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
         expect(select<AnyBlock>(result, { blockIndex: 0 }).id).toEqual(select<AnyBlock>(state, { blockIndex: 0 }).id);
       });
 
       test("updates deletedContent", () => {
-        const movedContent = [literal("third"), variable("fourth")];
+        const movedContent = [literal({ text: "third" }), variable("fourth")];
         const state = letter(
           withDeleted(
-            paragraph(literal("first"), variable("second")),
+            paragraph(literal({ text: "first" }), variable("second")),
             movedContent.map((c) => c.id!),
           ),
           asNew(paragraph(...movedContent)),
@@ -157,15 +157,15 @@ describe("LetterEditorActions.merge", () => {
 
       describe("Update focus", () => {
         test("when previous block is empty focus is stolen to beginning of the replaced block", () => {
-          const state = letter(paragraph(), paragraph(literal("lit1"), variable("var1")));
+          const state = letter(paragraph(), paragraph(literal({ text: "lit1" }), variable("var1")));
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
           expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
         });
 
         test("when merging adjoining literals focus is stolen to the merge point of the two literals", () => {
           const state = letter(
-            paragraph(variable("var1"), literal("lit1")),
-            paragraph(literal("lit2"), variable("var2")),
+            paragraph(variable("var1"), literal({ text: "lit1" })),
+            paragraph(literal({ text: "lit2" }), variable("var2")),
           );
 
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
@@ -173,7 +173,7 @@ describe("LetterEditorActions.merge", () => {
         });
 
         test("when merging with non adjoining literals focus is stolen so that the cursor is at the beginning of the current content", () => {
-          const state = letter(paragraph(variable("var1")), paragraph(literal("lit1"), variable("var2")));
+          const state = letter(paragraph(variable("var1")), paragraph(literal({ text: "lit1" }), variable("var2")));
 
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
           expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 0 });
@@ -181,8 +181,8 @@ describe("LetterEditorActions.merge", () => {
 
         test("when merging from empty block with previous focus is correctly set to the end of previous", () => {
           const state = letter(
-            paragraph(literal("first"), variable("second"), literal("third")),
-            paragraph(literal("")),
+            paragraph(literal({ text: "first" }), variable("second"), literal({ text: "third" })),
+            paragraph(literal({ text: "" })),
           );
 
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
@@ -191,7 +191,10 @@ describe("LetterEditorActions.merge", () => {
         });
 
         test("merging from empty block when last content of previous is variable keeps the empty literal", () => {
-          const state = letter(paragraph(literal("first"), variable("second")), paragraph(literal("")));
+          const state = letter(
+            paragraph(literal({ text: "first" }), variable("second")),
+            paragraph(literal({ text: "" })),
+          );
 
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
           expect(result.redigertBrev.blocks).toHaveLength(1);
@@ -203,12 +206,12 @@ describe("LetterEditorActions.merge", () => {
       describe("previous content in same block is itemList", () => {
         const mergeId = { blockIndex: 1, contentIndex: 1 };
         const withContentAfterList = letter(
-          paragraph(literal("block 0")),
+          paragraph(literal({ text: "block 0" })),
           paragraph(
-            itemList(item(literal("Det blir "))),
-            literal("content 1"),
+            itemList({ items: [item(literal({ text: "Det blir " }))] }),
+            literal({ text: "content 1" }),
             variable("variable 1"),
-            itemList(item(literal("En annen liste"))),
+            itemList({ items: [item(literal({ text: "En annen liste" }))] }),
           ),
         );
         const result = Actions.merge(withContentAfterList, mergeId, MergeTarget.PREVIOUS);
@@ -249,7 +252,9 @@ describe("LetterEditorActions.merge", () => {
         });
 
         test("uses edited text to calculate offset", () => {
-          const state = letter(paragraph(itemList(item(literal("item 1", ""))), literal("")));
+          const state = letter(
+            paragraph(itemList({ items: [item(literal({ text: "item 1", editedText: "" }))] }), literal({ text: "" })),
+          );
 
           const result = Actions.merge(state, { blockIndex: 0, contentIndex: 1 }, MergeTarget.PREVIOUS);
           expect(result.focus).toStrictEqual({
@@ -264,12 +269,18 @@ describe("LetterEditorActions.merge", () => {
 
       describe("current literal is not first in block", () => {
         test("does not merge blocks", () => {
-          const state = letter(paragraph(literal("p1")), paragraph(literal("p2-l1"), literal("p2-l2")));
+          const state = letter(
+            paragraph(literal({ text: "p1" })),
+            paragraph(literal({ text: "p2-l1" }), literal({ text: "p2-l2" })),
+          );
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 1 }, MergeTarget.PREVIOUS);
           expect(result.redigertBrev.blocks).toHaveLength(2);
         });
         test("removes empty literal", () => {
-          const state = letter(paragraph(literal("p1")), paragraph(literal("p2-l1"), literal("")));
+          const state = letter(
+            paragraph(literal({ text: "p1" })),
+            paragraph(literal({ text: "p2-l1" }), literal({ text: "" })),
+          );
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 1 }, MergeTarget.PREVIOUS);
           const resultBlock = select<ParagraphBlock>(result, { blockIndex: 1 });
           expect(resultBlock.content).toHaveLength(1);
@@ -279,7 +290,10 @@ describe("LetterEditorActions.merge", () => {
           expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: "p2-l1".length });
         });
         test("does not remove non-empty literal, but shifts focus", () => {
-          const state = letter(paragraph(literal("p1")), paragraph(literal("p2-l1"), literal("p2-l2")));
+          const state = letter(
+            paragraph(literal({ text: "p1" })),
+            paragraph(literal({ text: "p2-l1" }), literal({ text: "p2-l2" })),
+          );
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 1 }, MergeTarget.PREVIOUS);
           expect(select<ParagraphBlock>(result, { blockIndex: 1 }).content).toHaveLength(2);
           expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: "p2-l1".length });
@@ -291,7 +305,9 @@ describe("LetterEditorActions.merge", () => {
   describe("at itemList", () => {
     describe("with next", () => {
       test("the specified items are merged and the number of items reduced", () => {
-        const state = letter(paragraph(itemList(item(literal("lit1")), item(literal("lit2")))));
+        const state = letter(
+          paragraph(itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "lit2" }))] })),
+        );
         const result = Actions.merge(
           state,
           { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
@@ -301,7 +317,9 @@ describe("LetterEditorActions.merge", () => {
       });
 
       test("merge is ignored if the specified item is the last", () => {
-        const state = letter(paragraph(itemList(item(literal("lit1")), item(literal("lit2")))));
+        const state = letter(
+          paragraph(itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "lit2" }))] })),
+        );
         const result = Actions.merge(
           state,
           { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 },
@@ -311,7 +329,7 @@ describe("LetterEditorActions.merge", () => {
       });
 
       test("the content of the next item is added to the end of the specified", () => {
-        const state = letter(paragraph(itemList(item(variable("lit1")), item(literal("lit2")))));
+        const state = letter(paragraph(itemList({ items: [item(variable("lit1")), item(literal({ text: "lit2" }))] })));
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
 
         const result = Actions.merge(state, mergeId, MergeTarget.NEXT);
@@ -324,7 +342,14 @@ describe("LetterEditorActions.merge", () => {
 
       describe("adjoining literals", () => {
         const state = letter(
-          paragraph(itemList(item(variable("var1"), literal("lit1")), item(literal("lit2"), variable("var2")))),
+          paragraph(
+            itemList({
+              items: [
+                item(variable("var1"), literal({ text: "lit1" })),
+                item(literal({ text: "lit2" }), variable("var2")),
+              ],
+            }),
+          ),
         );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
 
@@ -349,7 +374,9 @@ describe("LetterEditorActions.merge", () => {
       });
 
       describe("the next item is empty", () => {
-        const state = letter(paragraph(itemList(item(literal("lit1")), item(literal("")))));
+        const state = letter(
+          paragraph(itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "" }))] })),
+        );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
         const result = Actions.merge(state, mergeId, MergeTarget.NEXT);
 
@@ -372,7 +399,9 @@ describe("LetterEditorActions.merge", () => {
       });
 
       describe("the current item is empty", () => {
-        const state = letter(paragraph(itemList(item(literal("")), item(literal("lit1")))));
+        const state = letter(
+          paragraph(itemList({ items: [item(literal({ text: "" })), item(literal({ text: "lit1" }))] })),
+        );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
         const result = Actions.merge(state, mergeId, MergeTarget.NEXT);
 
@@ -397,7 +426,9 @@ describe("LetterEditorActions.merge", () => {
 
     describe("with previous", () => {
       test("the specified items are merged, the number of items is reduced and focus is stolen", () => {
-        const state = letter(paragraph(itemList(item(literal("lit1")), item(literal("lit2")))));
+        const state = letter(
+          paragraph(itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "lit2" }))] })),
+        );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
         const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
 
@@ -405,13 +436,15 @@ describe("LetterEditorActions.merge", () => {
       });
 
       test("merge is ignored if the specified item is the first", () => {
-        const state = letter(paragraph(itemList(item(literal("lit1")), item(literal("lit2")))));
+        const state = letter(
+          paragraph(itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "lit2" }))] })),
+        );
         const result = Actions.merge(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }, MergeTarget.PREVIOUS);
         expect(result).toBe(result);
       });
 
       test("the content of the specified item is added to the end of the previous", () => {
-        const state = letter(paragraph(itemList(item(variable("var1")), item(literal("lit1")))));
+        const state = letter(paragraph(itemList({ items: [item(variable("var1")), item(literal({ text: "lit1" }))] })));
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
         const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
         expect(select<Item>(result, { ...mergeId, itemIndex: mergeId.itemIndex - 1 }).content).toEqual([
@@ -422,7 +455,14 @@ describe("LetterEditorActions.merge", () => {
 
       test("adjoining literal content in merging items are joined", () => {
         const state = letter(
-          paragraph(itemList(item(variable("var1"), literal("lit1")), item(literal("lit2"), variable("var2")))),
+          paragraph(
+            itemList({
+              items: [
+                item(variable("var1"), literal({ text: "lit1" })),
+                item(literal({ text: "lit2" }), variable("var2")),
+              ],
+            }),
+          ),
         );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
 
@@ -436,7 +476,9 @@ describe("LetterEditorActions.merge", () => {
       });
 
       describe("the previous item is empty", () => {
-        const state = letter(paragraph(itemList(item(literal("")), item(literal("lit1")))));
+        const state = letter(
+          paragraph(itemList({ items: [item(literal({ text: "" })), item(literal({ text: "lit1" }))] })),
+        );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
         const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
 
@@ -459,7 +501,9 @@ describe("LetterEditorActions.merge", () => {
       });
 
       describe("the current item is empty", () => {
-        const state = letter(paragraph(itemList(item(literal("lit")), item(literal("")))));
+        const state = letter(
+          paragraph(itemList({ items: [item(literal({ text: "lit" })), item(literal({ text: "" }))] })),
+        );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
         const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
 
@@ -483,7 +527,9 @@ describe("LetterEditorActions.merge", () => {
         });
 
         test("and it is the only one then the itemlist should be deleted", () => {
-          const state = letter(paragraph(literal("before list"), itemList(item(literal("")))));
+          const state = letter(
+            paragraph(literal({ text: "before list" }), itemList({ items: [item(literal({ text: "" }))] })),
+          );
 
           const result = Actions.merge(
             state,

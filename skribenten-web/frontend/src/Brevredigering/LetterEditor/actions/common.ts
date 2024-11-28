@@ -110,6 +110,6 @@ export function newItem(text: string, variable?: string, text2?: string): Item {
 
 export const newItems = (...text: string[]) => text.map((t) => newItem(t));
 
-export function newItemList(args: { items: Item[]; deletedItems?: number[] }): ItemList {
-  return { id: null, type: "ITEM_LIST", items: args.items, deletedItems: args.deletedItems ?? [] };
+export function newItemList(args: { id?: Nullable<number>; items: Item[]; deletedItems?: number[] }): ItemList {
+  return { id: args.id ?? null, type: "ITEM_LIST", items: args.items, deletedItems: args.deletedItems ?? [] };
 }
