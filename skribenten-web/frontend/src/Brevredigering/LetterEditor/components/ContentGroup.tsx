@@ -203,7 +203,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       event.preventDefault();
       const nextFocus = allSpans[previousSpanIndex];
       nextFocus.focus();
-      // focusAtOffset(nextFocus.childNodes[0], nextFocus.textContent?.length ?? 0);
       focusAtOffset(
         nextFocus.childNodes[0],
         isPreviousSpanInSameBlock ? (nextFocus.textContent?.length ?? 0) - 1 : nextFocus.textContent?.length ?? 0,
