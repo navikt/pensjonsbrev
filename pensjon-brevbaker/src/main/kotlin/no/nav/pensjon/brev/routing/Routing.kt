@@ -25,7 +25,8 @@ fun Application.brevRouting(
 
             authenticate(*authenticationNames, optional = application.developmentMode) {
                 route("/letter") {
-                    letterRoutes(autobrev, redigerbareBrev)
+                    autobrevRoutes(autobrev)
+                    redigerbarRoutes(redigerbareBrev)
                 }
             }
         }
