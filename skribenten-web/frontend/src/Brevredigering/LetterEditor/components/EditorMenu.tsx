@@ -17,6 +17,7 @@ import { getCursorOffset } from "../services/caretUtils";
 import type { Typography } from "../utils";
 import { TypographyToText } from "../utils";
 import EditorBulletList from "./EditorBulletList";
+import EditorFonts from "./EditorFonts";
 
 const SelectTypography = (props: {
   editorState: LetterEditorState;
@@ -73,6 +74,8 @@ export const EditorMenu = () => {
       `}
     >
       <HStack gap="5">
+        <EditorFonts editorState={editorState} setEditorState={setEditorState} />
+        <VerticalDivider />
         <EditorBulletList editorState={editorState} setEditorState={setEditorState} />
         <VerticalDivider />
         <SelectTypography editorState={editorState} setEditorState={setEditorState} />
