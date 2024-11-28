@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 
-object TemplateModelSpecificationModule : SimpleModule() {
+internal object TemplateModelSpecificationModule : SimpleModule() {
     private fun readResolve(): Any = TemplateModelSpecificationModule
 
     init {

@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.PesysBrevkategori
 import no.nav.pensjon.brev.api.model.TemplateDescription
 
 // TODO: Denne bør liggje på konsumentsida
-object BrevkategoriModule : SimpleModule() {
+internal object BrevkategoriModule : SimpleModule() {
     private fun readResolve(): Any = BrevkodeModule
 
     init {

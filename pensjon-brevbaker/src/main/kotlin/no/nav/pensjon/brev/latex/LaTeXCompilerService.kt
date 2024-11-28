@@ -22,14 +22,14 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-data class PdfCompilationInput(val files: Map<String, String>)
-data class PDFCompilationOutput(val base64PDF: String)
+internal data class PdfCompilationInput(val files: Map<String, String>)
+internal data class PDFCompilationOutput(val base64PDF: String)
 
-class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
-class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
-class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
+internal class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
+internal class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
+internal class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
-class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30, private val timeout: Duration = 300.seconds) {
+internal class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30, private val timeout: Duration = 300.seconds) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {

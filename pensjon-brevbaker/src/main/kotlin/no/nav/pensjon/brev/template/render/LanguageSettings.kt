@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.languageSettings
 
-object LanguageSetting {
+internal object LanguageSetting {
     object Sakspart {
         const val navn = "navnprefix"
         const val gjelderNavn = "gjeldernavnprefix"
@@ -25,7 +25,7 @@ object LanguageSetting {
     }
 }
 
-val pensjonLatexSettings = languageSettings {
+internal val pensjonLatexSettings = languageSettings {
     setting(LanguageSetting.Sakspart.navn) {
         Literal.create(
             Bokmal to "Navn:",
@@ -142,7 +142,7 @@ val pensjonLatexSettings = languageSettings {
     }
 }
 
-val pensjonHTMLSettings = languageSettings(pensjonLatexSettings) {
+internal val pensjonHTMLSettings = languageSettings(pensjonLatexSettings) {
     setting(LanguageSetting.HTML.altTextLogo) {
         Literal.create(
             Bokmal to "Nav logo",

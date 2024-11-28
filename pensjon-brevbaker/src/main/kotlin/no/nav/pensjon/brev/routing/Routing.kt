@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.AllTemplates
 
-fun Application.brevRouting(
+internal fun Application.brevRouting(
     authenticationNames: Array<String>,
     latexCompilerService: LaTeXCompilerService,
     brevProvider: AllTemplates,

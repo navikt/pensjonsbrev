@@ -16,7 +16,7 @@ fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     includeSakspart
 )
 
-fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
+internal fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
     text(Language.Bokmal to "«", Language.Nynorsk to "«", Language.English to "“")
     addTextContent(attachment.title)
     text(Language.Bokmal to "»", Language.Nynorsk to "»", Language.English to "”")

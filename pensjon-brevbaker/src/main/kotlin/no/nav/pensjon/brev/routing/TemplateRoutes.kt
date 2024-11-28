@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T>) =
+internal inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T>) =
     route("/${resource.name}") {
 
         get {
@@ -67,7 +67,7 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
     }
 
 // TODO: Med riktig typing burde heile denne metoden vera unødvendig
-fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*>): Kode = parameters.getOrFail<String>("kode").let {
+internal fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*>): Kode = parameters.getOrFail<String>("kode").let {
     if (resource.name == "autobrev") {
         AutomatiskBrevkode(it)
     } else {

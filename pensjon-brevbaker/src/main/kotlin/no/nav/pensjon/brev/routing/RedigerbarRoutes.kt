@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
-fun Route.redigerbarRoutes(
+internal fun Route.redigerbarRoutes(
     redigerbareBrev: TemplateResource<Brevkode.Redigerbart, RedigerbarTemplate<*>>,
 ) {
     route("/${redigerbareBrev.name}") {

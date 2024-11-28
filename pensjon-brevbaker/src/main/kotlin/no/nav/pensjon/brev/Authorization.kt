@@ -12,7 +12,7 @@ import java.net.URL
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.Authorization")
 
-data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, val audience: List<String>, val preAuthorizedApps: List<PreAuthorizedApp>?, val requireAzureAdClaims: Boolean) {
+internal data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, val audience: List<String>, val preAuthorizedApps: List<PreAuthorizedApp>?, val requireAzureAdClaims: Boolean) {
     companion object {
 
         private const val jwtAzureAdName = "AZURE_AD"
@@ -39,9 +39,9 @@ data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, 
     }
 }
 
-data class PreAuthorizedApp(val name: String, val clientId: String)
+internal data class PreAuthorizedApp(val name: String, val clientId: String)
 
-fun AuthenticationConfig.brevbakerJwt(config: JwtConfig) =
+internal fun AuthenticationConfig.brevbakerJwt(config: JwtConfig) =
     jwt(config.name) {
         realm = "brevbaker-latex-$name"
         verifier(JwkProviderBuilder(URL(config.jwksUrl)).build(), config.issuer) {

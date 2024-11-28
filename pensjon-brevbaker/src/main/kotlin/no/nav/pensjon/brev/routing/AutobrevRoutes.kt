@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.AutobrevTemplate
 
-fun Route.autobrevRoutes(
+internal fun Route.autobrevRoutes(
     autobrev: TemplateResource<Brevkode.Automatisk, AutobrevTemplate<*>>,
 ) {
     route("/${autobrev.name}") {

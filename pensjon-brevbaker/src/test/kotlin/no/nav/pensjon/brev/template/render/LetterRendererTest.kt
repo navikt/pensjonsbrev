@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
-class LetterRendererTest {
+internal class LetterRendererTest {
 
     val letter = Letter(LetterExample.template, createLetterExampleDto(), Bokmal, felles)
 

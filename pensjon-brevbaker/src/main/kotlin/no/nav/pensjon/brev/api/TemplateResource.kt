@@ -23,7 +23,7 @@ import java.util.*
 private val objectMapper = jacksonObjectMapper()
 private val base64Decoder = Base64.getDecoder()
 
-class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
+internal class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     val name: String,
     templates: Set<T>,
     private val laTeXCompilerService: LaTeXCompilerService,

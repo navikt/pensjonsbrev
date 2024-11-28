@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invoke.Operation
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
-object TemplateDocumentationRenderer {
+internal object TemplateDocumentationRenderer {
 
     fun render(template: LetterTemplate<*, *>, lang: Language): TemplateDocumentation =
         TemplateDocumentation(
@@ -296,7 +296,7 @@ object TemplateDocumentationRenderer {
 
 }
 
-data class TemplateDocumentation(
+internal data class TemplateDocumentation(
     val title: List<ContentOrControlStructure<Element.ParagraphContent.Text>>,
     val outline: List<ContentOrControlStructure<Element.OutlineContent>>,
     val attachments: List<Attachment>,

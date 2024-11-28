@@ -8,9 +8,9 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import kotlin.reflect.*
 import kotlin.reflect.full.primaryConstructor
 
-class TemplateModelSpecificationError(msg: String) : Error(msg)
+internal class TemplateModelSpecificationError(msg: String) : Error(msg)
 
-class TemplateModelSpecificationFactory(val from: KClass<*>) {
+internal class TemplateModelSpecificationFactory(val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     fun build(): TemplateModelSpecification =

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 
-object BrevbakerBrevdataModule : SimpleModule() {
+internal object BrevbakerBrevdataModule : SimpleModule() {
     private fun readResolve(): Any = BrevbakerBrevdataModule
 
     private class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata

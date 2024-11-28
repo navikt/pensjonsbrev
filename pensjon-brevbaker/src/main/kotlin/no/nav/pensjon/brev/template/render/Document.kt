@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.latex.LatexAppendable
 import java.nio.file.Path
 import java.util.*
 
-interface Document {
+internal interface Document {
     val files: List<DocumentFile>
     fun base64EncodedFiles(): Map<String, String> =
         files.associate {
@@ -17,7 +17,7 @@ interface Document {
 
 private val base64Encoder: Base64.Encoder = Base64.getEncoder()
 
-class LatexDocument : Document {
+internal class LatexDocument : Document {
     private val _files: MutableList<DocumentFile> = mutableListOf()
     override val files: List<DocumentFile>
         get() = _files
@@ -35,7 +35,7 @@ class LatexDocument : Document {
     }
 }
 
-class HTMLDocument(indexHTMLBuilder: Appendable.() -> Unit) : Document {
+internal class HTMLDocument(indexHTMLBuilder: Appendable.() -> Unit) : Document {
     private val _files: MutableList<DocumentFile> = mutableListOf()
     override val files: List<DocumentFile>
         get() = _files
@@ -51,7 +51,7 @@ class HTMLDocument(indexHTMLBuilder: Appendable.() -> Unit) : Document {
     }
 }
 
-sealed class DocumentFile {
+internal sealed class DocumentFile {
     abstract val fileName: String
     abstract fun writeTo(path: Path)
 

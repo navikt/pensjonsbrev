@@ -8,7 +8,7 @@ import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.*
 import io.prometheus.client.CollectorRegistry
 
-object Metrics {
+internal object Metrics {
     val prometheusRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM)
 
     fun Application.configureMetrics() {

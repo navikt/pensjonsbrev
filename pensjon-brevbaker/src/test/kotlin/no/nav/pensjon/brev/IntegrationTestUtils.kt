@@ -76,7 +76,7 @@ fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("buil
 
 private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
 
-fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
+internal fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
 ): Letter<ParameterType> {
@@ -95,7 +95,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     return this
 }
 
-fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: String = "test_html") {
+internal fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: String = "test_html") {
     val dir = Path("build/$buildSubDir/$letterName")
     dir.toFile().mkdirs()
     htmlLetter.files.forEach { it.writeTo(dir) }
@@ -105,7 +105,7 @@ fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: Str
         }
 }
 
-fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
+internal fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
     Letter2Markup.render(this)
         .let {
             HTMLDocumentRenderer.render(

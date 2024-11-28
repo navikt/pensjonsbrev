@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.BrevTemplate
 
-class TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(templates: Set<T>) {
+internal class TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(templates: Set<T>) {
     private val templates: Map<String, T> = templates.associateBy { it.kode.kode() }
 
     fun listTemplatesWithMetadata() = templates.map { getTemplate(it.key)!!.description() }

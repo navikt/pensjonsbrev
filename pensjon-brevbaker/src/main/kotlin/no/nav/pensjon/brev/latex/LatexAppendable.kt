@@ -3,10 +3,10 @@ package no.nav.pensjon.brev.latex
 import no.nav.pensjon.brev.template.latexEscape
 
 @DslMarker
-annotation class LatexAppendableMarker
+internal annotation class LatexAppendableMarker
 
 @LatexAppendableMarker
-class LatexAppendable(private val output: Appendable) {
+internal class LatexAppendable(private val output: Appendable) {
 
     fun append(s: String, escape: Boolean = true) {
         output.append(latexString(s, escape))

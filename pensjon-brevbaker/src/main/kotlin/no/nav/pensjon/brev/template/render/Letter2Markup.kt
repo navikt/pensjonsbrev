@@ -11,9 +11,9 @@ import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
+internal data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
-object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
+internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private val languageSettings = pensjonLatexSettings
 
     override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkup =

@@ -7,7 +7,7 @@ import io.getunleash.util.UnleashConfig
 
 private const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
 
-object FeatureToggleHandler {
+internal object FeatureToggleHandler {
 
     private lateinit var unleashAction: () -> Unleash
     private val unleash: Unleash by lazy { unleashAction() }
@@ -40,9 +40,9 @@ object FeatureToggleHandler {
     }
 }
 
-enum class InitState { NEW, DONE }
+internal enum class InitState { NEW, DONE }
 
-class FeatureToggleConfig {
+internal class FeatureToggleConfig {
     internal lateinit var appName: String
     internal lateinit var environment: String
     internal lateinit var host: String

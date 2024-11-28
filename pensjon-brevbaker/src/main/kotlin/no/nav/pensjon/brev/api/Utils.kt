@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 
-fun LanguageCode.toLanguage(): Language =
+internal fun LanguageCode.toLanguage(): Language =
     when (this) {
         LanguageCode.BOKMAL -> Language.Bokmal
         LanguageCode.NYNORSK -> Language.Nynorsk
@@ -12,7 +12,7 @@ fun LanguageCode.toLanguage(): Language =
     }
 
 
-fun Language.toCode(): LanguageCode =
+internal fun Language.toCode(): LanguageCode =
     when (this) {
         Language.Bokmal -> LanguageCode.BOKMAL
         Language.Nynorsk -> LanguageCode.NYNORSK

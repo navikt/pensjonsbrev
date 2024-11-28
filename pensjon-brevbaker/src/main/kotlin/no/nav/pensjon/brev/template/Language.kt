@@ -11,7 +11,7 @@ typealias LangBokmalNynorsk = LanguageSupport.Double<Language.Bokmal, Language.N
 typealias LangBokmalEnglish = LanguageSupport.Double<Language.Bokmal, Language.English>
 typealias LangBokmalNynorskEnglish = LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
 
-data class LanguageSettings(val settings: Map<String, Element.OutlineContent.ParagraphContent.Text.Literal<BaseLanguages>>) {
+internal data class LanguageSettings(val settings: Map<String, Element.OutlineContent.ParagraphContent.Text.Literal<BaseLanguages>>) {
     class MissingLanguageSettingException(msg: String) : Exception(msg)
 
     fun writeLanguageSettings(language: Language, writeSetting: (name: String, value: String) -> Unit): Unit =
@@ -50,7 +50,7 @@ interface LanguageSupport : StableHash {
     interface Triple<Lang1 : Language, Lang2 : Language, Lang3 : Language> : Double<Lang1, Lang2>
 }
 
-sealed class LanguageCombination {
+internal sealed class LanguageCombination {
 
     data class Single<Lang : Language>(val first: Lang) : LanguageCombination(), LanguageSupport.Single<Lang>, StableHash by StableHash.of(first) {
         override fun supports(language: Language): Boolean = language == first

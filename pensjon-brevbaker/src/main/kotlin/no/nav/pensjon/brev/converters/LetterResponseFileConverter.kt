@@ -9,7 +9,7 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.charsets.*
 import no.nav.pensjon.brev.api.model.LetterResponse
 
-object LetterResponseFileConverter : ContentConverter {
+internal object LetterResponseFileConverter : ContentConverter {
     override suspend fun deserialize(charset: Charset, typeInfo: TypeInfo, content: ByteReadChannel): Any? = null
 
     override suspend fun serialize(contentType: ContentType, charset: Charset, typeInfo: TypeInfo, value: Any?): OutgoingContent? {

@@ -12,7 +12,7 @@ import io.ktor.server.routing.application
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 
-fun Application.brevbakerRouting(authenticationNames: Array<String>) {
+internal fun Application.brevbakerRouting(authenticationNames: Array<String>) {
     routing {
         authenticate(*authenticationNames, optional = application.developmentMode) {
             get("/ping_authorized") {

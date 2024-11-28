@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 
-object BrevkodeModule : SimpleModule() {
+internal object BrevkodeModule : SimpleModule() {
     private fun readResolve(): Any = BrevkodeModule
 
     init {
