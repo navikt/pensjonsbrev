@@ -105,8 +105,7 @@ fun createOmstillingsstoenadRevurderingDTO() =
 fun createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() =
     OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
         beregning =
-        OmstillingsstoenadBeregning(
-            innhold = createPlaceholderForRedigerbartInnhold(),
+        OmstillingsstoenadBeregningRevurderingRedigertbartUtfall(
             virkningsdato = LocalDate.of(2024, 1, 1),
             beregningsperioder =
             listOf(
@@ -158,33 +157,6 @@ fun createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() =
                 institusjon = false,
             ),
             sisteBeregningsperiodeNesteAar = null,
-            trygdetid =
-            Trygdetid(
-                trygdetidsperioder =
-                listOf(
-                    Trygdetidsperiode(
-                        datoFOM = LocalDate.of(2000, 1, 1),
-                        datoTOM = LocalDate.of(2023, 12, 31),
-                        land = "NOR",
-                        opptjeningsperiode = Periode(23, 0, 0),
-                        type = TrygdetidType.FAKTISK,
-                    ),
-                    Trygdetidsperiode(
-                        datoFOM = LocalDate.of(2024, 1, 1),
-                        datoTOM = LocalDate.of(2050, 12, 31),
-                        land = "NOR",
-                        opptjeningsperiode = Periode(26, 0, 0),
-                        type = TrygdetidType.FREMTIDIG,
-                    ),
-                ),
-                beregnetTrygdetidAar = 40,
-                prorataBroek = null,
-                beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
-                beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-                mindreEnnFireFemtedelerAvOpptjeningstiden = true,
-                navnAvdoed = "Elvis Presley",
-
-                ),
             oppphoersdato = LocalDate.of(2024, 12, 1),
             opphoerNesteAar = false,
         ),

@@ -12,7 +12,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRevurderingRedigertbartUtfall
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
@@ -26,7 +26,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.harUtbetaling
 
 data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
-    val beregning: OmstillingsstoenadBeregning,
+    val beregning: OmstillingsstoenadBeregningRevurderingRedigertbartUtfall,
     val erEndret: Boolean,
     val erEtterbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
