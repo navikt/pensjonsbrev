@@ -19,7 +19,7 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
 
     draft.isDirty = true;
     const theContentTheUserIsOn = block.content[literalIndex.contentIndex];
-    if (theContentTheUserIsOn.type === "LITERAL" || theContentTheUserIsOn.type === "VARIABLE") {
+    if (isTextContent(theContentTheUserIsOn)) {
       toggleBulletListOn(draft, literalIndex);
     } else if (theContentTheUserIsOn.type === "ITEM_LIST") {
       toggleBulletListOff(draft, literalIndex as ItemContentIndex);
