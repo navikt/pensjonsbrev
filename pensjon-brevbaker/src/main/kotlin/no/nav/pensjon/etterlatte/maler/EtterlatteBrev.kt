@@ -53,6 +53,15 @@ data class OmstillingsstoenadBeregning(
     val opphoerNesteAar: Boolean,
 ) : BrevDTO
 
+data class OmstillingsstoenadBeregningRevurderingRedigertbartUtfall(
+    val virkningsdato: LocalDate,
+    val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,
+    val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
+    val sisteBeregningsperiodeNesteAar: OmstillingsstoenadBeregningsperiode?,
+    val oppphoersdato: LocalDate? = null,
+    val opphoerNesteAar: Boolean,
+)
+
 data class OmstillingsstoenadBeregningsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,

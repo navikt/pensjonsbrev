@@ -94,24 +94,80 @@ fun createOmstillingsstoenadRevurderingDTO() =
                 oppphoersdato = LocalDate.of(2024, 12, 1),
                 opphoerNesteAar = false,
             ),
-        etterbetaling =
-            OmstillingsstoenadEtterbetaling(
-                fraDato = LocalDate.of(2024, 1, 1),
-                tilDato = LocalDate.of(2024, 1, 31),
-            ),
         erEndret = true,
         erOmgjoering = false,
         datoVedtakOmgjoering = null,
-        harFlereUtbetalingsperioder = true,
         lavEllerIngenInntekt = false,
-        harUtbetaling = true,
         feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
         tidligereFamiliepleier = false,
     )
 
 fun createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() =
     OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
+        beregning =
+        OmstillingsstoenadBeregningRevurderingRedigertbartUtfall(
+            virkningsdato = LocalDate.of(2024, 1, 1),
+            beregningsperioder =
+            listOf(
+                OmstillingsstoenadBeregningsperiode(
+                    datoFOM = LocalDate.of(2024, 2, 1),
+                    datoTOM = null,
+                    inntekt = Kroner(100000),
+                    oppgittInntekt = Kroner(600000),
+                    fratrekkInnAar = Kroner(100000),
+                    innvilgaMaaneder = 12,
+                    grunnbeloep = Kroner(118000),
+                    utbetaltBeloep = Kroner(5000),
+                    ytelseFoerAvkorting = Kroner(22000),
+                    restanse = Kroner(1000),
+                    trygdetid = 40,
+                    sanksjon = false,
+                    institusjon = false,
+                ),
+                OmstillingsstoenadBeregningsperiode(
+                    datoFOM = LocalDate.of(2024, 1, 1),
+                    datoTOM = LocalDate.of(2024, 1, 31),
+                    inntekt = Kroner(100000),
+                    oppgittInntekt = Kroner(600000),
+                    fratrekkInnAar = Kroner(100000),
+                    innvilgaMaaneder = 12,
+                    grunnbeloep = Kroner(118000),
+                    utbetaltBeloep = Kroner(10000),
+                    ytelseFoerAvkorting = Kroner(22000),
+                    restanse = Kroner(1000),
+                    trygdetid = 40,
+                    sanksjon = false,
+                    institusjon = false,
+                ),
+            ),
+            sisteBeregningsperiode =
+            OmstillingsstoenadBeregningsperiode(
+                datoFOM = LocalDate.of(2024, 2, 1),
+                datoTOM = null,
+                inntekt = Kroner(100000),
+                oppgittInntekt = Kroner(600000),
+                fratrekkInnAar = Kroner(100000),
+                innvilgaMaaneder = 12,
+                grunnbeloep = Kroner(118000),
+                utbetaltBeloep = Kroner(5000),
+                ytelseFoerAvkorting = Kroner(22000),
+                restanse = Kroner(1000),
+                trygdetid = 40,
+                sanksjon = false,
+                institusjon = false,
+            ),
+            sisteBeregningsperiodeNesteAar = null,
+            oppphoersdato = LocalDate.of(2024, 12, 1),
+            opphoerNesteAar = false,
+        ),
+        erEndret = true,
         erEtterbetaling = true,
-        harUtbetaling = true,
+        etterbetaling =
+        OmstillingsstoenadEtterbetaling(
+            fraDato = LocalDate.of(2024, 1, 1),
+            tilDato = LocalDate.of(2024, 1, 31),
+        ),
         feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
+        harFlereUtbetalingsperioder = true,
+        harUtbetaling = true,
     )
