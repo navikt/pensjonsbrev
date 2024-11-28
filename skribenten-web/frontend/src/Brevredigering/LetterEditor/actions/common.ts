@@ -81,6 +81,8 @@ export function newLiteral(args: {
   id?: Nullable<number>;
   text: string;
   editedText?: Nullable<string>;
+  fontType?: Nullable<FontType>;
+  editedFontType?: Nullable<FontType>;
   tags?: ElementTags[];
 }): LiteralValue {
   return {

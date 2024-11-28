@@ -4,6 +4,7 @@ import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
 import { create } from "./common";
 import { merge } from "./merge";
 import { split } from "./split";
+import { switchFontType } from "./switchFontType";
 import { switchTypography } from "./switchTypography";
 import { updateContentText } from "./updateContentText";
 
@@ -15,5 +16,6 @@ const Actions = {
   split,
   switchTypography,
   updateContentText,
+  switchFontType,
 };
 export default Actions;
