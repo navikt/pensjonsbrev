@@ -261,6 +261,26 @@ describe("ArrowLeft will move focus to previous editable content", () => {
       itemContentIndex: 0,
     });
   });
+  test("When marked a fritekst-felt, 2 arrow-lefts required to move to next editable content", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("andre literal"));
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{ArrowLeft}");
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{ArrowLeft}");
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+    });
+  });
 });
 describe("ArrowRight will move focus to next editable content", () => {
   test("unless already at the end of the document", async () => {
@@ -303,6 +323,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     });
 
     await user.keyboard("{ArrowRight}");
+    await user.keyboard("{ArrowRight}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
@@ -326,6 +347,26 @@ describe("ArrowRight will move focus to next editable content", () => {
       contentIndex: 0,
       itemIndex: 3,
       itemContentIndex: 0,
+    });
+  });
+  test("When marked a fritekst-felt, 2 arrow-rights required to move to next editable content", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("andre literal"));
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{ArrowRight}");
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{ArrowRight}");
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 2,
+      contentIndex: 0,
     });
   });
 });

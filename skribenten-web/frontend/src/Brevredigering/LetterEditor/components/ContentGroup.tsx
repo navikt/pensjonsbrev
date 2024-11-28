@@ -163,54 +163,97 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  /**
+   * Vi har 2 forventinger når vi taster venste-pil:
+   * 1. Hvis vi er i et fritekst-felt, og den er markert:
+   *  - Skal første tast fjerne markeringen og sette markøren til starten av teksten
+   *  - Skal andre tast flytte markøren til neste posisjon
+   * 2. Hvis vi er i en vanlig literal (eller en redigert fritekst-felt):
+   *  - skal tast alltid flytte posisjon
+   */
   const handleArrowLeft = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     if (contentEditableReference.current === null) return;
 
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
-    const cursorOffsetOrRange = getCursorOffsetOrRange();
+    const selection = window.getSelection();
+    const range = selection?.getRangeAt(0);
 
-    if (cursorOffsetOrRange === undefined) return;
+    if (selection && range && !range.collapsed && erFritekst) {
+      const nextFocus = allSpans[thisSpanIndex];
+      nextFocus.focus();
+      focusAtOffset(nextFocus.childNodes[0], range.startOffset);
+    } else {
+      const cursorOffsetOrRange = getCursorOffsetOrRange();
 
-    const cursorIsAtBeginning =
-      typeof cursorOffsetOrRange === "number" ? cursorOffsetOrRange === 0 : cursorOffsetOrRange.startOffset === 0;
+      if (cursorOffsetOrRange === undefined) return;
 
-    if (!cursorIsAtBeginning) return;
+      const cursorIsAtBeginning =
+        typeof cursorOffsetOrRange === "number" ? cursorOffsetOrRange === 0 : cursorOffsetOrRange.startOffset === 0;
 
-    const previousSpanIndex = thisSpanIndex - 1;
-    if (previousSpanIndex === -1) return;
+      if (!cursorIsAtBeginning) return;
 
-    event.preventDefault();
-    const nextFocus = allSpans[previousSpanIndex];
-    nextFocus.focus();
-    focusAtOffset(nextFocus.childNodes[0], nextFocus.textContent?.length ?? 0);
+      const previousSpanIndex = thisSpanIndex - 1;
+      if (previousSpanIndex === -1) return;
+
+      const isPreviousSpanInSameBlock =
+        allSpans[previousSpanIndex].parentElement === contentEditableReference.current.parentElement;
+
+      event.preventDefault();
+      const nextFocus = allSpans[previousSpanIndex];
+      nextFocus.focus();
+      // focusAtOffset(nextFocus.childNodes[0], nextFocus.textContent?.length ?? 0);
+      focusAtOffset(
+        nextFocus.childNodes[0],
+        isPreviousSpanInSameBlock ? (nextFocus.textContent?.length ?? 0) - 1 : nextFocus.textContent?.length ?? 0,
+      );
+    }
   };
 
+  /**
+   * Vi har 2 forventinger når vi taster høyre-pil:
+   * 1. Hvis vi er i et fritekst-felt, og den er markert:
+   *  - Skal første tast fjerne markeringen og sette markøren til slutten av teksten
+   *  - Skal andre tast flytte markøren til neste posisjon
+   * 2. Hvis vi er i en vanlig literal (eller en redigert fritekst-felt):
+   *  - skal tast alltid flytte posisjon
+   */
   const handleArrowRight = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     if (contentEditableReference.current === null) return;
 
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
-    const cursorOffsetOrRange = getCursorOffsetOrRange();
-    if (cursorOffsetOrRange === undefined) return;
+    const selection = window.getSelection();
+    const range = selection?.getRangeAt(0);
 
-    const cursorIsAtEnd =
-      typeof cursorOffsetOrRange === "number"
-        ? cursorOffsetOrRange >= text.length
-        : cursorOffsetOrRange.endOffset >= text.length;
+    if (selection && range && !range.collapsed && erFritekst) {
+      const nextFocus = allSpans[thisSpanIndex];
+      nextFocus.focus();
+      focusAtOffset(nextFocus.childNodes[0], range.endOffset);
+    } else {
+      const cursorOffsetOrRange = getCursorOffsetOrRange();
+      if (cursorOffsetOrRange === undefined) return;
 
-    if (!cursorIsAtEnd) return;
+      const cursorIsAtEnd =
+        typeof cursorOffsetOrRange === "number"
+          ? cursorOffsetOrRange >= text.length
+          : cursorOffsetOrRange.endOffset >= text.length;
 
-    const nextSpanIndex = thisSpanIndex + 1;
+      if (!cursorIsAtEnd) return;
 
-    if (nextSpanIndex > allSpans.length - 1) return;
+      const nextSpanIndex = thisSpanIndex + 1;
+      if (nextSpanIndex > allSpans.length - 1) return;
 
-    event.preventDefault();
-    const nextFocus = allSpans[nextSpanIndex];
-    nextFocus.focus();
-    focusAtOffset(nextFocus.childNodes[0], 0);
+      const isNextSpanInSameBlock =
+        allSpans[nextSpanIndex].parentElement === contentEditableReference.current.parentElement;
+
+      event.preventDefault();
+      const nextFocus = allSpans[nextSpanIndex];
+      nextFocus.focus();
+      focusAtOffset(nextFocus.childNodes[0], isNextSpanInSameBlock ? 1 : 0);
+    }
   };
 
   const handleArrowUp = (event: React.KeyboardEvent<HTMLSpanElement>) => {
