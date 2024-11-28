@@ -1,11 +1,7 @@
 package no.nav.pensjon.brev.routing
 
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.plugins.swagger.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
@@ -33,19 +29,5 @@ fun Application.brevRouting(authenticationNames: Array<String>, latexCompilerSer
                     redigerbareBrev = TemplateResource("etterlatteRedigerbare", EtterlatteMaler.hentRedigerbareMaler(), latexCompilerService)
                 )
             }
-            get("/ping_authorized") {
-                val principal = call.authentication.principal<JWTPrincipal>()
-                call.respondText("Authorized as: ${principal?.subject}")
-            }
         }
-
-        get("/isAlive") {
-            call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
-        }
-
-        get("/isReady") {
-            call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
-        }
-
-        swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
     }
