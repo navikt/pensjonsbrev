@@ -1,7 +1,7 @@
 import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
+import type { ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select } from "../utils";
 
@@ -26,6 +26,67 @@ describe("LetterEditorActions.toggleBulletList", () => {
       expect(
         select<LiteralValue>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 }),
       ).toEqual(toggledContent);
+    });
+    test("should not merge with itemList in next block if not last in current block", () => {
+      const state = letter(
+        paragraph(literal("b1-l1"), itemList(item(literal("b1-p1"))), literal("b1-l2")),
+        paragraph(itemList(item(literal("b2-p1")))),
+      );
+      const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0 });
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks[1]).toEqual(state.redigertBrev.blocks[1]);
+
+      const toggledContent = select<LiteralValue>(state, { blockIndex: 0, contentIndex: 0 });
+
+      const toggledInBlock = select<ParagraphBlock>(result, { blockIndex: 0 });
+      expect(toggledInBlock.content).toHaveLength(2);
+      expect(toggledInBlock.deletedContent).toEqual([toggledContent.id]);
+      expect(toggledInBlock?.content.at(-1)).toEqual(state.redigertBrev.blocks[0].content.at(-1));
+
+      expect(
+        select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }),
+      ).toEqual(toggledContent);
+    });
+    test("should not merge with itemList in previous and next block if not first and last in block", () => {
+      const state = letter(
+        paragraph(itemList(item(literal("b1-p1")))),
+        paragraph(
+          literal("b2-l1"),
+          itemList(item(literal("b2-ul1-p1"))),
+          literal("b2-l2"),
+          itemList(item(literal("b2-ul2-p1"))),
+          literal("b2-l3"),
+        ),
+        paragraph(itemList(item(literal("b3-p1")))),
+      );
+      const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
+
+      // blocks and content that should be untouched
+      expect(result.redigertBrev.blocks).toHaveLength(3);
+      expect(result.redigertBrev.blocks[0]).toEqual(state.redigertBrev.blocks[0]);
+      expect(result.redigertBrev.blocks[2]).toEqual(state.redigertBrev.blocks[2]);
+      expect(result.redigertBrev.blocks[1].content[0]).toEqual(state.redigertBrev.blocks[1].content[0]);
+      expect(result.redigertBrev.blocks[1].content.at(-1)).toEqual(state.redigertBrev.blocks[1].content.at(-1));
+
+      const toggledInBlock = select<ParagraphBlock>(result, { blockIndex: 1 });
+      expect(toggledInBlock.content).toHaveLength(3);
+
+      // deletedContent should contain the literal that was toggled and the itemList that we merged into the one we kept
+      expect(toggledInBlock.deletedContent).toHaveLength(2);
+      const shouldBeDeleted = state.redigertBrev.blocks[1].content
+        .map((c) => c.id)
+        .filter((id) => toggledInBlock.content.findIndex((keptContent) => keptContent.id === id) === -1);
+      expect(toggledInBlock.deletedContent).toEqual(shouldBeDeleted);
+
+      // content that we merged in to the itemList
+      expect(
+        select<LiteralValue>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 }),
+      ).toEqual(select<LiteralValue>(state, { blockIndex: 1, contentIndex: 2 }));
+      const keptItemList = select<ItemList>(result, { blockIndex: 1, contentIndex: 1 });
+      const mergedItemList = state.redigertBrev.blocks[1].content.find(
+        (c) => c.type === "ITEM_LIST" && c.id !== keptItemList.id,
+      ) as ItemList;
+      expect(keptItemList.items).toContain(mergedItemList.items[0]);
     });
   });
 });
