@@ -85,6 +85,29 @@ export type Item = Identifiable & {
   readonly content: TextContent[];
 };
 
+export const TABLE = "TABLE";
+export type Table = Identifiable & {
+  readonly type: typeof TABLE;
+  readonly rows: Row[];
+  readonly header: Header;
+  readonly deletedRows: number[];
+};
+export type Row = Identifiable & {
+  readonly cells: Cell[];
+};
+export type Cell = Identifiable & {
+  readonly text: TextContent[];
+};
+export type Header = Identifiable & {
+  readonly colSpec: ColumnSpec[];
+};
+export type ColumnSpec = Identifiable & {
+  readonly headerContent: Cell;
+  readonly alignment: ColumnAlignment;
+  readonly span: number;
+};
+export type ColumnAlignment = "LEFT" | "RIGHT";
+
 export type TextContent = LiteralValue | VariableValue;
 export type Content = ItemList | LiteralValue | VariableValue;
 

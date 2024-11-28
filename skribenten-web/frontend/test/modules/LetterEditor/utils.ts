@@ -6,19 +6,21 @@ import { SpraakKode } from "~/types/apiTypes";
 import { Distribusjonstype } from "~/types/brev";
 import type {
   AnyBlock,
+  Cell,
   Content,
   Identifiable,
   Item,
   ItemList,
   LiteralValue,
   ParagraphBlock,
+  Row,
+  Table,
   TextContent,
   Title1Block,
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { TITLE2 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, PARAGRAPH, TITLE1, VARIABLE } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, PARAGRAPH, TABLE, TITLE1, TITLE2, VARIABLE } from "~/types/brevbakerTypes";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
@@ -123,6 +125,31 @@ export function itemList(...items: Item[]): ItemList {
 
 export function item(...content: TextContent[]): Item {
   return { id: randomInt(1000), content };
+}
+
+export function table(headerCells: Cell[], rows: Row[]): Table {
+  return {
+    id: randomInt(1000),
+    type: TABLE,
+    rows,
+    header: {
+      id: randomInt(1000),
+      colSpec: headerCells.map((c) => ({ id: randomInt(1000), headerContent: c, alignment: "LEFT", span: 1 })),
+    },
+    deletedRows: [],
+  };
+}
+export function cell(...content: TextContent[]): Cell {
+  return {
+    id: randomInt(1000),
+    text: content,
+  };
+}
+export function row(...cells: Cell[]): Row {
+  return {
+    id: randomInt(1000),
+    cells,
+  };
 }
 
 export function asNew<T extends Identifiable>(c: T): T {
