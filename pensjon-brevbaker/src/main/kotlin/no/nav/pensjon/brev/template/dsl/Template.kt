@@ -20,7 +20,7 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     }
 
 @TemplateModelHelpers([Felles::class])
-interface TemplateGlobalScope<LetterData : Any> {
+sealed interface TemplateGlobalScope<LetterData : Any> {
     val argument: Expression<LetterData>
         get() = Expression.FromScope.Argument()
 

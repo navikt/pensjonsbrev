@@ -25,7 +25,7 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<
 
 }
 
-internal interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
+internal sealed interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
     fun addOutlineContent(e: OutlineElement<Lang>)
 
     fun title1(create: TextOnlyScope<Lang, LetterData>.() -> Unit) {

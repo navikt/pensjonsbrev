@@ -25,7 +25,7 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, 
     }
 }
 
-interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+sealed interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
 
     fun addTextContent(e: TextElement<Lang>)
 

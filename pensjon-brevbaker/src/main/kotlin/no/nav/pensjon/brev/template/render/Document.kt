@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.latex.LatexAppendable
 import java.nio.file.Path
 import java.util.*
 
-internal interface Document {
+internal sealed interface Document {
     val files: List<DocumentFile>
     fun base64EncodedFiles(): Map<String, String> =
         files.associate {

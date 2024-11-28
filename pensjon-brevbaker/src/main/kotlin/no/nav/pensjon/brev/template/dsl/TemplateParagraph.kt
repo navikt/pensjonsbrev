@@ -28,7 +28,7 @@ class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> : ParagraphSc
     }
 }
 
-internal interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData> {
+internal sealed interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData> {
     fun addParagraphContent(e: ParagraphContentElement<Lang>)
 
     fun list(create: ListScope<Lang, LetterData>.() -> Unit) {

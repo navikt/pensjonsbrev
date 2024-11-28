@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.toCode
 import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 
-interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
+sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
     val template: LetterTemplate<*, LetterData>
     val kode: Kode
     fun description(): TemplateDescription

@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 
-interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> : TemplateGlobalScope<LetterData> {
+sealed interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> : TemplateGlobalScope<LetterData> {
     fun scopeFactory(): Scope
     fun addControlStructure(e: ContentOrControlStructure<Lang, C>)
     val elements: List<ContentOrControlStructure<Lang, C>>
