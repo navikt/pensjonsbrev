@@ -114,7 +114,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
-  const erFritekst = content.tags.includes(ElementTags.FRITEKST);
+  //hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
+  const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
 
   const text = (content.editedText ?? content.text) || "​";
   useEffect(() => {

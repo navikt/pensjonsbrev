@@ -60,14 +60,14 @@ const complexEditorState = letter(
   paragraph(literal("Dokumentet avsluttes med literal")),
 );
 
-function setupComplex() {
+function setupComplex(stateOverride?: LetterEditorState) {
   return {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider
-        value={{ freeze: false, error: false, editorState: complexEditorState, setEditorState }}
+        value={{ freeze: false, error: false, editorState: stateOverride ?? complexEditorState, setEditorState }}
       >
-        {complexEditorState.redigertBrev.blocks.map((block, blockIndex) => (
+        {(stateOverride ?? complexEditorState).redigertBrev.blocks.map((block, blockIndex) => (
           <div className={block.type} key={blockIndex}>
             <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
           </div>
@@ -339,6 +339,22 @@ describe("onClickHandler", () => {
     expect(selection).not.toBeNull();
     expect(selection?.toString()).toBe("andre literal");
   });
+
+  test("clicking on a fritekst variable that has been edited should not select the whole element", async () => {
+    const state = letter(
+      paragraph(
+        literal("første literal"),
+        variable("X"),
+        newLiteral({ text: "andre literal", editedText: "Hei på deg", tags: [ElementTags.FRITEKST] }),
+      ),
+    );
+    const { user } = setupComplex(state);
+
+    await user.click(screen.getByText("Hei på deg"));
+    const selection = window.getSelection();
+    expect(selection).not.toBeNull();
+    expect(selection?.toString()).toBe("");
+  });
 });
 
 describe("onFocusHandler", () => {
@@ -350,5 +366,26 @@ describe("onFocusHandler", () => {
     const selection = window.getSelection();
     expect(selection).not.toBeNull();
     expect(selection?.toString()).toBe("andre literal");
+  });
+  test("tabbing through a fritkest variable that has been edited should not be focused", async () => {
+    const state = letter(
+      paragraph(
+        literal("første literal"),
+        variable("X"),
+        newLiteral({
+          text: "andre literal",
+          editedText: "Denne skal ikke bli fokusert fordi den er redigert",
+          tags: [ElementTags.FRITEKST],
+        }),
+        newLiteral({ text: "tredje literal", tags: [ElementTags.FRITEKST] }),
+      ),
+    );
+    const { user } = setupComplex(state);
+
+    await user.click(screen.getByText("første literal"));
+    await user.tab();
+    const selection = window.getSelection();
+    expect(selection).not.toBeNull();
+    expect(selection?.toString()).toBe("tredje literal");
   });
 });
