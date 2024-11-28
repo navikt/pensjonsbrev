@@ -6,7 +6,7 @@ import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
 
-abstract class Operation : StableHash {
+sealed class Operation : StableHash {
     // Since most operations don't have fields, and hence can't be data classes,
     // we override equals+hashCode to compare by class.
     override fun equals(other: Any?): Boolean {
@@ -66,7 +66,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     }
 }
 
-abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
+sealed class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
     data class Documentation(val name: String, val syntax: Notation) {
         enum class Notation { PREFIX, INFIX, POSTFIX, FUNCTION }
     }

@@ -336,7 +336,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
 
 }
 
-abstract class TemplateValidationException(msg: String) : Exception(msg)
+sealed class TemplateValidationException(msg: String) : Exception(msg)
 class MissingScopeForNextItemEvaluationException(msg: String) : TemplateValidationException(msg)
 class InvalidScopeTypeException(msg: String) : TemplateValidationException(msg)
 class InvalidTableDeclarationException(msg: String) : TemplateValidationException(msg)
