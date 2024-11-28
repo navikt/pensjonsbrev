@@ -303,7 +303,6 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
   const hasContentBefore = thisBlockContentBeforeItemList.length > 0;
 
   const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
-  const hasOnlyOneItem = thisItemList.items.length === 1;
   const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
   const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
 
@@ -311,7 +310,7 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
   const hasContentAfter = thisBlockContentAfterItemList.length > 0;
 
   const newPrevBlock = newParagraph({ content: thisBlockContentBeforeItemList });
-  const newThisBlock = newParagraph({ id: hasOnlyOneItem ? thisBlock.id : null, content: thisItem.content });
+  const newThisBlock = newParagraph({ content: thisItem.content });
   const hasItemsAfter = itemsAfter.length > 0;
 
   const newNextBlock = newParagraph({
@@ -334,7 +333,7 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
 
   args.draft.redigertBrev.blocks = newBlocks;
   args.draft.redigertBrev.deletedBlocks = [...args.draft.redigertBrev.deletedBlocks, thisBlock.id].filter(
-    (id) => id !== null,
+    (id) => !!id,
   ) as number[];
   args.draft.focus = {
     blockIndex: newParagraphBlockIndex,
