@@ -70,7 +70,6 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
   const doesThisBlockStartWithAnItemList = newThisParagraph.content[0].type === "ITEM_LIST";
 
   if (doesPreviousBlockEndWithAnItemList && doesThisBlockStartWithAnItemList) {
-    console.log("before");
     const previousBlock = draft.redigertBrev.blocks[literalIndex.blockIndex - 1];
 
     const previousBlockContentBeforeItemList = previousBlock.content.slice(0, -1);
@@ -120,7 +119,6 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
 
   //-- Merging av punktlister dersom det finnes en punktliste-blokk etter (merk at her bygger vi videre på det som potensielt er allerede blitt merget fra før)
   if (doesThisBlockEndWithAnItemList && doesNextBlockStartWithAnItemList) {
-    console.log("after");
     const nextBlock = draft.redigertBrev.blocks[possibleNewThisBlockIndex + 1];
 
     const thisBlockContentBeforeItemList = possibleNewThisBlock.content.slice(0, -1);
