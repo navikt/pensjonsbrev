@@ -30,7 +30,7 @@ describe("toggle bullet-liet", () => {
     it("toggler et enkelt avsnitt", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph({ content: [newLiteral("Dette er kun et avsnitt")] })],
+          blocks: [newParagraph({ content: [newLiteral({ text: "Dette er kun et avsnitt" })] })],
         }),
       });
 
@@ -49,7 +49,7 @@ describe("toggle bullet-liet", () => {
         redigertBrev: nyRedigertBrev({
           blocks: [
             newParagraph({
-              content: [newItemList({ items: [newItem("Punkt 1")] }), newLiteral("Avsnitt med punktliste")],
+              content: [newItemList({ items: [newItem("Punkt 1")] }), newLiteral({ text: "Avsnitt med punktliste" })],
             }),
           ],
         }),
@@ -67,7 +67,7 @@ describe("toggle bullet-liet", () => {
         redigertBrev: nyRedigertBrev({
           blocks: [
             newParagraph({
-              content: [newLiteral("Avsnitt med punktliste"), newItemList({ items: [newItem("Punkt 1")] })],
+              content: [newLiteral({ text: "Avsnitt med punktliste" }), newItemList({ items: [newItem("Punkt 1")] })],
             }),
           ],
         }),
@@ -88,7 +88,7 @@ describe("toggle bullet-liet", () => {
             newParagraph({
               content: [
                 newItemList({ items: [newItem("Punkt 1")] }),
-                newLiteral("Avsnitt med punktliste"),
+                newLiteral({ text: "Avsnitt med punktliste" }),
                 newItemList({ items: [newItem("Punkt 2")] }),
               ],
             }),
@@ -110,7 +110,7 @@ describe("toggle bullet-liet", () => {
         redigertBrev: nyRedigertBrev({
           blocks: [
             newParagraph({ content: [newItemList({ items: [newItem("Punkt 1")] })] }),
-            newParagraph({ content: [newLiteral("Avsnitt uten punktliste")] }),
+            newParagraph({ content: [newLiteral({ text: "Avsnitt uten punktliste" })] }),
           ],
         }),
       });
@@ -128,7 +128,7 @@ describe("toggle bullet-liet", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
-            newParagraph({ content: [newLiteral("Avsnitt uten punktliste")] }),
+            newParagraph({ content: [newLiteral({ text: "Avsnitt uten punktliste" })] }),
             newParagraph({ content: [newItemList({ items: [newItem("Punkt 1")] })] }),
           ],
         }),
@@ -147,7 +147,7 @@ describe("toggle bullet-liet", () => {
         redigertBrev: nyRedigertBrev({
           blocks: [
             newParagraph({ content: [newItemList({ items: [newItem("Punkt 1")] })] }),
-            newParagraph({ content: [newLiteral("Avsnitt uten punktliste")] }),
+            newParagraph({ content: [newLiteral({ text: "Avsnitt uten punktliste" })] }),
             newParagraph({ content: [newItemList({ items: [newItem("Punkt 2")] })] }),
           ],
         }),
@@ -205,9 +205,9 @@ describe("toggle bullet-liet", () => {
           blocks: [
             newParagraph({
               content: [
-                newLiteral("Denne skal ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal ikke forsvinne når man trigger av punktliste" }),
                 newItemList({ items: newItems("skal brytes ut", "Punkt 1") }),
-                newLiteral("Denne skal heller ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal heller ikke forsvinne når man trigger av punktliste" }),
               ],
             }),
           ],
@@ -234,9 +234,9 @@ describe("toggle bullet-liet", () => {
           blocks: [
             newParagraph({
               content: [
-                newLiteral("Denne skal ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal ikke forsvinne når man trigger av punktliste" }),
                 newItemList({ items: newItems("skal brytes ut") }),
-                newLiteral("Denne skal heller ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal heller ikke forsvinne når man trigger av punktliste" }),
               ],
             }),
           ],
@@ -263,9 +263,9 @@ describe("toggle bullet-liet", () => {
           blocks: [
             newParagraph({
               content: [
-                newLiteral("Denne skal ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal ikke forsvinne når man trigger av punktliste" }),
                 newItemList({ items: newItems("Punkt 1", "skal brytes ut", "punkt 2") }),
-                newLiteral("Denne skal heller ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal heller ikke forsvinne når man trigger av punktliste" }),
               ],
             }),
           ],
@@ -292,9 +292,9 @@ describe("toggle bullet-liet", () => {
           blocks: [
             newParagraph({
               content: [
-                newLiteral("Denne skal ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal ikke forsvinne når man trigger av punktliste" }),
                 newItemList({ items: newItems("Punkt 1", "skal brytes ut") }),
-                newLiteral("Denne skal heller ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal heller ikke forsvinne når man trigger av punktliste" }),
               ],
             }),
           ],
@@ -321,9 +321,9 @@ describe("toggle bullet-liet", () => {
           blocks: [
             newParagraph({
               content: [
-                newLiteral("Denne skal ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal ikke forsvinne når man trigger av punktliste" }),
                 newItemList({ items: newItems("skal brytes ut") }),
-                newLiteral("Denne skal heller ikke forsvinne når man trigger av punktliste"),
+                newLiteral({ text: "Denne skal heller ikke forsvinne når man trigger av punktliste" }),
               ],
             }),
           ],
