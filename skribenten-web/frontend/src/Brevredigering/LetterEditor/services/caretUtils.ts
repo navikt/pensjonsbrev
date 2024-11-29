@@ -42,6 +42,7 @@ export function focusAtOffset(node: ChildNode, offset: number) {
     const range = document.createRange();
     range.setStart(node, offset);
     range.collapse();
+    node.parentElement?.focus();
 
     const selection = window.getSelection();
     selection?.removeAllRanges();
