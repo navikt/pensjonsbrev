@@ -6,9 +6,6 @@ ingresses:
 groups:
   - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
 
-externalHosts:
-  - teampensjon-unleash-api.nav.cloud.nais.io
-
 preAuthorized:
   - name: pensjon-pen-q0
     namespace: pensjon-q0
