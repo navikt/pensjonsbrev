@@ -177,32 +177,29 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
-    const selection = window.getSelection();
-    const range = selection?.getRangeAt(0);
+    const cursorOffsetOrRange = getCursorOffsetOrRange();
+    if (cursorOffsetOrRange === undefined) return;
 
-    if (selection && range && !range.collapsed && erFritekst) {
+    const isCursorOffset = typeof cursorOffsetOrRange === "number";
+    const isRange = !isCursorOffset;
+
+    if (isRange && erFritekst) {
       const nextFocus = allSpans[thisSpanIndex];
-      nextFocus.focus();
-      focusAtOffset(nextFocus.childNodes[0], range.startOffset);
+      focusAtOffset(nextFocus.childNodes[0], cursorOffsetOrRange.startOffset);
     } else {
-      const cursorOffsetOrRange = getCursorOffsetOrRange();
-
-      if (cursorOffsetOrRange === undefined) return;
-
-      const cursorIsAtBeginning =
-        typeof cursorOffsetOrRange === "number" ? cursorOffsetOrRange === 0 : cursorOffsetOrRange.startOffset === 0;
+      const cursorIsAtBeginning = isCursorOffset ? cursorOffsetOrRange === 0 : cursorOffsetOrRange.startOffset === 0;
 
       if (!cursorIsAtBeginning) return;
 
       const previousSpanIndex = thisSpanIndex - 1;
-      if (previousSpanIndex === -1) return;
+      if (previousSpanIndex < 0) return;
 
       const isPreviousSpanInSameBlock =
         allSpans[previousSpanIndex].parentElement === contentEditableReference.current.parentElement;
 
       event.preventDefault();
       const nextFocus = allSpans[previousSpanIndex];
-      nextFocus.focus();
+
       focusAtOffset(
         nextFocus.childNodes[0],
         isPreviousSpanInSameBlock ? (nextFocus.textContent?.length ?? 0) - 1 : nextFocus.textContent?.length ?? 0,
@@ -224,21 +221,19 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
-    const selection = window.getSelection();
-    const range = selection?.getRangeAt(0);
+    const cursorOffsetOrRange = getCursorOffsetOrRange();
+    if (cursorOffsetOrRange === undefined) return;
 
-    if (selection && range && !range.collapsed && erFritekst) {
+    const isCursorOffset = typeof cursorOffsetOrRange === "number";
+    const isRange = !isCursorOffset;
+
+    if (isRange && erFritekst) {
       const nextFocus = allSpans[thisSpanIndex];
-      nextFocus.focus();
-      focusAtOffset(nextFocus.childNodes[0], range.endOffset);
+      focusAtOffset(nextFocus.childNodes[0], cursorOffsetOrRange.endOffset);
     } else {
-      const cursorOffsetOrRange = getCursorOffsetOrRange();
-      if (cursorOffsetOrRange === undefined) return;
-
-      const cursorIsAtEnd =
-        typeof cursorOffsetOrRange === "number"
-          ? cursorOffsetOrRange >= text.length
-          : cursorOffsetOrRange.endOffset >= text.length;
+      const cursorIsAtEnd = isCursorOffset
+        ? cursorOffsetOrRange >= text.length
+        : cursorOffsetOrRange.endOffset >= text.length;
 
       if (!cursorIsAtEnd) return;
 
@@ -250,7 +245,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
       event.preventDefault();
       const nextFocus = allSpans[nextSpanIndex];
-      nextFocus.focus();
       focusAtOffset(nextFocus.childNodes[0], isNextSpanInSameBlock ? 1 : 0);
     }
   };
@@ -340,7 +334,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       contentEditable
       css={
         erFritekst &&
-        content.editedText === null &&
         css`
           color: var(--a-blue-500);
           text-decoration: underline;
