@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -61,11 +62,20 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
             }
         }
 
-        put<String>("/{brevId}/attestant") { signatur ->
-            if (signatur.trim().isNotEmpty()) {
-                respond(brevredigeringService.oppdaterSignaturAttestant(brevId = call.parameters.getOrFail<Long>("brevId"), signaturAttestant = signatur))
-            } else {
-                call.respond(HttpStatusCode.BadRequest, "Signatur kan ikke være tom")
+        route("/{brevId}/attestant") {
+            put<String> { signatur ->
+                if (signatur.trim().isNotEmpty()) {
+                    respond(brevredigeringService.oppdaterSignaturAttestant(brevId = call.parameters.getOrFail<Long>("brevId"), signaturAttestant = signatur))
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "Signatur kan ikke være tom")
+                }
+            }
+            get {
+                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val saksId = call.attributes[SakKey].saksId
+                brevredigeringService.hentSignaturAttestant(saksId = saksId, brevId = brevId)
+                    ?.onOk { it?.let { call.respond(it) } ?: call.respond(HttpStatusCode.NoContent) }
+                    ?.onError { error, _ -> call.respond(HttpStatusCode.InternalServerError, error) }
             }
         }
 
