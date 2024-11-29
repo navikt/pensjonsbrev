@@ -40,6 +40,7 @@ fun Application.brevbakerModule(templates: AllTemplates) {
     monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")
     }
+    monitor.subscribe(ServerReady) { it.log.info("Ferdig med å sette opp applikasjonen") }
 
     install(CallLogging) {
         callIdMdc("x_correlationId")
@@ -131,7 +132,6 @@ fun Application.brevbakerModule(templates: AllTemplates) {
 
     configureMetrics()
     brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
-    monitor.subscribe(ServerReady) { it.log.info("Ferdig med å sette opp applikasjonen") }
 }
 
 private fun ApplicationConfig.stringProperty(path: String): String = this.property(path).getString()
