@@ -28,7 +28,7 @@ import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/Model
 import { ApiError } from "~/components/ApiError";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import type { EditedLetter } from "~/types/brevbakerTypes";
+import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
