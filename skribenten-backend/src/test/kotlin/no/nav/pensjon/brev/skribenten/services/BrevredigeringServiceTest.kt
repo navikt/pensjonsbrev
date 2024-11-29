@@ -609,12 +609,11 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `attesterer og sender vedtaksbrev hvis avsender har attestantrolle`(): Unit = runBlocking {
+    fun `attesterer hvis avsender har attestantrolle`(): Unit = runBlocking {
         Features.override(Features.attestant, true)
         clearMocks(brevbakerMock, penService)
 
         coEvery { penService.hentPesysBrevdata(any(), any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
-        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
         coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
@@ -639,7 +638,7 @@ class BrevredigeringServiceTest {
                 distribusjonstype = Distribusjonstype.SENTRALPRINT
             )
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
-            brevredigeringService.sendBrev(sak.saksId, brev.info.id).also { assertTrue(it is ServiceResult.Ok) }
+            brevredigeringService.attester(sak.saksId, brev.info.id)
         }
 
         coVerify {
@@ -650,18 +649,14 @@ class BrevredigeringServiceTest {
                 eq(principalNavEnhetId),
             )
         }
-        coVerify {
-            penService.sendbrev(any(), any())
-        }
     }
 
     @Test
-    fun `attesterer ikke og sender ikke vedtaksbrev hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
+    fun `attesterer ikke hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
         Features.override(Features.attestant, true)
         clearMocks(brevbakerMock, penService)
 
         coEvery { penService.hentPesysBrevdata(any(), any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
-        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
         coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
@@ -686,15 +681,12 @@ class BrevredigeringServiceTest {
             )
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
             assertThrows<BrevredigeringException.HarIkkeAttestantrolleException> {
-                brevredigeringService.sendBrev(sak.saksId, brev.info.id).also { assertTrue(it is ServiceResult.Error) }
+                brevredigeringService.attester(sak.saksId, brev.info.id)
             }
         }
 
         coVerify {
             penService.hentPesysBrevdata(any(), any(), any(), any())
-        }
-        coVerify(exactly = 0) {
-            penService.sendbrev(any(), any())
         }
     }
 
