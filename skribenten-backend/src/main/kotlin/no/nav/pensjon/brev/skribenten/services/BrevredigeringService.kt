@@ -36,6 +36,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.R
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -291,8 +292,6 @@ class BrevredigeringService(
             validerErFerdigRedigert(brev)
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
-//           TODO: verifiserVedtaksbrevAttestert(brev, template?.metadata?.brevtype)
-            // skal her no berre verifisere at vedtaksbrevet er attestert
 
             if (template == null) {
                 ServiceResult.Error(
@@ -300,6 +299,7 @@ class BrevredigeringService(
                     HttpStatusCode.InternalServerError
                 )
             } else {
+                validerVedtaksbrevAttestert(brev, template.metadata.brevtype)
                 hentEllerOpprettPdf(brev.info.saksId, brev.info.id)?.then {
                     penService.sendbrev(
                         sendRedigerbartBrevRequest = Pen.SendRedigerbartBrevRequest(
@@ -327,6 +327,12 @@ class BrevredigeringService(
                 }
             }
         } else null
+    }
+
+    private fun validerVedtaksbrevAttestert(brev: Dto.Brevredigering, brevtype: LetterMetadata.Brevtype) {
+        if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV && brev.info.attestertAv == null) {
+            throw BrevIkkeKlartTilSendingException("Brevet ${brev.info.id} er ikke attestert.")
+        }
     }
 
     private suspend fun medAttestertVedtaksbrev(saksId: Long, brevId: Long, attester: suspend (UserPrincipal, Dto.Brevredigering) -> ServiceResult<Dto.Brevredigering>?) {
