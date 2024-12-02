@@ -48,7 +48,9 @@ dependencies {
     implementation("com.google.devtools.ksp:symbol-processing-api:$kotlinVersion-$kspVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
-    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0")
+    // Byttet til fork som støtter kotlin > 2.0
+    //    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0")
+    testImplementation("dev.zacsweers.kctfork:ksp:0.7.0")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
 }
