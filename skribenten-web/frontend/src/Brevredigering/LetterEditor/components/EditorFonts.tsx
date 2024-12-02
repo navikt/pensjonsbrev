@@ -8,7 +8,6 @@ import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
-import { getCursorOffset, getCursorOffsetOrRange } from "../services/caretUtils";
 
 const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
