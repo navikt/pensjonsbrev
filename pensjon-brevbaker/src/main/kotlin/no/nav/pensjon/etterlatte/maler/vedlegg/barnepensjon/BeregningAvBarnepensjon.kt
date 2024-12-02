@@ -349,7 +349,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                                 ". The deceased's total contribution time amounts to " + aarTrygdetid.format() + " years.",
                     )
                 }.orShow {
-                    // TODO mangler tekster ved ukjent avdød
+                    // TODO støtter ikke to trygdetider med en ukjent og en kjent avdød. To ukjente skal ikke støttes i Gjenny
                 }
 
             }.orShow {
@@ -369,7 +369,17 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                                 "The deceased's total contribution time amounts to " + aarTrygdetid.format() + " years.",
                     )
                 }.orShow {
-                    // TODO mangler tekster ved ukjent avdød
+                    textExpr(
+                        Bokmal to "For å få full pensjon må minst en av foreldrene ha hatt minst 40 års trygdetid. ".expr() +
+                                "Trygdetid over 40 år blir ikke tatt med i beregningen. Avdødes samlede trygdetid er " +
+                                "beregnet til " + aarTrygdetid.format() + " år.",
+                        Nynorsk to "For at det skal kunne betalast ut full pensjon, må minst éin av foreldra ".expr() +
+                                "ha hatt minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
+                                "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år",
+                        English to "To achieve a full pension, at least one of the parents must have accumulated 40 years ".expr() +
+                                "of contribution time. Contribution time above 40 years of coverage is not included in the calculation. " +
+                                "The deceased's total contribution time amounts to " + aarTrygdetid.format() + " years.",
+                    )
                 }
             }
         }
@@ -435,7 +445,17 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                                 "of " + navnAvdoed + ". The deceased total contribution time amounts to " + aarTrygdetid.format() + " years.",
                     )
                 }.orShow {
-                    // TODO mangler tekster ved ukjent avdød
+                    textExpr(
+                        Bokmal to "For å få full pensjon må minst en av foreldrene ha hatt minst 40 års trygdetid. ".expr() +
+                                "Trygdetid over 40 år blir ikke tatt med i beregningen. Avdødes samlede trygdetid er beregnet " +
+                                "til " + aarTrygdetid.format() + " år.",
+                        Nynorsk to "For at det skal kunne betalast ut full pensjon, må minst éin av foreldra ha hatt ".expr() +
+                                "minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
+                                "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år.",
+                        English to "To achieve a full pension, at least one of the parents must have accumulated ".expr() +
+                                "40 years of contribution time. Contribution time above 40 years of coverage is not included " +
+                                "in the calculation. The deceased total contribution time amounts to " + aarTrygdetid.format() + " years.",
+                    )
                 }
 
             }
@@ -563,7 +583,20 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                         )
                     }
                 }.orShow {
-                    // TODO mangler tekster ved ukjent avdød
+                    paragraph {
+                        textExpr(
+                            Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. ".expr() +
+                                    "Trygdetid over 40 år blir ikke tatt med i beregningen. Avdødes samlede trygdetid er beregnet " +
+                                    "til " + aarTrygdetid.format() + " år.",
+                            Nynorsk to "For at det skal kunne betalast ut full pensjon, må minst éin av foreldra ha hatt ".expr() +
+                                    "minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
+                                    "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år.",
+                            English to "To achieve a full pension, at least one of the parents must have accumulated ".expr() +
+                                    "40 years of contribution time. Contribution time above 40 years of coverage is not " +
+                                    "included in the calculation. The deceased total contribution time amounts to " +
+                                    aarTrygdetid.format() + " years. ",
+                        )
+                    }
                 }
             }
             paragraph {
@@ -610,7 +643,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                                     "beregningen av trygdetid.",
                             Nynorsk to "Frå ".expr() + andreVirk.format() + " er det den andre forelderen sin " +
                                     "trygdetid som er brukt i beregningen. Avdødes samlede trygdetid er beregnet til " +
-                                    aarTrygdetid.format() + " år ved nasjonal opptjening. Dettefordi den gir beste " +
+                                    aarTrygdetid.format() + " år ved nasjonal opptjening. Dette fordi den gir beste " +
                                     "utrekning av trygdetid.",
                             English to "From ".expr() + andreVirk.format() + " it is the other parent's total " +
                                     "contribution time that has been used in the calculation. The deceased's total " +
