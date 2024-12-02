@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.FormatStyle
@@ -44,20 +45,30 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun apply(first: Telefonnummer, second: Language): String = first.format()
     }
 
+    object AarFormat : LocalizedFormatter<Collection<Year>>() {
+        override fun stableHashCode(): Int = "AarFormat".hashCode()
+        override fun apply(first: Collection<Year>, second: Language): String =
+            formaterListe(first.map { it.value.toString() }, second)
+    }
+
     object CollectionFormat : LocalizedFormatter<Collection<String>>() {
         override fun stableHashCode(): Int = "CollectionFormat".hashCode()
         override fun apply(first: Collection<String>, second: Language): String {
-            return if (first.size == 1) {
-                first.first()
-            } else {
-                val lastSeparator = when (second) {
-                    Language.Bokmal -> " og "
-                    Language.Nynorsk -> " og "
-                    Language.English -> " and "
-                }
-                first.take(first.size - 1).joinToString(", ") + lastSeparator + first.last()
-            }
+            return formaterListe(first, second)
         }
-
     }
 }
+
+private fun formaterListe(first: Collection<String>, second: Language): String =
+    when {
+        first.isEmpty() -> ""
+        first.size == 1 -> first.first()
+        else -> {
+            val lastSeparator = when (second) {
+                Language.Bokmal -> " og "
+                Language.Nynorsk -> " og "
+                Language.English -> " and "
+            }
+            first.take(first.size - 1).joinToString(", ") + lastSeparator + first.last()
+        }
+    }

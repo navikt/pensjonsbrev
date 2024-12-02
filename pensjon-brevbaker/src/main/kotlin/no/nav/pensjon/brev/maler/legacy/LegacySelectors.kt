@@ -2,6 +2,11 @@
 
 package no.nav.pensjon.brev.maler.legacy
 
+import no.nav.pensjon.brev.api.model.maler.legacy.GrunnlagSelectors.omsorgGodskrGrunnlagListe
+import no.nav.pensjon.brev.api.model.maler.legacy.KravhodeSelectors.kravmottattdato_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.OmsorgGodskrGrunnlagSelectors
+import no.nav.pensjon.brev.api.model.maler.legacy.OmsorgLegacyData
+import no.nav.pensjon.brev.api.model.maler.legacy.OmsorgLegacyDataSelectors.vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt
@@ -29,6 +34,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.pebrevkode_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.personsak
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtaksbrevSelectors.grunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtaksbrevSelectors.vedtaksdata
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtaksdataSelectors.kravhode_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.GrunnlagSelectors.persongrunnlagsliste_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.brukerflyktning_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.personbostedsland_safe
@@ -237,6 +245,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.getOrNull
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.map
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -449,3 +458,11 @@ fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskade
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat(): Expression<String> = vedtaksbrev.vedtaksdata.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkar_safe.yrkesskaderesultat_safe.ifNull("")
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom(): Expression<LocalDate?> = vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkarvirkningfom_safe
 fun Expression<PE>.vedtaksdata_virkningfom(): Expression<LocalDate?> = vedtaksbrev.vedtaksdata.virkningfom_safe
+
+object OmsorgLegacyData {
+    fun Expression<OmsorgLegacyData>.grunnlag_omsorggodskrgrunnlagliste_omsorggodskrgrunnlagar() =
+        vedtaksbrev.grunnlag.omsorgGodskrGrunnlagListe.map(OmsorgGodskrGrunnlagSelectors.aarSelector).ifNull(emptyList())
+
+    fun Expression<OmsorgLegacyData>.omsorg_vedtaksdata_kravhode_kravmottatdato() =
+        vedtaksbrev.vedtaksdata.kravhode_safe.kravmottattdato_safe
+}
