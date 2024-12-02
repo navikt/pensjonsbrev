@@ -2,13 +2,13 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 import { isEqual } from "lodash";
 
-import type { Content, FontType, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
+import type { Content, FontType, LiteralValue, ParagraphBlock, VariableValue } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent, isItemContentIndex } from "~/utils/brevbakerUtils";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { getCursorOffset } from "../services/caretUtils";
-import { newLiteral } from "./common";
+import { newLiteral, newVariable } from "./common";
 import type { LiteralIndex } from "./model";
 
 export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
@@ -56,9 +56,7 @@ const switchFontTypeOnMarkedText = (
         literal,
         fonttype,
       }),
-    onVariable: () => {
-      console.log("variable");
-    },
+    onVariable: (variable) => handleSwitchVariable({ draft, thisBlock: block, literalIndex, fonttype, variable }),
     onItemList: (itemList) => {
       if (!isItemContentIndex(literalIndex)) {
         return;
@@ -79,9 +77,7 @@ const switchFontTypeOnMarkedText = (
             literal,
             fonttype,
           }),
-        onVariable: () => {
-          console.log("variable");
-        },
+        onVariable: (variable) => handleSwitchVariable({ draft, thisBlock: block, literalIndex, fonttype, variable }),
       });
     },
   });
@@ -118,9 +114,7 @@ const switchFontTypeWithoutMarkedText = (
         literal,
         fonttype,
       }),
-    onVariable: () => {
-      console.log("variable");
-    },
+    onVariable: (variable) => handleSwitchVariable({ draft, thisBlock: block, literalIndex, fonttype, variable }),
     onItemList: (itemList) => {
       if (!isItemContentIndex(literalIndex)) {
         return;
@@ -141,9 +135,7 @@ const switchFontTypeWithoutMarkedText = (
             literal,
             fonttype,
           }),
-        onVariable: () => {
-          console.log("variable");
-        },
+        onVariable: (variable) => handleSwitchVariable({ draft, thisBlock: block, literalIndex, fonttype, variable }),
       });
     },
   });
@@ -186,6 +178,28 @@ const handleOnLiteralSwitchFontTypeWithSelection = (args: {
     cursorPosition: newLiterals[updatedLiteralIndex].editedText?.length ?? 0,
   };
   args.draft.redigertBrev.blocks[args.literalIndex.blockIndex] = result;
+};
+
+const handleSwitchVariable = (args: {
+  draft: Draft<LetterEditorState>;
+  thisBlock: ParagraphBlock;
+  literalIndex: LiteralIndex;
+  fonttype: FontType;
+  variable: Draft<VariableValue>;
+}) => {
+  const theNewVariable = newVariable({
+    id: args.variable.id,
+    text: args.variable.text,
+    fontType: args.fonttype,
+  });
+
+  const newContent = [
+    ...args.thisBlock.content.slice(0, args.literalIndex.contentIndex),
+    theNewVariable,
+    ...args.thisBlock.content.slice(args.literalIndex.contentIndex + 1),
+  ];
+
+  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].content = newContent;
 };
 
 /**
@@ -252,6 +266,10 @@ const handleOnLiteralSwitchFontType = (args: {
   fonttype: FontType;
 }) => {
   const cursorPosition = getCursorOffset();
+
+  if (cursorPosition < 0) {
+    return;
+  }
 
   const text = args.literal.editedText ?? args.literal.text;
 
