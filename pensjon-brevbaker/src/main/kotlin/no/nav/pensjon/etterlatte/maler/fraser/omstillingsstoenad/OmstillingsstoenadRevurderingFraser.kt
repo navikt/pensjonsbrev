@@ -222,7 +222,7 @@ class OmstillingsstoenadRevurderingFraser {
                     textExpr(
                         Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven §§ 17-9, 22-12 og 22-13.".expr(),
                         Nynorsk to "Vedtaket er gjort etter føresegnene om omstillingsstønad i folketrygdlova §§ 17-9, 22-12 og 22-13.".expr(),
-                        English to "This decision has been made pursuant to the provisions regarding the adjustment allowance in Section 22-12 and 22-13 of the National Insurance Act.".expr()
+                        English to "The decision has been made pursuant to the regulations on adjustment allowance in the National Insurance Act Sections 17-9, 22-12 and 22-13.".expr()
                     )
                 }
             }.orShow {
