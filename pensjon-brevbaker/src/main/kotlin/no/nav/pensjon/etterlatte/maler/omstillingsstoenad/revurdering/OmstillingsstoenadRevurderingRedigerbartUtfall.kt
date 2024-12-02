@@ -24,6 +24,10 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.harFlereUtbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.inntektsAar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.mottattInntektendringAutomatisk
+import java.time.LocalDate
 
 data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
     val beregning: OmstillingsstoenadBeregningRevurderingRedigertbartUtfall,
@@ -33,10 +37,14 @@ data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
     val feilutbetaling: FeilutbetalingType,
     val harFlereUtbetalingsperioder: Boolean,
     val harUtbetaling: Boolean,
-) : RedigerbartUtfallBrevDTO
+    val inntekt: Int,
+    val inntektsAar: Int,
+    val mottattInntektendringAutomatisk: LocalDate?
+): RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
-object OmstillingsstoenadRevurderingRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadRevurderingRedigerbartUtfallDTO>, Delmal {
+object OmstillingsstoenadRevurderingRedigerbartUtfall:
+    EtterlatteTemplate<OmstillingsstoenadRevurderingRedigerbartUtfallDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING_UTFALL
 
     override val template = createTemplate(
@@ -68,7 +76,15 @@ object OmstillingsstoenadRevurderingRedigerbartUtfall : EtterlatteTemplate<Omsti
                 ),
             )
             includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(OmstillingsstoenadRevurderingFraser.UtfallRedigerbart(erEtterbetaling, feilutbetaling))
+            includePhrase(
+                OmstillingsstoenadRevurderingFraser.UtfallRedigerbart(
+                    erEtterbetaling,
+                    feilutbetaling,
+                    inntekt,
+                    inntektsAar,
+                    mottattInntektendringAutomatisk
+                )
+            )
             showIf(harUtbetaling) {
                 includePhrase(OmstillingsstoenadRevurderingFraser.UtbetalingMedEtterbetaling(erEtterbetaling))
             }
