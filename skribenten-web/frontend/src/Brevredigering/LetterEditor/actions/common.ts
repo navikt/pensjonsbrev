@@ -96,12 +96,12 @@ export function newLiteral(args: {
   };
 }
 
-export const newVariable = (args: { id?: Nullable<number>; text: string }): VariableValue => {
+export const newVariable = (args: { id?: Nullable<number>; text: string; fontType?: FontType }): VariableValue => {
   return {
     type: VARIABLE,
     id: args.id ?? null,
     text: args.text,
-    fontType: FontType.PLAIN,
+    fontType: args.fontType ?? FontType.PLAIN,
   };
 };
 

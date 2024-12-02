@@ -50,7 +50,16 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
           switch (content.type) {
             case LITERAL:
             case VARIABLE: {
-              return <Text content={content} key={index} />;
+              return (
+                <Text
+                  content={content}
+                  key={index}
+                  literalIndex={{
+                    blockIndex: literalIndex.blockIndex,
+                    contentIndex: index,
+                  }}
+                />
+              );
             }
             case ITEM_LIST: {
               return <span key={index}>TODO</span>;
@@ -73,7 +82,16 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
             return <EditableText content={content} key={_contentIndex} literalIndex={updatedLiteralIndex} />;
           }
           case VARIABLE: {
-            return <Text content={content} key={_contentIndex} />;
+            return (
+              <Text
+                content={content}
+                key={_contentIndex}
+                literalIndex={{
+                  blockIndex: literalIndex.blockIndex,
+                  contentIndex: _contentIndex,
+                }}
+              />
+            );
           }
           case ITEM_LIST: {
             return (
