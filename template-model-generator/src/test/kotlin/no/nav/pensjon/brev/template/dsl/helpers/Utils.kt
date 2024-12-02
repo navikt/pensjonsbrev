@@ -11,15 +11,18 @@ fun hasKspErrorMessages(msg: String): Matcher<String> =
 fun hasOnlySourceAndNoHelpers(): Matcher<Collection<File>> =
     hasSize(equalTo(2)) and allElements(has(File::getName, endsWith("MyClass.class") or endsWith("main.kotlin_module")))
 
-fun SourceFile.compile(): KotlinCompilation.Result =
+fun SourceFile.compile(): JvmCompilationResult =
     listOf(this).compile()
 
-fun List<SourceFile>.compile(): KotlinCompilation.Result {
+fun List<SourceFile>.compile(): JvmCompilationResult {
     val sourcesToCompile = this
     return KotlinCompilation().apply {
         inheritClassPath = true
-        symbolProcessorProviders = listOf(TemplateModelHelpersAnnotationProcessorProvider())
         kspWithCompilation = true
+        configureKsp(useKsp2 = true) {
+            symbolProcessorProviders += listOf(TemplateModelHelpersAnnotationProcessorProvider())
+            withCompilation = true
+        }
         sources = sourcesToCompile
     }.compile()
 }

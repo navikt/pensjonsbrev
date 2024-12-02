@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import io.micrometer.prometheus.PrometheusMeterRegistry
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import java.util.concurrent.atomic.AtomicInteger
 
 class ActiveCounter {
