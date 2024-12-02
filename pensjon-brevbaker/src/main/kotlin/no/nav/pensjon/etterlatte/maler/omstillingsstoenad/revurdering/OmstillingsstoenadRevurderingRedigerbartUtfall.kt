@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -37,7 +38,7 @@ data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
     val feilutbetaling: FeilutbetalingType,
     val harFlereUtbetalingsperioder: Boolean,
     val harUtbetaling: Boolean,
-    val inntekt: Int,
+    val inntekt: Kroner,
     val inntektsAar: Int,
     val mottattInntektendringAutomatisk: LocalDate?
 ): RedigerbartUtfallBrevDTO

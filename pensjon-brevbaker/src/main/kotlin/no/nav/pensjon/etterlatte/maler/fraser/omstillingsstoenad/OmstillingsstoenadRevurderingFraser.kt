@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRevurderingRedigertbartUtfall
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRevurderingRedigertbartUtfallSelectors.sisteBeregningsperiode
@@ -180,7 +181,7 @@ class OmstillingsstoenadRevurderingFraser {
     data class UtfallRedigerbart(
         val etterbetaling: Expression<Boolean>,
         val feilutbetaling: Expression<FeilutbetalingType?>,
-        val inntekt: Expression<Int>,
+        val inntekt: Expression<Kroner>,
         val inntektsAar: Expression<Int>,
         val mottattInntektendringAutomatisk: Expression<LocalDate?>
     ): OutlinePhrase<LangBokmalNynorskEnglish>() {
