@@ -90,7 +90,7 @@ export function newLiteral(args: {
     id: args.id ?? null,
     text: args.text,
     editedText: args.editedText ?? null,
-    editedFontType: null,
+    editedFontType: args.editedFontType ?? null,
     fontType: FontType.PLAIN,
     tags: args.tags ?? [],
   };
