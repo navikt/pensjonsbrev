@@ -26,7 +26,7 @@ import java.time.LocalDate
 
 data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
     val virkningsdato: LocalDate,
-    val avdoed: Avdoed,
+    val avdoed: Avdoed?,
     val sisteBeregningsperiodeDatoFom: LocalDate,
     val sisteBeregningsperiodeBeloep: Kroner,
     val erEtterbetaling: Boolean,

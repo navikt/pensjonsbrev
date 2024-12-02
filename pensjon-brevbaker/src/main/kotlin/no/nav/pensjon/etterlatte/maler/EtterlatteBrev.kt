@@ -79,7 +79,7 @@ data class OmstillingsstoenadBeregningsperiode(
 )
 
 data class Trygdetid(
-    val navnAvdoed: String,
+    val navnAvdoed: String?,
     val trygdetidsperioder: List<Trygdetidsperiode>,
     val beregnetTrygdetidAar: Int,
     val prorataBroek: IntBroek?,
@@ -141,7 +141,7 @@ data class ForskjelligTrygdetid(
 }
 
 data class ForskjelligAvdoedPeriode(
-    val foersteAvdoed: Avdoed,
-    val senereAvdoed: Avdoed,
+    val foersteAvdoed: Avdoed?,
+    val senereAvdoed: Avdoed?,
     val senereVirkningsdato: LocalDate,
 )
