@@ -1,6 +1,6 @@
-import { is } from "cypress/types/bluebird";
 import type { Draft } from "immer";
 import { produce } from "immer";
+import { isEqual } from "lodash";
 
 import type { FontType, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent, isItemContentIndex } from "~/utils/brevbakerUtils";
@@ -32,30 +32,38 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
 /**
  * Switcher fonttype på en literal som har hele/deler av teksten markert.
  */
-const switchFontTypeOnLiteral = (
+const switchFontTypeOnLiteralWithSelection = (
   literal: LiteralValue,
   newFonttype: FontType,
-): { newLiterals: Draft<LiteralValue>[]; deletedContent: number[] } => {
+): { newLiterals: Draft<LiteralValue>[]; deletedContent: number[]; updatedLiteralIndex: number } => {
   const selection = window.getSelection();
 
   //safe-guard i tilfelle det ikke er noen selection - selv om funksjonen skal kalles med markert tekst
   if (!selection) {
-    return { newLiterals: [], deletedContent: [] };
+    return { newLiterals: [], deletedContent: [], updatedLiteralIndex: 0 };
   }
   const range = selection.getRangeAt(0);
 
-  const textBeforeTheSelection = literal.text.slice(0, range.startOffset);
+  const textBeforeTheSelection = (literal.editedText ?? literal.text).slice(0, range.startOffset);
   const hasTextBeforeTheSelection = textBeforeTheSelection.length > 0;
-  const textInSelection = literal.text.slice(range.startOffset, range.endOffset);
-  const textAfterTheSelection = literal.text.slice(range.endOffset);
+  const textInSelection = (literal.editedText ?? literal.text).slice(range.startOffset, range.endOffset);
+  const textAfterTheSelection = (literal.editedText ?? literal.text).slice(range.endOffset);
   const hasTextAfterTheSelection = textAfterTheSelection.length > 0;
+
+  const changesTheWholeLiteral = textBeforeTheSelection.length === 0 && textAfterTheSelection.length === 0;
 
   const newPreviousLiteral = newLiteral({
     text: literal.text,
     editedText: textBeforeTheSelection,
     editedFontType: literal.editedFontType,
   });
-  const newThisLiteral = newLiteral({ text: literal.text, editedText: textInSelection, editedFontType: newFonttype });
+  const newThisLiteral = newLiteral({
+    id: changesTheWholeLiteral ? literal.id : null,
+    text: literal.text,
+    editedText: changesTheWholeLiteral && literal.editedText === null ? null : textInSelection,
+    editedFontType: newFonttype,
+    tags: changesTheWholeLiteral ? literal.tags : [],
+  });
   const newNextLiteral = newLiteral({
     text: literal.text,
     editedText: textAfterTheSelection,
@@ -69,6 +77,7 @@ const switchFontTypeOnLiteral = (
       ...(hasTextAfterTheSelection ? [newNextLiteral] : []),
     ],
     deletedContent: [...(literal.id ? [literal.id] : [])],
+    updatedLiteralIndex: hasTextBeforeTheSelection ? 1 : 0,
   };
 };
 
@@ -88,7 +97,10 @@ const switchFontTypeOnMarkedText = (
   return handleSwitchContent({
     content: theContentWeAreOn,
     onLiteral: (literal) => {
-      const { newLiterals, deletedContent } = switchFontTypeOnLiteral(literal, fonttype);
+      const { newLiterals, deletedContent, updatedLiteralIndex } = switchFontTypeOnLiteralWithSelection(
+        literal,
+        fonttype,
+      );
 
       const newContent = [
         ...(hasContentBeforeTheLiteralWeAreOn ? contentBeforeTheLiteralWeAreOn : []),
@@ -96,13 +108,21 @@ const switchFontTypeOnMarkedText = (
         ...(hasContentAfterTheLiteralWeAreOn ? contentAfterTheLiteralWeAreOn : []),
       ];
 
-      const result = {
+      const result: ParagraphBlock = {
         ...block,
         content: newContent,
         deletedContent: [...block.deletedContent, ...deletedContent],
       };
 
-      return (draft.redigertBrev.blocks[literalIndex.blockIndex] = result);
+      const newContentIndex = newContent.findIndex((c) => isEqual(c, newLiterals[updatedLiteralIndex]));
+
+      draft.focus = {
+        ...draft.focus,
+        blockIndex: literalIndex.blockIndex,
+        contentIndex: newContentIndex,
+        cursorPosition: newLiterals[updatedLiteralIndex].editedText?.length ?? 0,
+      };
+      draft.redigertBrev.blocks[literalIndex.blockIndex] = result;
     },
     onVariable: () => {
       return;
@@ -116,7 +136,7 @@ const switchFontTypeOnMarkedText = (
       return handleSwitchTextContent({
         content: item,
         onLiteral: (literal) => {
-          const { newLiterals, deletedContent } = switchFontTypeOnLiteral(literal, fonttype);
+          const { newLiterals, deletedContent } = switchFontTypeOnLiteralWithSelection(literal, fonttype);
 
           const newContent = [
             ...(hasContentBeforeTheLiteralWeAreOn ? contentBeforeTheLiteralWeAreOn : []),
@@ -161,9 +181,8 @@ const switchFontTypeWithoutMarkedText = (
     content: theContentWeAreOn,
     onLiteral: (literal) => {
       const cursorPosition = getCursorOffset();
-      console.log("the cursor position is:", cursorPosition);
 
-      const text = literal.text;
+      const text = literal.editedText ?? literal.text;
 
       const isWhiteSpace = text[cursorPosition] === " ";
 
@@ -187,19 +206,21 @@ const switchFontTypeWithoutMarkedText = (
       const theWord = text.slice(start, end);
       const textAfterTheWord = text.slice(end);
       const hasTextAfterTheWord = textAfterTheWord.length > 0;
+      const changesTheWholeLiteral = textBeforeTheWord.length === 0 && textAfterTheWord.length === 0;
 
       const newPreviousLiteral = newLiteral({
-        text: text,
+        text: literal.text,
         editedText: textBeforeTheWord,
         editedFontType: literal.editedFontType,
       });
       const newThisLiteral = newLiteral({
-        text: text,
-        editedText: theWord,
+        id: changesTheWholeLiteral ? literal.id : null,
+        text: literal.text,
+        editedText: changesTheWholeLiteral && literal.editedText === null ? null : theWord,
         editedFontType: fonttype,
       });
       const newNextLiteral = newLiteral({
-        text: text,
+        text: literal.text,
         editedText: textAfterTheWord,
         editedFontType: literal.editedFontType,
       });
@@ -218,6 +239,13 @@ const switchFontTypeWithoutMarkedText = (
         deletedContent: [...block.deletedContent, ...(literal.id ? [literal.id] : [])],
       };
 
+      const newContentIndex = newContent.findIndex((c) => isEqual(c, newThisLiteral));
+      draft.focus = {
+        ...draft.focus,
+        blockIndex: literalIndex.blockIndex,
+        contentIndex: newContentIndex,
+        cursorPosition: cursorPosition - start,
+      };
       draft.redigertBrev.blocks[literalIndex.blockIndex] = result;
     },
     onVariable: () => {

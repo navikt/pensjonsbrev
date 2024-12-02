@@ -8,7 +8,7 @@ import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
-import { getCursorOffset } from "../services/caretUtils";
+import { getCursorOffset, getCursorOffsetOrRange } from "../services/caretUtils";
 
 const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
@@ -58,9 +58,6 @@ const EditorFonts = (props: {
           } else {
             applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.BOLD);
           }
-
-          //setter fokuset tilbake til editor etter valgt fonttype
-          applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
         }}
         text={<Label>F</Label>}
       />
@@ -73,9 +70,6 @@ const EditorFonts = (props: {
           } else {
             applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.ITALIC);
           }
-
-          //setter fokuset tilbake til editor etter valgt fonttype
-          applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
         }}
         text={
           <Label

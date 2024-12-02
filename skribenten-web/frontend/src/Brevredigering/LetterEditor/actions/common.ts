@@ -230,7 +230,7 @@ export function newLiteral(args: {
     parentId: args.parentId ?? null,
     text: args.text,
     editedText: args.editedText ?? null,
-    editedFontType: null,
+    editedFontType: args.editedFontType ?? null,
     fontType: FontType.PLAIN,
     tags: args.tags ?? [],
   };
