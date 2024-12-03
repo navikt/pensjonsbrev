@@ -271,11 +271,11 @@ data class InfoSivilstandAP(
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du har en ektefelle, partner eller samboer som har en inntekt som er lavere enn to ganger folketrygdens grunnbeløp er det viktig at du kontakter $NAV_URL. " +
+                    Bokmal to "Hvis du har en ektefelle, partner eller samboer som har en inntekt som er lavere enn to ganger folketrygdens grunnbeløp er det viktig at du kontakter Nav. " +
                             "Da kan du ha rett på høyere alderspensjon.",
-                    Nynorsk to "Dersom du har ein ektefelle, partnar eller sambuar som har ei inntekt som er lågare enn to gonger grunnbeløpet i folketrygda, er det viktig at du kontaktar $NAV_URL. " +
+                    Nynorsk to "Dersom du har ein ektefelle, partnar eller sambuar som har ei inntekt som er lågare enn to gonger grunnbeløpet i folketrygda, er det viktig at du kontaktar Nav. " +
                             "Då kan du ha rett på høgare alderspensjon.",
-                    English to "If you have a spouse/partner/cohabitant who has an income that is lower than two times the National Insurance basic amount, it is important that you contact $NAV_URL, " +
+                    English to "If you have a spouse/partner/cohabitant who has an income that is lower than two times the National Insurance basic amount, it is important that you contact Nav, " +
                             "as you may be entitled to a higher retirement pension."
                 )
             }
