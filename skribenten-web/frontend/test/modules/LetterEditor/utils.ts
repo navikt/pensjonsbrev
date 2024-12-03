@@ -121,12 +121,12 @@ export function variable(text: string): VariableValue {
   };
 }
 
-export function itemList(args: { id?: Nullable<number>; items: Item[] }): ItemList {
+export function itemList(args: { id?: Nullable<number>; items: Item[]; deletedItems?: number[] }): ItemList {
   return {
     id: args.id ?? randomInt(1000),
     type: ITEM_LIST,
     items: args.items,
-    deletedItems: [],
+    deletedItems: args.deletedItems ?? [],
   };
 }
 

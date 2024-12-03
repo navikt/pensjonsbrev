@@ -101,14 +101,33 @@ describe("LetterEditorActions.toggleBulletList", () => {
     });
   });
 
-  describe("retains block info for modified block", () => {
-    test("previous deletedContent is kept", () => {
+  describe("retains deletedContent", () => {
+    test("previous deletedContent is kept for block", () => {
       const state = letter(newParagraph({ id: 1, content: [literal({ text: "l1" })], deletedContent: [-1] }));
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0 });
       const deletedContent = result.redigertBrev.blocks[0].deletedContent;
 
       expect(deletedContent).toContain(select<LiteralValue>(state, { blockIndex: 0, contentIndex: 0 }).id);
       expect(deletedContent).toContain(-1);
+    });
+    test("previous deletedItems is kept for merged itemLists", () => {
+      const state = letter(
+        paragraph(
+          itemList({ items: [item(literal({ text: "l1" }))], deletedItems: [-1] }),
+          literal({ text: "l2" }),
+          itemList({ items: [item(literal({ text: "l3" }))], deletedItems: [-2] }),
+        ),
+      );
+      const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 1 });
+
+      const keptItemList = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
+      const originalDeletedItems = (
+        state.redigertBrev.blocks[0].content.find((c) => c.id === keptItemList.id) as ItemList
+      ).deletedItems;
+      expect(originalDeletedItems).toHaveLength(1);
+
+      const deletedItems = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).deletedItems;
+      expect(deletedItems).toContain(originalDeletedItems[0]);
     });
   });
 });
