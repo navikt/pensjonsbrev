@@ -170,4 +170,7 @@ fun createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() =
         feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
         harFlereUtbetalingsperioder = true,
         harUtbetaling = true,
+        inntekt = Kroner(0),
+        inntektsAar = 2024,
+        mottattInntektendringAutomatisk = null
     )
