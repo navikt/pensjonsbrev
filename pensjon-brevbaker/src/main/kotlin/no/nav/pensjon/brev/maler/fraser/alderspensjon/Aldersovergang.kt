@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
 
+import no.nav.pensjon.brev.api.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
@@ -13,21 +14,16 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 // infoGjIkkeInntektsavkorted_002, infoGjInntektsavkortet_001, infoUTAPinnledn_001, infoUTGradertAPinnledn_001, infoUTogAPinnledn_001, infoFamPleierAPinnledn_001, infoAPinnledn_001
 data class InnledningInfoYtelse(
-    val harYtelseFullGjenlevendepensjon: Expression<Boolean>,
-    val harYtelseAvkortetGjenlevendepensjon: Expression<Boolean>,
-    val harYtelseFullUforetrygd: Expression<Boolean>,
-    val harYtelseGradertUforetrygd: Expression<Boolean>,
-    val harYtelseGradertUforetrygdKombinertAlderspensjon: Expression<Boolean>,
-    val harYtelseFamiliePleie: Expression<Boolean>,
-    val harYtelseIngen: Expression<Boolean>
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
+
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(harYtelseFullGjenlevendepensjon) {
+        showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.GJP_FULL)) {
             paragraph {
                 text(
-                    Bokmal to "Gjenlevendepensjonen din opphører fra og med måneden etter at du fyller 67 år.",
-                    Nynorsk to "Attlevandepensjonen din opphøyrar frå og med månaden etter at du fyller 67 år.",
-                    English to "Your survivor`s pension will be terminated from the month after you turn 67."
+                    Bokmal to "Gjenlevendepensjonen din opphører fra og med måneden etter at du fyller 67 år.",
+                    Nynorsk to "Attlevandepensjonen din opphøyrar frå og med månaden etter at du fyller 67 år.",
+                    English to "Your survivor`s pension will be terminated from the month after you turn 67."
                 )
             }
             paragraph {
@@ -42,9 +38,9 @@ data class InnledningInfoYtelse(
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan søke elektronisk via $DIN_PENSJON_URL. Hvis du ikke kan benytte denne løsningen, så finner du søknadsskjema for alderspensjon på $NAV_URL",
-                    Nynorsk to "Du kan søkje elektronisk via $DIN_PENSJON_URL. Dersom du ikkje kan bruke denne løsninga, så finn du søknadsskjema  for alderspensjon på $NAV_URL",
-                    English to "You can apply electronically by logging on to $DIN_PENSJON_URL, or use the application form for retirement pension, which is also found at $NAV_URL"
+                    Bokmal to "Du kan søke elektronisk via $DIN_PENSJON_URL. Hvis du ikke kan benytte denne løsningen, så finner du søknadsskjema for alderspensjon på $NAV_URL.",
+                    Nynorsk to "Du kan søkje elektronisk via $DIN_PENSJON_URL. Dersom du ikkje kan bruke denne løsninga, så finn du søknadsskjema  for alderspensjon på $NAV_URL.",
+                    English to "You can apply electronically by logging on to $DIN_PENSJON_URL, or use the application form for retirement pension, which is also found at $NAV_URL."
                 )
             }
             paragraph {
@@ -61,7 +57,7 @@ data class InnledningInfoYtelse(
                     English to "You can start drawing all or a part of your retirement pension at a rate of 20, 40, 50, 60, 80 or 100 percent. You can also postpone drawing your retirement pension."
                 )
             }
-        }.orShowIf(harYtelseAvkortetGjenlevendepensjon) {
+        }.orShowIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.GJP_AVKORT)) {
             paragraph {
                 text(
                     Bokmal to "Gjenlevendepensjonen din opphører fra og med måneden etter at du fyller 67 år. Fra samme tidspunkt har alle som hovedregel rett til å ta ut alderspensjon. " +
@@ -73,57 +69,57 @@ data class InnledningInfoYtelse(
                             "If you decide to draw retirement pension, your survivor’s rights will be included."
                 )
             }
-        }.orShowIf(harYtelseFullUforetrygd) {
+        }.orShowIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.UT)) {
             paragraph {
                 text(
-                    Bokmal to "Uføretrygden din opphører og regnes om til 100 prosent alderspensjon måneden etter at du fyller 67 år. Du trenger ikke søke om dette.",
-                    Nynorsk to "Uføretrygda di blir avslutta og rekna om til 100 prosent alderspensjon månaden etter at du fyller 67 år. Du treng ikkje søkje om dette.",
+                    Bokmal to "Uføretrygden din opphører og regnes om til 100 prosent alderspensjon måneden etter at du fyller 67 år. Du trenger ikke søke om dette.",
+                    Nynorsk to "Uføretrygda di blir avslutta og rekna om til 100 prosent alderspensjon månaden etter at du fyller 67 år. Du treng ikkje søkje om dette.",
                     English to "The month after you turn 67 years of age, your disability benefit will cease and you will instead receive full retirement pension. " +
                             "You do not need to apply for this."
                 )
             }
-        }.orShowIf(harYtelseGradertUforetrygd) {
+        }.orShowIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.UT_GRAD)) {
             paragraph {
                 text(
-                    Bokmal to "Uføretrygden din opphører og regnes om til alderspensjon måneden etter at du fyller 67 år. " +
+                    Bokmal to "Uføretrygden din opphører og regnes om til alderspensjon måneden etter at du fyller 67 år. " +
                             "Du får da alderspensjon etter en uttaksgrad som tilsvarer det du får i uføretrygd i dag.",
-                    Nynorsk to "Uføretrygda di blir avslutta og rekna om til alderspensjon månaden etter at du fyller 67 år. " +
+                    Nynorsk to "Uføretrygda di blir avslutta og rekna om til alderspensjon månaden etter at du fyller 67 år. " +
                             "Du får då alderspensjon etter ein uttaksgrad som svarer til det du får i uføretrygd i dag.",
                     English to "The month after you turn 67 years of age, your disability benefit will cease and you will instead receive retirement pension. " +
                             "Your retirement pension will be paid out at the same percentage rate as your current disability benefit."
                 )
             }
-        }.orShowIf(harYtelseGradertUforetrygdKombinertAlderspensjon) {
+        }.orShowIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.UT_AP_GRAD)) {
             paragraph {
                 text(
-                    Bokmal to "Uføretrygden din opphører og regnes om til alderspensjon måneden etter at du fyller 67 år. " +
+                    Bokmal to "Uføretrygden din opphører og regnes om til alderspensjon måneden etter at du fyller 67 år. " +
                             "Du får da alderspensjon etter den uttaksgraden som tilsvarer det du får i uføretrygd og alderspensjon i dag.",
-                    Nynorsk to "Uføretrygda di blir avslutta og rekna om til alderspensjon månaden etter at du fyller 67 år. " +
+                    Nynorsk to "Uføretrygda di blir avslutta og rekna om til alderspensjon månaden etter at du fyller 67 år. " +
                             "Du får då alderspensjon etter den uttaksgraden som svarer til det du får i uføretrygd og alderspensjon i dag.",
                     English to "The month after you turn 67 years of age, your disability benefit will cease and you will instead receive retirement pension. " +
                             "Your retirement pension will be paid out at the same percentage rate as your current disability benefit and retirement pension in total."
                 )
             }
-        }.orShowIf(harYtelseFamiliePleie) {
+        }.orShowIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.FAM_PL)) {
             paragraph {
                 text(
-                    Bokmal to "Din pensjon som tidligere familiepleier opphører og regnes om til 100 prosent alderspensjon måneden etter at du fyller 67 år. " +
+                    Bokmal to "Din pensjon som tidligere familiepleier opphører og regnes om til 100 prosent alderspensjon måneden etter at du fyller 67 år. " +
                             "Du trenger ikke søke om dette.",
-                    Nynorsk to "Pensjonen din som tidlegare familiepleiar blir avslutta og rekna om til 100 prosent alderspensjon månaden etter at du fyller 67 år. " +
+                    Nynorsk to "Pensjonen din som tidlegare familiepleiar blir avslutta og rekna om til 100 prosent alderspensjon månaden etter at du fyller 67 år. " +
                             "Du treng ikkje å søkje om dette.",
                     English to "The month after you turn 67 years of age, the pension you currently receive as a former family carer will cease and you will instead receive full retirement pension. " +
                             "You do not need to apply for this."
                 )
             }
-        }.orShowIf(harYtelseIngen) {
+        }.orShowIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.INGEN_YT)) {
             paragraph {
                 text(
                     Bokmal to "Du har frem til nå ikke tatt ut alderspensjon. " +
-                            "Vi ønsker derfor å gjøre deg oppmerksom på at alle som hovedregel har rett til å ta ut alderspensjon fra folketrygden fra og med måneden etter fylte 67 år.",
+                            "Vi ønsker derfor å gjøre deg oppmerksom på at alle som hovedregel har rett til å ta ut alderspensjon fra folketrygden fra og med måneden etter fylte 67 år.",
                     Nynorsk to "Du har fram til no ikkje teke ut alderspensjon. " +
-                            "Vi ønskjer derfor å gjere deg merksam på at alle som hovudregel har rett til å ta ut alderspensjon frå folketrygda frå og med månaden etter fylte 67 år",
+                            "Vi ønskjer derfor å gjere deg merksam på at alle som hovudregel har rett til å ta ut alderspensjon frå folketrygda frå og med månaden etter fylte 67 år",
                     English to "To date you have not drawn any retirement pension. " +
-                            "We therefore want to make you aware of the fact that as a general rule everyone is entitled to draw retirement pension from the National Insurance Scheme from the month after they reach the age of 67."
+                            "We therefore want to make you aware of the fact that as a general rule everyone is entitled to draw retirement pension from the National Insurance Scheme from the month after they reach the age of 67."
                 )
             }
         }
@@ -132,13 +128,17 @@ data class InnledningInfoYtelse(
 
 // infoAPVelge1_001, infoAPVelge2_001
 data class InfoVelgeAP(
-    val harYtelseAvkortetGjenlevendepensjon: Expression<Boolean>,
-    val harYtelseIngen: Expression<Boolean>,
-    val harYtelseGradertUforetrygd: Expression<Boolean>,
-    val harYtelseFamiliePleie: Expression<Boolean>,
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(harYtelseAvkortetGjenlevendepensjon or harYtelseIngen or harYtelseFamiliePleie or harYtelseGradertUforetrygd) {
+        showIf(
+            ytelseForAldersovergangKode.isOneOf(
+                YtelseForAldersovergangKode.GJP_AVKORT,
+                YtelseForAldersovergangKode.INGEN_YT,
+                YtelseForAldersovergangKode.FAM_PL,
+                YtelseForAldersovergangKode.UT_GRAD
+            )
+        ) {
             paragraph {
                 text(
                     Bokmal to "Du kan velge",
@@ -160,7 +160,12 @@ data class InfoVelgeAP(
                             English to "Start drawing all or a part of your pension (at a rate of 20, 40, 50, 60, 80 or 100 percent)."
                         )
                     }
-                    showIf(harYtelseFamiliePleie or harYtelseGradertUforetrygd) {
+                    showIf(
+                        ytelseForAldersovergangKode.isOneOf(
+                            YtelseForAldersovergangKode.FAM_PL,
+                            YtelseForAldersovergangKode.UT_GRAD
+                        )
+                    ) {
                         item {
                             text(
                                 Bokmal to "å stanse eller endre alderspensjonen på et senere tidspunkt",
@@ -177,12 +182,10 @@ data class InfoVelgeAP(
 
 // infoAPSoke1_002, infoAPSoke2_002
 data class InfoOenskeSokeAP(
-    val harYtelseAvkortetGjenlevendepensjon: Expression<Boolean>,
-    val harYtelseIngen: Expression<Boolean>,
-    val harYtelseGradertUforetrygdKombinertAlderspensjon: Expression<Boolean>,
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(harYtelseAvkortetGjenlevendepensjon or harYtelseIngen) {
+        showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.GJP_AVKORT, YtelseForAldersovergangKode.INGEN_YT)) {
             paragraph {
                 text(
                     Bokmal to "Ønsker du å vente med å ta ut alderspensjonen eller en annen uttaksgrad enn hva du vil få etter omregning, må du søke om dette." +
@@ -200,7 +203,7 @@ data class InfoOenskeSokeAP(
                     English to "Any change will be implemented at the earliest the month after we have received the application."
                 )
             }
-        }.orShowIf(harYtelseGradertUforetrygdKombinertAlderspensjon) {
+        }.orShowIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.UT_AP_GRAD)) {
             paragraph {
                 text(
                     Bokmal to "Ønsker du en annen uttaksgrad enn hva du vil få etter omregning, må du søke om dette. " +
@@ -217,10 +220,10 @@ data class InfoOenskeSokeAP(
 
 // omregningUTAPtilAPEksempel_001
 data class InfoOmregningUTtilAP(
-    val harYtelseGradertUforetrygdKombinertAlderspensjon: Expression<Boolean>
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(harYtelseGradertUforetrygdKombinertAlderspensjon) {
+        showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.UT_AP_GRAD)) {
             paragraph {
                 text(
                     Bokmal to "Eksempel: Hvis du mottar 60 prosent uføretrygd og 20 prosent alderspensjon, vil dette bli regnet om til 80 prosent alderspensjon. " +
@@ -238,11 +241,10 @@ data class InfoOmregningUTtilAP(
 
 // infoAPSivilstand_001
 data class InfoSivilstandAP(
-    val harYtelseFullUforetrygd: Expression<Boolean>,
-    val harYtelseGradertUforetrygd: Expression<Boolean>
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(harYtelseFullUforetrygd or harYtelseGradertUforetrygd) {
+        showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.UT, YtelseForAldersovergangKode.UT_GRAD)) {
             title1 {
                 text(
                     Bokmal to "For deg som har ektefelle/partner/samboer",
@@ -283,12 +285,10 @@ data class InfoSivilstandAP(
 
 // infoAPft_002
 data class InfoFTAP(
-    val harYtelseFullUforetrygd: Expression<Boolean>,
-    val harYtelseGradertUforetrygd: Expression<Boolean>,
-    val harYtelseGradertUforetrygdKombinertAlderspensjon: Expression<Boolean>
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(harYtelseFullUforetrygd or harYtelseGradertUforetrygd or harYtelseGradertUforetrygdKombinertAlderspensjon) {
+        showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.UT, YtelseForAldersovergangKode.UT_GRAD, YtelseForAldersovergangKode.UT_AP_GRAD)) {
             title1 {
                 text(
                     Bokmal to "For deg som har forsørgingstillegg",
@@ -308,9 +308,9 @@ data class InfoFTAP(
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner mer informasjon om dette på $ALDERSPENSJON",
-                    Nynorsk to "Du finn meir informasjon om dette på $ALDERSPENSJON",
-                    English to "You will find more information at $ALDERSPENSJON"
+                    Bokmal to "Du finner mer informasjon om dette på $ALDERSPENSJON.",
+                    Nynorsk to "Du finn meir informasjon om dette på $ALDERSPENSJON.",
+                    English to "You will find more information at $ALDERSPENSJON."
                 )
             }
         }
@@ -320,11 +320,10 @@ data class InfoFTAP(
 
 // infoAPAfpPrivat_001
 data class InfoAFPprivatAP(
-    val harYtelseAvkortetGjenlevendepensjon: Expression<Boolean>,
-    val harYtelseIngen: Expression<Boolean>
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(harYtelseAvkortetGjenlevendepensjon or harYtelseIngen) {
+        showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.GJP_AVKORT, YtelseForAldersovergangKode.INGEN_YT)) {
             title1 {
                 text(
                     Bokmal to "Har du rett til AFP i privat sektor?",
@@ -356,12 +355,10 @@ data class InfoAFPprivatAP(
 
 // infoAPNorSoke_002, infoAPHvordanSoke_002
 data class InfoSoekeAP(
-    val harYtelseFullGjenlevendepensjon: Expression<Boolean>,
-    val harYtelseFullUforetrygd: Expression<Boolean>,
-    val harYtelseGradertUforetrygd: Expression<Boolean>
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(not(harYtelseFullGjenlevendepensjon and not(harYtelseFullUforetrygd) and not(harYtelseGradertUforetrygd))) {
+        showIf(ytelseForAldersovergangKode.isNotAnyOf(YtelseForAldersovergangKode.GJP_FULL, YtelseForAldersovergangKode.UT, YtelseForAldersovergangKode.UT_GRAD)) {
             title1 {
                 text(
                     Bokmal to "Når må du søke?",
@@ -411,10 +408,10 @@ data class InfoSoekeAP(
 
 // infoAPSokeAnnenGrad100_002
 data class InfoSoekeAnnenGradAP(
-    val harYtelseFullUforetrygd: Expression<Boolean>
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(harYtelseFullUforetrygd) {
+        showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.UT)) {
             title1 {
                 text(
                     Bokmal to "Ønsker du å ta ut en annen grad enn 100 prosent alderspensjon?",
@@ -426,28 +423,28 @@ data class InfoSoekeAnnenGradAP(
                 text(
                     Bokmal to "Vi regner om uføretrygden din til 100 prosent alderspensjon. Du kan likevel velge",
                     Nynorsk to "Vi reknar om uføretrygda di til 100 prosent alderspensjon. Du kan likevel velje",
-                    English to "Your disability benefit will be converted into a 100 percent retirement pension. You can nevertheless select one of the following options:"
+                    English to "Your disability benefit will be converted into a 100 percent retirement pension. You can nevertheless select one of the following options"
                 )
                 list {
                     item {
                         text(
                             Bokmal to "å ta ut deler av pensjonen din (20, 40 ,50, 60 eller 80 prosent)",
                             Nynorsk to "å ta ut delar av pensjonen din (20, 40, 50, 60 eller 80 prosent)",
-                            English to "Start drawing a part of your pension at a rate of 20, 40, 50, 60 of 80 percent."
+                            English to "start drawing a part of your pension at a rate of 20, 40, 50, 60 of 80 percent"
                         )
                     }
                     item {
                         text(
                             Bokmal to "å stanse eller endre pensjonen din på et senere tidspunkt",
                             Nynorsk to "å stanse eller endre pensjonen din på eit seinare tidspunkt",
-                            English to "Stop or change your retirement pension at a later date."
+                            English to "stop or change your retirement pension at a later date"
                         )
                     }
                     item {
                         text(
                             Bokmal to "å vente med å ta ut alderspensjonen",
                             Nynorsk to "å vente med å ta ut alderspensjonen",
-                            English to "Postpone drawing your retirement pension."
+                            English to "postpone drawing your retirement pension"
                         )
                     }
                 }
@@ -480,7 +477,7 @@ object InfoSkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Det er egne skatteregler for alderspensjon",
                 Nynorsk to "Det er eigne skattereglar for pensjon",
-                English to "Pensions are subject to special tax rules"
+                English to "Pensions are subject to different tax rules"
             )
         }
         paragraph {

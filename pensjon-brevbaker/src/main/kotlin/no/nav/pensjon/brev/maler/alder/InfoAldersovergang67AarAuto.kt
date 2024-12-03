@@ -3,13 +3,6 @@ package no.nav.pensjon.brev.maler.alder
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
-import no.nav.pensjon.brev.api.model.maler.alderApi.YtelseForAldersovergangSelectors.harYtelseAvkortetGjenlevendepensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.YtelseForAldersovergangSelectors.harYtelseFamiliePleie
-import no.nav.pensjon.brev.api.model.maler.alderApi.YtelseForAldersovergangSelectors.harYtelseFullGjenlevendepensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.YtelseForAldersovergangSelectors.harYtelseFullUforetrygd
-import no.nav.pensjon.brev.api.model.maler.alderApi.YtelseForAldersovergangSelectors.harYtelseGradertUforetrygd
-import no.nav.pensjon.brev.api.model.maler.alderApi.YtelseForAldersovergangSelectors.harYtelseGradertUforetrygdKombinertAlderspensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.YtelseForAldersovergangSelectors.harYtelseIngen
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -46,70 +39,26 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
                 English to "Information about retirement pension for people who are about to turn 67"
             )
         }
-        with(ytelseForAldersovergang) {
-            outline {
-                includePhrase(
-                    InnledningInfoYtelse(
-                        harYtelseAvkortetGjenlevendepensjon = harYtelseAvkortetGjenlevendepensjon,
-                        harYtelseFamiliePleie = harYtelseFamiliePleie,
-                        harYtelseFullGjenlevendepensjon = harYtelseFullGjenlevendepensjon,
-                        harYtelseFullUforetrygd = harYtelseFullUforetrygd,
-                        harYtelseGradertUforetrygd = harYtelseGradertUforetrygd,
-                        harYtelseGradertUforetrygdKombinertAlderspensjon = harYtelseGradertUforetrygdKombinertAlderspensjon,
-                        harYtelseIngen = harYtelseIngen
-                    )
-                )
-                includePhrase(
-                    InfoVelgeAP(
-                        harYtelseAvkortetGjenlevendepensjon = harYtelseAvkortetGjenlevendepensjon,
-                        harYtelseFamiliePleie = harYtelseFamiliePleie,
-                        harYtelseGradertUforetrygd = harYtelseGradertUforetrygd,
-                        harYtelseIngen = harYtelseIngen
-                    )
-                )
-                includePhrase(InfoOmregningUTtilAP(harYtelseGradertUforetrygdKombinertAlderspensjon = harYtelseGradertUforetrygdKombinertAlderspensjon))
-                includePhrase(
-                    InfoOenskeSokeAP(
-                        harYtelseAvkortetGjenlevendepensjon = harYtelseAvkortetGjenlevendepensjon,
-                        harYtelseGradertUforetrygdKombinertAlderspensjon = harYtelseGradertUforetrygdKombinertAlderspensjon,
-                        harYtelseIngen = harYtelseIngen,
-                    )
-                )
-                includePhrase(
-                    InfoSivilstandAP(
-                        harYtelseFullUforetrygd = harYtelseFullUforetrygd,
-                        harYtelseGradertUforetrygd = harYtelseGradertUforetrygd
-                    )
-                )
-                includePhrase(
-                    InfoFTAP(
-                        harYtelseFullUforetrygd = harYtelseFullUforetrygd,
-                        harYtelseGradertUforetrygd = harYtelseGradertUforetrygd,
-                        harYtelseGradertUforetrygdKombinertAlderspensjon = harYtelseGradertUforetrygdKombinertAlderspensjon
-                    )
-                )
-                includePhrase(
-                    InfoAFPprivatAP(
-                        harYtelseAvkortetGjenlevendepensjon = harYtelseFullGjenlevendepensjon,
-                        harYtelseIngen = harYtelseIngen
-                    )
-                )
-                includePhrase(
-                    InfoSoekeAP(
-                        harYtelseFullGjenlevendepensjon = harYtelseFullGjenlevendepensjon,
-                        harYtelseFullUforetrygd = harYtelseFullUforetrygd,
-                        harYtelseGradertUforetrygd = harYtelseGradertUforetrygd
-                    )
-                )
-                includePhrase(InfoSoekeAnnenGradAP(harYtelseFullUforetrygd = harYtelseFullUforetrygd))
-                includePhrase(InfoSkattAP)
-                includePhrase(InfoLevealderAP)
-                includePhrase(InfoInntektAP)
-                includePhrase(InfoBoddArbeidetUtlandet)
-                includePhrase(InfoPensjonFraAndreAP)
-                includePhrase(Felles.HarDuSpoersmaal.alder)
-            }
+        outline {
+            includePhrase(InnledningInfoYtelse(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InfoVelgeAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InfoOmregningUTtilAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InfoOenskeSokeAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InfoSivilstandAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InfoFTAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InfoAFPprivatAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InfoSoekeAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InfoSoekeAnnenGradAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InfoSkattAP)
+            includePhrase(InfoLevealderAP)
+            includePhrase(InfoInntektAP)
+            includePhrase(InfoBoddArbeidetUtlandet)
+            includePhrase(InfoPensjonFraAndreAP)
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
     }
 }
+
+
+
 
