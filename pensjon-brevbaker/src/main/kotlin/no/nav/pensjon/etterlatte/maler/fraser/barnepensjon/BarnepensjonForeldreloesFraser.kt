@@ -69,22 +69,22 @@ object BarnepensjonForeldreloesFraser {
                     }.orShow {
                         textExpr(
                             Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() +
-                                    formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.".expr(),
+                                    formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.",
                             Language.Nynorsk to "Du er innvilga barnepensjon frå ".expr() +
-                                    formatertVirkningsdato + " fordi begge foreldra dine er registrert som døde.".expr(),
+                                    formatertVirkningsdato + " fordi begge foreldra dine er registrert som døde.",
                             Language.English to "You have been granted a children's pension starting ".expr() +
-                                    formatertVirkningsdato + " because both your parents are registered as deceased.".expr()
+                                    formatertVirkningsdato + " because both your parents are registered as deceased."
                         )
                     }
 
                 }.orShow {
                     textExpr(
                         Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() +
-                                formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.".expr(),
+                                formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.",
                         Language.Nynorsk to "Du er innvilga barnepensjon frå ".expr() +
-                                formatertVirkningsdato + " fordi begge foreldra dine er registrert som døde.".expr(),
+                                formatertVirkningsdato + " fordi begge foreldra dine er registrert som døde.",
                         Language.English to "You have been granted a children's pension starting ".expr() +
-                                formatertVirkningsdato + " because both your parents are registered as deceased.".expr()
+                                formatertVirkningsdato + " because both your parents are registered as deceased."
                     )
                 }
 
@@ -100,9 +100,9 @@ object BarnepensjonForeldreloesFraser {
                         )
                     }.orShow {
                         textExpr(
-                            Language.Bokmal to " Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
-                            Language.Nynorsk to " Du får ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
-                            Language.English to " You will receive NOK ".expr() + formatertBeloep + " each month before tax.".expr(),
+                            Language.Bokmal to " Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.",
+                            Language.Nynorsk to " Du får ".expr() + formatertBeloep + " kroner per månad før skatt.",
+                            Language.English to " You will receive NOK ".expr() + formatertBeloep + " each month before tax.",
                         )
                     }
                 }.orShow {
