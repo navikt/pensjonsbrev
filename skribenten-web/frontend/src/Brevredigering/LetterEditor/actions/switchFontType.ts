@@ -82,9 +82,11 @@ const switchFontTypeForLiteral = (args: {
 }) => {
   const selection = window.getSelection();
 
+  const hasSelectionAndMarkedText = selection && (selection.toString?.()?.length ?? 0) > 0;
+
   //TODO - koden i if-setningene kan flyttes til egne funksjoner
-  if (selection) {
-    const range = selection!.getRangeAt(0);
+  if (hasSelectionAndMarkedText) {
+    const range = selection.getRangeAt(0);
 
     const textBeforeTheSelection = (args.literal.editedText ?? args.literal.text).slice(0, range.startOffset);
     const hasTextBeforeTheSelection = textBeforeTheSelection.length > 0;
