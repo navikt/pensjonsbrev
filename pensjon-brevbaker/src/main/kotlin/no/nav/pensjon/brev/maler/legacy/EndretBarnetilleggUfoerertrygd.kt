@@ -28,6 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndretBarnetilleggUfoerertrygd : AutobrevTemplate<EndretBarnetilleggUfoeretrygdDto> {
 
+    // PE_UT_06_300
     override val kode = Brevkode.AutoBrev.UT_BARNETILLEGG_ENDRET_AUTO
 
     override val template = createTemplate(
