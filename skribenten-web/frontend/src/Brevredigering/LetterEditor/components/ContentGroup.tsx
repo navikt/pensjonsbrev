@@ -43,33 +43,6 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const { editorState } = useEditor();
   const contents = getContent(editorState.redigertBrev, literalIndex);
 
-  if (!block.editable) {
-    return (
-      <div>
-        {block.content.map((content, index) => {
-          switch (content.type) {
-            case LITERAL:
-            case VARIABLE: {
-              return (
-                <Text
-                  content={content}
-                  key={index}
-                  literalIndex={{
-                    blockIndex: literalIndex.blockIndex,
-                    contentIndex: index,
-                  }}
-                />
-              );
-            }
-            case ITEM_LIST: {
-              return <span key={index}>TODO</span>;
-            }
-          }
-        })}
-      </div>
-    );
-  }
-
   return (
     <div>
       {contents.map((content, _contentIndex) => {
