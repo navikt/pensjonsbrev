@@ -1,6 +1,7 @@
 import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { newParagraph } from "~/Brevredigering/LetterEditor/actions/common";
 import type { ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select } from "../utils";
@@ -97,6 +98,17 @@ describe("LetterEditorActions.toggleBulletList", () => {
         (c) => c.type === "ITEM_LIST" && c.id !== keptItemList.id,
       ) as ItemList;
       expect(keptItemList.items).toContain(mergedItemList.items[0]);
+    });
+  });
+
+  describe("retains block info for modified block", () => {
+    test("previous deletedContent is kept", () => {
+      const state = letter(newParagraph({ id: 1, content: [literal({ text: "l1" })], deletedContent: [-1] }));
+      const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0 });
+      const deletedContent = result.redigertBrev.blocks[0].deletedContent;
+
+      expect(deletedContent).toContain(select<LiteralValue>(state, { blockIndex: 0, contentIndex: 0 }).id);
+      expect(deletedContent).toContain(-1);
     });
   });
 });
