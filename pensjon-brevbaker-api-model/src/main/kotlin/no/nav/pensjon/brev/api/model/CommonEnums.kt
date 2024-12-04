@@ -74,3 +74,13 @@ enum class Beregningsmetode {
     SVEITS,
     USA
 }
+
+enum class YtelseForAldersovergangKode {
+    FAM_PL,
+    GJP_AVKORT,
+    GJP_FULL,
+    INGEN_YT,
+    UT,
+    UT_AP_GRAD,
+    UT_GRAD,
+}
