@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAktivitetspliktFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.aktivitetsgrad
@@ -27,7 +28,7 @@ data class OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO(
     val utbetaling: Boolean,
     val redusertEtterInntekt: Boolean,
     val nasjonalEllerUtland: NasjonalEllerUtland
-)
+) : RedigerbartUtfallBrevDTO
 
 
 @TemplateModelHelpers
@@ -159,7 +160,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 }
             }
 
-            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.AKKURAT_100_PROSENT)) {
+            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
                 paragraph {
                     text(
                         Bokmal to "Er du fortsatt i full jobb eller annen aktivitet med sikte på å komme i arbeid, fyller du aktivitetskravet og vil få omstillingsstønad som før.",

@@ -13,6 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.datoForVedtaketKlagenGjelder
@@ -26,7 +27,7 @@ data class AvvistKlageInnholdDTO(
     val klageDato: LocalDate,
     val datoForVedtaketKlagenGjelder: LocalDate?,
     val bosattUtland: Boolean = false,
-    )
+    ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {

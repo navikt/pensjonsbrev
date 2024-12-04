@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.maler.ufoereBrev
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.dagensDatoMinus2Dager
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.utvidetBehandlingstid
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SAKSBEHANDLINGSTID_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_ENDRING_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -20,10 +19,10 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
+// Gammel brevkode: PE_UT_06_200
 @TemplateModelHelpers
-object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidAutoDto> {
+object VarselSaksbehandlingstidAutoV2 : AutobrevTemplate<VarselSaksbehandlingstidAutoDto> {
 
-    // PE_UT_06_200
     override val kode = Brevkode.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO
 
     override val template = createTemplate(
@@ -56,16 +55,10 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             }
             // TBU3015
             paragraph {
-                textExpr(
-                    Bokmal to "Søknaden din blir behandlet så snart som mulig, og senest innen ".expr()
-                            + ifElse(utvidetBehandlingstid, ifFalse = "6", ifTrue = "20") + " måneder. "
-                            + "Blir ikke saken din ferdigbehandlet innen denne fristen, vil vi gi deg beskjed om ny svartid.",
-                    Nynorsk to "Søknaden din vert handsama så snart som mogleg, og seinast innan ".expr()
-                            + ifElse(utvidetBehandlingstid, ifFalse = "6", ifTrue = "20") + " månader. "
-                            + "Vert ikkje saka di handsama innan denne fristen, vil vi gje deg melding om ny svartid.",
-                    English to "Your application will be processed as soon as possible, and no later than within ".expr()
-                            + ifElse(utvidetBehandlingstid, ifFalse = "6", ifTrue = "20") + " months. "
-                            + "If your case is not processed within this deadline, we will notify you of a new response time."
+                text(
+                    Bokmal to "Søknaden din blir behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på «Min side» på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL.",
+                    Nynorsk to "Søknaden din vert handsama så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på «Mi side» på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL.",
+                    English to "Your application will be processed as soon as possible. When your application has been processed, you will receive a response from us on «My Page» at $NAV_URL. You can check the processing times at $SAKSBEHANDLINGSTID_URL."
                 )
             }
 

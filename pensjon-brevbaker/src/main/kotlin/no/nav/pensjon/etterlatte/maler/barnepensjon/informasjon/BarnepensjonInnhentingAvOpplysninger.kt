@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTOSelectors.borIUtlandet
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTOSelectors.erOver18aar
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
@@ -19,7 +20,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 data class BarnepensjonInnhentingAvOpplysningerDTO(
     val erOver18aar: Boolean,
     val borIUtlandet: Boolean,
-)
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonInnhentingAvOpplysninger : EtterlatteTemplate<BarnepensjonInnhentingAvOpplysningerDTO> {

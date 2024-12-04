@@ -28,6 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndretBarnetilleggUfoerertrygd : AutobrevTemplate<EndretBarnetilleggUfoeretrygdDto> {
 
+    // PE_UT_06_300
     override val kode = Brevkode.AutoBrev.UT_BARNETILLEGG_ENDRET_AUTO
 
     override val template = createTemplate(
@@ -373,7 +374,7 @@ object EndretBarnetilleggUfoerertrygd : AutobrevTemplate<EndretBarnetilleggUfoer
             includePhrase(Skattekort)
 
             //TBU3730
-            includePhrase(SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("nor") and pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("")))
+            includePhrase(SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("nor") or pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("")))
             //TBU1076 og TBU1077
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
 

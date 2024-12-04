@@ -40,7 +40,8 @@
                         "id": 2054713812,
                         "text": "Vi har ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     },
                     {
                         "id": 2330245,
@@ -51,7 +52,8 @@
                         "id": -135432816,
                         "text": " mottatt søknaden din om uføretrygd.",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -66,7 +68,8 @@
                         "id": -577326550,
                         "text": "Søknaden vil bli behandlet så snart som mulig og senest innen 4 måneder. ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -81,7 +84,8 @@
                         "id": -819768832,
                         "text": "Hvis søknaden ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss. ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -96,7 +100,8 @@
                         "id": -453054708,
                         "text": "Meld fra om endringer",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -111,7 +116,8 @@
                         "id": -233482595,
                         "text": "Vi ber om at du holder oss orientert om forhold som kan ha betydning for avgjørelsen av søknaden din. Det kan være endringer i medisinske forhold, arbeid, inntekt, sivilstand og lignende. ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -126,7 +132,8 @@
                         "id": 1969093244,
                         "text": "Har du spørsmål?",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -141,7 +148,8 @@
                         "id": -1822255847,
                         "text": "Du finner mer informasjon på nav.no/uforetrygd. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09:00-15:00.",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
