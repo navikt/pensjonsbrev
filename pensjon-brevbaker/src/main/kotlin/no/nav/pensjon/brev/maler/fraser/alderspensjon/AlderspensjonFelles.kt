@@ -23,7 +23,7 @@ object InfoInntektAP: OutlinePhrase<LangBokmalNynorskEnglish>() {
                         "Fram til og med det året du fyller 75 år, kan arbeidsinntekt i tillegg føre til at pensjonen din øker.",
                 Nynorsk to "Du kan arbeide så mykje du vil sjølv om du tek ut alderspensjon, utan at pensjonen din blir redusert. " +
                         "Fram til og med det året du fyller 75 år, kan arbeidsinntekt i tillegg føre til at pensjonen din aukar.",
-                English to "You may combine work with drawing a pension, without deductions being made  in your pension. " +
+                English to "You may combine work with drawing a pension, without deductions being made in your pension. " +
                         "If you continue to work, you may accumulate additional pension rights. This will apply up to and including the year you turn 75."
             )
         }
