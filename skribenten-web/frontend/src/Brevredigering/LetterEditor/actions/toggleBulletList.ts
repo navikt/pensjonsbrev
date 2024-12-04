@@ -21,7 +21,7 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
     const theContentTheUserIsOn = block.content[literalIndex.contentIndex];
     if (isTextContent(theContentTheUserIsOn)) {
       toggleBulletListOn(draft, literalIndex);
-    } else if (theContentTheUserIsOn.type === "ITEM_LIST") {
+    } else if (theContentTheUserIsOn.type === "ITEM_LIST" && "itemIndex" in literalIndex) {
       toggleBulletListOff(draft, literalIndex as ItemContentIndex);
     }
   },
