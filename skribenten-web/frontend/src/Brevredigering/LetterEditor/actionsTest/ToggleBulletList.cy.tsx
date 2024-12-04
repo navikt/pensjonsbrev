@@ -120,7 +120,7 @@ describe("toggle bullet-liet", () => {
       cy.get("li").should("have.length", 1);
       cy.contains("Avsnitt uten punktliste").click();
       cy.getDataCy("editor-bullet-list").click();
-      cy.get("ul").should("have.length", 1);
+      cy.get("ul").should("have.length", 2);
       cy.get("li").should("have.length", 2);
     });
 
@@ -138,7 +138,7 @@ describe("toggle bullet-liet", () => {
       cy.get("li").should("have.length", 1);
       cy.contains("Avsnitt uten punktliste").click();
       cy.getDataCy("editor-bullet-list").click();
-      cy.get("ul").should("have.length", 1);
+      cy.get("ul").should("have.length", 2);
       cy.get("li").should("have.length", 2);
     });
 
@@ -157,7 +157,7 @@ describe("toggle bullet-liet", () => {
       cy.get("li").should("have.length", 2);
       cy.contains("Avsnitt uten punktliste").click();
       cy.getDataCy("editor-bullet-list").click();
-      cy.get("ul").should("have.length", 1);
+      cy.get("ul").should("have.length", 3);
       cy.get("li").should("have.length", 3);
       cy.contains("Avsnitt uten punktliste").should("exist");
     });

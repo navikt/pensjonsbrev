@@ -99,6 +99,28 @@ describe("LetterEditorActions.toggleBulletList", () => {
       ) as ItemList;
       expect(keptItemList.items).toContain(mergedItemList.items[0]);
     });
+    test("does not merge other itemLists than the one we toggled", () => {
+      const state = letter(
+        newParagraph({ content: [itemList({ items: [item(literal({ text: "blokk før" }))] })] }),
+        newParagraph({
+          content: [
+            itemList({ items: [item(literal({ text: "punktliste1" }))] }),
+            literal({ text: "l1" }),
+            itemList({ items: [item(literal({ text: "punktliste2" }))] }),
+            literal({ text: "l2" }),
+          ],
+        }),
+      );
+      const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 3 });
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks[1]?.content).toHaveLength(3);
+      expect(
+        select<LiteralValue>(result, { blockIndex: 1, contentIndex: 2, itemIndex: 1, itemContentIndex: 0 })?.text,
+      ).toEqual("l2");
+      expect(result.redigertBrev.blocks[1].deletedContent).toContain(
+        select<LiteralValue>(state, { blockIndex: 1, contentIndex: 3 }).id,
+      );
+    });
   });
 
   describe("retains deletedContent", () => {
