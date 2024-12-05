@@ -2,7 +2,7 @@ import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newParagraph } from "~/Brevredigering/LetterEditor/actions/common";
-import type { ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
+import type { Item, ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select } from "../utils";
 
@@ -150,6 +150,60 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
       const deletedItems = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).deletedItems;
       expect(deletedItems).toContain(originalDeletedItems[0]);
+    });
+  });
+
+  describe("updates deleted", () => {
+    test("when toggling off first item it is deleted", () => {
+      const state = letter(
+        paragraph(itemList({ items: [item(literal({ text: "p1" })), item(literal({ text: "p2" }))] })),
+      );
+      const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 1 }).deletedItems).toContain(
+        select<Item>(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).id,
+      );
+    });
+
+    test("when toggling off only item, then itemList is deleted", () => {
+      const state = letter(paragraph(itemList({ items: [item(literal({ text: "p1" }))] })));
+      const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
+      const originalItem = select<Item>(state, toggleIndex);
+      const result = Actions.toggleBulletList(state, toggleIndex);
+
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 })).toEqual(originalItem.content[0]);
+      expect(result.redigertBrev.blocks[0].deletedContent).toContain(
+        select<ItemList>(state, { blockIndex: 0, contentIndex: 0 }).id,
+      );
+    });
+  });
+
+  describe("focus is moved", () => {
+    test("when toggling off first item focus should be moved", () => {
+      const state = letter(
+        paragraph(
+          literal({ text: "b1-l1" }),
+          itemList({
+            items: [item(literal({ text: "p1-l1" }), literal({ text: "p1-l2" })), item(literal({ text: "p2" }))],
+          }),
+        ),
+      );
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 1,
+        itemIndex: 0,
+        itemContentIndex: 1,
+      });
+
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: state.focus.cursorPosition });
+    });
+    test("when toggling off only item focus is moved", () => {
+      const state = letter(paragraph(itemList({ items: [item(literal({ text: "p1" }))] })));
+      const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+      const result = Actions.toggleBulletList(state, toggleIndex);
+
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0 });
     });
   });
 });

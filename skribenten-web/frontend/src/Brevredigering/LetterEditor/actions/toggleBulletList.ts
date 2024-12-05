@@ -7,7 +7,7 @@ import type { Content, ItemList, TextContent } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
-import { newItemList } from "./common";
+import { deleteElement, newItemList } from "./common";
 import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = produce(
@@ -180,36 +180,22 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
   itemContentIndex: ItemContentIndex;
 }) => {
   const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
-
-  const thisBlockContentBeforeItemList = thisBlock.content.slice(0, args.itemContentIndex.contentIndex);
-  const hasContentBefore = thisBlockContentBeforeItemList.length > 0;
-
   const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
-  const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
-  const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
-  const hasItemsAfter = itemsAfter.length > 0;
+  const thisItem = thisItemList.items[0];
 
-  const thisBlockContentAfterItemList = thisBlock.content.slice(args.itemContentIndex.contentIndex + 1);
-  const hasContentAfter = thisBlockContentAfterItemList.length > 0;
+  thisItemList.items.splice(0, 1);
+  deleteElement(thisItem, thisItemList.items, thisItemList.deletedItems);
 
-  thisBlock.content = [
-    ...(hasContentBefore ? [...thisBlockContentBeforeItemList] : []),
+  thisBlock.content.splice(
+    args.itemContentIndex.contentIndex,
+    thisItemList.items.length === 0 ? 1 : 0,
     ...thisItem.content,
-    ...(hasItemsAfter
-      ? [
-          newItemList({
-            ...thisItemList,
-            items: itemsAfter,
-            deletedItems: [...thisItemList.deletedItems, ...(thisItem.id ? [thisItem.id] : [])],
-          }),
-        ]
-      : []),
-    ...(hasContentAfter ? [...thisBlockContentAfterItemList] : []),
-  ];
+  );
+  deleteElement(thisItemList, thisBlock.content, thisBlock.deletedContent);
 
   args.draft.focus = {
     blockIndex: args.itemContentIndex.blockIndex,
-    contentIndex: args.itemContentIndex.itemContentIndex,
+    contentIndex: args.itemContentIndex.contentIndex + (args.itemContentIndex.itemContentIndex ?? 0),
     cursorPosition: args.draft.focus.cursorPosition,
   };
 };
