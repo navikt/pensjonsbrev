@@ -19,10 +19,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.datoVedtakOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erEndret
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erOmgjoering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.feilutbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harFlereUtbetalingsperioder
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.informasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.omsRettUtenTidsbegrensning
@@ -37,9 +34,6 @@ data class OmstillingsstoenadRevurderingDTO(
     val erOmgjoering: Boolean,
     val datoVedtakOmgjoering: LocalDate?,
     val beregning: OmstillingsstoenadBeregning,
-    val etterbetaling: OmstillingsstoenadEtterbetaling?,
-    val harFlereUtbetalingsperioder: Boolean,
-    val harUtbetaling: Boolean,
     val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut
     val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
     val feilutbetaling: FeilutbetalingType,
@@ -111,16 +105,6 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
             }
 
             outline {
-                includePhrase(
-                    OmstillingsstoenadRevurderingFraser.RevurderingVedtak(
-                        erEndret,
-                        beregning,
-                        etterbetaling.notNull(),
-                        harFlereUtbetalingsperioder,
-                        harUtbetaling,
-                    ),
-                )
-
                 konverterElementerTilBrevbakerformat(innhold)
 
                 includePhrase(

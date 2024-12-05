@@ -17,6 +17,20 @@ export function getCursorOffset() {
   }
   return -1;
 }
+
+/**
+ *
+ * @returns the current offset of the cursor, or the range if the cursor is not collapsed.
+ */
+export const getCursorOffsetOrRange = () => {
+  const selection = window.getSelection();
+  if ((selection?.rangeCount ?? 0) > 0) {
+    const range = selection?.getRangeAt(0);
+    return range?.collapsed ? range.startOffset : range;
+  }
+  return -1;
+};
+
 /**
  * Focus cursor at the given offset in the node.
  *
@@ -28,6 +42,7 @@ export function focusAtOffset(node: ChildNode, offset: number) {
     const range = document.createRange();
     range.setStart(node, offset);
     range.collapse();
+    node.parentElement?.focus();
 
     const selection = window.getSelection();
     selection?.removeAllRanges();

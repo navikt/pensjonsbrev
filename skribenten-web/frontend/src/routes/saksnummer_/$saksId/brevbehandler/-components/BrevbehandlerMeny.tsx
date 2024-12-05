@@ -17,6 +17,7 @@ import {
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
+import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
 import type { UserInfo } from "~/api/bff-endpoints";
@@ -260,6 +261,14 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
         >
           Brevet er klart for sending
         </Switch>
+
+        {låsForRedigeringMutation.isError && (
+          <Alert size="small" variant="error">
+            {typeof (låsForRedigeringMutation.error as AxiosError).response?.data === "string"
+              ? ((låsForRedigeringMutation.error as AxiosError).response?.data as string)
+              : "Noe gikk galt"}
+          </Alert>
+        )}
 
         {!erLåst && (
           <VStack
