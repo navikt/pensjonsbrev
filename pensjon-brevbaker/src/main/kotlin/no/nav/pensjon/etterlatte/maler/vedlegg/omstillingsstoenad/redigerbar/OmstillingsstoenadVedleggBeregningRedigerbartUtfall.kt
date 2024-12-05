@@ -39,21 +39,7 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
             )
         }
         outline {
-            includePhrase(Fraser.Placeholder)
-        }
-    }
 
-    private object Fraser {
-        object Placeholder : OutlinePhrase<LangBokmalNynorskEnglish>() {
-            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                paragraph {
-                    text(
-                        Bokmal to "SKRIV INN HVILKEN INNTEKT SOM ER LAGT TIL GRUNN. HER KAN DU OGSÅ LEGGE INN OM INSTITUSJONSOPPHOLD E.L. OM DET SKULLE VÆRE AKTUELT.",
-                        Nynorsk to "SKRIV INN HVILKEN INNTEKT SOM ER LAGT TIL GRUNN. HER KAN DU OGSÅ LEGGE INN OM INSTITUSJONSOPPHOLD E.L. OM DET SKULLE VÆRE AKTUELT.",
-                        English to "SKRIV INN HVILKEN INNTEKT SOM ER LAGT TIL GRUNN. HER KAN DU OGSÅ LEGGE INN OM INSTITUSJONSOPPHOLD E.L. OM DET SKULLE VÆRE AKTUELT.",
-                    )
-                }
-            }
         }
     }
 
