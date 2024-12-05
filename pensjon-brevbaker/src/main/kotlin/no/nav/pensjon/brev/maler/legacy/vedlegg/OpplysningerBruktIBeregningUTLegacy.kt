@@ -4,6 +4,8 @@ package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_sum_fattnorge_framtidigttnorge_div_12
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.GrunnlagSelectors.persongrunnlagsliste_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistebilateral_safe
@@ -98,14 +100,13 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // TB1187 2
         showIf(
             pe.ut_trygdetid()
-                    and ((pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40)
-                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()))
-                    or (pe.vedtaksdata_kravhode_boddarbeidutland()
-                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()))
-                    and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull())
-        )
+                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
+                    and pe.functions.pe_ut_sum_fattnorge_framtidigttnorge_div_12.lessThan(40) or
+                    (pe.vedtaksdata_kravhode_boddarbeidutland()
+                            and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()))
         {
-            includePhrase(TBU1187_2(pe))
+            ifNotNull(pe.vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe) { trygdetidsliste ->
+                includePhrase(TrygdetidListeNorTabell(trygdetidsliste))
             }
         }
 
