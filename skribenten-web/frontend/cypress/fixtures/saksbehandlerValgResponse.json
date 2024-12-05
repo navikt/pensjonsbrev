@@ -49,7 +49,8 @@
                         "id": 1507865607,
                         "text": "We received your application for ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     },
                     {
                         "id": -726051414,
@@ -60,7 +61,8 @@
                         "id": -142236915,
                         "text": " from the National Insurance authorities in ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     },
                     {
                         "id": -1660311050,
@@ -71,7 +73,8 @@
                         "id": 1063425,
                         "text": " on ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     },
                     {
                         "id": -694080035,
@@ -82,7 +85,8 @@
                         "id": 46,
                         "text": ".",
                         "editedText": "",
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     },
                     {
                         "id": -1894607013,
@@ -94,7 +98,8 @@
                                         "id": -503413508,
                                         "text": "item 1 - TODO remove itemlist",
                                         "editedText": null,
-                                        "type": "LITERAL"
+                                        "type": "LITERAL",
+                                        "tags": []
                                     }
                                 ]
                             },
@@ -105,7 +110,8 @@
                                         "id": 886663457,
                                         "text": "item 2 - TODO remove itemlist",
                                         "editedText": null,
-                                        "type": "LITERAL"
+                                        "type": "LITERAL",
+                                        "tags": []
                                     }
                                 ]
                             },
@@ -116,7 +122,8 @@
                                         "id": -867386942,
                                         "text": "item 3 - TODO remove itemlist",
                                         "editedText": null,
-                                        "type": "LITERAL"
+                                        "type": "LITERAL",
+                                        "tags": []
                                     }
                                 ]
                             }
@@ -137,7 +144,8 @@
                         "id": 1034742166,
                         "text": "Your accumulated pension capital is not sufficient for you to draw a retirement pension at ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     },
                     {
                         "id": -1152962312,
@@ -148,7 +156,8 @@
                         "id": -1159560709,
                         "text": " percent from ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     },
                     {
                         "id": -947583377,
@@ -159,7 +168,8 @@
                         "id": -1221981595,
                         "text": ". If you are entitled to a contractual early retirement pension (AFP) in the private sector, you might be entitled to draw a retirement pension.",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -174,7 +184,8 @@
                         "id": -856915016,
                         "text": "We will process your application once we have received the necessary information from Fellesordningen about your AFP rights. Normally it takes four to six weeks for you to get a reply from them on your application. This requires that you have submitted an application for AFP to Fellesordningen.",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -189,7 +200,8 @@
                         "id": -1114690237,
                         "text": "Our processing time for this type of application is usually ",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     },
                     {
                         "id": 1834595758,
@@ -200,7 +212,8 @@
                         "id": 1838606639,
                         "text": " weeks.",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -215,7 +228,8 @@
                         "id": -1153661597,
                         "text": "We will contact you if we need you to provide more information.",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -230,7 +244,8 @@
                         "id": 1767516298,
                         "text": "Duty to report changes",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],
@@ -245,7 +260,8 @@
                         "id": 173660288,
                         "text": "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move.",
                         "editedText": null,
-                        "type": "LITERAL"
+                        "type": "LITERAL",
+                        "tags": []
                     }
                 ],
                 "deletedContent": [],

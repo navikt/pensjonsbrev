@@ -31,72 +31,14 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 object OmstillingsstoenadInnvilgelseFraser {
-    data class Vedtak(
-        val avdoed: Expression<Avdoed?>,
-        val omstillingsstoenadBeregning: Expression<OmstillingsstoenadBeregning>,
+
+    data class Utbetaling(
         val harUtbetaling: Expression<Boolean>,
-        val tidligereFamiliepleier: Expression<Boolean>,
-        val erSluttbehandling: Expression<Boolean>
+        val omstillingsstoenadBeregning: Expression<OmstillingsstoenadBeregning>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            val harFlerePerioder = omstillingsstoenadBeregning.beregningsperioder.size().greaterThan(1)
-            val formatertVirkningsdato = omstillingsstoenadBeregning.virkningsdato.format()
-
-
-                showIf(tidligereFamiliepleier) {
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                                    " på bakgrunn av at du har pleiet et nært familiemedlem.",
-                            Nynorsk to "Fordi du har pleidd eit nært familiemedlem, er du innvilga omstillingsstønad frå ".expr() +
-                                    formatertVirkningsdato + ".",
-                            English to "You have been granted adjustment allowance from ".expr() +
-                                    formatertVirkningsdato + " based on caring for a close family member.",
-                        )
-                    }
-                }.orShowIf(erSluttbehandling) {
-                    paragraph {
-                        text(
-                            Bokmal to
-                                    "Du har tidligere fått et foreløpig avslag på søknaden din om omstillingsstønad fordi du ikke hadde rett på stønaden kun vurdert etter nasjonale regler. Avslaget var gitt i påvente av opplysninger fra utenlandske trygdemyndigheter.",
-                            Nynorsk to
-                                    "Du har tidlegare fått eit foreløpig avslag på søknaden din om omstillingsstønad fordi du ikkje hadde rett på stønaden berre vurdert etter nasjonale reglar. Avslaget var gitt i påvente av opplysningar frå utanlandske trygdemyndigheiter.",
-                            English to
-                                    "You previously received a preliminary rejection of your application for adjustment allowance because you were assessed only according to national rules, which did not entitle you to the allowance. The rejection was issued pending information from foreign social security authorities.",
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to
-                                    "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på stønaden etter EØS-reglene.",
-                            Nynorsk to
-                                    "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du har rett på stønaden etter EØS-reglane.",
-                            English to
-                                    "We have now received information from foreign social security authorities, which means you are entitled to the allowance under the EEA rules.",
-                        )
-                    }
-                }
-
-                showIf(tidligereFamiliepleier.not()) {
-                    ifNotNull(avdoed){
-                        val formatertDoedsdato = it.doedsdato.format()
-
-                        // TODO: ta ut i fellesFraser
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                                        " fordi " + it.navn + " døde " + formatertDoedsdato + ".",
-                                Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
-                                        ", ettersom " + it.navn + " døydde " + formatertDoedsdato + ".",
-                                English to "You have been granted adjustment allowance starting ".expr() +
-                                        formatertVirkningsdato + " because " + it.navn + " died on " + formatertDoedsdato + ".",
-                            )
-                        }
-                    }
-
-                }
-
             showIf(harUtbetaling) {
+                val harFlerePerioder = omstillingsstoenadBeregning.beregningsperioder.size().greaterThan(1)
                 val sisteUtbetaltBeloep = omstillingsstoenadBeregning.sisteBeregningsperiode.utbetaltBeloep
                 val datoFomSisteBeregningsperiode = omstillingsstoenadBeregning.sisteBeregningsperiode.datoFOM
 
@@ -105,32 +47,32 @@ object OmstillingsstoenadInnvilgelseFraser {
                         paragraph {
                             textExpr(
                                 Bokmal to
-                                    "Du får ".expr() + sisteUtbetaltBeloep.format() +
-                                    " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ". Fra ".expr() +
-                                    it.datoFOM.format() + " får du " +
-                                    it.utbetaltBeloep.format() +
-                                    " kroner hver måned før skatt.",
+                                        "Du får ".expr() + sisteUtbetaltBeloep.format() +
+                                        " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ". Fra ".expr() +
+                                        it.datoFOM.format() + " får du " +
+                                        it.utbetaltBeloep.format() +
+                                        " kroner hver måned før skatt.",
                                 Nynorsk to
-                                    "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før " +
-                                    "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". Frå og med ".expr() +
-                                    it.datoFOM.format() + " får du " +
-                                    it.utbetaltBeloep.format() + " kroner kvar månad før skatt. ",
+                                        "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før " +
+                                        "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". Frå og med ".expr() +
+                                        it.datoFOM.format() + " får du " +
+                                        it.utbetaltBeloep.format() + " kroner kvar månad før skatt. ",
                                 English to
-                                    "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
-                                    "month before tax, starting on " + datoFomSisteBeregningsperiode.format() +
-                                    ". Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK " +
-                                    it.utbetaltBeloep.format() + " each month before tax.",
+                                        "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
+                                        "month before tax, starting on " + datoFomSisteBeregningsperiode.format() +
+                                        ". Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK " +
+                                        it.utbetaltBeloep.format() + " each month before tax.",
                             )
                         }
                     }.orShow {
                         paragraph {
                             textExpr(
                                 Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() +
-                                    " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ".",
+                                        " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ".",
                                 Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før " +
-                                    "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". ",
+                                        "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". ",
                                 English to "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
-                                    "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ".",
+                                        "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ".",
                             )
                         }
                     }
@@ -138,11 +80,11 @@ object OmstillingsstoenadInnvilgelseFraser {
                     paragraph {
                         textExpr(
                             Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner i stønad hver " +
-                                "måned før skatt.",
+                                    "måned før skatt.",
                             Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner i stønad kvar " +
-                                "månad før skatt.".expr(),
+                                    "månad før skatt.".expr(),
                             English to "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
-                                "month before tax.",
+                                    "month before tax.",
                         )
                     }
                 }
@@ -150,11 +92,11 @@ object OmstillingsstoenadInnvilgelseFraser {
                 paragraph {
                     text(
                         Bokmal to "Du får ikke utbetalt omstillingsstønad fordi du har inntekt som er høyere " +
-                            "enn grensen for å få utbetalt stønaden.",
+                                "enn grensen for å få utbetalt stønaden.",
                         Nynorsk to "Du får ikkje utbetalt omstillingsstønad, då inntekta di er over " +
-                            "maksimumsgrensa for å kunne få stønad.",
+                                "maksimumsgrensa for å kunne få stønad.",
                         English to "You will not receive adjustment allowance because your income is " +
-                            "higher than the limit for receiving such allowance.",
+                                "higher than the limit for receiving such allowance.",
                     )
                 }
             }
@@ -162,13 +104,77 @@ object OmstillingsstoenadInnvilgelseFraser {
             paragraph {
                 text(
                     Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget «Beregning av " +
-                        "omstillingsstønad».",
+                            "omstillingsstønad».",
                     Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» korleis vi har " +
-                        "rekna ut omstillingsstønaden din.",
+                            "rekna ut omstillingsstønaden din.",
                     English to
-                        "You can see how we calculated your adjustment allowance in the attachment: Calculation of adjustment allowance.",
+                            "You can see how we calculated your adjustment allowance in the attachment: Calculation of adjustment allowance.",
                 )
             }
+        }
+    }
+
+
+    data class Vedtak(
+        val avdoed: Expression<Avdoed?>,
+        val omstillingsstoenadBeregning: Expression<OmstillingsstoenadBeregning>,
+        val harUtbetaling: Expression<Boolean>,
+        val tidligereFamiliepleier: Expression<Boolean>,
+        val erSluttbehandling: Expression<Boolean>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            val formatertVirkningsdato = omstillingsstoenadBeregning.virkningsdato.format()
+
+            showIf(tidligereFamiliepleier) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
+                                " på bakgrunn av at du har pleiet et nært familiemedlem.",
+                        Nynorsk to "Fordi du har pleidd eit nært familiemedlem, er du innvilga omstillingsstønad frå ".expr() +
+                                formatertVirkningsdato + ".",
+                        English to "You have been granted adjustment allowance from ".expr() +
+                                formatertVirkningsdato + " based on caring for a close family member.",
+                    )
+                }
+            }.orShowIf(erSluttbehandling) {
+                paragraph {
+                    text(
+                        Bokmal to
+                                "Du har tidligere fått et foreløpig avslag på søknaden din om omstillingsstønad fordi du ikke hadde rett på stønaden kun vurdert etter nasjonale regler. Avslaget var gitt i påvente av opplysninger fra utenlandske trygdemyndigheter.",
+                        Nynorsk to
+                                "Du har tidlegare fått eit foreløpig avslag på søknaden din om omstillingsstønad fordi du ikkje hadde rett på stønaden berre vurdert etter nasjonale reglar. Avslaget var gitt i påvente av opplysningar frå utanlandske trygdemyndigheiter.",
+                        English to
+                                "You previously received a preliminary rejection of your application for adjustment allowance because you were assessed only according to national rules, which did not entitle you to the allowance. The rejection was issued pending information from foreign social security authorities.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to
+                                "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på stønaden etter EØS/avtalelandreglene heller.",
+                        Nynorsk to
+                                "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du har rett på stønaden etter EØS/avtalelandreglane heller.",
+                        English to
+                                "We have now received information from foreign social security authorities, which means you are entitled to the allowance under the EEA/agreement country rules either.",
+                    )
+                }
+            }
+
+            showIf(tidligereFamiliepleier.not()) {
+                ifNotNull(avdoed){
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
+                                    " fordi " + it.navn + " døde " + it.doedsdato.format() + ".",
+                            Nynorsk to "Du har fått innvilga omstillingsstønad frå ".expr() + formatertVirkningsdato +
+                                    ", ettersom " + it.navn + " døydde " + it.doedsdato.format() + ".",
+                            English to "You have been granted adjustment allowance starting ".expr() +
+                                    formatertVirkningsdato + " because " + it.navn + " died on " + it.doedsdato.format() + ".",
+                        )
+                    }
+                }
+            }
+
+            includePhrase(Utbetaling(harUtbetaling, omstillingsstoenadBeregning))
         }
     }
 
@@ -314,7 +320,7 @@ object OmstillingsstoenadInnvilgelseFraser {
         }
     }
 
-    data class Utbetaling(
+    data class UtbetalingMedEtterbetaling(
         val etterbetaling: Expression<OmstillingsstoenadEtterbetaling?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

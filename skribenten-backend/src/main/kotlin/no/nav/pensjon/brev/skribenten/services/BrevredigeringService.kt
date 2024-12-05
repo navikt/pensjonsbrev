@@ -8,11 +8,9 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.letter.toEdit
-import no.nav.pensjon.brev.skribenten.letter.toMarkup
-import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -33,9 +31,12 @@ data class GeneriskRedigerbarBrevdata(
     override val saksbehandlerValg: BrevbakerBrevdata,
 ) : RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
 
-class KanIkkeReservereBrevredigeringException(override val message: String, val response: Api.ReservasjonResponse) : RuntimeException(message)
-class ArkivertBrevException(val brevId: Long, val journalpostId: Long) :
-    RuntimeException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
+sealed class BrevredigeringException(message: String) : Exception(message) {
+    class KanIkkeReservereBrevredigeringException(override val message: String, val response: Api.ReservasjonResponse) : BrevredigeringException(message)
+    class ArkivertBrevException(val brevId: Long, val journalpostId: Long) : BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
+    class BrevIkkeKlartTilSendingException(override val message: String) : BrevredigeringException(message)
+    class BrevLaastForRedigeringException(override val message: String) : BrevredigeringException(message)
+}
 
 class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
@@ -106,6 +107,9 @@ class BrevredigeringService(
         frigiReservasjon: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
+            if (brevDto.info.laastForRedigering) {
+                throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'.")
+            }
             rendreBrev(brev = brevDto, saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg).map { rendretBrev ->
                 val principal = PrincipalInContext.require()
                 transaction {
@@ -130,6 +134,11 @@ class BrevredigeringService(
         mottaker: Dto.Mottaker? = null,
     ): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
+            // Før brevet kan markeres som `laastForRedigering` (klar til sending) så må det valideres at brevet faktisk er klar til sending.
+            if (laastForRedigering == true) {
+                validerErKlarTilSending(brevDto)
+            }
+
             transaction {
                 brevDb.apply {
                     laastForRedigering?.also { this.laastForRedigering = it }
@@ -222,6 +231,11 @@ class BrevredigeringService(
         }
 
         return if (brev != null && document != null) {
+            if (!brev.info.laastForRedigering) {
+                throw BrevIkkeKlartTilSendingException("Brev må være markert som klar til sending")
+            }
+            validerErKlarTilSending(brev)
+
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
             if (template == null) {
@@ -394,6 +408,9 @@ class BrevredigeringService(
             }
         }
     }
+
+    private fun validerErKlarTilSending(brev: Dto.Brevredigering): Boolean =
+        brev.redigertBrev.klarTilSending() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
 
     private fun Mottaker.oppdater(mottaker: Dto.Mottaker?) =
         if (mottaker != null) {

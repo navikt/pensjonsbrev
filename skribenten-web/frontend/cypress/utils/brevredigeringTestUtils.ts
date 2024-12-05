@@ -7,7 +7,22 @@ import type {
   NAVEnhet,
   SaksbehandlerValg,
 } from "~/types/brev";
-import type { AnyBlock, EditedLetter, Sakspart, Signatur } from "~/types/brevbakerTypes";
+import type {
+  Content,
+  Item,
+  ItemList,
+  ParagraphBlock,
+  TextContent,
+  Title1Block,
+  VariableValue,
+} from "~/types/brevbakerTypes";
+import {
+  type AnyBlock,
+  type EditedLetter,
+  type LiteralValue,
+  type Sakspart,
+  type Signatur,
+} from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import { SpraakKode } from "../../src/types/apiTypes";
@@ -57,6 +72,7 @@ export const nyRedigertBrev = (args: {
             text: "We received your application for ",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
           {
             id: -726_051_414,
@@ -68,6 +84,7 @@ export const nyRedigertBrev = (args: {
             text: " from the Norwegian National Insurance Scheme on ",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
           {
             id: -694_080_035,
@@ -79,6 +96,7 @@ export const nyRedigertBrev = (args: {
             text: ".",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
         ],
         deletedContent: [],
@@ -93,6 +111,7 @@ export const nyRedigertBrev = (args: {
             text: "Our processing time for this type of application is usually ",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
           {
             id: 1_834_595_758,
@@ -104,6 +123,7 @@ export const nyRedigertBrev = (args: {
             text: " weeks.",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
         ],
         deletedContent: [],
@@ -154,3 +174,58 @@ export const nyBrevInfo = (args: {
     journalpostId: args.journalpostId ?? null,
   };
 };
+
+//TODO - kan heller bruke newLiteral fra common.ts
+export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): LiteralValue => ({
+  type: "LITERAL",
+  id: args.id ?? null,
+  text: args.text ?? "ny literal default text",
+  editedText: args.text ?? "ny literal default edited-text",
+  tags: [],
+});
+
+export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: string }): VariableValue => ({
+  type: "VARIABLE",
+  id: args.id ?? 1,
+  name: args.name,
+  text: args.text ?? "ny variable default text",
+});
+
+//TODO - kan heller bruke newItem fra common.ts
+export const nyItem = (args: { id?: Nullable<number>; content?: TextContent[] }): Item => ({
+  id: args.id ?? null,
+  content: args.content ?? [nyVariable({})],
+});
+
+//TODO - kan heller bruke newItemList fra common.ts
+export const nyItemList = (args: { id?: Nullable<number>; items?: Item[] }): ItemList => ({
+  type: "ITEM_LIST",
+  id: args.id ?? null,
+  items: args.items ?? [nyItem({})],
+  deletedItems: [],
+});
+
+export const nyTitle1Block = (args: {
+  id?: Nullable<number>;
+  editable?: boolean;
+  content?: TextContent[];
+}): Title1Block => ({
+  type: "TITLE1",
+  id: args.id ?? null,
+  editable: args.editable ?? true,
+  content: args.content ?? [nyVariable({})],
+  deletedContent: [],
+});
+
+//TODO - kan heller bruke newParagraph fra common.ts
+export const nyParagraphBlock = (args: {
+  id?: Nullable<number>;
+  editable?: boolean;
+  content?: Content[];
+}): ParagraphBlock => ({
+  type: "PARAGRAPH",
+  id: args.id ?? null,
+  editable: args.editable ?? true,
+  content: args.content ?? [nyVariable({})],
+  deletedContent: [],
+});

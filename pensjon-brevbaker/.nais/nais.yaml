@@ -60,6 +60,8 @@ spec:
     outbound:
       rules:
         - application: {{pdf-bygger-app}}
+      external:
+        - host: teampensjon-unleash-api.nav.cloud.nais.io
     inbound:
       rules:
         {{#each preAuthorized as |app|}}
@@ -76,3 +78,5 @@ spec:
       value: "http://pensjon-pdf-bygger:8080"
     - name: PDF_BYGGER_MAX_RETRIES
       value: "250"
+  envFrom:
+    - secret: pensjon-brevbaker-unleash-api-token

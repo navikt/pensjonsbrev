@@ -24,6 +24,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtterbetalingAutoDto> {
 
+    // PE_UT_23_101
     override val kode = Brevkode.AutoBrev.UT_ETTEROPPGJOER_ETTERBETALING_AUTO
 
     override val template = createTemplate(

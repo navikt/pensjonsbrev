@@ -16,16 +16,16 @@ inline fun <reified Kode : Enum<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>
 
         get {
             if (call.parameters["includeMetadata"] == "true") {
-                call.respond(resource.templates.map { it.value.description() })
+                call.respond(resource.listTemplatesWithMetadata())
             } else {
-                call.respond(resource.templates.keys)
+                call.respond(resource.listTemplatekeys())
             }
         }
 
         route("/{kode}") {
             get {
                 val template = call.parameters.getOrFail<Kode>("kode")
-                    .let { resource.templates[it] }
+                    .let { resource.getTemplate(it) }
                     ?.description()
 
                 if (template != null) {
@@ -39,7 +39,7 @@ inline fun <reified Kode : Enum<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>
                 val language = call.parameters.getOrFail<LanguageCode>("language").toLanguage()
 
                 val template = call.parameters.getOrFail<Kode>("kode")
-                    .let { resource.templates[it]?.template }
+                    .let { resource.getTemplate(it)?.template }
                     ?.takeIf { it.language.supports(language) }
 
                 if (template != null) {
@@ -51,7 +51,7 @@ inline fun <reified Kode : Enum<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>
 
             get("/modelSpecification") {
                 val template = call.parameters.getOrFail<Kode>("kode")
-                    .let { resource.templates[it]?.template }
+                    .let { resource.getTemplate(it)?.template }
 
                 if (template != null) {
                     call.respond(template.modelSpecification)

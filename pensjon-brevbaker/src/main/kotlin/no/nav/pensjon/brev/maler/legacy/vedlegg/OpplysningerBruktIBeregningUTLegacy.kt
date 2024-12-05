@@ -4,8 +4,6 @@ package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_sum_fattnorge_framtidigttnorge_div_12
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.GrunnlagSelectors.persongrunnlagsliste_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistebilateral_safe
@@ -98,9 +96,16 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         //IF( PE_UT_Trygdetid() = true  AND ((((FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTNorge) +  FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk)) / 12) < 40 AND FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = false )   OR (PE_Vedtaksdata_Kravhode_BoddArbeidUtland = true  AND  FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = false)   AND  FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom) = true  )  ) THEN      INCLUDE ENDIF
         // TB1187 2
-        showIf(pe.ut_trygdetid() and ((pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40) and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())) or (pe.vedtaksdata_kravhode_boddarbeidutland() and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())) and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull())) {
-            ifNotNull(pe.vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe) { trygdetidsliste ->
-                includePhrase(TrygdetidListeNorTabell(trygdetidsliste))
+        showIf(
+            pe.ut_trygdetid()
+                    and ((pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40)
+                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()))
+                    or (pe.vedtaksdata_kravhode_boddarbeidutland()
+                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()))
+                    and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull())
+        )
+        {
+            includePhrase(TBU1187_2(pe))
             }
         }
 

@@ -28,6 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 @TemplateModelHelpers
 object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGAInntektDto> {
 
+    // PE_UT_05_100
     override val kode = Brevkode.AutoBrev.UT_ENDRET_PGA_INNTEKT
 
     override val template = createTemplate(
