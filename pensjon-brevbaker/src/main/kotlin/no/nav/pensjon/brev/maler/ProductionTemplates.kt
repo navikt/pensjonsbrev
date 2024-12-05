@@ -20,8 +20,13 @@ import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
-object ProductionTemplates {
-    val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
+interface AllTemplates {
+    fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>>
+    fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>>
+}
+
+object ProductionTemplates : AllTemplates {
+    private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
         AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
@@ -49,7 +54,7 @@ object ProductionTemplates {
         UngUfoerAuto,
         VarselSaksbehandlingstidAuto,
     )
-    val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+    private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagUfoeretrygd,
         BekreftelsePaaFlyktningstatus,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
@@ -60,4 +65,8 @@ object ProductionTemplates {
         InnhentingDokumentasjonFraBruker,
         VarselOmMuligAvslag,
     )
+
+    override fun hentAutobrevmaler() = autobrev
+
+    override fun hentRedigerbareMaler() = redigerbare
 }
