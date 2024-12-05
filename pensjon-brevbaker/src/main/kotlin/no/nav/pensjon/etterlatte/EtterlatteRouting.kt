@@ -14,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 private val letterResource = LetterResource()
 
-data class LetterResponse(val base64pdf: String, val file: String, val contentType: String, val letterMetadata: LetterMetadata)
+data class LetterResponse(val file: String, val contentType: String, val letterMetadata: LetterMetadata)
 
 fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
 
@@ -27,7 +27,6 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
             .let { latexCompilerService.producePDF(it) }
 
         call.respond(LetterResponse(
-            base64pdf = pdfBase64.base64PDF,
             file = pdfBase64.base64PDF,
             contentType = ContentType.Application.Pdf.toString(),
             letterMetadata = letter.template.letterMetadata
