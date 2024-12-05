@@ -177,6 +177,17 @@ describe("LetterEditorActions.toggleBulletList", () => {
         select<ItemList>(state, { blockIndex: 0, contentIndex: 0 }).id,
       );
     });
+
+    test("when toggling off last item it is deleted", () => {
+      const state = letter(
+        paragraph(itemList({ items: [item(literal({ text: "p1" })), item(literal({ text: "p2" }))] })),
+      );
+      const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1 });
+
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 1 }).deletedItems).toContain(
+        select<Item>(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1 }).id,
+      );
+    });
   });
 
   describe("focus is moved", () => {
