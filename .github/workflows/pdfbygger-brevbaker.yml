@@ -143,23 +143,6 @@ jobs:
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      brevbaker:
-        env:
-          NAIS_APP_NAME: brevbaker
-          PDF_BUILDER_URL: "http://pdf-bygger:8080"
-          AZURE_OPENID_CONFIG_JWKS_URI: "http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri"
-          AZURE_OPENID_CONFIG_ISSUER: "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0"
-          AZURE_APP_CLIENT_ID: "brevbaker-123"
-          UNLEASH_SERVER_API_ENV: "test"
-          UNLEASH_SERVER_API_URL: "http://localhost"
-          UNLEASH_SERVER_API_TOKEN: "Token123"
-          JAVA_TOOL_OPTIONS: "-Dio.ktor.development=true"
-        ports:
-          - 8080:8080
-        image: "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
-        credentials:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     permissions:
       statuses: write
