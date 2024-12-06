@@ -151,6 +151,37 @@ describe("LetterEditorActions.toggleBulletList", () => {
       const deletedItems = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).deletedItems;
       expect(deletedItems).toContain(originalDeletedItems[0]);
     });
+
+    test("toggling off item in middle of list keeps deletedItems for the part that keeps ID", () => {
+      const state = letter(
+        paragraph(
+          itemList({
+            id: -1,
+            items: [item(literal({ text: "p1" })), item(literal({ text: "p2" })), item(literal({ text: "p2" }))],
+            deletedItems: [-2],
+          }),
+        ),
+      );
+      const originalItem = select<Item>(state, {
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 1,
+      });
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 1,
+        itemContentIndex: 0,
+      });
+
+      const block = select<ParagraphBlock>(result, { blockIndex: 0 });
+      expect(block.content).toHaveLength(3);
+      expect(block.content.filter((c) => c.type === "ITEM_LIST")).toHaveLength(2);
+
+      const keptList = block.content.find((il) => il.id === -1 && il.type === "ITEM_LIST") as ItemList;
+      expect(keptList).not.toBeUndefined();
+      expect(keptList.deletedItems).toEqual([-2, originalItem.id]);
+    });
   });
 
   describe("updates deleted", () => {
