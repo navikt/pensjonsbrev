@@ -74,6 +74,7 @@ class AuthorizeAnsattSakTilgangTest {
                     "fortroligAdresse" to "ad gruppe id for Fortrolig_Adresse",
                     "strengtFortroligAdresse" to "ad gruppe id for Strengt_Fortrolig_Adresse",
                     "strengtFortroligUtland" to "ad gruppe id for EndreStrengtFortroligUtland",
+                    "attestant" to "ad gruppe id for Attestant",
                 )
             ).toConfig()
         )
