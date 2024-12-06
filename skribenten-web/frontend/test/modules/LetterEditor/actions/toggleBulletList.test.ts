@@ -24,11 +24,11 @@ describe("LetterEditorActions.toggleBulletList", () => {
   describe("has adjoining itemList", () => {
     test("should not merge with itemList in previous block if not first in current block", () => {
       const state = letter(
-        paragraph(itemList({ items: [item(literal({ text: "b1-p1" }))] })),
+        paragraph(itemList({ items: [item(literal({ text: "b0-c1" }))] })),
         paragraph(
-          literal({ text: "b2-l1" }),
-          itemList({ items: [item(literal({ text: "b2-p1" }))] }),
-          literal({ text: "b2-l2" }),
+          literal({ text: "b1-c0" }),
+          itemList({ items: [item(literal({ text: "b1-c1-i0-ic0" }))] }),
+          literal({ text: "b1-c2" }),
         ),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
@@ -44,7 +44,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
       expect(
         select<LiteralValue>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 }),
-      ).toEqual(toggledContent);
+      ).toEqual({ ...toggledContent, id: null });
     });
     test("should not merge with itemList in next block if not last in current block", () => {
       const state = letter(
@@ -68,7 +68,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
       expect(
         select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }),
-      ).toEqual(toggledContent);
+      ).toEqual({ ...toggledContent, id: null });
     });
     test("should not merge with itemList in previous and next block if not first and last in block", () => {
       const state = letter(
@@ -106,7 +106,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
       // content that we merged in to the itemList
       expect(
         select<LiteralValue>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 }),
-      ).toEqual(select<LiteralValue>(state, { blockIndex: 1, contentIndex: 2 }));
+      ).toEqual({ ...select<LiteralValue>(state, { blockIndex: 1, contentIndex: 2 }), id: null });
       const keptItemList = select<ItemList>(result, { blockIndex: 1, contentIndex: 1 });
       const mergedItemList = state.redigertBrev.blocks[1].content.find(
         (c) => c.type === "ITEM_LIST" && c.id !== keptItemList.id,
