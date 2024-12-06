@@ -157,7 +157,11 @@ describe("LetterEditorActions.toggleBulletList", () => {
         paragraph(
           itemList({
             id: -1,
-            items: [item(literal({ text: "p1" })), item(literal({ text: "p2" })), item(literal({ text: "p2" }))],
+            items: [
+              item(literal({ text: "b0-c0-i0-ic0" })),
+              item(literal({ text: "b0-c0-i1-ic0" })),
+              item(literal({ text: "b0-c0-i2-ic0" })),
+            ],
             deletedItems: [-2],
           }),
         ),
@@ -215,14 +219,115 @@ describe("LetterEditorActions.toggleBulletList", () => {
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1 });
 
-      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 1 }).deletedItems).toContain(
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).deletedItems).toContain(
         select<Item>(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1 }).id,
       );
     });
   });
 
   describe("focus is moved", () => {
+    test("when toggling off only item focus is moved", () => {
+      const state = letter(paragraph(itemList({ items: [item(literal({ text: "p1" }))] })));
+      const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+      const result = Actions.toggleBulletList(state, toggleIndex);
+
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0 });
+    });
+
     test("when toggling off first item focus should be moved", () => {
+      const state = letter(
+        paragraph(
+          literal({ text: "b0-c0" }),
+          itemList({
+            items: [item(literal({ text: "b0-c1-i0-ic0" })), item(literal({ text: "b0-c1-i1-ic0" }))],
+          }),
+        ),
+      );
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 1,
+        itemIndex: 0,
+        itemContentIndex: 1,
+      });
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: state.focus.cursorPosition });
+    });
+
+    test("when toggling off first item with multiple literals, focus should be moved", () => {
+      const state = letter(
+        paragraph(
+          literal({ text: "b0-c0" }),
+          itemList({
+            items: [
+              item(literal({ text: "b0-c1-i0-ic0" }), literal({ text: "b0-c1-i0-ic1" })),
+              item(literal({ text: "b0-c1-i1-ic0" })),
+            ],
+          }),
+        ),
+      );
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 1,
+        itemIndex: 0,
+        itemContentIndex: 1,
+      });
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(4);
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: state.focus.cursorPosition });
+    });
+
+    test("when toggling off last item, focus should be moved", () => {
+      const state = letter(
+        paragraph(
+          literal({ text: "b0-c0" }),
+          itemList({
+            items: [
+              item(literal({ text: "b0-c1-i0-ic0" }), literal({ text: "b0-c1-i0-ic1" })),
+              item(literal({ text: "b0-c1-i1-ic0" })),
+            ],
+          }),
+        ),
+      );
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 1,
+        itemIndex: 1,
+        itemContentIndex: 0,
+      });
+
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: state.focus.cursorPosition });
+    });
+
+    test("when toggling off last item with multiple literals, focus should be moved", () => {
+      const state = letter(
+        paragraph(
+          literal({ text: "b0-c0" }),
+          itemList({
+            items: [
+              item(literal({ text: "b0-c1-i0-ic0" }), literal({ text: "b0-c1-i0-ic1" })),
+              item(literal({ text: "b0-c1-i1-ic0" }), literal({ text: "b0-c1-i1-ic1" })),
+            ],
+          }),
+        ),
+      );
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 1,
+        itemIndex: 1,
+        itemContentIndex: 1,
+      });
+
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(4);
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 3, cursorPosition: state.focus.cursorPosition });
+    });
+
+    test("when toggling off item in the middle, focus should be moved", () => {
       const state = letter(
         paragraph(
           literal({ text: "b1-l1" }),
@@ -234,18 +339,13 @@ describe("LetterEditorActions.toggleBulletList", () => {
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
         contentIndex: 1,
-        itemIndex: 0,
         itemContentIndex: 1,
+        itemIndex: 0,
       });
 
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(4);
       expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: state.focus.cursorPosition });
-    });
-    test("when toggling off only item focus is moved", () => {
-      const state = letter(paragraph(itemList({ items: [item(literal({ text: "p1" }))] })));
-      const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
-      const result = Actions.toggleBulletList(state, toggleIndex);
-
-      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0 });
     });
   });
 });

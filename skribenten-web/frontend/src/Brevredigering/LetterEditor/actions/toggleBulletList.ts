@@ -195,7 +195,8 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
 
   args.draft.focus = {
     blockIndex: args.itemContentIndex.blockIndex,
-    contentIndex: args.itemContentIndex.contentIndex + (args.itemContentIndex.itemContentIndex ?? 0),
+    contentIndex:
+      args.itemContentIndex.contentIndex + (thisItem.content.length > 1 ? args.itemContentIndex.itemContentIndex : 0),
     cursorPosition: args.draft.focus.cursorPosition,
   };
 };
@@ -214,23 +215,22 @@ const toggleBulletListOffBetweenListElements = (args: {
   const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
 
   const thisBlockContentBeforeItemList = thisBlock.content.slice(0, args.itemContentIndex.contentIndex);
-  const hasContentBefore = thisBlockContentBeforeItemList;
   const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
   const itemsBefore = thisItemList.items.slice(0, args.itemContentIndex.itemIndex);
   const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
   const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
   const thisBlockContentAfterItemList = thisBlock.content.slice(args.itemContentIndex.contentIndex + 1);
-  const hasContentAfter = thisBlockContentAfterItemList.length > 0;
 
   thisBlock.content = [
-    ...(hasContentBefore ? [...thisBlockContentBeforeItemList] : []),
+    ...thisBlockContentBeforeItemList,
     newItemList({
+      ...thisItemList,
       items: itemsBefore,
       deletedItems: [...thisItemList.deletedItems, ...(thisItem.id ? [thisItem.id] : [])],
     }),
     ...thisItem.content,
     newItemList({ items: itemsAfter }),
-    ...(hasContentAfter ? [...thisBlockContentAfterItemList] : []),
+    ...thisBlockContentAfterItemList,
   ];
 
   args.draft.focus = {
@@ -257,17 +257,17 @@ const toggleBulletListOffAtTheEndOfItemList = (args: {
   thisItemList.items.splice(-1, 1);
   deleteElement(thisItem, thisItemList.items, thisItemList.deletedItems);
 
-  thisBlock.content.splice(
-    args.itemContentIndex.contentIndex,
-    thisItemList.items.length === 0 ? 1 : 0,
-    ...thisItem.content,
-  );
+  thisBlock.content.splice(args.itemContentIndex.contentIndex + 1, 0, ...thisItem.content);
+  if (thisItemList.items.length === 0) {
+    thisBlock.content.splice(args.itemContentIndex.contentIndex, 1);
+  }
 
   deleteElement(thisItemList, thisBlock.content, thisBlock.deletedContent);
 
   args.draft.focus = {
     blockIndex: args.itemContentIndex.blockIndex,
-    contentIndex: args.itemContentIndex.contentIndex + (args.itemContentIndex.itemContentIndex ?? 0),
+    contentIndex:
+      args.itemContentIndex.contentIndex + args.itemContentIndex.itemContentIndex + args.itemContentIndex.itemIndex,
     cursorPosition: args.draft.focus.cursorPosition,
   };
 };
