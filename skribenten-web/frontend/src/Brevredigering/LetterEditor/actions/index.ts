@@ -5,6 +5,7 @@ import { create } from "./common";
 import { merge } from "./merge";
 import { split } from "./split";
 import { switchTypography } from "./switchTypography";
+import { toggleBulletList } from "./toggleBulletList";
 import { updateContentText } from "./updateContentText";
 
 const Actions = {
@@ -15,5 +16,6 @@ const Actions = {
   split,
   switchTypography,
   updateContentText,
+  toggleBulletList,
 };
 export default Actions;

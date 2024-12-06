@@ -8,7 +8,7 @@ import { asNew, item, itemList, letter, literal, paragraph, select, title1, titl
 
 describe("switchTypography", () => {
   test("can switch from paragraph to title1", () => {
-    const state = letter(paragraph(literal("en literal")));
+    const state = letter(paragraph(literal({ text: "en literal" })));
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE1);
 
     const block = select<Title1Block>(result, { blockIndex: 0 });
@@ -17,7 +17,7 @@ describe("switchTypography", () => {
   });
 
   test("can switch from paragraph to title2", () => {
-    const state = letter(paragraph(literal("en literal")));
+    const state = letter(paragraph(literal({ text: "en literal" })));
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
 
     const block = select<Title2Block>(result, { blockIndex: 0 });
@@ -26,7 +26,7 @@ describe("switchTypography", () => {
   });
 
   test("can switch from title1 to paragraph", () => {
-    const state = letter(title1(literal("en literal")));
+    const state = letter(title1(literal({ text: "en literal" })));
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH);
 
     const block = select<ParagraphBlock>(result, { blockIndex: 0 });
@@ -35,7 +35,7 @@ describe("switchTypography", () => {
   });
 
   test("can switch from title1 to title2", () => {
-    const state = letter(title1(literal("en literal")));
+    const state = letter(title1(literal({ text: "en literal" })));
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
 
     const block = select<Title2Block>(result, { blockIndex: 0 });
@@ -44,7 +44,7 @@ describe("switchTypography", () => {
   });
 
   test("can switch from title2 to title1", () => {
-    const state = letter(title2(literal("en literal")));
+    const state = letter(title2(literal({ text: "en literal" })));
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE1);
 
     const block = select<Title1Block>(result, { blockIndex: 0 });
@@ -53,7 +53,7 @@ describe("switchTypography", () => {
   });
 
   test("can switch from title2 to paragraph", () => {
-    const state = letter(title2(literal("en literal")));
+    const state = letter(title2(literal({ text: "en literal" })));
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH);
 
     const block = select<ParagraphBlock>(result, { blockIndex: 0 });
@@ -62,7 +62,7 @@ describe("switchTypography", () => {
   });
 
   test("originalType is not replaced when switching a second time", () => {
-    const state = letter(title2(literal("en literal")));
+    const state = letter(title2(literal({ text: "en literal" })));
     const result = Actions.switchTypography(
       Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH),
       { blockIndex: 0, contentIndex: 0 },
@@ -74,7 +74,7 @@ describe("switchTypography", () => {
   });
 
   test("originalType is cleared when switching back", () => {
-    const state = letter(title2(literal("en literal")));
+    const state = letter(title2(literal({ text: "en literal" })));
     const result = Actions.switchTypography(
       Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH),
       { blockIndex: 0, contentIndex: 0 },
@@ -89,9 +89,9 @@ describe("switchTypography", () => {
     const state = letter(
       paragraph(
         variable("en variabel"),
-        literal("en literal"),
+        literal({ text: "en literal" }),
         variable("to variabel"),
-        itemList(item(literal("en literal"))),
+        itemList({ items: [item(literal({ text: "en literal" }))] }),
       ),
     );
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 1 }, TITLE1);
@@ -116,9 +116,9 @@ describe("switchTypography", () => {
   test("can switch to title2 from paragraph when there is non text content at the beginning", () => {
     const state = letter(
       paragraph(
-        itemList(item(literal("en literal"))),
+        itemList({ items: [item(literal({ text: "en literal" }))] }),
         variable("en variabel"),
-        literal("en literal"),
+        literal({ text: "en literal" }),
         variable("to variabel"),
       ),
     );
@@ -145,8 +145,8 @@ describe("switchTypography", () => {
     const state = letter(
       paragraph(
         variable("en variabel"),
-        itemList(item(literal("en literal"))),
-        literal("en literal"),
+        itemList({ items: [item(literal({ text: "en literal" }))] }),
+        literal({ text: "en literal" }),
         variable("to variabel"),
       ),
     );
@@ -173,10 +173,10 @@ describe("switchTypography", () => {
     const state = letter(
       paragraph(
         variable("en variabel"),
-        itemList(item(literal("punktliste 1"))),
-        literal("en literal"),
+        itemList({ items: [item(literal({ text: "punktliste 1" }))] }),
+        literal({ text: "en literal" }),
         variable("to variabel"),
-        itemList(item(literal("punktliste 2"))),
+        itemList({ items: [item(literal({ text: "punktliste 2" }))] }),
       ),
     );
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 2 }, TITLE2);
@@ -205,7 +205,11 @@ describe("switchTypography", () => {
 
   test("not possitble to switch to title1 when focus is at non-text content", () => {
     const state = letter(
-      paragraph(literal("noe tekst"), itemList(item(literal("punktliste"))), literal("noe mer tekst")),
+      paragraph(
+        literal({ text: "noe tekst" }),
+        itemList({ items: [item(literal({ text: "punktliste" }))] }),
+        literal({ text: "noe mer tekst" }),
+      ),
     );
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 1 }, TITLE1);
 
@@ -214,7 +218,7 @@ describe("switchTypography", () => {
   });
 
   test("does not set originalType for new blocks", () => {
-    const state = letter(asNew(paragraph(literal("noe tekst"))));
+    const state = letter(asNew(paragraph(literal({ text: "noe tekst" }))));
     const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
     expect(select<ParagraphBlock>(result, { blockIndex: 0 }).originalType).toBeUndefined();
   });

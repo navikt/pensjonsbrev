@@ -7,6 +7,7 @@ import { memo, useEffect, useRef, useState } from "react";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { VerticalDivider } from "~/components/Divider";
 import { formatTime } from "~/utils/dateUtils";
 
 import type { CallbackReceiver } from "../lib/actions";
@@ -15,6 +16,7 @@ import type { LetterEditorState } from "../model/state";
 import { getCursorOffset } from "../services/caretUtils";
 import type { Typography } from "../utils";
 import { TypographyToText } from "../utils";
+import EditorBulletList from "./EditorBulletList";
 
 const SelectTypography = (props: {
   editorState: LetterEditorState;
@@ -70,7 +72,11 @@ export const EditorMenu = () => {
         justify-content: space-between;
       `}
     >
-      <SelectTypography editorState={editorState} setEditorState={setEditorState} />
+      <HStack gap="5">
+        <EditorBulletList editorState={editorState} setEditorState={setEditorState} />
+        <VerticalDivider />
+        <SelectTypography editorState={editorState} setEditorState={setEditorState} />
+      </HStack>
 
       <LagretTidspunkt
         datetime={editorState.info.sistredigert}

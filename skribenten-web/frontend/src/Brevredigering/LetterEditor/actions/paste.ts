@@ -142,7 +142,7 @@ function interpretULorOL(draft: Draft<LetterEditorState>, literalIndex: LiteralI
           const currentBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
 
           if (currentBlock?.type === PARAGRAPH) {
-            currentBlock.content.push(newItemList(newItem(text)));
+            currentBlock.content.push(newItemList({ items: [newItem(text)] }));
             literalIndex = {
               ...literalIndex,
               contentIndex: literalIndex.contentIndex + 1,
@@ -151,7 +151,11 @@ function interpretULorOL(draft: Draft<LetterEditorState>, literalIndex: LiteralI
             };
             offset = text.length;
           } else if (currentBlock?.type === TITLE1 || currentBlock?.type === TITLE2) {
-            draft.redigertBrev.blocks.splice(literalIndex.blockIndex + 1, 0, newParagraph(newItemList(newItem(text))));
+            draft.redigertBrev.blocks.splice(
+              literalIndex.blockIndex + 1,
+              0,
+              newParagraph({ content: [newItemList({ items: [newItem(text)] })] }),
+            );
             literalIndex = {
               blockIndex: literalIndex.blockIndex + 1,
               contentIndex: 0,

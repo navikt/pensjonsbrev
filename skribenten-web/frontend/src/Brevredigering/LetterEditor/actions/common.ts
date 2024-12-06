@@ -66,13 +66,17 @@ export function deleteElements(
   }
 }
 
-export function newParagraph(...content: Content[]): ParagraphBlock {
+export function newParagraph(args: {
+  id?: Nullable<number>;
+  content: Content[];
+  deletedContent?: number[];
+}): ParagraphBlock {
   return {
     type: PARAGRAPH,
-    id: null,
+    id: args.id ?? null,
     editable: true,
-    deletedContent: [],
-    content,
+    deletedContent: args.deletedContent ?? [],
+    content: args.content,
   };
 }
 
@@ -91,10 +95,21 @@ export function newLiteral(args: {
   };
 }
 
-export function newItem(text: string): Item {
-  return { id: null, content: [newLiteral({ text })] };
+export const newVariable = (args: { id?: number; text: string; name?: string }): VariableValue => {
+  return { type: VARIABLE, id: args.id ?? -1, name: args.name, text: args.text };
+};
+
+export function newItem(text: string, variable?: string, text2?: string): Item {
+  const content = variable ? [newLiteral({ text }), newVariable({ text: variable })] : [newLiteral({ text })];
+  if (text2) {
+    content.push(newLiteral({ text: text2 }));
+  }
+
+  return { id: null, content: content };
 }
 
-export function newItemList(...items: Item[]): ItemList {
-  return { id: null, type: "ITEM_LIST", items, deletedItems: [] };
+export const newItems = (...text: string[]) => text.map((t) => newItem(t));
+
+export function newItemList(args: { id?: Nullable<number>; items: Item[]; deletedItems?: number[] }): ItemList {
+  return { id: args.id ?? null, type: "ITEM_LIST", items: args.items, deletedItems: args.deletedItems ?? [] };
 }
