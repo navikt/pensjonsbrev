@@ -9,8 +9,6 @@ import no.nav.pensjon.brev.template.dsl.text
 
 object TBU1091_Generated : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-		//[TBU1091, TBU1091NN]
-
 		paragraph {
 			text (
 				Bokmal to "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet.",
