@@ -62,6 +62,17 @@ object AdhocMidlertidigOpphoerHvilenderett10Aar : AutobrevTemplate<EmptyBrevdata
                 )
             }
 
+            title1 {
+                text(
+                    Bokmal to "Honnørkort"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du har ikke lenger rett på uføretrygd, og må derfor levere tilbake honnørkortet til Nav-kontoret ditt."
+                )
+            }
+
             includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
