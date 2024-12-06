@@ -22,6 +22,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.informasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innvilgelsesaar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
@@ -39,12 +40,13 @@ data class OmstillingsstoenadRevurderingDTO(
     val feilutbetaling: FeilutbetalingType,
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
-) : FerdigstillingBrevDTO {
+    val innvilgelsesaar: Boolean
+): FerdigstillingBrevDTO {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
 
 @TemplateModelHelpers
-object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
+object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING
 
     override val template =
@@ -53,12 +55,12 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
             letterDataType = OmstillingsstoenadRevurderingDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-                LetterMetadata(
-                    displayTitle = "Vedtak - Revurdering av omstillingsstønad",
-                    isSensitiv = true,
-                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-                ),
+            LetterMetadata(
+                displayTitle = "Vedtak - Revurdering av omstillingsstønad",
+                isSensitiv = true,
+                distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            ),
         ) {
             title {
                 text(
@@ -125,15 +127,26 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
             }
 
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
                 beregning,
-                tidligereFamiliepleier,
+                tidligereFamiliepleier.and(innvilgelsesaar),
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false),
                 beregning,
-                tidligereFamiliepleier.not(),
+                tidligereFamiliepleier.not().and(innvilgelsesaar.not()),
             )
+            includeAttachment(
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false),
+                beregning,
+                tidligereFamiliepleier.and(innvilgelsesaar.not()),
+            )
+            includeAttachment(
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
+                beregning,
+                tidligereFamiliepleier.not().and(innvilgelsesaar),
+            )
+
 
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
 
