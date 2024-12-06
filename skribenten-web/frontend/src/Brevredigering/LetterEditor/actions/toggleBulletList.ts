@@ -7,7 +7,7 @@ import type { Content, ItemList, TextContent } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
-import { deleteElement, newItemList } from "./common";
+import { deleteElement, newItemList, newLiteral } from "./common";
 import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = produce(
@@ -42,12 +42,23 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
   const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
   const sentenceElements = sentence.map((r) => r.element);
 
+  //TODO - vi kan vurdere å slå sammen alle contenstene inn til 1 literal, så lenge dem har samme fonttype (gjøres i en annen PR)
+  const allSentenceElementsAsLiterals = sentenceElements.map((s) => {
+    if (s.type === "LITERAL") {
+      return newLiteral({ ...s, id: null });
+    }
+    return newLiteral({
+      text: s.text,
+      editedText: s.text,
+    });
+  });
+
   const replacedWithItemList = replaceElementsBetweenIncluding(
     thisBlock.content,
     sentence[0].originalIndex,
     sentence.at(-1)!.originalIndex,
     newItemList({
-      items: [{ id: null, content: sentenceElements }],
+      items: [{ id: null, content: allSentenceElementsAsLiterals }],
     }),
   );
 
@@ -56,11 +67,12 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
   thisBlock.deletedContent.push(...sentenceElements.filter((s) => !!s.id).map((r) => r.id!), ...newDeletedContent);
 
   const newContentIndex = draft.redigertBrev.blocks[literalIndex.blockIndex].content.findIndex(
-    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
+    (content) =>
+      content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, allSentenceElementsAsLiterals)),
   );
   const newItemIndex = (
     draft.redigertBrev.blocks[literalIndex.blockIndex].content[newContentIndex] as ItemList
-  ).items.findIndex((i) => isEqual(i.content, sentenceElements));
+  ).items.findIndex((i) => isEqual(i.content, allSentenceElementsAsLiterals));
   const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
 
   draft.focus = {

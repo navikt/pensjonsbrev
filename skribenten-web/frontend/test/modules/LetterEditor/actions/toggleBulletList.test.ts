@@ -4,9 +4,23 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newParagraph } from "~/Brevredigering/LetterEditor/actions/common";
 import type { Item, ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 
-import { item, itemList, letter, literal, paragraph, select } from "../utils";
+import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
 
 describe("LetterEditorActions.toggleBulletList", () => {
+  describe("toggle on", () => {
+    test("converts variables into literals", () => {
+      const state = letter(paragraph(literal({ text: "b0-c0" }), variable("b0-c1"), literal({ text: "b0-c2" })));
+      const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 2 });
+
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+      const itemListItems = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items;
+      expect(itemListItems).toHaveLength(1);
+      expect(itemListItems[0].content).toHaveLength(3);
+      expect(itemListItems.every((i) => i.content.every((c) => c.type === "LITERAL"))).toBe(true);
+    });
+  });
+
   describe("has adjoining itemList", () => {
     test("should not merge with itemList in previous block if not first in current block", () => {
       const state = letter(
