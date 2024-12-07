@@ -17,21 +17,21 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser.Utbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.endringIUtbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.informasjonOmOmstillingsstoenadData
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.inntektsaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.omsRettUtenTidsbegrensning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.tidligereFamiliepleier
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.endringIUtbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.informasjonOmOmstillingsstoenadData
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.inntektsaar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.omsRettUtenTidsbegrensning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 import java.time.LocalDate
 
-data class OmstillingsstoenadInntektsjusteringVedtakDTO(
+data class AarligInntektsjusteringVedtakDTO(
     override val innhold: List<Element>,
     val beregning: OmstillingsstoenadBeregning,
     val omsRettUtenTidsbegrensning: Boolean = false,
@@ -46,14 +46,14 @@ data class OmstillingsstoenadInntektsjusteringVedtakDTO(
 }
 
 @TemplateModelHelpers
-object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<OmstillingsstoenadInntektsjusteringVedtakDTO>,
+object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInntektsjusteringVedtakDTO>,
     Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VEDTAK
 
     override val template =
         createTemplate(
             name = kode.name,
-            letterDataType = OmstillingsstoenadInntektsjusteringVedtakDTO::class,
+            letterDataType = AarligInntektsjusteringVedtakDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(
@@ -140,12 +140,12 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<Omstilling
             }
 
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, inntektsjustering = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false),
                 beregning,
                 tidligereFamiliepleier,
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, inntektsjustering = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false),
                 beregning,
                 tidligereFamiliepleier.not(),
             )

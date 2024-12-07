@@ -14,19 +14,19 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.inntektsaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTOSelectors.virkningstidspunkt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.inntektsaar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.virkningstidspunkt
 
 @TemplateModelHelpers
-object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<OmstillingsstoenadInntektsjusteringVedtakDTO>,
+object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInntektsjusteringVedtakDTO>,
     Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VARSEL
 
     override val template =
         createTemplate(
             name = kode.name,
-            letterDataType = OmstillingsstoenadInntektsjusteringVedtakDTO::class,
+            letterDataType = AarligInntektsjusteringVedtakDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(
