@@ -18,11 +18,11 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.datoVedtakOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erInnvilgelsesaar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.informasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innvilgelsesaar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
@@ -40,7 +40,7 @@ data class OmstillingsstoenadRevurderingDTO(
     val feilutbetaling: FeilutbetalingType,
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
-    val innvilgelsesaar: Boolean
+    val erInnvilgelsesaar: Boolean
 ): FerdigstillingBrevDTO {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
@@ -129,22 +129,22 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
                 beregning,
-                tidligereFamiliepleier.and(innvilgelsesaar),
+                tidligereFamiliepleier.and(erInnvilgelsesaar),
             )
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false),
                 beregning,
-                tidligereFamiliepleier.not().and(innvilgelsesaar.not()),
+                tidligereFamiliepleier.not().and(erInnvilgelsesaar.not()),
             )
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false),
                 beregning,
-                tidligereFamiliepleier.and(innvilgelsesaar.not()),
+                tidligereFamiliepleier.and(erInnvilgelsesaar.not()),
             )
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
                 beregning,
-                tidligereFamiliepleier.not().and(innvilgelsesaar),
+                tidligereFamiliepleier.not().and(erInnvilgelsesaar),
             )
 
 
