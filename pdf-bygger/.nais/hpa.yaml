@@ -11,8 +11,8 @@ spec:
   minReplicas: 12
   maxReplicas: 150
   metrics:
-    - type: Pods
-      pods:
+    - type: External
+      external:
         metric:
           name: pensjonsbrev_pdf_compile_active_active
         target:
