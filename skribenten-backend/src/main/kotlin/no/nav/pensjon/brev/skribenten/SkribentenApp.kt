@@ -77,7 +77,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
                 is BrevredigeringException.HarIkkeAttestantrolleException -> call.respond(HttpStatusCode.Forbidden, cause.message)
                 is BrevredigeringException.KanIkkeAttestereEgetBrevException -> call.respond(HttpStatusCode.Forbidden, cause.message)
                 is BrevredigeringException.AlleredeAttestertException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is BrevredigeringException.BrevFinsIkkeException -> call.respond(HttpStatusCode.NotFound, cause.message)
+                is BrevredigeringException.BrevFinnesIkkeException -> call.respond(HttpStatusCode.NotFound, cause.message)
                 is BrevredigeringException.KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
             }
         }
