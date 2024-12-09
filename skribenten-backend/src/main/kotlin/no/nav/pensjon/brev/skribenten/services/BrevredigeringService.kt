@@ -139,7 +139,10 @@ class BrevredigeringService(
             if (brevDto.info.laastForRedigering) {
                 throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'.")
             }
-            rendreBrev(brev = brevDto, saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg).map { rendretBrev ->
+            rendreBrev(
+                brev = brevDto,
+                saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
+            ).map { rendretBrev ->
                 val principal = PrincipalInContext.require()
                 transaction {
                     brevDb.apply {
@@ -287,11 +290,17 @@ class BrevredigeringService(
             }
             validerErFerdigRedigert(brev)
             hentBrevMedReservasjon(brevId = brev.info.id, saksId = brev.info.saksId) {
-                rendreBrev(brev = brevDto, attesterendeSaksbehandler = userPrincipal.navIdent).map { rendretBrev ->
+                val signaturAttestant = brev.info.signaturAttestant
+                    ?: userPrincipal.navIdent.let { navansattService.hentNavansatt(it.id)?.navn }
+                rendreBrev(
+                    brev = brevDto,
+                    signaturAttestant = signaturAttestant
+                ).map { rendretBrev ->
                     transaction {
                         brevDb.apply {
                             redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
                             this.attestertAvNavIdent = userPrincipal.navIdent
+                            this.signaturAttestant = signaturAttestant
                         }.toDto()
                     }
                 }
@@ -418,8 +427,8 @@ class BrevredigeringService(
         brev: Dto.Brevredigering,
         saksbehandlerValg: SaksbehandlerValg? = null,
         signaturSignerende: String? = null,
-        signaturAttestant: String? = null,
-        attesterendeSaksbehandler: NavIdent? = null) =
+        signaturAttestant: String? = null
+    ) =
         rendreBrev(
             brevkode = brev.info.brevkode,
             spraak = brev.info.spraak,
@@ -427,7 +436,6 @@ class BrevredigeringService(
             vedtaksId = brev.info.vedtaksId,
             saksbehandlerValg = saksbehandlerValg ?: brev.saksbehandlerValg,
             avsenderEnhetsId = brev.info.avsenderEnhetId,
-            attesterendeSaksbehandler = attesterendeSaksbehandler ?: brev.info.attestertAv,
             signaturSignerende = signaturSignerende ?: brev.info.signaturSignerende,
             signaturAttestant = signaturAttestant ?: brev.info.signaturAttestant,
         )
@@ -440,11 +448,8 @@ class BrevredigeringService(
         saksbehandlerValg: BrevbakerBrevdata,
         avsenderEnhetsId: String?,
         signaturSignerende: String,
-        attesterendeSaksbehandler: NavIdent? = null,
         signaturAttestant: String? = null,
     ): ServiceResult<LetterMarkup> = coroutineScope {
-        val signaturAttesterende = signaturAttestant ?: attesterendeSaksbehandler?.let { navansattService.hentNavansatt(it.id)?.navn }
-
         penService.hentPesysBrevdata(saksId = saksId, vedtaksId = vedtaksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
             .then { pesysData ->
                 brevbakerService.renderMarkup(
@@ -454,7 +459,7 @@ class BrevredigeringService(
                         pesysData = pesysData.brevdata,
                         saksbehandlerValg = saksbehandlerValg,
                     ),
-                    felles = pesysData.felles.copy(signerendeSaksbehandlere = SignerendeSaksbehandlere(signaturSignerende, signaturAttesterende))
+                    felles = pesysData.felles.copy(signerendeSaksbehandlere = SignerendeSaksbehandlere(signaturSignerende, signaturAttestant))
                 )
             }
     }
