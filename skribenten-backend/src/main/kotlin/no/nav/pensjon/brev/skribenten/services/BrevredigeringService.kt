@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Document
@@ -267,16 +266,39 @@ class BrevredigeringService(
         }
     }
 
-    suspend fun attester(saksId: Long, brevId: Long) = medAttestertVedtaksbrev(saksId = saksId, brevId = brevId) { bruker, brev ->
-        hentBrevMedReservasjon(brevId = brev.info.id, saksId = brev.info.saksId) {
-            rendreBrev(brev = brevDto, attesterendeSaksbehandler = bruker.navIdent).map { rendretBrev ->
-                transaction {
-                    brevDb.apply {
-                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
-                        this.attestertAvNavIdent = bruker.navIdent
-                    }.toDto()
+    suspend fun attester(saksId: Long, brevId: Long) {
+        if (!Features.attestant.isEnabled()) {
+            logger.debug("Attestering er skrudd av")
+            return
+        }
+        val brev = transaction { Brevredigering.findByIdAndSaksId(id = brevId, saksId = saksId)?.toDto() }
+            ?: throw BrevredigeringException.BrevFinnesIkkeException("Brev $brevId finnes ikke")
+        if (brev.info.attestertAv == null) {
+            val userPrincipal = PrincipalInContext.require()
+            if (!userPrincipal.isInGroup(ADGroups.attestant)) {
+                throw BrevredigeringException.HarIkkeAttestantrolleException(
+                    "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${brev.info.id}",
+                )
+            }
+            if (userPrincipal.navIdent == brev.info.opprettetAv) {
+                throw BrevredigeringException.KanIkkeAttestereEgetBrevException(
+                    "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${brev.info.id}",
+                )
+            }
+            validerErFerdigRedigert(brev)
+            hentBrevMedReservasjon(brevId = brev.info.id, saksId = brev.info.saksId) {
+                rendreBrev(brev = brevDto, attesterendeSaksbehandler = userPrincipal.navIdent).map { rendretBrev ->
+                    transaction {
+                        brevDb.apply {
+                            redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
+                            this.attestertAvNavIdent = userPrincipal.navIdent
+                        }.toDto()
+                    }
                 }
             }
+                ?.onError { error, _ -> throw BrevredigeringException.KanIkkeAttestereException(error) }
+        } else {
+            throw BrevredigeringException.AlleredeAttestertException("Brev ${brev.info.id} er allerede attestert")
         }
     }
 
@@ -332,33 +354,6 @@ class BrevredigeringService(
     private suspend fun validerVedtaksbrevAttestert(brev: Dto.Brevredigering, brevtype: LetterMetadata.Brevtype) {
         if (Features.attestant.isEnabled() && brevtype == LetterMetadata.Brevtype.VEDTAKSBREV && brev.info.attestertAv == null) {
             throw BrevIkkeKlartTilSendingException("Brevet ${brev.info.id} er ikke attestert.")
-        }
-    }
-
-    private suspend fun medAttestertVedtaksbrev(saksId: Long, brevId: Long, attester: suspend (UserPrincipal, Dto.Brevredigering) -> ServiceResult<Dto.Brevredigering>?) {
-        if (!Features.attestant.isEnabled()) {
-            logger.debug("Attestering er skrudd av")
-            return
-        }
-        val brev = transaction { Brevredigering.findByIdAndSaksId(id = brevId, saksId = saksId)?.toDto() }
-            ?: throw BrevredigeringException.BrevFinnesIkkeException("Brev $brevId finnes ikke")
-        if (brev.info.attestertAv == null) {
-            val userPrincipal = PrincipalInContext.require()
-            if (!userPrincipal.isInGroup(ADGroups.attestant)) {
-                throw BrevredigeringException.HarIkkeAttestantrolleException(
-                    "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${brev.info.id}",
-                )
-            }
-            if (userPrincipal.navIdent == brev.info.opprettetAv) {
-                throw BrevredigeringException.KanIkkeAttestereEgetBrevException(
-                    "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${brev.info.id}",
-                )
-            }
-            validerErFerdigRedigert(brev)
-            attester(userPrincipal, brev)
-                ?.onError { error, _ -> throw BrevredigeringException.KanIkkeAttestereException(error) }
-        } else {
-            throw BrevredigeringException.AlleredeAttestertException("Brev ${brev.info.id} er allerede attestert")
         }
     }
 
