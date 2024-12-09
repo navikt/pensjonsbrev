@@ -72,6 +72,7 @@ export const nyRedigertBrev = (args: {
             text: "We received your application for ",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
           {
             id: -726_051_414,
@@ -83,6 +84,7 @@ export const nyRedigertBrev = (args: {
             text: " from the Norwegian National Insurance Scheme on ",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
           {
             id: -694_080_035,
@@ -94,6 +96,7 @@ export const nyRedigertBrev = (args: {
             text: ".",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
         ],
         deletedContent: [],
@@ -108,6 +111,7 @@ export const nyRedigertBrev = (args: {
             text: "Our processing time for this type of application is usually ",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
           {
             id: 1_834_595_758,
@@ -119,6 +123,7 @@ export const nyRedigertBrev = (args: {
             text: " weeks.",
             editedText: null,
             type: "LITERAL",
+            tags: [],
           },
         ],
         deletedContent: [],
@@ -176,6 +181,7 @@ export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): Liter
   id: args.id ?? null,
   text: args.text ?? "ny literal default text",
   editedText: args.text ?? "ny literal default edited-text",
+  tags: [],
 });
 
 export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: string }): VariableValue => ({

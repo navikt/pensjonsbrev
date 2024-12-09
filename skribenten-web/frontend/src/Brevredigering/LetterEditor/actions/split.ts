@@ -30,7 +30,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
       if (isAtStartOfBlock) {
         // Since we're at the very beginning of a block, it makes sense that we create a new block and push `block`
         // one position.
-        const newBlock: ParagraphBlock = newParagraph(newLiteral(""));
+        const newBlock: ParagraphBlock = newParagraph(newLiteral({ text: "" }));
         editedLetter.blocks.splice(literalIndex.blockIndex, 0, newBlock);
       } else {
         // We're splitting a block somewhere inside it, so we modify `block` and move content after cursor to a new block.
@@ -60,7 +60,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
         // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or move focus to ít).
         content.items.splice(literalIndex.itemIndex, 1);
         if (literalIndex.contentIndex >= block.content.length - 1) {
-          block.content.push({ type: LITERAL, id: null, text: "", editedText: "" });
+          block.content.push(newLiteral({ text: "" }));
         }
         draft.focus = {
           blockIndex: literalIndex.blockIndex,

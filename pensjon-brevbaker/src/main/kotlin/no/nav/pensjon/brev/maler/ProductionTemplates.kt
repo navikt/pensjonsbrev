@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
+import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
@@ -19,17 +20,22 @@ import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
-object ProductionTemplates {
-    val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
+interface AllTemplates {
+    fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>>
+    fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>>
+}
+
+object ProductionTemplates : AllTemplates {
+    private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
         AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
-        AdhocGjenlevendEtter1970,
         AdhocFeilEtteroppgjoer2023,
-        AdhocUfoeretrygdEtterbetalingDagpenger,
-        AdhocUfoeretrygdKombiDagpenger,
+        AdhocGjenlevendEtter1970,
         AdhocInformasjonHvilendeRett4Aar,
         AdhocMidlertidigOpphoerHvilenderett10Aar,
+        AdhocUfoeretrygdEtterbetalingDagpenger,
+        AdhocUfoeretrygdKombiDagpenger,
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
@@ -40,6 +46,7 @@ object ProductionTemplates {
         EtteroppgjoerEtterbetalingAutoLegacy,
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
+        InfoAldersovergang67AarAuto,
         OmsorgEgenAuto,
         OpphoerBarnetilleggAuto,
         OpptjeningVedForhoeyetHjelpesats,
@@ -47,7 +54,7 @@ object ProductionTemplates {
         UngUfoerAuto,
         VarselSaksbehandlingstidAuto,
     )
-    val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+    private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagUfoeretrygd,
         BekreftelsePaaFlyktningstatus,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
@@ -58,4 +65,8 @@ object ProductionTemplates {
         InnhentingDokumentasjonFraBruker,
         VarselOmMuligAvslag,
     )
+
+    override fun hentAutobrevmaler() = autobrev
+
+    override fun hentRedigerbareMaler() = redigerbare
 }

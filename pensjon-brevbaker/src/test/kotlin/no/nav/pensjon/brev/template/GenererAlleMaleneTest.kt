@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class GenererAlleMaleneTest {
 
-    private val filterForPDF = listOf<String>()
+    private val filterForPDF = listOf<String>("67")
 
     @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{1}, {3}")
@@ -64,14 +64,14 @@ class GenererAlleMaleneTest {
     companion object {
         @JvmStatic
         fun alleMalene() = listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
-                ProductionTemplates.autobrev.map {
+                ProductionTemplates.hentAutobrevmaler().map {
                     Arguments.of(
                         it.template,
                         it.kode,
                         Fixtures.create(it.template.letterDataType),
                         spraak,
                     )
-                } + ProductionTemplates.redigerbare.map {
+                } + ProductionTemplates.hentRedigerbareMaler().map {
                     Arguments.of(
                         it.template,
                         it.kode,

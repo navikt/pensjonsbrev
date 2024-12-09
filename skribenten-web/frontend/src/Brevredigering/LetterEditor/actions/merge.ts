@@ -1,6 +1,6 @@
 import { produce } from "immer";
 
-import { deleteElement, text } from "~/Brevredigering/LetterEditor/actions/common";
+import { deleteElement, newLiteral, text } from "~/Brevredigering/LetterEditor/actions/common";
 import type { AnyBlock, Identifiable } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
@@ -80,7 +80,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
 
           const contentBeforeItemList = block.content[literalIndex.contentIndex - 1];
           if (contentBeforeItemList?.type === VARIABLE) {
-            block.content.splice(literalIndex.contentIndex, 1, { type: LITERAL, id: null, text: "", editedText: "" });
+            block.content.splice(literalIndex.contentIndex, 1, newLiteral({ text: "" }));
             draft.focus = {
               blockIndex: literalIndex.blockIndex,
               contentIndex: literalIndex.contentIndex,
@@ -142,13 +142,13 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
         block.content.splice(literalIndex.contentIndex, 1);
         deleteElement(content, block.content, block.deletedContent);
         draft.focus = {
-          blockIndex: 1,
+          blockIndex: literalIndex.blockIndex,
           contentIndex: literalIndex.contentIndex - 1,
           cursorPosition: text(previousContentSameBlock).length,
         };
       } else {
         draft.focus = {
-          blockIndex: 1,
+          blockIndex: literalIndex.blockIndex,
           contentIndex: literalIndex.contentIndex - 1,
           cursorPosition: text(previousContentSameBlock).length,
         };
@@ -167,7 +167,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
           blocks.splice(secondId, 1);
           deleteElement(second, blocks, editedLetter.deletedBlocks);
           if (first.content.at(-1)?.type === VARIABLE) {
-            first.content.push({ type: LITERAL, id: null, text: "", editedText: "" });
+            first.content.push(newLiteral({ text: "" }));
           }
           draft.focus = focusEndOfBlock(firstId, first);
         } else {

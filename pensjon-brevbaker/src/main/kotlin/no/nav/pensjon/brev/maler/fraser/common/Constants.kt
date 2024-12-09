@@ -6,11 +6,13 @@ import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 object Constants {
     const val NAV_URL = "nav.no"
 
+    const val ALDERSPENSJON = "$NAV_URL/alderspensjon"
     const val ALDERSPENSJON_GJENLEVENDE_URL = "$NAV_URL/alderspensjon-gjenlevende"
     const val AFP_OFFENTLIG_URL = "$NAV_URL/afp-offentlig"
     const val ARBEID_URL= "$NAV_URL/arbeid"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
     const val DIN_UFOERETRYGD_URL = "$NAV_URL/dinuføretrygd"
+    const val DIN_PENSJON_URL = "$NAV_URL/dinpensjon"
     const val PENSJON_URL = "$NAV_URL/pensjon"
     const val DITT_NAV = "$NAV_URL/dittnav"
     const val ETTEROPPGJOR_URL = "$NAV_URL/etteroppgjor"
@@ -43,4 +45,5 @@ object Constants {
     const val UFOERE_ETTERSENDE_POST_URL = "$NAV_URL/uføre-ettersende-post"
     const val UFOERE_ETTERSENDE_URL = "$NAV_URL/uføre-ettersende"
     const val UTBETALINGSOVERSIKT_URL = "$NAV_URL/utbetalingsoversikt"
+    const val SAKSBEHANDLINGSTID_URL = "$NAV_URL/saksbehandlingstider"
 }

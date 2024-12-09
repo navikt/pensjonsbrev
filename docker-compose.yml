@@ -157,6 +157,9 @@ services:
       BREVBAKER_API_URL: "http://pensjon-brevbaker:8080"
 
   locust-master:
+    depends_on:
+      locust-worker:
+        condition: service_started
     profiles:
       - locust
     image: locustio/locust

@@ -60,7 +60,7 @@ object Felles {
                             + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                     English to "You can find more information at $merInformasjonUrl."
                             + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
-                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 $telefonnummer,"
+                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 $telefonnummer,"
                             + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
                 )
             }
