@@ -20,12 +20,11 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 @TemplateModelHelpers
 object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
+    override val kode = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = kode.name,

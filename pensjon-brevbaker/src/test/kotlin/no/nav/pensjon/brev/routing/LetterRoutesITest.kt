@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
@@ -66,6 +67,18 @@ class LetterRoutesITest {
         val response = client.post("/letter/autobrev/html") {
             accept(ContentType.Text.Html)
             setBody(autoBrevRequest)
+        }
+        assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertThat(response.bodyAsText(), contains(Regex("<html.*>")))
+    }
+
+    @Test
+    fun `render html can respond with raw html with new code`() = testBrevbakerApp { client ->
+        val req = autoBrevRequest.copy(kode = AutomatiskBrevkode("TESTBREV"))
+        val response = client.post("/letter/autobrev/html") {
+            accept(ContentType.Text.Html)
+            setBody(req)
         }
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
         assertEquals(HttpStatusCode.OK, response.status)
