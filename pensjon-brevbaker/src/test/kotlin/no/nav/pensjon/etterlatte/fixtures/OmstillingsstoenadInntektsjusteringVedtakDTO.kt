@@ -2,10 +2,10 @@ package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadInntektsjusteringVedtakDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTO
 import java.time.LocalDate
 
-fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = OmstillingsstoenadInntektsjusteringVedtakDTO(
+fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = AarligInntektsjusteringVedtakDTO(
     innhold = createPlaceholderForRedigerbartInnhold(),
     beregning =
     OmstillingsstoenadBeregning(
