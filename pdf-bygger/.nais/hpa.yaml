@@ -11,10 +11,10 @@ spec:
   minReplicas: 12
   maxReplicas: 150
   metrics:
-    - type: External
-      external:
+    - type: Pods
+      pods:
         metric:
           name: pensjonsbrev_pdf_compile_active_active
         target:
           type: AverageValue
-          averageValue: "4" #PDF_BYGGER_LATEX_PARALLELISM / 2
+          averageValue: "2" #PDF_BYGGER_LATEX_PARALLELISM / 2
