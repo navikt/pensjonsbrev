@@ -24,7 +24,7 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
             val objectTypes = mutableMapOf(from.qualifiedName!! to createObjectTypeSpecification(from))
 
             while (toProcess.isNotEmpty()) {
-                val current = toProcess.removeAt(0)
+                val current = toProcess.removeFirst()
                 val name = current.qualifiedName!!
                 if (!objectTypes.containsKey(name)) {
                     objectTypes[name] = createObjectTypeSpecification(current)
