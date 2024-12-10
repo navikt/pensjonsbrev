@@ -59,6 +59,7 @@ enum class EtterlatteBrevKode {
     UTSATT_KLAGEFRIST,
     KLAGE_OVERSENDELSE_BLANKETT,
     KLAGE_OVERSENDELSE_BRUKER,
+    KLAGE_SAKSBEHANDLINGSTID,
     INGEN_REDIGERBAR_DEL, // Til bruk for å modellere at brevet ikke har en redigerbar del
 }
 
