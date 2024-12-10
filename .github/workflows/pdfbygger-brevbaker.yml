@@ -9,7 +9,7 @@ on:
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
-      - "!**.md"
+      - "!**/**.md"
   push:
     branches:
       - "main"
@@ -20,7 +20,7 @@ on:
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
-      - "!**.md"
+      - "!**/**.md"
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
 
