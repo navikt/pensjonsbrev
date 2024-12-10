@@ -226,7 +226,7 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:pdf-bygger"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "pdf-bygger/.nais/nais.yaml"
+          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
 

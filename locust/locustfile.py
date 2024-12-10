@@ -1,14 +1,14 @@
-from locust import HttpUser, task, between
+from locust import FastHttpUser, task, between
 import azuread
 import os
 import uuid
 
 payload = open(os.path.join(os.path.dirname(__file__), 'autobrev_request.json'), "r").read()
 
-class BrevbakerLoadTest(HttpUser):
+class BrevbakerLoadTest(FastHttpUser):
     token = azuread.fetch_token()
     wait_time = between(0,0)
-
+    #network_timeout = 300.0
     @task
     def load_test(self):
         #headers = {'Content-Type': 'application/json'} # local testing
