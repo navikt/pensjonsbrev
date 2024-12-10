@@ -38,7 +38,7 @@ data class KlageSaksbehandlingstidDTO(
 
 @TemplateModelHelpers
 object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.KLAGE_SAKSBEHANDLINGSTID
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.KLAGE_SAKSBEHANDLINGS_INFO
 
     override val template =
         createTemplate(
