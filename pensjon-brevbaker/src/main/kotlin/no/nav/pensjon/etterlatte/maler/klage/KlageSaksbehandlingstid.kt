@@ -1,7 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.klage
 
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -19,15 +17,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.SAKSBEHANDLINGSTIDER_BP
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.SAKSBEHANDLINGSTIDER_OMS
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.borIUtlandet
 import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.datoForVedtak
 import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.datoMottatKlage
