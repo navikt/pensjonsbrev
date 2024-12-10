@@ -13,7 +13,7 @@ class BrevbakerLoadTest(HttpUser):
     def load_test(self):
         #headers = {'Content-Type': 'application/json'} # local testing
         headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}# dev environment testing
-        self.client.post("/letter/autobrev", payload, headers=headers)
+        self.client.post("/letter/autobrev/pdf", payload, headers=headers)
 
     def access_token(self):
         if self.token.is_valid():

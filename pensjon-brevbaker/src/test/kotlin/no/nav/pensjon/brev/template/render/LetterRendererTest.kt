@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.Fixtures.felles
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.*
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.template.*
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Assertions.*
 
 class LetterRendererTest {
 
-    val letter = Letter(LetterExample.template, Fixtures.create<LetterExampleDto>(), Bokmal, felles)
+    val letter = Letter(LetterExample.template, createLetterExampleDto(), Bokmal, felles)
 
     class MockRenderer : LetterRenderer<HTMLDocument>() {
         var letterScope: ExpressionScope<*>? = null

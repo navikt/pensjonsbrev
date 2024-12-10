@@ -1,15 +1,9 @@
 package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -61,23 +55,36 @@ object BarnepensjonForeldreloesFraser {
                                 formatertVirkningsdato + " both your parents are registered as deceased."
                     )
                 }.orIfNotNull(forskjelligAvdoedPeriode) { forskjelligAvdoed ->
-                    val avdoedNavn = forskjelligAvdoed.foersteAvdoed.navn
-                    val formatertDoedsdato = forskjelligAvdoed.foersteAvdoed.doedsdato.format()
-                    val senereDoedsdato = forskjelligAvdoed.senereAvdoed.doedsdato.format()
-                    val senereVirkningsdato = forskjelligAvdoed.senereVirkningsdato.format()
-                    textExpr(
-                        Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". Barnepensjon endres fra " + senereVirkningsdato + " fordi den andre forelderen din er registrert død " + senereDoedsdato + ". ",
-                        Language.Nynorsk to "Du er innvilga barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". Barnepensjonen din er endra frå " + senereVirkningsdato + " fordi begge foreldra dine er registrert som døde. ",
-                        Language.English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + ". Your children's pension will change on " + senereVirkningsdato + " because both your parents are registered as deceased. ",
-                    )
+                    ifNotNull(forskjelligAvdoed.foersteAvdoed, forskjelligAvdoed.senereAvdoed) { foersteAvdoed, senereAvdoed ->
+                        val senereVirkningsdato = forskjelligAvdoed.senereVirkningsdato.format()
+                        val avdoedNavn = foersteAvdoed.navn
+                        val formatertDoedsdato = foersteAvdoed.doedsdato.format()
+                        val formatertSenereDoedsdato = senereAvdoed.doedsdato.format()
+
+                        textExpr(
+                            Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". Barnepensjon endres fra " + senereVirkningsdato + " fordi den andre forelderen din er registrert død " + formatertSenereDoedsdato + ". ",
+                            Language.Nynorsk to "Du er innvilga barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". Barnepensjonen din er endra frå " + senereVirkningsdato + " fordi begge foreldra dine er registrert som døde. ",
+                            Language.English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + ". Your children's pension will change on " + senereVirkningsdato + " because both your parents are registered as deceased. ",
+                        )
+                    }.orShow {
+                        textExpr(
+                            Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() +
+                                    formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.",
+                            Language.Nynorsk to "Du er innvilga barnepensjon frå ".expr() +
+                                    formatertVirkningsdato + " fordi begge foreldra dine er registrert som døde.",
+                            Language.English to "You have been granted a children's pension starting ".expr() +
+                                    formatertVirkningsdato + " because both your parents are registered as deceased."
+                        )
+                    }
+
                 }.orShow {
                     textExpr(
                         Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() +
-                                formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.".expr(),
+                                formatertVirkningsdato + " fordi begge foreldrene dine er registrert død.",
                         Language.Nynorsk to "Du er innvilga barnepensjon frå ".expr() +
-                                formatertVirkningsdato + " fordi begge foreldra dine er registrert som døde.".expr(),
+                                formatertVirkningsdato + " fordi begge foreldra dine er registrert som døde.",
                         Language.English to "You have been granted a children's pension starting ".expr() +
-                                formatertVirkningsdato + " because both your parents are registered as deceased.".expr()
+                                formatertVirkningsdato + " because both your parents are registered as deceased."
                     )
                 }
 
@@ -93,9 +100,9 @@ object BarnepensjonForeldreloesFraser {
                         )
                     }.orShow {
                         textExpr(
-                            Language.Bokmal to " Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.".expr(),
-                            Language.Nynorsk to " Du får ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
-                            Language.English to " You will receive NOK ".expr() + formatertBeloep + " each month before tax.".expr(),
+                            Language.Bokmal to " Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.",
+                            Language.Nynorsk to " Du får ".expr() + formatertBeloep + " kroner per månad før skatt.",
+                            Language.English to " You will receive NOK ".expr() + formatertBeloep + " each month before tax.",
                         )
                     }
                 }.orShow {

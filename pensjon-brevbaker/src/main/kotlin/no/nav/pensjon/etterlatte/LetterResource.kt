@@ -1,14 +1,13 @@
 package no.nav.pensjon.etterlatte
 
 import io.ktor.server.plugins.*
+import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.Felles
-
-class ParseLetterDataException(msg: String, cause: Exception): Exception(msg, cause)
 
 class LetterResource(private val templateResource: TemplateResource = TemplateResource()) {
     private val objectMapper = jacksonObjectMapper()
