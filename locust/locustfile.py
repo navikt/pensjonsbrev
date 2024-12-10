@@ -16,8 +16,12 @@ class BrevbakerLoadTest(FastHttpUser):
         self.client.post("/letter/autobrev/pdf", payload, headers=headers)
 
     def access_token(self):
-        if self.token.is_valid():
-            return self.token.token
-        else:
-            self.token = azuread.fetch_token()
-            return self.token.token
+        return self.token.token
+        #TODO kjent feil. Etter token løper ut etter en time prøver alle workers å fetche token samtidig
+        # Kan vi få en uavhengig oppgave med refresh token som oppdaterer denne løpende?
+        # mistenker at mange feiler fordi mange forsøker å fetche token samtidig. De som ikke får token dør.
+        #if self.token.is_valid():
+        #    return self.token.token
+        #else:
+        #    self.token = azuread.fetch_token()
+        #    return self.token.token
