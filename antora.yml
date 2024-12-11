@@ -1,6 +1,0 @@
-name: pensjonsbrev
-title: Pensjonsbrev
-version: main
-start_page: ROOT:index.adoc
-nav:
-    - modules/Pensjonsbrev/nav.adoc
