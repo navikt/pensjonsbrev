@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "check-types": "tsc --noemit",
     "test": "vitest",
-    "lint": "eslint --ext .",
+    "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "stylelint": "stylelint '**/*.{tsx,css}'",
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
