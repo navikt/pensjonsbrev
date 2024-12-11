@@ -1,0 +1,70 @@
+version: 2
+
+updates:
+  # ==============
+  # KOTLIN BACKEND
+  # ==============
+  - package-ecosystem: "gradle"
+    directories:
+      - "/"
+      - "/brevbaker-api-model-common"
+      - "/pdf-bygger"
+      - "/pensjon-brevbaker"
+      - "/pensjon-brevbaker-api-model"
+      - "/skribenten-backend"
+      - "/template-model-generator"
+      - "/tjenestebuss-integrasjon"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+    open-pull-requests-limit: 10
+    groups:
+      backend:
+        patterns:
+          - "*"
+
+  # =============
+  # FRONTEND
+  # =============
+  - package-ecosystem: "npm"
+    directories:
+      - "/skribenten-web/bff"
+      - "/skribenten-web/frontend"
+      - "/brevoppskrift-web/bff"
+      - "/brevoppskrift-web/frontend"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+    open-pull-requests-limit: 10
+    groups:
+      frontend:
+        patterns:
+        - "*"
+
+  # ==============
+  # GITHUB ACTIONS
+  # ==============
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+
+  # ==============
+  # Docker
+  # ==============
+  - package-ecosystem: "docker"
+    directories:
+      - "/brevoppskrift-web/bff"
+      - "/pensjon-brevbaker"
+      - "/pdf-bygger"
+      - "/skribenten-backend"
+      - "/skribenten-web/bff"
+      - "/tjenestebuss-integrasjon"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+    groups:
+      dockerfilene:
+        patterns:
+          - "*"
