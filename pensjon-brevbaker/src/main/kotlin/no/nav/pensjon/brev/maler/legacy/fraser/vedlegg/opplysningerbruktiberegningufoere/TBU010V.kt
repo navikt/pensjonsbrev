@@ -378,7 +378,8 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                                 Nynorsk to "Ja",
                                 English to "Yes",
                             )
-                        }                    }
+                        }
+                    }
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = PE_SivilstandAnvendt_gift_men_lever_adskilt AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "gift") THEN      INCLUDE ENDIF
@@ -690,26 +691,27 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                         }
                     }
                 }
-                //Failed to convert with error: Expected token of type CLOSE_PAREN but found NUMBER
 
                 //IF(  (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd" OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk")  AND  (FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk)/12<40)  )  THEN      INCLUDE ENDIF
 
                 //[TBU010V]
-
-                row {
-                    cell {
-                        text(
-                            Bokmal to "Norsk framtidig trygdetid",
-                            Nynorsk to "Norsk framtidig trygdetid",
-                            English to "Future insurance period in Norway",
-                        )
-                    }
-                    cell {
-                        textExpr(
-                            Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " måneder",
-                            Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " månader",
-                            English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " months",
-                        )
+                showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().lessThan(480)
+                        and (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk"))) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Norsk framtidig trygdetid",
+                                Nynorsk to "Norsk framtidig trygdetid",
+                                English to "Future insurance period in Norway",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " måneder",
+                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " månader",
+                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " months",
+                            )
+                        }
                     }
                 }
 

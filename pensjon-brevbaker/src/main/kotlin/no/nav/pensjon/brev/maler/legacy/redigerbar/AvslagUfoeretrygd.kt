@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.LocalDate
 
 @TemplateModelHelpers
 object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
@@ -271,6 +272,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_ForutgaendeMedlemskapResultat) = "ikke_oppfylt" AND PE_Vedtaksdata_Kravhode_VurdereTrygdeavtale = false) THEN      INCLUDE ENDIF
+            val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
             showIf(
                 (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskapresultat().equalTo("ikke_oppfylt") and not(
                     pe.vedtaksdata_kravhode_vurderetrygdeavtale()
@@ -355,11 +357,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2394]
                 paragraph {
                     textExpr(
-                        Bokmal to "Du flyttet til Norge <FRIKTEKST: siste innflyttingsdato til Norge>, og ble da medlem av folketrygden. Vi har fastsatt uføretidspunktet ditt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()
+                        Bokmal to "Du flyttet til Norge <FRIKTEKST: siste innflyttingsdato til Norge>, og ble da medlem av folketrygden. Vi har fastsatt uføretidspunktet ditt til ".expr() + uforetidspunkt
                             .format() + ". Da ble inntektsevnen din varig nedsatt med minst ",
-                        Nynorsk to "Du flytta til Noreg <FRITEKST: siste innflyttingsdato til Norge>, og blei då medlem av folketrygda. Vi har fastsett uføretidspunktet ditt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()
+                        Nynorsk to "Du flytta til Noreg <FRITEKST: siste innflyttingsdato til Norge>, og blei då medlem av folketrygda. Vi har fastsett uføretidspunktet ditt til ".expr() + uforetidspunkt
                             .format() + ". Då blei inntektsevna di varig sett ned med minst ",
-                        English to "You moved to Norway on <FRITEKST: siste innflyttingsdato til Norge>, and you have national insurance coverage from that date. We have determined your date of disability to be ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()
+                        English to "You moved to Norway on <FRITEKST: siste innflyttingsdato til Norge>, and you have national insurance coverage from that date. We have determined your date of disability to be ".expr() + uforetidspunkt
                             .format() + ". Your earning ability then became permanently reduced by at least ",
                     )
 
@@ -464,11 +466,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har satt uføretidspunktet ditt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()
+                        Bokmal to "Vi har satt uføretidspunktet ditt til ".expr() + uforetidspunkt
                             .format() + ". Da ble inntektsevnen din varig nedsatt med minst ",
-                        Nynorsk to "Vi har sett uføretidspunktet ditt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()
+                        Nynorsk to "Vi har sett uføretidspunktet ditt til ".expr() + uforetidspunkt
                             .format() + ". Då blei inntektsevna di varig sett ned med minst ",
-                        English to "We have determined your date of disability to be ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()
+                        English to "We have determined your date of disability to be ".expr() + uforetidspunkt
                             .format() + ". Your earning ability then became permanently reduced by at least ",
                     )
 

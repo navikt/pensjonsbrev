@@ -19,8 +19,6 @@ data class TBU2339_Generated(
     val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        //[TBU2339, TBU2339NN, TBU2339EN]
-        // I bokmål: egentlig sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall
         paragraph {
             textExpr(
                 Bokmal to "Inntekten til deg og ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. ",

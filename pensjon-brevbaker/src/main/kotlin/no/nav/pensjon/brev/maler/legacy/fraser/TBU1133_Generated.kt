@@ -1,5 +1,3 @@
-
-
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

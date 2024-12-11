@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_nettoakk_pluss_nettorestar
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
 import no.nav.pensjon.brev.maler.legacy.*
@@ -57,9 +56,9 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
                         }
                         cell {
                             textExpr (
-                                Bokmal to pe.functions.pe_ut_nettoakk_pluss_nettorestar.format() + " kr",
-                                Nynorsk to pe.functions.pe_ut_nettoakk_pluss_nettorestar.format() + " kr",
-                                English to pe.functions.pe_ut_nettoakk_pluss_nettorestar.format() + " NOK",
+                                Bokmal to pe.ut_nettoakk_pluss_nettorestar().format() + " kr",
+                                Nynorsk to pe.ut_nettoakk_pluss_nettorestar().format() + " kr",
+                                English to pe.ut_nettoakk_pluss_nettorestar().format() + " NOK",
                             )
                         }
                     }
