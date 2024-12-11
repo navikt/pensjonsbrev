@@ -19,6 +19,11 @@ updates:
       day: "sunday"
     open-pull-requests-limit: 10
     groups:
+      tjenestebuss:
+        patterns:
+          - "org.apache.cxf:*"
+          - "com.sun.xml.messaging.saaj:saaj-impl"
+          - "com.sun.xml.bind:jaxb-core"
       backend:
         patterns:
           - "*"
@@ -37,6 +42,12 @@ updates:
       day: "sunday"
     open-pull-requests-limit: 10
     groups:
+      dev:
+        patterns:
+          - "*eslint*"
+          - "prettier"
+          - "typescript"
+          - "stylelint*"
       frontend:
         patterns:
         - "*"
@@ -51,20 +62,33 @@ updates:
       day: "sunday"
 
   # ==============
-  # Docker
+  # Docker frontend
   # ==============
   - package-ecosystem: "docker"
     directories:
       - "/brevoppskrift-web/bff"
+      - "/skribenten-web/bff"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+    groups:
+      docker-frontend:
+        patterns:
+          - "*"
+
+  # ==============
+  # Docker backend
+  # ==============
+  - package-ecosystem: "docker"
+    directories:
       - "/pensjon-brevbaker"
       - "/pdf-bygger"
       - "/skribenten-backend"
-      - "/skribenten-web/bff"
       - "/tjenestebuss-integrasjon"
     schedule:
       interval: "monthly"
       day: "sunday"
     groups:
-      dockerfilene:
+      docker-frontend:
         patterns:
           - "*"
