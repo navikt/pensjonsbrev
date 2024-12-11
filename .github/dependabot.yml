@@ -19,6 +19,11 @@ updates:
       day: "sunday"
     open-pull-requests-limit: 10
     groups:
+      tjenestebuss:
+        patterns:
+          - "org.apache.cxf:*"
+          - "com.sun.xml.messaging.saaj:saaj-impl"
+          - "com.sun.xml.bind:jaxb-core"
       backend:
         patterns:
           - "*"
