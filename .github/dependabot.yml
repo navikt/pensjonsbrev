@@ -7,9 +7,13 @@ updates:
   - package-ecosystem: "gradle"
     directories:
       - "/"
+      - "/brevbaker-api-model-common"
+      - "/pdf-bygger"
       - "/pensjon-brevbaker"
+      - "/pensjon-brevbaker-api-model"
       - "/skribenten-backend"
       - "/template-model-generator"
+      - "/tjenestebuss-integrasjon"
     schedule:
       interval: "monthly"
       day: "sunday"
