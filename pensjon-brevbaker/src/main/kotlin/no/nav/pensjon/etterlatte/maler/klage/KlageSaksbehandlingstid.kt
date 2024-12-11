@@ -115,7 +115,7 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
                     )
                 }
 
-                title1 {
+                title2 {
                     text(
                         Bokmal to "Meld fra om endringer",
                         Nynorsk to "Meld frå om endringar",
