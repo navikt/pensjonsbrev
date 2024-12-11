@@ -56,20 +56,25 @@ updates:
       day: "sunday"
 
   # ==============
-  # Docker
+  # Docker frontend
   # ==============
   - package-ecosystem: "docker"
     directories:
       - "/brevoppskrift-web/bff"
+      - "/skribenten-web/bff"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+
+  # ==============
+  # Docker backend
+  # ==============
+  - package-ecosystem: "docker"
+    directories:
       - "/pensjon-brevbaker"
       - "/pdf-bygger"
       - "/skribenten-backend"
-      - "/skribenten-web/bff"
       - "/tjenestebuss-integrasjon"
     schedule:
       interval: "monthly"
       day: "sunday"
-    groups:
-      dockerfilene:
-        patterns:
-          - "*"
