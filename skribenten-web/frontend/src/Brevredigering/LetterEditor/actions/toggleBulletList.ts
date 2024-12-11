@@ -7,7 +7,7 @@ import type { Content, ItemList, TextContent } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
-import { deleteElement, newItemList, newLiteral } from "./common";
+import { deleteElement, deleteElements, newItemList } from "./common";
 import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = produce(
@@ -42,23 +42,12 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
   const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
   const sentenceElements = sentence.map((r) => r.element);
 
-  //TODO - vi kan vurdere å slå sammen alle contenstene inn til 1 literal, så lenge dem har samme fonttype (gjøres i en annen PR)
-  const allSentenceElementsAsLiterals = sentenceElements.map((s) => {
-    if (s.type === "LITERAL") {
-      return newLiteral({ ...s, id: null });
-    }
-    return newLiteral({
-      text: s.text,
-      editedText: s.text,
-    });
-  });
-
   const replacedWithItemList = replaceElementsBetweenIncluding(
     thisBlock.content,
     sentence[0].originalIndex,
     sentence.at(-1)!.originalIndex,
     newItemList({
-      items: [{ id: null, content: allSentenceElementsAsLiterals }],
+      items: [{ id: null, content: sentenceElements }],
     }),
   );
 
@@ -67,12 +56,11 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
   thisBlock.deletedContent.push(...sentenceElements.filter((s) => !!s.id).map((r) => r.id!), ...newDeletedContent);
 
   const newContentIndex = draft.redigertBrev.blocks[literalIndex.blockIndex].content.findIndex(
-    (content) =>
-      content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, allSentenceElementsAsLiterals)),
+    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
   );
   const newItemIndex = (
     draft.redigertBrev.blocks[literalIndex.blockIndex].content[newContentIndex] as ItemList
-  ).items.findIndex((i) => isEqual(i.content, allSentenceElementsAsLiterals));
+  ).items.findIndex((i) => isEqual(i.content, sentenceElements));
   const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
 
   draft.focus = {
@@ -201,7 +189,7 @@ const toggleBulletListOffAtTheStartOfItemList = (args: {
   thisBlock.content.splice(
     args.itemContentIndex.contentIndex,
     thisItemList.items.length === 0 ? 1 : 0,
-    ...thisItem.content,
+    ...thisItem.content.map((c) => ({ ...c, id: null })),
   );
   deleteElement(thisItemList, thisBlock.content, thisBlock.deletedContent);
 
@@ -225,25 +213,17 @@ const toggleBulletListOffBetweenListElements = (args: {
   itemContentIndex: ItemContentIndex;
 }) => {
   const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
-
-  const thisBlockContentBeforeItemList = thisBlock.content.slice(0, args.itemContentIndex.contentIndex);
   const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
-  const itemsBefore = thisItemList.items.slice(0, args.itemContentIndex.itemIndex);
   const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
-  const itemsAfter = thisItemList.items.slice(args.itemContentIndex.itemIndex + 1);
-  const thisBlockContentAfterItemList = thisBlock.content.slice(args.itemContentIndex.contentIndex + 1);
+  const itemsAfter = thisItemList.items.splice(args.itemContentIndex.itemIndex, thisItemList.items.length).slice(1);
 
-  thisBlock.content = [
-    ...thisBlockContentBeforeItemList,
-    newItemList({
-      ...thisItemList,
-      items: itemsBefore,
-      deletedItems: [...thisItemList.deletedItems, ...(thisItem.id ? [thisItem.id] : [])],
-    }),
-    ...thisItem.content,
-    newItemList({ items: itemsAfter }),
-    ...thisBlockContentAfterItemList,
-  ];
+  deleteElements([thisItem, ...itemsAfter], thisItemList.items, thisItemList.deletedItems);
+  thisBlock.content.splice(args.itemContentIndex.contentIndex + 1, 0, newItemList({ items: itemsAfter }));
+  thisBlock.content.splice(
+    args.itemContentIndex.contentIndex + 1,
+    0,
+    ...thisItem.content.map((c) => ({ ...c, id: null })),
+  );
 
   args.draft.focus = {
     blockIndex: args.itemContentIndex.blockIndex,
@@ -269,7 +249,11 @@ const toggleBulletListOffAtTheEndOfItemList = (args: {
   thisItemList.items.splice(-1, 1);
   deleteElement(thisItem, thisItemList.items, thisItemList.deletedItems);
 
-  thisBlock.content.splice(args.itemContentIndex.contentIndex + 1, 0, ...thisItem.content);
+  thisBlock.content.splice(
+    args.itemContentIndex.contentIndex + 1,
+    0,
+    ...thisItem.content.map((c) => ({ ...c, id: null })),
+  );
   if (thisItemList.items.length === 0) {
     thisBlock.content.splice(args.itemContentIndex.contentIndex, 1);
   }

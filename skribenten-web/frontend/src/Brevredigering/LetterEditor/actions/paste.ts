@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import { newItem, newItemList, newParagraph, text } from "~/Brevredigering/LetterEditor/actions/common";
+import { newItem, newItemList, newLiteral, newParagraph, text } from "~/Brevredigering/LetterEditor/actions/common";
 import type { LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
@@ -135,14 +135,14 @@ function interpretULorOL(draft: Draft<LetterEditorState>, literalIndex: LiteralI
         const currentContent = draft.redigertBrev.blocks[literalIndex.blockIndex]?.content?.[literalIndex.contentIndex];
 
         if (currentContent?.type === ITEM_LIST && "itemContentIndex" in literalIndex) {
-          currentContent.items.push(newItem(text));
+          currentContent.items.push(newItem({ content: [newLiteral({ text })] }));
           literalIndex = { ...literalIndex, itemIndex: literalIndex.itemIndex + 1 };
           offset += text.length;
         } else if (currentContent?.type === LITERAL && !("itemContentIndex" in literalIndex)) {
           const currentBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
 
           if (currentBlock?.type === PARAGRAPH) {
-            currentBlock.content.push(newItemList({ items: [newItem(text)] }));
+            currentBlock.content.push(newItemList({ items: [newItem({ content: [newLiteral({ text })] })] }));
             literalIndex = {
               ...literalIndex,
               contentIndex: literalIndex.contentIndex + 1,
@@ -154,7 +154,7 @@ function interpretULorOL(draft: Draft<LetterEditorState>, literalIndex: LiteralI
             draft.redigertBrev.blocks.splice(
               literalIndex.blockIndex + 1,
               0,
-              newParagraph({ content: [newItemList({ items: [newItem(text)] })] }),
+              newParagraph({ content: [newItemList({ items: [newItem({ content: [newLiteral({ text })] })] })] }),
             );
             literalIndex = {
               blockIndex: literalIndex.blockIndex + 1,

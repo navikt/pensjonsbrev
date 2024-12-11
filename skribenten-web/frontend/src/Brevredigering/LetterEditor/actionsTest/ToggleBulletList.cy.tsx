@@ -1,10 +1,11 @@
 import { useState } from "react";
 
 import type { BrevResponse } from "~/types/brev";
+import type { Item } from "~/types/brevbakerTypes";
 
 import { nyBrevResponse, nyRedigertBrev } from "../../../../cypress/utils/brevredigeringTestUtils";
 import Actions from "../actions";
-import { newItem, newItemList, newItems, newLiteral, newParagraph } from "../actions/common";
+import { newItem, newItemList, newLiteral, newParagraph } from "../actions/common";
 import { LetterEditor } from "../LetterEditor";
 import type { LetterEditorState } from "../model/state";
 
@@ -19,6 +20,10 @@ function EditorWithState({ brev }: { brev: BrevResponse }) {
       showDebug={false}
     />
   );
+}
+
+function newItems(...texts: string[]): Item[] {
+  return texts.map((t) => newItem({ content: [newLiteral({ text: t })] }));
 }
 
 describe("toggle bullet-liet", () => {
@@ -49,7 +54,7 @@ describe("toggle bullet-liet", () => {
         redigertBrev: nyRedigertBrev({
           blocks: [
             newParagraph({
-              content: [newItemList({ items: [newItem("Punkt 1")] }), newLiteral({ text: "Avsnitt med punktliste" })],
+              content: [newItemList({ items: newItems("Punkt 1") }), newLiteral({ text: "Avsnitt med punktliste" })],
             }),
           ],
         }),
@@ -67,7 +72,7 @@ describe("toggle bullet-liet", () => {
         redigertBrev: nyRedigertBrev({
           blocks: [
             newParagraph({
-              content: [newLiteral({ text: "Avsnitt med punktliste" }), newItemList({ items: [newItem("Punkt 1")] })],
+              content: [newLiteral({ text: "Avsnitt med punktliste" }), newItemList({ items: newItems("Punkt 1") })],
             }),
           ],
         }),
@@ -87,9 +92,9 @@ describe("toggle bullet-liet", () => {
           blocks: [
             newParagraph({
               content: [
-                newItemList({ items: [newItem("Punkt 1")] }),
+                newItemList({ items: newItems("Punkt 1") }),
                 newLiteral({ text: "Avsnitt med punktliste" }),
-                newItemList({ items: [newItem("Punkt 2")] }),
+                newItemList({ items: newItems("Punkt 2") }),
               ],
             }),
           ],
@@ -109,7 +114,7 @@ describe("toggle bullet-liet", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
-            newParagraph({ content: [newItemList({ items: [newItem("Punkt 1")] })] }),
+            newParagraph({ content: [newItemList({ items: newItems("Punkt 1") })] }),
             newParagraph({ content: [newLiteral({ text: "Avsnitt uten punktliste" })] }),
           ],
         }),
@@ -129,7 +134,7 @@ describe("toggle bullet-liet", () => {
         redigertBrev: nyRedigertBrev({
           blocks: [
             newParagraph({ content: [newLiteral({ text: "Avsnitt uten punktliste" })] }),
-            newParagraph({ content: [newItemList({ items: [newItem("Punkt 1")] })] }),
+            newParagraph({ content: [newItemList({ items: newItems("Punkt 1") })] }),
           ],
         }),
       });
@@ -146,9 +151,9 @@ describe("toggle bullet-liet", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
-            newParagraph({ content: [newItemList({ items: [newItem("Punkt 1")] })] }),
+            newParagraph({ content: [newItemList({ items: newItems("Punkt 1") })] }),
             newParagraph({ content: [newLiteral({ text: "Avsnitt uten punktliste" })] }),
-            newParagraph({ content: [newItemList({ items: [newItem("Punkt 2")] })] }),
+            newParagraph({ content: [newItemList({ items: newItems("Punkt 2") })] }),
           ],
         }),
       });
@@ -167,7 +172,7 @@ describe("toggle bullet-liet", () => {
     it("toggler av et enkelt avsnitt", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
-          blocks: [newParagraph({ content: [newItemList({ items: [newItem("Dette er kun et avsnitt")] })] })],
+          blocks: [newParagraph({ content: [newItemList({ items: newItems("Dette er kun et avsnitt") })] })],
         }),
       });
 

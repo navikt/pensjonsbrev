@@ -9,6 +9,7 @@ import type {
   ItemList,
   LiteralValue,
   ParagraphBlock,
+  TextContent,
   VariableValue,
 } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
@@ -95,20 +96,12 @@ export function newLiteral(args: {
   };
 }
 
-export const newVariable = (args: { id?: number; text: string; name?: string }): VariableValue => {
-  return { type: VARIABLE, id: args.id ?? -1, name: args.name, text: args.text };
-};
-
-export function newItem(text: string, variable?: string, text2?: string): Item {
-  const content = variable ? [newLiteral({ text }), newVariable({ text: variable })] : [newLiteral({ text })];
-  if (text2) {
-    content.push(newLiteral({ text: text2 }));
-  }
-
-  return { id: null, content: content };
+export function newItem({ id, content }: { id?: Nullable<number>; content: TextContent[] }): Item {
+  return {
+    id: id ?? null,
+    content,
+  };
 }
-
-export const newItems = (...text: string[]) => text.map((t) => newItem(t));
 
 export function newItemList(args: { id?: Nullable<number>; items: Item[]; deletedItems?: number[] }): ItemList {
   return { id: args.id ?? null, type: "ITEM_LIST", items: args.items, deletedItems: args.deletedItems ?? [] };

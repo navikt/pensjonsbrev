@@ -4,23 +4,9 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newParagraph } from "~/Brevredigering/LetterEditor/actions/common";
 import type { Item, ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 
-import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
+import { asNew, item, itemList, letter, literal, paragraph, select, variable } from "../utils";
 
 describe("LetterEditorActions.toggleBulletList", () => {
-  describe("toggle on", () => {
-    test("converts variables into literals", () => {
-      const state = letter(paragraph(literal({ text: "b0-c0" }), variable("b0-c1"), literal({ text: "b0-c2" })));
-      const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 2 });
-
-      expect(result.redigertBrev.blocks).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
-      const itemListItems = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items;
-      expect(itemListItems).toHaveLength(1);
-      expect(itemListItems[0].content).toHaveLength(3);
-      expect(itemListItems.every((i) => i.content.every((c) => c.type === "LITERAL"))).toBe(true);
-    });
-  });
-
   describe("has adjoining itemList", () => {
     test("should not merge with itemList in previous block if not first in current block", () => {
       const state = letter(
@@ -42,9 +28,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
       expect(toggledInBlock.deletedContent).toEqual(toggledContent.id ? [toggledContent.id] : []);
       expect(toggledInBlock?.content[0]).toEqual(state.redigertBrev.blocks[1].content[0]);
 
-      expect(
-        select<LiteralValue>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 }),
-      ).toEqual({ ...toggledContent, id: null });
+      expect(select<Item>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1 }).content).toEqual([toggledContent]);
     });
     test("should not merge with itemList in next block if not last in current block", () => {
       const state = letter(
@@ -66,9 +50,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
       expect(toggledInBlock.deletedContent).toEqual(toggledContent.id ? [toggledContent.id] : []);
       expect(toggledInBlock?.content.at(-1)).toEqual(state.redigertBrev.blocks[0].content.at(-1));
 
-      expect(
-        select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }),
-      ).toEqual({ ...toggledContent, id: null });
+      expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).content).toEqual([toggledContent]);
     });
     test("should not merge with itemList in previous and next block if not first and last in block", () => {
       const state = letter(
@@ -104,9 +86,9 @@ describe("LetterEditorActions.toggleBulletList", () => {
       expect(toggledInBlock.deletedContent).toEqual(shouldBeDeleted);
 
       // content that we merged in to the itemList
-      expect(
-        select<LiteralValue>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 }),
-      ).toEqual({ ...select<LiteralValue>(state, { blockIndex: 1, contentIndex: 2 }), id: null });
+      expect(select<Item>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1 }).content).toEqual([
+        select<LiteralValue>(state, { blockIndex: 1, contentIndex: 2 }),
+      ]);
       const keptItemList = select<ItemList>(result, { blockIndex: 1, contentIndex: 1 });
       const mergedItemList = state.redigertBrev.blocks[1].content.find(
         (c) => c.type === "ITEM_LIST" && c.id !== keptItemList.id,
@@ -180,10 +162,9 @@ describe("LetterEditorActions.toggleBulletList", () => {
           }),
         ),
       );
-      const originalItem = select<Item>(state, {
+      const originalItemList = select<ItemList>(state, {
         blockIndex: 0,
         contentIndex: 0,
-        itemIndex: 1,
       });
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
@@ -198,7 +179,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
       const keptList = block.content.find((il) => il.id === -1 && il.type === "ITEM_LIST") as ItemList;
       expect(keptList).not.toBeUndefined();
-      expect(keptList.deletedItems).toEqual([-2, originalItem.id]);
+      expect(keptList.deletedItems).toEqual([-2, ...originalItemList.items.slice(1).map((c) => c.id)]);
     });
   });
 
@@ -221,7 +202,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
       const result = Actions.toggleBulletList(state, toggleIndex);
 
       expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
-      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 })).toEqual(originalItem.content[0]);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 })).toEqual(asNew(originalItem.content[0]));
       expect(result.redigertBrev.blocks[0].deletedContent).toContain(
         select<ItemList>(state, { blockIndex: 0, contentIndex: 0 }).id,
       );
@@ -360,6 +341,61 @@ describe("LetterEditorActions.toggleBulletList", () => {
       expect(result.redigertBrev.blocks).toHaveLength(1);
       expect(result.redigertBrev.blocks[0].content).toHaveLength(4);
       expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: state.focus.cursorPosition });
+    });
+  });
+  describe("Removes ID when toggling off", () => {
+    // Due to how an edited letter is merged with re-renders from Brevbaker, we have to remove IDs of content that is moved
+    // into another "container" that still has tracking (i.e. has an ID). Any un-edited content that has an ID will
+    // be removed from a "container" because it is assumed that a change in the input data for the letter has caused
+    // the content to no longer be a part of a "container". By "container" we mean any element that can contain other content,
+    // e.g. block, itemlist, table.
+
+    const state = letter(
+      paragraph(
+        itemList({
+          items: [
+            item(literal({ text: "l1" }), variable("v1")),
+            item(literal({ text: "l2" }), variable("v2")),
+            item(literal({ text: "l3" }), variable("v3")),
+          ],
+        }),
+      ),
+    );
+
+    test("moving tracked content out from first item will remove ID", () => {
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 0,
+        itemContentIndex: 0,
+      });
+      for (const c of result.redigertBrev.blocks[0].content.slice(0, 2)) {
+        expect(c.id).toBeNull();
+      }
+    });
+
+    test("moving tracked content out from middle item will remove ID", () => {
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 1,
+        itemContentIndex: 0,
+      });
+      for (const c of result.redigertBrev.blocks[0].content.slice(1, 3)) {
+        expect(c.id).toBeNull();
+      }
+    });
+
+    test("moving tracked content out from last item will remove ID", () => {
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 2,
+        itemContentIndex: 0,
+      });
+      for (const c of result.redigertBrev.blocks[0].content.slice(1, 3)) {
+        expect(c.id).toBeNull();
+      }
     });
   });
 });

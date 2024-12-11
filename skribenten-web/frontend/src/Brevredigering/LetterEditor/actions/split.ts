@@ -91,7 +91,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
 
         if (literalIndex.itemContentIndex === 0 && offset === 0) {
           // We're at the very beginning of an item, so it makes sense to insert a new item before it istead of splitting
-          content.items.splice(literalIndex.itemIndex, 0, newItem(""));
+          content.items.splice(literalIndex.itemIndex, 0, newItem({ content: [newLiteral({ text: "" })] }));
         } else {
           // Update content of current item, and build content of new item
           const nextContent = splitContentArrayAtLiteral(item.content, literalIndex.itemContentIndex, offset);
