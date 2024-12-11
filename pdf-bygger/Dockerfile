@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 eclipse-temurin:17-jre
+FROM --platform=linux/amd64 eclipse-temurin:21-jre
 
 EXPOSE 8080
 
