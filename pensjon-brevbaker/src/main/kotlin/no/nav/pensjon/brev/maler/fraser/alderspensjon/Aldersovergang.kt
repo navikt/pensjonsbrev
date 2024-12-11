@@ -64,8 +64,8 @@ data class InnledningInfoYtelse(
                             "Dersom du velger å ta ut alderspensjon vil den bli beregnet med dine gjenlevenderettigheter.",
                     Nynorsk to "Attlevandepensjonen din blir avslutta frå og med månaden etter at du fyller 67 år. Frå same tidspunkt har alle som hovudregel rett til å ta ut alderspensjon. " +
                             "Dersom du vel å ta ut alderspensjon vil den bli berekna med dine attlevanderettar.",
-                    English to "The month after you turn 67 years of age, your survivor´s pension will cease. " +
-                            "As a general rule everyone is entitled to draw retirement pension from the National Insurance Scheme from the month after they reach the age of 67. " +
+                    English to "Your survivor's pension will cease the month after you turn 67. " +
+                            "As a general rule, everyone is entitled to draw a retirement pension from the National Insurance Scheme starting the month after they reach the age of 67. " +
                             "If you decide to draw retirement pension, your survivor’s rights will be included."
                 )
             }
@@ -107,7 +107,7 @@ data class InnledningInfoYtelse(
                             "Du trenger ikke søke om dette.",
                     Nynorsk to "Pensjonen din som tidlegare familiepleiar blir avslutta og rekna om til 100 prosent alderspensjon månaden etter at du fyller 67 år. " +
                             "Du treng ikkje å søkje om dette.",
-                    English to "The month after you turn 67 years of age, the pension you currently receive as a former family carer will cease and you will instead receive full retirement pension. " +
+                    English to "The month after you turn 67, the pension you currently receive as a former family carer will cease, and you will instead receive a full retirement pension. " +
                             "You do not need to apply for this."
                 )
             }
@@ -117,9 +117,9 @@ data class InnledningInfoYtelse(
                     Bokmal to "Du har frem til nå ikke tatt ut alderspensjon. " +
                             "Vi ønsker derfor å gjøre deg oppmerksom på at alle som hovedregel har rett til å ta ut alderspensjon fra folketrygden fra og med måneden etter fylte 67 år.",
                     Nynorsk to "Du har fram til no ikkje teke ut alderspensjon. " +
-                            "Vi ønskjer derfor å gjere deg merksam på at alle som hovudregel har rett til å ta ut alderspensjon frå folketrygda frå og med månaden etter fylte 67 år",
-                    English to "To date you have not drawn any retirement pension. " +
-                            "We therefore want to make you aware of the fact that as a general rule everyone is entitled to draw retirement pension from the National Insurance Scheme from the month after they reach the age of 67."
+                            "Vi ønskjer derfor å gjere deg merksam på at alle som hovudregel har rett til å ta ut alderspensjon frå folketrygda frå og med månaden etter fylte 67 år.",
+                    English to "To date, you have not yet drawn any retirement pension. " +
+                            "We want to make you aware that, as a general rule, everyone is entitled to draw retirement pension from the National Insurance Scheme starting the month after they turn 67."
                 )
             }
         }
@@ -140,10 +140,14 @@ data class InfoVelgeAP(
             )
         ) {
             paragraph {
-                text(
-                    Bokmal to "Du kan velge",
-                    Nynorsk to "Du kan velje",
-                    English to "You can select one of the following options:"
+                val likevel = ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.FAM_PL, YtelseForAldersovergangKode.UT_GRAD)
+                textExpr(
+                    Bokmal to "Du kan " .expr() +
+                            ifElse(likevel, ifTrue = "likevel", ifFalse = "") + " velge".expr(),
+                    Nynorsk to "Du kan " .expr() +
+                            ifElse(likevel, ifTrue = "likevel", ifFalse = "") + " velje".expr(),
+                    English to "You can " .expr() +
+                            ifElse(likevel, ifTrue = "nevertheless", ifFalse = "") + " select one of the following options:".expr()
                 )
                 list {
                     item {
@@ -157,7 +161,7 @@ data class InfoVelgeAP(
                         text(
                             Bokmal to "å ta ut hele eller deler av pensjonen din (20, 40, 50, 60, 80 eller 100 prosent)",
                             Nynorsk to "å ta ut heile eller delar av pensjonen din (20, 40, 50, 60, 80 eller 100 prosent)",
-                            English to "Start drawing all or a part of your pension (at a rate of 20, 40, 50, 60, 80 or 100 percent)."
+                            English to "Start drawing all or a part of your pension at a rate of 20, 40, 50, 60, 80 or 100 percent."
                         )
                     }
                     showIf(
@@ -180,19 +184,36 @@ data class InfoVelgeAP(
     }
 }
 
-// infoAPSoke1_002, infoAPSoke2_002
-data class InfoOenskeSokeAP(
+// infoAPOnsketUttak_001
+data class InfoOnsketUttakAP(
     val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.GJP_AVKORT, YtelseForAldersovergangKode.INGEN_YT)) {
             paragraph {
                 text(
-                    Bokmal to "Ønsker du å vente med å ta ut alderspensjonen eller en annen uttaksgrad enn hva du vil få etter omregning, må du søke om dette." +
-                            "Du kan søke elektronisk via $DIN_PENSJON_URL. Hvis du ikke kan benytte denne løsningen, så finner du søknadsskjema for alderspensjon på $NAV_URL",
+                    Bokmal to "Når du ønsker å ta ut alderspensjon, må du søke om dette.",
+                    Nynorsk to "Når du ønskjer å ta ut alderspensjon, må du søkje om dette.",
+                    English to "When you want to start receiving your retirement pension, you will need to submit an application."
+                )
+            }
+        }
+    }
+}
+
+// infoAPSoke1_002, infoAPSoke2_002
+data class InfoOenskeSokeAP(
+    val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.FAM_PL, YtelseForAldersovergangKode.UT_GRAD)) {
+            paragraph {
+                text(
+                    Bokmal to "Ønsker du å vente med å ta ut alderspensjonen eller en annen uttaksgrad enn hva du vil få etter omregning, må du søke om dette. " +
+                            "Du kan søke elektronisk via $DIN_PENSJON_URL. Hvis du ikke kan benytte denne løsningen, så finner du søknadsskjema for alderspensjon på $NAV_URL.",
                     Nynorsk to "Ønskjer du å vente med å ta ut alderspensjonen, eller ønskjer du ein annan uttaksgrad enn det du får etter omrekninga, må du søkje om dette. " +
-                            "Du kan søkje elektronisk via $DIN_PENSJON_URL. Dersom du ikkje kan bruke denne løsninga, så finn du søknadsskjema  for alderspensjon på $NAV_URL",
-                    English to "If you do not want to start drawing your retirement pension yet or want to draw your pension at a different rate than that allocated after recalculation, " +
+                            "Du kan søkje elektronisk via $DIN_PENSJON_URL. Dersom du ikkje kan bruke denne løsninga, så finn du søknadsskjema for alderspensjon på $NAV_URL.",
+                    English to "If you do not want to start drawing your retirement pension yet, or if you want to draw your pension at a different rate than the one allocated after recalculation, " +
                             "you must submit an application. You can apply electronically by logging on to $DIN_PENSJON_URL, or use the application form for retirement pension, which is also found at $NAV_URL."
                 )
             }
@@ -302,7 +323,7 @@ data class InfoFTAP(
                             "Derfor vil du ikke få ektefelletillegg og/eller barnetillegg i alderspensjonen din.",
                     Nynorsk to "Frå 1. januar 2022 er regelverket endra og det blir ikkje lenger innvilga nye forsørgingstillegg til alderspensjon. " +
                             "Derfor vil du ikkje få ektefelletillegg og/eller barnetillegg i alderspensjonen din.",
-                    English to "From 1 January 2022 the regulations change and new dependant supplement will no longer be granted in a retirement pension. " +
+                    English to "From 1 January 2022, the regulations change and new dependant supplement will no longer be granted in a retirement pension. " +
                             "Therefore, you will not be granted dependant supplement for your spouse or child in your retirement pension."
                 )
             }
@@ -423,28 +444,28 @@ data class InfoSoekeAnnenGradAP(
                 text(
                     Bokmal to "Vi regner om uføretrygden din til 100 prosent alderspensjon. Du kan likevel velge",
                     Nynorsk to "Vi reknar om uføretrygda di til 100 prosent alderspensjon. Du kan likevel velje",
-                    English to "Your disability benefit will be converted into a 100 percent retirement pension. You can nevertheless select one of the following options"
+                    English to "Your disability benefit will be converted into a 100 percent retirement pension. You can nevertheless select one of the following options:"
                 )
                 list {
                     item {
                         text(
                             Bokmal to "å ta ut deler av pensjonen din (20, 40 ,50, 60 eller 80 prosent)",
                             Nynorsk to "å ta ut delar av pensjonen din (20, 40, 50, 60 eller 80 prosent)",
-                            English to "start drawing a part of your pension at a rate of 20, 40, 50, 60 of 80 percent"
+                            English to "Start drawing a part of your pension at a rate of 20, 40, 50, 60 or 80 percent."
                         )
                     }
                     item {
                         text(
                             Bokmal to "å stanse eller endre pensjonen din på et senere tidspunkt",
                             Nynorsk to "å stanse eller endre pensjonen din på eit seinare tidspunkt",
-                            English to "stop or change your retirement pension at a later date"
+                            English to "Stop or change your retirement pension at a later date."
                         )
                     }
                     item {
                         text(
                             Bokmal to "å vente med å ta ut alderspensjonen",
                             Nynorsk to "å vente med å ta ut alderspensjonen",
-                            English to "postpone drawing your retirement pension"
+                            English to "Postpone drawing your retirement pension."
                         )
                     }
                 }
@@ -486,8 +507,8 @@ object InfoSkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         "Der får du også mer informasjon om skattekort for pensjonister. Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss.",
                 Nynorsk to "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. Dette kan du gjere sjølv på $SKATTEETATEN_URL. " +
                         "Der får du også meir informasjon om skattekort for pensjonistar. Vi får skattekortet elektronisk. Du skal derfor ikkje sende det til oss.",
-                English to "When you start draw retirement pension, you should change your tax deduction card. You can change your tax card by logging on to $SKATTEETATEN_URL. " +
-                        "There you will find more information regarding tax deduction card for pensioners. We will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
+                English to "When you start drawing retirement pension, you should change your tax deduction card. You can change your tax card by logging on to $SKATTEETATEN_URL. " +
+                        "There you will find more information regarding the tax deduction card for pensioners. We will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
             )
         }
         paragraph {
@@ -496,7 +517,7 @@ object InfoSkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         "Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
                 Nynorsk to "På $SKATTEETATEN_URL finn du også informasjon om skatt når du bur utanfor Noreg. " +
                         "Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
-                English to "At $SKATTEETATEN_URL you will also find information about tax liability to Norway after moving abroad. " +
+                English to "At $SKATTEETATEN_URL, you will also find information about tax liability to Norway after moving abroad. " +
                         "You must clarify questions about tax liability to your country of residence with the local tax authorities."
             )
         }
