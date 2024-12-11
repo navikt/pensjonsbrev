@@ -42,6 +42,12 @@ updates:
       day: "sunday"
     open-pull-requests-limit: 10
     groups:
+      dev:
+        patterns:
+          - "*eslint*"
+          - "prettier"
+          - "typescript"
+          - "stylelint*"
       frontend:
         patterns:
         - "*"
