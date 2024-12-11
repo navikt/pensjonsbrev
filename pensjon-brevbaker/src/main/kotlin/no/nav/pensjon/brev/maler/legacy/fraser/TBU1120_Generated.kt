@@ -2,6 +2,9 @@
 
 package no.nav.pensjon.brev.maler.legacy.fraser
 
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_totalnetto
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -10,21 +13,35 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.formatMaanedAar
 
 
 data class TBU1120_Generated(
-	val beregningUfore_totalNetto: Expression<Kroner>,
+	val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU1120NN, TBU1120, TBU1120EN]
-
+		val beregningUfore_totalNetto: Expression<Kroner> = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
 		paragraph {
 			textExpr (
-				Bokmal to "Du får ".expr() + beregningUfore_totalNetto.format() + " kroner i uføretrygd per måned før skatt.",
-				Nynorsk to "Du får ".expr() + beregningUfore_totalNetto.format() + " kroner i uføretrygd per månad før skatt.",
-				English to "Your monthly disability benefit payment will be NOK ".expr() + beregningUfore_totalNetto.format() + " before tax.",
+				Bokmal to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner i uføretrygd per måned før skatt" ,
+				Nynorsk to "Du får ".expr() + beregningUfore_totalNetto.format() + " kroner i uføretrygd per månad før skatt",
+				English to "Your monthly disability benefit payment will be NOK ".expr() + beregningUfore_totalNetto.format() + " before tax",
+			)
+			ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) {
+				textExpr (
+					Bokmal to " fra ".expr() + it.formatMaanedAar(),
+					Nynorsk to " fra ".expr() + it.formatMaanedAar() ,
+					English to " from ".expr() + it.formatMaanedAar(),
+				)
+			}
+			text(
+				Bokmal to ".",
+				Nynorsk to ".",
+				English to ".",
 			)
 		}
     }
