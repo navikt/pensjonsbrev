@@ -1,18 +1,11 @@
 package no.nav.pensjon.brev
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import io.getunleash.FakeUnleash
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.serialization.jackson.jackson
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -37,39 +30,14 @@ object TestTags {
     const val MANUAL_TEST = "manual-test"
 }
 
-val httpClient = try {
-    HttpClient(CIO) {
-        install(HttpTimeout) {
-            requestTimeoutMillis = 40000
-        }
-        install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
-            }
-        }
-        settOppFakeUnleash()
-    }
-} catch (e: Exception) {
-    e.printStackTrace()
-    throw e
-}
 
-private fun settOppFakeUnleash() =
-    FeatureToggleHandler.configure {
-        unleash = { FakeUnleash() }
-    }
-
-fun requestLetter(letterRequest: BestillBrevRequest<Brevkode.AutoBrev>): LetterResponse =
+fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode.AutoBrev>): LetterResponse =
     runBlocking {
-        httpClient.post("$BREVBAKER_URL/letter/autobrev/pdf") {
+        client.post("letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
             setBody(letterRequest)
         }.body()
     }
-
-fun requestTemplates(): Set<Brevkode.AutoBrev> = runBlocking {
-    httpClient.get("$BREVBAKER_URL/templates/autobrev").body()
-}
 
 fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("build", "test_pdf")) {
     val file = path.resolve("$pdfFileName.pdf").toFile()

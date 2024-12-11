@@ -28,7 +28,7 @@ import java.time.LocalDate
 object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
     // PE_UT_04_104
-    override val kode: Brevkode.Redigerbar = Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD
+    override val kode = Brevkode.Redigerbar.UT_AVSLAG_UFOERETRYGD
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)

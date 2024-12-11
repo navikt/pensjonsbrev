@@ -18,6 +18,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.datoVedtakOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erInnvilgelsesaar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.informasjonOmOmstillingsstoenadData
@@ -39,12 +40,13 @@ data class OmstillingsstoenadRevurderingDTO(
     val feilutbetaling: FeilutbetalingType,
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
-) : FerdigstillingBrevDTO {
+    val erInnvilgelsesaar: Boolean
+): FerdigstillingBrevDTO {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
 
 @TemplateModelHelpers
-object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
+object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING
 
     override val template =
@@ -53,12 +55,12 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
             letterDataType = OmstillingsstoenadRevurderingDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-                LetterMetadata(
-                    displayTitle = "Vedtak - Revurdering av omstillingsstønad",
-                    isSensitiv = true,
-                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-                ),
+            LetterMetadata(
+                displayTitle = "Vedtak - Revurdering av omstillingsstønad",
+                isSensitiv = true,
+                distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            ),
         ) {
             title {
                 text(
@@ -125,15 +127,26 @@ object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevu
             }
 
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
                 beregning,
-                tidligereFamiliepleier,
+                tidligereFamiliepleier.and(erInnvilgelsesaar),
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false),
                 beregning,
-                tidligereFamiliepleier.not(),
+                tidligereFamiliepleier.not().and(erInnvilgelsesaar.not()),
             )
+            includeAttachment(
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false),
+                beregning,
+                tidligereFamiliepleier.and(erInnvilgelsesaar.not()),
+            )
+            includeAttachment(
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
+                beregning,
+                tidligereFamiliepleier.not().and(erInnvilgelsesaar),
+            )
+
 
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
 

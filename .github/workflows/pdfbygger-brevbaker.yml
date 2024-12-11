@@ -9,6 +9,7 @@ on:
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
+      - "!**/**.md"
   push:
     branches:
       - "main"
@@ -19,8 +20,8 @@ on:
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
+      - "!**/**.md"
 env:
-  "IMAGE_BREVBAKER": "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
 
 jobs:
@@ -34,7 +35,7 @@ jobs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "gradle/actions/wrapper-validation@v3"
+      - uses: "gradle/actions/wrapper-validation@v4"
       - uses: "actions/cache@v4"
         with:
           "path": "~/.gradle/caches"
@@ -66,13 +67,6 @@ jobs:
           dockerfile: pensjon-brevbaker/Dockerfile
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      - name: "Publish container image to ghcr.io"
-        run: |
-          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${{ steps.docker-push.outputs.image }}" ] && docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_BREVBAKER} || docker build --pull --tag ${IMAGE_BREVBAKER} pensjon-brevbaker
-          docker push ${IMAGE_BREVBAKER}
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
   "build-pdfbygger":
     name: "build pdfbygger"
@@ -84,7 +78,7 @@ jobs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "gradle/actions/wrapper-validation@v3"
+      - uses: "gradle/actions/wrapper-validation@v4"
       - uses: "actions/cache@v4"
         with:
           "path": "~/.gradle/caches"
@@ -132,7 +126,7 @@ jobs:
 
   runIntegrationTests:
     name: "Integration tests"
-    needs: [ build-brevbaker, build-pdfbygger, changes ]
+    needs: [ build-pdfbygger, changes ]
     services:
       pdf-bygger:
         env:
@@ -140,23 +134,6 @@ jobs:
         ports:
           - 8081:8080
         image: "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
-        credentials:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      brevbaker:
-        env:
-          NAIS_APP_NAME: brevbaker
-          PDF_BUILDER_URL: "http://pdf-bygger:8080"
-          AZURE_OPENID_CONFIG_JWKS_URI: "http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri"
-          AZURE_OPENID_CONFIG_ISSUER: "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0"
-          AZURE_APP_CLIENT_ID: "brevbaker-123"
-          UNLEASH_SERVER_API_ENV: "test"
-          UNLEASH_SERVER_API_URL: "http://localhost"
-          UNLEASH_SERVER_API_TOKEN: "Token123"
-          JAVA_TOOL_OPTIONS: "-Dio.ktor.development=true"
-        ports:
-          - 8080:8080
-        image: "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -251,7 +228,7 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:pdf-bygger"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "pdf-bygger/.nais/nais.yaml"
+          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
 

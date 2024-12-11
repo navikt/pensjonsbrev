@@ -28,7 +28,8 @@ interface Brevkode {
         UT_OPPHOER_BT_AUTO,
         UT_UNG_UFOER_20_AAR_AUTO,
         UT_VARSEL_SAKSBEHANDLINGSTID_AUTO,
-        UT_BARNETILLEGG_ENDRET_AUTO;
+        UT_BARNETILLEGG_ENDRET_AUTO,
+        TESTBREV;
 
         override fun kode(): String = this.name
     }
@@ -43,6 +44,7 @@ interface Brevkode {
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
         PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER,
         PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER,
+        TESTBREV,
         ;
 
         override fun kode(): String = this.name

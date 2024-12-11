@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 object AdhocUfoeretrygdVarselOpphoerEktefelletillegg : AutobrevTemplate<EmptyBrevdata> {
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_ADHOC_VARSEL_OPPHOER_EKTEFELLETILLEGG
+    override val kode = Brevkode.AutoBrev.UT_ADHOC_VARSEL_OPPHOER_EKTEFELLETILLEGG
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
