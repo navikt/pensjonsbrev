@@ -9,8 +9,8 @@
     "preview": "vite preview",
     "check-types": "tsc --noemit",
     "test": "vitest",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
-    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
+    "lint": "eslint --ext .",
+    "lint:fix": "eslint --fix .",
     "stylelint": "stylelint '**/*.{tsx,css}'",
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
     "lint-and-check-types": "npm run check-types && npm run lint && npm run stylelint"
