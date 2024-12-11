@@ -12,9 +12,9 @@ import type {
   TextContent,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "../../../types/brevbakerTypes";
 import type { LetterEditorState } from "../model/state";
 
 export function cleanseText(text: string): string {
