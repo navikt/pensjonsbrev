@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { addViteModeHtmlToResponse, addServeSpaHandler } from "@navikt/vite-mode";
+import { addServeSpaHandler, addViteModeHtmlToResponse } from "@navikt/vite-mode";
 import express, { Express } from "express";
 
 export function setupStaticRoutes(server: Express) {
