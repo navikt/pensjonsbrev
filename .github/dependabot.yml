@@ -71,6 +71,10 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    groups:
+      docker-frontend:
+        patterns:
+          - "*"
 
   # ==============
   # Docker backend
@@ -84,3 +88,7 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    groups:
+      docker-frontend:
+        patterns:
+          - "*"
