@@ -82,9 +82,9 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
 
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har".expr() + datoMottatKlage.format() + "fått klagen over vårt vedtak av" + datoForVedtak.format() + ".",
+                        Bokmal to "Vi har".expr() + datoMottatKlage.format() + " fått klagen over vårt vedtak av " + datoForVedtak.format() + ".",
                         Nynorsk to "Klaga på vedtaket vårt av ".expr() + datoMottatKlage.format() + " blei motteken " + datoForVedtak.format() + ".",
-                        English to "We received a complaint about ".expr() + datoMottatKlage.format() + "our decision of" + datoForVedtak.format() + "."
+                        English to "We received a complaint about ".expr() + datoMottatKlage.format() + " our decision of " + datoForVedtak.format() + "."
                     )
                 }
 
