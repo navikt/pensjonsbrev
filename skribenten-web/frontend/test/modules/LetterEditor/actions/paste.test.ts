@@ -9,14 +9,14 @@ import { item, itemList, letter, literal, paragraph, select, title1 } from "../u
 describe("LetterEditorActions.paste", () => {
   describe("format: text/plain", () => {
     test("start of a literal", () => {
-      const state = letter(paragraph(literal("Her har vi noe")));
+      const state = letter(paragraph(literal({ text: "Her har vi noe" })));
       const clipboard = new MockDataTransfer({ "text/plain": "ikke " });
       const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
 
       expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("ikke Her har vi noe");
     });
     test("inside of a literal", () => {
-      const state = letter(paragraph(literal("Her har vi noe")));
+      const state = letter(paragraph(literal({ text: "Her har vi noe" })));
       const clipboard = new MockDataTransfer({ "text/plain": " ikke" });
       const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 10, clipboard);
 
@@ -24,7 +24,7 @@ describe("LetterEditorActions.paste", () => {
     });
 
     test("end of a literal", () => {
-      const state = letter(paragraph(literal("Her har vi noe")));
+      const state = letter(paragraph(literal({ text: "Her har vi noe" })));
       const clipboard = new MockDataTransfer({ "text/plain": " ikke" });
       const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 14, clipboard);
 
@@ -33,7 +33,7 @@ describe("LetterEditorActions.paste", () => {
 
     test("in an item", () => {
       const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
-      const state = letter(paragraph(itemList(item(literal("Her har vi noe")))));
+      const state = letter(paragraph(itemList({ items: [item(literal({ text: "Her har vi noe" }))] })));
       const clipboard = new MockDataTransfer({ "text/plain": " ikke" });
       const result = Actions.paste(state, index, 10, clipboard);
 
@@ -44,7 +44,7 @@ describe("LetterEditorActions.paste", () => {
   describe("format: text/html", () => {
     test("single span should be inserted", () => {
       const index = { blockIndex: 0, contentIndex: 0 };
-      const state = letter(paragraph(literal("Her har vi noe")));
+      const state = letter(paragraph(literal({ text: "Her har vi noe" })));
       const clipboard = new MockDataTransfer({ "text/html": "<span> ikke</span>" });
       const result = Actions.paste(state, index, 10, clipboard);
 
@@ -52,7 +52,7 @@ describe("LetterEditorActions.paste", () => {
     });
     test("multiple span should be inserted in order", () => {
       const index = { blockIndex: 0, contentIndex: 0 };
-      const state = letter(paragraph(literal("Her har vi noe")));
+      const state = letter(paragraph(literal({ text: "Her har vi noe" })));
       const clipboard = new MockDataTransfer({ "text/html": "<span> da</span><span> ikke</span>" });
       const result = Actions.paste(state, index, 10, clipboard);
 
@@ -60,7 +60,7 @@ describe("LetterEditorActions.paste", () => {
     });
     test("multiple p elements should append first to existing", () => {
       const index = { blockIndex: 0, contentIndex: 0 };
-      const state = letter(paragraph(literal("Her har vi noe")));
+      const state = letter(paragraph(literal({ text: "Her har vi noe" })));
       const clipboard = new MockDataTransfer({ "text/html": "<p> da</p><p> ikke</p>" });
       const result = Actions.paste(state, index, 10, clipboard);
 
@@ -70,7 +70,7 @@ describe("LetterEditorActions.paste", () => {
 
     test("multiple p elements should append first to existing list item", () => {
       const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
-      const state = letter(paragraph(itemList(item(literal("Her har vi noe")))));
+      const state = letter(paragraph(itemList({ items: [item(literal({ text: "Her har vi noe" }))] })));
       const clipboard = new MockDataTransfer({ "text/html": "<p> da</p><p> ikke</p>" });
       const result = Actions.paste(state, index, 10, clipboard);
 
@@ -80,7 +80,7 @@ describe("LetterEditorActions.paste", () => {
 
     test("ul list should append to existing itemList", () => {
       const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
-      const state = letter(paragraph(itemList(item(literal("Her har vi noe ")))));
+      const state = letter(paragraph(itemList({ items: [item(literal({ text: "Her har vi noe " }))] })));
       const clipboard = new MockDataTransfer({ "text/html": "<ul><li>annet</li><li>og enda mer</li></ul>" });
       const result = Actions.paste(state, index, 15, clipboard);
 
@@ -90,7 +90,7 @@ describe("LetterEditorActions.paste", () => {
 
     test("ul list should append first li to current literal and create a list for the remaining", () => {
       const index = { blockIndex: 0, contentIndex: 0 };
-      const state = letter(paragraph(literal("Her har vi noe ")));
+      const state = letter(paragraph(literal({ text: "Her har vi noe " })));
       const clipboard = new MockDataTransfer({ "text/html": "<ul><li>annet</li><li>mer</li><li>enda mer</li></ul>" });
       const result = Actions.paste(state, index, 15, clipboard);
 
@@ -102,7 +102,7 @@ describe("LetterEditorActions.paste", () => {
 
     test("when at title1 ul list should append first li to current literal and create a new block and list for the remaining", () => {
       const index = { blockIndex: 0, contentIndex: 0 };
-      const state = letter(title1(literal("Her har vi noe ")));
+      const state = letter(title1(literal({ text: "Her har vi noe " })));
       const clipboard = new MockDataTransfer({ "text/html": "<ul><li>annet</li><li>mer</li><li>enda mer</li></ul>" });
       const result = Actions.paste(state, index, 15, clipboard);
 

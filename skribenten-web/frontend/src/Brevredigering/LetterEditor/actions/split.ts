@@ -30,7 +30,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
       if (isAtStartOfBlock) {
         // Since we're at the very beginning of a block, it makes sense that we create a new block and push `block`
         // one position.
-        const newBlock: ParagraphBlock = newParagraph(newLiteral({ text: "" }));
+        const newBlock: ParagraphBlock = newParagraph({ content: [newLiteral({ text: "" })] });
         editedLetter.blocks.splice(literalIndex.blockIndex, 0, newBlock);
       } else {
         // We're splitting a block somewhere inside it, so we modify `block` and move content after cursor to a new block.
@@ -43,7 +43,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
           if (c.id !== null) block.deletedContent.push(c.id);
         }
 
-        const nextBlock: ParagraphBlock = newParagraph(...nextContent);
+        const nextBlock: ParagraphBlock = newParagraph({ content: nextContent });
         editedLetter.blocks.splice(literalIndex.blockIndex + 1, 0, nextBlock);
       }
 
@@ -91,7 +91,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
 
         if (literalIndex.itemContentIndex === 0 && offset === 0) {
           // We're at the very beginning of an item, so it makes sense to insert a new item before it istead of splitting
-          content.items.splice(literalIndex.itemIndex, 0, newItem(""));
+          content.items.splice(literalIndex.itemIndex, 0, newItem({ content: [newLiteral({ text: "" })] }));
         } else {
           // Update content of current item, and build content of new item
           const nextContent = splitContentArrayAtLiteral(item.content, literalIndex.itemContentIndex, offset);

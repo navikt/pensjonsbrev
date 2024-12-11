@@ -9,11 +9,12 @@ import type {
   ItemList,
   LiteralValue,
   ParagraphBlock,
+  TextContent,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "../../../types/brevbakerTypes";
 import type { LetterEditorState } from "../model/state";
 
 export function cleanseText(text: string): string {
@@ -66,13 +67,17 @@ export function deleteElements(
   }
 }
 
-export function newParagraph(...content: Content[]): ParagraphBlock {
+export function newParagraph(args: {
+  id?: Nullable<number>;
+  content: Content[];
+  deletedContent?: number[];
+}): ParagraphBlock {
   return {
     type: PARAGRAPH,
-    id: null,
+    id: args.id ?? null,
     editable: true,
-    deletedContent: [],
-    content,
+    deletedContent: args.deletedContent ?? [],
+    content: args.content,
   };
 }
 
@@ -91,10 +96,13 @@ export function newLiteral(args: {
   };
 }
 
-export function newItem(text: string): Item {
-  return { id: null, content: [newLiteral({ text })] };
+export function newItem({ id, content }: { id?: Nullable<number>; content: TextContent[] }): Item {
+  return {
+    id: id ?? null,
+    content,
+  };
 }
 
-export function newItemList(...items: Item[]): ItemList {
-  return { id: null, type: "ITEM_LIST", items, deletedItems: [] };
+export function newItemList(args: { id?: Nullable<number>; items: Item[]; deletedItems?: number[] }): ItemList {
+  return { id: args.id ?? null, type: "ITEM_LIST", items: args.items, deletedItems: args.deletedItems ?? [] };
 }

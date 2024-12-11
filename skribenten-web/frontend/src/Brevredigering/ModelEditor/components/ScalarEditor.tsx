@@ -145,6 +145,7 @@ export const AutoSavingTextField = (props: {
           onChange={(e) => (e.target.value ? field.onChange(e.target.value) : field.onChange(null))}
           size="small"
           step={props.step}
+          value={field.value ?? ""}
         />
       )}
       rules={{
