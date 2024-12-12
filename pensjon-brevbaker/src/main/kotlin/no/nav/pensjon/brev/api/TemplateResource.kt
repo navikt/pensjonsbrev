@@ -59,6 +59,14 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
             renderHTML(createLetter(kode, letterData, language, felles), letterMarkup)
         }
 
+    fun renderJSON(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
+        with(brevbestilling) {
+            renderJSON(createLetter(kode, letterData, language, felles))
+        }
+
+    private fun renderJSON(letter: Letter<BrevbakerBrevdata>) = Letter2Markup.render(letter).letterMarkup
+
+
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         createLetter(brevbestilling.kode, brevbestilling.letterData, brevbestilling.language, brevbestilling.felles)
             .let { Letter2Markup.renderLetterOnly(it.toScope(), it.template) }
@@ -69,8 +77,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
             listOf(Tag.of("brevkode", brevkode.kode()))
         ).increment()
 
-    // TODO: private igjen når endringa er ferdig
-    fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
+    private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
         val template = getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
 
         val language = spraak.toLanguage()
