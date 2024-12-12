@@ -89,16 +89,12 @@ export const createValidationSchema = (template: LetterMetadata) => {
     })
     .superRefine((data, refinementContext) => {
       //validerer språk for alle templates unntatt 'Notat'
-      if (template.id === "PE_IY_03_156") {
-        // gjør bevisst ingenting
-      } else {
-        if (!data.spraak) {
-          refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Obligatorisk",
-            path: ["spraak"],
-          });
-        }
+      if (template.id !== "PE_IY_03_156" && !data.spraak) {
+        refinementContext.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Obligatorisk",
+          path: ["spraak"],
+        });
       }
 
       //isSensitive skal kun sjekkes for brev som ikke er doksys
