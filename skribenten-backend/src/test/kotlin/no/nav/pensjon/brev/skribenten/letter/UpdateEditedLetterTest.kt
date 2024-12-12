@@ -5,14 +5,19 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList.Item
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.InstanceOfAssertFactories
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
+import no.nav.pensjon.brev.skribenten.letter.Edit.Identifiable as E_Identifiable
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList as E_ItemList
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList.Item as E_Item
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table as E_Table
@@ -304,7 +309,8 @@ class UpdateRenderedLetterTest {
         )
         val edited = editedLetter(
             E_Title1(
-                1, true, listOf(
+                1, true,
+                listOf(
                     E_Literal(1, "Noe tekst", E_FontType.PLAIN),
                     E_Variable(2, "en variabel", E_FontType.PLAIN),
                 ),
@@ -623,7 +629,14 @@ class UpdateRenderedLetterTest {
                     E_Literal(28, "burde heller ikke bli med etter rendring", E_FontType.PLAIN),
                     E_ItemList(
                         16, listOf(
-                            E_Item(160, listOf(E_Literal(161, "punkt 1", E_FontType.PLAIN), E_Literal(162, "punkt 2", E_FontType.PLAIN), E_Literal(163, "punkt 3", E_FontType.PLAIN))),
+                            E_Item(
+                                160,
+                                listOf(
+                                    E_Literal(161, "punkt 1", E_FontType.PLAIN),
+                                    E_Literal(162, "punkt 2", E_FontType.PLAIN),
+                                    E_Literal(163, "punkt 3", E_FontType.PLAIN)
+                                )
+                            ),
                         )
                     ),
                 )
@@ -908,4 +921,98 @@ class UpdateRenderedLetterTest {
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
+    @Test
+    fun `content moved into an item list is kept`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(Literal(11, "lit1"), Variable(12, "var2"), ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))), Literal(14, "lit2"))
+            )
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(
+                    E_ItemList(
+                        13,
+                        listOf(
+                            E_Item(null, listOf(E_Literal(11, "lit1", parentId = 1), E_Variable(12, "var2", parentId = 1))),
+                            E_Item(131, listOf(E_Literal(1311, "punkt1")))
+                        )
+                    ),
+                    E_Literal(14, "lit2")
+                ),
+                deletedContent = setOf(11, 12)
+            )
+        )
+        assertEquals(edited, edited.updateEditedLetter(next))
+    }
+
+    @Test
+    fun `content moved to another block is kept`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(Literal(11, "lit1"), Variable(12, "var2"), ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))), Literal(14, "lit2"))
+            )
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                null, true,
+                listOf(E_Literal(11, "lit1", parentId = 1), E_Variable(12, "var2", parentId = 1))
+            ),
+            E_Paragraph(
+                1, true,
+                listOf(
+                    E_ItemList(13, listOf(E_Item(131, listOf(E_Literal(1311, "punkt1"))))),
+                    E_Literal(14, "lit2")
+                ),
+                deletedContent = setOf(11, 12)
+            )
+        )
+        assertEquals(edited, edited.updateEditedLetter(next))
+    }
+
+    @Test
+    fun `parentIds will be fixed for edited letters that does not have them`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    Literal(11, "lit1"),
+                    Variable(12, "var2"),
+                    ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))),
+                    Literal(14, "lit2"),
+                    Table(
+                        15,
+                        listOf(Row(152, listOf(Cell(1521, listOf(Literal(15211, "cell 1")))))),
+                        Header(151, listOf(ColumnSpec(1511, Cell(15111, listOf(Literal(151111, "title cell 1"))), ColumnAlignment.LEFT, 1))),
+                    ),
+                )
+            )
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(
+                    E_Literal(11, "lit1"),
+                    E_Variable(12, "var2"),
+                    E_ItemList(13, listOf(E_Item(131, listOf(E_Literal(1311, "punkt1"))))),
+                    E_Literal(14, "lit2"),
+                    E_Table(
+                        15,
+                        listOf(E_Row(152, listOf(E_Cell(1521, listOf(E_Literal(15211, "cell 1")))))),
+                        E_Header(151, listOf(E_ColumnSpec(1511, E_Cell(15111, listOf(E_Literal(151111, "title cell 1"))), E_Table.ColumnAlignment.LEFT, 1))),
+                    ),
+                )
+            ),
+            fixParentIds = false,
+        )
+
+        assertThat(edited.identifiable.toList()).allSatisfy { assertThat(it).extracting(E_Identifiable::parentId).isNull() }
+
+        val updated = edited.updateEditedLetter(next)
+        assertThat(updated.identifiable.filter { it !is Edit.Block }.toList()).allSatisfy { assertThat(it).extracting(E_Identifiable::parentId, InstanceOfAssertFactories.INTEGER) }
+        assertEquals(edited.fixParentIds(), updated)
+    }
 }
