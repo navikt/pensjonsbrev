@@ -340,6 +340,7 @@ describe("LetterEditorActions.split", () => {
       expect(select<ItemList>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
       expect(select<LiteralValue>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 })).toStrictEqual({
         id: null,
+        parentId: null,
         type: LITERAL,
         text: "",
         editedText: null,
@@ -352,6 +353,7 @@ describe("LetterEditorActions.split", () => {
       expect(select<ParagraphBlock>(splitFromEmptyLastContent, { blockIndex: 1 }).content).toHaveLength(1);
       expect(select<LiteralValue>(splitFromEmptyLastContent, { blockIndex: 1, contentIndex: 0 })).toStrictEqual({
         id: null,
+        parentId: null,
         type: LITERAL,
         text: "",
         editedText: "",

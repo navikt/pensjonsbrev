@@ -63,12 +63,14 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
 }
 
 export function paragraph(...content: Content[]): ParagraphBlock {
+  const id = randomInt(1000);
   return {
-    id: randomInt(1000),
+    id,
+    parentId: null,
     editable: true,
     type: PARAGRAPH,
     deletedContent: [],
-    content: content ?? [],
+    content: withParent(content ?? [], id),
   };
 }
 
@@ -80,32 +82,38 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
 }
 
 export function title1(...content: TextContent[]): Title1Block {
+  const id = randomInt(1000);
   return {
-    id: randomInt(1000),
+    id,
+    parentId: null,
     editable: true,
     type: TITLE1,
     deletedContent: [],
-    content,
+    content: withParent(content ?? [], id),
   };
 }
 export function title2(...content: TextContent[]): Title2Block {
+  const id = randomInt(1000);
   return {
-    id: randomInt(1000),
+    id,
+    parentId: null,
     editable: true,
     type: TITLE2,
     deletedContent: [],
-    content,
+    content: withParent(content ?? [], id),
   };
 }
 
 export function literal(args: {
   id?: Nullable<number>;
+  parentId?: Nullable<number>;
   text: string;
   editedText?: Nullable<string>;
   tags?: ElementTags[];
 }): LiteralValue {
   return {
     id: args.id ?? randomInt(1000),
+    parentId: args.parentId ?? null,
     type: LITERAL,
     text: args.text,
     editedText: args.editedText ?? null,
@@ -116,51 +124,81 @@ export function literal(args: {
 export function variable(text: string): VariableValue {
   return {
     id: randomInt(1000),
+    parentId: null,
     type: VARIABLE,
     text,
   };
 }
 
-export function itemList(args: { id?: Nullable<number>; items: Item[]; deletedItems?: number[] }): ItemList {
+export function itemList(args: {
+  id?: Nullable<number>;
+  parentId?: Nullable<number>;
+  items: Item[];
+  deletedItems?: number[];
+}): ItemList {
+  const id = args.id ?? randomInt(1000);
   return {
-    id: args.id ?? randomInt(1000),
+    id: id,
+    parentId: args.parentId ?? null,
     type: ITEM_LIST,
-    items: args.items,
+    items: withParent(args.items, id),
     deletedItems: args.deletedItems ?? [],
   };
 }
 
 export function item(...content: TextContent[]): Item {
-  return { id: randomInt(1000), content };
+  const id = randomInt(1000);
+  return { id: id, parentId: null, content: withParent(content, id) };
 }
 
 export function table(headerCells: Cell[], rows: Row[]): Table {
+  const tableId = randomInt(1000);
+  const headerId = randomInt(1000);
   return {
-    id: randomInt(1000),
+    id: tableId,
+    parentId: null,
     type: TABLE,
-    rows,
+    rows: withParent(rows, tableId),
     header: {
-      id: randomInt(1000),
-      colSpec: headerCells.map((c) => ({ id: randomInt(1000), headerContent: c, alignment: "LEFT", span: 1 })),
+      id: headerId,
+      parentId: tableId,
+      colSpec: headerCells.map((c) => {
+        const colSpecId = randomInt(1000);
+        return {
+          id: colSpecId,
+          parentId: headerId,
+          headerContent: { ...c, parentId: colSpecId },
+          alignment: "LEFT",
+          span: 1,
+        };
+      }),
     },
     deletedRows: [],
   };
 }
 export function cell(...content: TextContent[]): Cell {
+  const id = randomInt(1000);
   return {
-    id: randomInt(1000),
-    text: content,
+    id,
+    parentId: null,
+    text: withParent(content, id),
   };
 }
 export function row(...cells: Cell[]): Row {
+  const id = randomInt(1000);
   return {
-    id: randomInt(1000),
-    cells,
+    id,
+    parentId: null,
+    cells: withParent(cells, id),
   };
 }
 
+function withParent<T extends Identifiable>(content: T[], parentId: number, replaceExisting: boolean = false): T[] {
+  return content.map((c) => ({ ...c, parentId: replaceExisting ? parentId : c.parentId ?? parentId }));
+}
+
 export function asNew<T extends Identifiable>(c: T): T {
-  return { ...c, id: null };
+  return { ...c, id: null, parentId: null };
 }
 
 export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex> & { blockIndex: number }): T {

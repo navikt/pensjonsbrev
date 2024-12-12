@@ -1,3 +1,4 @@
+import { SpraakKode } from "~/types/apiTypes";
 import type {
   BrevInfo,
   BrevResponse,
@@ -7,6 +8,7 @@ import type {
   NAVEnhet,
   SaksbehandlerValg,
 } from "~/types/brev";
+import { Distribusjonstype } from "~/types/brev";
 import type {
   Content,
   Item,
@@ -24,9 +26,6 @@ import {
   type Signatur,
 } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
-
-import { SpraakKode } from "../../src/types/apiTypes";
-import { Distribusjonstype } from "../../src/types/brev";
 
 export const nyBrevResponse = ({
   info = nyBrevInfo({}),
@@ -65,10 +64,12 @@ export const nyRedigertBrev = (args: {
     blocks: args.blocks ?? [
       {
         id: 272_720_182,
+        parentId: null,
         editable: true,
         content: [
           {
             id: 1_507_865_607,
+            parentId: 272_720_182,
             text: "We received your application for ",
             editedText: null,
             type: "LITERAL",
@@ -76,11 +77,13 @@ export const nyRedigertBrev = (args: {
           },
           {
             id: -726_051_414,
+            parentId: 272_720_182,
             text: "alderspensjon",
             type: "VARIABLE",
           },
           {
             id: -711_242_333,
+            parentId: 272_720_182,
             text: " from the Norwegian National Insurance Scheme on ",
             editedText: null,
             type: "LITERAL",
@@ -88,11 +91,13 @@ export const nyRedigertBrev = (args: {
           },
           {
             id: -694_080_035,
+            parentId: 272_720_182,
             text: "24 July 2024",
             type: "VARIABLE",
           },
           {
             id: 46,
+            parentId: 272_720_182,
             text: ".",
             editedText: null,
             type: "LITERAL",
@@ -104,10 +109,12 @@ export const nyRedigertBrev = (args: {
       },
       {
         id: 822_540_105,
+        parentId: null,
         editable: true,
         content: [
           {
             id: -1_114_690_237,
+            parentId: 822_540_105,
             text: "Our processing time for this type of application is usually ",
             editedText: null,
             type: "LITERAL",
@@ -115,11 +122,13 @@ export const nyRedigertBrev = (args: {
           },
           {
             id: 1_834_595_758,
+            parentId: 822_540_105,
             text: "10",
             type: "VARIABLE",
           },
           {
             id: 1_838_606_639,
+            parentId: 822_540_105,
             text: " weeks.",
             editedText: null,
             type: "LITERAL",
@@ -179,6 +188,7 @@ export const nyBrevInfo = (args: {
 export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): LiteralValue => ({
   type: "LITERAL",
   id: args.id ?? null,
+  parentId: null,
   text: args.text ?? "ny literal default text",
   editedText: args.text ?? "ny literal default edited-text",
   tags: [],
@@ -187,6 +197,7 @@ export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): Liter
 export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: string }): VariableValue => ({
   type: "VARIABLE",
   id: args.id ?? 1,
+  parentId: null,
   name: args.name,
   text: args.text ?? "ny variable default text",
 });
@@ -194,6 +205,7 @@ export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: 
 //TODO - kan heller bruke newItem fra common.ts
 export const nyItem = (args: { id?: Nullable<number>; content?: TextContent[] }): Item => ({
   id: args.id ?? null,
+  parentId: null,
   content: args.content ?? [nyVariable({})],
 });
 
@@ -201,6 +213,7 @@ export const nyItem = (args: { id?: Nullable<number>; content?: TextContent[] })
 export const nyItemList = (args: { id?: Nullable<number>; items?: Item[] }): ItemList => ({
   type: "ITEM_LIST",
   id: args.id ?? null,
+  parentId: null,
   items: args.items ?? [nyItem({})],
   deletedItems: [],
 });
@@ -212,6 +225,7 @@ export const nyTitle1Block = (args: {
 }): Title1Block => ({
   type: "TITLE1",
   id: args.id ?? null,
+  parentId: null,
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],
@@ -225,6 +239,7 @@ export const nyParagraphBlock = (args: {
 }): ParagraphBlock => ({
   type: "PARAGRAPH",
   id: args.id ?? null,
+  parentId: null,
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],

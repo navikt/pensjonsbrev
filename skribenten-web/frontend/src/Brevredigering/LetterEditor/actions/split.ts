@@ -2,7 +2,7 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import type { Content, Item, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
+import type { Content, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
@@ -51,12 +51,12 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
     }
   } else if (content.type === ITEM_LIST) {
     if ("itemIndex" in literalIndex) {
-      const item = content.items[literalIndex.itemIndex];
+      const thisItem = content.items[literalIndex.itemIndex];
       const previousItem = content.items[literalIndex.itemIndex - 1];
       const nextItem = content.items[literalIndex.itemIndex + 1];
 
       const isAtLastItem = literalIndex.itemIndex === content.items.length - 1;
-      if (isAtLastItem && isEmptyItem(item)) {
+      if (isAtLastItem && isEmptyItem(thisItem)) {
         // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or move focus to ít).
         content.items.splice(literalIndex.itemIndex, 1);
         if (literalIndex.contentIndex >= block.content.length - 1) {
@@ -69,17 +69,17 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
         };
       } else {
         // Validate that splitting should be performed
-        const itemContent = item.content[literalIndex.itemContentIndex];
+        const itemContent = thisItem.content[literalIndex.itemContentIndex];
         if (itemContent.type !== LITERAL) {
           // cannot split non literal
           return;
-        } else if (isEmptyItem(item)) {
+        } else if (isEmptyItem(thisItem)) {
           // Item splitting from is empty; prevent multiple consecutive empty items
           return;
         } else if (
           nextItem &&
           isEmptyItem(nextItem) &&
-          literalIndex.itemContentIndex + 1 >= item.content.length &&
+          literalIndex.itemContentIndex + 1 >= thisItem.content.length &&
           offset >= text(itemContent).length
         ) {
           // next item is empty; prevent multiple consecutive empty items
@@ -94,15 +94,11 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
           content.items.splice(literalIndex.itemIndex, 0, newItem({ content: [newLiteral({ text: "" })] }));
         } else {
           // Update content of current item, and build content of new item
-          const nextContent = splitContentArrayAtLiteral(item.content, literalIndex.itemContentIndex, offset);
-
-          const newItem: Item = {
-            id: null,
-            content: nextContent,
-          };
+          const nextContent = splitContentArrayAtLiteral(thisItem.content, literalIndex.itemContentIndex, offset);
+          const item = newItem({ content: nextContent });
 
           // insert new item after specified item
-          content.items.splice(literalIndex.itemIndex + 1, 0, newItem);
+          content.items.splice(literalIndex.itemIndex + 1, 0, item);
         }
 
         // Update focus

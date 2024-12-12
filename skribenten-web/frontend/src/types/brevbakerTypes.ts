@@ -55,6 +55,7 @@ export type Signatur = {
 
 export type Identifiable = {
   readonly id: number | null;
+  readonly parentId: number | null;
 };
 
 export enum ElementTags {

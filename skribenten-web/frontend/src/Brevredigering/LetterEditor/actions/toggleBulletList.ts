@@ -7,7 +7,7 @@ import type { Content, ItemList, TextContent } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
-import { deleteElement, deleteElements, newItemList } from "./common";
+import { deleteElement, deleteElements, newItem, newItemList } from "./common";
 import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = produce(
@@ -38,8 +38,8 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
  */
 const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex) => {
   const thisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  const theIdexOfTheContent = literalIndex.contentIndex;
-  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIdexOfTheContent);
+  const theIndexOfTheContent = literalIndex.contentIndex;
+  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIndexOfTheContent);
   const sentenceElements = sentence.map((r) => r.element);
 
   const replacedWithItemList = replaceElementsBetweenIncluding(
@@ -47,7 +47,7 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
     sentence[0].originalIndex,
     sentence.at(-1)!.originalIndex,
     newItemList({
-      items: [{ id: null, content: sentenceElements }],
+      items: [newItem({ content: sentenceElements })],
     }),
   );
 
@@ -61,7 +61,7 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
   const newItemIndex = (
     draft.redigertBrev.blocks[literalIndex.blockIndex].content[newContentIndex] as ItemList
   ).items.findIndex((i) => isEqual(i.content, sentenceElements));
-  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIdexOfTheContent);
+  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIndexOfTheContent);
 
   draft.focus = {
     blockIndex: literalIndex.blockIndex,

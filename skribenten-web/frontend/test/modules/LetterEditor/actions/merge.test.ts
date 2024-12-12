@@ -2,7 +2,15 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
-import type { AnyBlock, Item, ItemList, LiteralValue, ParagraphBlock, VariableValue } from "~/types/brevbakerTypes";
+import type {
+  AnyBlock,
+  Item,
+  ItemList,
+  LiteralValue,
+  ParagraphBlock,
+  TextContent,
+  VariableValue,
+} from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
 
 import { asNew, item, itemList, letter, literal, paragraph, select, variable, withDeleted } from "../utils";
@@ -240,6 +248,13 @@ describe("LetterEditorActions.merge", () => {
 
         test("should only merge textcontent into the last item", () => {
           expect(select(result, mergeId)).toBe(select(withContentAfterList, { ...mergeId, contentIndex: 3 }));
+        });
+
+        test("moved textcontent should be marked as deleted", () => {
+          expect(select<ParagraphBlock>(result, { blockIndex: mergeId.blockIndex }).deletedContent).toEqual([
+            select<TextContent>(withContentAfterList, mergeId).id,
+            select<TextContent>(withContentAfterList, { ...mergeId, contentIndex: mergeId.contentIndex + 1 }).id,
+          ]);
         });
 
         test("focus should be stolen to the end of the last item", () => {

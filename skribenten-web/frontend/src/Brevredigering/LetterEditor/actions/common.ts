@@ -75,6 +75,7 @@ export function newParagraph(args: {
   return {
     type: PARAGRAPH,
     id: args.id ?? null,
+    parentId: null,
     editable: true,
     deletedContent: args.deletedContent ?? [],
     content: args.content,
@@ -90,19 +91,27 @@ export function newLiteral(args: {
   return {
     type: LITERAL,
     id: args.id ?? null,
+    parentId: null,
     text: args.text,
     editedText: args.editedText ?? null,
     tags: args.tags ?? [],
   };
 }
 
-export function newItem({ id, content }: { id?: Nullable<number>; content: TextContent[] }): Item {
+export function newItem({ content }: { content: TextContent[] }): Item {
   return {
-    id: id ?? null,
+    id: null,
+    parentId: null,
     content,
   };
 }
 
 export function newItemList(args: { id?: Nullable<number>; items: Item[]; deletedItems?: number[] }): ItemList {
-  return { id: args.id ?? null, type: "ITEM_LIST", items: args.items, deletedItems: args.deletedItems ?? [] };
+  return {
+    id: args.id ?? null,
+    parentId: null,
+    type: "ITEM_LIST",
+    items: args.items,
+    deletedItems: args.deletedItems ?? [],
+  };
 }

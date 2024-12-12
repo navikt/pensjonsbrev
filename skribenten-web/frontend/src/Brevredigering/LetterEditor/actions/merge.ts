@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import { deleteElement, newLiteral, text } from "~/Brevredigering/LetterEditor/actions/common";
+import { deleteElement, deleteElements, newLiteral, text } from "~/Brevredigering/LetterEditor/actions/common";
 import type { AnyBlock, Identifiable, ItemList } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
@@ -185,7 +185,8 @@ function mergeIntoItemList(
 ) {
   // This is when merging inside a block with an itemList
   // The previous content of the block is an itemList, so we want to merge with the last item
-  const content = draft.redigertBrev.blocks[literalIndex.blockIndex].content;
+  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const content = block.content;
   const lastItemId = previousContentSameBlock.items.length - 1;
   const lastItem = previousContentSameBlock.items[lastItemId];
   const lastContentOfLastItem = lastItem.content.at(-1);
@@ -217,6 +218,7 @@ function mergeIntoItemList(
     .filter(isTextContent);
 
   lastItem.content = mergeContentArrays(lastItem.content, textContentAfterList);
+  deleteElements(textContentAfterList, block.content, block.deletedContent);
 }
 
 function focusEndOfBlock(blockId: number, block: AnyBlock): Focus {

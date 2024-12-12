@@ -17,6 +17,7 @@ const content: LiteralValue[] = [newLiteral({ id: 1, text: "Heisann" }), newLite
 
 const block: ParagraphBlock = {
   id: 1,
+  parentId: null,
   editable: true,
   type: PARAGRAPH,
   deletedContent: [],

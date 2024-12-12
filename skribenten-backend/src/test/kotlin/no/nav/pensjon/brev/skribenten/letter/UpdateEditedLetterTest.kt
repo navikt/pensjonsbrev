@@ -844,7 +844,7 @@ class UpdateRenderedLetterTest {
                                 E_ColumnSpec(
                                     1411,
                                     E_Cell(14111, listOf(E_Variable(141111, "variabel 3", E_FontType.PLAIN))),
-                                    Edit.ParagraphContent.Table.ColumnAlignment.LEFT,
+                                    E_Table.ColumnAlignment.LEFT,
                                     1
                                 )
                             )
@@ -872,7 +872,7 @@ class UpdateRenderedLetterTest {
                                 E_ColumnSpec(
                                     1411,
                                     E_Cell(14111, listOf(E_Variable(141111, "oppdatert variabel 3", E_FontType.PLAIN))),
-                                    Edit.ParagraphContent.Table.ColumnAlignment.LEFT,
+                                    E_Table.ColumnAlignment.LEFT,
                                     1
                                 )
                             )

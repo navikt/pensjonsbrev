@@ -69,6 +69,7 @@ function extractContentIntoNewBlock(
 ): AnyBlock {
   const newBlock: AnyBlock = {
     id: null,
+    parentId: null,
     type: targetType,
     editable: true,
     deletedContent: [],
