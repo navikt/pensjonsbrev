@@ -4,12 +4,12 @@ registries:
   npm-github:
     type: npm-registry
     url: https://npm.pkg.github.com
-    token: ${{secrets.GITHUB_TOKEN}}
+    token: ${{secrets.READER_TOKEN}}
   gradle-artifactory:
     type: maven-repository
     url: https://maven.pkg.github.com/navikt/pensjonsbrev
     username: ${{ github.repository_owner }}
-    password: ${{secrets.GITHUB_TOKEN}}
+    password: ${{secrets.READER_TOKEN}}
 
 updates:
   # ==============
