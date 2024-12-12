@@ -37,9 +37,9 @@
     "zod": "3.22.4"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.2.4",
-    "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^9.16.0",
+    "@eslint/compat": "1.2.4",
+    "@eslint/eslintrc": "3.2.0",
+    "@eslint/js": "9.16.0",
     "@navikt/aksel-stylelint": "7.1.0",
     "@tanstack/eslint-plugin-query": "5.62.1",
     "@tanstack/react-query-devtools": "5.28.4",
@@ -63,7 +63,7 @@
     "eslint-plugin-simple-import-sort": "12.1.1",
     "eslint-plugin-testing-library": "7.1.1",
     "eslint-plugin-unicorn": "56.0.1",
-    "globals": "^15.13.0",
+    "globals": "15.13.0",
     "jsdom": "24.0.0",
     "postcss-styled-syntax": "0.6.4",
     "prettier": "3.4.2",
