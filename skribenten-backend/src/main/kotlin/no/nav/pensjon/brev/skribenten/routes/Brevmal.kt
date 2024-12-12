@@ -11,11 +11,11 @@ fun Route.brevmal(brevbakerService: BrevbakerService) {
     val logger = LoggerFactory.getLogger("brevbakerRoute")
 
     get("/brevmal/{brevkode}/modelSpecification") {
-        val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
+        val brevkode = call.parameters.getOrFail<Brevkode.Redigerbart>("brevkode")
         brevbakerService.getModelSpecification(brevkode)
             .onOk { call.respond(it) }
             .onError { message, status ->
-                logger.error("Feil ved henting av modelSpecification for ${brevkode.name}: Status:$status Melding: $message ")
+                logger.error("Feil ved henting av modelSpecification for ${brevkode.kode()}: Status:$status Melding: $message ")
                 call.respond(status, message)
             }
     }

@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.api.model.maler
 
-interface Brevkode {
-    enum class AutoBrev : Brevkode {
+interface Brevkode<T: Brevkode<T>> {
+
+    interface Automatisk : Brevkode<Automatisk>
+    enum class AutoBrev : Automatisk {
         PE_ADHOC_2024_FEIL_INFOBREV_AP_SENDT_BRUKER,
         PE_ADHOC_2024_FEIL_ETTEROPPGJOER_2023,
         PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970,
@@ -28,13 +30,13 @@ interface Brevkode {
         UT_OPPHOER_BT_AUTO,
         UT_UNG_UFOER_20_AAR_AUTO,
         UT_VARSEL_SAKSBEHANDLINGSTID_AUTO,
-        UT_BARNETILLEGG_ENDRET_AUTO,
-        TESTBREV;
+        UT_BARNETILLEGG_ENDRET_AUTO;
 
         override fun kode(): String = this.name
     }
 
-    enum class Redigerbar : Brevkode {
+    interface Redigerbart : Brevkode<Redigerbart>
+    enum class Redigerbar : Redigerbart {
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
         PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS,
         PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
@@ -43,12 +45,20 @@ interface Brevkode {
         UT_AVSLAG_UFOERETRYGD,
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
         PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER,
-        PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER,
-        TESTBREV,
-        ;
+        PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER;
 
         override fun kode(): String = this.name
     }
 
     fun kode(): String
+}
+
+@JvmInline
+value class RedigerbarBrevkode(private val kode: String) : Brevkode.Redigerbart {
+    override fun kode(): String = kode
+}
+
+@JvmInline
+value class AutomatiskBrevkode(private val kode: String): Brevkode.Automatisk {
+    override fun kode(): String = kode
 }
