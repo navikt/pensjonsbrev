@@ -27,7 +27,7 @@ export const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
 
 axios.interceptors.response.use(undefined, (error) => {
   if (error.response.status === 401) {
-    window.location.assign(error.response.headers.location);
+    globalThis.location.assign(error.response.headers.location);
   }
   return Promise.reject(error);
 });
