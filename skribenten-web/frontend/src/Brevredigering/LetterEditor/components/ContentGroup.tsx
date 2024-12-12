@@ -40,26 +40,7 @@ function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
 
 export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const { editorState } = useEditor();
-  const block = editorState.redigertBrev.blocks[literalIndex.blockIndex];
   const contents = getContent(editorState.redigertBrev, literalIndex);
-
-  if (!block.editable) {
-    return (
-      <div>
-        {block.content.map((content, index) => {
-          switch (content.type) {
-            case LITERAL:
-            case VARIABLE: {
-              return <Text content={content} key={index} />;
-            }
-            case ITEM_LIST: {
-              return <span key={index}>TODO</span>;
-            }
-          }
-        })}
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -344,7 +325,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // NOTE: ideally this would be "plaintext-only", and it works in practice.
       // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
       // This is not documented anywhere I could find and caused a day of frustration, beware
-      contentEditable
+      contentEditable={!freeze}
       css={
         erFritekst &&
         css`

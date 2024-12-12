@@ -68,7 +68,7 @@ export function paragraph(...content: Content[]): ParagraphBlock {
     editable: true,
     type: PARAGRAPH,
     deletedContent: [],
-    content,
+    content: content ?? [],
   };
 }
 

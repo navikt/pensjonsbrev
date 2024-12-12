@@ -38,7 +38,7 @@ export const getCursorOffsetOrRange = () => {
  * @param offset the offset in the node
  */
 export function focusAtOffset(node: ChildNode, offset: number) {
-  if (offset >= 0) {
+  if (offset >= 0 && node) {
     const range = document.createRange();
     range.setStart(node, offset);
     range.collapse();

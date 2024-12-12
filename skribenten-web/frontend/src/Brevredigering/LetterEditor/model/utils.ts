@@ -46,9 +46,7 @@ export function mergeContentArrays(first: Content[], second: Content[]) {
 
     if (lastContentOfFirst.type === LITERAL && firstContentOfSecond.type === LITERAL) {
       // merge adjoining literals
-      lastContentOfFirst.editedText =
-        (lastContentOfFirst.editedText ?? lastContentOfFirst.text) +
-        (firstContentOfSecond.editedText ?? firstContentOfSecond.text);
+      lastContentOfFirst.editedText = text(lastContentOfFirst) + text(firstContentOfSecond);
       draft.splice(first.length, 0, ...second.slice(1));
     } else {
       draft.splice(first.length, 0, ...second);

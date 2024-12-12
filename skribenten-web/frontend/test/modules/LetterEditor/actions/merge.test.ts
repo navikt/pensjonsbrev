@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
-import type { AnyBlock, Item, ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
+import type { AnyBlock, Item, ItemList, LiteralValue, ParagraphBlock, VariableValue } from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
 
 import { asNew, item, itemList, letter, literal, paragraph, select, variable, withDeleted } from "../utils";
@@ -43,7 +43,7 @@ describe("LetterEditorActions.merge", () => {
         );
         const mergeId = { blockIndex: 0 };
 
-        const result = Actions.merge(state, { ...mergeId, contentIndex: 0 }, MergeTarget.NEXT);
+        const result = Actions.merge(state, { ...mergeId, contentIndex: 1 }, MergeTarget.NEXT);
 
         // assertions
         expect(select<ParagraphBlock>(result, mergeId).content).toHaveLength(3);
@@ -67,6 +67,7 @@ describe("LetterEditorActions.merge", () => {
         const mergeId = { blockIndex: 0 };
         const result = Actions.merge(state, { ...mergeId, contentIndex: 0 }, MergeTarget.NEXT);
 
+        expect(result.redigertBrev.blocks).toHaveLength(1);
         expect(select<AnyBlock>(result, mergeId).id).toEqual(
           select<AnyBlock>(state, { blockIndex: mergeId.blockIndex + 1 }).id,
         );
@@ -232,8 +233,8 @@ describe("LetterEditorActions.merge", () => {
           expect(itemList.items).toHaveLength(1);
           expect(mergedLiteral.text).toEqual("Det blir ");
           expect(mergedLiteral.editedText).toEqual("Det blir content 1");
-          expect(itemList.items[0].content[1]).toBe(
-            select(withContentAfterList, { ...mergeId, contentIndex: mergeId.contentIndex + 1 }),
+          expect(itemList.items[0].content[1]).toEqual(
+            select<VariableValue>(withContentAfterList, { ...mergeId, contentIndex: mergeId.contentIndex + 1 }),
           );
         });
 
