@@ -4,7 +4,7 @@ LABEL org.opencontainers.image.source="https://github.com/navikt/pensjonsbrev/la
 LABEL org.opencontainers.image.description="XeLaTeX installation with required packages for Navs letter template"
 LABEL org.opencontainers.image.title="XeLaTeX"
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
-ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
+ENV PATH="${PATH}:/app/tex/bin/aarch64-linux/"
 
 #Download and install tlmgr (texlive package manager)
 RUN apt -y --allow-releaseinfo-change -o Acquire::Check-Valid-Until=false update
