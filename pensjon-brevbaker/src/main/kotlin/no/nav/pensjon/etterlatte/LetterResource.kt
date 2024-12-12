@@ -25,10 +25,10 @@ class LetterResource(templates: AllTemplates, private val latexCompilerService: 
     private val autoBrevMap: Map<Brevkode<*>, AutobrevTemplate<BrevbakerBrevdata>> =
         templates.hentAutobrevmaler().associateBy { it.kode }
 
-    private fun getAutoBrev(kode: Brevkode<*>): LetterTemplate<*, *>? = autoBrevMap[kode]?.template
+    private fun getTemplate(kode: Brevkode<*>): LetterTemplate<*, *>? = autoBrevMap[kode]?.template
 
-    suspend fun renderPDF(letterRequest: BestillBrevRequest<Brevkode.Automatisk>): LetterResponse {
-        val letter = create(letterRequest)
+    suspend fun renderPDF(brevbestilling: BestillBrevRequest<Brevkode.Automatisk>): LetterResponse {
+        val letter = create(brevbestilling)
         val pdfBase64 = Letter2Markup.render(letter)
             .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
             .let { latexCompilerService.producePDF(it) }
@@ -48,11 +48,11 @@ class LetterResource(templates: AllTemplates, private val latexCompilerService: 
         listOf(Tag.of("brevkode", kode.kode()))
     ).increment()
 
-    private fun create(letterRequest: BestillBrevRequest<*>): Letter<*> {
-        val template: LetterTemplate<*, *> = getAutoBrev(letterRequest.kode)
-            ?: throw NotFoundException("Template '${letterRequest.kode}' doesn't exist")
+    private fun create(brevbestilling: BestillBrevRequest<*>): Letter<*> {
+        val template: LetterTemplate<*, *> = getTemplate(brevbestilling.kode)
+            ?: throw NotFoundException("Template '${brevbestilling.kode}' doesn't exist")
 
-        val language = letterRequest.language.toLanguage()
+        val language = brevbestilling.language.toLanguage()
 
         if (!template.language.supports(language)) {
             throw BadRequestException("Template '${template.name}' doesn't support language: $language")
@@ -60,9 +60,9 @@ class LetterResource(templates: AllTemplates, private val latexCompilerService: 
 
         return Letter(
             template = template,
-            argument = parseArgument(letterRequest.letterData, template),
+            argument = parseArgument(brevbestilling.letterData, template),
             language = language,
-            felles = letterRequest.felles,
+            felles = brevbestilling.felles,
         )
     }
 
