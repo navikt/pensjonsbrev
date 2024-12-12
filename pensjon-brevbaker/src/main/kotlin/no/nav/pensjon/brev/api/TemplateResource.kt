@@ -3,12 +3,16 @@ package no.nav.pensjon.brev.api
 import io.ktor.http.*
 import io.ktor.server.plugins.*
 import io.micrometer.core.instrument.Tag
+import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstidV2
+import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAutoV2
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
@@ -27,7 +31,19 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
     templates: Set<T>,
     private val laTeXCompilerService: LaTeXCompilerService,
 ) {
-    val templates: Map<Kode, T> = templates.associateBy { it.kode }
+    private val templates: Map<Kode, T> = templates.associateBy { it.kode }
+
+    fun listTemplatesWithMetadata() = templates.map { getTemplate(it.key)!!.description() }
+
+    fun listTemplatekeys() = templates.keys
+
+    fun getTemplate(kode: Kode) = when {
+        // Legg inn her hvis du ønsker å styre forskjellige versjoner, feks
+        // kode == DinBrevmal.kode && FeatureToggles.dinToggle.isEnabled() -> DinBrevmalV2
+        kode == Brevkode.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID && FeatureToggles.pl7231ForventetSvartid.isEnabled() -> OrienteringOmSaksbehandlingstidV2
+        kode == Brevkode.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO && FeatureToggles.pl7231ForventetSvartid.isEnabled() -> VarselSaksbehandlingstidAutoV2
+        else -> templates[kode]
+    }
 
     suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
@@ -60,7 +76,7 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
         ).increment()
 
     private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
-        val template = templates[brevkode]?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
+        val template = getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
 
         val language = spraak.toLanguage()
         if (!template.language.supports(language)) {

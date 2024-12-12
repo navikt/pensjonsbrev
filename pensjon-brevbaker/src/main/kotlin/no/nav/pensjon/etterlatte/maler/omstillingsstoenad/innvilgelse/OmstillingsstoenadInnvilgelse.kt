@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse
 
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -76,7 +77,7 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
                 konverterElementerTilBrevbakerformat(innhold)
 
                 showIf(harUtbetaling) {
-                    includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
+                    includePhrase(OmstillingsstoenadInnvilgelseFraser.UtbetalingMedEtterbetaling(etterbetaling))
                 }
                 includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad(tidligereFamiliepleier))
                 includePhrase(
@@ -101,12 +102,12 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
                 beregning,
                 tidligereFamiliepleier,
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
                 beregning,
                 tidligereFamiliepleier.not(),
             )

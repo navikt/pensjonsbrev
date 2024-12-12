@@ -133,13 +133,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvaMaaKlagenInnehold
             Nynorsk to "Nav kan hjelpe deg med å skrive ned klaga. Viss du treng hjelp, " +
                     "må du gjerne ringje oss på telefon ",
             English to "The Nav office can help you with the wording of your appeal. " +
-                    "If you need help, you are welcome to call us by phone ("
+                    "If you need help, you are welcome to call us by phone "
         )
         kontakttelefonPensjon(bosattUtland)
         text(
             Bokmal to ".",
             Nynorsk to ".",
-            English to ")."
+            English to "."
         )
     }
 }

@@ -5,22 +5,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  cleanup-brevbaker:
-    name: "Brevbaker: Fjern gamle container bilder"
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/delete-package-versions@v4.1.1
-        with:
-          package-name: pensjonsbrev/brevbaker
-          package-type: container
-          min-versions-to-keep: 10
-          token: "${{ secrets.DELETE_PACKAGES_TOKEN }}"
-
   cleanup-pdf-bygger:
     name: "Pdf-bygger: Fjern gamle container bilder"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/delete-package-versions@v4.1.1
+      - uses: actions/delete-package-versions@v5.0.0
         with:
           package-name: pensjonsbrev/pdf-bygger
           package-type: container

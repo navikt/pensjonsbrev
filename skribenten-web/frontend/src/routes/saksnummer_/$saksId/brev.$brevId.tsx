@@ -28,7 +28,7 @@ import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/Model
 import { ApiError } from "~/components/ApiError";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import type { EditedLetter } from "~/types/brevbakerTypes";
+import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
@@ -223,10 +223,12 @@ function RedigerBrev({
     },
   );
 
-  const onSubmit = (values: RedigerBrevSidemenyFormData) => {
+  const onSubmit = (values: RedigerBrevSidemenyFormData, onSuccess?: () => void) => {
     saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
       onSuccess: () => {
-        signaturMutation.mutate(values.signatur);
+        signaturMutation.mutate(values.signatur, {
+          onSuccess: onSuccess,
+        });
       },
     });
   };
@@ -275,13 +277,13 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const requestSubmit = useCallback(() => {
+  const requestSubmit = useCallback(async () => {
     formRef.current?.requestSubmit();
   }, [formRef]);
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
+      <form onSubmit={form.handleSubmit((v) => onSubmit(v))} ref={formRef}>
         <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
@@ -373,20 +375,24 @@ function RedigerBrev({
                 Tilbake til brevvelger
               </Button>
               <Button
-                loading={redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending}
+                loading={
+                  redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending
+                }
                 onClick={async () => {
-                  await redigertBrevMutation.mutateAsync(
-                    { redigertBrev: editorState.redigertBrev, frigiReservasjon: true },
-                    {
-                      onSuccess: () => {
-                        navigate({
-                          to: "/saksnummer/$saksId/brevbehandler",
-                          params: { saksId },
-                          search: { brevId: brev.info.id },
-                        });
+                  onSubmit(form.getValues(), () => {
+                    redigertBrevMutation.mutate(
+                      { redigertBrev: editorState.redigertBrev, frigiReservasjon: true },
+                      {
+                        onSuccess: () => {
+                          navigate({
+                            to: "/saksnummer/$saksId/brevbehandler",
+                            params: { saksId },
+                            search: { brevId: brev.info.id },
+                          });
+                        },
                       },
-                    },
-                  );
+                    );
+                  });
                 }}
                 size="small"
                 type="button"

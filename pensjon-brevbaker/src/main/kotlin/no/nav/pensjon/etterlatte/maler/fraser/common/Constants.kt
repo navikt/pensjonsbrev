@@ -51,7 +51,7 @@ object Constants {
         const val OMS = "$OMS_URL#utland"
         const val UTBETALING_INFO = "${NAV_URL}/utbetaling-utland"
         const val ENDRE_KONTONUMMER_SKJEMA_URL = "${NAV_URL}/soknader/en#bank-account-number-how-to-change"
-        const val KONTAKTTELEFON_SKATT = "+47 22 07 70 00"
+        const val KONTAKTTELEFON_SKATT = "(+47) 22 07 70 00"
         const val POSTADRESSE = "Nav familie- og pensjonsytelser, Postboks 6600 Etterstad, 0607 Oslo, Norway"
     }
 }

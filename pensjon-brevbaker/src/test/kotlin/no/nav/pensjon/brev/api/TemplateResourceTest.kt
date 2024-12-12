@@ -12,14 +12,14 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PDFCompilationOutput
-import no.nav.pensjon.brev.maler.OpphoerBarnetilleggAuto
-import no.nav.pensjon.brev.maler.ProductionTemplates
+import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
+import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
@@ -39,18 +39,18 @@ class TemplateResourceTest {
     private val latexMock = mockk<LaTeXCompilerService> {
         coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
     }
-    private val autobrev = TemplateResource("autobrev", ProductionTemplates.autobrev, latexMock)
-    private val redigerbar = TemplateResource("autobrev", ProductionTemplates.redigerbare, latexMock)
+    private val autobrev = TemplateResource("autobrev", Testmaler.hentAutobrevmaler(), latexMock)
+    private val redigerbar = TemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), latexMock)
 
     private val validAutobrevRequest = BestillBrevRequest(
-        Brevkode.AutoBrev.UT_OPPHOER_BT_AUTO,
-        Fixtures.create<OpphoerBarnetilleggAutoDto>(),
+        LetterExample.kode,
+        createLetterExampleDto(),
         Fixtures.fellesAuto,
         LanguageCode.BOKMAL
     )
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
-        Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
-        Fixtures.create<InformasjonOmSaksbehandlingstidDto>(),
+        EksempelbrevRedigerbart.kode,
+        createEksempelbrevRedigerbartDto(),
         Fixtures.felles,
         LanguageCode.BOKMAL,
         LetterMarkup(
@@ -76,7 +76,7 @@ class TemplateResourceTest {
     fun `can renderPDF with valid letterData`(): Unit = runBlocking {
         val result = autobrev.renderPDF(validAutobrevRequest)
         assertEquals(
-            LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), OpphoerBarnetilleggAuto.template.letterMetadata),
+            LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
             result
         )
     }
@@ -85,20 +85,20 @@ class TemplateResourceTest {
     fun `can renderHTML with valid letterData`() {
         val result = autobrev.renderHTML(validAutobrevRequest)
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), result.contentType)
-        assertEquals(OpphoerBarnetilleggAuto.template.letterMetadata, result.letterMetadata)
+        assertEquals(LetterExample.template.letterMetadata, result.letterMetadata)
     }
 
     @Test
     fun `fails renderPDF with invalid letterData`(): Unit = runBlocking {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderPDF(validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+            autobrev.renderPDF(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
         }
     }
 
     @Test
     fun `fails renderHTML with invalid letterData`() {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderHTML(validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+            autobrev.renderHTML(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
         }
     }
 
@@ -142,3 +142,5 @@ class TemplateResourceTest {
     }
 
 }
+
+data class RandomLetterdata(val v1: Boolean) : BrevbakerBrevdata

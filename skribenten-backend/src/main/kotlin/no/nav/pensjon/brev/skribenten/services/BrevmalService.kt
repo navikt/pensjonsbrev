@@ -80,7 +80,9 @@ class BrevmalService(
 
     private fun TemplateDescription.erMalMedFritekst() = name in setOf(
         Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
-        Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ETTERLATTE
+        Brevkode.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ETTERLATTE,
+        Brevkode.Redigerbar.PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER,
+        Brevkode.Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER
     ).map { it.name }
 
     private fun TemplateDescription.hasEmptyBrevData() = letterDataClass in setOf(

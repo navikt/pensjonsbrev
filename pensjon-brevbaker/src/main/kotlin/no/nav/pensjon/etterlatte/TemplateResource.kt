@@ -28,8 +28,8 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigstilling
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnhold
 import no.nav.pensjon.etterlatte.maler.klage.BlankettKlageinstans
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelsesbrevBruker
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstid
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
@@ -38,6 +38,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInformasjonDoedsfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysninger
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknad
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelse
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoer
@@ -76,6 +77,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt,
         BarnepensjonMottattSoeknad,
         BarnepensjonInnhentingAvOpplysninger,
+
         // Omstillingsstønad
         OmstillingsstoenadAvslag,
         OmstillingsstoenadAvslagRedigerbartUtfall,
@@ -98,19 +100,27 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold,
         OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold,
         OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold,
+        OmstillingsstoenadInntektsjusteringVedtak,
+        OmstillingsstoenadInntektsjusteringVarsel,
+        OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall,
+
         // Tilbakekreving
         TilbakekrevingInnhold,
         TilbakekrevingFerdig,
+
         // Klage
         AvvistKlageInnhold,
         AvvistKlageFerdigstilling,
         BlankettKlageinstans,
         KlageOversendelsesbrevBruker,
+        KlageSaksbehandlingstid,
+
         // Informasjonsbrev
         TomMal,
         TomDelmal,
         TomMalInformasjonsbrev,
         UtsattKlagefrist,
+
         // Div migrering mm.
         ForhaandsvarselOmregningBP,
         EnkeltVedtakOmregningNyttRegelverk,

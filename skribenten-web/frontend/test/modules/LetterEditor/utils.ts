@@ -100,6 +100,7 @@ export function literal(text: string, editedText: string | null = null): Literal
     type: LITERAL,
     text,
     editedText,
+    tags: [],
   };
 }
 

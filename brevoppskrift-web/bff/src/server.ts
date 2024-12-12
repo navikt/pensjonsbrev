@@ -1,5 +1,5 @@
-import { addSimpleProxyHandler } from "@navikt/backend-for-frontend-utils";
-import express from "express";
+import express, { Express } from "express";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 import { setupActuators } from "./actuators.js";
 import config from "./config.js";
@@ -18,3 +18,22 @@ addSimpleProxyHandler(server, { ingoingUrl: "/brevbaker", outgoingUrl: config.br
 setupStaticRoutes(server);
 
 export { server };
+
+/**
+ * Proxies request without any modification or token exchange
+ */
+function addSimpleProxyHandler(server: Express, { ingoingUrl, outgoingUrl }: SimpleProxyOptions) {
+  server.use(
+    ingoingUrl,
+    createProxyMiddleware({
+      target: outgoingUrl,
+      changeOrigin: true,
+      logger: console,
+    }),
+  );
+}
+
+type SimpleProxyOptions = {
+  ingoingUrl: string;
+  outgoingUrl: string;
+};

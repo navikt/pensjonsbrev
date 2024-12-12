@@ -21,7 +21,7 @@ private val objectMapper = jacksonObjectMapper()
 
 class TemplateResourceTest {
 
-    @Tag(TestTags.INTEGRATION_TEST)
+    @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(

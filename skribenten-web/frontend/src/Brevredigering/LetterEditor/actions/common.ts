@@ -3,6 +3,7 @@ import type { Draft } from "immer";
 import type { BrevResponse } from "~/types/brev";
 import type {
   Content,
+  ElementTags,
   Identifiable,
   Item,
   ItemList,
@@ -10,9 +11,9 @@ import type {
   ParagraphBlock,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { PARAGRAPH } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import type { Nullable } from "~/types/Nullable";
 
+import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "../../../types/brevbakerTypes";
 import type { LetterEditorState } from "../model/state";
 
 export function cleanseText(text: string): string {
@@ -75,12 +76,23 @@ export function newParagraph(...content: Content[]): ParagraphBlock {
   };
 }
 
-export function newLiteral(text: string): LiteralValue {
-  return { type: LITERAL, id: null, text: "", editedText: text };
+export function newLiteral(args: {
+  id?: Nullable<number>;
+  text: string;
+  editedText?: Nullable<string>;
+  tags?: ElementTags[];
+}): LiteralValue {
+  return {
+    type: LITERAL,
+    id: args.id ?? null,
+    text: args.text,
+    editedText: args.editedText ?? null,
+    tags: args.tags ?? [],
+  };
 }
 
 export function newItem(text: string): Item {
-  return { id: null, content: [newLiteral(text)] };
+  return { id: null, content: [newLiteral({ text })] };
 }
 
 export function newItemList(...items: Item[]): ItemList {

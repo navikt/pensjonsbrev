@@ -11,3 +11,12 @@
   AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"pen-AzureClientId"}]
   ```
 - -Dio.ktor.development=true
+
+### Hvis du ikke er i team pensjonsbrev
+- Hvis du ikke er i team pensjonsbrev, vil du ikke få tilgang til secret for å starte opp med Unleash. Da vil brevbaker i utgangspunktet ikke starte. Du kan omgå dette ved å konfigurere opp Unleash-variablene, og så vil det fungere helt fint fram til en toggle blir kalt. For det må du sette opp disse variablene:
+  ```
+    UNLEASH_SERVER_API_ENV=development
+    UNLEASH_SERVER_API_TOKEN=token123
+    UNLEASH_SERVER_API_URL=https://teampensjon-unleash-api.nav.cloud.nais.io
+    NAIS_APP_NAME=brevbaker
+  ```

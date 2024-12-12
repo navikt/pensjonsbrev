@@ -10,7 +10,17 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -47,6 +57,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 fun beregningAvOmstillingsstoenad(
     tidligereFamiliepleier: Boolean,
+    innvilgelsesaar: Boolean
 ): AttachmentTemplate<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning> =
     createAttachment(
         title =
@@ -57,7 +68,7 @@ fun beregningAvOmstillingsstoenad(
         ),
         includeSakspart = false,
     ) {
-        beregning(tidligereFamiliepleier.expr())
+        beregning(tidligereFamiliepleier.expr(), innvilgelsesaar.expr())
         trygdetid(trygdetid, tidligereFamiliepleier.expr())
         perioderMedRegistrertTrygdetid(trygdetid, tidligereFamiliepleier.expr())
         meldFraTilNav()
@@ -65,6 +76,7 @@ fun beregningAvOmstillingsstoenad(
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning>.beregning(
     tidligereFamiliepleier: Expression<Boolean>,
+    innvilgelsesAar: Expression<Boolean>,
 ) {
     val sisteInntekt = sisteBeregningsperiode.inntekt
     val sisteGrunnbeloep = sisteBeregningsperiode.grunnbeloep
@@ -90,7 +102,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     paragraph {
         textExpr(
             Bokmal to "For at du skal få full stønad må ".expr() +
-                ifElse(tidligereFamiliepleier, "trygdetiden din", "avødes trygdetid") +
+                ifElse(tidligereFamiliepleier, "trygdetiden din", "avdødes trygdetid") +
                 " være minst 40 år. Er trygdetiden mindre enn 40 år vil stønaden avkortes.",
             Nynorsk to "For at du skal få full stønad må ".expr() +
                 ifElse(tidligereFamiliepleier, "du", "avdøde") +
@@ -219,7 +231,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     )
                 }
             }
-            showIf(sisteInnvilgaMaaneder.lessThan(12)) {
+            showIf(innvilgelsesAar and sisteInnvilgaMaaneder.lessThan(12)) {
                 textExpr(
                     Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har en inntekt på " +
@@ -341,6 +353,37 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 )
             }
         }
+        showIf(
+            sisteBeregningsperiode.restanse.notEqualTo(0) and
+            sisteBeregningsperiode.utbetaltBeloep.equalTo(0)
+        ) {
+            title2 {
+                text(
+                    Bokmal to "Feilutbetalt ytelse vil bli behandlet i et etteroppgjør",
+                    Nynorsk to "Feilutbetalt yting vil bli behandla i eit etteroppgjer",
+                    English to "Incorrectly paid allowance will be dealt with in a final settlement",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Den forventede inntekten din for inneværende år er blitt justert. " +
+                            "Siden du ikke får utbetalt stønad, kan vi ikke trekke inn for mye utbetalt stønad " +
+                            "i utbetalingene for resten av året. " +
+                            "Feilutbetalt stønad vil derfor bli behandlet i etteroppgjøret for i år, " +
+                            "som blir gjort etter at skatteåret er ferdig lignet neste år.",
+                    Nynorsk to "Den forventa inntekta di for inneverande år har vorte justert. " +
+                            "Sidan du ikkje får utbetalt stønad, kan vi ikkje trekkja inn for mykje utbetalt stønad " +
+                            "i utbetalingane for resten av året. " +
+                            "Feilutbetalt stønad vil derfor bli behandla i etteroppgjeret for i år, " +
+                            "som blir gjort etter at skatteåret er ferdig likna neste år.",
+                    English to "Your estimated income for the current year has been adjusted. Since you are " +
+                            "not receiving any allowance for the rest of the year, we cannot deduct any overpaid " +
+                            "benefits from payments during this period. Any overpaid benefits will therefore be " +
+                            "addressed in the final settlement for this year, which will be completed after " +
+                            "the tax settlement for this year is finalized next year."
+                )
+            }
+        }
     }.orShow {
         paragraph {
             text(
@@ -427,7 +470,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
         paragraph {
             textExpr(
                 Bokmal to "For å få full omstillingsstønad må ".expr() +
-                    ifElse(tidligereFamiliepleier, "trygdetiden din", "avødes trygdetid") +
+                    ifElse(tidligereFamiliepleier, "trygdetiden din", "avdødes trygdetid") +
                     " være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. " +
                     ifElse(tidligereFamiliepleier, "Din", "Avdødes") +
                     " samlede trygdetid er beregnet til " + trygdetid.beregnetTrygdetidAar.format() + " år.",

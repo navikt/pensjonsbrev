@@ -6,50 +6,7 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
-import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageFerdigDTO
-import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonForeldreloesRedigerbarDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInformasjonDoedsfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInformasjonMottattSoeknadDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnhentingAvOpplysningerDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkFerdigDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOpphoerDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOpphoerRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
-import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBlankettDTO
-import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBrukerDTO
-import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktInformasjon6mndDto
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInformasjonDoedsfallDto
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnhentingAvOpplysningerDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadMotattSoekdnadDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadOpphoerDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadRevurderingRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadVarselAktivitetspliktDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadpphoerRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingFerdigDTO
-import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingRedigerbartBrevDTO
-import no.nav.pensjon.etterlatte.fixtures.createTomMal
-import no.nav.pensjon.etterlatte.fixtures.createTomMalInformasjonsbrev
+import no.nav.pensjon.etterlatte.fixtures.*
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
@@ -75,6 +32,7 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTO
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO
@@ -84,6 +42,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
@@ -168,10 +127,14 @@ object Fixtures {
             OmstillingsstoenadVarselAktivitetspliktDTO::class -> createOmstillingsstoenadVarselAktivitetspliktDTO() as T
             OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO::class -> createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() as T
 
+            AarligInntektsjusteringVedtakDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
+            OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfallDTO() as T
+
             TilbakekrevingBrevDTO::class -> createTilbakekrevingFerdigDTO() as T
             TilbakekrevingRedigerbartBrevDTO::class -> createTilbakekrevingRedigerbartBrevDTO() as T
 
             AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
+            KlageSaksbehandlingstidDTO::class -> createKlageSaksbehandlingstidDtoTestI() as T
             AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T
             KlageOversendelseBlankettDTO::class -> createKlageOversendelseBlankettDTO() as T
             KlageOversendelseBrukerDTO::class -> createKlageOversendelseBrukerDTO() as T
@@ -183,5 +146,6 @@ object Fixtures {
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
+
 }
 

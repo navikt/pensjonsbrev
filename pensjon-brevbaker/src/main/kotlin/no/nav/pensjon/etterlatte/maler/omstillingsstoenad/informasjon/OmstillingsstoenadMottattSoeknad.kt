@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.borINorgeEllerIkkeAvtaleland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.mottattDato
@@ -22,7 +23,7 @@ import java.time.LocalDate
 data class OmstillingsstoenadMottattSoeknadDTO(
     val mottattDato: LocalDate,
     val borINorgeEllerIkkeAvtaleland: Boolean,
-)
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadMottattSoeknadDTO> {

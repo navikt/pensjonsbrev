@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brevbaker.api.model.IntValue
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -35,7 +32,7 @@ sealed class Expression<out Out> : StableHash {
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
-    data class Literal<out Out>(val value: Out) : Expression<Out>() {
+    data class Literal<out Out>(val value: Out, val tags: Set<ElementTags> = emptySet()) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
 
@@ -55,7 +52,6 @@ sealed class Expression<out Out> : StableHash {
                 null -> StableHash.of(null)
                 else -> throw IllegalArgumentException("Unable to calculate stableHashCode for type ${v::class.java}")
             }
-
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {

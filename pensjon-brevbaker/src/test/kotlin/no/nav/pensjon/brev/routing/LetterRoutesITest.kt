@@ -12,10 +12,10 @@ import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
+import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
+import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
+import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.render.Letter2Markup
@@ -30,19 +30,19 @@ import org.junit.jupiter.api.Test
 @Tag(TestTags.INTEGRATION_TEST)
 class LetterRoutesITest {
     private val autoBrevRequest = BestillBrevRequest(
-        kode = OmsorgEgenAuto.kode,
-        letterData = Fixtures.create<OmsorgEgenAutoDto>(),
+        kode = LetterExample.kode,
+        letterData = createLetterExampleDto(),
         felles = Fixtures.fellesAuto,
         language = LanguageCode.BOKMAL,
     )
     private val bestillMarkupRequest = BestillBrevRequest(
-        kode = InformasjonOmSaksbehandlingstid.kode,
-        letterData = Fixtures.create<InformasjonOmSaksbehandlingstidDto>(),
+        kode = EksempelbrevRedigerbart.kode,
+        letterData = createEksempelbrevRedigerbartDto(),
         felles = Fixtures.felles,
         language = LanguageCode.BOKMAL,
     )
     private val redigertBestilling = Letter(
-        template = InformasjonOmSaksbehandlingstid.template,
+        template = EksempelbrevRedigerbart.template,
         argument = bestillMarkupRequest.letterData,
         language = Language.Bokmal,
         felles = bestillMarkupRequest.felles
