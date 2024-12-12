@@ -202,7 +202,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
       focusAtOffset(
         nextFocus.childNodes[0],
-        isPreviousSpanInSameBlock ? (nextFocus.textContent?.length ?? 0) - 1 : nextFocus.textContent?.length ?? 0,
+        isPreviousSpanInSameBlock ? (nextFocus.textContent?.length ?? 0) - 1 : (nextFocus.textContent?.length ?? 0),
       );
     }
   };
@@ -316,7 +316,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleWordSelect = (element: HTMLSpanElement) => {
-    const selection = window.getSelection();
+    const selection = globalThis.getSelection();
     const range = document.createRange();
 
     if (selection) {
