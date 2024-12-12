@@ -926,7 +926,12 @@ class UpdateRenderedLetterTest {
         val next = letter(
             Paragraph(
                 1, true,
-                listOf(Literal(11, "lit1"), Variable(12, "var2"), ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))), Literal(14, "lit2"))
+                listOf(
+                    Literal(11, "lit1"),
+                    Variable(12, "var2"),
+                    ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))),
+                    Literal(14, "lit2"),
+                )
             )
         )
         val edited = editedLetter(
@@ -937,12 +942,11 @@ class UpdateRenderedLetterTest {
                         13,
                         listOf(
                             E_Item(null, listOf(E_Literal(11, "lit1", parentId = 1), E_Variable(12, "var2", parentId = 1))),
-                            E_Item(131, listOf(E_Literal(1311, "punkt1")))
+                            E_Item(131, listOf(E_Literal(1311, "punkt1"), E_Literal(14, "lit2", parentId = 1)))
                         )
                     ),
-                    E_Literal(14, "lit2")
                 ),
-                deletedContent = setOf(11, 12)
+                deletedContent = setOf(11, 12, 14)
             )
         )
         assertEquals(edited, edited.updateEditedLetter(next))

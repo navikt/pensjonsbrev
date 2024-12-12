@@ -40,7 +40,7 @@ object Edit {
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)
 
-        override fun isEdited(): Boolean = isNew() || isChangedType() || content.any { it.isEdited() } || deletedContent.isNotEmpty()
+        override fun isEdited(): Boolean = isNew() || isChangedType() || content.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
 
         data class Title1(
             override val id: Int?,
@@ -82,10 +82,10 @@ object Edit {
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
             data class Item(override val id: Int?, val content: List<Text>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() }
+                override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() || it.parentId != id }
             }
 
-            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() } || deletedItems.isNotEmpty()
+            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty()
         }
 
         data class Table(
@@ -96,15 +96,15 @@ object Edit {
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.TABLE) {
             data class Row(override val id: Int?, val cells: List<Cell>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() }
+                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() || it.parentId != id }
             }
 
             data class Cell(override val id: Int?, val text: List<Text>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() }
+                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() || it.parentId != id }
             }
 
             data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() }
+                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() || it.parentId != id }
             }
 
             data class ColumnSpec(
@@ -119,7 +119,7 @@ object Edit {
 
             enum class ColumnAlignment { LEFT, RIGHT }
 
-            override fun isEdited(): Boolean = isNew() || deletedRows.isNotEmpty() || rows.any { it.isEdited() } || header.isEdited()
+            override fun isEdited(): Boolean = isNew() || deletedRows.isNotEmpty() || rows.any { it.isEdited() || it.parentId != id } || header.isEdited()
         }
 
         sealed class Text(type: Type) : ParagraphContent(type) {

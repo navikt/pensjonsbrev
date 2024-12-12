@@ -90,18 +90,42 @@ private fun <E : Edit.Identifiable> mergeList(
     addAll(remainingRendered)
 }
 
+// TODO: Fjern `parentId = edited.parentId ?: rendered.parentId` fra alle `edited.copy` kall. De er kun lagt til for å oppdatere redigerte brev i databasen.
+
 private fun mergeBlock(edited: Edit.Block, rendered: Edit.Block): Edit.Block =
     when (edited) {
-        is Edit.Block.Paragraph -> edited.copy(content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent))
-        is Edit.Block.Title1 -> edited.copy(content = mergeListText(edited, edited.content, rendered, edited.deletedContent))
-        is Edit.Block.Title2 -> edited.copy(content = mergeListText(edited, edited.content, rendered, edited.deletedContent))
+        is Edit.Block.Paragraph -> edited.copy(
+            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent),
+            parentId = edited.parentId ?: rendered.parentId
+        )
+
+        is Edit.Block.Title1 -> edited.copy(
+            content = mergeListText(edited, edited.content, rendered, edited.deletedContent),
+            parentId = edited.parentId ?: rendered.parentId
+        )
+
+        is Edit.Block.Title2 -> edited.copy(
+            content = mergeListText(edited, edited.content, rendered, edited.deletedContent),
+            parentId = edited.parentId ?: rendered.parentId
+        )
     }
 
-private fun mergeListText(parent: Edit.Identifiable, editedContent: List<Edit.ParagraphContent.Text>, rendered: Edit.Block, deleted: Set<Int>): List<Edit.ParagraphContent.Text> =
+private fun mergeListText(
+    parent: Edit.Identifiable,
+    editedContent: List<Edit.ParagraphContent.Text>,
+    rendered: Edit.Block,
+    deleted: Set<Int>,
+): List<Edit.ParagraphContent.Text> =
     when (rendered) {
         is Edit.Block.Title1 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent)
         is Edit.Block.Title2 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent)
-        is Edit.Block.Paragraph -> mergeList(parent, editedContent, rendered.content.filterIsInstance<Edit.ParagraphContent.Text>(), deleted, ::mergeTextContent)
+        is Edit.Block.Paragraph -> mergeList(
+            parent,
+            editedContent,
+            rendered.content.filterIsInstance<Edit.ParagraphContent.Text>(),
+            deleted,
+            ::mergeTextContent
+        )
     }
 
 private fun mergeTextContent(edited: Edit.ParagraphContent.Text, rendered: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text =
@@ -118,7 +142,10 @@ private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.
     when (edited) {
         is Edit.ParagraphContent.ItemList ->
             if (rendered is Edit.ParagraphContent.ItemList) {
-                edited.copy(items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems))
+                edited.copy(
+                    items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems),
+                    parentId = edited.parentId ?: rendered.parentId
+                )
             } else {
                 throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
             }
@@ -134,7 +161,8 @@ private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.
             if (rendered is Edit.ParagraphContent.Table) {
                 edited.copy(
                     header = mergeTableHeader(edited.header, rendered.header),
-                    rows = mergeList(edited, edited.rows, rendered.rows, rendered.deletedRows, ::mergeRows)
+                    rows = mergeList(edited, edited.rows, rendered.rows, rendered.deletedRows, ::mergeRows),
+                    parentId = edited.parentId ?: rendered.parentId,
                 )
             } else {
                 throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
@@ -142,19 +170,22 @@ private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.
     }
 
 private fun mergeTableHeader(edited: Edit.ParagraphContent.Table.Header, rendered: Edit.ParagraphContent.Table.Header): Edit.ParagraphContent.Table.Header =
-    edited.copy(colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, emptySet(), ::mergeColumnSpec))
+    edited.copy(colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, emptySet(), ::mergeColumnSpec), parentId = edited.parentId ?: rendered.parentId)
 
-private fun mergeColumnSpec(edited: Edit.ParagraphContent.Table.ColumnSpec, rendered: Edit.ParagraphContent.Table.ColumnSpec): Edit.ParagraphContent.Table.ColumnSpec =
-    edited.copy(headerContent = mergeCell(edited.headerContent, rendered.headerContent))
+private fun mergeColumnSpec(
+    edited: Edit.ParagraphContent.Table.ColumnSpec,
+    rendered: Edit.ParagraphContent.Table.ColumnSpec,
+): Edit.ParagraphContent.Table.ColumnSpec =
+    edited.copy(headerContent = mergeCell(edited.headerContent, rendered.headerContent), parentId = edited.parentId ?: rendered.parentId)
 
 private fun mergeCell(edited: Edit.ParagraphContent.Table.Cell, rendered: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
-    edited.copy(text = mergeList(edited, edited.text, rendered.text, emptySet(), ::mergeTextContent))
+    edited.copy(text = mergeList(edited, edited.text, rendered.text, emptySet(), ::mergeTextContent), parentId = edited.parentId ?: rendered.parentId)
 
 private fun mergeRows(edited: Edit.ParagraphContent.Table.Row, rendered: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row =
-    edited.copy(cells = mergeList(edited, edited.cells, rendered.cells, emptySet(), ::mergeCell))
+    edited.copy(cells = mergeList(edited, edited.cells, rendered.cells, emptySet(), ::mergeCell), parentId = edited.parentId ?: rendered.parentId)
 
 private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
-    edited.copy(content = mergeList(edited, edited.content, rendered.content, emptySet(), ::mergeTextContent))
+    edited.copy(content = mergeList(edited, edited.content, rendered.content, emptySet(), ::mergeTextContent), parentId = edited.parentId ?: rendered.parentId)
 
 private fun updateVariableValues(edited: Edit.Block, variableValues: Map<Int, String>): Edit.Block =
     when (edited) {
