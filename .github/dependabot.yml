@@ -54,6 +54,8 @@ updates:
       interval: "monthly"
       day: "sunday"
     open-pull-requests-limit: 10
+    registries:
+      - npm-github
     groups:
       dev:
         patterns:
