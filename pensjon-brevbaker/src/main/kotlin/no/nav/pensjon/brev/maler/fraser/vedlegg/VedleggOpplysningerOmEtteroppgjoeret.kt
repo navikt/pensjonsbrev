@@ -299,17 +299,16 @@ data class OmBeregningAvBarnetillegg(
             }
             text(
                 Bokmal to "Hvis personinntekten din overstiger et visst beløp (fribeløp), blir barnetillegget redusert eller faller helt bort. " +
-                        "Fikk du innvilget barnetillegg i løpet av året, eller barnetillegget opphørte i løpet av året" +
-                        ", er det bare inntekten for perioden med rett til barnetillegg som har betydning.",
+                        "Fikk du innvilget barnetillegg i løpet av året, eller barnetillegget opphørte i løpet av året, er inntekten kortet ned for kun å gjelde den perioden du mottar barnetillegg. " +
+                        "Dette regnes ut ved å dele årsinntekten på antall måneder med uføretrygd i etteroppgjørsåret og multiplisere med antall måneder du mottar barnetillegg.",
 
                 Nynorsk to "Dersom personinntekta di er over eit visst beløp (fribeløp), vil barnetillegget bli redusert eller falle bort heilt. " +
-                        "Viss barnetillegg blei innvilga eller avvikla i løpet av året, vil det berre vere inntekta for perioden med rett til " +
-                        "barnetillegg som har betydning.",
+                        "Fekk du innvilga barnetillegg i løpet av året, eller barnetillegget opphøyrde i løpet av året, er inntekta korta ned for berre å gjelde den perioden du mottar barnetillegg. " +
+                        "Dette vert rekna ut ved å dele årsinntekta på talet månader med uføretrygd i etteroppgjørsåret og så multiplisert med talet månader du mottar barnetillegg.",
 
-                English to "The limit for what you can earn before child supplement is reduced is called the free allowance. If your personal income " +
-                        "exceeds the free allowance, the child supplement will be reduced or cease completely. If you were granted child supplement, " +
-                        "or if the child supplement ceased during the year, only the income for the period you were eligible " +
-                        "for the child supplement matters."
+                English to "If your personal income exceeds a certain amount (threshold), the child supplement is reduced or completely discontinued. " +
+                        "If you were granted the child supplement during the year, or if the child supplement ceased during the year, the income is adjusted to apply only to the period when you receive the child supplement. " +
+                        "This calculation is done by dividing the annual income by the number of months with disability benefit in the post-settlement year and multiplying it by the number of months you receive the child supplement."
             )
         }
 
@@ -521,9 +520,9 @@ data class OmBeregningAvBarnetillegg(
             }
             paragraph {
                 text(
-                    Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra NAV, regnes dette også med som personinntekt.",
-                    Nynorsk to "Mottar den andre forelderen uføretrygd eller alderspensjon frå NAV, blir dette også rekna som personinntekt.",
-                    English to "If the other parent receives disability benefit or retirement pension from NAV, this will also count as personal income."
+                    Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra Nav, regnes dette også med som personinntekt.",
+                    Nynorsk to "Mottar den andre forelderen uføretrygd eller alderspensjon frå Nav, blir dette også rekna som personinntekt.",
+                    English to "If the other parent receives disability benefit or retirement pension from Nav, this will also count as personal income."
                 )
             }
 
@@ -617,6 +616,7 @@ data class OmBeregningAvBarnetillegg(
 }
 
 data class OmBeregningAvUfoeretrygd(
+    val barnetillegg: Expression<OpplysningerOmEtteroppgjoeretDto.Barnetillegg?>,
     val harGjenlevendeTillegg: Expression<Boolean>,
     val pensjonsgivendeInntekt: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk>,
     val periode: Expression<Year>,
@@ -626,11 +626,15 @@ data class OmBeregningAvUfoeretrygd(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             textExpr(
-                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg," og gjenlevendetillegg","")
+                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(
+                    harGjenlevendeTillegg,
+                    " og gjenlevendetillegg", "")
                         + " for ".expr() + periode.format(),
-                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg","")
+                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(
+                    harGjenlevendeTillegg,
+                    " og attlevandetillegg", "")
                         + " for ".expr() + periode.format(),
-                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg," and survivor's supplement","")
+                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "")
                         + " calculation for ".expr() + periode.format(),
             )
         }
@@ -730,9 +734,9 @@ data class OmBeregningAvUfoeretrygd(
                 }
                 item {
                     text(
-                        Bokmal to "erstatning for inntektstap (erstatningsoppgjør)",
-                        Nynorsk to "erstatning for inntektstap (erstatningsoppgjer)",
-                        English to "compensation for loss of income (compensation settlements)",
+                        Bokmal to "erstatningoppgjør for inntektstap",
+                        Nynorsk to "erstatningsoppgjer for inntektstap",
+                        English to "compensation settlement payments for loss of income",
                     )
                 }
                 item {
@@ -744,13 +748,33 @@ data class OmBeregningAvUfoeretrygd(
                 }
                 item {
                     text(
-                        Bokmal to "etterbetaling du har fått fra NAV",
-                        Nynorsk to "etterbetalingar du har fått frå NAV",
-                        English to "back payment you have received from NAV",
+                        Bokmal to "etterbetaling du har fått fra Nav",
+                        Nynorsk to "etterbetalingar du har fått frå Nav",
+                        English to "back payment you have received from Nav",
                     )
                 }
             }
         }
+
+        showIf(barnetillegg.felles_safe.notNull() and periode.greaterThanOrEqual(2023)) {
+            paragraph {
+                text(
+                    Bokmal to "Hva kan holdes utenfor personinntekten til den andre forelderen?",
+                    Nynorsk to "Kva kan haldast utanfor personinntekta til den andre forelderen?",
+                    English to "Income that can be excluded from the other parent's personal income?",
+                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav",
+                            Nynorsk to "erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav",
+                            English to "compensation settlement payments for loss of income if the other parent receives disability benefit or retirement pension from Nav",
+                        )
+                    }
+                }
+            }
+        }
+
         showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
             paragraph {
                 val erFlereTabellerPensjonsgivendeInntekt =
@@ -908,15 +932,15 @@ data class ErOpplysningeneOmInntektFeil(
         }
         paragraph {
             text(
-                Bokmal to "Hvis inntekten din fra pensjonsytelser utenom NAV blir endret, må du gi beskjed til oss når endringen er gjort. " +
+                Bokmal to "Hvis inntekten din fra pensjonsytelser utenom Nav blir endret, må du gi beskjed til oss når endringen er gjort. " +
                         "Vi gjør da et nytt etteroppgjør. Du kan gi beskjed ved å skrive til oss på ${Constants.SKRIV_TIL_OSS_URL} " +
                         "eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
 
-                Nynorsk to "Dersom inntekta di frå pensjonsytingar utanom NAV blir endra, må du gi beskjed til oss når endringa er gjort. " +
+                Nynorsk to "Dersom inntekta di frå pensjonsytingar utanom Nav blir endra, må du gi beskjed til oss når endringa er gjort. " +
                         "Vi utfører då eit nytt etteroppgjer. Du kan gi beskjed ved å skrive til oss på ${Constants.SKRIV_TIL_OSS_URL} " +
                         "eller ringje til oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
 
-                English to "If your income pensions outside of NAV changes, you must notify us once the changes have been made. " +
+                English to "If your income pensions outside of Nav changes, you must notify us once the changes have been made. " +
                         "We will then conduct a new settlement. You can notify us by writing to us at ${Constants.SKRIV_TIL_OSS_URL} " +
                         "or by calling us at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
             )
@@ -1016,9 +1040,9 @@ data class FratrekkTabell(
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.ETTERBETALING_FRA_NAV -> when (second) {
-                    Bokmal -> "Etterbetaling fra NAV"
-                    Nynorsk -> "Etterbetaling frå NAV"
-                    English -> "Back payment from NAV"
+                    Bokmal -> "Etterbetaling fra Nav"
+                    Nynorsk -> "Etterbetaling frå Nav"
+                    English -> "Back payment from Nav"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.INNTEKT_INNTIL_1G -> when (second) {
@@ -1057,9 +1081,9 @@ data class FratrekkTabell(
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.InntektType.ANDRE_PENSJONER_OG_YTELSER -> when (second) {
-                    Bokmal -> "Pensjon fra andre enn NAV"
-                    Nynorsk -> "Pensjonar frå andre enn NAV"
-                    English -> "Pensions from other than NAV"
+                    Bokmal -> "Pensjon fra andre enn Nav"
+                    Nynorsk -> "Pensjonar frå andre enn Nav"
+                    English -> "Pensions from other than Nav"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.InntektType.FORVENTET_PENSJON_FRA_UTLANDET -> when (second) {
@@ -1164,7 +1188,7 @@ data class InntektTabell(
                     English -> "Provided by you"
                 }
 
-                OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.NAV -> "NAV"
+                OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.NAV -> "Nav"
             }
 
         override fun stableHashCode(): Int = "LocalizedKilde".hashCode()
@@ -1202,9 +1226,9 @@ data class InntektTabell(
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.InntektType.ANDRE_PENSJONER_OG_YTELSER -> when (second) {
-                    Bokmal -> "Pensjon fra andre enn NAV"
-                    Nynorsk -> "Pensjonar frå andre enn NAV"
-                    English -> "Pensions from other than NAV"
+                    Bokmal -> "Pensjon fra andre enn Nav"
+                    Nynorsk -> "Pensjonar frå andre enn Nav"
+                    English -> "Pensions from other than Nav"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.InntektType.FORVENTET_PENSJON_FRA_UTLANDET -> when (second) {

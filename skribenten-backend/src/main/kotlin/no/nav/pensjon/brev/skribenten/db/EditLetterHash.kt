@@ -3,9 +3,7 @@ package no.nav.pensjon.brev.skribenten.db
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
-import org.jetbrains.exposed.dao.ColumnWithTransform
 import org.jetbrains.exposed.dao.Entity
-
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 import kotlin.reflect.KProperty
@@ -13,11 +11,11 @@ import kotlin.reflect.KProperty
 fun Column<Edit.Letter>.writeHashTo(hash: Column<ByteArray>) =
     WithEditLetterHash(this, hash)
 
-fun Table.hashColumn(name: String) =
+fun Table.hashColumn(name: String): Column<ByteArray> =
     binary(name, 32)
 
-fun Column<ByteArray>.editLetterHash(): ColumnWithTransform<ByteArray, EditLetterHash> =
-    ColumnWithTransform(this, { Hex.decodeHex(it.hex) }, { EditLetterHash(Hex.encodeHexString(it)) }, false)
+fun Column<ByteArray>.editLetterHash(): ValueClassWrapper<EditLetterHash, ByteArray> =
+    wrap({ EditLetterHash(Hex.encodeHexString(it)) }, { Hex.decodeHex(it.hex) })
 
 @JvmInline
 value class EditLetterHash(val hex: String)

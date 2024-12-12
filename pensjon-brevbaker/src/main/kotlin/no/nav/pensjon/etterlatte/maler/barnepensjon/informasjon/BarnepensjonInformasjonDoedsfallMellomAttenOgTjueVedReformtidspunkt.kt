@@ -12,19 +12,17 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
-import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTOSelectors.borIutland
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
 
 data class BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO(
-    override val innhold: List<Element>,
     val avdoedNavn: String,
     val borIutland: Boolean,
-) : BrevDTO
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : EtterlatteTemplate<BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO>, Hovedmal {
@@ -82,23 +80,13 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
                 paragraph {
-                    list {
-                        item {
-                            text(
-                                Bokmal to "Du kan få barnepensjon til du blir 20 år. Tidligere hovedregel var 18 år.",
-                                Nynorsk to "Du kan få barnepensjon til du fyller 20 år. Tidlegare var grensa normalt 18 år.",
-                                English to "Children’s pension can now be granted up to age 20. Previously, the benefit was granted up to age 18.",
-                            )
-                        }
-                        item {
-                            text(
-                                Bokmal to "Du må som hovedregel være medlem i folketrygden.",
-                                Nynorsk to "Du må som hovudregel vere medlem i folketrygda.",
-                                English to "Normally, you must be a member of the Norwegian National Insurance scheme.",
-                            )
-                        }
-                    }
+                    text(
+                        Bokmal to "Du kan få barnepensjon til du blir 20 år. Tidligere hovedregel var 18 år. I tillegg må du som hovedregel være medlem i folketrygden.",
+                        Nynorsk to "Du kan få barnepensjon til du fyller 20 år. Tidlegare var grensa normalt 18 år. I tillegg må du som hovudregel vere medlem i folketrygda.",
+                        English to "Children’s pension can now be granted up to age 20. Previously, the benefit was granted up to age 18. Normally, you must be a member of the Norwegian National Insurance scheme.",
+                    )
                 }
+
                 title2 {
                     text(
                         Bokmal to "Hvordan søker du?",
@@ -143,8 +131,8 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis avdøde tidligere har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
-                        Nynorsk to "Viss avdøde tidlegare har budd eller jobba i utlandet, kan dette verke inn på kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Dette betyr at du kan ha rettar også frå andre land. Vi kan hjelpe deg å sende søknad til land som Noreg har trygdeavtale med.",
+                        Bokmal to "Hvis avdøde tidligere har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får utbetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
+                        Nynorsk to "Viss avdøde tidlegare har budd eller jobba i utlandet, kan dette verke inn på kor mykje du får utbetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Dette betyr at du kan ha rettar også frå andre land. Vi kan hjelpe deg å sende søknad til land som Noreg har trygdeavtale med.",
                         English to "If the deceased previously lived or worked abroad, this could affect the amount you receive. Norway practices social security coordination with a number of countries through the EEA and other agreements. This means you may also have accumulated rights in other countries. We can help you prepare applications to countries Norway has social security agreements with.",
                     )
                 }

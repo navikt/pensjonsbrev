@@ -9,8 +9,7 @@ export const SakspartView = ({ sakspart }: { sakspart: Sakspart }) => (
       grid-template-columns: max-content 1fr min-content;
       gap: var(--a-spacing-1) var(--a-spacing-2);
       border-radius: 4px;
-      background: var(--a-gray-50);
-      padding: 0 var(--a-spacing-3);
+      opacity: 0.5;
     `}
   >
     <span>Saken gjelder:</span>
@@ -21,6 +20,5 @@ export const SakspartView = ({ sakspart }: { sakspart: Sakspart }) => (
     <span />
     <span>Saksnummer:</span>
     <span>{sakspart.saksnummer}</span>
-    <span>{sakspart.dokumentDato}</span>
   </div>
 );

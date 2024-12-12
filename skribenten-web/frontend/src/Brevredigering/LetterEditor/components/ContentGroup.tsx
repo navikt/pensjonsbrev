@@ -1,8 +1,10 @@
+import { css } from "@emotion/react";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import type { LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
+import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -15,10 +17,11 @@ import {
   focusAtOffset,
   getCaretRect,
   getCursorOffset,
+  getCursorOffsetOrRange,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import { ElementTags, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -111,6 +114,9 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
+  //hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
+  const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
+
   const text = (content.editedText ?? content.text) || "​";
   useEffect(() => {
     if (contentEditableReference.current !== null && contentEditableReference.current.textContent !== text) {
@@ -157,40 +163,90 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  /**
+   * Vi har 2 forventinger når vi taster venste-pil:
+   * 1. Hvis vi er i et fritekst-felt, og den er markert:
+   *  - Skal første tast fjerne markeringen og sette markøren til starten av teksten
+   *  - Skal andre tast flytte markøren til neste posisjon
+   * 2. Hvis vi er i en vanlig literal (eller en redigert fritekst-felt):
+   *  - skal tast alltid flytte posisjon
+   */
   const handleArrowLeft = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     if (contentEditableReference.current === null) return;
 
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
-    const cursorIsAtBeginning = getCursorOffset() === 0;
-    if (!cursorIsAtBeginning) return;
 
-    const previousSpanIndex = thisSpanIndex - 1;
-    if (previousSpanIndex === -1) return;
+    const cursorOffsetOrRange = getCursorOffsetOrRange();
+    if (cursorOffsetOrRange === undefined) return;
 
-    event.preventDefault();
-    const nextFocus = allSpans[previousSpanIndex];
-    nextFocus.focus();
-    focusAtOffset(nextFocus.childNodes[0], nextFocus.textContent?.length ?? 0);
+    const isCursorOffset = typeof cursorOffsetOrRange === "number";
+    const isRange = !isCursorOffset;
+
+    if (isRange && erFritekst) {
+      const nextFocus = allSpans[thisSpanIndex];
+      focusAtOffset(nextFocus.childNodes[0], cursorOffsetOrRange.startOffset);
+    } else {
+      const cursorIsAtBeginning = isCursorOffset ? cursorOffsetOrRange === 0 : cursorOffsetOrRange.startOffset === 0;
+
+      if (!cursorIsAtBeginning) return;
+
+      const previousSpanIndex = thisSpanIndex - 1;
+      if (previousSpanIndex < 0) return;
+
+      const isPreviousSpanInSameBlock =
+        allSpans[previousSpanIndex].parentElement === contentEditableReference.current.parentElement;
+
+      event.preventDefault();
+      const nextFocus = allSpans[previousSpanIndex];
+
+      focusAtOffset(
+        nextFocus.childNodes[0],
+        isPreviousSpanInSameBlock ? (nextFocus.textContent?.length ?? 0) - 1 : (nextFocus.textContent?.length ?? 0),
+      );
+    }
   };
 
+  /**
+   * Vi har 2 forventinger når vi taster høyre-pil:
+   * 1. Hvis vi er i et fritekst-felt, og den er markert:
+   *  - Skal første tast fjerne markeringen og sette markøren til slutten av teksten
+   *  - Skal andre tast flytte markøren til neste posisjon
+   * 2. Hvis vi er i en vanlig literal (eller en redigert fritekst-felt):
+   *  - skal tast alltid flytte posisjon
+   */
   const handleArrowRight = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     if (contentEditableReference.current === null) return;
 
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
-    const cursorIsAtEnd = getCursorOffset() >= text.length;
-    if (!cursorIsAtEnd) return;
+    const cursorOffsetOrRange = getCursorOffsetOrRange();
+    if (cursorOffsetOrRange === undefined) return;
 
-    const nextSpanIndex = thisSpanIndex + 1;
+    const isCursorOffset = typeof cursorOffsetOrRange === "number";
+    const isRange = !isCursorOffset;
 
-    if (nextSpanIndex > allSpans.length - 1) return;
+    if (isRange && erFritekst) {
+      const nextFocus = allSpans[thisSpanIndex];
+      focusAtOffset(nextFocus.childNodes[0], cursorOffsetOrRange.endOffset);
+    } else {
+      const cursorIsAtEnd = isCursorOffset
+        ? cursorOffsetOrRange >= text.length
+        : cursorOffsetOrRange.endOffset >= text.length;
 
-    event.preventDefault();
-    const nextFocus = allSpans[nextSpanIndex];
-    nextFocus.focus();
-    focusAtOffset(nextFocus.childNodes[0], 0);
+      if (!cursorIsAtEnd) return;
+
+      const nextSpanIndex = thisSpanIndex + 1;
+      if (nextSpanIndex > allSpans.length - 1) return;
+
+      const isNextSpanInSameBlock =
+        allSpans[nextSpanIndex].parentElement === contentEditableReference.current.parentElement;
+
+      event.preventDefault();
+      const nextFocus = allSpans[nextSpanIndex];
+      focusAtOffset(nextFocus.childNodes[0], isNextSpanInSameBlock ? 1 : 0);
+    }
   };
 
   const handleArrowUp = (event: React.KeyboardEvent<HTMLSpanElement>) => {
@@ -232,18 +288,60 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    // TODO: for debugging frem til vi er ferdig å teste liming
+    logPastedClipboard(event.clipboardData);
+
+    const offset = getCursorOffset();
+    if (offset >= 0) {
+      applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
+    }
+  };
+
+  const handleOnclick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!erFritekst) return;
+    handleWordSelect(e.target as HTMLSpanElement);
+  };
+
+  const handleOnFocus = (e: React.FocusEvent) => {
+    e.preventDefault();
+    setEditorState((oldState) => ({
+      ...oldState,
+      focus: literalIndex,
+    }));
+    if (!erFritekst) return;
+    handleWordSelect(e.target as HTMLSpanElement);
+  };
+
+  const handleWordSelect = (element: HTMLSpanElement) => {
+    const selection = globalThis.getSelection();
+    const range = document.createRange();
+
+    if (selection) {
+      selection.removeAllRanges();
+      range.selectNodeContents(element.childNodes[0]);
+      selection.addRange(range);
+    }
+  };
+
   return (
     <span
       // NOTE: ideally this would be "plaintext-only", and it works in practice.
       // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
       // This is not documented anywhere I could find and caused a day of frustration, beware
-      contentEditable={!freeze}
-      onFocus={() => {
-        setEditorState((oldState) => ({
-          ...oldState,
-          focus: literalIndex,
-        }));
-      }}
+      contentEditable
+      css={
+        erFritekst &&
+        css`
+          color: var(--a-blue-500);
+          text-decoration: underline;
+          cursor: pointer;
+        `
+      }
+      onClick={handleOnclick}
+      onFocus={handleOnFocus}
       onInput={(event) => {
         applyAction(
           Actions.updateContentText,
@@ -275,7 +373,9 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           handleArrowUp(event);
         }
       }}
+      onPaste={handlePaste}
       ref={contentEditableReference}
+      tabIndex={erFritekst ? 0 : -1}
     />
   );
 }

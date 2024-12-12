@@ -20,9 +20,9 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.bosattUtland
@@ -53,20 +53,21 @@ import java.time.LocalDate
 
 data class BarnepensjonRevurderingDTO(
     override val innhold: List<Element>,
-    val innholdForhaandsvarsel: List<Element>,
-    val erEndret: Boolean,
-    val erOmgjoering: Boolean,
-    val datoVedtakOmgjoering: LocalDate?,
     val beregning: BarnepensjonBeregning,
-    val etterbetaling: BarnepensjonEtterbetaling?,
-    val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
-    val kunNyttRegelverk: Boolean,
+    val brukerUnder18Aar: Boolean,
+    val datoVedtakOmgjoering: LocalDate?,
+    val erEndret: Boolean,
+    val erMigrertYrkesskade: Boolean,
+    val erOmgjoering: Boolean,
+    val etterbetaling: BarnepensjonEtterbetaling?,
+    val feilutbetaling: FeilutbetalingType,
+    val frivilligSkattetrekk: Boolean,
     val harFlereUtbetalingsperioder: Boolean,
     val harUtbetaling: Boolean,
-    val feilutbetaling: FeilutbetalingType,
-    val erMigrertYrkesskade: Boolean,
-) : BrevDTO
+    val innholdForhaandsvarsel: List<Element>,
+    val kunNyttRegelverk: Boolean,
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>, Hovedmal {
@@ -131,9 +132,6 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, brukerUnder18Aar))
-            }
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)

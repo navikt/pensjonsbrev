@@ -17,8 +17,8 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
@@ -40,7 +40,7 @@ data class KlageOversendelseBrukerDTO(
     val under18Aar: Boolean,
     val harVerge: Boolean,
     val bosattIUtlandet: Boolean
-): BrevDTO {
+): FerdigstillingBrevDTO {
     override val innhold: List<Element> = emptyList()
     val innstillingTekstLinjer = innstillingTekst.lines()
 }
@@ -54,7 +54,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
         letterDataType = KlageOversendelseBrukerDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vi har sendt klagen din tiil NAV Klageinstans Vest",
+            displayTitle = "Vi har sendt klagen din tiil Nav klageinstans vest",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
@@ -62,7 +62,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har sendt klagen din til NAV Klageinstans Vest",
+                Language.Bokmal to "Vi har sendt klagen din til Nav klageinstans vest",
                 Language.Nynorsk to "",
                 Language.English to "",
             )
@@ -71,7 +71,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
         outline {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Vi har ".expr() + klageDato.format() + " fått klagen din på vedtaket om " + sakType.format() + " som ble gjort " + vedtakDato.format() + ", og har kommet frem til at vi ikke endrer vedtaket. NAV Klageinstans skal vurdere saken din på nytt.",
+                    Language.Bokmal to "Vi har ".expr() + klageDato.format() + " fått klagen din på vedtaket om " + sakType.format() + " som ble gjort " + vedtakDato.format() + ", og har kommet frem til at vi ikke endrer vedtaket. Nav klageinstans skal vurdere saken din på nytt.",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
                 )
@@ -87,7 +87,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
 
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Saksbehandlingstiden til NAV Klageinstans finner du på ".expr() + ifElse(sakType.equalTo(
+                    Language.Bokmal to "Saksbehandlingstiden til Nav klageinstans finner du på ".expr() + ifElse(sakType.equalTo(
                         SakType.BARNEPENSJON), Constants.SAKSBEHANDLINGSTIDER_BP.expr(), Constants.SAKSBEHANDLINGSTIDER_OMS.expr()) + ".",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
@@ -96,7 +96,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
 
             title1 {
                 text(
-                    Language.Bokmal to "Dette er vurderingen vi har sendt til NAV Klageinstans",
+                    Language.Bokmal to "Dette er vurderingen vi har sendt til Nav klageinstans",
                     Language.Nynorsk to "",
                     Language.English to "",
                 )
@@ -136,7 +136,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
             }
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Du kan også kontakte NAV Klageinstans på ".expr() + sakUrl(sakType) + " eller telefon " + ifElse(
+                    Language.Bokmal to "Du kan også kontakte Nav klageinstans på ".expr() + sakUrl(sakType) + " eller telefon " + ifElse(
                         bosattIUtlandet,
                         Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE,
                         Constants.KONTAKTTELEFON_PENSJON

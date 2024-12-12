@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import java.time.LocalDate
 import java.time.LocalDateTime
+import no.nav.pensjon.brev.api.model.Sakstype as BrevbakerSakstype
 
 object Pen {
     enum class SakType(val behandlingsnummer: Behandlingsnummer?) {
@@ -24,6 +25,21 @@ object Pen {
         KRIGSP(null),
         OMSORG(null),
         UFOREP(B255);
+
+        fun toBrevbaker(): BrevbakerSakstype = when(this) {
+            AFP -> BrevbakerSakstype.AFP
+            AFP_PRIVAT -> BrevbakerSakstype.AFP_PRIVAT
+            ALDER -> BrevbakerSakstype.ALDER
+            BARNEP -> BrevbakerSakstype.BARNEP
+            FAM_PL -> BrevbakerSakstype.FAM_PL
+            GAM_YRK -> BrevbakerSakstype.GAM_YRK
+            GENRL -> BrevbakerSakstype.GENRL
+            GJENLEV -> BrevbakerSakstype.GJENLEV
+            GRBL -> BrevbakerSakstype.GRBL
+            KRIGSP -> BrevbakerSakstype.KRIGSP
+            OMSORG -> BrevbakerSakstype.OMSORG
+            UFOREP -> BrevbakerSakstype.UFOREP
+        }
     }
 
     data class SakSelection(
@@ -95,13 +111,14 @@ object Pen {
     )
 
     data class SendRedigerbartBrevRequest(
-        val templateDescription: TemplateDescription,
+        val templateDescription: TemplateDescription.Redigerbar,
         val dokumentDato: LocalDate,
         val saksId: Long,
-        val brevkode: Brevkode.Redigerbar,
+        val brevkode: Brevkode.Redigerbart,
         val enhetId: String?,
         val pdf: ByteArray,
         val eksternReferanseId: String,
+        val mottaker: Mottaker?
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -116,6 +133,7 @@ object Pen {
             if (enhetId != other.enhetId) return false
             if (!pdf.contentEquals(other.pdf)) return false
             if (eksternReferanseId != other.eksternReferanseId) return false
+            if (mottaker != other.mottaker) return false
 
             return true
         }
@@ -128,7 +146,15 @@ object Pen {
             result = 31 * result + enhetId.hashCode()
             result = 31 * result + pdf.contentHashCode()
             result = 31 * result + eksternReferanseId.hashCode()
+            result = 31 * result + mottaker.hashCode()
             return result
+        }
+
+        data class Mottaker(val type: Type, val tssId: String? = null, val norskAdresse: NorskAdresse? = null, val utenlandskAdresse: UtenlandsAdresse? = null) {
+            enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
+            data class NorskAdresse(val navn: String, val postnummer: String, val poststed: String, val adresselinje1: String?, val adresselinje2: String?, val adresselinje3: String?)
+            // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
+            data class UtenlandsAdresse(val navn: String, val landkode: String, val postnummer: String?, val poststed: String?, val adresselinje1: String, val adresselinje2: String?, val adresselinje3: String?)
         }
     }
 

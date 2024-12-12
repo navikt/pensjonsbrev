@@ -24,6 +24,9 @@ inboundRules:
   - application: skribenten-web
     namespace: pensjonsbrev
     cluster: dev-gcp
+  - application: azure-token-generator
+    namespace: aura
+    cluster: dev-gcp
 
 outboundRules:
   - application: pensjon-brevbaker
@@ -43,6 +46,9 @@ externalHosts:
   - pensjon-persondata-q2.dev-fss-pub.nais.io
   - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
   - navansatt.dev-fss-pub.nais.io
+  - pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io
+  - teampensjon-unleash-api.nav.cloud.nais.io
+  - norg2.intern.dev.nav.no
 
 env:
   - name: CORS_ALLOW_HOST
@@ -70,6 +76,8 @@ env:
     value: "https://saf-q2.dev-fss-pub.nais.io/graphql"
   - name: SAF_SCOPE
     value: "api://dev-fss.teamdokumenthandtering.saf/.default"
+  - name: SAF_REST_URL
+    value: "https://saf-q2.dev-fss-pub.nais.io/rest"
 
   - name: KRR_URL
     value: "http://digdir-krr-proxy.team-rocket"
@@ -91,5 +99,10 @@ env:
   - name: NAVANSATT_SCOPE
     value: "api://dev-fss.teampensjon.navansatt/.default"
 
-  - name: FEATURE_brevbakerbrev
-    value: "true"
+  - name: SAMHANDLER_PROXY_URL
+    value: "https://pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io"
+  - name: SAMHANDLER_PROXY_SCOPE
+    value: "api://dev-fss.pensjon-q2.pensjon-samhandler-proxy-q2/.default"
+
+  - name: NORG2_URL
+    value: "https://norg2.intern.dev.nav.no/norg2/"

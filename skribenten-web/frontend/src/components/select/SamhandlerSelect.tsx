@@ -1,34 +1,10 @@
-import { Controller, type FieldError, useFormContext } from "react-hook-form";
+import { css } from "@emotion/react";
+import { UNSAFE_Combobox } from "@navikt/ds-react";
+import { type FieldError } from "react-hook-form";
 
-import { BasicSelect, SelectLayoutWrapper } from "~/components/select/CustomSelectComponents";
 import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 
-export function SamhandlerTypeSelectFormPart({
-  name = "samhandlerType",
-  description,
-}: {
-  name?: string;
-  description?: string;
-}) {
-  const { control } = useFormContext();
-
-  return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <SamhandlerTypeSelect
-          description={description}
-          error={fieldState.error}
-          onChange={field.onChange}
-          value={field.value}
-        />
-      )}
-    />
-  );
-}
-
-export function SamhandlerTypeSelect({
+export const SamhandlerTypeSelect = ({
   description,
   onChange,
   error,
@@ -38,19 +14,25 @@ export function SamhandlerTypeSelect({
   description?: string;
   error?: FieldError;
   value: string;
-}) {
+}) => {
   const options = Object.entries(SAMHANDLER_ENUM_TO_TEXT).map(([value, label]) => ({ label, value }));
 
-  const currentOption = options.find((option) => option.value === value);
-
   return (
-    <SelectLayoutWrapper description={description} error={error} htmlFor="samhandlerType" label="Samhandlertype">
-      <BasicSelect
-        inputId="samhandlerType"
-        onChange={(option) => onChange(option?.value)}
-        options={options}
-        value={currentOption ?? null}
-      />
-    </SelectLayoutWrapper>
+    <UNSAFE_Combobox
+      //begrenser høyden så en ikke faller utenfor modalen og forårsaker scrolling
+      css={css`
+        .navds-combobox__list {
+          max-height: 200px;
+        }
+      `}
+      description={description}
+      error={error?.message}
+      label="Samhandlertype"
+      onToggleSelected={(option) => onChange(option)}
+      options={options}
+      selectedOptions={options.filter((option) => option.value === value) ?? undefined}
+      shouldAutocomplete
+      size="small"
+    />
   );
-}
+};

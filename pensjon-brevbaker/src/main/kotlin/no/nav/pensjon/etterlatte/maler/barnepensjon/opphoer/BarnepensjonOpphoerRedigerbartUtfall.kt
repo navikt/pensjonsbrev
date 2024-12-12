@@ -11,6 +11,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
@@ -18,7 +19,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 data class BarnepensjonOpphoerRedigerbartUtfallDTO(
     val feilutbetaling: FeilutbetalingType
-)
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<BarnepensjonOpphoerRedigerbartUtfallDTO>, Delmal {
@@ -45,8 +46,8 @@ object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<BarnepensjonOpp
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(BarnepensjonFellesFraser.FyllInn)
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
+            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_4RG_UTEN_VARSEL)) {
+                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUnder4RGUtenVarselOpphoer)
             }
         }
     }

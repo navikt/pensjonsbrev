@@ -7,13 +7,13 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
 /**
  * Update a letter edited in Skribenten (originally rendered by brevbaker) with a fresh
  * rendering from brevbaker. In the new rendering from brevbaker we may receive elements (blocks/content)
- * that wasn't present in previous renders, e.g. if Saksbehandler has modified the template options or
+ * that wasn't present in previous renders, e.g. if Saksbehandler has modified the template options (saksbehandlerValg) or
  * if Sak-data has changed in pesys. Or elements (blocks/content) present in previous renders may no longer be
  * present.
  */
 fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
     renderedLetter.toEdit().let { renderedAsEdit ->
-        val variableValues = VariableValuesVisitor(renderedAsEdit).build()
+        val variableValues = renderedAsEdit.variablesValueMap()
         copy(
             title = renderedLetter.title,
             sakspart = renderedLetter.sakspart,
@@ -49,7 +49,7 @@ private fun <E : Edit.Identifiable> mergeList(
     rendered: List<E>,
     deleted: Set<Int>,
     merge: (E, E) -> E,
-    updateVariables: ((E) -> E)? = null
+    updateVariables: ((E) -> E)? = null,
 ): List<E> = buildList {
     // A queue of unprocessed rendered elements
     val remainingRendered = rendered.filter { it.id != null && !deleted.contains(it.id) }.toMutableList()
@@ -104,7 +104,7 @@ private fun mergeListText(edited: List<Edit.ParagraphContent.Text>, rendered: Ed
 private fun mergeTextContent(edited: Edit.ParagraphContent.Text, rendered: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text =
     when (edited) {
         is Edit.ParagraphContent.Text.Literal -> when (rendered) {
-            is Edit.ParagraphContent.Text.Literal -> rendered.copy(editedText = edited.editedText)
+            is Edit.ParagraphContent.Text.Literal -> rendered.copy(editedText = edited.editedText, editedFontType = edited.editedFontType)
             is Edit.ParagraphContent.Text.Variable -> throw UpdateEditedLetterException("Edited literal and rendered variable has same ID, cannot merge: $edited - $rendered")
         }
 
@@ -127,8 +127,28 @@ private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.
                 throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
             }
 
-        is Edit.ParagraphContent.Table -> TODO("Tables are not yet supported by Skribenten")
+        is Edit.ParagraphContent.Table ->
+            if (rendered is Edit.ParagraphContent.Table) {
+                edited.copy(
+                    header = mergeTableHeader(edited.header, rendered.header),
+                    rows = mergeList(edited.rows, rendered.rows, rendered.deletedRows, ::mergeRows)
+                )
+            } else {
+                throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
+            }
     }
+
+private fun mergeTableHeader(edited: Edit.ParagraphContent.Table.Header, rendered: Edit.ParagraphContent.Table.Header): Edit.ParagraphContent.Table.Header =
+    edited.copy(colSpec = mergeList(edited.colSpec, rendered.colSpec, emptySet(), ::mergeColumnSpec))
+
+private fun mergeColumnSpec(edited: Edit.ParagraphContent.Table.ColumnSpec, rendered: Edit.ParagraphContent.Table.ColumnSpec): Edit.ParagraphContent.Table.ColumnSpec =
+    edited.copy(headerContent = mergeCell(edited.headerContent, rendered.headerContent))
+
+private fun mergeCell(edited: Edit.ParagraphContent.Table.Cell, rendered: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
+    edited.copy(text = mergeList(edited.text, rendered.text, emptySet(), ::mergeTextContent))
+
+private fun mergeRows(edited: Edit.ParagraphContent.Table.Row, rendered: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row =
+    edited.copy(cells = mergeList(edited.cells, rendered.cells, emptySet(), ::mergeCell))
 
 private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
     edited.copy(content = mergeList(edited.content, rendered.content, emptySet(), ::mergeTextContent))
@@ -152,7 +172,7 @@ private fun updateVariableValues(content: Edit.ParagraphContent.Text, variableVa
         is Edit.ParagraphContent.Text.Literal -> content
         is Edit.ParagraphContent.Text.Variable -> variableValues[content.id]
             ?.let { content.copy(text = it) }
-            ?: Edit.ParagraphContent.Text.Literal(content.id, content.text)
+            ?: Edit.ParagraphContent.Text.Literal(content.id, content.text, content.fontType)
     }
 
 private fun updateVariableValues(itemList: Edit.ParagraphContent.ItemList, variableValues: Map<Int, String>): Edit.ParagraphContent.ItemList =

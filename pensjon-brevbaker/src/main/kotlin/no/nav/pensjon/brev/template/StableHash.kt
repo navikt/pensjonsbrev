@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import java.time.LocalDate
+
 /**
  * Classes implementing StableHash guarantee that they provide a hashCode
  * through stableHashCode that only changes when the contained data changes.
@@ -46,6 +48,7 @@ interface StableHash {
         fun of(enum: Enum<*>): StableHash = EnumStableHash(enum)
         fun of(number: Number): StableHash = HashCodeStableHash(number)
         fun of(boolean: Boolean): StableHash = HashCodeStableHash(boolean)
+        fun of(localDate: LocalDate): StableHash = HashCodeStableHash(localDate)
         fun of(string: String): StableHash = HashCodeStableHash(string)
     }
 

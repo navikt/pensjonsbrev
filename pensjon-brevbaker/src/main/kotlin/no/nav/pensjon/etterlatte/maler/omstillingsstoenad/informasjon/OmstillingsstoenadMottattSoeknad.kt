@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.borINorgeEllerIkkeAvtaleland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.mottattDato
@@ -22,7 +23,7 @@ import java.time.LocalDate
 data class OmstillingsstoenadMottattSoeknadDTO(
     val mottattDato: LocalDate,
     val borINorgeEllerIkkeAvtaleland: Boolean,
-)
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadMottattSoeknadDTO> {
@@ -42,14 +43,20 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
                 ),
         ) {
             title {
-                textExpr(
-                    Bokmal to "Vi har mottatt søknaden din om omstillingsstønad ".expr() + mottattDato.format(),
-                    Nynorsk to "Vi har fått søknaden din om omstillingsstønad ".expr() + mottattDato.format(),
-                    English to "We received your application for adjustment allowance on ".expr() + mottattDato.format(),
+                text(
+                    Bokmal to "Vi har mottatt søknaden din om omstillingsstønad",
+                    Nynorsk to "Vi har fått søknaden din om omstillingsstønad",
+                    English to "We received your application for adjustment allowance",
                 )
             }
-
             outline {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi viser til søknaden din som vi mottok ".expr() + mottattDato.format() + ".",
+                        Nynorsk to "Vi viser til søknaden din som vi tok imot ".expr() + mottattDato.format() + ".",
+                        English to "We refer to your application that we received ".expr() + mottattDato.format() + ".",
+                    )
+                }
                 showIf(borINorgeEllerIkkeAvtaleland) {
                     title2 {
                         text(
@@ -69,7 +76,7 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
                                     "Dersom saka di ikkje har blitt ferdigbehandla innan denne tida, vil du få nærmare beskjed. " +
                                     "Du finn saksbehandlingstida vår på nav.no/saksbehandlingstider#omstillingsstonad.",
                             English to
-                                    "NAV will process your application as soon as possible, and within <fritekst: antall uker/måneder> " +
+                                    "Nav will process your application as soon as possible, and within <fritekst: antall uker/måneder> " +
                                     "at the latest. If your application is not processed within this time frame, " +
                                     "you will hear from us again. Read more about processing times at nav.no/saksbehandlingstider#omstillingsstonad.",
                         )
@@ -86,16 +93,16 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
                         text(
                             Bokmal to
                                     "Du må kontakte trygdemyndigheten i landet du bor i for å søke om omstillingsstønad. " +
-                                    "Dette landets trygdemyndigheter vil sende søknaden videre til NAV. " +
+                                    "Dette landets trygdemyndigheter vil sende søknaden videre til Nav. " +
                                     "Mottatt søknad er derfor avbrutt og vil ikke bli behandlet.",
                             Nynorsk to
                                     "Du må kontakte trygdemaktene i landet du bur i for å søkje om omstillingsstønad. " +
-                                    "Trygdemaktene i landet du bur i vil sende søknaden til NAV. " +
+                                    "Trygdemaktene i landet du bur i vil sende søknaden til Nav. " +
                                     "Motteken søknad er avbrutt og vil ikkje bli behandla.",
                             English to
                                     "You must contact the national insurance authority in the country where you live to apply " +
                                     "for an adjustment allowance. This country’s national insurance authority will then " +
-                                    "forward your application to NAV. The application we received has therefore been terminated and will not be processed.",
+                                    "forward your application to Nav. The application we received has therefore been terminated and will not be processed.",
                         )
                     }
                 }

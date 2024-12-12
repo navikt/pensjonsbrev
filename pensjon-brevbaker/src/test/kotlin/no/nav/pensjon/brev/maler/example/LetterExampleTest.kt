@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.*
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
 
@@ -11,7 +12,7 @@ class LetterExampleTest {
     fun test() {
         Letter(
             LetterExample.template,
-            Fixtures.create<LetterExampleDto>(),
+            createLetterExampleDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("EKSEMPELBREV_BOKMAL")
@@ -21,7 +22,7 @@ class LetterExampleTest {
     fun `test design reference letter`() {
         Letter(
             DesignReferenceLetter.template,
-            Fixtures.create<LetterExampleDto>(),
+            createLetterExampleDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("DESIGN_REFERENCE_LETTER_BOKMAL")

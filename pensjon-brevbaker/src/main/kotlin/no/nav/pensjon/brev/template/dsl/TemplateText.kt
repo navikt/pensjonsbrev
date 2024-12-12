@@ -91,4 +91,3 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 ) {
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
 }
-

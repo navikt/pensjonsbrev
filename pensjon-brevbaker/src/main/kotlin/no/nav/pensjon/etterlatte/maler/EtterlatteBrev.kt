@@ -5,7 +5,6 @@ import java.time.LocalDate
 
 data class BarnepensjonEtterbetaling(
     val inneholderKrav: Boolean?,
-    val frivilligSkattetrekk: Boolean?,
     val etterbetalingPeriodeValg: EtterbetalingPeriodeValg?,
 )
 
@@ -17,7 +16,7 @@ enum class EtterbetalingPeriodeValg {
 data class OmstillingsstoenadEtterbetaling(
     val fraDato: LocalDate,
     val tilDato: LocalDate,
-    val etterbetalingsperioder: List<OmstillingsstoenadBeregningsperiode> = listOf()
+    val etterbetalingsperioder: List<OmstillingsstoenadBeregningsperiode> = listOf(),
 )
 
 data class BarnepensjonBeregning(
@@ -30,7 +29,10 @@ data class BarnepensjonBeregning(
     val bruktTrygdetid: Trygdetid, // Fra og med siste åpne periode
     val trygdetid: List<Trygdetid>,
     val erForeldreloes: Boolean = false,
-) : BrevDTO
+    val forskjelligTrygdetid: ForskjelligTrygdetid? = null,
+) : BrevDTO {
+    val harForskjelligMetode = forskjelligTrygdetid?.harForskjelligMetode == true
+}
 
 data class BarnepensjonBeregningsperiode(
     val datoFOM: LocalDate,
@@ -45,26 +47,39 @@ data class OmstillingsstoenadBeregning(
     val virkningsdato: LocalDate,
     val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,
     val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
+    val sisteBeregningsperiodeNesteAar: OmstillingsstoenadBeregningsperiode?,
     val trygdetid: Trygdetid,
+    val oppphoersdato: LocalDate? = null,
+    val opphoerNesteAar: Boolean,
 ) : BrevDTO
+
+data class OmstillingsstoenadBeregningRevurderingRedigertbartUtfall(
+    val virkningsdato: LocalDate,
+    val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,
+    val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
+    val sisteBeregningsperiodeNesteAar: OmstillingsstoenadBeregningsperiode?,
+    val oppphoersdato: LocalDate? = null,
+    val opphoerNesteAar: Boolean,
+)
 
 data class OmstillingsstoenadBeregningsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
     val inntekt: Kroner,
-    val aarsinntekt: Kroner,
+    val oppgittInntekt: Kroner,
     val fratrekkInnAar: Kroner,
-    val relevantMaanederInnAar: Int,
+    val innvilgaMaaneder: Int,
     val grunnbeloep: Kroner,
     val ytelseFoerAvkorting: Kroner,
     val restanse: Kroner,
     val utbetaltBeloep: Kroner,
     val trygdetid: Int,
     val sanksjon: Boolean,
+    val institusjon: Boolean = false,
 )
 
 data class Trygdetid(
-    val navnAvdoed: String,
+    val navnAvdoed: String?,
     val trygdetidsperioder: List<Trygdetidsperiode>,
     val beregnetTrygdetidAar: Int,
     val prorataBroek: IntBroek?,
@@ -76,7 +91,7 @@ data class Trygdetid(
 enum class BeregningsMetode {
     NASJONAL,
     PRORATA,
-    BEST
+    BEST,
 }
 
 data class Trygdetidsperiode(
@@ -89,7 +104,7 @@ data class Trygdetidsperiode(
 
 enum class TrygdetidType {
     FREMTIDIG,
-    FAKTISK
+    FAKTISK,
 }
 
 data class Periode(
@@ -105,8 +120,28 @@ data class Avdoed(
 
 enum class FeilutbetalingType {
     FEILUTBETALING_UTEN_VARSEL,
+    FEILUTBETALING_4RG_UTEN_VARSEL,
     FEILUTBETALING_MED_VARSEL,
-    INGEN_FEILUTBETALING
+    INGEN_FEILUTBETALING,
 }
 
-data class IntBroek(val teller: Int, val nevner: Int)
+data class IntBroek(
+    val teller: Int,
+    val nevner: Int,
+)
+
+data class ForskjelligTrygdetid(
+    val foersteTrygdetid: Trygdetid,
+    val foersteVirkningsdato: LocalDate,
+    val senereVirkningsdato: LocalDate,
+    val harForskjelligMetode: Boolean,
+    val erForskjellig: Boolean,
+) {
+    val tilOgIkkeMedSenereVirkningsdato: LocalDate = senereVirkningsdato.minusDays(1)
+}
+
+data class ForskjelligAvdoedPeriode(
+    val foersteAvdoed: Avdoed?,
+    val senereAvdoed: Avdoed?,
+    val senereVirkningsdato: LocalDate,
+)

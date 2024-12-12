@@ -29,6 +29,14 @@ spec:
     enabled: true
     path: "/metrics"
     port: "8080"
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
   resources:
     requests:
       cpu: "200m"
@@ -36,6 +44,7 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_14
+        tier: db-custom-1-3840
         databases:
           - envVarPrefix: DB
             name: skribentendb
@@ -80,3 +89,5 @@ spec:
       - name: AD_GROUP_{{g.name}}
         value: {{g.id}}
     {{/each}}
+  envFrom:
+    - secret: "{{ app-name }}-unleash-api-token"

@@ -2,6 +2,8 @@ import { randomInt } from "node:crypto";
 
 import type { ItemContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { SpraakKode } from "~/types/apiTypes";
+import { Distribusjonstype } from "~/types/brev";
 import type {
   AnyBlock,
   Content,
@@ -23,15 +25,21 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
     isDirty: false,
     info: {
       id: 1,
-      opprettetAv: "Z993104",
+      opprettetAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
       opprettet: "2024-07-24T09:23:21.381Z",
-      sistredigertAv: "Z993104",
+      sistredigertAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
       sistredigert: "2024-07-26T14:15:57.173Z",
       brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+      brevtittel: "Informasjon om saksbehandlingstid",
       status: {
         type: "UnderRedigering",
-        redigeresAv: "Z993104",
+        redigeresAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
       },
+      distribusjonstype: Distribusjonstype.SENTRALPRINT,
+      mottaker: null,
+      avsenderEnhet: null,
+      spraak: SpraakKode.Bokmaal,
+      journalpostId: null,
     },
     redigertBrev: {
       title: "tittel",
@@ -92,6 +100,7 @@ export function literal(text: string, editedText: string | null = null): Literal
     type: LITERAL,
     text,
     editedText,
+    tags: [],
   };
 }
 
@@ -126,14 +135,14 @@ export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex>
   if (id.contentIndex == null) {
     return block as T;
   } else {
-    const content = block.content[id.contentIndex];
+    const content = block?.content?.[id.contentIndex];
 
     if (id.itemIndex == null) {
       return content as T;
     } else {
-      const item = (content as ItemList).items[id.itemIndex];
+      const item = (content as ItemList)?.items?.[id.itemIndex];
 
-      return id.itemContentIndex == null ? (item as T) : (item.content[id.itemContentIndex] as T);
+      return id.itemContentIndex == null ? (item as T) : (item?.content?.[id.itemContentIndex] as T);
     }
   }
 }

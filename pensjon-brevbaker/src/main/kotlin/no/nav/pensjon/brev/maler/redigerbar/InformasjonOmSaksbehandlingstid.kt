@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
@@ -25,8 +26,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbehandlingstidDto> {
+
+    // AP_INFO_STID_MAN (MF 000130)
     override val kode = Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID
     override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
+    override val brevkontekst = TemplateDescription.Brevkontekst.SAK
+    override val sakstyper = Sakstype.all
 
     override val template = createTemplate(
         name = kode.name,
@@ -65,19 +70,6 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                         Nynorsk to "Vi har ".expr() + mottattDato + " fått søknaden din om " + ytelse + " frå folketrygda.",
                         English to "We received your application for ".expr() + ytelse + " from the Norwegian National Insurance Scheme on " + mottattDato + ".",
                     )
-                }
-
-                // TODO: Midlertidig liste slik at frontend har noe å eksperimentere med
-                list {
-                    item {
-                        text(Bokmal to "punkt 1 - TODO fjern punktliste", Nynorsk to "punkt 1 - TODO fjern punktliste", English to "item 1 - TODO remove itemlist")
-                    }
-                    item {
-                        text(Bokmal to "punkt 2 - TODO fjern punktliste", Nynorsk to "punkt 2 - TODO fjern punktliste", English to "item 2 - TODO remove itemlist")
-                    }
-                    item {
-                        text(Bokmal to "punkt 3 - TODO fjern punktliste", Nynorsk to "punkt 3 - TODO fjern punktliste", English to "item 3 - TODO remove itemlist")
-                    }
                 }
             }
             ifNotNull(saksbehandlerValg.inkluderVenterSvarAFP) {

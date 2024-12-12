@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.latex
 
+import io.ktor.callid.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -11,8 +12,8 @@ import io.ktor.client.request.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.io.IOException
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.LatexDocument
 import org.slf4j.LoggerFactory
@@ -92,11 +93,11 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
     }
 
-    suspend fun producePDF(latexLetter: LatexDocument, callId: String?): PDFCompilationOutput =
+    suspend fun producePDF(latexLetter: LatexDocument): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
             httpClient.post("$pdfByggerUrl/compile") {
                 contentType(ContentType.Application.Json)
-                header("X-Request-ID", callId)
+                header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
                 // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
                 // for some unknown reason, this results in all requests being halted for around 5 minutes.

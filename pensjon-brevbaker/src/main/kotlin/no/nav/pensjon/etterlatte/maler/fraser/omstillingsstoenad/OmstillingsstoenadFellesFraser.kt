@@ -2,19 +2,51 @@ package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 object OmstillingsstoenadFellesFraser {
+
+    object Utbetaling : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Utbetaling av omstillingsstønad",
+                    Language.Nynorsk to "Utbetaling av omstillingsstønad",
+                    Language.English to "Payment of adjustment allowance",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Omstillingsstønad blir utbetalt innen den 20. i hver måned. Du finner " +
+                            "utbetalingsdatoer på ${Constants.UTBETALING_URL}. Utbetalingen kan bli forsinket hvis " +
+                            "den skal samordnes med ytelser du mottar fra Nav eller andre, som for eksempel " +
+                            "tjenestepensjonsordninger.",
+                    Language.Nynorsk to "Omstillingsstønad blir utbetalt innan den 20. i kvar månad. Du finn " +
+                            "utbetalingsdatoane på ${Constants.UTBETALING_URL}. Utbetalinga kan bli forseinka dersom " +
+                            "ho skal samordnast med ytingar du får frå Nav eller andre (t.d. tenestepensjonsordningar).",
+                    Language.English to "The adjustment allowance is paid on or before the 20th of each month. " +
+                            "You can find payout dates online: ${Constants.UTBETALING_URL}. The payment may be delayed " +
+                            "if it is to be  coordinated with benefits you receive from Nav or others, such as a " +
+                            "pension from an occupational pension scheme.",
+                )
+            }
+        }
+    }
 
     object MeldFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -35,7 +67,7 @@ object OmstillingsstoenadFellesFraser {
                             "endringar du må seie frå om. ",
                     English to "You are obligated to notify us of any changes that affect the payment of " +
                             "the adjustment allowance, or the right to receive the allowance. You will see " +
-                            "which changes you must report in the attachment Your Rights and Obligations."
+                            "which changes you must report in the attachment: Your Rights and Obligations."
                 )
             }
         }
@@ -121,7 +153,7 @@ object OmstillingsstoenadFellesFraser {
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
-                    English to "Any questions?"
+                    English to "Do you have any questions?"
                 )
             }
             paragraph {
@@ -154,20 +186,20 @@ object OmstillingsstoenadFellesFraser {
             }
             paragraph {
                 text(
-                    Bokmal to "Hver høst sjekker NAV inntektsopplysningene i skatteoppgjøret ditt for å se " +
+                    Bokmal to "Hver høst sjekker Nav inntektsopplysningene i skatteoppgjøret ditt for å se " +
                             "om du har fått utbetalt riktig beløp i omstillingsstønad året før. Hvis du har fått " +
                             "for lite utbetalt, får du en etterbetaling. Har du fått for mye utbetalt, må du betale " +
                             "tilbake. Du kan finne mer informasjon om etteroppgjør på " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
-                    Nynorsk to "Kvar haust sjekkar NAV inntektsopplysningane i skatteoppgjeret ditt for å sjå " +
+                    Nynorsk to "Kvar haust sjekkar Nav inntektsopplysningane i skatteoppgjeret ditt for å sjå " +
                             "om du fekk utbetalt rett beløp i omstillingsstønad året før. Dersom du fekk utbetalt " +
                             "for lite, får du ei etterbetaling. Dersom du fekk utbetalt meir enn du hadde rett på, " +
                             "må du betale tilbake. Du kan lese meir om etteroppgjer på " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
-                    English to "Each autumn, NAV checks income data from your tax return to verify the correct " +
+                    English to "Each autumn, Nav checks income data from your tax return to verify the correct " +
                             "amount of adjustment allowance for the previous year. If you received less than you " +
                             "are owed, you will receive Back Pay. If you received more than you were owed, you must " +
-                            "repay the excess to NAV. You can find more information about final settlements online: " +
+                            "repay the excess to Nav. You can find more information about final settlements online: " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
                 )
             }
@@ -176,7 +208,8 @@ object OmstillingsstoenadFellesFraser {
 
     data class HvorLengerKanDuFaaOmstillingsstoenad(
         val beregning: Expression<OmstillingsstoenadBeregning>,
-        val omsRettUtenTidsbegrensning: Expression<Boolean>
+        val omsRettUtenTidsbegrensning: Expression<Boolean>,
+        val tidligereFamiliepleier: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -188,30 +221,38 @@ object OmstillingsstoenadFellesFraser {
             }
             showIf(omsRettUtenTidsbegrensning) {
                 paragraph {
-                    text(
-                        Bokmal to "Du kommer inn under unntaksreglene for varighet av stønaden, fordi du har hatt " +
-                                "lav eller ingen inntekt de siste fem årene før dødsfallstidspunktet. Du får " +
-                                "omstillingsstønad frem til du fyller 67 år, så lenge du oppfyller vilkårene.",
-                        Nynorsk to "Du kjem inn under unntaksreglane for lengde på stønad, då du var utan " +
-                                "inntekt eller hadde låg inntekt dei siste fem åra før dødsfallet. Under " +
-                                "føresetnad av at du oppfyller vilkåra, får du omstillingsstønad fram til du " +
+                    textExpr(
+                        Bokmal to "Du kommer inn under unntaksreglene for varighet av stønaden, fordi du har hatt ".expr() +
+                                "lav eller ingen inntekt de siste fem årene før " +
+                                ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallstidspunktet") +
+                                ". Du får omstillingsstønad frem til du fyller 67 år, så lenge du oppfyller vilkårene.",
+                        Nynorsk to "Du kjem inn under unntaksreglane for lengde på stønad, då du var utan ".expr() +
+                                "inntekt eller hadde låg inntekt dei siste fem åra før " +
+                                ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
+                                ". Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad fram til du " +
                                 "fyller 67 år. ",
-                        English to "If any of the rules for exemption from the duration of allowance apply to " +
+                        English to "If any of the rules for exemption from the duration of allowance apply to ".expr() +
                                 "you, because you had a low income or no income in the last five years before the " +
-                                "date of the death. You are eligible for the adjustment allowance until you turn " +
+                                ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
+                                ". You are eligible for the adjustment allowance until you turn " +
                                 "67 as long as you meet the conditions.",
                     )
                 }
             }.orShow {
                 showIf(beregning.sisteBeregningsperiode.utbetaltBeloep.greaterThan(0)) {
                     paragraph {
-                        text(
-                            Bokmal to "Du får omstillingsstønad frem til det er gått tre år fra datoen for dødsfallet, så " +
-                                    "lenge du oppfyller vilkårene.",
-                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
-                                    "fram til det har gått tre år sidan datoen for dødsfallet.",
-                            English to "You are eligible for adjustment allowance for three years from the " +
-                                    "date of the death, as long as you meet the conditions for receiving the allowance.",
+                        textExpr(
+                            Bokmal to "Du får omstillingsstønad frem til det er gått tre år ".expr() +
+                                    ifElse(tidligereFamiliepleier, "siden pleieforholdet opphørte", "fra datoen for dødsfallet") + ", så " +
+                                    "lenge du oppfyller vilkårene. Rett til omstillingsstønad faller uansett bort når du fyller 67 år.",
+                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad ".expr() +
+                                    "fram til det har gått tre år frå datoen " +
+                                    ifElse(tidligereFamiliepleier, "siden pleieforholdet opphørte", "for dødsfallet") +
+                                    ". Rett til omstillingsstønad fell uansett bort når du fyller 67 år.",
+                            English to "You are eligible for adjustment allowance for three years from the ".expr() +
+                                    ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
+                                    ", as long as you meet the conditions for receiving the allowance. " +
+                                    "The right to adjustment allowance ceases when you reach the age of 67.",
                         )
                     }
                     paragraph {
@@ -226,15 +267,18 @@ object OmstillingsstoenadFellesFraser {
                     }
                 }.orShow {
                     paragraph {
-                        text(
-                            Bokmal to "Du er innvilget omstillingsstønad frem til det er gått tre år fra datoen for " +
-                                    "dødsfallet, så lenge du oppfyller vilkårene. Om det skjer endringer " +
+                        textExpr(
+                            Bokmal to "Du er innvilget omstillingsstønad frem til det er gått tre år ".expr() +
+                                    ifElse(tidligereFamiliepleier, "siden pleieforholdet opphørte", "fra datoen for dødsfallet") +
+                                    ", så lenge du oppfyller vilkårene. Om det skjer endringer " +
                                     "i inntekten din kan dette gjør at du likevel vil få utbetalt stønad i denne perioden. ",
-                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
-                                    "i tre år frå datoen for dødsfallet. Dersom inntekta di skulle endre seg, kan " +
+                            Nynorsk to "Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad ".expr() +
+                                    "i tre år frå datoen " + ifElse(tidligereFamiliepleier, "siden pleieforholdet opphørte", "for dødsfallet") +
+                                    ". Dersom inntekta di skulle endre seg, kan " +
                                     "dette gjere at du likevel får utbetalt stønad i denne perioden.",
-                            English to "You are eligible for adjustment allowance for three years from the " +
-                                    "date of the death, as long as you meet the conditions for receiving the allowance. " +
+                            English to "You are eligible for adjustment allowance for three years from the ".expr() +
+                                    ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
+                                    ", as long as you meet the conditions for receiving the allowance. " +
                                     "Changes to your income may make you eligible for allowance in this period. ",
                         )
                     }
@@ -246,6 +290,28 @@ object OmstillingsstoenadFellesFraser {
                     Bokmal to "Les mer om hvor lenge du kan få på " + Constants.OMS_HVORLENGE_URL + ".",
                     Nynorsk to "Les meir på " + Constants.OMS_HVORLENGE_URL + " om kor lenge du kan få stønad.",
                     English to "Read more about the duration of allowance online: " + Constants.OMS_HVORLENGE_URL + ".",
+                )
+            }
+        }
+    }
+
+    object FyllInn : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "(Utfall jamfør tekstbibliotek)",
+                    Nynorsk to "(Utfall jamfør tekstbibliotek)",
+                    English to "(Utfall jamfør tekstbibliotek)",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to
+                            "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § <riktig paragrafhenvisning>.",
+                    Nynorsk to
+                            "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § <riktig paragrafhenvisning>.",
+                    English to
+                            "This decision has been made pursuant to the provisions regarding adjustment allowance in the National Insurance Act – sections § <riktig paragrafhenvisning>.",
                 )
             }
         }
@@ -273,7 +339,7 @@ object OmstillingsstoenadFellesFraser {
                     English to "To receive the correct amount of the adjustment allowance, you are obligated " +
                             "to inform us about any changes to your income. We will adjust the adjustment " +
                             "allowance starting the month after you reported the change. You can read more " +
-                            "about income reporting in the attachment Information to Adjustment Allowance Recipients.",
+                            "about income reporting in the attachment: Information for recipients of adjustment allowance.",
                 )
             }
         }
@@ -301,7 +367,7 @@ object OmstillingsstoenadFellesFraser {
                     English to "To receive the correct amount of adjustment allowance, you are obligated to " +
                             "inform us about any changes to your income. We will adjust the adjustment allowance " +
                             "starting the month after you reported the change. You can read more about income " +
-                            "reporting in the attachment Information to Recipients of Adjustment Allowance. ",
+                            "reporting in the attachment Information to recipients of adjustment allowance. ",
                 )
             }
         }

@@ -64,11 +64,16 @@ export type Identifiable = {
   readonly id: number | null;
 };
 
+export enum ElementTags {
+  FRITEKST = "FRITEKST",
+}
+
 export const LITERAL = "LITERAL";
 export type LiteralValue = Identifiable & {
   readonly type: typeof LITERAL;
   readonly text: string;
   readonly editedText: string | null;
+  readonly tags: ElementTags[];
 };
 export const VARIABLE = "VARIABLE";
 export type VariableValue = {
@@ -79,8 +84,7 @@ export type VariableValue = {
 };
 
 export const ITEM_LIST = "ITEM_LIST";
-export type ItemList = {
-  readonly id: number;
+export type ItemList = Identifiable & {
   readonly type: typeof ITEM_LIST;
   readonly items: Item[];
   readonly deletedItems: number[];

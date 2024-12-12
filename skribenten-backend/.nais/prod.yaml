@@ -43,6 +43,9 @@ externalHosts:
   - pensjon-persondata.prod-fss-pub.nais.io
   - pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io
   - navansatt.prod-fss-pub.nais.io
+  - pensjon-samhandler-proxy.prod-fss-pub.nais.io
+  - teampensjon-unleash-api.nav.cloud.nais.io
+  - norg2.intern.nav.no
 
 env:
   - name: CORS_ALLOW_HOST
@@ -70,6 +73,8 @@ env:
     value: "https://saf.prod-fss-pub.nais.io/graphql"
   - name: SAF_SCOPE
     value: "api://prod-fss.teamdokumenthandtering.saf/.default"
+  - name: SAF_REST_URL
+    value: "https://saf.prod-fss-pub.nais.io/rest"
 
   - name: KRR_URL
     value: "http://digdir-krr-proxy.team-rocket"
@@ -90,3 +95,11 @@ env:
     value: "https://navansatt.prod-fss-pub.nais.io/"
   - name: NAVANSATT_SCOPE
     value: "api://prod-fss.pensjondeployer.navansatt/.default"
+
+  - name: SAMHANDLER_PROXY_URL
+    value: "https://pensjon-samhandler-proxy.prod-fss-pub.nais.io"
+  - name: SAMHANDLER_PROXY_SCOPE
+    value: "api://prod-fss.pensjondeployer.pensjon-samhandler-proxy/.default"
+
+  - name: NORG2_URL
+    value: "https://norg2.intern.nav.no/norg2/"

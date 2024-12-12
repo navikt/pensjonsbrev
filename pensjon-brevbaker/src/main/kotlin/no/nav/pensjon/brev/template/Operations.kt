@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.render.fulltNavn
+import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
@@ -57,6 +59,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
     object IsEmpty : UnaryOperation<Collection<*>, Boolean>(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
+    }
+
+    object BrukerFulltNavn: UnaryOperation<Bruker, String>(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {
+        override fun apply(input: Bruker): String = input.fulltNavn()
     }
 }
 
@@ -124,6 +130,10 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
 
+    class GetElementOrNull<ListType> : BinaryOperation<List<ListType>?, Int, ListType?>(), StableHash by StableHash.of("BinaryOperation.GetElementOrNull") {
+        override fun apply(first: List<ListType>?, second: Int): ListType? = first?.getOrNull(second)
+    }
+
     class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>(), StableHash by StableHash.of("BinaryOperation.IfElse") {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
     }
@@ -135,6 +145,15 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
     data class Flip<In1, In2, Out>(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>() {
         override fun apply(first: In1, second: In2): Out = operation.apply(second, first)
         override fun stableHashCode(): Int = hashCode()
+    }
+
+    data class SafeCall<In1, In2, Out>(val operation: BinaryOperation<In1 & Any, In2 & Any, Out>) : BinaryOperation<In1, In2, Out?>() {
+        override fun apply(first: In1, second: In2): Out? =
+            if (first != null && second != null) {
+                operation.apply(first, second)
+            } else null
+
+        override fun stableHashCode(): Int = StableHash.hash(StableHash.of("BinaryOperation.SafeCall" ), operation)
     }
 
 }

@@ -12,17 +12,20 @@ services:
       - "5016:5006"
   pensjon-brevbaker:
     environment:
+      - NAIS_APP_NAME=brevbaker
       - PDF_BUILDER_URL=http://pdf-bygger:8080
       - AZURE_OPENID_CONFIG_JWKS_URI=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
       - AZURE_APP_CLIENT_ID=66a118a6-95db-4a64-be81-3af02048a46e
-      - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend-lokal","clientId":"d8057f3d-871b-4ea9-973e-f5facdc04590"}]
+      - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend","clientId":"adce3431-deeb-422f-959c-298b644b7611"}]
       # Allows requests without auth-header #opens up debug port
       - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"
       - "5015:5005" # debug port
+    env_file:
+      - ./pensjon-brevbaker/secrets/unleash.env
   skribenten-backend:
     profiles:
       - skribenten
@@ -33,9 +36,13 @@ services:
     ports:
       - "8082:8080"
       - "5017:5007"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     env_file:
       - ./skribenten-backend/secrets/azuread.env
+      - ./skribenten-backend/secrets/unleash.env
     environment:
+      - NAIS_APP_NAME=skribenten-backend
       - BREVBAKER_SCOPE=api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default
       - BREVBAKER_URL=http://pensjon-brevbaker:8080
       - BREVMETADATA_URL=https://pensjon-brevmetadata-q2.intern.dev.nav.no
@@ -56,6 +63,9 @@ services:
       - PENSJON_PERSONDATA_URL=https://pensjon-persondata-q2.dev-fss-pub.nais.io
       - SAF_SCOPE=api://dev-fss.teamdokumenthandtering.saf/.default
       - SAF_URL=https://saf-q2.dev-fss-pub.nais.io/graphql
+      - SAF_REST_URL=https://saf-q2.dev.intern.nav.no/rest
+      - SAMHANDLER_PROXY_SCOPE=api://dev-fss.pensjon-q2.pensjon-samhandler-proxy-q2/.default
+      - SAMHANDLER_PROXY_URL=https://pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io
       - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
       - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
       - NAVANSATT_URL=https://navansatt.dev-fss-pub.nais.io
@@ -65,7 +75,7 @@ services:
       - AD_GROUP_Fortrolig_Adresse=ea930b6b-9397-44d9-b9e6-f4cf527a632a
       - AD_GROUP_Strengt_Fortrolig_Adresse=5ef775f2-61f8-4283-bf3d-8d03f428aa14
       - AD_GROUP_EndreStrengtFortroligUtland=fc792042-93d8-4d5e-a501-55c45c03c576
-      - FEATURE_brevbakerbrev=true
+      - NORG2_URL=https://norg2.intern.dev.nav.no/norg2/
 
   skribenten-backend-db:
     profiles:
@@ -130,7 +140,7 @@ services:
       EXPRESS_PORT: "8084"
       EXPRESS_HOST: "::"
       SKRIBENTEN_API_URL: "http://skribenten-backend:8080"
-      SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default"
+      SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
 
   brevoppskrift:
     profiles:
@@ -146,6 +156,9 @@ services:
       BREVBAKER_API_URL: "http://pensjon-brevbaker:8080"
 
   locust-master:
+    depends_on:
+      locust-worker:
+        condition: service_started
     profiles:
       - locust
     image: locustio/locust

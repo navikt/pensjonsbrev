@@ -10,7 +10,7 @@
     "sakType": "UFOREP",
     "enhetId": "4405"
   },
-  "brevMetadata":[
+  "brevMetadata": [
     {
       "name": "Orientering om saksbehandlingstid (bosatt i ikke-avtaleland)",
       "id": "PE_IY_03_164",
@@ -88,18 +88,6 @@
       "redigerbarBrevtittel": false
     },
     {
-      "name": "Bekreftelse på at bruker mottar uføretrygd (norsk)",
-      "id": "PE_IY_03_169",
-      "brevsystem": "EXSTREAM",
-      "spraak": [
-        "NB"
-      ],
-      "brevkategori": "Informasjonsbrev",
-      "dokumentkategoriCode": "B",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
       "name": "Innhente opplysninger (uføretrygd - med førsteside for ettersendelse)",
       "id": "PE_UP_07_100",
       "brevsystem": "EXSTREAM",
@@ -139,7 +127,7 @@
       "redigerbarBrevtittel": false
     },
     {
-      "name": "Klage - orientering om saksbehandlingstid ved NAV Klageinstans",
+      "name": "Klage - orientering om saksbehandlingstid ved Nav klageinstans",
       "id": "PE_IY_03_162",
       "brevsystem": "EXSTREAM",
       "spraak": [
@@ -304,47 +292,11 @@
       "redigerbarBrevtittel": false
     },
     {
-      "name": "Bekreftelse på at bruker mottar uføretrygd (tysk)",
-      "id": "PE_IY_03_171",
-      "brevsystem": "EXSTREAM",
-      "spraak": [
-        "NB"
-      ],
-      "brevkategori": "Informasjonsbrev",
-      "dokumentkategoriCode": "B",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
       "name": "Orientering om forlenget saksbehandlingstid",
       "id": "PE_IY_05_041",
       "brevsystem": "EXSTREAM",
       "spraak": [
         "EN",
-        "NB"
-      ],
-      "brevkategori": "Informasjonsbrev",
-      "dokumentkategoriCode": "B",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
-      "name": "Bekreftelse på at bruker mottar uføretrygd (fransk)",
-      "id": "PE_IY_03_172",
-      "brevsystem": "EXSTREAM",
-      "spraak": [
-        "NB"
-      ],
-      "brevkategori": "Informasjonsbrev",
-      "dokumentkategoriCode": "B",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
-      "name": "Bekreftelse på at bruker mottar uføretrygd (spansk)",
-      "id": "PE_IY_03_173",
-      "brevsystem": "EXSTREAM",
-      "spraak": [
         "NB"
       ],
       "brevkategori": "Informasjonsbrev",
@@ -470,7 +422,7 @@
       "redigerbarBrevtittel": false
     },
     {
-      "name": "Klage - følgeskriv til oversendelse til NAV Klageinstans",
+      "name": "Klage - følgeskriv til oversendelse til Nav klageinstans",
       "id": "PE_IY_03_154",
       "brevsystem": "EXSTREAM",
       "spraak": [
@@ -494,7 +446,7 @@
       "redigerbarBrevtittel": true
     },
     {
-      "name": "Klage - orientering om oversendelse til NAV Klageinstans",
+      "name": "Klage - orientering om oversendelse til Nav klageinstans",
       "id": "PE_IY_03_157",
       "brevsystem": "EXSTREAM",
       "spraak": [
@@ -532,7 +484,7 @@
       "redigerbarBrevtittel": false
     },
     {
-      "name": "Brev fra NAV",
+      "name": "Brev fra Nav",
       "id": "PE_IY_05_300",
       "brevsystem": "EXSTREAM",
       "spraak": [
@@ -544,17 +496,7 @@
       "redigerbarBrevtittel": true
     },
     {
-      "name": "Melding til samhandlere om stans eller gjenopptatt betaling",
-      "id": "PE_IY_05_301",
-      "brevsystem": "EXSTREAM",
-      "spraak": [],
-      "brevkategori": "Leveattest",
-      "dokumentkategoriCode": "B",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
-      "name": "Klage - oversendelse til NAV Klageinstans",
+      "name": "Klage - oversendelse til Nav klageinstans",
       "id": "PE_IY_03_150",
       "brevsystem": "EXSTREAM",
       "spraak": [
@@ -591,50 +533,29 @@
       "redigerbarBrevtittel": false
     },
     {
-      "name": "E 202 og E 205 - Behandling av krav om alderspensjon og Attest om trygdetid i Norge",
-      "id": "E202_E205",
-      "brevsystem": "EXSTREAM",
+      "name": "Informasjon om saksbehandlingstid",
+      "id": "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+      "brevsystem": "BREVBAKER",
       "spraak": [
-        "NB"
+        "NB",
+        "NN",
+        "EN"
       ],
-      "brevkategori": null,
-      "dokumentkategoriCode": "E_BLANKETT",
+      "brevkategori": "Informasjonsbrev",
+      "dokumentkategoriCode": "IB",
       "redigerbart": true,
       "redigerbarBrevtittel": false
     },
     {
-      "name": "E 210 - Melding om vedtak i sak som gjelder krav",
-      "id": "E210",
-      "brevsystem": "EXSTREAM",
+      "name": "Orientering om saksbehandlingstid (uføretrygd)",
+      "id": "UT_ORIENTERING_OM_SAKSBEHANDLINGSTID",
+      "brevsystem": "BREVBAKER",
       "spraak": [
-        "NB"
+        "NB",
+        "NN"
       ],
-      "brevkategori": null,
-      "dokumentkategoriCode": "E_BLANKETT",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
-      "name": "E 211 - Samlet melding om vedtakene",
-      "id": "E211",
-      "brevsystem": "EXSTREAM",
-      "spraak": [
-        "NB"
-      ],
-      "brevkategori": null,
-      "dokumentkategoriCode": "E_BLANKETT",
-      "redigerbart": true,
-      "redigerbarBrevtittel": false
-    },
-    {
-      "name": "E 202 - Behandling av krav om alderspensjon",
-      "id": "E202",
-      "brevsystem": "EXSTREAM",
-      "spraak": [
-        "NB"
-      ],
-      "brevkategori": null,
-      "dokumentkategoriCode": "E_BLANKETT",
+      "brevkategori": "Informasjonsbrev",
+      "dokumentkategoriCode": "IB",
       "redigerbart": true,
       "redigerbarBrevtittel": false
     },
@@ -671,6 +592,18 @@
       ],
       "brevkategori": null,
       "dokumentkategoriCode": "E_BLANKETT",
+      "redigerbart": true,
+      "redigerbarBrevtittel": false
+    },
+    {
+      "name": "Bekreftelse på flyktningstatus",
+      "id": "PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS",
+      "brevsystem": "BREVBAKER",
+      "spraak": [
+        "NB"
+      ],
+      "brevkategori": "Innhente opplysninger",
+      "dokumentkategoriCode": "IB",
       "redigerbart": true,
       "redigerbarBrevtittel": false
     }

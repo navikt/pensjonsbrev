@@ -14,7 +14,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.callid.*
-import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
@@ -23,7 +23,8 @@ import io.ktor.server.response.*
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.services.KanIkkeReservereBrevredigeringException
+import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 
 
 fun main() {
@@ -68,8 +69,13 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
         }
-        exception<KanIkkeReservereBrevredigeringException> { call, cause ->
-            call.respond(HttpStatusCode.Locked, cause.response)
+        exception<BrevredigeringException> { call, cause ->
+            when (cause) {
+                is BrevredigeringException.ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message ?: "Brev er allerede arkivert")
+                is BrevredigeringException.BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
+                is BrevredigeringException.BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
+                is BrevredigeringException.KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
+            }
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)
@@ -105,6 +111,7 @@ fun Application.skribentenContenNegotiation() {
         jackson {
             registerModule(JavaTimeModule())
             registerModule(Edit.JacksonModule)
+            registerModule(BrevkodeModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }

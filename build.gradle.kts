@@ -10,18 +10,10 @@ plugins {
 
 allprojects {
     repositories {
-        mavenLocal()
         mavenCentral()
+        mavenLocal()
         maven {
-            // Create a token at https://github.com/settings/tokens/new with package.read
-            // Then create a gradle.properties file in $HOME/.gradle with the following:
-            // gpr.user=<your github username>
-            // gpr.token=<the token>
-            url = uri("https://maven.pkg.github.com/navikt/pensjonsbrev")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
-            }
+            url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
             content {
                 includeGroup("no.nav.pensjon.brev") // api-model
                 includeGroup("no.nav.pensjon.brevbaker") // api-model-common

@@ -83,13 +83,13 @@ class BarnepensjonForhaandsvarselFraser {
 
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis NAV har forårsaket feilutbetalingen, kan vi kreve tilbake " +
+                    Language.Bokmal to "Hvis Nav har forårsaket feilutbetalingen, kan vi kreve tilbake " +
                             "feilutbetalt beløp hvis du forstod eller burde forstått at utbetalingen du fikk, " +
                             "skyldtes en feil. Vi legger blant annet vekt på",
-                    Language.Nynorsk to "Dersom NAV har forårsaka feilutbetalinga, kan vi krevje tilbake " +
+                    Language.Nynorsk to "Dersom Nav har forårsaka feilutbetalinga, kan vi krevje tilbake " +
                             "feilutbetalt beløp dersom du forstod eller burde ha forstått at utbetalinga du fekk, " +
                             "skuldast ein feil. Vi legg vekt på mellom anna",
-                    Language.English to "If NAV has caused an incorrect amount to be paid, we can demand " +
+                    Language.English to "If Nav has caused an incorrect amount to be paid, we can demand " +
                             "repayment if you understood, or should have understood, that the payment you received " +
                             "was due to an error. We will place emphasis on, among other things",
                 )

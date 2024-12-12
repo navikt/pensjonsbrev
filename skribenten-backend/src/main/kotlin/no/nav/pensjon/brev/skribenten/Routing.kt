@@ -6,6 +6,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
@@ -22,35 +23,53 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerService(servicesConfig.getConfig("brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(servicesConfig.getConfig("brevmetadata"))
-    val tjenestebussIntegrasjonService =
-        TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
+    val samhandlerService = SamhandlerService(servicesConfig.getConfig("samhandlerProxy"), authService)
+    val tjenestebussIntegrasjonService = TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
     val navansattService = NavansattService(servicesConfig.getConfig("navansatt"), authService)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
-    val brevredigeringService = BrevredigeringService(brevbakerService, penService, navansattService)
+    val norg2Service = Norg2Service(servicesConfig.getConfig("norg2"))
+    val brevredigeringService =
+        BrevredigeringService(brevbakerService, navansattService, penService)
+    val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
 
+    Features.initUnleash(servicesConfig.getConfig("unleash"))
 
     routing {
         healthRoute()
 
         authenticate(authConfig.name) {
-            setupServiceStatus(safService, penService, pensjonPersonDataService, pdlService, krrService, brevbakerService, brevmetadataService, tjenestebussIntegrasjonService, navansattService)
+            install(PrincipalInContext)
+
+            setupServiceStatus(
+                safService,
+                penService,
+                pensjonPersonDataService,
+                pdlService,
+                krrService,
+                brevbakerService,
+                brevmetadataService,
+                samhandlerService,
+                tjenestebussIntegrasjonService,
+                navansattService
+            )
 
             landRoute()
             brevmal(brevbakerService)
             kodeverkRoute(penService)
             sakRoute(
-                penService,
-                legacyBrevService,
-                pdlService,
-                pensjonPersonDataService,
-                krrService,
+                dto2ApiService,
                 brevmalService,
                 brevredigeringService,
-
+                krrService,
+                legacyBrevService,
+                pdlService,
+                penService,
+                pensjonPersonDataService,
+                safService,
             )
-            brev(brevredigeringService)
-            tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
+            brev(brevredigeringService, dto2ApiService)
+            tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
             meRoute(navansattService)
         }
     }

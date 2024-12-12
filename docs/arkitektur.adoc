@@ -15,7 +15,7 @@ HP Extreme bruker hovedsakelig ESB(Enterprise Service Bus) som har en rekke prob
 
 *MetaForce ønsker vi også å gå bort ifra fordi:*
 
-* Team CCM har besluttet at de ikke lengre vil opprettholde MetaForce i NAV
+* Team CCM har besluttet at de ikke lengre vil opprettholde MetaForce i Nav
 * Det er ett proprietært verktøy:
 ** Kan ikke tilpasses våres behov
 ** Vi er ingen garanti at MetaForce ikke stopper å få oppdateringer
@@ -32,7 +32,7 @@ Det ble vurdert å ta i bruk hyllevare(OpenText Exstream), men da antar vi at vi
 Vi valgte å utvikle en egen fullstendig løsning og ikke hyllevare fordi:
 
 Implementasjonen av brev-malene er av høy verdi. Ved å ta i bruk en egen løsning kan vi skrive malene og lagre de i en løsning vi kan vedlikeholde over lang tid.
-Vi ønsker at løsningen skal vare så lenge som mulig. Ved å lage en egen løsning vil vi kunne forvalte den så lenge NAV har utviklerkapasitet.
+Vi ønsker at løsningen skal vare så lenge som mulig. Ved å lage en egen løsning vil vi kunne forvalte den så lenge Nav har utviklerkapasitet.
 
 ==== Logisk skille mellom bestemmelse av innhold og rendring av brev
 Selv om vi skriver våres egen løsning må vi ha avhengigheter til eksterne verktøy for å produsere PDF dokumenter.

@@ -2,20 +2,29 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel
 
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.*
+import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
+import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTOSelectors.innhold
 
 data class OmstillingsstoenadVarselAktivitetspliktDTO(
     override val innhold: List<Element>,
-) : BrevDTO
+    val bosattUtland: Boolean,
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<OmstillingsstoenadVarselAktivitetspliktDTO>, Hovedmal {
@@ -57,13 +66,16 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                         Nynorsk to "Du kan melde frå om endringar og sende dokumentasjon ved å",
                         English to "You can report changes and submit documentation by",
                     )
+
+                    val postadresse = ifElse(bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
+
                     list {
                         item {
                             text(
-                                Bokmal to "sende en melding på ${Constants.SKRIVTILOSS_URL} (her får du ikke lagt ved dokumentasjon)",
-                                Nynorsk to "send ei melding på ${Constants.SKRIVTILOSS_URL} (her får du ikkje lagt ved dokumentasjon).",
+                                Bokmal to "sende en beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her får du ikke lagt ved dokumentasjon)",
+                                Nynorsk to "send ein beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her kan du ikkje leggje ved dokumentasjon)",
                                 English to
-                                    "sending a message through ${Constants.Engelsk.SKRIVTILOSS_URL} (you cannot attach any documentationhere)",
+                                    "send us a message online: ${Constants.Engelsk.BESKJED_TIL_NAV_URL} (you cannot attach documentation from this page)",
                             )
                         }
                         item {
@@ -78,10 +90,10 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                             )
                         }
                         item {
-                            text(
-                                Bokmal to "sende brev til ${Constants.POSTADRESSE}",
-                                Nynorsk to "send brev til ${Constants.POSTADRESSE}",
-                                English to "send a letter to ${Constants.POSTADRESSE}",
+                            textExpr(
+                                Bokmal to "sende brev til ".expr() + postadresse,
+                                Nynorsk to "send brev til ".expr() + postadresse,
+                                English to "send a letter to ".expr() + postadresse,
                             )
                         }
                     }

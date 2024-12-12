@@ -14,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_AP_ADHOC_2024_REGLERENDRET_GJR_AP_MNTINDV
+    override val kode = Brevkode.AutoBrev.PE_AP_ADHOC_2024_REGLERENDRET_GJR_AP_MNTINDV
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
@@ -103,17 +103,17 @@ object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
                 text(
                     Bokmal to "Du må melde fra om endringer",
                     Nynorsk to "Du må melde frå om endringar",
-                    English to "Notify NAV about changes",
+                    English to "Notify Nav about changes",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Hvis du får endringer i familiesituasjon eller planlegger opphold i et annet land, kan det påvirke utbetalingen din. "
-                            + "I slike tilfeller må du derfor straks melde fra til NAV. Se hva du må melde fra om på ${Constants.PENSJON_ENDRING_URL}.",
+                            + "I slike tilfeller må du derfor straks melde fra til Nav. Se hva du må melde fra om på ${Constants.PENSJON_ENDRING_URL}.",
                     Nynorsk to "Viss du får endringar i familiesituasjon eller planlegg opphald i eit anna land, kan det påverke utbetalinga di. "
-                            + "I slike tilfelle må du derfor straks melde frå til NAV. Sjå kva du må melde frå om på ${Constants.PENSJON_ENDRING_URL}.",
+                            + "I slike tilfelle må du derfor straks melde frå til Nav. Sjå kva du må melde frå om på ${Constants.PENSJON_ENDRING_URL}.",
                     English to "If you have changes in your family situation or you plan to live abroad, this may influence your benefits. "
-                            + "You are obliged to notify NAV as soon as you are aware of any of these changes. "
+                            + "You are obliged to notify Nav as soon as you are aware of any of these changes. "
                             + "You can find out what you are required to report at ${Constants.PENSJON_ENDRING_URL}."
                 )
             }

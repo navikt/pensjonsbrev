@@ -1,21 +1,48 @@
 package no.nav.pensjon.brev.skribenten
 
-import kotlin.reflect.KProperty
+import com.typesafe.config.Config
+import io.getunleash.DefaultUnleash
+import io.getunleash.Unleash
+import io.getunleash.UnleashContext
+import io.getunleash.util.UnleashConfig
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 
-object Features {
-    val brevbakerbrev: Boolean by EnvironmentToggle()
+private const val unleashTogglePrefix = "pensjonsbrev.skribenten."
 
-    private val _overrides = mutableMapOf<String, Boolean>()
-    val overrides: Map<String, Boolean> = _overrides
-    fun override(key: String, value: Boolean) {
-        _overrides[key] = value
-    }
+data class UnleashToggle(val name: String) {
+    suspend fun isEnabled() = Features.isEnabled(this)
 }
 
-private class EnvironmentToggle {
-    fun isEnabled(property: KProperty<*>): Boolean =
-        System.getenv().getOrDefault("FEATURE_${property.name}", "false").toBoolean()
+object Features {
+    val brevbakerbrev = UnleashToggle("brevbakerbrev")
+    val brevutendata = UnleashToggle("brevutendata")
+    val brevmalUTavslag = UnleashToggle("brevmal_ut_avslag")
+    val brevMedFritekst = UnleashToggle("brevMedFritekst")
 
-    operator fun getValue(thisRef: Features, property: KProperty<*>): Boolean =
-        thisRef.overrides[property.name] ?: isEnabled(property)
+    private var unleash: Unleash? = null
+    private val overrides = mutableMapOf<String, Boolean>()
+
+    fun override(key: UnleashToggle, value: Boolean) {
+        overrides[key.name] = value
+    }
+
+    fun initUnleash(config: Config) {
+        unleash = DefaultUnleash(
+            UnleashConfig.builder()
+                .appName(config.getString("appName"))
+                .environment(config.getString("environment"))
+                .unleashAPI(config.getString("host") + "/api")
+                .apiKey(config.getString("apiToken")).build()
+        )
+    }
+
+    suspend fun isEnabled(toggle: UnleashToggle): Boolean =
+        overrides[toggle.name]
+            ?: unleash?.isEnabled(unleashTogglePrefix + toggle.name, context())
+            ?: false
+
+    private suspend fun context(): UnleashContext =
+        PrincipalInContext.get()
+            ?.let { UnleashContext.builder().userId(it.navIdent.id).build() }
+            ?: UnleashContext.builder().build()
 }

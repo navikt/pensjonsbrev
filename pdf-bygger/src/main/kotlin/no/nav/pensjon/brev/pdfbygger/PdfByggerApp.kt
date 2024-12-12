@@ -7,7 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callid.*
-import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
@@ -15,10 +15,9 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.date.*
-import io.micrometer.core.instrument.Clock
-import io.micrometer.prometheus.PrometheusConfig
-import io.micrometer.prometheus.PrometheusMeterRegistry
-import io.prometheus.client.CollectorRegistry
+import io.micrometer.core.instrument.Tag
+import io.micrometer.prometheusmetrics.PrometheusConfig
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import java.nio.file.Path
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -26,7 +25,7 @@ import kotlin.time.Duration.Companion.seconds
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
-private val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM)
+private val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
 private fun Application.getProperty(name: String): String? =
     environment.config.propertyOrNull(name)?.getString()
@@ -34,7 +33,7 @@ private fun Application.getProperty(name: String): String? =
 @Suppress("unused")
 fun Application.module() {
     val parallelism = getProperty("pdfBygger.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
-    val activityCounter = ActiveCounter()
+    val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
     val laTeXService = LaTeXService(
         compileTimeout = getProperty("pdfBygger.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
         queueWaitTimeout = getProperty("pdfBygger.compileQueueWaitTimeout")?.let { Duration.parse(it) } ?: 4.seconds,
@@ -44,7 +43,7 @@ fun Application.module() {
     )
 
     log.info("Target parallelism : $parallelism")
-    environment.monitor.subscribe(ApplicationStopPreparing) {
+    monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
@@ -128,7 +127,7 @@ fun Application.module() {
                 }
 
                 is PDFCompilationResponse.Failure.QueueTimeout -> {
-                    logger.error(result.reason)
+                    logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
                     call.respond(HttpStatusCode.ServiceUnavailable, result)
                 }
             }

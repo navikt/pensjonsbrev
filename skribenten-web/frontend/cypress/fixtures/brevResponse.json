@@ -28,7 +28,8 @@
             "id": 2054713812,
             "text": "Vi har ",
             "editedText": null,
-            "type": "LITERAL"
+            "type": "LITERAL",
+            "tags": []
           },
           {
             "id": -694080035,
@@ -39,7 +40,8 @@
             "id": -1820992704,
             "text": " mottatt søknaden din om ",
             "editedText": null,
-            "type": "LITERAL"
+            "type": "LITERAL",
+            "tags": []
           },
           {
             "id": -726051414,
@@ -50,7 +52,8 @@
             "id": 1962386266,
             "text": " fra trygdemyndighetene i ",
             "editedText": null,
-            "type": "LITERAL"
+            "type": "LITERAL",
+            "tags": []
           },
           {
             "id": -1660311050,
@@ -61,7 +64,8 @@
             "id": 46,
             "text": ".",
             "editedText": null,
-            "type": "LITERAL"
+            "type": "LITERAL",
+            "tags": []
           },
           {
             "id": -1894607013,
@@ -73,7 +77,8 @@
                     "id": -503413508,
                     "text": "punkt 1 - TODO fjern punktliste",
                     "editedText": null,
-                    "type": "LITERAL"
+                    "type": "LITERAL",
+                    "tags": []
                   }
                 ]
               },
@@ -84,7 +89,8 @@
                     "id": 886663457,
                     "text": "punkt 2 - TODO fjern punktliste",
                     "editedText": null,
-                    "type": "LITERAL"
+                    "type": "LITERAL",
+                    "tags": []
                   }
                 ]
               },
@@ -95,7 +101,8 @@
                     "id": -867386942,
                     "text": "punkt 3 - TODO fjern punktliste",
                     "editedText": null,
-                    "type": "LITERAL"
+                    "type": "LITERAL",
+                    "tags": []
                   }
                 ]
               }
@@ -116,7 +123,8 @@
             "id": -1505022304,
             "text": "Saksbehandlingstiden vår er vanligvis ",
             "editedText": null,
-            "type": "LITERAL"
+            "type": "LITERAL",
+            "tags": []
           },
           {
             "id": 1834595758,
@@ -127,7 +135,8 @@
             "id": 1027473067,
             "text": " uker.",
             "editedText": " uker.  ",
-            "type": "LITERAL"
+            "type": "LITERAL",
+            "tags": []
           }
         ],
         "deletedContent": [],
@@ -142,7 +151,8 @@
             "id": -1153661597,
             "text": "Dersom vi trenger flere opplysninger fra deg, vil du høre fra oss.",
             "editedText": null,
-            "type": "LITERAL"
+            "type": "LITERAL",
+            "tags": []
           }
         ],
         "deletedContent": [],
@@ -157,7 +167,8 @@
             "id": 1767516298,
             "text": "Meld fra om endringer",
             "editedText": null,
-            "type": "LITERAL"
+            "type": "LITERAL",
+            "tags": []
           }
         ],
         "deletedContent": [],
@@ -172,7 +183,8 @@
             "id": 173660288,
             "text": "Du må melde fra til oss med en gang hvis det skjer endringer som kan ha betydning for saken din, for eksempel ved endring av sivilstand eller ved flytting.",
             "editedText": null,
-            "type": "LITERAL"
+            "type": "LITERAL",
+            "tags": []
           }
         ],
         "deletedContent": [],
@@ -183,9 +195,9 @@
     "signatur": {
       "hilsenTekst": "Med vennlig hilsen",
       "saksbehandlerRolleTekst": "Saksbehandler",
-      "saksbehandlerNavn": "",
+      "saksbehandlerNavn": "Sak S. Behandler",
       "attesterendeSaksbehandlerNavn": "",
-      "navAvsenderEnhet": "NAV Oslo"
+      "navAvsenderEnhet": "Nav Oslo"
     },
     "deletedBlocks": []
   },

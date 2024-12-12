@@ -4,23 +4,31 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.borINorgeEllerIkkeAvtaleland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.erOver18aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.mottattDato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
+import java.time.LocalDate
 
 data class BarnepensjonMottattSoeknadDTO(
+    val mottattDato: LocalDate,
     val erOver18aar: Boolean,
     val bosattUtland: Boolean,
     val borINorgeEllerIkkeAvtaleland: Boolean,
-)
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoeknadDTO> {
@@ -46,8 +54,14 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                     English to "We received your application for a children's pension",
                 )
             }
-
             outline {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi viser til søknaden din som vi mottok ".expr() + mottattDato.format() + ".",
+                        Nynorsk to "Vi viser til søknaden din som vi tok imot ".expr() + mottattDato.format() + ".",
+                        English to "We refer to your application that we received ".expr() + mottattDato.format() + ".",
+                    )
+                }
                 showIf(borINorgeEllerIkkeAvtaleland) {
                     title2 {
                         text(
@@ -67,7 +81,7 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                                 "Dersom saka di ikkje har blitt ferdigbehandla innan denne tida, vil du få nærmare beskjed. " +
                                 "Du finn saksbehandlingstida vår på nav.no/saksbehandlingstider#barnepensjon.",
                             English to
-                                "NAV will process your application as soon as possible, and within <fritekst: antall uker/måneder> " +
+                                "Nav will process your application as soon as possible, and within <fritekst: antall uker/måneder> " +
                                 "at the latest. If your application is not processed within this time frame, " +
                                 "you will hear from us again. Read more about processing times at nav.no/saksbehandlingstider#barnepensjon.",
                         )
@@ -84,16 +98,16 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                         text(
                             Bokmal to
                                 "Du må kontakte trygdemyndigheten i landet du bor i for å søke om barnepensjon. " +
-                                "Dette landets trygdemyndigheter vil sende søknaden videre til NAV. " +
+                                "Dette landets trygdemyndigheter vil sende søknaden videre til Nav. " +
                                 "Mottatt søknad er derfor avbrutt og vil ikke bli behandlet.",
                             Nynorsk to
                                 "Du må kontakte trygdemaktene i landet du bur i for å søkje om barnepensjon. " +
-                                "Trygdemaktene i landet du bur i vil sende søknaden til NAV. " +
+                                "Trygdemaktene i landet du bur i vil sende søknaden til Nav. " +
                                 "Motteken søknad er avbrutt og vil ikkje bli behandla.",
                             English to
                                 "You must contact the national insurance authority in the country where you live to apply " +
                                 "for a children's pension. This country’s national insurance authority will then " +
-                                "forward your application to NAV. The application we received has therefore been terminated and will not be processed.",
+                                "forward your application to Nav. The application we received has therefore been terminated and will not be processed.",
                         )
                     }
                 }

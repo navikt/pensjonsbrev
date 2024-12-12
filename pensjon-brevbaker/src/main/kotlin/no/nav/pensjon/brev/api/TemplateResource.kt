@@ -1,16 +1,18 @@
 package no.nav.pensjon.brev.api
 
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.plugins.*
-import io.ktor.server.plugins.callid.*
 import io.micrometer.core.instrument.Tag
+import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstidV2
+import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAutoV2
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
@@ -24,21 +26,27 @@ import java.util.*
 private val objectMapper = jacksonObjectMapper()
 private val base64Decoder = Base64.getDecoder()
 
-class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
+class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     val name: String,
     templates: Set<T>,
     private val laTeXCompilerService: LaTeXCompilerService,
 ) {
-    val templates: Map<Kode, T> = templates.associateBy { it.kode }
+    private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
 
-    suspend fun renderPDF(call: ApplicationCall, brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
+    fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
+
+    fun listTemplatekeys() = templateLibrary.listTemplatekeys()
+
+    fun getTemplate(kode: Kode) = templateLibrary.getTemplate(kode)
+
+    suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            renderPDF(call, createLetter(kode, letterData, language, felles))
+            renderPDF(createLetter(kode, letterData, language, felles))
         }
 
-    suspend fun renderPDF(call: ApplicationCall, brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
+    suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            renderPDF(call, createLetter(kode, letterData, language, felles), letterMarkup)
+            renderPDF(createLetter(kode, letterData, language, felles), letterMarkup)
         }
 
     fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
@@ -58,11 +66,11 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
     fun countLetter(brevkode: Kode): Unit =
         Metrics.prometheusRegistry.counter(
             "pensjon_brevbaker_letter_request_count",
-            listOf(Tag.of("brevkode", brevkode.name))
+            listOf(Tag.of("brevkode", brevkode.kode()))
         ).increment()
 
     private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
-        val template = templates[brevkode]?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
+        val template = getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
 
         val language = spraak.toLanguage()
         if (!template.language.supports(language)) {
@@ -77,10 +85,10 @@ class TemplateResource<Kode : Enum<Kode>, out T : BrevTemplate<BrevbakerBrevdata
         )
     }
 
-    private suspend fun renderPDF(call: ApplicationCall, letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
+    private suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
             .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
-            .let { laTeXCompilerService.producePDF(it, call.callId) }
+            .let { laTeXCompilerService.producePDF(it) }
             .let { pdf ->
                 LetterResponse(
                     file = base64Decoder.decode(pdf.base64PDF),

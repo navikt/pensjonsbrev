@@ -5,7 +5,8 @@ import React, { useState } from "react";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { BrevResponse } from "~/types/brev";
+import { SpraakKode } from "~/types/apiTypes";
+import { type BrevResponse, Distribusjonstype } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
 
 import exampleLetter1Json from "./example-letter-1.json";
@@ -18,18 +19,32 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
     info: {
       id: 1,
       brevkode: "BREV1",
+      brevtittel: "Brev 1",
       opprettet: "2024-01-01",
       sistredigert: "2024-01-01",
-      sistredigertAv: "Z123",
-      opprettetAv: "Z123",
-      status: { type: "UnderRedigering", redigeresAv: "Z123" },
+      sistredigertAv: { id: "Z123", navn: "Z entotre" },
+      opprettetAv: { id: "Z123", navn: "Z entotre" },
+      status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
+      distribusjonstype: Distribusjonstype.SENTRALPRINT,
+      mottaker: null,
+      avsenderEnhet: null,
+      spraak: SpraakKode.Bokmaal,
+      journalpostId: null,
     },
     redigertBrev: initial,
     redigertBrevHash: "hash1",
     saksbehandlerValg: {},
   };
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevresponse));
-  return <LetterEditor editorState={editorState} freeze={false} setEditorState={setEditorState} />;
+  return (
+    <LetterEditor
+      editorState={editorState}
+      error={false}
+      freeze={false}
+      setEditorState={setEditorState}
+      showDebug={false}
+    />
+  );
 }
 
 describe("<LetterEditor />", () => {
@@ -41,21 +56,18 @@ describe("<LetterEditor />", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
 
       cy.get(".TITLE1").contains("Tittel over punktliste").click();
-      cy.get('[data-cy="TITLE1-BUTTON"]').should("be.disabled");
-      cy.get('[data-cy="TITLE2-BUTTON"]').should("be.enabled");
-      cy.get('[data-cy="PARAGRAPH-BUTTON"]').should("be.enabled").click();
+      cy.getDataCy("typography-select").contains("Overskrift (alt+2)").should("be.selected");
 
+      cy.getDataCy("typography-select").select("Normal (alt+1)");
       cy.get(".PARAGRAPH").contains("Tittel over punktliste");
-      cy.get('[data-cy="PARAGRAPH-BUTTON"]').should("be.disabled");
-      cy.get('[data-cy="TITLE1-BUTTON"]').should("be.enabled");
-      cy.get('[data-cy="TITLE2-BUTTON"]').should("be.enabled").click();
+      cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
 
+      cy.getDataCy("typography-select").select("Underoverskrift (alt+3)");
       cy.get(".TITLE2").contains("Tittel over punktliste");
-      cy.get('[data-cy="TITLE2-BUTTON"]').should("be.disabled");
-      cy.get('[data-cy="PARAGRAPH-BUTTON"]').should("be.enabled");
-      cy.get('[data-cy="TITLE1-BUTTON"]').should("be.enabled");
+      cy.getDataCy("typography-select").contains("Underoverskrift (alt+3)").should("be.selected");
     });
   });
+
   describe("Navigation", () => {
     it("ArrowUp works within sibling contenteditables", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);

@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarInnvilgetOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.egenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.model.format
@@ -18,12 +19,12 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 
 @TemplateModelHelpers
 object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
+    override val kode = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = kode.name,
@@ -33,7 +34,7 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
             displayTitle = "Egenerklæring godskriving omsorgspoeng",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = VEDTAKSBREV,
+            brevtype = INFORMASJONSBREV,
         )
     ) {
 
@@ -63,7 +64,7 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
                     English to
                             "We need you to confirm that you have provided nursing and care work in ".expr()
                             + aarEgenerklaringOmsorgspoeng
-                            + ". Therefore, it is required that you complete the enclosed form and return it to NAV within four weeks.",
+                            + ". Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks.",
                 )
             }
             paragraph {
@@ -74,7 +75,7 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
                     English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                 )
             }
-            includePhrase(Felles.HarDuSpoersmaalOmsorgsarbeid)
+            includePhrase(Felles.HarDuSpoersmaal.omsorg)
         }
         includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, egenerklaeringOmsorgsarbeidDto)
     }

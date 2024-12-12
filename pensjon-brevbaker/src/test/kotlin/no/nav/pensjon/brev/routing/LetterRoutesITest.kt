@@ -12,10 +12,11 @@ import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
+import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
+import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
+import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
+import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.render.Letter2Markup
@@ -30,19 +31,19 @@ import org.junit.jupiter.api.Test
 @Tag(TestTags.INTEGRATION_TEST)
 class LetterRoutesITest {
     private val autoBrevRequest = BestillBrevRequest(
-        kode = OmsorgEgenAuto.kode,
-        letterData = Fixtures.create<OmsorgEgenAutoDto>(),
+        kode = LetterExample.kode,
+        letterData = createLetterExampleDto(),
         felles = Fixtures.fellesAuto,
         language = LanguageCode.BOKMAL,
     )
     private val bestillMarkupRequest = BestillBrevRequest(
-        kode = InformasjonOmSaksbehandlingstid.kode,
-        letterData = Fixtures.create<InformasjonOmSaksbehandlingstidDto>(),
+        kode = EksempelbrevRedigerbart.kode,
+        letterData = createEksempelbrevRedigerbartDto(),
         felles = Fixtures.felles,
         language = LanguageCode.BOKMAL,
     )
     private val redigertBestilling = Letter(
-        template = InformasjonOmSaksbehandlingstid.template,
+        template = EksempelbrevRedigerbart.template,
         argument = bestillMarkupRequest.letterData,
         language = Language.Bokmal,
         felles = bestillMarkupRequest.felles
@@ -66,6 +67,18 @@ class LetterRoutesITest {
         val response = client.post("/letter/autobrev/html") {
             accept(ContentType.Text.Html)
             setBody(autoBrevRequest)
+        }
+        assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertThat(response.bodyAsText(), contains(Regex("<html.*>")))
+    }
+
+    @Test
+    fun `render html can respond with raw html with new code`() = testBrevbakerApp { client ->
+        val req = autoBrevRequest.copy(kode = AutomatiskBrevkode("TESTBREV"))
+        val response = client.post("/letter/autobrev/html") {
+            accept(ContentType.Text.Html)
+            setBody(req)
         }
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
         assertEquals(HttpStatusCode.OK, response.status)

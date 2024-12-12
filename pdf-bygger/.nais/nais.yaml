@@ -23,9 +23,7 @@ spec:
     initialDelay: 20
     timeout: 5
   replicas:
-    min: 12
-    max: 300
-    cpuThresholdPercentage: 50
+    disableAutoScaling: true
   prometheus:
     enabled: true
     path: "/metrics"
@@ -34,10 +32,14 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
   resources:
     requests:
-      cpu: "100m"
-      memory: "512Mi"
+      cpu: "1"
+      memory: "1024Mi"
     limits:
       memory: "8192Mi"
   accessPolicy:
@@ -52,7 +54,7 @@ spec:
     - name: PDF_BYGGER_COMPILE_TIMEOUT
       value: "120s"
     - name: PDF_BYGGER_LATEX_PARALLELISM
-      value: "8"
+      value: "4"
     - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT
       value: "1s"
     - name: PDF_BYGGER_COMPILE_TMP_DIR

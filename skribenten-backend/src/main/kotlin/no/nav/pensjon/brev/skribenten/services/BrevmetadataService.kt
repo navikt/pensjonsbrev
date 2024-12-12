@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.typesafe.config.Config
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -12,21 +11,16 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import no.nav.pensjon.brev.skribenten.callId
-import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
 class BrevmetadataService(
     config: Config,
-    clientEngine: HttpClientEngine = CIO.create(),
 ) : ServiceStatus {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
-    private val httpClient = HttpClient(clientEngine) {
+    private val httpClient = HttpClient(CIO) {
         defaultRequest {
             url(brevmetadataUrl)
         }
@@ -35,20 +29,11 @@ class BrevmetadataService(
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
+        install(CallIdFromContext)
     }
 
-    suspend fun hentMaler(call: ApplicationCall, sakType: Pen.SakType, includeEblanketter: Boolean): Brevmaler =
-        coroutineScope {
-            val eblanketterAsync: Deferred<List<BrevdataDto>> = async { if (includeEblanketter) getEblanketter(call) else emptyList() }
-            val malerAsync: Deferred<List<BrevdataDto>> = async { getBrevmalerForSakstype(call, sakType) }
-            return@coroutineScope Brevmaler(eblanketterAsync.await(), malerAsync.await())
-        }
-
-    private suspend fun getBrevmalerForSakstype(call: ApplicationCall, sakstype: Pen.SakType): List<BrevdataDto> {
-        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
-            headers {
-                callId(call)
-            }
+    suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {
+        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.name}?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {
@@ -59,12 +44,9 @@ class BrevmetadataService(
         }
     }
 
-    private suspend fun getEblanketter(call: ApplicationCall): List<BrevdataDto> {
-        return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
+    suspend fun getEblanketter(): List<BrevdataDto> {
+        return httpClient.get("/api/brevdata/eblanketter") {
             contentType(ContentType.Application.Json)
-            headers{
-                callId(call)
-            }
         }.body<List<BrevdataDto>>()
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
     }
@@ -76,13 +58,17 @@ class BrevmetadataService(
     }
 
     override val name = "Brevmetadata"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
+    override suspend fun ping(): ServiceResult<Boolean> =
         httpClient.get("/api/internal/isReady").toServiceResult<String>().map { true }
 
-    data class Brevmaler(
-        val eblanketter: List<BrevdataDto>,
-        val maler: List<BrevdataDto>,
-    )
+}
+
+enum class SpraakKode {
+    EN, // Engelsk
+    NB, // Bokmaal
+    NN, // Nynorsk
+    FR, // Fransk
+    SE, // Nord-samisk
 }
 
 data class BrevdataDto(
@@ -141,8 +127,13 @@ data class BrevdataDto(
                 GG, NN, ON -> false
             }
     }
-
 }
 
+object Brevkoder {
+    const val FRITEKSTBREV_KODE = "PE_IY_05_300"
+    const val POSTERINGSGRUNNLAG_KODE = "PE_OK_06_100"
+    const val POSTERINGSGRUNNLAG_VIRK0101_KODE = "PE_OK_06_101"
+    const val POSTERINGSGRUNNLAG_VIRK0102_KODE = "PE_OK_06_102"
 
-
+    val ikkeRedigerbarBrevtittel = setOf(POSTERINGSGRUNNLAG_KODE, POSTERINGSGRUNNLAG_VIRK0101_KODE, POSTERINGSGRUNNLAG_VIRK0102_KODE)
+}

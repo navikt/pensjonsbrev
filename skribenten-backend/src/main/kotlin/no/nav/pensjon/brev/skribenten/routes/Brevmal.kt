@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
@@ -13,11 +11,11 @@ fun Route.brevmal(brevbakerService: BrevbakerService) {
     val logger = LoggerFactory.getLogger("brevbakerRoute")
 
     get("/brevmal/{brevkode}/modelSpecification") {
-        val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
-        brevbakerService.getModelSpecification(call, brevkode)
-            .onOk { call.respondText(it, ContentType.Application.Json) }
+        val brevkode = call.parameters.getOrFail<Brevkode.Redigerbart>("brevkode")
+        brevbakerService.getModelSpecification(brevkode)
+            .onOk { call.respond(it) }
             .onError { message, status ->
-                logger.error("Feil ved henting av modelSpecification for ${brevkode.name}: Status:$status Melding: $message ")
+                logger.error("Feil ved henting av modelSpecification for ${brevkode.kode()}: Status:$status Melding: $message ")
                 call.respond(status, message)
             }
     }

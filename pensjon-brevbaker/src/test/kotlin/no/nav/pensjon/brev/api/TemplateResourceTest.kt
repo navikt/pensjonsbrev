@@ -3,21 +3,23 @@ package no.nav.pensjon.brev.api
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.plugins.callid.*
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PDFCompilationOutput
-import no.nav.pensjon.brev.maler.OpphoerBarnetilleggAuto
+import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
+import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
@@ -35,20 +37,20 @@ class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
     private val base64PDF = Base64.getEncoder().encodeToString(pdfInnhold.toByteArray())
     private val latexMock = mockk<LaTeXCompilerService> {
-        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(base64PDF)
+        coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
     }
-    private val autobrev = TemplateResource("autobrev", ProductionTemplates.autobrev, latexMock)
-    private val redigerbar = TemplateResource("autobrev", ProductionTemplates.redigerbare, latexMock)
+    private val autobrev = TemplateResource("autobrev", Testmaler.hentAutobrevmaler(), latexMock)
+    private val redigerbar = TemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), latexMock)
 
     private val validAutobrevRequest = BestillBrevRequest(
-        Brevkode.AutoBrev.UT_OPPHOER_BT_AUTO,
-        Fixtures.create<OpphoerBarnetilleggAutoDto>(),
+        LetterExample.kode,
+        createLetterExampleDto(),
         Fixtures.fellesAuto,
         LanguageCode.BOKMAL
     )
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
-        Brevkode.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID,
-        Fixtures.create<InformasjonOmSaksbehandlingstidDto>(),
+        EksempelbrevRedigerbart.kode,
+        createEksempelbrevRedigerbartDto(),
         Fixtures.felles,
         LanguageCode.BOKMAL,
         LetterMarkup(
@@ -70,15 +72,11 @@ class TemplateResourceTest {
         )
     )
 
-    private val callMock = mockk<ApplicationCall> {
-        every { callId } returns "abdef"
-    }
-
     @Test
     fun `can renderPDF with valid letterData`(): Unit = runBlocking {
-        val result = autobrev.renderPDF(callMock, validAutobrevRequest)
+        val result = autobrev.renderPDF(validAutobrevRequest)
         assertEquals(
-            LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), OpphoerBarnetilleggAuto.template.letterMetadata),
+            LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
             result
         )
     }
@@ -87,20 +85,20 @@ class TemplateResourceTest {
     fun `can renderHTML with valid letterData`() {
         val result = autobrev.renderHTML(validAutobrevRequest)
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), result.contentType)
-        assertEquals(OpphoerBarnetilleggAuto.template.letterMetadata, result.letterMetadata)
+        assertEquals(LetterExample.template.letterMetadata, result.letterMetadata)
     }
 
     @Test
     fun `fails renderPDF with invalid letterData`(): Unit = runBlocking {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderPDF(callMock, validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+            autobrev.renderPDF(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
         }
     }
 
     @Test
     fun `fails renderHTML with invalid letterData`() {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderHTML(validAutobrevRequest.copy(letterData = Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>()))
+            autobrev.renderHTML(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
         }
     }
 
@@ -128,8 +126,8 @@ class TemplateResourceTest {
         ).firstOrNull()
 
         val capturedLatex = slot<LatexDocument>()
-        redigerbar.renderPDF(callMock, validRedigertBrevRequest)
-        coVerify { latexMock.producePDF(capture(capturedLatex), any()) }
+        redigerbar.renderPDF(validRedigertBrevRequest)
+        coVerify { latexMock.producePDF(capture(capturedLatex)) }
 
         val letterLatexContent = capturedLatex.captured.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "letter.tex" }.content
         assertThat(
@@ -144,3 +142,5 @@ class TemplateResourceTest {
     }
 
 }
+
+data class RandomLetterdata(val v1: Boolean) : BrevbakerBrevdata

@@ -98,7 +98,7 @@ function findEditsContent(content: Content): { contentIndex: number; itemIndex?:
       return [];
     }
     case "ITEM_LIST": {
-      return content.items.flatMap(findEditsItem).map((ind) => ({ ...ind, contentIndex: content.id }));
+      return content.items.flatMap(findEditsItem).map((ind) => ({ ...ind, contentIndex: content.id ?? -1 }));
     }
     case "LITERAL": {
       return content.editedText ? [{ contentIndex: content.id ?? -1 }] : [];

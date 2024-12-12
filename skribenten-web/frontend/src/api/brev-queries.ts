@@ -44,18 +44,35 @@ export async function createBrev(saksId: string, request: OpprettBrevRequest) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`, request)).data;
 }
 
-export async function updateBrev(saksId: string, brevId: number, request: OppdaterBrevRequest) {
+export async function updateBrev(saksId: string, brevId: string | number, request: OppdaterBrevRequest) {
   return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, request)).data;
 }
 
-export async function hurtiglagreBrev(brevId: number, redigertBrev: EditedLetter) {
-  return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/redigertBrev`, redigertBrev)).data;
+export async function hurtiglagreBrev(brevId: number, redigertBrev: EditedLetter, frigiReservasjon?: boolean) {
+  return (
+    await axios.put<BrevResponse>(
+      `${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/redigertBrev?frigiReservasjon=${frigiReservasjon === true}`,
+      redigertBrev,
+    )
+  ).data;
 }
 
 export async function hurtiglagreSaksbehandlerValg(brevId: number, saksbehandlerValg: SaksbehandlerValg) {
   return (
     await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/saksbehandlerValg`, saksbehandlerValg)
   ).data;
+}
+
+export const oppdaterSignatur = async (brevId: number | string, signatur: string) =>
+  (
+    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/signatur`, signatur, {
+      //sendes som form-data hvis man ikke setter content-type til text/plain
+      headers: { "Content-Type": "text/plain" },
+    })
+  ).data;
+
+export async function tilbakestillBrev(brevId: number) {
+  return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/tilbakestill`)).data;
 }
 
 export const getBrevReservasjon = {
@@ -75,9 +92,11 @@ export const getBrevReservasjon = {
 };
 
 export function useModelSpecification<T>(brevkode: string, select: (data: LetterModelSpecification) => T) {
-  return useQuery({
+  const { status, data, error } = useQuery({
     queryKey: getModelSpecification.queryKey(brevkode),
     queryFn: () => getModelSpecification.queryFn(brevkode),
     select,
-  }).data;
+  });
+
+  return { status, specification: data, error };
 }

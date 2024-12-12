@@ -1,0 +1,294 @@
+{
+    "info": {
+        "id": 1,
+        "opprettetAv": {
+            "id": "Z990297",
+            "navn": "F_Z990297 E_Z990297"
+        },
+        "opprettet": "2024-09-06T07:57:03.041Z",
+        "sistredigertAv": {
+            "id": "Z990297",
+            "navn": "F_Z990297 E_Z990297"
+        },
+        "sistredigert": "2024-09-13T11:12:32.683Z",
+        "brevkode": "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+        "brevtittel": "Informasjon om saksbehandlingstid",
+        "status": {
+            "type": "UnderRedigering",
+            "redigeresAv": {
+                "id": "Z990297",
+                "navn": "F_Z990297 E_Z990297"
+            }
+        },
+        "distribusjonstype": "SENTRALPRINT",
+        "mottaker": {
+            "type": "UtenlandskAdresse",
+            "navn": "Private personen",
+            "postnummer": "4444",
+            "poststed": "et poststed",
+            "adresselinje1": "sin andresselinje",
+            "adresselinje2": "",
+            "adresselinje3": "",
+            "landkode": "GB"
+        }
+    },
+    "redigertBrev": {
+        "title": "Information about application processing time",
+        "sakspart": {
+            "gjelderNavn": "TRYGG ANBEFALING",
+            "gjelderFoedselsnummer": "21418744917",
+            "saksnummer": "22981081",
+            "dokumentDato": "13/09/2024"
+        },
+        "blocks": [
+            {
+                "id": -2030215963,
+                "editable": true,
+                "content": [
+                    {
+                        "id": 1507865607,
+                        "text": "We received your application for ",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    },
+                    {
+                        "id": -726051414,
+                        "text": "alderspensjon",
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": -142236915,
+                        "text": " from the National Insurance authorities in ",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    },
+                    {
+                        "id": -1660311050,
+                        "text": "Spaniaa",
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": 1063425,
+                        "text": " on ",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    },
+                    {
+                        "id": -694080035,
+                        "text": "24 July 2024",
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": 46,
+                        "text": ".",
+                        "editedText": "",
+                        "type": "LITERAL",
+                        "tags": []
+                    },
+                    {
+                        "id": -1894607013,
+                        "items": [
+                            {
+                                "id": -503413477,
+                                "content": [
+                                    {
+                                        "id": -503413508,
+                                        "text": "item 1 - TODO remove itemlist",
+                                        "editedText": null,
+                                        "type": "LITERAL",
+                                        "tags": []
+                                    }
+                                ]
+                            },
+                            {
+                                "id": 886663488,
+                                "content": [
+                                    {
+                                        "id": 886663457,
+                                        "text": "item 2 - TODO remove itemlist",
+                                        "editedText": null,
+                                        "type": "LITERAL",
+                                        "tags": []
+                                    }
+                                ]
+                            },
+                            {
+                                "id": -867386911,
+                                "content": [
+                                    {
+                                        "id": -867386942,
+                                        "text": "item 3 - TODO remove itemlist",
+                                        "editedText": null,
+                                        "type": "LITERAL",
+                                        "tags": []
+                                    }
+                                ]
+                            }
+                        ],
+                        "deletedItems": [],
+                        "type": "ITEM_LIST"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": -510052513,
+                "editable": true,
+                "content": [
+                    {
+                        "id": 1034742166,
+                        "text": "Your accumulated pension capital is not sufficient for you to draw a retirement pension at ",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    },
+                    {
+                        "id": -1152962312,
+                        "text": "55",
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": -1159560709,
+                        "text": " percent from ",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    },
+                    {
+                        "id": -947583377,
+                        "text": "10 September 2024",
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": -1221981595,
+                        "text": ". If you are entitled to a contractual early retirement pension (AFP) in the private sector, you might be entitled to draw a retirement pension.",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": -856914985,
+                "editable": true,
+                "content": [
+                    {
+                        "id": -856915016,
+                        "text": "We will process your application once we have received the necessary information from Fellesordningen about your AFP rights. Normally it takes four to six weeks for you to get a reply from them on your application. This requires that you have submitted an application for AFP to Fellesordningen.",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": 822540105,
+                "editable": true,
+                "content": [
+                    {
+                        "id": -1114690237,
+                        "text": "Our processing time for this type of application is usually ",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    },
+                    {
+                        "id": 1834595758,
+                        "text": "10",
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": 1838606639,
+                        "text": " weeks.",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": -1153661566,
+                "editable": true,
+                "content": [
+                    {
+                        "id": -1153661597,
+                        "text": "We will contact you if we need you to provide more information.",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": 1767516329,
+                "editable": true,
+                "content": [
+                    {
+                        "id": 1767516298,
+                        "text": "Duty to report changes",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "TITLE1"
+            },
+            {
+                "id": 173660319,
+                "editable": true,
+                "content": [
+                    {
+                        "id": 173660288,
+                        "text": "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move.",
+                        "editedText": null,
+                        "type": "LITERAL",
+                        "tags": []
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "type": "PARAGRAPH"
+            }
+        ],
+        "signatur": {
+            "hilsenTekst": "Yours sincerely",
+            "saksbehandlerRolleTekst": "Caseworker",
+            "saksbehandlerNavn": "TODO",
+            "attesterendeSaksbehandlerNavn": "",
+            "navAvsenderEnhet": "Nav Arbeid og ytelser Sørlandet"
+        },
+        "deletedBlocks": []
+    },
+    "redigertBrevHash": "d229d42baec7d58e9714e44215dbcddda87dfa460cdfbb407fe34959c5c51d0f",
+    "saksbehandlerValg": {
+        "mottattSoeknad": "2024-07-24",
+        "ytelse": "alderspensjon",
+        "land": "Spaniaa",
+        "svartidUker": "10",
+        "inkluderVenterSvarAFP": {
+            "uttakAlderspensjonProsent": "55",
+            "uttaksDato": "2024-09-10"
+        },
+        "inkluderVenterSvarAFP.uttaksDato": "2024-09-10",
+        "inkluderVenterSvarAFP.uttakAlderspensjonProsent": "55"
+    }
+}

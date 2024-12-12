@@ -17,9 +17,9 @@ data class Innledning(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                Bokmal to "Hvert år sjekker NAV inntekten din for å se om du har fått utbetalt riktig beløp i uføretrygd året før. Uføretrygden din er beregnet etter nye opplysninger om inntekt fra Skatteetaten.",
-                Nynorsk to "Kvart år sjekkar NAV inntekta di for å sjå om du fekk utbetalt rett beløp i uføretrygd året før. Uføretrygda di blir rekna ut etter nye opplysningar om inntekt frå Skatteetaten.",
-                English to "Every year, NAV checks your income information in your tax settlement to see whether you have received the correct amount of disability benefit in the previous year. We use updated income information from the Norwegian Tax Administration to calculate your benefit."
+                Bokmal to "Hvert år sjekker Nav inntekten din for å se om du har fått utbetalt riktig beløp i uføretrygd året før. Uføretrygden din er beregnet etter nye opplysninger om inntekt fra Skatteetaten.",
+                Nynorsk to "Kvart år sjekkar Nav inntekta di for å sjå om du fekk utbetalt rett beløp i uføretrygd året før. Uføretrygda di blir rekna ut etter nye opplysningar om inntekt frå Skatteetaten.",
+                English to "Every year, Nav checks your income information in your tax settlement to see whether you have received the correct amount of disability benefit in the previous year. We use updated income information from the Norwegian Tax Administration to calculate your benefit."
             )
         }
         paragraph {

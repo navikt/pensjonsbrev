@@ -6,22 +6,23 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.services.LetterMetadata
-import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import no.nav.pensjon.brev.skribenten.services.*
 import java.time.Duration
 import java.time.Instant
 
 typealias SaksbehandlerValg = Api.GeneriskBrevdata
 
 object Api {
-    class GeneriskBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
+    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata
 
     data class OpprettBrevRequest(
-        val brevkode: Brevkode.Redigerbar,
+        val brevkode: Brevkode.Redigerbart,
         val spraak: SpraakKode,
         val avsenderEnhetsId: String?,
         val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean?,
+        val mottaker: OverstyrtMottaker?,
+        val vedtaksId: Long?,
     )
 
     data class OppdaterBrevRequest(
@@ -29,16 +30,26 @@ object Api {
         val redigertBrev: Edit.Letter,
     )
 
-    data class DelvisOppdaterBrevRequest(val laastForRedigering: Boolean?)
+    data class DelvisOppdaterBrevRequest(
+        val laastForRedigering: Boolean? = null,
+        val distribusjonstype: Distribusjonstype? = null,
+        val mottaker: OverstyrtMottaker? = null
+    )
 
     data class BrevInfo(
         val id: Long,
-        val opprettetAv: String,
+        val opprettetAv: NavAnsatt,
         val opprettet: Instant,
-        val sistredigertAv: String,
+        val sistredigertAv: NavAnsatt,
         val sistredigert: Instant,
-        val brevkode: Brevkode.Redigerbar,
+        val brevkode: Brevkode.Redigerbart,
+        val brevtittel: String,
         val status: BrevStatus,
+        val distribusjonstype: Distribusjonstype,
+        val mottaker: OverstyrtMottaker?,
+        val avsenderEnhet: NavEnhet?,
+        val spraak: SpraakKode,
+        val journalpostId: Long?,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -46,11 +57,42 @@ object Api {
         JsonSubTypes.Type(BrevStatus.Kladd::class, name = "Kladd"),
         JsonSubTypes.Type(BrevStatus.UnderRedigering::class, name = "UnderRedigering"),
         JsonSubTypes.Type(BrevStatus.Klar::class, name = "Klar"),
+        JsonSubTypes.Type(BrevStatus.Arkivert::class, name = "Arkivert"),
     )
     sealed class BrevStatus {
         data object Kladd : BrevStatus()
-        data class UnderRedigering(val redigeresAv: String) : BrevStatus()
+        data class UnderRedigering(val redigeresAv: NavAnsatt) : BrevStatus()
         data object Klar : BrevStatus()
+        data object Arkivert : BrevStatus()
+    }
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(OverstyrtMottaker.Samhandler::class, name = "Samhandler"),
+        JsonSubTypes.Type(OverstyrtMottaker.NorskAdresse::class, name = "NorskAdresse"),
+        JsonSubTypes.Type(OverstyrtMottaker.UtenlandskAdresse::class, name = "UtenlandskAdresse"),
+    )
+    sealed class OverstyrtMottaker {
+        data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker()
+        data class NorskAdresse(
+            val navn: String,
+            val postnummer: String,
+            val poststed: String,
+            val adresselinje1: String?,
+            val adresselinje2: String?,
+            val adresselinje3: String?
+        ) : OverstyrtMottaker()
+
+        // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
+        data class UtenlandskAdresse(
+            val navn: String,
+            val postnummer: String?,
+            val poststed: String?,
+            val adresselinje1: String,
+            val adresselinje2: String?,
+            val adresselinje3: String?,
+            val landkode: String,
+        ) : OverstyrtMottaker()
     }
 
     data class BrevResponse(
@@ -68,11 +110,22 @@ object Api {
         val redigertBrevHash: EditLetterHash,
     )
 
-    data class NavAnsatt(val id: String, val navn: String?)
+    data class NavAnsatt(val id: NavIdent, val navn: String?)
 
     data class SakContext(
         val sak: Pen.SakSelection,
-        val brevMetadata: List<LetterMetadata>
+        val brevMetadata: List<Brevmal>
+    )
+
+    data class Brevmal(
+        val name: String,
+        val id: String,
+        val brevsystem: BrevSystem,
+        val spraak: List<SpraakKode>,
+        val brevkategori: String?,
+        val dokumentkategoriCode: BrevdataDto.DokumentkategoriCode?,
+        val redigerbart: Boolean,
+        val redigerbarBrevtittel: Boolean,
     )
 
     data class BestillDoksysBrevRequest(
@@ -91,6 +144,7 @@ object Api {
         val brevtittel: String? = null,
         val enhetsId: String,
     )
+
     data class BestillEblankettRequest(
         val brevkode: String,
         val landkode: String,

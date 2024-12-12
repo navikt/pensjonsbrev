@@ -27,7 +27,7 @@ jobs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "gradle/actions/wrapper-validation@v3"
+      - uses: "gradle/actions/wrapper-validation@v4"
       - uses: "actions/cache@v4"
         with:
           "path": "~/.gradle/caches"
@@ -73,7 +73,7 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:skribenten-backend"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "skribenten-backend/.nais/nais.yaml"
+          "RESOURCE": "skribenten-backend/.nais/unleash-api-token-dev-q2.yaml,skribenten-backend/.nais/nais.yaml"
           "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
           "VARS": "skribenten-backend/.nais/dev.yaml"
 
@@ -93,6 +93,6 @@ jobs:
         env:
           "ENVIRONMENT": "prod-gcp:skribenten-backend"
           "CLUSTER": "prod-gcp"
-          "RESOURCE": "skribenten-backend/.nais/nais.yaml"
+          "RESOURCE": "skribenten-backend/.nais/unleash-api-token-prod.yaml,skribenten-backend/.nais/nais.yaml"
           "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
           "VARS": "skribenten-backend/.nais/prod.yaml"

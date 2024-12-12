@@ -6,11 +6,9 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.utvidetBehandlingstid
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_ENDRING_URL
-import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -25,6 +23,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidAutoDto> {
 
+    // PE_UT_06_200
     override val kode = Brevkode.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO
 
     override val template = createTemplate(
@@ -40,9 +39,9 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
     ) {
         title {
             text(
-                Bokmal to "NAV har mottatt søknaden din om uføretrygd",
-                Nynorsk to "NAV har motteke søknaden din om uføretrygd",
-                English to "NAV has received your application for disability benefit"
+                Bokmal to "Nav har mottatt søknaden din om uføretrygd",
+                Nynorsk to "Nav har motteke søknaden din om uføretrygd",
+                English to "Nav has received your application for disability benefit"
             )
         }
         outline {
@@ -108,7 +107,7 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                 )
             }
 
-            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }
 }

@@ -361,6 +361,31 @@ components:
             - "KLAGE_OG_ANKE"
             - "POSTERINGSGRUNNLAG"
             - "FRITEKSTBREV"
+        brevkontekst:
+          type: string
+          description: Se `no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst`
+          enum:
+            - "ALLE"
+            - "SAK"
+            - "VEDTAK"
+        sakstyper:
+          type: array
+          items:
+            type: string
+            description: Se `no.nav.pensjon.brev.api.model.Sakstype`
+            enum:
+              - "AFP"
+              - "AFP_PRIVAT"
+              - "ALDER"
+              - "BARNEP"
+              - "FAM_PL"
+              - "GAM_YRK"
+              - "GENRL"
+              - "GJENLEV"
+              - "GRBL"
+              - "KRIGSP"
+              - "OMSORG"
+              - "UFOEREP"
     LanguageCode:
       type: string
       description: Se `no.nav.pensjon.brevbaker.api.model.LanguageCode`

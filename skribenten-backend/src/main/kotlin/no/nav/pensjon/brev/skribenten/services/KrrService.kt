@@ -3,22 +3,21 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
 
 class KrrService(config: Config, authService: AzureADService): ServiceStatus {
     private val krrUrl = config.getString("url")
-    private val krrScope = config.getString("scope")
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    private val client = AzureADOnBehalfOfAuthorizedHttpClient(krrScope, authService) {
+    private val client = HttpClient(CIO) {
         defaultRequest {
             url(krrUrl)
         }
@@ -27,6 +26,7 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
                 registerModule(JavaTimeModule())
             }
         }
+        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
     }
 
     @Suppress("EnumEntryName")
@@ -50,8 +50,8 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
         }
     }
 
-    suspend fun getPreferredLocale(call: ApplicationCall, pid: String): KontaktinfoResponse {
-        return client.get(call, "/rest/v1/person") {
+    suspend fun getPreferredLocale(pid: String): KontaktinfoResponse {
+        return client.get("/rest/v1/person") {
             headers {
                 accept(ContentType.Application.Json)
                 header("Nav-Personident", pid)
@@ -80,8 +80,8 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
     }
 
     override val name = "KRR"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
-        client.get(call, "/internal/health/readiness")
+    override suspend fun ping(): ServiceResult<Boolean> =
+        client.get("/internal/health/readiness")
             .toServiceResult<String>()
             .map { true }
 }

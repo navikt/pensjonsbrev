@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import { TextField } from "@navikt/ds-react";
 
 import type { Signatur } from "~/types/brevbakerTypes";
 
@@ -9,16 +8,14 @@ const Saksbehandler = ({ rolleTekst, navn }: { rolleTekst: string; navn?: string
   }
   return (
     <div>
-      <TextField
+      <p
         css={css`
-          margin-bottom: var(--a-spacing-1);
+          margin-bottom: var(--a-spacing-1-alt);
         `}
-        hideLabel
-        label=""
-        readOnly
-        tabIndex={-1}
-        value={navn}
-      />
+        data-cy="brev-editor-saksbehandler"
+      >
+        {navn}
+      </p>
       <i>{rolleTekst}</i>
     </div>
   );
@@ -27,8 +24,8 @@ const Saksbehandler = ({ rolleTekst, navn }: { rolleTekst: string; navn?: string
 export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
   <div
     css={css`
-      background: var(--a-gray-50);
-      padding: var(--a-spacing-3);
+      opacity: 0.5;
+      margin-top: var(--a-spacing-8);
       display: flex;
       flex-direction: column;
       gap: var(--a-spacing-6);

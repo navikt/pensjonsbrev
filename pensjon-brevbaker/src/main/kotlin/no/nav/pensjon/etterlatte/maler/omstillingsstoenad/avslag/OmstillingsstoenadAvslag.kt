@@ -14,18 +14,16 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
-
 data class OmstillingstoenadAvslagDTO(
     override val innhold: List<Element>,
     val bosattUtland: Boolean,
-): FerdigstillingBrevDTO
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>, Hovedmal {
@@ -40,7 +38,7 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        )
+        ),
     ) {
         title {
             text(
@@ -51,8 +49,6 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
         }
 
         outline {
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
-
             konverterElementerTilBrevbakerformat(innhold)
 
             includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageAvslagOpphoer)

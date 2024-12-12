@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.api.ProductionTemplates
+import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Language
@@ -25,7 +25,7 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun canRenderDocumentationForAllTemplates() {
-        ProductionTemplates.autobrev.forEach {
+        (ProductionTemplates.hentAutobrevmaler() + ProductionTemplates.hentRedigerbareMaler()).forEach {
             TemplateDocumentationRenderer.render(it.template, it.template.language.all().first())
         }
     }

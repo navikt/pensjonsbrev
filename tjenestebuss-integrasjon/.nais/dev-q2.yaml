@@ -14,20 +14,13 @@ groups:
   - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
 
 vaultPaths:
-  - kvPath: "serviceuser/data/dev/srvpensjonsbrev-esb"
-    mountPath: "/secrets/sts"
   - kvPath: "/kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev"
     mountPath: "/secrets/pensjonsbrev"
 inboundRules:
   - application: skribenten-backend
     namespace: pensjonsbrev
     cluster: dev-gcp
-  - application: skribenten-backend-lokal
-    namespace: pensjonsbrev
-    cluster: dev-gcp
 
 externalHosts:
-  - tjenestebuss-q2.adeo.no
-  - security-token-service.dev.adeo.no
   - login.microsoftonline.com
   - wasapp.adeo.no

@@ -10,10 +10,27 @@ type Coordinates = {
  *
  */
 export function getCursorOffset() {
-  const selection = window.getSelection();
-  const range = selection?.getRangeAt(0);
-  return range?.collapsed ? range.startOffset : -1;
+  const selection = globalThis.getSelection();
+  if ((selection?.rangeCount ?? 0) > 0) {
+    const range = selection?.getRangeAt(0);
+    return range?.collapsed ? range.startOffset : -1;
+  }
+  return -1;
 }
+
+/**
+ *
+ * @returns the current offset of the cursor, or the range if the cursor is not collapsed.
+ */
+export const getCursorOffsetOrRange = () => {
+  const selection = globalThis.getSelection();
+  if ((selection?.rangeCount ?? 0) > 0) {
+    const range = selection?.getRangeAt(0);
+    return range?.collapsed ? range.startOffset : range;
+  }
+  return -1;
+};
+
 /**
  * Focus cursor at the given offset in the node.
  *
@@ -21,13 +38,16 @@ export function getCursorOffset() {
  * @param offset the offset in the node
  */
 export function focusAtOffset(node: ChildNode, offset: number) {
-  const range = document.createRange();
-  range.setStart(node, offset);
-  range.collapse();
+  if (offset >= 0) {
+    const range = document.createRange();
+    range.setStart(node, offset);
+    range.collapse();
+    node.parentElement?.focus();
 
-  const selection = window.getSelection();
-  selection?.removeAllRanges();
-  selection?.addRange(range);
+    const selection = globalThis.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }
 }
 
 export function areAnyContentEditableSiblingsPlacedLower(element: HTMLSpanElement) {
@@ -62,7 +82,7 @@ export function gotoCoordinates(coordinates: Coordinates) {
     console.warn("Could not get caret for position:", x, y);
     return;
   }
-  const selection = window.getSelection();
+  const selection = globalThis.getSelection();
   selection?.removeAllRanges();
   selection?.addRange(range);
 }
@@ -124,7 +144,7 @@ export function getCaretRect() {
 }
 
 export function getRange() {
-  const selection = window.getSelection();
+  const selection = globalThis.getSelection();
   return selection?.getRangeAt(0);
 }
 

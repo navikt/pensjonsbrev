@@ -12,19 +12,25 @@ fun <Data : Any, Field> Expression<Data>.select(
 
 fun <T> T.expr(): Expression<T> = Expression.Literal(this)
 
-fun <T: Any> Expression<T?>.ifNull(then: T): Expression<T> =
+fun <T : Any> Expression<T?>.ifNull(then: T): Expression<T> =
     Expression.BinaryInvoke(
         this,
         then.expr(),
         BinaryOperation.IfNull(),
     )
 
-fun <T: Any> Expression<T?>.notNull(): Expression<Boolean> = notEqualTo(null)
+fun <T : Any> Expression<T?>.notNull(): Expression<Boolean> = notEqualTo(null)
 
 fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
     this,
     enums.asList().expr(),
     BinaryOperation.EnumInList()
+)
+
+fun <T: Any> Expression<List<T>?>.getOrNull(index: Int = 0): Expression<T?> = Expression.BinaryInvoke(
+    this,
+    index.expr(),
+    BinaryOperation.GetElementOrNull()
 )
 
 fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = not(isOneOf(*enums))
@@ -111,3 +117,4 @@ fun <T> Expression<T>.format(formatter: LocalizedFormatter<T>): StringExpression
         second = Expression.FromScope.Language,
         operation = formatter,
     )
+

@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.BinaryOperation.Documentation
 import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invoke.Operation
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 object TemplateDocumentationRenderer {
 
@@ -250,6 +251,11 @@ object TemplateDocumentationRenderer {
             is UnaryOperation.IsEmpty -> TemplateDocumentation.Expression.Invoke(
                 operator = Operation(text = "isEmpty", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value)
+            )
+
+            is UnaryOperation.BrukerFulltNavn -> TemplateDocumentation.Expression.Invoke(
+                operator = Operation("fulltNavn", Documentation.Notation.FUNCTION),
+                first = renderExpression(expr.value),
             )
         }
 

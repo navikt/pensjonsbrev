@@ -1,0 +1,551 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= Utvikling av brevmaler i brevbakeren
+
+Brevbakeren inneholder brevmaler i form av vår egen Kotlin DSL(Domain specific language)
+DSL'en er utviklet for å kun inneholde de elementene vi trenger for å representere innholdet i brev i nav.
+
+Vi har bevisst utelatt funksjonalitet som ikke direkte har med visningslogikk å gjøre, f. eks aritmetiske operasjoner for tall.
+
+Mal-spåket er laget spesifikt for å gjøre det mindre sannsynlig at man implementerer tekniske feil i maler og at disse fører til at et brev produserers med uheldige feil og mangler. Dette inkluderer blant null-safety, slik at det ikke er mulig å bruke nullable inndata på en måte hvor man risikerer NPE eller at teksten "null" havner i produserte brev.
+
+Informasjonsmodellen bør ta hensyn til virkelighetsbildet når det gjelder hvordan data er knyttet sammen og nullabillity. For eksempel om det ikke gir mening å ha verdi A uten verdi B så bør det vurderes om disse skal grupperes sammen (i en nøstet data-klasse). Om brevet krever en verdi C så bør den vær non-nullable slik at brevproduksjonen kan feile allerede der hvor man populerer opp informasjonsmodellen.
+
+Denne guiden er laget for å komme i gang med mal-utvikling, men inneholder ikke en komplett liste over funksjonalitet.
+
+== Tekst
+Tekst er ett av de vanligste elementene i ett brev og brukes i mange ulike elementer.
+
+=== Kun tekst
+Tekst kan defineres slik:
+[%nowrap, kotlin, ]
+----
+// når vi kun har ren tekst og ingen variabler så bruker man text funksjonen
+paragraph {
+    text(
+        // Her får du kompileringsfeil om du mangler tekst for språklag som påkreves av brevet/frasen/vedlegget:
+
+        Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid",
+        Nynorsk to "Du må sende oss eigenmelding om pleie- og omsorgsarbeid",
+        English to "Personal declaration about the circumstances of care",
+
+        FontType.BOLD // Optional siste parameter fontType. Default er plain. [PLAIN, BOLD, ITALIC]
+    )
+
+    // etterfølgende tekst i samme paragraph vil "henge" sammen med foregående. Det er altså opp til brev-rendering-motoren å bestemme hvordan tekst skal flytte på tverrs av linjer og sider.
+    text(...)
+
+    textExpr()
+}
+----
+
+=== Tekst med variabler
+
+For å bruke variabler i innhold bruker vi textExpr.
+I dette tilfellet får vi da en tekst med en formattert verdi for hvilket år de utførte omsorgs-arbeid.
+Tilsvarende text() så tar den også font-type som siste parameter.
+
+Dette er ikke en funksjon som kalles ved hver bestilling, men en definisjon av en template, så verdiene vi opererer med er
+Expressions(litt som promises).
+
+For å vise variabler i ett brev så blir man tvungen til å alltid bevisst velge en måte å formattere dataene.
+I eksempelet under er aarEgenerklaringOmsorgspoeng som sendes med til brevet av typen Expression<no.nav.pensjon.brevbaker.api.model.Year>.
+
+Year er en IntValue, så den kan formatteres som tall. Det finnes ulike formatteringer for kroner, desimaltall, LocalDate (kort/lang format)
+som hensyntar hvilket språk brevet bestilles på når den formatterer verdiene. Format gir tilbake Expression<String> som påkreves i textExpr.
+
+[%nowrap, kotlin, ]
+----
+// gitt at aarEgenerklaringOmsorgspoeng er en Expression<Year> som sendes med til brevet
+textExpr(
+    Bokmal to
+            // Om vi starter med tekst så må den gjøres om til text expr(). Vi har ikke funnet en bedre måte å få til dette på til nå.
+            "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ".expr()
+            + aarEgenerklaringOmsorgspoeng.format()
+            + ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.",
+)
+----
+
+== Avsnitt
+Avsnitt deler opp innhold med mellomrom og defineres slik:
+[%nowrap, kotlin, ]
+----
+outline {
+    paragraph {
+        text(Bokmal to "lipsum...",)
+    }
+}
+----
+== Titler
+Utenom hoved-tittelen kan man definere titler slik:
+[%nowrap, kotlin, ]
+----
+outline {
+    title1 {
+        text(
+            Bokmal to "Tittel på bokmål",
+        )
+    }
+}
+----
+
+== Inkluderings-logikk
+Dagens brevmaler inneholder mange styringer for å vise riktig innhold til bruker.
+For å tilrettelegge for det har vi funksjonalitet for å inkludere innhold gitt.
+
+Gitt en data-klassen til brevet er:
+[%nowrap, kotlin, ]
+----
+data class EksempelBrevDto(val barnetillegg: Barnetillegg?){
+    data class BarnetilleggFellesBarn(
+        val inntektAnnenForelder: Kroner,
+        val netto: Kroner,
+    )
+}
+----
+
+Da kan vi f.eks lage følgende logikk:
+[%nowrap, kotlin, ]
+----
+paragraph {
+
+    // Om du har barnetillegg
+    ifNotNull(barnetillegg) { tillegg ->
+        // og du får utbetalt barnetillegg
+        showIf(tillegg.netto.greaterThan(0)) {
+            textExpr(
+                Bokmal to "Du får utbetalt ".expr() + tillegg.netto.format() + " Kroner i måneden i barnetillegg...",
+            )
+        }.orShow { // og ikke får utbetalt barnetillegg
+            text(
+                Bokmal to "Du får ikke utbetalt barnetillegget fordi...",
+            )
+        }
+    }
+}
+----
+
+=== showIf
+[%nowrap, kotlin, ]
+----
+// Tar inn Expression<Boolean>, ofte som ett logisk uttrykk på samme måte som man skrive vanlige IF i kotlin
+showIf(/*logikk*/) {
+    ...
+}.orShowIf(/*logikk*/){
+    ...
+}.orShow{
+    ...
+}
+----
+
+=== ifNotNull
+
+ifNotNull inkluderer innholdet om verdi(ene) i argumentet ikke er null.
+Verdiene passeres med videre inn i blokken som garanterer at de er til stede.
+[%nowrap, kotlin, ]
+----
+val a: Expression<Kroner?> = null.expr()
+val b: Expression<Kroner?> = Kroner(100).expr()
+
+ifNotNull(a) { kroner ->
+    textExpr(... kroner.format() ...)
+}.orIfNotNull(b) { kroner ->
+    textExpr(... kroner.format() ...)
+}
+----
+Lignende logikk kan brukes nesten over alt innenfor outline. F.eks rundt rader i tabeller, hele tabeller, hele avsnitt, punkter i en liste, osv sov
+
+== Boolske uttrykk
+For å bygge opp visnings-logikk i malene må vi kunne utføre enkle logiske uttrykk i brev.
+Uttrykkene må også evalueres under bruk av malen, og ikke når malen lages ved oppstart ved hjelp av Expressions
+
+=== and, or
+Fungerer likt som && og || i kotlin, men opererer på expressions.
+F.eks:
+[%nowrap, kotlin, ]
+----
+// Tar inn Expression<Boolean>, ofte som ett logisk uttrykk på samme måte som man skrive vanlige IF i kotlin
+// gitt at a b og c er boolske verdier.
+showIf(a and (b or c)) {
+    ...
+}. orShowIf(b) {
+    ...
+}.orShow {
+    ...
+}
+----
+
+=== Sammenligning
+Fungerer likt som i kotlin.
+[%nowrap, kotlin, ]
+----
+showIf(
+    x.greaterThan(y)
+    or a.greaterThanOrEqual(b)
+    or c.lessThanOrEqual(2.5)
+    or d.lessThan(LocalDate.of(2020,1,1))
+) {
+...
+}
+----
+== ForEach
+Foreach brukes for å repitere innhold for hvert element i en liste.
+
+Gitt en data-klassen til brevet er:
+[%nowrap, kotlin, ]
+----
+data class EksempelBrevDto(val trygdetid: List<Trygdetid>){
+    data class Trygdetid(val fomDato: LocalDate, val tomDato: LocalDate?, val land: String)
+}
+----
+
+Kan vi skrive f.eks:
+[%nowrap, kotlin, ]
+----
+paragraph {
+    table(...){
+        forEach(trygdetid) { tt -> // fungerer likt som kotlin forEach hvor tt er nåværende element
+            row{
+                cell{...}
+            }
+        }
+    }
+}
+
+// Kan brukes for å repitere ulike typer innhold samme steder som conditionals kan brukes.
+forEach(trygdetid) { tt ->
+    paragraph{
+        ...
+    }
+}
+----
+== IfElse
+ifElse brukes litt tilsvarende tertiært uttrykk(short if). Brukes ofte til å velge mellom to ord basert på en boolean.
+
+I eksempelet under slipper man da å lage flere showif og textExpr for å
+[%nowrap, kotlin, ]
+----
+textExpr(
+    Bokmal to "Inntekten til ".expr() + borMedSivilstand.bestemtForm() + " din har kun betydning for størrelsen på barnetillegget til "
+            + ifElse(barnetilleggSaerkullsbarnGjelderFlereBarn, "barna", "barnet")
+            + " som bor sammen med begge sine foreldre.",
+
+    Nynorsk to "Inntekta til ".expr() + borMedSivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget til "
+            + ifElse(barnetilleggSaerkullsbarnGjelderFlereBarn, "barna", "barnet")
+            + " som bur saman med begge foreldra sine.",
+
+    English to "The income of your ".expr() + borMedSivilstand.bestemtForm() + " only affects the size of the child supplement for the children who live together with both parents.",
+)
+----
+
+Uten ifElse måtte vi ha skrevet:
+[%nowrap, kotlin, ]
+----
+textExpr(
+    Bokmal to "Inntekten til ".expr() + borMedSivilstand.bestemtForm() + " din har kun betydning for størrelsen på barnetillegget til "
+    Nynorsk to "Inntekta til ".expr() + borMedSivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget til "
+    English to "The income of your ".expr() + borMedSivilstand.bestemtForm() + " only affects the size of the child supplement for the children who live together with both parents.",
+)
+
+showIf(barnetilleggSaerkullsbarnGjelderFlereBarn) {
+    textExpr(
+        Bokmal to "barna",
+        Nynorsk to "barna",
+        English to "",
+    )
+}.orShow {
+        textExpr(
+        Bokmal to "barnet",
+        Nynorsk to "barnet",
+        English to "",
+    )
+}
+
+text(
+    Bokmal to " som bor sammen med begge sine foreldre.",
+    Nynorsk to " som bur saman med begge foreldra sine.",
+    English to "",
+)
+----
+== Tabell
+Tabeller må alltid ha en kolonne-heading, og celler kan ikke inneholde lister, tabeller eller avsnitt.
+Man bør også høyre-justere tall-verdier for best mulig utseende.
+
+Forholdstall brukes for å sette hvor mye plass i bredden en kolonne skal bruke.
+Med 2 kolonner hvor en har forholdstall 2 og den andre har 1, så vil den første bruke 2/3 av plassen, altså 2:1 forhold.
+
+Om ikke antall celler i hver rad matcher antall kolonner vil brevmalen feile ved oppstart av brevbakeren/test.
+[%nowrap, kotlin, ]
+----
+table(
+    // Kolonne-spesifikasjon
+    header = {
+        // column(for , justering for kolonnen hvor venstre er default)
+        column(2/*størrelsesforhold tall*/ ) {
+            text(Bokmal to "Måned", FontType.BOLD)
+        }
+        column(1, RIGHT/*høyre eller venstre justering[LEFT, RIGHT], default er LEFT*/ ) {
+            text(Bokmal to "Stønad", FontType.BOLD)
+        }
+        column(1, RIGHT) { text(Bokmal to "Pensjon", FontType.BOLD) }
+        column(1, RIGHT) { text(Bokmal to "Totalt", FontType.BOLD) }
+    }
+) {
+    row {
+        cell { text(Bokmal to "Januar") }
+        cell { text(Bokmal to "1 kr") }
+        cell { text(Bokmal to "1 kr") }
+        cell { text(Bokmal to "2 kr") }
+    }
+    // kontroll-strukturer som if, foreach, ifNotnull osv er også støttet her.
+    showIf(...) {
+        row{ ... }
+    }
+    row {
+        ...
+    }
+    forEach(...){
+        row { ... }
+    }
+    ...
+}
+
+----
+== Punktliste
+Punktlister er ganske rett fram. På lik måte som celler i en tabell kan de kun inneholde tekstlig innhold
+og støtter kontroll-strukturer
+[%nowrap, kotlin, ]
+----
+list {
+    item {
+        text(Bokmal to "en av mange ting i lista")
+    }
+
+    // Støtter også if'er, løkker osv.
+    showIf(...){
+        item {...}
+    }.orShowIf(...) {
+        ...
+    }
+    item {
+        showIf(...){
+            ...
+        }
+    }
+}
+----
+
+== Fraser
+Mange brev har samme innhold, så fraser er gjenbrukbart innhold man kan inkludere i flere maler.
+Da blir det lettere å vedlikeholde innhold på tvers av flere brev. Akkuratt som maler kan en frase ta inn data, og innholdet defineres på samme måte
+som i maler.
+Om en frase ikke støtter alle språklagene som brevet rundt bruker vil man få kompilerings-feil.
+
+F.eks i ett brev så kan man ha en outline:
+[%nowrap, kotlin, ]
+----
+outline {
+    val kroner = Kroner(100).expr()
+    title1 {
+        text(Bokmal to "Tittel")
+    }
+    includePhrase(DuFaarUtbetalt(kroner))
+}
+----
+
+Da kan man ha gjenbrukbar frase som tar inn f.eks kroner som parameter.
+Dette definerer man i en egen fil på ett fornuftig sted under fraser pakken slik:
+[%nowrap, kotlin, ]
+----
+data class DuFaarUtbetalt(
+    val beloep: Expression<Kroner>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            textExpr(
+                Bokmal to "Du får utbetalt ".expr() + beloep.format() + " Kroner per måned før skatt",
+                Nynorsk to ...,
+                English to ...,
+            )
+        }
+    }
+}
+----
+
+Det finnes 3 typer fraser, hvor de kan bli inkludert ulike steder:
+TextOnlyPhrase er ren tekst, og kan brukes alle steder text(...) og textExpr(...) kan brukes.
+ParagraphPhrase kan inneholde elementer som kan brukes inne i ett avsnitt. F.eks tabeller, tekster, lister osv.
+OutlinePhrase kan inneholde elementer som kan skrives i outline. F.eks title1, title2, paragraph.
+
+== Vedlegg
+Brev har oftest vedlegg som kommer på egne ark i pdf etter ett brev og inkluderes i vedlegg listen.
+For utvikling av maler trenger man ikke å bry seg så veldig mye om hva som skjer i bakgrunnen.
+
+Ett vedlegg defineres slik og legges på ett fornuftig sted i vedlegg pakken:
+[%nowrap, kotlin, ]
+----
+@TemplateModelHelpers
+val eksempelVedlegg = createAttachment<LangBokmalNynorskEnglish, EksempelVedleggDto>(
+    // På samme måte som brev kan vedlegg kreve data for å produseres.
+    // Vanlig mønster for disse data klassene er at de inkluderes i brev som bruker vedlegget, så alle bruker samme data klasse for vedlegget.
+    // Dette gjør det enkelt å gjøre endringer i ett vedlegg som brukes på tvers av mange brev
+
+    // På samme måte som ett brev må vedlegg ha en tittel
+    title = newText(
+        Bokmal to "Dine rettigheter og mulighet til å klage",
+        Nynorsk to "Rettane dine og høve til å klage",
+        English to "Your rights and how to appeal"
+    ),
+    // Setter om informasjon om bruker/verge og saksnummer skal vises på samme måte som hoved-brevet i vedlegget.
+    includeSakspart = false,
+) {
+    // Innhold defineres på lik måte som outline
+}
+----
+
+=== Inkludering av vedlegg i maler
+Vedlegg kan inkluderes utenfor outline ved å bruke enten includeAttachment eller includeAttachmentIfNotNull
+
+==== includeAttachment
+[%nowrap, kotlin, ]
+----
+{
+    outline {...}
+    includeAttachment(
+        template = eksempelVedlegg,
+        attachmentData = eksempelVedleggData
+        predicate = skalHaVedlegget /*logikk som styrer om vedlegget skal produseres.*/
+    )
+}
+----
+==== includeAttachmentIfNotNull
+includeAttachmentIfNotNull inkluderer vedlegget med dataene om dataene ikke er null. Typisk bruk for denne funksjonen
+er om det at vedlegget vises henger sammen med at vi har dataene. Da kan vi også garantere i vedlegget at dataene er satt.
+[%nowrap, kotlin, ]
+----
+{
+    outline {...}
+    includeAttachmentIfNotNull(
+        template = eksempelVedlegg,
+        attachmentData = eksempelVedleggData /* hvor denne kan være null */
+    )
+}
+----
+
+
+
+== Eksempel på en enkel mal
+[%nowrap, kotlin, ]
+----
+@TemplateModelHelpers // Annotasjon som gjør at malen blir plukket opp av en kode-generator. Det vil da genereres extension functions og properties basert på data-klassen som er angitt for malen som gir deg lett tilgang til feltene i en dataklasse i scopet til malen.
+object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO // Brevkode som identifiserer dette brevet. Defineres i API-model (enum)
+
+    override val template = createTemplate(
+
+        // Metadata
+        name = kode.name,
+        letterDataType = OmsorgEgenAutoDto::class, // Data klasse for data dette brevet trenger fra api-model (utenom det som defineres i Felles())
+        languages = languages(Bokmal, Nynorsk, English), // Støttede språk som type-parameter. Disse brukes for å sjekke at du har inkludert innhold for alle språk-lag ved compile-time
+        letterMetadata = LetterMetadata(
+            displayTitle = "", //Tittel som settes i arkivet. Det er denne tittelen som vises for saksbehandler.
+            isSensitiv = false, // Setter brevet som sensitivt by default (false for auto-brev, kan hende det skal brukes for manuelle brev) Kan hende at dette feltet skal fjernes.
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG, // Distribusjonstype. Avgjør hvordan varslingen ved distribusjon blir. [VEDTAK,VIKTIG,ANNET]
+            brevtype = VEDTAKSBREV, // VEDTAKSBREV,INFORMASJONSBREV fører til endringer i signatur/slutt-tekst og første-side
+        )
+    ) {
+        // Her starter DSL.
+
+
+        // Hoved-tittel til brevet
+        title {
+
+            // når vi kun har ren tekst og ingen variabler så bruker man text funksjonen
+            text(
+                // Her forventer den pairs av samme typer som definert i languages over. Da får du kompileringsfeil om du mangler en tekst på ett språklag.
+                Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid",
+                Nynorsk to "Du mæå sende oss eigenmelding om pleie- og omsorgsarbeid",
+                English to "Personal declaration about the circumstances of care",
+                FontType.BOLD // Optional siste parameter fontType. Default er plain. [PLAIN, BOLD, ITALIC]
+            )
+        }
+
+        // Dette er ikke en funksjon som kalles ved hver bestilling, men en definisjon av en template, så verdiene vi opererer med er
+        // Expressions(litt som promises).
+
+        // For å vise noe i ett brev så skal det alltid bevisst velges en måte å formattere dataene.
+        // Her er aarEgenerklaringOmsorgspoeng som sendes med fra  av typen Expression<no.nav.pensjon.brevbaker.api.model.Year>.
+        // Year er en IntValue, så den kan formatteres som tall. Det finnes ulike formatteringer for kroner, desimaltall, LocalDate (kort/lang format)
+        // som hensyntar hvilket språk brevet bestilles på når den formatterer verdiene. Format gir tilbake Expression<String>
+        val aarEgenerklaringOmsorgspoeng = aarEgenerklaringOmsorgspoeng.format()
+
+
+        // Outline er selve innholdet i brevet som starter på side 1 før vedleggene.
+        outline {
+            // I outline kan man definere titler og avsnitt
+            title1 {
+                text(
+                    Bokmal to "Tittel",
+                    Nynorsk to "Tittel",
+                    English to "Title",
+                )
+            }
+            title2 {// Under-tittel (bruk helst kun tittel 1)
+                text(
+                    Bokmal to "Tittel",
+                    Nynorsk to "Tittel",
+                    English to "Title",
+                )
+            }
+            // Alt annet innhold må være tildelt ett avsnitt/paragraph med mellomrom til neste.
+
+            // En del av malene våres inneholder logikk. Dette fungerer ganske likt som vanlig kotlin, men ikke helt:
+            // Alt her opererer på expressions, og vi har med vilje utelatt ganging, deling og ting som faciliterer forretningslogikk.
+            // Vi mener at forretnings-logikk skal foregå i høyest mulig grad utenfor brevmalen. (minst mulig beregninger).
+
+            paragraph {
+                // Her kan vi ha punktlister, tekster og tabeller.
+
+                // For å bruke variabler i innhold bruker vi textExpr. Her tar den i mot en textExpr på alle språklagene.
+                // I dette tilfellet får vi da en tekst med en formattert verdi for hvilket år de utførte omsorgs-arbeid.
+                // Tilsvarende text() så tar den også font-type som siste parameter.
+                textExpr(
+                    Bokmal to
+                            // Om vi starter med tekst så må den gjøres om til text expr(). Vi har ikke funnet en bedre måte å få til dette på til nå.
+                            "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ".expr()
+                            + aarEgenerklaringOmsorgspoeng
+                            + ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.",
+
+                    Nynorsk to
+                            "Vi treng ei stadfesting på at du har utført pleie- og omsorgsarbeid i ".expr()
+                            + aarEgenerklaringOmsorgspoeng
+                            + ". Du må difor nytte det vedlagde skjemaet og sende til oss innan fire veker.",
+
+                    English to
+                            "We need you to confirm that you have provided nursing and care work in ".expr()
+                            + aarEgenerklaringOmsorgspoeng
+                            + ". Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks.",
+                )
+            }
+            //Her kan vi loope over en liste og repitere innhold basert på lista.
+        }
+
+        //For å inkludere vedlegg så bruker man funksjonen includeAttachment.
+        //Her kan man også legge inn logikk basert på medsendte data som styrer når vedlegget skal være med.
+        //Det finnes også
+
+        includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, egenerklaeringOmsorgsarbeidDto)
+    }
+}
+----
+
+== Steg for å lage ett nytt brev
+For å lage ett brev i brevbakeren må man:
+
+1. Oppdatere api-modell med data-klasse som definerer informasjonsbehovet til malen
+1. Oppdatere api-modell med ny brevkode i Brevkode enum klassen
+1. Midlertidig publisere api-modellen (kjør publish to maven local), bump api-model versjon og oppdater apiModelVersion i gradle.properties
+1. Lage en fil ett fornuftig sted under maler-pakken i brevbakeren med en brevmal.
+

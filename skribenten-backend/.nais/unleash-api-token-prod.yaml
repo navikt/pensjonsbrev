@@ -1,0 +1,15 @@
+apiVersion: unleash.nais.io/v1
+kind: ApiToken
+metadata:
+    name: {{ app-name }}
+    namespace: pensjonsbrev
+spec:
+    unleashInstance:
+        apiVersion: unleash.nais.io/v1
+        kind: RemoteUnleash
+        name: teampensjon
+    secretName: {{ app-name }}-unleash-api-token
+
+    # Specify which environment the API token should be created for.
+    # Can be one of: development, or production.
+    environment: production

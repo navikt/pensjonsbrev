@@ -27,7 +27,7 @@ export const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
 
 axios.interceptors.response.use(undefined, (error) => {
   if (error.response.status === 401) {
-    window.location.assign(error.response.headers.location);
+    globalThis.location.assign(error.response.headers.location);
   }
   return Promise.reject(error);
 });
@@ -83,6 +83,11 @@ export const preferredLanguageKeys = {
   saksId: (saksId: string) => [...preferredLanguageKeys.all, saksId] as const,
 };
 
+export const orderLetterKeys = {
+  all: ["ORDER_LETTER"],
+  brevsystem: (brevsystem: string) => [...orderLetterKeys.all, brevsystem] as const,
+};
+
 export const getSakContext = {
   queryKey: saksnummerKeys.id,
   queryFn: async (saksId: string, vedtaksId: string | undefined) =>
@@ -92,7 +97,8 @@ export const getSakContext = {
 
 export const getNavn = {
   queryKey: navnKeys.saksId,
-  queryFn: async (saksId: string) => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/navn`)).data,
+  queryFn: async (saksId: string | number) =>
+    (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/navn`)).data,
 };
 
 export const getPreferredLanguage = {

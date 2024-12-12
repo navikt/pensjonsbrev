@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte
 
-import io.ktor.server.application.*
-import io.ktor.server.plugins.callid.*
+import io.ktor.http.ContentType
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -15,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 private val letterResource = LetterResource()
 
-data class LetterResponse(val base64pdf: String, val letterMetadata: LetterMetadata)
+data class LetterResponse(val file: String, val contentType: String, val letterMetadata: LetterMetadata)
 
 fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
 
@@ -25,9 +24,13 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         val letter = letterResource.create(letterRequest)
         val pdfBase64 = Letter2Markup.render(letter)
             .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
-            .let { latexCompilerService.producePDF(it, call.callId) }
+            .let { latexCompilerService.producePDF(it) }
 
-        call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
+        call.respond(LetterResponse(
+            file = pdfBase64.base64PDF,
+            contentType = ContentType.Application.Pdf.toString(),
+            letterMetadata = letter.template.letterMetadata
+        ))
 
         // Om dere vil ha det
         Metrics.prometheusRegistry.counter(

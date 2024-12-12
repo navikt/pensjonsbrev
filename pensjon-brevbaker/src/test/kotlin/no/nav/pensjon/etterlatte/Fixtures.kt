@@ -11,8 +11,10 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
@@ -30,11 +32,17 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTO
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
@@ -56,7 +64,7 @@ object Fixtures {
             avsenderEnhet =
                 NAVEnhet(
                     nettside = "nav.no",
-                    navn = "NAV Familie- og pensjonsytelser Porsgrunn",
+                    navn = "Nav familie- og pensjonsytelser Porsgrunn",
                     telefonnummer = Telefonnummer("55553334"),
                 ),
             bruker =
@@ -87,6 +95,7 @@ object Fixtures {
             BarnepensjonForeldreloesRedigerbarDTO::class -> createBarnepensjonForeldreloesRedigerbarDTO() as T
             BarnepensjonAvslagDTO::class -> createBarnepensjonAvslagDTO() as T
             BarnepensjonOpphoerDTO::class -> createBarnepensjonOpphoerDTO() as T
+            BarnepensjonAvslagRedigerbartUtfallDTO::class -> createBarnepensjonAvslagRedigerbartUtfallDTO() as T
             BarnepensjonOpphoerRedigerbartUtfallDTO::class -> createBarnepensjonOpphoerRedigerbartUtfallDTO() as T
             BarnepensjonRevurderingDTO::class -> createBarnepensjonRevurderingDTO() as T
             BarnepensjonRevurderingRedigerbartUtfallDTO::class -> createBarnepensjonRevurderingRedigerbartUtfallDTO() as T
@@ -95,6 +104,7 @@ object Fixtures {
             BarnepensjonInformasjonDoedsfallDTO::class -> createBarnepensjonInformasjonDoedsfallDTO() as T
             BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO::class -> createBarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO() as T
             BarnepensjonMottattSoeknadDTO::class -> createBarnepensjonInformasjonMottattSoeknadDTO() as T
+            BarnepensjonInnhentingAvOpplysningerDTO::class -> createBarnepensjonInnhentingAvOpplysningerDTO() as T
 
             BarnepensjonVarselDTO::class -> createBarnepensjonVarsel() as T
             BarnepensjonVarselRedigerbartUtfallDTO::class -> createBarnepensjonVarselRedigerbartUtfall() as T
@@ -112,14 +122,19 @@ object Fixtures {
             OmstillingsstoenadOpphoerRedigerbartUtfallDTO::class -> createOmstillingsstoenadpphoerRedigerbartUtfallDTO() as T
             OmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO() as T
             OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO() as T
+            OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO() as T
             OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon6mndDto() as T
             OmstillingsstoenadVarselAktivitetspliktDTO::class -> createOmstillingsstoenadVarselAktivitetspliktDTO() as T
             OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO::class -> createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() as T
+
+            AarligInntektsjusteringVedtakDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
+            OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfallDTO() as T
 
             TilbakekrevingBrevDTO::class -> createTilbakekrevingFerdigDTO() as T
             TilbakekrevingRedigerbartBrevDTO::class -> createTilbakekrevingRedigerbartBrevDTO() as T
 
             AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
+            KlageSaksbehandlingstidDTO::class -> createKlageSaksbehandlingstidDtoTestI() as T
             AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T
             KlageOversendelseBlankettDTO::class -> createKlageOversendelseBlankettDTO() as T
             KlageOversendelseBrukerDTO::class -> createKlageOversendelseBrukerDTO() as T
@@ -131,4 +146,6 @@ object Fixtures {
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
+
 }
+

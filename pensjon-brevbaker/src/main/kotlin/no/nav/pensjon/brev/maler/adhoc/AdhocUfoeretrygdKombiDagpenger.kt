@@ -13,7 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 object AdhocUfoeretrygdKombiDagpenger : AutobrevTemplate<EmptyBrevdata> {
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER
+    override val kode = Brevkode.AutoBrev.UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
@@ -33,7 +33,7 @@ object AdhocUfoeretrygdKombiDagpenger : AutobrevTemplate<EmptyBrevdata> {
         outline {
             paragraph {
                 text(
-                    Bokmal to "NAV etterbetaler dagpenger til medlemmer som fikk feil beregningsgrunnlag for dagpenger i perioden 2019 til og med desember 2021. "
+                    Bokmal to "Nav etterbetaler dagpenger til medlemmer som fikk feil beregningsgrunnlag for dagpenger i perioden 2019 til og med desember 2021. "
                             + "Du har mottatt eget brev om dette, og vi viser til det brevet for nærmere informasjon om etterbetalingen av dagpenger.",
                 )
             }

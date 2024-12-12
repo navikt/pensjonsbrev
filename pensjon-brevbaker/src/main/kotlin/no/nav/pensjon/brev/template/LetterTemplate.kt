@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brevbaker.api.model.IntValue
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.*
+import java.time.LocalDate
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
@@ -13,7 +13,7 @@ data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
-    val modelSpecification: TemplateModelSpecification = LetterModelSpecificationFactory(letterDataType).build()
+    val modelSpecification: TemplateModelSpecification = TemplateModelSpecificationFactory(letterDataType).build()
 
     init {
         if (title.isEmpty()) {
@@ -32,7 +32,7 @@ sealed class Expression<out Out> : StableHash {
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
-    data class Literal<out Out>(val value: Out) : Expression<Out>() {
+    data class Literal<out Out>(val value: Out, val tags: Set<ElementTags> = emptySet()) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
 
@@ -43,14 +43,15 @@ sealed class Expression<out Out> : StableHash {
                 is String -> StableHash.of(v)
                 is Number -> StableHash.of(v)
                 is IntValue -> StableHash.of(v.value)
+                is Telefonnummer -> StableHash.of(v.value)
                 is Boolean -> StableHash.of(v)
                 is Collection<*> -> StableHash.of(v.map { stableHash(it) })
                 is Pair<*, *> -> StableHash.of(stableHash(v.first), stableHash(v.second))
                 is Unit -> StableHash.of("kotlin.Unit")
+                is LocalDate -> StableHash.of(v)
                 null -> StableHash.of(null)
                 else -> throw IllegalArgumentException("Unable to calculate stableHashCode for type ${v::class.java}")
             }
-
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {
@@ -220,7 +221,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             sealed class Text<out Lang : LanguageSupport> : ParagraphContent<Lang>() {
                 abstract val fontType: FontType
 
-                @Suppress("DataClassPrivateConstructor")
+                @ConsistentCopyVisibility
                 data class Literal<out Lang : LanguageSupport> private constructor(
                     val text: Map<Language, String>,
                     val languages: Lang,
@@ -275,7 +276,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     override val fontType: FontType = FontType.PLAIN
                 ) : Text<Lang>(), StableHash by StableHash.of(expression, StableHash.of(fontType)) {
 
-                    @Suppress("DataClassPrivateConstructor")
+                    @ConsistentCopyVisibility
                     data class ByLanguage<out Lang : LanguageSupport> private constructor(
                         val expression: Map<Language, StringExpression>,
                         val languages: Lang,

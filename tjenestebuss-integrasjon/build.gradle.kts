@@ -39,7 +39,6 @@ ktor {
 }
 
 val cxfVersion = "3.6.3"
-val esbVersion = "2023.11.01-10.31-1bc8315f412e"
 val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
 	implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
@@ -56,8 +55,6 @@ dependencies {
 	implementation("ch.qos.logback:logback-classic:$logbackVersion")
 	implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
-	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:$esbVersion")
-	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:$esbVersion")
 	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
 
 	implementation("javax.xml.ws:jaxws-api:2.3.1")
@@ -87,15 +84,7 @@ dependencies {
 
 repositories {
 	maven {
-		// Create a token at https://github.com/settings/tokens/new with package.read
-		// Then create a gradle.properties file in $HOME/.gradle with the following:
-		// gpr.user=<your github username>
-		// gpr.token=<the token>
-		url = uri("https://maven.pkg.github.com/navikt/pesys-esb-wsclient")
-		credentials {
-			username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
-			password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
-		}
+		url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
 		metadataSources {
 			artifact() //Look directly for artifact
 		}
@@ -104,11 +93,7 @@ repositories {
 		}
 	}
 	maven {
-		url = uri("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
-		credentials {
-			username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
-			password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
-		}
+		url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
 	}
 }
 

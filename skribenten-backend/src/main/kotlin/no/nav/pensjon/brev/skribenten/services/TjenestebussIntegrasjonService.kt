@@ -1,18 +1,19 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseRequestDto
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseResponseDto.FailureType.GENERISK
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.TjenestebussStatus
 import org.slf4j.LoggerFactory
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) : ServiceStatus {
@@ -21,57 +22,20 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
     private val tjenestebussIntegrasjonScope = config.getString("scope")
     private val logger = LoggerFactory.getLogger(TjenestebussIntegrasjonService::class.java)
 
-    private val tjenestebussIntegrasjonClient =
-        AzureADOnBehalfOfAuthorizedHttpClient(tjenestebussIntegrasjonScope, authService) {
-            defaultRequest {
-                url(tjenestebussIntegrasjonUrl)
-            }
-            install(ContentNegotiation) {
-                jackson()
-            }
+    private val tjenestebussIntegrasjonClient = HttpClient(CIO) {
+        defaultRequest {
+            url(tjenestebussIntegrasjonUrl)
         }
+        install(ContentNegotiation) {
+            jackson()
+        }
+        callIdAndOnBehalfOfClient(tjenestebussIntegrasjonScope, authService)
+    }
 
-    suspend fun finnSamhandler(
-        call: ApplicationCall,
-        requestDto: FinnSamhandlerRequestDto,
-    ): FinnSamhandlerResponseDto =
-        tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(jacksonObjectMapper().writeValueAsString(requestDto))
-        }.toServiceResult<FinnSamhandlerResponseDto>()
-            .catch { message, status ->
-                logger.error("Feil ved samhandler søk. Status: $status Melding: $message")
-                FinnSamhandlerResponseDto("Feil ved henting av samhandler")
-            }
-
-    suspend fun hentSamhandler(
-        call: ApplicationCall,
-        idTSSEkstern: String,
-        hentDetaljert: Boolean,
-    ): HentSamhandlerResponseDto =
-        tjenestebussIntegrasjonClient.post(call, "/hentSamhandler") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(
-                HentSamhandlerRequestDto(
-                    idTSSEkstern = idTSSEkstern,
-                    hentDetaljert = hentDetaljert
-                )
-            )
-        }.toServiceResult<HentSamhandlerResponseDto>()
-            .catch { message, status ->
-                logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
-                HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
-            }
-
-    suspend fun hentSamhandlerAdresse(
-        call: ApplicationCall,
-        idTSSEkstern: String,
-    ): HentSamhandlerAdresseResponseDto =
-        tjenestebussIntegrasjonClient.post(call, "/hentSamhandlerAdresse") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
+    suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto =
+        tjenestebussIntegrasjonClient.post("/hentSamhandlerAdresse") {
+            contentType(Json)
+            accept(Json)
             setBody(HentSamhandlerAdresseRequestDto(idTSSEkstern))
         }.toServiceResult<HentSamhandlerAdresseResponseDto>()
             .catch { message, status ->
@@ -80,9 +44,10 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             }
 
     override val name = "Tjenestebuss-integrasjon"
-    override suspend fun ping(call: ApplicationCall): ServiceResult<Boolean> =
-        tjenestebussIntegrasjonClient.get(call, "/isReady").toServiceResult<String>().map { true }
+    override suspend fun ping(): ServiceResult<Boolean> =
+        tjenestebussIntegrasjonClient.get("/isReady").toServiceResult<String>().map { true }
 
-    suspend fun status(call: ApplicationCall): ServiceResult<TjenestebussStatus> =
-        tjenestebussIntegrasjonClient.get(call, "/status").toServiceResult()
+    suspend fun status(): ServiceResult<TjenestebussStatus> =
+        tjenestebussIntegrasjonClient.get("/status").toServiceResult()
+
 }

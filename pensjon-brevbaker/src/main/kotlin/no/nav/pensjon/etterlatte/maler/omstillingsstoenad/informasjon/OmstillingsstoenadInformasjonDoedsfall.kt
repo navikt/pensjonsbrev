@@ -12,8 +12,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BrevDTO
-import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_ANDRE_STOENADER_URL
@@ -23,10 +22,9 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.borIutland
 
 data class OmstillingstoenadInformasjonDoedsfallDTO(
-    override val innhold: List<Element>,
     val avdoedNavn: String,
     val borIutland: Boolean,
-) : BrevDTO
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<OmstillingstoenadInformasjonDoedsfallDTO> {
@@ -154,8 +152,8 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 }
                 paragraph {
                     text(
-                        Bokmal to "Inntekten din avgjør hvor mye du kan få. Stønaden reduseres med 45 prosent av den inntekten din som overstiger halvparten av folketrygdens grunnbeløp. Noen ytelser fra NAV, som for eksempel sykepenger og dagpenger, likestilles med arbeidsinntekt.",
-                        Nynorsk to "Inntekta di avgjer kor mykje pengar du kan få. Stønaden blir redusert med 45 prosent av inntekta di som overstig halve grunnbeløpet i folketrygda. Nokre ytingar frå NAV, som til dømes sjukepengar og dagpengar, er likestilte med arbeidsinntekt.",
+                        Bokmal to "Inntekten din avgjør hvor mye du kan få. Stønaden reduseres med 45 prosent av den inntekten din som overstiger halvparten av folketrygdens grunnbeløp. Noen ytelser fra Nav, som for eksempel sykepenger og dagpenger, likestilles med arbeidsinntekt.",
+                        Nynorsk to "Inntekta di avgjer kor mykje pengar du kan få. Stønaden blir redusert med 45 prosent av inntekta di som overstig halve grunnbeløpet i folketrygda. Nokre ytingar frå Nav, som til dømes sjukepengar og dagpengar, er likestilte med arbeidsinntekt.",
                         English to "Your income determines how much money you are entitled to. The adjustment allowance will be reduced on the basis of income that you receive or expect to receive. Some benefits, such as sickness benefits and unemployment benefits are equivalent to earned income. Your pension will be reduced by 45 per cent of your income that exceeds half of the National Insurance basic amount.",
                     )
                 }
@@ -216,8 +214,8 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis avdøde tidligere har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
-                        Nynorsk to "Dersom avdøde tidlegare har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
+                        Bokmal to "Hvis avdøde tidligere har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får utbetalt. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
+                        Nynorsk to "Dersom avdøde tidlegare har budd eller arbeidd i utlandet, kan det påverke kor mykje du får utbetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
                         English to "If the deceased has lived or worked abroad, this may affect the amount of your adjustment allowance. Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. Therefore, you may also be entitled to a pension from other countries. We can assist you with your application to countries with which Norway has a social security agreement.",
                     )
                 }

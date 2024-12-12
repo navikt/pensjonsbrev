@@ -1,37 +1,50 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadDataSelectors.tidligereFamiliepleier
 
 
-@TemplateModelHelpers
-val informasjonOmOmstillingsstoenad = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon til deg som mottar omstillingsstønad",
-        Nynorsk to "Informasjon til deg som får omstillingsstønad",
-        English to "Information for Recipients of adjustment allowance",
-    ),
-    includeSakspart = false,
-) {
-    aktivitet()
-    hvisDuIkkeFyllerAktivitetsplikten()
-    inntektOgOmstillingsstoenad()
-    endretInntekt()
-    hvilkenInntektReduseresEtter()
-    hvordanMeldeEndringer()
-    utbetalingTilKontonummer()
-    skatt()
+data class InformasjonOmOmstillingsstoenadData(
+    val tidligereFamiliepleier: Boolean = false,
+    val bosattUtland: Boolean = false,
+)
+
+fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData> {
+    return createAttachment(
+        title = newText(
+            Bokmal to "Informasjon til deg som mottar omstillingsstønad",
+            Nynorsk to "Informasjon til deg som får omstillingsstønad",
+            English to "Information for recipients of adjustment allowance",
+        ),
+        includeSakspart = false,
+    ) {
+        aktivitet(argument.tidligereFamiliepleier)
+        hvisDuIkkeFyllerAktivitetsplikten()
+        inntektOgOmstillingsstoenad()
+        endretInntekt()
+        hvilkenInntektReduseresEtter()
+        hvordanMeldeEndringer(argument.bosattUtland)
+        utbetalingTilKontonummer()
+        skatt()
+    }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.aktivitet() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.aktivitet(
+    tidligereFamiliepleier: Expression<Boolean>
+) {
     title2 {
         text(
             Bokmal to "Du må være i aktivitet når du mottar omstillingsstønad",
@@ -40,19 +53,21 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         )
     }
     paragraph {
-        text(
-            Bokmal to "Når det er gått seks måneder etter dødsfallet er det et krav for å motta " +
-                    "omstillingsstønad at du er i minst 50 prosent arbeid eller annen aktivitet med sikte på " +
-                    "å komme i arbeid. Etter et år kan det forventes at du er i 100 prosent aktivitet. Dette " +
-                    "kalles for aktivitetsplikt. ",
-            Nynorsk to "or å kunne halde fram med å få omstillingsstønad når det har gått seks månader sidan " +
-                    "dødsfallet, må du vere i minst 50 prosent arbeid eller annan aktivitet med sikte på å kome " +
-                    "i arbeid. Etter eitt år er det forventa at du er i 100 prosent aktivitet. Dette blir kalla " +
-                    "aktivitetsplikt.",
-            English to "Once six months have passed after the death, receiving adjustment allowance is " +
-                    "contingent upon working at least 50 percent or involved in another activity with the aim of " +
-                    "finding employment. After one year, you will be expected to be active 100 percent. This is " +
-                    "called the Activity Obligation.",
+        textExpr(
+            Bokmal to "Når det er gått seks måneder etter ".expr() +
+                    ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
+                    " er det et krav for å motta omstillingsstønad at du er i minst 50 prosent arbeid eller annen " +
+                    "aktivitet med sikte på å komme i arbeid. Etter et år kan det forventes at du er i 100 prosent aktivitet. " +
+                    "Dette kalles for aktivitetsplikt.",
+            Nynorsk to "For å kunne halde fram med å få omstillingsstønad når det har gått seks månader sidan ".expr() +
+                    ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet") +
+                    ", må du vere i minst 50 prosent arbeid eller annan aktivitet med sikte på å kome i arbeid. Etter " +
+                    "eitt år er det forventa at du er i 100 prosent aktivitet. Dette blir kalla aktivitetsplikt.",
+            English to "Once six months have passed after the ".expr() +
+                    ifElse(tidligereFamiliepleier, "care period ended", "death") +
+                    ", receiving adjustment allowance is contingent upon working at least 50 percent or involved in " +
+                    "another activity with the aim of finding employment. After one year, you will be expected to be " +
+                    "active 100 percent. This is called the activity obligation.",
         )
     }
     paragraph {
@@ -130,7 +145,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.hvisDuIkkeFyllerAktivitetsplikten() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.hvisDuIkkeFyllerAktivitetsplikten() {
     title2 {
         text(
             Bokmal to "Hva skjer hvis du ikke fyller aktivitetsplikten?",
@@ -180,17 +195,17 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "NAV må kunne komme i kontakt med deg for å følge deg opp ved behov. Får vi ikke " +
+            Bokmal to "Nav må kunne komme i kontakt med deg for å følge deg opp ved behov. Får vi ikke " +
                     "kontakt med deg, kan vi stoppe stønaden din.",
-            Nynorsk to "NAV må kunne kontakte deg for å gi oppfølging ved behov. Dersom vi ikkje får kontakt " +
+            Nynorsk to "Nav må kunne kontakte deg for å gi oppfølging ved behov. Dersom vi ikkje får kontakt " +
                     "med deg, kan vi stoppe stønaden.",
-            English to "NAV must be able to get in touch with you to follow up your case, whenever needed. " +
+            English to "Nav must be able to get in touch with you to follow up your case, whenever needed. " +
                     "We may stop your allowance if we cannot get in touch with you. ",
         )
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.inntektOgOmstillingsstoenad() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.inntektOgOmstillingsstoenad() {
     title2 {
         text(
             Bokmal to "Inntekt og omstillingsstønad",
@@ -211,22 +226,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "reduced based on what you declare as anticipated income for the current year.",
         )
     }
-    paragraph {
-        text(
-            Bokmal to "Om du ikke oppgir annet, vil inntekten bli oppjustert ved årsskiftet for å ta hensyn " +
-                    "til generell lønnsøkning. Dette gjøres ved hjelp av faktor som er brukt i den årlige " +
-                    "oppjusteringen av grunnbeløpet.",
-            Nynorsk to "Med mindre du oppgir noko anna, vil inntekta bli oppjustert ved årsskiftet for å ta " +
-                    "omsyn til generell lønsauke. Dette blir gjort ved hjelp av faktoren som er brukt i den " +
-                    "årlege oppjusteringa av grunnbeløpet. ",
-            English to "Unless you state otherwise, your income will be adjusted upwards at the end of the " +
-                    "year to account for a general increase in wages. This is done by applying the factor used by " +
-                    "the government in the annual upward adjustment of the basic amount.",
-        )
-    }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endretInntekt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.endretInntekt() {
     title2 {
         text(
             Bokmal to "Får du endret inntekt i løpet av året?",
@@ -255,28 +257,23 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Utbetalingen for resten av året vil justeres utfra det du har fått utbetalt så langt " +
-                    "det gjeldende året. Dette gjøres for å redusere et eventuelt etteroppgjør, som kan medføre " +
-                    "tilbakekreving av tidligere utbetalt omstillingsstønad.",
+                    "det gjeldende året. Meld derfor fra snarest mulig for å få mest mulig riktig utbetalt " +
+                    "omstillingsstønad, slik at etteroppgjøret blir så riktig som mulig. Du kan finne mer " +
+                    "informasjon om etteroppgjør på ${Constants.OMS_ETTEROPPGJOER_URL}.",
             Nynorsk to "Utbetalinga for resten av året vil bli justert ut frå det du har fått utbetalt så " +
-                    "langt det gjeldande året. Dette blir gjort for å redusere eit eventuelt etteroppgjer som kan " +
-                    "føre til at tidlegare utbetalt omstillingsstønad blir kravd tilbake. ",
+                    "langt det gjeldande året. Meld difor frå snarast råd, slik at du får utbetalt " +
+                    "omstillingsstønaden du har krav på, og etteroppgjeret blir mest mogleg rett. Du finn meir " +
+                    "informasjon om etteroppgjer på ${Constants.OMS_ETTEROPPGJOER_URL}.",
             English to "The payment for the rest of the year will be adjusted based on what you have been " +
-                    "paid so far in the current year. This is done to reduce any final settlement that could result " +
-                    "in NAV demanding repayment of previously paid adjustment allowance.",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Om inntekten din endres, må du melde fra til oss snarest mulig for å unngå etteroppgjør.",
-            Nynorsk to "Dersom det skulle skje endringar i inntekta di, må du melde frå til oss snarast mogleg " +
-                    "for å unngå etteroppgjer.",
-            English to "If your income changes, you must notify us as soon as possible to avoid this type " +
-                    "of future settlement.",
+                    "paid so far in the current year. It is therefore important to notify us as soon as possible " +
+                    "to receive the correct amount of adjustment allowance, so that any final settlement will " +
+                    "be as correct as possible. You can find more information about final settlements " +
+                    "online: ${Constants.OMS_ETTEROPPGJOER_URL}.",
         )
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.hvilkenInntektReduseresEtter() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.hvilkenInntektReduseresEtter() {
     title2 {
         text(
             Bokmal to "Hvilken inntekt skal omstillingsstønaden reduseres etter?",
@@ -347,7 +344,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.hvordanMeldeEndringer() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.hvordanMeldeEndringer(bosattUtland: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Hvordan melder du fra om endringer?",
@@ -361,26 +358,29 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Nynorsk to "Du kan gi beskjed om endringar i inntekta di ved å sende",
             English to "You can notify us about changes in your income by submitting",
         )
+
+        val postadresse = ifElse(bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
+
         list {
             item {
                 text(
-                    Bokmal to "en melding på " + Constants.SKRIVTILOSS_URL,
-                    Nynorsk to "ei melding på " + Constants.SKRIVTILOSS_URL,
-                    English to "a message online: " + Constants.SKRIVTILOSS_URL,
+                    Bokmal to "beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her får du ikke lagt ved dokumentasjon)",
+                    Nynorsk to "ein beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her kan du ikkje leggje ved dokumentasjon)",
+                    English to "a message online: ${Constants.Engelsk.BESKJED_TIL_NAV_URL} (you cannot attach documentation from this page)",
                 )
             }
             item {
-                text(
-                    Bokmal to "brev til " + Constants.POSTADRESSE,
-                    Nynorsk to "brev til " + Constants.POSTADRESSE,
-                    English to "send a letter to " +  Constants.POSTADRESSE,
+                textExpr(
+                    Bokmal to "brev til ".expr() + postadresse,
+                    Nynorsk to "brev til ".expr() + postadresse,
+                    English to "send a letter to ".expr() + postadresse,
                 )
             }
         }
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbetalingTilKontonummer() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.utbetalingTilKontonummer() {
     title2 {
         text(
             Bokmal to "Utbetaling til kontonummer",
@@ -390,13 +390,13 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Du kan bare ha ett kontonummer registrert hos NAV. Du kan endre kontonummeret i " +
+            Bokmal to "Du kan bare ha ett kontonummer registrert hos Nav. Du kan endre kontonummeret i " +
                     "«Personopplysninger» ved å logge på nav.no. Du kan også sende endring per post. " +
                     "Du finner skjema og riktig adresse på " + Constants.ENDRING_KONTONUMMER_URL + ".",
-            Nynorsk to "Du kan berre ha eitt kontonummer registrert hos NAV. Du kan endre kontonummer under " +
+            Nynorsk to "Du kan berre ha eitt kontonummer registrert hos Nav. Du kan endre kontonummer under " +
                     "«Personopplysningar» ved å logge på nav.no. Du kan også sende endring per post. Du finn skjema " +
                     "og rett adresse på " + Constants.ENDRING_KONTONUMMER_URL + ".",
-            English to "You can only have one account number registered with NAV. You can change your account " +
+            English to "You can only have one account number registered with Nav. You can change your account " +
                     "number online (in Personal Data) by logging in to nav.no. You can also report changes by " +
                     "conventional mail. You will find the form and the correct address online: " +
                     Constants.ENDRING_KONTONUMMER_URL + ".",
@@ -404,7 +404,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skatt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.skatt() {
     title2 {
         text(
             Bokmal to "Skatt",
@@ -414,12 +414,12 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til NAV " +
+            Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til Nav " +
                     "fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten.",
-            Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til NAV, " +
+            Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til Nav, " +
                     "då skatteopplysningane dine blir sende elektronisk frå Skatteetaten.",
             English to "Adjustment allowance are taxable. You do not need to submit your tax deduction " +
-                    "card to NAV because your tax information is sent to NAV electronically from the " +
+                    "card to Nav because your tax information is sent to Nav electronically from the " +
                     "Norwegian Tax Administration.",
         )
     }
