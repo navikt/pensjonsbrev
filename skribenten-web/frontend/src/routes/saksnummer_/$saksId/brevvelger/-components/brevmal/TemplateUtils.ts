@@ -90,7 +90,7 @@ export const createValidationSchema = (template: LetterMetadata) => {
     .superRefine((data, refinementContext) => {
       //validerer språk for alle templates unntatt 'Notat'
       if (template.id === "PE_IY_03_156") {
-        refinementContext;
+        // gjør bevisst ingenting
       } else {
         if (!data.spraak) {
           refinementContext.addIssue({
