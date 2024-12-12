@@ -1,10 +1,9 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.trygdetideosland
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.trygdetidfomeos_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagEOSSelectors.trygdetidtomeos_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOS
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeEOSSelectors.trygdetidsgrunnlageos
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOS
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetideosland
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidfomeos_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidtomeos_safe
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -16,8 +15,8 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-data class TBU045V_2(
-    val PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS: Expression<TrygdetidsgrunnlagListeEOS>
+data class TrygdetidsListeEOSTabell(
+    val trygdetidsgrunnlagListeEOS: Expression<List<TrygdetidsgrunnlagEOS>>
 ): OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -46,7 +45,7 @@ data class TBU045V_2(
                     }
                 }
             ) {
-                forEach(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeEOS.trygdetidsgrunnlageos){ trygdetidEOS ->
+                forEach(trygdetidsgrunnlagListeEOS){ trygdetidEOS ->
                     row {
                         cell {
                             textExpr(

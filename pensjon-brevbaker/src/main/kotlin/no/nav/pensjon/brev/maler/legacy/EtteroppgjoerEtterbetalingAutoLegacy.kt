@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDtoSelectors.pe
+import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.HarDuSpoersmaalEtteroppgjoer
 import no.nav.pensjon.brev.maler.legacy.fraser.*
