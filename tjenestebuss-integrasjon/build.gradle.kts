@@ -56,8 +56,8 @@ dependencies {
 	implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
 	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
+	implementation("jakarta.xml.ws:jakarta.xml.ws-api:4.0.2")
 
-	implementation("javax.xml.ws:jaxws-api:2.3.1")
 	@Suppress("GradlePackageUpdate")
 	implementation("com.sun.xml.messaging.saaj:saaj-impl:3.0.4") // needs to be correct version for apache cxf to function
 
@@ -77,7 +77,7 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 	testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
 	testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
-	testImplementation("com.sun.xml.bind:jaxb-core:4.0.5")
+	testImplementation("com.sun.xml.bind:jaxb-impl:4.0.5")
 	testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
 	testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
 }
