@@ -1444,7 +1444,7 @@ er om det at vedlegget vises henger sammen med at vi har dataene. Da kan vi ogs�
 <div class="content">
 <pre class="highlight nowrap"><code class="language-kotlin" data-lang="kotlin">@TemplateModelHelpers // Annotasjon som gjør at malen blir plukket opp av en kode-generator. Det vil da genereres extension functions og properties basert på data-klassen som er angitt for malen som gir deg lett tilgang til feltene i en dataklasse i scopet til malen.
 object OmsorgEgenAuto : AutobrevTemplate&lt;OmsorgEgenAutoDto&gt; {
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO // Brevkode som identifiserer dette brevet. Defineres i API-model (enum)
+    override val kode: Pesysbrevkoder.AutoBrev = Pesysbrevkoder.AutoBrev.PE_OMSORG_EGEN_AUTO // Brevkode som identifiserer dette brevet. Defineres i API-model (enum)
 
     override val template = createTemplate(
 
@@ -1573,7 +1573,7 @@ object OmsorgEgenAuto : AutobrevTemplate&lt;OmsorgEgenAutoDto&gt; {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-12-11 11:24:10 UTC
+Last updated 2024-12-13 08:48:15 UTC
 </div>
 </div>
 </body>
