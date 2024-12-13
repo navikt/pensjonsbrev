@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
-import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
-import no.nav.pensjon.brev.maler.alder.InfoTilDegSomHarEPSSomFyller60AarAuto
+import no.nav.pensjon.brev.maler.alderspensjon.InfoAldersovergang67AarAuto
+import no.nav.pensjon.brev.maler.alderspensjon.InfoTilDegSomHarEPSSomFyller60AarAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
