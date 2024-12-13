@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.alderspensjon
+package no.nav.pensjon.brev.maler.fraser.alder
 
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal

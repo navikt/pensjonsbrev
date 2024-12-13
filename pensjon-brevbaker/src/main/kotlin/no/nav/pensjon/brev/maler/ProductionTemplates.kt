@@ -47,6 +47,7 @@ object ProductionTemplates : AllTemplates {
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
         InfoAldersovergang67AarAuto,
+        InfoTilDegSomHarEPSSomFyller60AarAuto,
         OmsorgEgenAuto,
         OpphoerBarnetilleggAuto,
         OpptjeningVedForhoeyetHjelpesats,

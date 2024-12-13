@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.alderspensjon
+package no.nav.pensjon.brev.maler.fraser.alder
 
 
 import no.nav.pensjon.brev.api.model.YtelseForAldersovergangKode
@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 // infoGjIkkeInntektsavkorted_002, infoGjInntektsavkortet_001, infoUTAPinnledn_001, infoUTGradertAPinnledn_001, infoUTogAPinnledn_001, infoFamPleierAPinnledn_001, infoAPinnledn_001
 data class InnledningInfoYtelse(
     val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>
-
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.GJP_FULL)) {

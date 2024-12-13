@@ -1,0 +1,68 @@
+package no.nav.pensjon.brev.maler
+
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.InfoTilDegSomHarEPSSomFyller60AarAutoDto
+import no.nav.pensjon.brev.api.model.maler.InfoTilDegSomHarEPSSomFyller60AarAutoDtoSelectors.sakstype
+import no.nav.pensjon.brev.maler.fraser.alder.*
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.ingenYtelse.InfoSaerskiltSatsEPS60
+import no.nav.pensjon.brev.maler.fraser.ingenYtelse.InfoSaerskiltSatsEPS60DetteMaaDuGjoere
+import no.nav.pensjon.brev.maler.fraser.ingenYtelse.InfoSaerskiltSatsEPS60Grunnen
+import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
+
+@TemplateModelHelpers
+
+// MF_000238 : VSS_INFO_EPS60_AUTO
+
+object InfoTilDegSomHarEPSSomFyller60AarAuto : AutobrevTemplate<InfoTilDegSomHarEPSSomFyller60AarAutoDto> {
+
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_INFO_EPS_SOM_FYLLER_60_AAR_AUTO
+
+    override val template = createTemplate(
+        name = kode.name,
+        letterDataType = InfoTilDegSomHarEPSSomFyller60AarAutoDto::class,
+        languages = languages(Bokmal, Nynorsk, English),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Informasjon til deg med ektefelle/partner/samboer som fyller 60 år",
+            isSensitiv = false,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = INFORMASJONSBREV,
+        )
+    ) {
+        title {
+            text(
+                Bokmal to "Informasjon til deg som har ektefelle/partner/samboer som snart fyller 60 år",
+                Nynorsk to "Informasjon til deg som har ektefelle/partner/samboer som snart fyller 60 år",
+                English to "Informasjon til deg som har ektefelle/partner/samboer som snart fyller 60 år"
+            )
+        }
+        outline {
+            // infoSoerSatsInnledning_001
+            paragraph {
+                text(
+                    Bokmal to "Er inntekten til ektefellen/partneren/samboeren din lavere enn folketrygdens grunnbeløp (G)?",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+            includePhrase(InfoSaerskiltSatsEPS60(sakstype))
+            includePhrase(InfoSaerskiltSatsEPS60Grunnen(sakstype))
+            includePhrase(InfoSaerskiltSatsEPS60DetteMaaDuGjoere(sakstype))
+            includePhrase(Felles.HarDuSpoersmaal.alder)
+        }
+    }
+}
+
+
+
+
+
+
+
