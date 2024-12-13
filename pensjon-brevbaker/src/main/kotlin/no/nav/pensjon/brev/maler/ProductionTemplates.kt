@@ -21,11 +21,6 @@ import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
-interface AllTemplates {
-    fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>>
-    fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>>
-}
-
 object ProductionTemplates : AllTemplates {
     private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
         AdhocAFPInformasjonOekningToleransebeloep,
