@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.ingenYtelse
+package no.nav.pensjon.brev.maler.fraser.alder
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.template.*

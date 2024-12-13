@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
 import no.nav.pensjon.brev.fixtures.alder.createInfoAlderspensjonOvergang67AarAutoDto
+import no.nav.pensjon.brev.fixtures.alder.createInfoTilDegSomHarEPSSomFyller60AarAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createOrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto

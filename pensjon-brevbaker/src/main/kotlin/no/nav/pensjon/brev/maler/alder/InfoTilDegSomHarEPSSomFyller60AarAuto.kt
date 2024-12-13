@@ -1,13 +1,12 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.brev.maler.alder
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.InfoTilDegSomHarEPSSomFyller60AarAutoDto
 import no.nav.pensjon.brev.api.model.maler.InfoTilDegSomHarEPSSomFyller60AarAutoDtoSelectors.sakstype
-import no.nav.pensjon.brev.maler.fraser.alder.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.ingenYtelse.InfoSaerskiltSatsEPS60
-import no.nav.pensjon.brev.maler.fraser.ingenYtelse.InfoSaerskiltSatsEPS60DetteMaaDuGjoere
-import no.nav.pensjon.brev.maler.fraser.ingenYtelse.InfoSaerskiltSatsEPS60Grunnen
+import no.nav.pensjon.brev.maler.fraser.alder.InfoSaerskiltSatsEPS60
+import no.nav.pensjon.brev.maler.fraser.alder.InfoSaerskiltSatsEPS60DetteMaaDuGjoere
+import no.nav.pensjon.brev.maler.fraser.alder.InfoSaerskiltSatsEPS60Grunnen
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate

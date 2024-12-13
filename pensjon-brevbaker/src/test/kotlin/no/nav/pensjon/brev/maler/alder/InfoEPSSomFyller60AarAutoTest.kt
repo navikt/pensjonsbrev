@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.brev.maler.alder
 
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.InfoTilDegSomHarEPSSomFyller60AarAutoDto
