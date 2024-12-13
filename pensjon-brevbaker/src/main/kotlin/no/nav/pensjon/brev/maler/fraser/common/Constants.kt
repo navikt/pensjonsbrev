@@ -34,7 +34,7 @@ object Constants {
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
     const val PENSJON_ENDRING_URL = "$NAV_URL/pensjon-endring"
-    const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelop"
+    const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelopet"
     const val REGULERING_ALDERSPENSJON_URL = "$NAV_URL/reguleringalderspensjon"
     const val SEND_BESKJED_URL = "$NAV_URL/send-beskjed"
     const val SKATTEETATEN_URL = "skatteetaten.no"
