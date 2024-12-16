@@ -1,5 +1,16 @@
 version: 2
 
+registries:
+  npm-github:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{secrets.READER_TOKEN}}
+  gradle-artifactory:
+    type: maven-repository
+    url: https://maven.pkg.github.com/navikt/pensjonsbrev
+    username: ${{ github.repository_owner }}
+    password: ${{secrets.READER_TOKEN}}
+
 updates:
   # ==============
   # KOTLIN BACKEND
@@ -18,6 +29,8 @@ updates:
       interval: "monthly"
       day: "sunday"
     open-pull-requests-limit: 10
+    registries:
+      - gradle-artifactory
     groups:
       tjenestebuss:
         patterns:
@@ -41,6 +54,8 @@ updates:
       interval: "monthly"
       day: "sunday"
     open-pull-requests-limit: 10
+    registries:
+      - npm-github
     groups:
       dev:
         patterns:

@@ -10,9 +10,9 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.maler.AllTemplates
-import no.nav.pensjon.etterlatte.etterlatteRouting
+import no.nav.pensjon.etterlatte.EtterlatteMaler
 
-fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService, brevProvider: AllTemplates) =
+fun Application.brevRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService, brevProvider: AllTemplates) =
     routing {
         val autobrev = TemplateResource("autobrev", brevProvider.hentAutobrevmaler(), latexCompilerService)
         val redigerbareBrev = TemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService)
@@ -28,7 +28,10 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
             }
 
             route("etterlatte") {
-                etterlatteRouting(latexCompilerService)
+                letterRoutes(
+                    autobrev = TemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService),
+                    redigerbareBrev = TemplateResource("ikke-i-bruk", EtterlatteMaler.hentRedigerbareMaler(), latexCompilerService)
+                )
             }
             get("/ping_authorized") {
                 val principal = call.authentication.principal<JWTPrincipal>()

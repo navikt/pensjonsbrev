@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.alderspensjon
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.maler.fraser.alder.*
@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBR
 // MF_000129 : AP_INFO_AO67_AUTO
 object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang67AarAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_AP_INFO_ALDERSOVERGANG_67_AAR_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_INFO_ALDERSOVERGANG_67_AAR_AUTO
 
     override val template = createTemplate(
         name = kode.name,

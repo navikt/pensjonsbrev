@@ -13,7 +13,6 @@ interface Brevkode {
         PE_UT_ADHOC_2024_INFO_HVILENDE_RETT_4_AAR,
         PE_UT_ADHOC_2024_MIDL_OPPHOER_HVILENDE_RETT_10_AAR,
         PE_AP_INFO_ALDERSOVERGANG_67_AAR_AUTO,
-        PE_INFO_EPS_SOM_FYLLER_60_AAR_AUTO,
         PE_OMSORG_EGEN_AUTO,
         PE_OMSORG_HJELPESTOENAD_AUTO,
         UT_ADHOC_UFOERETRYGD_ETTERBETALING_DAGPENGER,
@@ -31,24 +30,19 @@ interface Brevkode {
         UT_BARNETILLEGG_ENDRET_AUTO,
         TESTBREV;
 
-        override fun kode(): String = this.name
-    }
+    interface Automatisk : Brevkode<Automatisk>
 
-    enum class Redigerbar : Brevkode {
-        INFORMASJON_OM_SAKSBEHANDLINGSTID,
-        PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS,
-        PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
-        PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ETTERLATTE,
-        PE_VARSEL_OM_MULIG_AVSLAG,
-        UT_AVSLAG_UFOERETRYGD,
-        UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
-        PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER,
-        PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER,
-        TESTBREV,
-        ;
-
-        override fun kode(): String = this.name
-    }
+    interface Redigerbart : Brevkode<Redigerbart>
 
     fun kode(): String
+}
+
+@JvmInline
+value class RedigerbarBrevkode(private val kode: String) : Brevkode.Redigerbart {
+    override fun kode(): String = kode
+}
+
+@JvmInline
+value class AutomatiskBrevkode(private val kode: String): Brevkode.Automatisk {
+    override fun kode(): String = kode
 }

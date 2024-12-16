@@ -14,7 +14,7 @@ export function getFieldDefaultValue(defaults: { [x: string]: any } | undefined,
   }
 
   const dotIndex = fieldName.indexOf(".");
-  if (dotIndex >= 0) {
+  if (dotIndex !== -1) {
     return getFieldDefaultValue(defaults[fieldName.slice(0, dotIndex)], fieldName.slice(dotIndex + 1));
   }
   return defaults[fieldName];

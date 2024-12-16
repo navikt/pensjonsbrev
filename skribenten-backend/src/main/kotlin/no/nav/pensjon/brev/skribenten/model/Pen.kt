@@ -114,7 +114,7 @@ object Pen {
         val templateDescription: TemplateDescription.Redigerbar,
         val dokumentDato: LocalDate,
         val saksId: Long,
-        val brevkode: Brevkode.Redigerbar,
+        val brevkode: Brevkode.Redigerbart,
         val enhetId: String?,
         val pdf: ByteArray,
         val eksternReferanseId: String,

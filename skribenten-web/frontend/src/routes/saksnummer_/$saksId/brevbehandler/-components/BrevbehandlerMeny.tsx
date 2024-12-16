@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { css } from "@emotion/react";
 import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
