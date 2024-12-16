@@ -22,7 +22,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBR
 
 object InfoTilDegSomHarEPSSomFyller60AarAuto : AutobrevTemplate<InfoTilDegSomHarEPSSomFyller60AarAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_INFO_EPS_SOM_FYLLER_60_AAR_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev
 
     override val template = createTemplate(
         name = kode.name,
