@@ -38,16 +38,12 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
 
             paragraph {
                 text(
-                    Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022.",
-                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022."
+                    Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo.",
+                    Nynorsk to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. "
                 )
             }
 
-            for (i in 1..9){
+            for (i in 1..10){
                 paragraph {
                     text(Bokmal to "BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA ", Nynorsk to "BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA ")
                 }
@@ -216,11 +212,11 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
             }
 
             title1 {
-                text(Bokmal to "Tittel 1", Nynorsk to "Tittel 1")
+                text(Bokmal to "Samme innhold med annen størrelse", Nynorsk to "Samme innhold med annen størrelse")
             }
 
             title2 {
-                text(Bokmal to "Tittel 2", Nynorsk to "Tittel 2")
+                text(Bokmal to "Samme innhold med annen størrelse", Nynorsk to "Samme innhold med annen størrelse")
             }
 
         }

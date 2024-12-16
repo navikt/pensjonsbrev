@@ -35,26 +35,37 @@
 %----------------------------------------
 %                Global
 %----------------------------------------
+
+
 %fonts
-\setsansfont{Source Sans Pro}
-\setmainfont{Source Sans Pro}
+
+\setsansfont{Source Sans 3}
+\setmainfont{Source Sans 3}
 \defaultfontfeatures{LetterSpace=1.5}
 \addfontfeature{VerticalPosition = Inferior }
 \newfontface{\primaryFont}[
     Color=262626,
-    BoldFont={Source Sans Pro Bold},
-    ItalicFont={Source Sans Pro Italic},
-    BoldItalicFont={Source Sans Pro Bold Italic}]{Source Sans Pro}
+    BoldFont={Source Sans 3 Bold},
+    ItalicFont={Source Sans 3 Italic},
+    BoldItalicFont={Source Sans 3 Bold Italic}]{Source Sans 3}
 
 % Global font commands
 \newcommand{\standardtextsize}{11.45pt}
 \newcommand{\standardtextspacing}{18.5pt}
 \newcommand{\titletextsize}{17pt}
+
 \newcommand{\titleonetextsize}{15.5pt}
+\newcommand{\titleonetextspacing}{20pt}
+
 \newcommand{\titletwotextsize}{13pt}
-\newcommand{\pagenumbertext}[1]{{\primaryFont \fontsize{10pt}{10pt} \selectfont #1}}
+\newcommand{\titletwotextspacing}{20pt}
+
+%paragraph spacing
 \setlength{\parindent}{0em} % indentations before first line in paragraph
 \setlength{\parskip}{1em} % space between paragraphs
+
+%page numbering
+\newcommand{\pagenumbertext}[1]{{\primaryFont \fontsize{10pt}{10pt} \selectfont #1}}
 
 %itemize / lists spacing
 \newlength{\listtopsep}

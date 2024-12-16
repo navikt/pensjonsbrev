@@ -11,7 +11,7 @@ COPY containerFiles/fonts /usr/share/fonts
 COPY containerFiles/latex /app/pensjonsbrev_latex
 RUN apt update && apt -y install tzdata perl-tk && rm -rf /var/lib/apt/lists/*
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
-COPY --from=latex /app /app
+COPY --from=debian_latex /app /app
 
 USER apprunner
 COPY  build/libs/pdf-bygger.jar /app/app.jar

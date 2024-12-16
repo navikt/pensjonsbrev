@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.description="XeLaTeX installation with required p
 LABEL org.opencontainers.image.title="XeLaTeX"
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/aarch64-linux/"
+ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 
 #Download and install tlmgr (texlive package manager)
 RUN apt -y --allow-releaseinfo-change -o Acquire::Check-Valid-Until=false update
@@ -30,4 +31,5 @@ RUN tlmgr install pdfx
 RUN tlmgr install xmpincl
 RUN tlmgr install everyshi
 RUN tlmgr install etoolbox
+RUN tlmgr install titlesec
 

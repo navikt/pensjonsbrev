@@ -2,23 +2,23 @@
 %               Content
 %----------------------------------------
 
-\newcommand{\lettersectiontitle}[2]{{
+\newcommand{\lettersectiontitle}[3]{{
     \pagebreak[3] %strongly encourage page break before section title
-    \primaryFont \fontsize{#2}{0pt}
+    \primaryFont \fontsize{#2}{#3}
     \selectfont
-    \section*{#1}
+    \textbf{#1}\\*
     \nopagebreak %absolutely prevent page break between title and vertical space under title
-    \vspace{-1.5em}
-    \nopagebreak %absolutely prevent page break between title and following content
+    \par
+    \nopagebreak %absolutely prevent page break between title and vertical space under title
 }}
 
 %Letter section title
 \newcommand{\lettersectiontitleone}[1]{{
-    \lettersectiontitle{#1}{\titleonetextsize}
+    \lettersectiontitle{#1}{\titleonetextsize}{\titleonetextspacing}
 }}
 
 \newcommand{\lettersectiontitletwo}[1]{{
-    \lettersectiontitle{#1}{\titletwotextsize}
+    \lettersectiontitle{#1}{\titletwotextsize}{\titletwotextspacing}
 }}
 
 %Normal paragraphs
@@ -49,7 +49,7 @@
 %----------------------------------------
 %default table settings
 
-\newcommand{\tableHeaderText}[1]{\allowbreak{\primaryFont \fontsize{\titletextsize}{\titletextsize} \selectfont \textbf{#1}}} %footer font command
+\newcommand{\tableHeaderText}[1]{\allowbreak{\primaryFont \fontsize{\titleonetextsize}{\titleonetextspacing} \selectfont \textbf{#1}}} %footer font command
 \definecolor{columnheadercolor}{HTML}{E6F0FF}
 \definecolor{linecolor}{HTML}{E5E5E5}
 \definecolor{row1color}{HTML}{F7F7F7}
@@ -61,10 +61,10 @@
 
 
 \newfontface{\tabletext}[
-    Color=707070,
-    BoldFont={Source Sans Pro Bold},
-    ItalicFont={Source Sans Pro Italic},
-    BoldItalicFont={Source Sans Pro Bold Italic}]{Source Sans Pro}
+    Color=000000,
+    BoldFont={Source Sans 3 Bold},
+    ItalicFont={Source Sans 3 Italic},
+    BoldItalicFont={Source Sans 3 Bold Italic}]{Source Sans 3}
 
 
 \newenvironment{letterTable}[1]{
