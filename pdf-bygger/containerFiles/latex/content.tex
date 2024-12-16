@@ -4,12 +4,12 @@
 
 \newcommand{\lettersectiontitle}[3]{{
     \pagebreak[3] %strongly encourage page break before section title
-    \primaryFont \fontsize{#2}{#3}
+    \primaryFont \fontsize{#2}{0pt}
     \selectfont
-    \textbf{#1}\\*
-    \nopagebreak %absolutely prevent page break between title and vertical space under title
-    \par
-    \nopagebreak %absolutely prevent page break between title and vertical space under title
+    \textbf{#1}
+    \nopagebreak %absolutely prevent page break between title and following content
+    \\*[#3] % newline with custom spacing.
+    \nopagebreak %absolutely prevent page break between title and following content
 }}
 
 %Letter section title

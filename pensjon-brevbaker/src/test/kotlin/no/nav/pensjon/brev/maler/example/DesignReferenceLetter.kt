@@ -15,7 +15,7 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
-        languages = languages(Bokmal, Nynorsk),
+        languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
@@ -25,41 +25,39 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
     ) {
         title {
             text(
-                Bokmal to "Du har fått innvilget søknad om pensjon",
-                Nynorsk to "Du har fått innvilget søknad om pensjon"
+                Bokmal to "Du har fått innvilget søknad om pensjon pensjon pensjon pensjon pensjon pensjon pensjon pensjon pensjon pensjon pensjon"
             )
         }
 
         outline {
             // section title
             title1 {
-                text(Bokmal to "Hvorfor skriver vi til deg?", Nynorsk to "Hvorfor skriver vi til deg?")
+                text(Bokmal to "Hvorfor skriver vi til deg?")
             }
 
             paragraph {
                 text(
-                    Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo.",
-                    Nynorsk to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. "
+                    Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo."
                 )
             }
 
-            for (i in 1..10){
+            repeat(9) {
                 paragraph {
-                    text(Bokmal to "BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA ", Nynorsk to "BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA ")
+                    text(Bokmal to "BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA ")
                 }
             }
 
             title1 {
-                text(Bokmal to "Utbetalingsoversikt", Nynorsk to "Utbetalingsoversikt")
+                text(Bokmal to "Utbetalingsoversikt")
             }
 
             paragraph {
                 table(
                     header = {
-                        column(1) { text(Bokmal to "Måned", Nynorsk to "Måned", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Stønad", Nynorsk to "Stønad", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Pensjon", Nynorsk to "Pensjon", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Totalt", Nynorsk to "Totalt", FontType.BOLD) }
+                        column(1) { text(Bokmal to "Måned", FontType.BOLD) }
+                        column(1, RIGHT) { text(Bokmal to "Stønad", FontType.BOLD) }
+                        column(1, RIGHT) { text(Bokmal to "Pensjon", FontType.BOLD) }
+                        column(1, RIGHT) { text(Bokmal to "Totalt", FontType.BOLD) }
                     }
                 ) {
                     listOf(
@@ -80,143 +78,117 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                         "Mars",
                     ).forEach {
                         row {
-                            cell { text(Bokmal to it, Nynorsk to it) }
-                            cell { text(Bokmal to "1 kr", Nynorsk to "1 kr") }
-                            cell { text(Bokmal to "1 kr", Nynorsk to "1 kr") }
-                            cell { text(Bokmal to "2 kr", Nynorsk to "2 kr") }
+                            cell { text(Bokmal to it) }
+                            cell { text(Bokmal to "1 kr") }
+                            cell { text(Bokmal to "1 kr") }
+                            cell { text(Bokmal to "2 kr") }
                         }
                     }
                 }
             }
 
             title2 {
-                text(Bokmal to "Tittel 2", Nynorsk to "Tittel 2")
+                text(Bokmal to "Tittel 2")
             }
 
             paragraph {
                 text(
                     Bokmal to "Du har fått innvilget pensjon.",
-                    Nynorsk to "Du har fått innvilget pensjon.",
                     FontType.BOLD
                 )
 
                 text(
                     Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
                             "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022.",
-                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022."
-                )
+                            "måneden fra januar 2022.")
             }
 
             paragraph {
                 text(
                     Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
                             "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022.",
-                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022."
-                )
+                            "måneden fra januar 2022.")
             }
 
             title1 {
-                text(Bokmal to "Tittel", Nynorsk to "Tittel")
+                text(Bokmal to "Tittel")
             }
 
             paragraph {
                 text(
                     Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
                             "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022.",
-                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022."
-                )
+                            "måneden fra januar 2022.")
                 list {
                     item {
                         text(
                             Bokmal to "Kulepunkt",
-                            Nynorsk to "Kulepunkt",
                         )
                     }
                     item {
                         text(
                             Bokmal to "Kulepunkt",
-                            Nynorsk to "Kulepunkt",
                         )
                     }
                     item {
                         text(
                             Bokmal to "Kulepunkt",
-                            Nynorsk to "Kulepunkt",
                         )
                     }
                     item {
                         text(
                             Bokmal to "Kulepunkt",
-                            Nynorsk to "Kulepunkt",
                         )
                     }
                 }
             }
 
             title1 {
-                text(Bokmal to "Tittel", Nynorsk to "Tittel")
+                text(Bokmal to "Tittel")
             }
 
             paragraph {
                 text(
                     Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
                             "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022.",
-                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022."
-                )
+                            "måneden fra januar 2022.")
 
 
                 list {
                     item {
                         text(
                             Bokmal to "Nummerert list",
-                            Nynorsk to "Nummerert list",
                         )
                     }
                     item {
                         text(
                             Bokmal to "Nummerert list",
-                            Nynorsk to "Nummerert list",
                         )
                     }
                     item {
                         text(
                             Bokmal to "Nummerert list",
-                            Nynorsk to "Nummerert list",
                         )
                     }
                     item {
                         text(
                             Bokmal to "Nummerert list",
-                            Nynorsk to "Nummerert list",
                         )
                     }
                     item {
                         text(
                             Bokmal to "Nummerert list",
-                            Nynorsk to "Nummerert list",
                         )
                     }
                 }
             }
 
             title1 {
-                text(Bokmal to "Samme innhold med annen størrelse", Nynorsk to "Samme innhold med annen størrelse")
+                text(Bokmal to "Samme innhold med annen størrelse")
             }
 
             title2 {
-                text(Bokmal to "Samme innhold med annen størrelse", Nynorsk to "Samme innhold med annen størrelse")
+                text(Bokmal to "Samme innhold med annen størrelse")
             }
 
         }

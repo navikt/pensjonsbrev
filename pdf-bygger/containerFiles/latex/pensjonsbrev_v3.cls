@@ -25,9 +25,8 @@
 \usepackage{enumitem,amssymb} % for formChoice list
 \usepackage[absolute
 %    ,showboxes %show boxes around textblocks for debugging
-    ]{textpos} %first page absolute posistioned elements
+]{textpos} %first page absolute posistioned elements
 %\usepackage{showframe} %show frames of page geometry
-%! suppress = FileNotFound
 \input{params}  % Must be done before pdfx is imported
 
 \usepackage[a-3b]{pdfx}       % create pdf/A compliant pdf's
@@ -50,19 +49,24 @@
     BoldItalicFont={Source Sans 3 Bold Italic}]{Source Sans 3}
 
 % Global font commands
-\newcommand{\standardtextsize}{11.45pt}
-\newcommand{\standardtextspacing}{18.5pt}
-\newcommand{\titletextsize}{17pt}
+\newcommand{\standardtextsize}{11pt}     % size
+\newcommand{\standardtextspacing}{18.5pt}   % space between normal lines
 
-\newcommand{\titleonetextsize}{15.5pt}
-\newcommand{\titleonetextspacing}{20pt}
+% main title
+\newcommand{\titletextsize}{16pt}           % size
+\newcommand{\titletextspacing}{26pt}        % space under
 
-\newcommand{\titletwotextsize}{13pt}
-\newcommand{\titletwotextspacing}{20pt}
+%title one
+\newcommand{\titleonetextsize}{13pt}      % size
+\newcommand{\titleonetextspacing}{10pt}     % space under
+
+%title two
+\newcommand{\titletwotextsize}{12pt}        % size
+\newcommand{\titletwotextspacing}{10pt}     % space under
 
 %paragraph spacing
-\setlength{\parindent}{0em} % indentations before first line in paragraph
-\setlength{\parskip}{1em} % space between paragraphs
+\setlength{\parindent}{0em}                 % indentations before first line in paragraph
+\setlength{\parskip}{1em}                   % space between paragraphs
 
 %page numbering
 \newcommand{\pagenumbertext}[1]{{\primaryFont \fontsize{10pt}{10pt} \selectfont #1}}
@@ -76,26 +80,27 @@
 
 
 % paragraph formatting
-\sloppy % no word-breaking
-\raggedright % no word spacing
-\raggedbottom % no line stretching to fit page
-\frenchspacing % no double space after ended sentence
+\sloppy                                     % no word-breaking
+\raggedright                                % no word spacing
+\raggedbottom                               % no line stretching to fit page
+\frenchspacing                              % no double space after ended sentence
 
-\interlinepenalty=1700 % penalty added between each line of a paragraph.
-\clubpenalty=9000 % penalty for a broken page, with a single line of a paragraph remaining on the bottom of the preceding page.
-\widowpenalty=9000 % penalty for a broken page, with a single line of a paragraph (called "widow") remaining on the top of the succeeding page.
+% Page break penalties changing this section requires extensive testing, so it's not recommended.
+\interlinepenalty=1700                      % penalty added between each line of a paragraph.
+\clubpenalty=9000                           % penalty for a broken page, with a single line of a paragraph remaining on the bottom of the preceding page.
+\widowpenalty=9000                          % penalty for a broken page, with a single line of a paragraph (called "widow") remaining on the top of the succeeding page.
 
-\@itempenalty=115 % penalty for breaking up an itemlist
+\@itempenalty=115                           % penalty for breaking up an itemlist
 
 
 % page text area formatting
 % DO NOT REPLACE WITH GEOMETRY PACKAGE. Geometry will use a hook for end of page, which is unstable and might cause page numbering bugs.
 \newlength{\lettermargin}
-\setlength{\lettermargin}{20mm} % top left and right margin.
+\setlength{\lettermargin}{64pt}                               % top left and right margin.
 \newlength{\lettermarginbottom}
-\setlength{\lettermarginbottom}{25mm} % bottom margin.
+\setlength{\lettermarginbottom}{74pt}                         % bottom margin.
 \newlength{\lettermargincalc}
-\setlength{\lettermargincalc}{\dimexpr(\lettermargin-1in)} % subtracting standard margin of one inch.
+\setlength{\lettermargincalc}{\dimexpr(\lettermargin-1in)}    % subtracting standard margin of one inch.
 
 \setlength{\textwidth}{\dimexpr(\paperwidth-\lettermargin*2)} % total text width calculated from margins and paper width
 \setlength{\headsep}{\lettermargincalc}
@@ -117,20 +122,18 @@
 %                 Logo
 %----------------------------------------
 \newcommand{\logo}{
-    \begin{textblock*}{24.1mm}(16.7mm,17.7mm)
-        \hfill\includegraphics[width=24.1mm,page=1]{nav-logo}
-    \end{textblock*}
+    \includegraphics[height=16pt,page=1]{nav-logo}
 }
 
 %----------------------------------------
 %               Page number
 %----------------------------------------
 \newlength{\pagenumbertoppadding}
-\setlength{\pagenumbertoppadding}{11mm} % space between bottom of page content and page number
+\setlength{\pagenumbertoppadding}{16pt} % space between bottom of page content and page number
 \newlength{\pagenumberyposcalc} % calculate page number position to not collide with content.
 \setlength{\pagenumberyposcalc}{\dimexpr(\paperheight-\lettermarginbottom+\pagenumbertoppadding)} % bottom margin.
-\newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
-\newcommand{\letterpagenumber}{ %general page number formatting
+\newcommand{\currentSectionName}{mainletter}                                                      % name of the current section of the letter. Used for lastpage label at the end of this section
+\newcommand{\letterpagenumber}{                                                                   % general page number formatting
     \begin{textblock*}{\textwidth}(\lettermargin,\pagenumberyposcalc)
         \pagenumbertext{\feltsidesaksnummerprefix\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
     \end{textblock*}
@@ -149,13 +152,12 @@
 
 \newcommand{\sakspart}{
     \setlength{\tabcolsep}{12pt}
-    \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
+    \primaryFont \fontsize{\standardtextsize}{\standardtextspacing} \selectfont
     \saksinfomottaker
-    \\[1em]
 }
 
 
-\input{content}     %Code related to the letter content, not the page layout
-\input{attachment}  %Elements related to the letter content, not the page layout
+\input{content}     % Code related to the letter content, not the page layout
+\input{attachment}  % Elements related to the letter content, not the page layout
 \input{firstpage}
 \input{closing}
