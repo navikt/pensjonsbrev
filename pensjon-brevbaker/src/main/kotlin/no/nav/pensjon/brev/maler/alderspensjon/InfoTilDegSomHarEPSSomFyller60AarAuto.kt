@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.alderspensjon
 
 import no.nav.pensjon.brev.api.model.maler.InfoTilDegSomHarEPSSomFyller60AarAutoDto
+import no.nav.pensjon.brev.api.model.maler.InfoTilDegSomHarEPSSomFyller60AarAutoDtoSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSaerskiltSatsEPS60
