@@ -38,7 +38,7 @@ object InfoTilDegSomHarEPSSomFyller60AarAuto : AutobrevTemplate<InfoTilDegSomHar
         title {
             text(
                 Bokmal to "Informasjon til deg som har ektefelle/partner/samboer som snart fyller 60 år",
-                Nynorsk to "Informasjon til deg som har ektefelle/partner/samboer som snart fyller 60 år",
+                Nynorsk to "Informasjon til deg som har ektefelle/partnar/sambuar som snart fyller 60 år",
                 English to "Information for you with a spouse/partner/cohabitant who is soon turning 60"
             )
         }
@@ -47,7 +47,7 @@ object InfoTilDegSomHarEPSSomFyller60AarAuto : AutobrevTemplate<InfoTilDegSomHar
             paragraph {
                 text(
                     Bokmal to "Er inntekten til ektefellen/partneren/samboeren din lavere enn folketrygdens grunnbeløp (G)?",
-                    Nynorsk to "",
+                    Nynorsk to "Er inntekta til ektefellen/partnaren/sambuaren din lågare enn folketrygda sitt grunnbeløp (G)?",
                     English to "Is your spouse/partner/cohabitant's income lower than the National Insurance basic amount (G)?"
                 )
             }

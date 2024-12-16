@@ -6,5 +6,5 @@ import no.nav.pensjon.brev.api.model.maler.InfoTilDegSomHarEPSSomFyller60AarAuto
 
 fun createInfoTilDegSomHarEPSSomFyller60AarAutoDto() =
     InfoTilDegSomHarEPSSomFyller60AarAutoDto(
-        sakstype = Sakstype.AFP,
+        sakstype = Sakstype.ALDER,
     )
