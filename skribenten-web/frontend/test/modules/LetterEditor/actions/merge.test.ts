@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import type {
   AnyBlock,
@@ -47,7 +48,7 @@ describe("LetterEditorActions.merge", () => {
       test("adjoining literal content in merging blocks are joined", () => {
         const state = letter(
           paragraph(variable("var1"), literal({ text: "lit1" })),
-          paragraph(literal({ text: "lit2" }), variable("var2")),
+          paragraph(newLiteral({ text: "lit2" }), variable("var2")),
         );
         const mergeId = { blockIndex: 0 };
 
@@ -123,10 +124,26 @@ describe("LetterEditorActions.merge", () => {
         expect(resultBlock.id).toStrictEqual(select<ParagraphBlock>(state, { blockIndex: 0 }).id);
       });
 
+      test("content moved back into original parent is unmarked as deleted", () => {
+        const state = letter(
+          paragraph(literal({ text: "l1" }), variable("v1"), literal({ text: "l2" }), variable("v2")),
+        );
+
+        const splitResult = Actions.split(state, { blockIndex: 0, contentIndex: 2 }, 0);
+        const splitBlock = select<ParagraphBlock>(splitResult, { blockIndex: 0 });
+        expect(splitBlock.deletedContent).toEqual(state.redigertBrev.blocks[0].content.slice(2).map((c) => c.id));
+        expect(splitBlock.content).toHaveLength(3);
+
+        const mergeResult = Actions.merge(splitResult, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+        const mergedBlock = select<ParagraphBlock>(mergeResult, { blockIndex: 0 });
+        expect(mergedBlock.content).toHaveLength(4);
+        expect(mergedBlock.deletedContent).toHaveLength(0);
+      });
+
       test("adjoining literal content in merging blocks are joined", () => {
         const state = letter(
           paragraph(variable("var1"), literal({ text: "lit1" })),
-          paragraph(literal({ text: "lit2" }), variable("var2")),
+          paragraph(newLiteral({ text: "lit2" }), variable("var2")),
         );
 
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
@@ -162,6 +179,12 @@ describe("LetterEditorActions.merge", () => {
 
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
         expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toHaveLength(0);
+      });
+
+      test("removed block is marked as deleted", () => {
+        const state = letter(paragraph(literal({ text: "l1" })), paragraph(literal({ text: "l2" })));
+        const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+        expect(result.redigertBrev.deletedBlocks).toContain(state.redigertBrev.blocks[1].id);
       });
 
       describe("Update focus", () => {
@@ -218,7 +241,7 @@ describe("LetterEditorActions.merge", () => {
           paragraph(literal({ text: "block 0" })),
           paragraph(
             itemList({ items: [item(literal({ text: "Det blir " }))] }),
-            literal({ text: "content 1" }),
+            newLiteral({ text: "content 1" }),
             variable("variable 1"),
             itemList({ items: [item(literal({ text: "En annen liste" }))] }),
           ),
@@ -252,7 +275,6 @@ describe("LetterEditorActions.merge", () => {
 
         test("moved textcontent should be marked as deleted", () => {
           expect(select<ParagraphBlock>(result, { blockIndex: mergeId.blockIndex }).deletedContent).toEqual([
-            select<TextContent>(withContentAfterList, mergeId).id,
             select<TextContent>(withContentAfterList, { ...mergeId, contentIndex: mergeId.contentIndex + 1 }).id,
           ]);
         });
@@ -362,7 +384,7 @@ describe("LetterEditorActions.merge", () => {
             itemList({
               items: [
                 item(variable("var1"), literal({ text: "lit1" })),
-                item(literal({ text: "lit2" }), variable("var2")),
+                item(newLiteral({ text: "lit2" }), variable("var2")),
               ],
             }),
           ),
@@ -474,7 +496,7 @@ describe("LetterEditorActions.merge", () => {
           paragraph(
             itemList({
               items: [
-                item(variable("var1"), literal({ text: "lit1" })),
+                item(variable("var1"), newLiteral({ text: "lit1" })),
                 item(literal({ text: "lit2" }), variable("var2")),
               ],
             }),
@@ -487,7 +509,7 @@ describe("LetterEditorActions.merge", () => {
         const mergedId = { ...mergeId, itemIndex: mergeId.itemIndex - 1 };
         expect(select<Item>(result, mergedId).content).toHaveLength(3);
         const mergedLiteral = select<LiteralValue>(result, { ...mergedId, itemContentIndex: 1 });
-        expect(mergedLiteral.text).toEqual("lit1");
+        expect(mergedLiteral.text).toEqual("lit2");
         expect(mergedLiteral.editedText).toEqual("lit1lit2");
       });
 

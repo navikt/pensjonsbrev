@@ -343,7 +343,7 @@ describe("LetterEditorActions.split", () => {
         parentId: null,
         type: LITERAL,
         text: "",
-        editedText: null,
+        editedText: "",
         tags: [],
       });
 

@@ -193,7 +193,11 @@ export function row(...cells: Cell[]): Row {
   };
 }
 
-function withParent<T extends Identifiable>(content: T[], parentId: number, replaceExisting: boolean = false): T[] {
+export function withParent<T extends Identifiable>(
+  content: T[],
+  parentId: number | null,
+  replaceExisting: boolean = false,
+): T[] {
   return content.map((c) => ({ ...c, parentId: replaceExisting ? parentId : c.parentId ?? parentId }));
 }
 

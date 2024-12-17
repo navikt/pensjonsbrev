@@ -1,5 +1,8 @@
 import type { Draft } from "immer";
 
+import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
+import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
+import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
   Content,
@@ -45,6 +48,71 @@ export function create(brev: BrevResponse): LetterEditorState {
     isDirty: false,
     focus: { blockIndex: 0, contentIndex: 0 },
   };
+}
+
+// TODO: skriv en test som verifiserer at kun elementer som har matchende parentId til from blir lagt til i deleted.
+export function removeElements<T extends Identifiable>(
+  startIndex: number,
+  count: number,
+  from: Draft<T[]>,
+  deleted: Draft<number[]>,
+): Draft<T[]> {
+  const removedElements = from.splice(startIndex, count);
+  for (const e of removedElements) deleteElement(e, from, deleted);
+  return removedElements;
+}
+
+export function addElements<T extends Identifiable, E extends T>(
+  elements: E[],
+  toIndex: number,
+  to: Draft<T[]>,
+  deleted: Draft<number[]>,
+): void;
+export function addElements<T extends Identifiable, E extends T>(
+  elements: Draft<E[]>,
+  toIndex: number,
+  to: Draft<T[]>,
+  deleted: Draft<number[]>,
+): void {
+  if (toIndex > 0) {
+    const elementBeforeStartIndex = to[toIndex - 1];
+    const firstElementToAdd = elements[0];
+
+    to.splice(
+      toIndex - 1,
+      1,
+      ...mergeLiteralsIfPossible(elementBeforeStartIndex, firstElementToAdd),
+      ...elements.slice(1),
+    );
+  } else {
+    to.splice(toIndex, 0, ...elements);
+  }
+
+  const presentIds = to.map((e) => e.id).filter((id) => id !== null) as number[];
+  for (const id of presentIds) {
+    const index = deleted.indexOf(id);
+    if (index >= 0) {
+      deleted.splice(index, 1);
+    }
+  }
+}
+
+export function mergeLiteralsIfPossible<T extends Identifiable>(first: Draft<T>, second: Draft<T>): Draft<T[]> {
+  // TODO: Legg til sjekk for `first.fontType === second.fontType`
+  if (isLiteral(first) && isLiteral(second) && !isFritekst(first) && !isFritekst(second)) {
+    const mergedText = text(first) + text(second);
+    if (first.id !== null && second.id !== null) {
+      return [first, second];
+    } else if (first.id === null) {
+      updateLiteralText(second, mergedText);
+      return [second];
+    } else {
+      updateLiteralText(first, mergedText);
+      return [first];
+    }
+  } else {
+    return [first, second];
+  }
 }
 
 export function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[], deleted: Draft<number[]>) {
@@ -114,4 +182,15 @@ export function newItemList(args: { id?: Nullable<number>; items: Item[]; delete
     items: args.items,
     deletedItems: args.deletedItems ?? [],
   };
+}
+
+export function getMergeIds(sourceId: number, target: MergeTarget): [number, number] {
+  switch (target) {
+    case MergeTarget.PREVIOUS: {
+      return [sourceId - 1, sourceId];
+    }
+    case MergeTarget.NEXT: {
+      return [sourceId, sourceId + 1];
+    }
+  }
 }
