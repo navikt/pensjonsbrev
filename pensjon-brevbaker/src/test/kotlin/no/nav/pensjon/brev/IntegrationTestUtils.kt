@@ -40,7 +40,7 @@ fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode
     }
 
 fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("build", "test_pdf")) {
-    val file = path.resolve("$pdfFileName.pdf").toFile()
+    val file = path.resolve("${pdfFileName.replace(" ", "_")}.pdf").toFile()
     file.parentFile.mkdirs()
     file.writeBytes(pdf)
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))

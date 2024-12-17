@@ -42,13 +42,6 @@ class LatexVisualITest {
     private fun ParagraphOnlyScope<LangBokmal, Unit>.ipsumText() = text(Bokmal to lipsums.first())
 
     @Test
-    fun `Paragraph after letter title`() {
-        render {
-            paragraph { ipsumText() }
-        }
-    }
-
-    @Test
     fun `Two paragraphs in a row`() {
         render {
             paragraph { ipsumText() }
@@ -91,7 +84,7 @@ class LatexVisualITest {
     @ParameterizedTest
     @MethodSource("elementCombinations")
     fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
-        render(overrideName = "${elementA.description} then ${elementB.description}".replace(" ", "_")) {
+        render(overrideName = "${elementA.description} then ${elementB.description}") {
             renderElementOfType(elementA)
             renderElementOfType(elementB)
         }
