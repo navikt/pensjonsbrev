@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B255
@@ -114,7 +114,7 @@ object Pen {
         val templateDescription: TemplateDescription.Redigerbar,
         val dokumentDato: LocalDate,
         val saksId: Long,
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: Pesysbrevkoder.Redigerbar,
         val enhetId: String?,
         val pdf: ByteArray,
         val eksternReferanseId: String,

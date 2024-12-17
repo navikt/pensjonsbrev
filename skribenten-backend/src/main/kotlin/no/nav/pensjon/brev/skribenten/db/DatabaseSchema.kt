@@ -14,6 +14,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -61,7 +62,7 @@ private inline fun <reified T> readJsonColumn(json: String): T =
 object BrevredigeringTable : LongIdTable() {
     val saksId: Column<Long> = long("saksId").index()
     val vedtaksId: Column<Long?> = long("vedtaksId").nullable()
-    val brevkode: Column<Brevkode.Redigerbart> = varchar("brevkode", length = 50).transform({ RedigerbarBrevkode(it) }, Brevkode.Redigerbart::kode)
+    val brevkode: Column<Pesysbrevkoder.Redigerbar> = varchar("brevkode", length = 50).transform(Pesysbrevkoder.Redigerbar::valueOf, Pesysbrevkoder.Redigerbar::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)

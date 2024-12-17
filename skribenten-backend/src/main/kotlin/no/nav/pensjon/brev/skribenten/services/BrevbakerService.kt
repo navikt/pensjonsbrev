@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
@@ -54,11 +54,11 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
     /**
      * Get model specification for a template.
      */
-    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> =
+    suspend fun getModelSpecification(brevkode: Pesysbrevkoder.Redigerbar): ServiceResult<TemplateModelSpecification> =
         client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification").toServiceResult()
 
     suspend fun renderMarkup(
-        brevkode: Brevkode.Redigerbart,
+        brevkode: Pesysbrevkoder.Redigerbar,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
@@ -76,7 +76,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
         }.toServiceResult()
 
     suspend fun renderPdf(
-        brevkode: Brevkode.Redigerbart,
+        brevkode: Pesysbrevkoder.Redigerbar,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
@@ -102,8 +102,8 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             }
         }.toServiceResult()
 
-    private val templateCache = Cache<Brevkode.Redigerbart, TemplateDescription.Redigerbar>()
-    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
+    private val templateCache = Cache<Pesysbrevkoder.Redigerbar, TemplateDescription.Redigerbar>()
+    suspend fun getRedigerbarTemplate(brevkode: Pesysbrevkoder.Redigerbar): TemplateDescription.Redigerbar? =
         templateCache.cached(brevkode) {
             client.get("/templates/redigerbar/${brevkode.kode()}").toServiceResult<TemplateDescription.Redigerbar>()
                 .onError { error, statusCode -> logger.error("Feilet ved henting av templateDescription for $brevkode: $statusCode - $error") }

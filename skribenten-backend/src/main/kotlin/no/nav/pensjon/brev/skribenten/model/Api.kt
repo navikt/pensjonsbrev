@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.model
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
@@ -16,7 +16,7 @@ object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata
 
     data class OpprettBrevRequest(
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: Pesysbrevkoder.Redigerbar,
         val spraak: SpraakKode,
         val avsenderEnhetsId: String?,
         val saksbehandlerValg: SaksbehandlerValg,
@@ -42,7 +42,7 @@ object Api {
         val opprettet: Instant,
         val sistredigertAv: NavAnsatt,
         val sistredigert: Instant,
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: Pesysbrevkoder.Redigerbar,
         val brevtittel: String,
         val status: BrevStatus,
         val distribusjonstype: Distribusjonstype,
