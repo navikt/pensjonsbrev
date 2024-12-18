@@ -43,12 +43,11 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
 
   // move sentence into a new item list
   const sentenceIndex = findAdjoiningContent(theIndexOfTheContent, thisBlock.content, isTextContent);
-  const sentence = removeElements(
-    sentenceIndex.startIndex,
-    sentenceIndex.count,
-    thisBlock.content,
-    thisBlock.deletedContent,
-  ).filter(isTextContent);
+  const sentence = removeElements(sentenceIndex.startIndex, sentenceIndex.count, {
+    content: thisBlock.content,
+    deletedContent: thisBlock.deletedContent,
+    id: thisBlock.id,
+  }).filter(isTextContent);
   addElements(
     [newItemList({ items: [newItem({ content: sentence })] })],
     sentenceIndex.startIndex,
@@ -58,12 +57,11 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
 
   // merge adjoining item lists
   const itemListsIndex = findAdjoiningContent(sentenceIndex.startIndex, thisBlock.content, isItemList);
-  const itemLists = removeElements(
-    itemListsIndex.startIndex,
-    itemListsIndex.count,
-    thisBlock.content,
-    thisBlock.deletedContent,
-  ).filter(isItemList);
+  const itemLists = removeElements(itemListsIndex.startIndex, itemListsIndex.count, {
+    content: thisBlock.content,
+    deletedContent: thisBlock.deletedContent,
+    id: thisBlock.id,
+  }).filter(isItemList);
 
   let listToKeep = itemLists[0];
   for (const list of itemLists.slice(1)) {
@@ -101,12 +99,18 @@ const toggleBulletListOff = (draft: Draft<LetterEditorState>, literalIndex: Item
   if (literalIndex.itemIndex >= 0 && literalIndex.itemIndex < itemList.items.length) {
     draft.isDirty = true;
 
-    const itemContent = removeElements(literalIndex.itemIndex, 1, itemList.items, itemList.deletedItems).flatMap(
-      (item) => item.content,
-    );
+    const itemContent = removeElements(literalIndex.itemIndex, 1, {
+      content: itemList.items,
+      deletedContent: itemList.deletedItems,
+      id: itemList.id,
+    }).flatMap((item) => item.content);
 
     if (itemList.items.length === 0) {
-      removeElements(literalIndex.contentIndex, 1, block.content, block.deletedContent);
+      removeElements(literalIndex.contentIndex, 1, {
+        content: block.content,
+        deletedContent: block.deletedContent,
+        id: block.id,
+      });
     }
 
     const insertItemContentIndex = literalIndex.contentIndex + (literalIndex.itemIndex === 0 ? 0 : 1);
@@ -114,12 +118,11 @@ const toggleBulletListOff = (draft: Draft<LetterEditorState>, literalIndex: Item
       // since we've already removed the item, then if we're removing the last item the index will be equal to `thisItemList.items.length`.
       addElements(itemContent, insertItemContentIndex, block.content, block.deletedContent);
     } else {
-      const itemsAfter = removeElements(
-        literalIndex.itemIndex,
-        itemList.items.length,
-        itemList.items,
-        itemList.deletedItems,
-      );
+      const itemsAfter = removeElements(literalIndex.itemIndex, itemList.items.length, {
+        content: itemList.items,
+        deletedContent: itemList.deletedItems,
+        id: itemList.id,
+      });
       addElements(
         [...itemContent, newItemList({ items: itemsAfter })],
         insertItemContentIndex,

@@ -48,7 +48,11 @@ export const switchTypography: Action<
       } else {
         const changedTypography = newTitle({
           type: typography,
-          content: removeElements(startIndex, count, block.content, block.deletedContent).filter(isTextContent),
+          content: removeElements(startIndex, count, {
+            content: block.content,
+            deletedContent: block.deletedContent,
+            id: block.id,
+          }).filter(isTextContent),
         });
         const changedTypographyIndex = literalIndex.blockIndex + (startIndex === 0 ? 0 : 1);
         addElements([changedTypography], changedTypographyIndex, editedLetter.blocks, editedLetter.deletedBlocks);
@@ -57,7 +61,11 @@ export const switchTypography: Action<
         // also extract the subsequent content into a new block to maintain the order.
         if (startIndex > 0 && startIndex < block.content.length) {
           const afterChanged = newParagraph({
-            content: removeElements(startIndex, block.content.length, block.content, block.deletedContent),
+            content: removeElements(startIndex, block.content.length, {
+              content: block.content,
+              deletedContent: block.deletedContent,
+              id: block.id,
+            }),
           });
           addElements([afterChanged], changedTypographyIndex + 1, editedLetter.blocks, editedLetter.deletedBlocks);
         }

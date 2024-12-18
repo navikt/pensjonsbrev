@@ -39,7 +39,11 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
       const block = blocks[literalIndex.blockIndex];
       const content = block?.content[literalIndex.contentIndex];
       if (isEmptyContent(content)) {
-        removeElements(literalIndex.contentIndex, 1, block.content, block.deletedContent);
+        removeElements(literalIndex.contentIndex, 1, {
+          content: block.content,
+          deletedContent: block.deletedContent,
+          id: block.id,
+        });
         draft.focus = {
           blockIndex: literalIndex.blockIndex,
           contentIndex: literalIndex.contentIndex - 1,
@@ -73,10 +77,10 @@ function mergeBlocks(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex
 
   if (first != null && second != null) {
     if (isEmptyBlock(first)) {
-      removeElements(firstId, 1, blocks, draft.redigertBrev.deletedBlocks);
+      removeElements(firstId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
       draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: firstId };
     } else if (isEmptyBlock(second)) {
-      removeElements(secondId, 1, blocks, draft.redigertBrev.deletedBlocks);
+      removeElements(secondId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
       if (first.content.at(-1)?.type === VARIABLE) {
         first.content.push(newLiteral({ text: "" }));
       }
@@ -93,7 +97,7 @@ function mergeBlocks(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex
       };
 
       addElements(second.content, first.content.length, first.content, first.deletedContent);
-      removeElements(secondId, 1, blocks, draft.redigertBrev.deletedBlocks);
+      removeElements(secondId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
     }
   }
 }
@@ -116,7 +120,7 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
           itemIndex: firstId,
           itemContentIndex: 0,
         };
-        removeElements(firstId, 1, itemList.items, itemList.deletedItems);
+        removeElements(firstId, 1, { content: itemList.items, deletedContent: itemList.deletedItems, id: itemList.id });
       } else if (isEmptyItem(second)) {
         draft.focus = {
           blockIndex: literalIndex.blockIndex,
@@ -125,7 +129,11 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
           itemContentIndex: first.content.length - 1,
           itemIndex: firstId,
         };
-        removeElements(secondId, 1, itemList.items, itemList.deletedItems);
+        removeElements(secondId, 1, {
+          content: itemList.items,
+          deletedContent: itemList.deletedItems,
+          id: itemList.id,
+        });
       } else {
         draft.focus = {
           blockIndex: literalIndex.blockIndex,
@@ -136,15 +144,23 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
         };
         // TODO: items har ikke deletedContent (enda?), derav `[]` som deleted
         addElements(second.content, first.content.length, first.content, []);
-        removeElements(secondId, 1, itemList.items, itemList.deletedItems);
+        removeElements(secondId, 1, {
+          content: itemList.items,
+          deletedContent: itemList.deletedItems,
+          id: itemList.id,
+        });
       }
     } else if (target === MergeTarget.PREVIOUS && isEmptyItem(second) && itemList.items.length === 1) {
-      // TODO: burde generaliseres slik at det fungerer som toggling av et hvilket som helst punkt
+      // TODO: burde kanskje generaliseres slik at det fungerer som toggling av et hvilket som helst punkt
       // We have a list with one empty element. That means that we want to break out of the list.
       const block = blocks[literalIndex.blockIndex];
       const contentBeforeItemList = block.content[literalIndex.contentIndex - 1];
 
-      removeElements(literalIndex.contentIndex, 1, block.content, block.deletedContent);
+      removeElements(literalIndex.contentIndex, 1, {
+        content: block.content,
+        deletedContent: block.deletedContent,
+        id: block.id,
+      });
 
       // TODO: Denne burde nok være en switch, slik at vi får håndtert andre typer content.
       if (contentBeforeItemList?.type === VARIABLE) {
@@ -203,12 +219,11 @@ function mergeIntoItemList(
     .findIndex((c) => !isTextContent(c));
   const nonTextContentIndex = nonTextContentRelativeIndex === -1 ? block.content.length : nonTextContentRelativeIndex;
 
-  const textContentAfterList = removeElements(
-    literalIndex.contentIndex,
-    nonTextContentIndex,
-    block.content,
-    block.deletedContent,
-  ).filter(isTextContent);
+  const textContentAfterList = removeElements(literalIndex.contentIndex, nonTextContentIndex, {
+    content: block.content,
+    deletedContent: block.deletedContent,
+    id: block.id,
+  }).filter(isTextContent);
 
   // TODO: item har ikke deletedContent (enda?), derav `[]` som deleted
   addElements(textContentAfterList, lastItem.content.length, lastItem.content, []);

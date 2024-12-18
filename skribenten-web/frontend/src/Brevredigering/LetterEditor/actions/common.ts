@@ -58,21 +58,24 @@ export function create(brev: BrevResponse): LetterEditorState {
 export function removeElements<T extends Identifiable>(
   startIndex: number,
   count: number,
-  from: Draft<T[]>,
-  deleted: Draft<number[]>,
+  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id: number | null },
 ): Draft<T[]> {
-  const removedElements = from.splice(startIndex, count);
-  for (const e of removedElements) deleteElement(e, from, deleted);
+  const removedElements = from.content.splice(startIndex, count);
+  for (const e of removedElements) deleteElement(e, from);
   return removedElements;
 }
 
-function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[], deleted: Draft<number[]>) {
+function deleteElement(
+  toDelete: Identifiable,
+  from: { content: Identifiable[]; deletedContent: Draft<number[]>; id: number | null },
+) {
   if (
     toDelete.id !== null &&
-    !deleted.includes(toDelete.id) &&
-    !verifyNotPresent.map((b) => b.id).includes(toDelete.id)
+    toDelete.parentId === from.id &&
+    !from.deletedContent.includes(toDelete.id) &&
+    !from.content.map((c) => c.id).includes(toDelete.id)
   ) {
-    deleted.push(toDelete.id);
+    from.deletedContent.push(toDelete.id);
   }
 }
 

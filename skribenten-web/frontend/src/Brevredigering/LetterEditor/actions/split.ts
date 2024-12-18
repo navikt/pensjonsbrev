@@ -55,10 +55,9 @@ function splitBlockAtLiteral(
 
       // Update content in `block` and get the content for the new (next) block
       const nextContent = splitContentArrayAtLiteral(
-        block.content,
+        { content: block.content, deletedContent: block.deletedContent, id: block.id },
         literalIndex.contentIndex,
         offset,
-        block.deletedContent,
       );
 
       addElements(
@@ -89,7 +88,11 @@ function splitItemList(
     const isAtLastItem = literalIndex.itemIndex === content.items.length - 1;
     if (isAtLastItem && isEmptyItem(thisItem)) {
       // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or move focus to ít).
-      removeElements(literalIndex.itemIndex, 1, content.items, content.deletedItems);
+      removeElements(literalIndex.itemIndex, 1, {
+        content: content.items,
+        deletedContent: content.deletedItems,
+        id: content.id,
+      });
       if (literalIndex.contentIndex >= block.content.length - 1) {
         addElements(
           [newLiteral({ text: "", editedText: "" })],
@@ -133,7 +136,11 @@ function splitItemList(
       } else {
         // Update content of current item, and build content of new item
         // TODO: Item har ikke deletedContent (enda?)
-        const nextContent = splitContentArrayAtLiteral(thisItem.content, literalIndex.itemContentIndex, offset, []);
+        const nextContent = splitContentArrayAtLiteral(
+          { content: thisItem.content, deletedContent: [], id: thisItem.id },
+          literalIndex.itemContentIndex,
+          offset,
+        );
         const item = newItem({ content: nextContent });
 
         // insert new item after specified item
@@ -157,12 +164,11 @@ function splitItemList(
 }
 
 function splitContentArrayAtLiteral<T extends Content | TextContent>(
-  contentArray: Draft<T[]>,
+  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id: number | null },
   atIndex: number,
   offset: number,
-  deleted: Draft<number[]>,
 ): Draft<T[]> {
-  const content = contentArray[atIndex];
+  const content = from.content[atIndex];
   if (isLiteral(content)) {
     const origText = text(content as LiteralValue);
     const newText = cleanseText(origText.slice(0, Math.max(0, offset)));
@@ -171,20 +177,20 @@ function splitContentArrayAtLiteral<T extends Content | TextContent>(
     let contentAfterSplit;
     if (newText.length > 0) {
       updateLiteralText(content, newText);
-      contentAfterSplit = removeElements(atIndex + 1, contentArray.length, contentArray, deleted);
+      contentAfterSplit = removeElements(atIndex + 1, from.content.length, from);
       if (nextText.length > 0 || isVariable(contentAfterSplit[0]) || contentAfterSplit.length === 0) {
         addElements([newLiteral({ text: "", editedText: nextText }) as T], 0, contentAfterSplit, []);
       }
     } else {
-      contentAfterSplit = removeElements(atIndex, contentArray.length, contentArray, deleted);
-      addElements([newLiteral({ text: "", editedText: "" }) as T], contentArray.length, contentArray, []);
+      contentAfterSplit = removeElements(atIndex, from.content.length, from);
+      addElements([newLiteral({ text: "", editedText: "" }) as T], from.content.length, from.content, []);
     }
 
-    // prevent dangling empty content at end of contentArray after itemList.
-    const lastContent = contentArray.at(-1);
-    const secondToLastContent = contentArray.at(-2);
+    // prevent dangling empty content at end of from.content after itemList.
+    const lastContent = from.content.at(-1);
+    const secondToLastContent = from.content.at(-2);
     if (isLiteral(lastContent) && isEmptyContent(lastContent) && secondToLastContent?.type === ITEM_LIST) {
-      contentArray.pop();
+      from.content.pop();
     }
 
     return contentAfterSplit;

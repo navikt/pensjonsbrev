@@ -121,7 +121,9 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
   describe("retains deletedContent", () => {
     test("previous deletedContent is kept for block", () => {
-      const state = letter(newParagraph({ id: 1, content: [literal({ id: 11, text: "l1" })], deletedContent: [-1] }));
+      const state = letter(
+        newParagraph({ id: 1, content: [literal({ id: 11, parentId: 1, text: "l1" })], deletedContent: [-1] }),
+      );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0 });
       const deletedContent = result.redigertBrev.blocks[0].deletedContent;
 
