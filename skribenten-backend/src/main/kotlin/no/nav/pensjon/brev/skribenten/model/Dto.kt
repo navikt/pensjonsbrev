@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.db.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -29,7 +29,7 @@ object Dto {
         val sistredigert: Instant,
         val redigeresAv: NavIdent?,
         val sistReservert: Instant?,
-        val brevkode: Pesysbrevkoder.Redigerbar,
+        val brevkode: Brevkode.Redigerbart,
         val laastForRedigering: Boolean,
         val distribusjonstype: Distribusjonstype,
         val mottaker: Mottaker?,
