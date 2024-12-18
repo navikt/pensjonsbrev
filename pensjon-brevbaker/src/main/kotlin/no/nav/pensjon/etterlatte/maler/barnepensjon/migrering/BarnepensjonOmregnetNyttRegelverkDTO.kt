@@ -17,7 +17,6 @@ data class BarnepensjonOmregnetNyttRegelverkDTO(
 data class BarnepensjonOmregnetNyttRegelverkFerdigDTO(
     override val innhold: List<Element>,
     val beregning: BarnepensjonBeregning,
-    val frivilligSkattetrekk: Boolean, // TODO: EY-4877
     val etterbetaling: BarnepensjonEtterbetaling?,
     val erUnder18Aar: Boolean,
     val erBosattUtlandet: Boolean,

@@ -116,7 +116,6 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
             inneholderKrav = true,
             etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
         ),
-        frivilligSkattetrekk = true,
         bosattUtland = true,
         brukerUnder18Aar = true,
         kunNyttRegelverk = true,
