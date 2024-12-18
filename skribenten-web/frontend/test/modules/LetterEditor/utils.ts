@@ -62,8 +62,12 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
   };
 }
 
+function randomId() {
+  return randomInt(1_000_000);
+}
+
 export function paragraph(...content: Content[]): ParagraphBlock {
-  const id = randomInt(1000);
+  const id = randomId();
   return {
     id,
     parentId: null,
@@ -82,7 +86,7 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
 }
 
 export function title1(...content: TextContent[]): Title1Block {
-  const id = randomInt(1000);
+  const id = randomId();
   return {
     id,
     parentId: null,
@@ -93,7 +97,7 @@ export function title1(...content: TextContent[]): Title1Block {
   };
 }
 export function title2(...content: TextContent[]): Title2Block {
-  const id = randomInt(1000);
+  const id = randomId();
   return {
     id,
     parentId: null,
@@ -112,7 +116,7 @@ export function literal(args: {
   tags?: ElementTags[];
 }): LiteralValue {
   return {
-    id: args.id ?? randomInt(1000),
+    id: args.id ?? randomId(),
     parentId: args.parentId ?? null,
     type: LITERAL,
     text: args.text,
@@ -123,7 +127,7 @@ export function literal(args: {
 
 export function variable(text: string): VariableValue {
   return {
-    id: randomInt(1000),
+    id: randomId(),
     parentId: null,
     type: VARIABLE,
     text,
@@ -136,7 +140,7 @@ export function itemList(args: {
   items: Item[];
   deletedItems?: number[];
 }): ItemList {
-  const id = args.id ?? randomInt(1000);
+  const id = args.id ?? randomId();
   return {
     id: id,
     parentId: args.parentId ?? null,
@@ -147,13 +151,13 @@ export function itemList(args: {
 }
 
 export function item(...content: TextContent[]): Item {
-  const id = randomInt(1000);
+  const id = randomId();
   return { id: id, parentId: null, content: withParent(content, id) };
 }
 
 export function table(headerCells: Cell[], rows: Row[]): Table {
-  const tableId = randomInt(1000);
-  const headerId = randomInt(1000);
+  const tableId = randomId();
+  const headerId = randomId();
   return {
     id: tableId,
     parentId: null,
@@ -163,7 +167,7 @@ export function table(headerCells: Cell[], rows: Row[]): Table {
       id: headerId,
       parentId: tableId,
       colSpec: headerCells.map((c) => {
-        const colSpecId = randomInt(1000);
+        const colSpecId = randomId();
         return {
           id: colSpecId,
           parentId: headerId,
@@ -177,7 +181,7 @@ export function table(headerCells: Cell[], rows: Row[]): Table {
   };
 }
 export function cell(...content: TextContent[]): Cell {
-  const id = randomInt(1000);
+  const id = randomId();
   return {
     id,
     parentId: null,
@@ -185,7 +189,7 @@ export function cell(...content: TextContent[]): Cell {
   };
 }
 export function row(...cells: Cell[]): Row {
-  const id = randomInt(1000);
+  const id = randomId();
   return {
     id,
     parentId: null,
@@ -201,8 +205,8 @@ export function withParent<T extends Identifiable>(
   return content.map((c) => ({ ...c, parentId: replaceExisting ? parentId : c.parentId ?? parentId }));
 }
 
-export function asNew<T extends Identifiable>(c: T): T {
-  return { ...c, id: null, parentId: null };
+export function asNew<T extends Identifiable>(c: T, keepParent: boolean = false): T {
+  return { ...c, id: null, parentId: keepParent ? c.parentId : null };
 }
 
 export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex> & { blockIndex: number }): T {

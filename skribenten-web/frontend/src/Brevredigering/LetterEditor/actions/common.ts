@@ -97,6 +97,39 @@ export function addElements<T extends Identifiable, E extends T>(
   }
 }
 
+export function findAdjoiningContent<T extends Content, S extends T>(
+  atIndex: number,
+  from: T[],
+  predicate: (value: T) => value is S,
+): { startIndex: number; endIndex: number; count: number } {
+  if (from.length === 0) {
+    return { startIndex: 0, endIndex: 0, count: 0 };
+  }
+
+  let countBefore = 0;
+  for (let i = atIndex - 1; i >= 0; i--) {
+    if (predicate(from[i])) {
+      countBefore++;
+    } else {
+      break;
+    }
+  }
+  let countAfter = 0;
+  for (let i = atIndex + 1; i < from.length; i++) {
+    if (predicate(from[i])) {
+      countAfter++;
+    } else {
+      break;
+    }
+  }
+
+  return {
+    startIndex: atIndex - countBefore,
+    endIndex: atIndex + countAfter,
+    count: countBefore + 1 + countAfter,
+  };
+}
+
 export function mergeLiteralsIfPossible<T extends Identifiable>(first: Draft<T>, second: Draft<T>): Draft<T[]> {
   // TODO: Legg til sjekk for `first.fontType === second.fontType`
   if (isLiteral(first) && isLiteral(second) && !isFritekst(first) && !isFritekst(second)) {

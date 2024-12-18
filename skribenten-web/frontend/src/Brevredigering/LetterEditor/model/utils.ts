@@ -15,8 +15,10 @@ import { ElementTags, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerType
 
 import type { ContentGroup } from "./state";
 
-export function isTextContent(content?: Content | null): content is TextContent {
-  return content?.type === LITERAL || content?.type === VARIABLE;
+export function isTextContent(obj: Draft<Identifiable | null | undefined>): obj is Draft<TextContent>;
+export function isTextContent(obj: Content | null | undefined): obj is TextContent;
+export function isTextContent(obj: Identifiable | null | undefined): obj is TextContent {
+  return isLiteral(obj) || isVariable(obj);
 }
 
 export function isLiteral(obj: Draft<Identifiable | null | undefined>): obj is Draft<LiteralValue>;

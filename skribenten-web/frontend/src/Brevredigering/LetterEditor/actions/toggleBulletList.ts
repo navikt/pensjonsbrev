@@ -2,12 +2,12 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 import { isEqual } from "lodash";
 
-import type { Content, ItemList, TextContent } from "~/types/brevbakerTypes";
+import type { ItemList } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
-import { isTextContent } from "../model/utils";
-import { deleteElement, deleteElements, newItem, newItemList } from "./common";
+import { isItemList, isTextContent } from "../model/utils";
+import { addElements, findAdjoiningContent, newItem, newItemList, removeElements } from "./common";
 import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = produce(
@@ -17,11 +17,10 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
       return;
     }
 
-    draft.isDirty = true;
     const theContentTheUserIsOn = block.content[literalIndex.contentIndex];
     if (isTextContent(theContentTheUserIsOn)) {
       toggleBulletListOn(draft, literalIndex);
-    } else if (theContentTheUserIsOn.type === "ITEM_LIST" && "itemIndex" in literalIndex) {
+    } else if (isItemList(theContentTheUserIsOn) && "itemIndex" in literalIndex) {
       toggleBulletListOff(draft, literalIndex as ItemContentIndex);
     }
   },
@@ -37,233 +36,102 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
  * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex) => {
+  draft.isDirty = true;
+
   const thisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
   const theIndexOfTheContent = literalIndex.contentIndex;
-  const sentence = getSurroundingLiteralsAndVariables(thisBlock.content, theIndexOfTheContent);
-  const sentenceElements = sentence.map((r) => r.element);
 
-  const replacedWithItemList = replaceElementsBetweenIncluding(
+  // move sentence into a new item list
+  const sentenceIndex = findAdjoiningContent(theIndexOfTheContent, thisBlock.content, isTextContent);
+  const sentence = removeElements(
+    sentenceIndex.startIndex,
+    sentenceIndex.count,
     thisBlock.content,
-    sentence[0].originalIndex,
-    sentence.at(-1)!.originalIndex,
-    newItemList({
-      items: [newItem({ content: sentenceElements })],
-    }),
+    thisBlock.deletedContent,
+  ).filter(isTextContent);
+  addElements(
+    [newItemList({ items: [newItem({ content: sentence })] })],
+    sentenceIndex.startIndex,
+    thisBlock.content,
+    thisBlock.deletedContent,
   );
 
-  const { newContent, newDeletedContent } = mergeAdjoiningItemLists(replacedWithItemList);
-  thisBlock.content = newContent;
-  thisBlock.deletedContent.push(...sentenceElements.filter((s) => !!s.id).map((r) => r.id!), ...newDeletedContent);
+  // merge adjoining item lists
+  const itemListsIndex = findAdjoiningContent(sentenceIndex.startIndex, thisBlock.content, isItemList);
+  const itemLists = removeElements(
+    itemListsIndex.startIndex,
+    itemListsIndex.count,
+    thisBlock.content,
+    thisBlock.deletedContent,
+  ).filter(isItemList);
 
-  const newContentIndex = draft.redigertBrev.blocks[literalIndex.blockIndex].content.findIndex(
-    (content) => content.type === "ITEM_LIST" && content.items.some((i) => isEqual(i.content, sentenceElements)),
-  );
-  const newItemIndex = (
-    draft.redigertBrev.blocks[literalIndex.blockIndex].content[newContentIndex] as ItemList
-  ).items.findIndex((i) => isEqual(i.content, sentenceElements));
-  const newItemContentIndex = sentence.findIndex((r) => r.originalIndex === theIndexOfTheContent);
+  let listToKeep = itemLists[0];
+  for (const list of itemLists.slice(1)) {
+    if (listToKeep.id === null) {
+      addElements(listToKeep.items, 0, list.items, list.deletedItems);
+      listToKeep = list;
+    } else {
+      addElements(list.items, listToKeep.items.length, listToKeep.items, listToKeep.deletedItems);
+    }
+  }
+  addElements([listToKeep], itemListsIndex.startIndex, thisBlock.content, thisBlock.deletedContent);
 
+  // update focus
+  const newItemIndex = listToKeep.items.findIndex((i) => isEqual(i.content, sentence));
   draft.focus = {
     blockIndex: literalIndex.blockIndex,
-    contentIndex: newContentIndex,
+    contentIndex: itemListsIndex.startIndex,
     itemIndex: newItemIndex,
-    itemContentIndex: newItemContentIndex,
+    itemContentIndex: theIndexOfTheContent - sentenceIndex.startIndex,
     cursorPosition: draft.focus.cursorPosition,
   };
 };
 
 /**
- * Henter alle literals/vars som er rundt en gitt index, fram til en ITEM_LIST er funnet
+ * Fjerner angitt punkt fra en punktliste, og flytter item.content ut til block.content.
+ * - om det er det første punktet så flyttes item.content ut i block.content før listen
+ * - om det er det siste punktet så flyttes item.content ut i block.content etter listen
+ * - om det er et punkt i midten så splittes listen i to ved angitt punkt og item.content settes inn i mellom listene.
  *
- * Merk at vi returnerer også original indexen til elementene, for å brukes videre i replaceElementsBetweenIncluding
  */
-const getSurroundingLiteralsAndVariables = (
-  content: Content[],
-  index: number,
-): Array<{ element: TextContent; originalIndex: number }> => {
-  const result: Array<{ element: TextContent; originalIndex: number }> = [];
+const toggleBulletListOff = (draft: Draft<LetterEditorState>, literalIndex: ItemContentIndex) => {
+  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const itemList = block.content[literalIndex.contentIndex] as ItemList;
 
-  // Loop backwards from index until an a non-textContent is encountered
-  for (let i = index; i >= 0; i--) {
-    const current = content[i];
-    if (!isTextContent(current)) break;
-    result.unshift({ element: current, originalIndex: i });
-  }
+  if (literalIndex.itemIndex >= 0 && literalIndex.itemIndex < itemList.items.length) {
+    draft.isDirty = true;
 
-  // Loop forwards from index + 1 until an non-textContent is encountered
-  for (let i = index + 1; i < content.length; i++) {
-    const current = content[i];
-    if (!isTextContent(current)) break;
-    result.push({ element: current, originalIndex: i });
-  }
+    const itemContent = removeElements(literalIndex.itemIndex, 1, itemList.items, itemList.deletedItems).flatMap(
+      (item) => item.content,
+    );
 
-  return result;
-};
-
-function replaceElementsBetweenIncluding<T>(array: T[], A: number, B: number, C: T): T[] {
-  if (A < 0 || B >= array.length || A > B) {
-    throw new Error("Ugyldige indekser");
-  }
-
-  return [...array.slice(0, A), C, ...array.slice(B + 1)];
-}
-
-const mergeAdjoiningItemLists = (content: Content[]): { newContent: Content[]; newDeletedContent: number[] } => {
-  const newContent: Content[] = [];
-  const newDeletedContent: number[] = [];
-  let temp: ItemList[] = [];
-
-  for (const current of content) {
-    if (current.type === "ITEM_LIST") {
-      temp.push(current);
-    } else {
-      if (temp.length > 0) {
-        const { itemList, deletedItemLists } = mergeItemLists(temp);
-        newContent.push(itemList);
-        newDeletedContent.push(...deletedItemLists);
-        temp = [];
-      }
-      newContent.push(current);
+    if (itemList.items.length === 0) {
+      removeElements(literalIndex.contentIndex, 1, block.content, block.deletedContent);
     }
+
+    const insertItemContentIndex = literalIndex.contentIndex + (literalIndex.itemIndex === 0 ? 0 : 1);
+    if (literalIndex.itemIndex === 0 || literalIndex.itemIndex === itemList.items.length) {
+      // since we've already removed the item, then if we're removing the last item the index will be equal to `thisItemList.items.length`.
+      addElements(itemContent, insertItemContentIndex, block.content, block.deletedContent);
+    } else {
+      const itemsAfter = removeElements(
+        literalIndex.itemIndex,
+        itemList.items.length,
+        itemList.items,
+        itemList.deletedItems,
+      );
+      addElements(
+        [...itemContent, newItemList({ items: itemsAfter })],
+        insertItemContentIndex,
+        block.content,
+        block.deletedContent,
+      );
+    }
+
+    draft.focus = {
+      blockIndex: literalIndex.blockIndex,
+      contentIndex: insertItemContentIndex + Math.min(itemContent.length - 1, literalIndex.itemContentIndex),
+      cursorPosition: draft.focus.cursorPosition,
+    };
   }
-
-  if (temp.length > 0) {
-    const { itemList, deletedItemLists } = mergeItemLists(temp);
-    newContent.push(itemList);
-    newDeletedContent.push(...deletedItemLists);
-  }
-
-  return { newContent, newDeletedContent };
-};
-
-function mergeItemLists(itemLists: ItemList[]): { itemList: ItemList; deletedItemLists: number[] } {
-  const idsToMerge = itemLists.filter((il) => !!il.id).map((il) => il.id!);
-  const idToKeep = idsToMerge.at(0);
-
-  const itemList = newItemList({
-    id: idToKeep,
-    items: itemLists.flatMap((i) => i.items),
-    deletedItems: idToKeep ? itemLists.find((l) => l.id === idToKeep)?.deletedItems : [],
-  });
-
-  return { itemList, deletedItemLists: idsToMerge.filter((id) => id !== idToKeep) };
-}
-
-/**
- * Når vi fjerner et punkt fra en punktliste, så må man ta høyde for at man kan potensielt ha content før og etter punktlisten.
- * Vi må også ta høyde for at vi kan være på første, siste eller et sted i mellom punktene i listen.
- *  Det er fordi vi må styre hvor den nye contenten skal havne, samt resten av innholdet i punktlisten.
- *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
- */
-const toggleBulletListOff = (draft: Draft<LetterEditorState>, itemContentIndex: ItemContentIndex) => {
-  const thisBlock = draft.redigertBrev.blocks[itemContentIndex.blockIndex];
-  const thisItemList = thisBlock.content[itemContentIndex.contentIndex] as ItemList;
-
-  if (itemContentIndex.itemIndex === 0) {
-    toggleBulletListOffAtTheStartOfItemList({ draft, itemContentIndex });
-  } else if (itemContentIndex.itemIndex > 0 && itemContentIndex.itemIndex < thisItemList.items.length - 1) {
-    toggleBulletListOffBetweenListElements({ draft, itemContentIndex });
-  } else if (itemContentIndex.itemIndex === thisItemList.items.length - 1) {
-    toggleBulletListOffAtTheEndOfItemList({ draft, itemContentIndex });
-  }
-};
-
-/**
- * Fjerner det første punktet fra en punktliste, og legger det som en vanlig text-content i blocken.
- * Legger tilbake resten av punktene i punktlisten
- *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
- */
-const toggleBulletListOffAtTheStartOfItemList = (args: {
-  draft: Draft<LetterEditorState>;
-  itemContentIndex: ItemContentIndex;
-}) => {
-  const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
-  const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
-  const thisItem = thisItemList.items[0];
-
-  thisItemList.items.splice(0, 1);
-  deleteElement(thisItem, thisItemList.items, thisItemList.deletedItems);
-
-  thisBlock.content.splice(
-    args.itemContentIndex.contentIndex,
-    thisItemList.items.length === 0 ? 1 : 0,
-    ...thisItem.content.map((c) => ({ ...c, id: null })),
-  );
-  deleteElement(thisItemList, thisBlock.content, thisBlock.deletedContent);
-
-  args.draft.focus = {
-    blockIndex: args.itemContentIndex.blockIndex,
-    contentIndex:
-      args.itemContentIndex.contentIndex + (thisItem.content.length > 1 ? args.itemContentIndex.itemContentIndex : 0),
-    cursorPosition: args.draft.focus.cursorPosition,
-  };
-};
-
-/**
- * Fjerner et punkt fra en punktliste, som ikke er det første eller siste punktet i punktlisten
- * legger det som en vanlig text-content i blocken.
- * Bygger 2 nye itemLists, med innhold som er før og etter det punktet som skal fjernes, og setter de inn i blocken
- *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
- */
-const toggleBulletListOffBetweenListElements = (args: {
-  draft: Draft<LetterEditorState>;
-  itemContentIndex: ItemContentIndex;
-}) => {
-  const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
-  const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
-  const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
-  const itemsAfter = thisItemList.items.splice(args.itemContentIndex.itemIndex, thisItemList.items.length).slice(1);
-
-  deleteElements([thisItem, ...itemsAfter], thisItemList.items, thisItemList.deletedItems);
-  thisBlock.content.splice(args.itemContentIndex.contentIndex + 1, 0, newItemList({ items: itemsAfter }));
-  thisBlock.content.splice(
-    args.itemContentIndex.contentIndex + 1,
-    0,
-    ...thisItem.content.map((c) => ({ ...c, id: null })),
-  );
-
-  args.draft.focus = {
-    blockIndex: args.itemContentIndex.blockIndex,
-    contentIndex: args.itemContentIndex.itemContentIndex,
-    cursorPosition: args.draft.focus.cursorPosition,
-  };
-};
-
-/**
- * Fjerner det siste punktet fra en punktliste, , og legger det som en vanlig text-content i blocken.
- * Legger tilbake resten av punktene i punktlisten før den nye blocken
- *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
- */
-const toggleBulletListOffAtTheEndOfItemList = (args: {
-  draft: Draft<LetterEditorState>;
-  itemContentIndex: ItemContentIndex;
-}) => {
-  const thisBlock = args.draft.redigertBrev.blocks[args.itemContentIndex.blockIndex];
-  const thisItemList = thisBlock.content[args.itemContentIndex.contentIndex] as ItemList;
-  const thisItem = thisItemList.items[args.itemContentIndex.itemIndex];
-
-  thisItemList.items.splice(-1, 1);
-  deleteElement(thisItem, thisItemList.items, thisItemList.deletedItems);
-
-  thisBlock.content.splice(
-    args.itemContentIndex.contentIndex + 1,
-    0,
-    ...thisItem.content.map((c) => ({ ...c, id: null })),
-  );
-  if (thisItemList.items.length === 0) {
-    thisBlock.content.splice(args.itemContentIndex.contentIndex, 1);
-  }
-
-  deleteElement(thisItemList, thisBlock.content, thisBlock.deletedContent);
-
-  args.draft.focus = {
-    blockIndex: args.itemContentIndex.blockIndex,
-    contentIndex:
-      args.itemContentIndex.contentIndex + args.itemContentIndex.itemContentIndex + args.itemContentIndex.itemIndex,
-    cursorPosition: args.draft.focus.cursorPosition,
-  };
 };

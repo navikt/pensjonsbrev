@@ -4,7 +4,7 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newParagraph } from "~/Brevredigering/LetterEditor/actions/common";
 import type { Item, ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 
-import { asNew, item, itemList, letter, literal, paragraph, select, variable } from "../utils";
+import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
 
 describe("LetterEditorActions.toggleBulletList", () => {
   describe("has adjoining itemList", () => {
@@ -121,11 +121,11 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
   describe("retains deletedContent", () => {
     test("previous deletedContent is kept for block", () => {
-      const state = letter(newParagraph({ id: 1, content: [literal({ text: "l1" })], deletedContent: [-1] }));
+      const state = letter(newParagraph({ id: 1, content: [literal({ id: 11, text: "l1" })], deletedContent: [-1] }));
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0 });
       const deletedContent = result.redigertBrev.blocks[0].deletedContent;
 
-      expect(deletedContent).toContain(select<LiteralValue>(state, { blockIndex: 0, contentIndex: 0 }).id);
+      expect(deletedContent).toContain(11);
       expect(deletedContent).toContain(-1);
     });
     test("previous deletedItems is kept for merged itemLists", () => {
@@ -202,7 +202,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
       const result = Actions.toggleBulletList(state, toggleIndex);
 
       expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
-      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 })).toEqual(asNew(originalItem.content[0]));
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 })).toEqual(originalItem.content[0]);
       expect(result.redigertBrev.blocks[0].deletedContent).toContain(
         select<ItemList>(state, { blockIndex: 0, contentIndex: 0 }).id,
       );
@@ -222,13 +222,13 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
   describe("focus is moved", () => {
     test("when toggling off only item focus is moved", () => {
-      const state = letter(paragraph(itemList({ items: [item(literal({ text: "p1" }))] })));
-      const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+      const state = letter(paragraph(itemList({ items: [item(literal({ text: "p1" }), literal({ text: "p1-l2" }))] })));
+      const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 1 };
       const result = Actions.toggleBulletList(state, toggleIndex);
 
       expect(result.redigertBrev.blocks).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
-      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0 });
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(2);
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1 });
     });
 
     test("when toggling off first item focus should be moved", () => {
@@ -244,7 +244,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
         blockIndex: 0,
         contentIndex: 1,
         itemIndex: 0,
-        itemContentIndex: 1,
+        itemContentIndex: 0,
       });
       expect(result.redigertBrev.blocks).toHaveLength(1);
       expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
@@ -325,77 +325,129 @@ describe("LetterEditorActions.toggleBulletList", () => {
     test("when toggling off item in the middle, focus should be moved", () => {
       const state = letter(
         paragraph(
-          literal({ text: "b1-l1" }),
+          variable("v1"),
           itemList({
-            items: [item(literal({ text: "p1-l1" }), literal({ text: "p1-l2" })), item(literal({ text: "p2" }))],
+            items: [
+              item(literal({ text: "p1-l1" }), literal({ text: "p1-l2" })),
+              item(literal({ text: "p2-l1" }), literal({ text: "p2-l2" })),
+              item(literal({ text: "p3" })),
+            ],
           }),
+          variable("v2"),
         ),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
         contentIndex: 1,
         itemContentIndex: 1,
-        itemIndex: 0,
+        itemIndex: 1,
       });
 
       expect(result.redigertBrev.blocks).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content).toHaveLength(4);
-      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: state.focus.cursorPosition });
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(6);
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 3, cursorPosition: state.focus.cursorPosition });
     });
   });
-  describe("Removes ID when toggling off", () => {
-    // Due to how an edited letter is merged with re-renders from Brevbaker, we have to remove IDs of content that is moved
-    // into another "container" that still has tracking (i.e. has an ID). Any un-edited content that has an ID will
-    // be removed from a "container" because it is assumed that a change in the input data for the letter has caused
-    // the content to no longer be a part of a "container". By "container" we mean any element that can contain other content,
-    // e.g. block, itemlist, table.
 
-    const state = letter(
-      paragraph(
-        itemList({
-          items: [
-            item(literal({ text: "l1" }), variable("v1")),
-            item(literal({ text: "l2" }), variable("v2")),
-            item(literal({ text: "l3" }), variable("v3")),
-          ],
-        }),
-      ),
-    );
-
-    test("moving tracked content out from first item will remove ID", () => {
+  describe("toggle off", () => {
+    test("first of two items, then content is inserted after list", () => {
+      const state = letter(
+        paragraph(
+          variable("v1"),
+          itemList({
+            items: [
+              item(literal({ text: "p1-l1" }), literal({ text: "p1-l2" })),
+              item(literal({ text: "p2-l1" }), literal({ text: "p2-l2" })),
+            ],
+          }),
+          variable("v2"),
+        ),
+      );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
-        contentIndex: 0,
+        contentIndex: 1,
         itemIndex: 0,
-        itemContentIndex: 0,
-      });
-      for (const c of result.redigertBrev.blocks[0].content.slice(0, 2)) {
-        expect(c.id).toBeNull();
-      }
-    });
+        itemContentIndex: 1,
+      }).redigertBrev.blocks[0];
 
-    test("moving tracked content out from middle item will remove ID", () => {
+      expect(result.content).toHaveLength(5);
+      expect(result.content.slice(1, 3)).toEqual(
+        select<Item>(state, { blockIndex: 0, contentIndex: 1, itemIndex: 0 }).content,
+      );
+    });
+    test("last of two items, then content is inserted after list", () => {
+      const state = letter(
+        paragraph(
+          variable("v1"),
+          itemList({
+            items: [
+              item(literal({ text: "p1-l1" }), literal({ text: "p1-l2" })),
+              item(literal({ text: "p2-l1" }), literal({ text: "p2-l2" })),
+            ],
+          }),
+          variable("v2"),
+        ),
+      );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
-        contentIndex: 0,
+        contentIndex: 1,
         itemIndex: 1,
-        itemContentIndex: 0,
-      });
-      for (const c of result.redigertBrev.blocks[0].content.slice(1, 3)) {
-        expect(c.id).toBeNull();
-      }
-    });
+        itemContentIndex: 1,
+      }).redigertBrev.blocks[0];
 
-    test("moving tracked content out from last item will remove ID", () => {
+      expect(result.content).toHaveLength(5);
+      expect(result.content.slice(2, 4)).toEqual(
+        select<Item>(state, { blockIndex: 0, contentIndex: 1, itemIndex: 1 }).content,
+      );
+    });
+    test("only item, then content replaces list", () => {
+      const state = letter(
+        paragraph(
+          variable("v1"),
+          itemList({
+            items: [item(literal({ text: "p2-l1" }), literal({ text: "p2-l2" }))],
+          }),
+          variable("v2"),
+        ),
+      );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
-        contentIndex: 0,
-        itemIndex: 2,
-        itemContentIndex: 0,
-      });
-      for (const c of result.redigertBrev.blocks[0].content.slice(1, 3)) {
-        expect(c.id).toBeNull();
-      }
+        contentIndex: 1,
+        itemIndex: 0,
+        itemContentIndex: 1,
+      }).redigertBrev.blocks[0];
+
+      expect(result.content).toHaveLength(4);
+      expect(result.content.slice(1, 3)).toEqual(
+        select<Item>(state, { blockIndex: 0, contentIndex: 1, itemIndex: 0 }).content,
+      );
+    });
+
+    test("middle, then list is split and itemContent is moved", () => {
+      const state = letter(
+        paragraph(
+          variable("v1"),
+          itemList({
+            items: [
+              item(literal({ text: "p1-l1" }), literal({ text: "p1-l2" })),
+              item(literal({ text: "p2-l1" }), literal({ text: "p2-l2" })),
+              item(literal({ text: "p3-l1" }), literal({ text: "p3-l2" })),
+            ],
+          }),
+          variable("v2"),
+        ),
+      );
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 1,
+        itemIndex: 1,
+        itemContentIndex: 1,
+      }).redigertBrev.blocks[0];
+
+      expect(result.content).toHaveLength(6);
+      expect(result.content.slice(2, 4)).toEqual(
+        select<Item>(state, { blockIndex: 0, contentIndex: 1, itemIndex: 1 }).content,
+      );
     });
   });
 });
