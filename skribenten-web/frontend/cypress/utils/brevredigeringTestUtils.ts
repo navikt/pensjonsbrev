@@ -1,4 +1,3 @@
-import { SpraakKode } from "~/types/apiTypes";
 import type {
   BrevInfo,
   BrevResponse,
@@ -8,7 +7,6 @@ import type {
   NAVEnhet,
   SaksbehandlerValg,
 } from "~/types/brev";
-import { Distribusjonstype } from "~/types/brev";
 import type {
   Content,
   Item,
@@ -26,6 +24,9 @@ import {
   type Signatur,
 } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
+
+import { SpraakKode } from "../../src/types/apiTypes";
+import { Distribusjonstype } from "../../src/types/brev";
 
 export const nyBrevResponse = ({
   info = nyBrevInfo({}),
