@@ -142,8 +142,7 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
           itemContentIndex: first.content.length - 1,
           itemIndex: firstId,
         };
-        // TODO: items har ikke deletedContent (enda?), derav `[]` som deleted
-        addElements(second.content, first.content.length, first.content, []);
+        addElements(second.content, first.content.length, first.content, first.deletedContent);
         removeElements(secondId, 1, {
           content: itemList.items,
           deletedContent: itemList.deletedItems,
@@ -226,7 +225,7 @@ function mergeIntoItemList(
   }).filter(isTextContent);
 
   // TODO: item har ikke deletedContent (enda?), derav `[]` som deleted
-  addElements(textContentAfterList, lastItem.content.length, lastItem.content, []);
+  addElements(textContentAfterList, lastItem.content.length, lastItem.content, lastItem.deletedContent);
 }
 
 function focusEndOfBlock(blockId: number, block: AnyBlock): Focus {

@@ -135,9 +135,8 @@ function splitItemList(
         addElements([item], literalIndex.itemIndex, content.items, content.deletedItems);
       } else {
         // Update content of current item, and build content of new item
-        // TODO: Item har ikke deletedContent (enda?)
         const nextContent = splitContentArrayAtLiteral(
-          { content: thisItem.content, deletedContent: [], id: thisItem.id },
+          { content: thisItem.content, deletedContent: thisItem.deletedContent, id: thisItem.id },
           literalIndex.itemContentIndex,
           offset,
         );

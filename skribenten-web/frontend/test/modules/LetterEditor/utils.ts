@@ -152,7 +152,7 @@ export function itemList(args: {
 
 export function item(...content: TextContent[]): Item {
   const id = randomId();
-  return { id: id, parentId: null, content: withParent(content, id) };
+  return { id: id, parentId: null, content: withParent(content, id), deletedContent: [] };
 }
 
 export function table(headerCells: Cell[], rows: Row[]): Table {

@@ -85,7 +85,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
-                    // TODO dette elementet er ikke lenger med i rendring, vurdere om vi skal annotere det på et vis eller noe (slik at det kan vises til saksbehandler).
+                    // TODO: dette elementet er ikke lenger med i rendring, vurdere om vi skal annotere det på et vis eller noe (slik at det kan vises til saksbehandler).
                     add(updateVariables(currentEdited))
                 } else if (currentEdited.parentId != parent?.id) {
                     // The currentEdited element is moved to another parent, and thus cannot currently be tracked.
@@ -201,7 +201,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
 
     private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
         edited.copy(
-            content = mergeList(edited, edited.content, rendered.content, emptySet(), ::mergeTextContent, ::updateVariableValues),
+            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
             parentId = edited.parentId ?: rendered.parentId
         )
 

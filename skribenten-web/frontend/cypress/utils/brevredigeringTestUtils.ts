@@ -207,6 +207,7 @@ export const nyItem = (args: { id?: Nullable<number>; content?: TextContent[] })
   id: args.id ?? null,
   parentId: null,
   content: args.content ?? [nyVariable({})],
+  deletedContent: [],
 });
 
 //TODO - kan heller bruke newItemList fra common.ts

@@ -81,8 +81,13 @@ object Edit {
             val deletedItems: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
-            data class Item(override val id: Int?, val content: List<Text>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() || it.parentId != id }
+            data class Item(
+                override val id: Int?,
+                val content: List<Text>,
+                val deletedContent: Set<Int> = emptySet(),
+                override val parentId: Int? = null,
+            ) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
             }
 
             override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty()

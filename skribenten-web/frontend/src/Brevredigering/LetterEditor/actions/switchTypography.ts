@@ -40,7 +40,6 @@ export const switchTypography: Action<
 
     case TITLE1:
     case TITLE2: {
-      // TODO: Se på om dette mønsteret matcher det som skjer i toggleBulletListOff
       const { startIndex, count } = findAdjoiningContent(literalIndex.contentIndex, block.content, isTextContent);
 
       if (startIndex === 0 && count === block.content.length) {

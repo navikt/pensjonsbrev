@@ -84,6 +84,7 @@ export type ItemList = Identifiable & {
 };
 export type Item = Identifiable & {
   readonly content: TextContent[];
+  readonly deletedContent: number[];
 };
 
 export const TABLE = "TABLE";

@@ -217,6 +217,7 @@ export function newItem({ content }: { content: TextContent[] }): Item {
     id: null,
     parentId: null,
     content,
+    deletedContent: [],
   };
 }
 
