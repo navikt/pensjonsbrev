@@ -1,9 +1,13 @@
-import type { Draft } from "immer";
 import { produce } from "immer";
 
-import { deleteElements } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  addElements,
+  findAdjoiningContent,
+  newParagraph,
+  newTitle,
+  removeElements,
+} from "~/Brevredigering/LetterEditor/actions/common";
 import type { BlockContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
-import type { AnyBlock } from "~/types/brevbakerTypes";
 import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
@@ -14,12 +18,14 @@ export const switchTypography: Action<
   LetterEditorState,
   [literalIndex: BlockContentIndex, typography: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2]
 > = produce((draft, literalIndex, typography) => {
-  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const editedLetter = draft.redigertBrev;
+  const block = editedLetter.blocks[literalIndex.blockIndex];
 
   if (!isTextContent(block.content[literalIndex.contentIndex])) {
     return;
   }
 
+  // mark the block with originalType so that the block is concidered edited.
   if (!block.originalType && block.id !== null) {
     block.originalType = block.type;
   }
@@ -34,23 +40,26 @@ export const switchTypography: Action<
 
     case TITLE1:
     case TITLE2: {
-      const { start, count } = findStartIndexAndCount(block, literalIndex);
-      const originalContentCount = block.content.length;
+      // TODO: Se på om dette mønsteret matcher det som skjer i toggleBulletListOff
+      const { startIndex, count } = findAdjoiningContent(literalIndex.contentIndex, block.content, isTextContent);
 
-      if (start === 0 && start + count === block.content.length) {
+      if (startIndex === 0 && count === block.content.length) {
         block.type = typography;
       } else {
-        const changedTypography = extractContentIntoNewBlock(block, start, count, typography);
-        const changedTypographyIndex = literalIndex.blockIndex + (start === 0 ? 0 : 1);
-        draft.redigertBrev.blocks.splice(changedTypographyIndex, 0, changedTypography);
+        const changedTypography = newTitle({
+          type: typography,
+          content: removeElements(startIndex, count, block.content, block.deletedContent).filter(isTextContent),
+        });
+        const changedTypographyIndex = literalIndex.blockIndex + (startIndex === 0 ? 0 : 1);
+        addElements([changedTypography], changedTypographyIndex, editedLetter.blocks, editedLetter.deletedBlocks);
 
         // If the content we changed typography for was in between non-text content,
         // also extract the subsequent content into a new block to maintain the order.
-        if (start > 0 && start + count < originalContentCount) {
-          const afterChanged = extractContentIntoNewBlock(block, start, block.content.length - start, PARAGRAPH);
-          draft.redigertBrev.blocks.splice(changedTypographyIndex + 1, 0, afterChanged);
-
-          deleteElements(afterChanged.content, block.content, block.deletedContent);
+        if (startIndex > 0 && startIndex < block.content.length) {
+          const afterChanged = newParagraph({
+            content: removeElements(startIndex, block.content.length, block.content, block.deletedContent),
+          });
+          addElements([afterChanged], changedTypographyIndex + 1, editedLetter.blocks, editedLetter.deletedBlocks);
         }
       }
       break;
@@ -60,42 +69,3 @@ export const switchTypography: Action<
     delete block.originalType;
   }
 });
-
-function extractContentIntoNewBlock(
-  from: Draft<AnyBlock>,
-  start: number,
-  extractCount: number,
-  targetType: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2,
-): AnyBlock {
-  const newBlock: AnyBlock = {
-    id: null,
-    parentId: null,
-    type: targetType,
-    editable: true,
-    deletedContent: [],
-    content: from.content.splice(start, extractCount),
-  } as AnyBlock;
-  deleteElements(newBlock.content, from.content, from.deletedContent);
-  return newBlock;
-}
-
-function findStartIndexAndCount(block: AnyBlock, literalIndex: BlockContentIndex): { start: number; count: number } {
-  let start = literalIndex.contentIndex;
-  for (let index = start - 1; index >= 0; index--) {
-    if (isTextContent(block.content[index])) {
-      start = index;
-    } else {
-      break;
-    }
-  }
-
-  let count = 0;
-  for (let index = start; index < block.content.length; index++) {
-    if (isTextContent(block.content[index])) {
-      count++;
-    } else {
-      break;
-    }
-  }
-  return { start, count };
-}

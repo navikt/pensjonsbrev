@@ -13,6 +13,10 @@ import type {
   LiteralValue,
   ParagraphBlock,
   TextContent,
+  TITLE1,
+  Title1Block,
+  TITLE2,
+  Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
@@ -60,6 +64,16 @@ export function removeElements<T extends Identifiable>(
   const removedElements = from.splice(startIndex, count);
   for (const e of removedElements) deleteElement(e, from, deleted);
   return removedElements;
+}
+
+function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[], deleted: Draft<number[]>) {
+  if (
+    toDelete.id !== null &&
+    !deleted.includes(toDelete.id) &&
+    !verifyNotPresent.map((b) => b.id).includes(toDelete.id)
+  ) {
+    deleted.push(toDelete.id);
+  }
 }
 
 export function addElements<T extends Identifiable, E extends T>(
@@ -148,24 +162,20 @@ export function mergeLiteralsIfPossible<T extends Identifiable>(first: Draft<T>,
   }
 }
 
-export function deleteElement(toDelete: Identifiable, verifyNotPresent: Identifiable[], deleted: Draft<number[]>) {
-  if (
-    toDelete.id !== null &&
-    !deleted.includes(toDelete.id) &&
-    !verifyNotPresent.map((b) => b.id).includes(toDelete.id)
-  ) {
-    deleted.push(toDelete.id);
-  }
-}
-
-export function deleteElements(
-  contentToDelete: Identifiable[],
-  verifyNotPresent: Identifiable[],
-  deleted: Draft<number[]>,
-) {
-  for (const toDelete of contentToDelete) {
-    deleteElement(toDelete, verifyNotPresent, deleted);
-  }
+export function newTitle(args: {
+  id?: Nullable<number>;
+  content: TextContent[];
+  type: typeof TITLE1 | typeof TITLE2;
+  deletedContent?: number[];
+}): Title1Block | Title2Block {
+  return {
+    type: args.type,
+    id: args.id ?? null,
+    parentId: null,
+    editable: true,
+    deletedContent: args.deletedContent ?? [],
+    content: args.content,
+  };
 }
 
 export function newParagraph(args: {

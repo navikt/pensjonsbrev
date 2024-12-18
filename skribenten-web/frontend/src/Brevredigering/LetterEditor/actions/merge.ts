@@ -3,7 +3,6 @@ import { produce } from "immer";
 
 import {
   addElements,
-  deleteElement,
   getMergeIds,
   newLiteral,
   removeElements,
@@ -40,8 +39,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
       const block = blocks[literalIndex.blockIndex];
       const content = block?.content[literalIndex.contentIndex];
       if (isEmptyContent(content)) {
-        block.content.splice(literalIndex.contentIndex, 1);
-        deleteElement(content, block.content, block.deletedContent);
+        removeElements(literalIndex.contentIndex, 1, block.content, block.deletedContent);
         draft.focus = {
           blockIndex: literalIndex.blockIndex,
           contentIndex: literalIndex.contentIndex - 1,
