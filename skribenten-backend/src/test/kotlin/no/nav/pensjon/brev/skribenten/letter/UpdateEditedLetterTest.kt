@@ -901,25 +901,119 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Paragraph(
                 null, true,
-                listOf(
-                    E_Literal(11, "en literal", E_FontType.PLAIN),
-                    E_Variable(12, "en variabel", E_FontType.PLAIN),
-                )
+                listOf(E_Literal(11, "en literal",), E_Variable(12, "en variabel"))
             ),
             deleted = setOf(1),
         )
         val expected = editedLetter(
             E_Paragraph(
                 null, true,
-                listOf(
-                    E_Literal(11, "en literal", E_FontType.PLAIN),
-                    E_Literal(12, "en variabel", E_FontType.PLAIN),
-                )
+                listOf(E_Literal(11, "en literal"), E_Literal(12, "en variabel"))
             ),
             deleted = setOf(1),
         )
         assertEquals(expected, edited.updateEditedLetter(next))
     }
+
+    @Test
+    fun `variables moved to another parent block will be updated`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    Literal(11, "en literal"),
+                    ItemList(12, listOf(Item(121, listOf(Variable(1211, "oppdatert v1"))))),
+                )
+            ),
+            Paragraph(
+                2, true,
+                listOf(Literal(21, "to literal")),
+            )
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(E_Literal(11, "en literal")),
+                deletedContent = setOf(12),
+            ),
+            E_Paragraph(
+                2, true,
+                listOf(E_Variable(1211, "variable 1", parentId = 121), E_Literal(21, "to literal")),
+            ),
+        )
+        val expected = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(E_Literal(11, "en literal")),
+                deletedContent = setOf(12),
+            ),
+            E_Paragraph(
+                2, true,
+                listOf(E_Variable(1211, "oppdatert v1", parentId = 121), E_Literal(21, "to literal")),
+            ),
+        )
+        assertEquals(expected, edited.updateEditedLetter(next))
+    }
+
+    @Test
+    fun `variables moved from itemList to parent block will be updated`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(
+                    Literal(11, "en literal"),
+                    ItemList(12, listOf(Item(121, listOf(Variable(1211, "oppdatert v1"))))),
+                )
+            )
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(E_Literal(11, "en literal"), E_Variable(1211, "variable 1", parentId = 121)),
+                deletedContent = setOf(12),
+            ),
+        )
+        val expected = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(E_Literal(11, "en literal"), E_Variable(1211, "oppdatert v1", parentId = 121)),
+                deletedContent = setOf(12),
+            ),
+        )
+        assertEquals(expected, edited.updateEditedLetter(next))
+    }
+
+    @Test
+    fun `variables moved to another parent block no longer present will be updated if variable is present in rendered`() {
+        val next = letter(
+            Paragraph(
+                1, true,
+                listOf(Literal(11, "en literal"), Variable(12, "oppdatert v1")),
+            ),
+        )
+        val edited = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(E_Literal(11, "en literal"),E_Variable(12, "variable 1")),
+            ),
+            E_Paragraph(
+                2, true,
+                listOf(E_Variable(12, "variable 1"), E_Literal(21, text = "hei", editedText = "heisann")),
+            )
+        )
+        val expected = editedLetter(
+            E_Paragraph(
+                1, true,
+                listOf(E_Literal(11, "en literal"), E_Variable(12, "oppdatert v1")),
+            ),
+            E_Paragraph(
+                2, true,
+                listOf(E_Variable(12, "oppdatert v1"),E_Literal(21, "hei", editedText = "heisann")),
+            ),
+        )
+        assertEquals(expected, edited.updateEditedLetter(next))
+    }
+
 
     @Test
     fun `content moved into an item list is kept`() {
@@ -1016,7 +1110,12 @@ class UpdateRenderedLetterTest {
         assertThat(edited.identifiable.toList()).allSatisfy { assertThat(it).extracting(E_Identifiable::parentId).isNull() }
 
         val updated = edited.updateEditedLetter(next)
-        assertThat(updated.identifiable.filter { it !is Edit.Block }.toList()).allSatisfy { assertThat(it).extracting(E_Identifiable::parentId, InstanceOfAssertFactories.INTEGER) }
+        assertThat(updated.identifiable.filter { it !is Edit.Block }.toList()).allSatisfy {
+            assertThat(it).extracting(
+                E_Identifiable::parentId,
+                InstanceOfAssertFactories.INTEGER
+            )
+        }
         assertEquals(edited.fixParentIds(), updated)
     }
 }
