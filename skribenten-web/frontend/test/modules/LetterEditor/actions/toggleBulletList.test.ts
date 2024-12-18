@@ -82,7 +82,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
       expect(toggledInBlock.deletedContent).toEqual([22, 3]);
       const shouldBeDeleted = state.redigertBrev.blocks[1].content
         .map((c) => c.id)
-        .filter((id) => toggledInBlock.content.findIndex((keptContent) => keptContent.id === id) === -1);
+        .filter((id) => !toggledInBlock.content.some((keptContent) => keptContent.id === id));
       expect(toggledInBlock.deletedContent).toEqual(shouldBeDeleted);
 
       // content that we merged in to the itemList

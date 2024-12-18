@@ -108,7 +108,7 @@ export function addElements<T extends Identifiable, E extends T>(
   const presentIds = to.map((e) => e.id).filter((id) => id !== null) as number[];
   for (const id of presentIds) {
     const index = deleted.indexOf(id);
-    if (index >= 0) {
+    if (index !== -1) {
       deleted.splice(index, 1);
     }
   }

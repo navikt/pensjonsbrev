@@ -202,7 +202,7 @@ export function withParent<T extends Identifiable>(
   parentId: number | null,
   replaceExisting: boolean = false,
 ): T[] {
-  return content.map((c) => ({ ...c, parentId: replaceExisting ? parentId : c.parentId ?? parentId }));
+  return content.map((c) => ({ ...c, parentId: replaceExisting ? parentId : (c.parentId ?? parentId) }));
 }
 
 export function asNew<T extends Identifiable>(c: T, keepParent: boolean = false): T {
