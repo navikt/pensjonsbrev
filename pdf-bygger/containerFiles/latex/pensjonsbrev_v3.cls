@@ -19,6 +19,7 @@
 \usepackage{fancyhdr}   % custom page styles
 % tables and colors
 \usepackage{xcolor}
+\usepackage{titlesec}
 \usepackage{ninecolors}
 \usepackage{tabularray} % better tables(tblr, longtblr)
 %\usepackage{layout} % page layout debug package
@@ -57,12 +58,14 @@
 \newcommand{\titletextspacing}{26pt}        % space under
 
 %title one
-\newcommand{\titleonetextsize}{13pt}      % size
+
+\newcommand{\titleonetextsize}{13pt}        % size
 \newcommand{\titleonetextspacing}{10pt}     % space under
 
 %title two
 \newcommand{\titletwotextsize}{12pt}        % size
 \newcommand{\titletwotextspacing}{10pt}     % space under
+%\newcommand{\titleone}{\primaryFont \fontsize{\titleonetextsize}{\titleonetextspacing} \selectfont}
 
 %paragraph spacing
 \setlength{\parindent}{0em}                 % indentations before first line in paragraph
