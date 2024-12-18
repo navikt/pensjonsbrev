@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral
+package no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos
 
 import java.time.LocalDate
 

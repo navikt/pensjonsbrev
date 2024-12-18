@@ -37,10 +37,16 @@ import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
+enum class EksempelbrevRedigerbartBrevkode : Brevkode.Redigerbart {
+    TESTBREV;
+
+    override fun kode() = name
+}
+
 @TemplateModelHelpers
 object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
-    override val kode: Brevkode.Redigerbar = Brevkode.Redigerbar.TESTBREV
+    override val kode: Brevkode.Redigerbart = EksempelbrevRedigerbartBrevkode.TESTBREV
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = Sakstype.all

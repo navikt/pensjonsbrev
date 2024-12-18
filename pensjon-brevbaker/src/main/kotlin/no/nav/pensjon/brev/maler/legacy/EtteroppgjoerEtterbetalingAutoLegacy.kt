@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.maler.legacy
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDtoSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.HarDuSpoersmaalEtteroppgjoer
 import no.nav.pensjon.brev.maler.legacy.fraser.*
@@ -24,7 +24,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtterbetalingAutoDto> {
 
     // PE_UT_23_101
-    override val kode = Brevkode.AutoBrev.UT_ETTEROPPGJOER_ETTERBETALING_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.UT_ETTEROPPGJOER_ETTERBETALING_AUTO
 
     override val template = createTemplate(
         name = kode.name,

@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte
 
 import io.ktor.util.reflect.*
 import no.nav.pensjon.brev.TestTags
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.*
@@ -26,7 +27,7 @@ class TemplateResourceTest {
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
-        etterlatteBrevKode: EtterlatteBrevKode,
+        etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
         spraak: Language,
     ) {
@@ -39,7 +40,7 @@ class TemplateResourceTest {
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
-        etterlatteBrevKode: EtterlatteBrevKode,
+        etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
         spraak: Language,
     ) {
@@ -51,14 +52,14 @@ class TemplateResourceTest {
         ).renderTestHtml(filnavn(etterlatteBrevKode, spraak))
     }
 
-    private fun filnavn(etterlatteBrevKode: EtterlatteBrevKode, spraak: Language) =
-        "${etterlatteBrevKode.name}_${spraak.javaClass.simpleName}"
+    private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
+        "${brevkode.kode()}_${spraak.javaClass.simpleName}"
 
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> jsontest(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
-        etterlatteBrevKode: EtterlatteBrevKode,
+        etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
         spraak: Language,
     ) {
@@ -90,7 +91,7 @@ class TemplateResourceTest {
         @JvmStatic
         fun alleMalene() = listOf(Language.Nynorsk, Language.Bokmal, Language.English)
             .flatMap { spraak ->
-                prodAutobrevTemplates.map {
+                EtterlatteMaler.hentAutobrevmaler().map {
                     Arguments.of(
                         it.template,
                         it.kode,

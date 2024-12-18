@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.adhoc
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants.FORSOERGINGSTILLEGG_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTemplate<EmptyBrevdata> {
-    override val kode = Brevkode.AutoBrev.PE_AP_2024_IKKEUTBET_FT_VARSEL_OPPH
+    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_2024_IKKEUTBET_FT_VARSEL_OPPH
     override val template = createTemplate(
         name = kode.name,
         letterDataType = EmptyBrevdata::class,

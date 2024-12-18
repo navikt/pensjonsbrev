@@ -1,0 +1,109 @@
+version: 2
+
+registries:
+  npm-github:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{secrets.READER_TOKEN}}
+  gradle-artifactory:
+    type: maven-repository
+    url: https://maven.pkg.github.com/navikt/pensjonsbrev
+    username: ${{ github.repository_owner }}
+    password: ${{secrets.READER_TOKEN}}
+
+updates:
+  # ==============
+  # KOTLIN BACKEND
+  # ==============
+  - package-ecosystem: "gradle"
+    directories:
+      - "/"
+      - "/brevbaker-api-model-common"
+      - "/pdf-bygger"
+      - "/pensjon-brevbaker"
+      - "/pensjon-brevbaker-api-model"
+      - "/skribenten-backend"
+      - "/template-model-generator"
+      - "/tjenestebuss-integrasjon"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+    open-pull-requests-limit: 10
+    registries:
+      - gradle-artifactory
+    groups:
+      tjenestebuss:
+        patterns:
+          - "org.apache.cxf:*"
+          - "com.sun.xml.messaging.saaj:saaj-impl"
+          - "com.sun.xml.bind:jaxb-core"
+      backend:
+        patterns:
+          - "*"
+
+  # =============
+  # FRONTEND
+  # =============
+  - package-ecosystem: "npm"
+    directories:
+      - "/skribenten-web/bff"
+      - "/skribenten-web/frontend"
+      - "/brevoppskrift-web/bff"
+      - "/brevoppskrift-web/frontend"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+    open-pull-requests-limit: 10
+    registries:
+      - npm-github
+    groups:
+      dev:
+        patterns:
+          - "*eslint*"
+          - "prettier"
+          - "typescript"
+          - "stylelint*"
+      frontend:
+        patterns:
+        - "*"
+
+  # ==============
+  # GITHUB ACTIONS
+  # ==============
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+
+  # ==============
+  # Docker frontend
+  # ==============
+  - package-ecosystem: "docker"
+    directories:
+      - "/brevoppskrift-web/bff"
+      - "/skribenten-web/bff"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+    groups:
+      docker-frontend:
+        patterns:
+          - "*"
+
+  # ==============
+  # Docker backend
+  # ==============
+  - package-ecosystem: "docker"
+    directories:
+      - "/pensjon-brevbaker"
+      - "/pdf-bygger"
+      - "/skribenten-backend"
+      - "/tjenestebuss-integrasjon"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+    groups:
+      docker-frontend:
+        patterns:
+          - "*"

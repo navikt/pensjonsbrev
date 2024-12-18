@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.alder
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBR
 // MF_000129 : AP_INFO_AO67_AUTO
 object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang67AarAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_AP_INFO_ALDERSOVERGANG_67_AAR_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_INFO_ALDERSOVERGANG_67_AAR_AUTO
 
     override val template = createTemplate(
         name = kode.name,
@@ -40,15 +40,16 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
             )
         }
         outline {
-            includePhrase(InnledningInfoYtelse(ytelseForAldersovergangKode = ytelseForAldersovergang))
-            includePhrase(InfoVelgeAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
-            includePhrase(InfoOmregningUTtilAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
-            includePhrase(InfoOenskeSokeAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
-            includePhrase(InfoSivilstandAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
-            includePhrase(InfoFTAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
-            includePhrase(InfoAFPprivatAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
-            includePhrase(InfoSoekeAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
-            includePhrase(InfoSoekeAnnenGradAP(ytelseForAldersovergangKode = ytelseForAldersovergang))
+            includePhrase(InnledningInfoYtelse(ytelseForAldersovergang))
+            includePhrase(InfoVelgeAP(ytelseForAldersovergang))
+            includePhrase(InfoOnsketUttakAP(ytelseForAldersovergang))
+            includePhrase(InfoOenskeSokeAP(ytelseForAldersovergang))
+            includePhrase(InfoOmregningUTtilAP(ytelseForAldersovergang))
+            includePhrase(InfoSivilstandAP(ytelseForAldersovergang))
+            includePhrase(InfoFTAP(ytelseForAldersovergang))
+            includePhrase(InfoAFPprivatAP(ytelseForAldersovergang))
+            includePhrase(InfoSoekeAP(ytelseForAldersovergang))
+            includePhrase(InfoSoekeAnnenGradAP(ytelseForAldersovergang))
             includePhrase(InfoSkattAP)
             includePhrase(InfoLevealderAP)
             includePhrase(InfoInntektAP)

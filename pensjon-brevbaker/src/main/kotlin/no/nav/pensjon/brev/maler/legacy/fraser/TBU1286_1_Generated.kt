@@ -4,22 +4,16 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_serkull
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget
-import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TBU1286_1_Generated(
     val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        //[TBU1286.1, TBU1286.1_NN, TBU1286.1_EN]
 
         paragraph {
             text(

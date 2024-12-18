@@ -15,6 +15,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.date.*
+import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import java.nio.file.Path
@@ -32,7 +33,7 @@ private fun Application.getProperty(name: String): String? =
 @Suppress("unused")
 fun Application.module() {
     val parallelism = getProperty("pdfBygger.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
-    val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active")
+    val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
     val laTeXService = LaTeXService(
         compileTimeout = getProperty("pdfBygger.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
         queueWaitTimeout = getProperty("pdfBygger.compileQueueWaitTimeout")?.let { Duration.parse(it) } ?: 4.seconds,

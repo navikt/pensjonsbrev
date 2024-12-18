@@ -28,10 +28,16 @@ import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import java.time.LocalDate
 
+enum class LetterExampleBrevkode : Brevkode.Automatisk {
+    TESTBREV;
+
+    override fun kode() = name
+}
+
 @TemplateModelHelpers
 object LetterExample : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.TESTBREV
+    override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID

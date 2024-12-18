@@ -121,10 +121,10 @@ services:
       - WONDERWALL_OPENID_PROVIDER=azure
       - WONDERWALL_INGRESS=http://localhost:8083
       - WONDERWALL_BIND_ADDRESS=0.0.0.0:8083
-      - WONDERWALL_UPSTREAM_HOST=skritenben-bff:8084
+      - WONDERWALL_UPSTREAM_HOST=skribenten-bff:8084
       - WONDERWALL_LOG_LEVEL=debug
       - WONDERWALL_LOG_FORMAT=text
-  skritenben-bff:
+  skribenten-bff:
     profiles:
       - skribenten
     build:

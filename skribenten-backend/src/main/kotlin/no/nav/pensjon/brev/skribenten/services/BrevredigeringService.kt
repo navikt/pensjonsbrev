@@ -49,7 +49,7 @@ class BrevredigeringService(
 
     suspend fun opprettBrev(
         sak: Pen.SakSelection,
-        brevkode: Brevkode.Redigerbar,
+        brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         avsenderEnhetsId: String?,
         saksbehandlerValg: SaksbehandlerValg,
@@ -340,7 +340,7 @@ class BrevredigeringService(
         )
 
     private suspend fun rendreBrev(
-        brevkode: Brevkode.Redigerbar,
+        brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         saksId: Long,
         vedtaksId: Long?,

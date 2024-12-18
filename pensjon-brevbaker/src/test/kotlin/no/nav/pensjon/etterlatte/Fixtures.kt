@@ -32,6 +32,7 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTO
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO
@@ -133,6 +134,7 @@ object Fixtures {
             TilbakekrevingRedigerbartBrevDTO::class -> createTilbakekrevingRedigerbartBrevDTO() as T
 
             AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
+            KlageSaksbehandlingstidDTO::class -> createKlageSaksbehandlingstidDtoTestI() as T
             AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T
             KlageOversendelseBlankettDTO::class -> createKlageOversendelseBlankettDTO() as T
             KlageOversendelseBrukerDTO::class -> createKlageOversendelseBrukerDTO() as T

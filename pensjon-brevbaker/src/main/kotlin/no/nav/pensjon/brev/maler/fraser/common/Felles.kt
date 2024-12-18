@@ -56,6 +56,7 @@ object Felles {
                             + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
                             + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                     Nynorsk to "Du finn meir informasjon på $merInformasjonUrl."
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
                             + " Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
                             + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                     English to "You can find more information at $merInformasjonUrl."

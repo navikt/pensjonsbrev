@@ -24,7 +24,7 @@ export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeB
 };
 
 export const forkortetSaksbehandlernavn = (navAnsatt: NavAnsatt, gjeldendeBruker?: UserInfo) => {
-  return navAnsatt.id === gjeldendeBruker?.navident ? "deg" : navAnsatt.navn ?? navAnsatt.id;
+  return navAnsatt.id === gjeldendeBruker?.navident ? "deg" : (navAnsatt.navn ?? navAnsatt.id);
 };
 
 const sorteringsRekkefølge = { Arkivert: 1, Kladd: 2, UnderRedigering: 3, Klar: 4 };

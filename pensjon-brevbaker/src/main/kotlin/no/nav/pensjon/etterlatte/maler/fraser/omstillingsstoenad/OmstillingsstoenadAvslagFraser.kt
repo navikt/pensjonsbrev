@@ -53,7 +53,7 @@ object OmstillingsstoenadAvslagFraser {
                     paragraph {
                         text(
                             Bokmal to "Din søknad om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid> er avslått.",
-                            Nynorsk to "Din søknad om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid> er avslått.",
+                            Nynorsk to "Din søknad om omstillingsstønad som tidlegare familiepleiar for <navn på den som er pleid> er avslått.",
                             English to "Your application for adjustment allowance as a former family caregiver for <name of the person who has been cared for> has been rejected.",
                         )
                     }

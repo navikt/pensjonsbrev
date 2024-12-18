@@ -379,7 +379,7 @@ describe("onClickHandler", () => {
     const { user } = setupComplex();
 
     await user.click(screen.getByText("andre literal"));
-    const selection = window.getSelection();
+    const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
     expect(selection?.toString()).toBe("andre literal");
   });
@@ -395,7 +395,7 @@ describe("onClickHandler", () => {
     const { user } = setupComplex(state);
 
     await user.click(screen.getByText("Hei på deg"));
-    const selection = window.getSelection();
+    const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
     expect(selection?.toString()).toBe("");
   });
@@ -407,7 +407,7 @@ describe("onFocusHandler", () => {
 
     await user.click(screen.getByText("Dokumentet starter med variable"));
     await user.tab();
-    const selection = window.getSelection();
+    const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
     expect(selection?.toString()).toBe("andre literal");
   });
@@ -428,7 +428,7 @@ describe("onFocusHandler", () => {
 
     await user.click(screen.getByText("første literal"));
     await user.tab();
-    const selection = window.getSelection();
+    const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
     expect(selection?.toString()).toBe("tredje literal");
   });
