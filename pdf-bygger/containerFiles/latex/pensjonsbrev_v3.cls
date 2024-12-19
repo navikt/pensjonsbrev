@@ -19,7 +19,7 @@
 \usepackage{fancyhdr}   % custom page styles
 % tables and colors
 \usepackage{xcolor}
-\usepackage{titlesec}
+%\usepackage{titlesec}
 \usepackage{ninecolors}
 \usepackage{tabularray} % better tables(tblr, longtblr)
 %\usepackage{layout} % page layout debug package
@@ -50,7 +50,7 @@
     BoldItalicFont={Source Sans 3 Bold Italic}]{Source Sans 3}
 
 % Global font commands
-\newcommand{\standardtextsize}{11pt}     % size
+\newcommand{\standardtextsize}{11pt}        % size
 \newcommand{\standardtextspacing}{18.5pt}   % space between normal lines
 
 % main title
