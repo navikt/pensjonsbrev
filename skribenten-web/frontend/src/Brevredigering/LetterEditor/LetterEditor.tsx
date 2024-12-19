@@ -60,6 +60,7 @@ export const LetterEditor = ({
           <Heading
             css={css`
               margin: var(--a-spacing-8) 0;
+              cursor: default;
             `}
             level="1"
             size="large"

@@ -163,4 +163,13 @@ describe("Brevredigering", () => {
     cy.contains("Gå til brevbehandler").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler");
   });
+
+  it("kan toggle punktliste", () => {
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Du må melde").click();
+    cy.getDataCy("editor-bullet-list").click();
+    cy.get("ul li span:last").should("contain.text", "Du må melde");
+    cy.getDataCy("editor-bullet-list").click();
+    cy.get("ul li span:last").should("not.contain.text", "Du må melde");
+  });
 });

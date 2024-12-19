@@ -53,15 +53,9 @@ export type Signatur = {
   readonly navAvsenderEnhet: string;
 };
 
-export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
-
-export type ParagraphBlock = Block & {
-  readonly type: typeof PARAGRAPH;
-  readonly content: Content[];
-};
-
 export type Identifiable = {
   readonly id: number | null;
+  readonly parentId: number | null;
 };
 
 export enum ElementTags {
@@ -76,8 +70,7 @@ export type LiteralValue = Identifiable & {
   readonly tags: ElementTags[];
 };
 export const VARIABLE = "VARIABLE";
-export type VariableValue = {
-  readonly id: number;
+export type VariableValue = Identifiable & {
   readonly type: typeof VARIABLE;
   readonly name?: string;
   readonly text: string;
@@ -91,10 +84,34 @@ export type ItemList = Identifiable & {
 };
 export type Item = Identifiable & {
   readonly content: TextContent[];
+  readonly deletedContent: number[];
 };
 
+export const TABLE = "TABLE";
+export type Table = Identifiable & {
+  readonly type: typeof TABLE;
+  readonly rows: Row[];
+  readonly header: Header;
+  readonly deletedRows: number[];
+};
+export type Row = Identifiable & {
+  readonly cells: Cell[];
+};
+export type Cell = Identifiable & {
+  readonly text: TextContent[];
+};
+export type Header = Identifiable & {
+  readonly colSpec: ColumnSpec[];
+};
+export type ColumnSpec = Identifiable & {
+  readonly headerContent: Cell;
+  readonly alignment: ColumnAlignment;
+  readonly span: number;
+};
+export type ColumnAlignment = "LEFT" | "RIGHT";
+
 export type TextContent = LiteralValue | VariableValue;
-export type Content = ItemList | LiteralValue | VariableValue;
+export type Content = ItemList | TextContent;
 
 export type Block = Identifiable & {
   readonly type: string;
@@ -105,6 +122,10 @@ export type Block = Identifiable & {
 };
 
 export const PARAGRAPH = "PARAGRAPH";
+export type ParagraphBlock = Block & {
+  readonly type: typeof PARAGRAPH;
+  readonly content: Content[];
+};
 
 export const TITLE1 = "TITLE1";
 export type Title1Block = Block & {
@@ -117,6 +138,8 @@ export type Title2Block = Block & {
   readonly type: typeof TITLE2;
   readonly content: TextContent[];
 };
+
+export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
 
 export interface EditedLetter {
   readonly title: string;
