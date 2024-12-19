@@ -26,7 +26,6 @@ export function SamhandlerSearchResults({
         direction: sort && sortKey === sort.orderBy && sort.direction === "ascending" ? "descending" : "ascending",
       });
     } else {
-      // eslint-disable-next-line unicorn/no-useless-undefined
       setSort(undefined);
     }
   };

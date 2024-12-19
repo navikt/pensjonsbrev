@@ -9,4 +9,5 @@ data class Reduksjonsgrunnlag(
     val prosentsatsoifufortak: Int?,
     val sumbruttoforreduksjonbt: Kroner?,
     val sumbruttoetterreduksjonbt: Kroner?,
+    val sumutbt: Kroner?,
 )

@@ -31,7 +31,7 @@ import no.nav.pensjon.brevbaker.api.model.*
 @TemplateModelHelpers
 object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_UNG_UFOER_20_AAR_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.UT_UNG_UFOER_20_AAR_AUTO
 
     override val template = createTemplate(
         name = kode.name,

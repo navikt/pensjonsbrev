@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.textExpr
 
+
 data class TBU1254_Generated(
 	val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {

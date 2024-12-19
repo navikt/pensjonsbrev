@@ -5,5 +5,5 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67A
 
 fun createInfoAlderspensjonOvergang67AarAutoDto() =
     InfoAlderspensjonOvergang67AarAutoDto(
-        ytelseForAldersovergang = YtelseForAldersovergangKode.UT
+        ytelseForAldersovergang = YtelseForAldersovergangKode.FAM_PL
     )

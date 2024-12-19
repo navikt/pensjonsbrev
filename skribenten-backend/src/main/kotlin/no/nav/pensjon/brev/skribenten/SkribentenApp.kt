@@ -23,6 +23,7 @@ import io.ktor.server.response.*
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 
 
@@ -115,6 +116,7 @@ fun Application.skribentenContenNegotiation() {
         jackson {
             registerModule(JavaTimeModule())
             registerModule(Edit.JacksonModule)
+            registerModule(BrevkodeModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }

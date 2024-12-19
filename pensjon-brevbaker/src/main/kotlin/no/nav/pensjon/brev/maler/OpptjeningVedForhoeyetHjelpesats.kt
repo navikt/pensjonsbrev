@@ -18,7 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 @TemplateModelHelpers
 object OpptjeningVedForhoeyetHjelpesats : AutobrevTemplate<OpptjeningVedForhoeyetHjelpesatsDto> {
 
-    override val kode = Brevkode.AutoBrev.PE_OMSORG_HJELPESTOENAD_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.PE_OMSORG_HJELPESTOENAD_AUTO
 
     override val template = createTemplate(
         name = kode.name,

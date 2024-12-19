@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
+import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
@@ -19,11 +20,6 @@ import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-
-interface AllTemplates {
-    fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>>
-    fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>>
-}
 
 object ProductionTemplates : AllTemplates {
     private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
@@ -53,6 +49,7 @@ object ProductionTemplates : AllTemplates {
         UfoerOmregningEnslig,
         UngUfoerAuto,
         VarselSaksbehandlingstidAuto,
+        EndretUforetrygdPGAOpptjeningLegacy,
     )
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagUfoeretrygd,

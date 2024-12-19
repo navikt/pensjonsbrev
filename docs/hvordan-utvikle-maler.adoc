@@ -441,7 +441,7 @@ er om det at vedlegget vises henger sammen med at vi har dataene. Da kan vi ogs�
 ----
 @TemplateModelHelpers // Annotasjon som gjør at malen blir plukket opp av en kode-generator. Det vil da genereres extension functions og properties basert på data-klassen som er angitt for malen som gir deg lett tilgang til feltene i en dataklasse i scopet til malen.
 object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO // Brevkode som identifiserer dette brevet. Defineres i API-model (enum)
+    override val kode: Pesysbrevkoder.AutoBrev = Pesysbrevkoder.AutoBrev.PE_OMSORG_EGEN_AUTO // Brevkode som identifiserer dette brevet. Defineres i API-model (enum)
 
     override val template = createTemplate(
 

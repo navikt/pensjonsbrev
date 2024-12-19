@@ -9,6 +9,7 @@ on:
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
+      - "!**/**.md"
   push:
     branches:
       - "main"
@@ -19,6 +20,7 @@ on:
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
+      - "!**/**.md"
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
 
@@ -33,7 +35,7 @@ jobs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "gradle/actions/wrapper-validation@v3"
+      - uses: "gradle/actions/wrapper-validation@v4"
       - uses: "actions/cache@v4"
         with:
           "path": "~/.gradle/caches"
@@ -76,7 +78,7 @@ jobs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "gradle/actions/wrapper-validation@v3"
+      - uses: "gradle/actions/wrapper-validation@v4"
       - uses: "actions/cache@v4"
         with:
           "path": "~/.gradle/caches"
@@ -226,7 +228,7 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:pdf-bygger"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "pdf-bygger/.nais/nais.yaml"
+          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
 

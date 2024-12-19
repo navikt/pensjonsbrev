@@ -18,7 +18,6 @@ server.set("trust proxy", 1);
 
 server.use(verifyJWTToken);
 
-
 setupSkribentenBackendApiProxy(server);
 internalRoutes(server);
 setupStaticRoutes(server);
