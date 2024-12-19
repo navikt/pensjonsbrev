@@ -80,7 +80,7 @@ class BrevmalService(
 
     private fun TemplateDescription.erMalMedFritekst() = name in setOf(
         Pesysbrevkoder.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
-        Pesysbrevkoder.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ETTERLATTE,
+        Pesysbrevkoder.Redigerbar.PE_FORESPOERSEL_DOKUM_BOTIDINORGE_ETTERLATTE,
         Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER,
         Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER
     ).map { it.name }
