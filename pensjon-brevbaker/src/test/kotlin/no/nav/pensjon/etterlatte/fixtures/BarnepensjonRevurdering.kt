@@ -130,5 +130,5 @@ fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderin
     feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
     brukerUnder18Aar = true,
     bosattUtland = false,
-    frivilligSkattetrekk = false
+    frivilligSkattetrekk = false,
 )

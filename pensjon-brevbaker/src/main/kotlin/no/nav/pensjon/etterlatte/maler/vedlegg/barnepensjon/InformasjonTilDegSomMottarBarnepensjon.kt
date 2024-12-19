@@ -24,7 +24,6 @@ val informasjonTilDegSomMottarBarnepensjonNasjonal = createAttachment(
 ) {
     informasjon()
     postadresse(utland = false.expr())
-    skattetrekkPaaBarnepensjonNasjonal()
     endringAvKontonummerNasjonal()
 }
 
@@ -39,7 +38,6 @@ val informasjonTilDegSomMottarBarnepensjonUtland = createAttachment(
 ) {
     informasjon()
     postadresse(utland = true.expr())
-    skattetrekkPaaBarnepensjonUtland()
     endringAvKontonummerUtland()
     utbetalingAvBarnepensjonUtland()
 }
@@ -115,54 +113,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Bokmal to "Når kontonummer er i en utenlandsk bank, må du være oppmerksom på at det er et gebyr for hver utbetaling. Det kan også ta litt lenger tid før pengene er på kontoen din. Du finner mer informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
             Nynorsk to "Når kontonummer er i ein utanlandsk bank, må du vere merksam på at det blir trekt eit gebyr for kvar utbetaling. Det kan også ta litt lenger tid før pengane er på kontoen din. Du finn meir informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
             English to "If the bank account is held by a foreign bank, be aware that a minor fee may be charged for each payment. It will also take a little more time before the money reaches your account. More information on payments is available online: ${Constants.Engelsk.UTBETALING_INFO}.",
-        )
-    }
-}
-
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjonNasjonal() {
-    title2 {
-        text(
-            Bokmal to "Skattetrekk på barnepensjon",
-            Nynorsk to "Skattetrekk på barnepensjon",
-            English to "Tax deductions on children's pensions",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Du kan legge til et frivillig skattetrekk som en prosentandel av pensjonen eller som et fast beløp. Dette sikrer at skatten blir riktig og gir mindre risiko for restskatt. Har du spørsmål om størrelsen på skattetrekk på barnepensjonen må du ta kontakt med Skatteetaten.",
-            Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt av beløpet utan at det er avtalt. Du kan leggje til eit frivillig skattetrekk anten som prosentdel av pensjonen eller som fast beløp. Dette sikrar at skatten blir rett, og gir mindre risiko for restskatt. Ta kontakt med Skatteetaten dersom du har spørsmål om kor stort skattetrekket vil vere.",
-            English to "A children’s pension is taxable, but we do not deduct tax from the amount unless we have agreed with you to do so. You can add a voluntary tax deduction as a percentage of your pension or as a fixed amount. This ensures that your tax payment is correct, and it minimises the risk of back taxes. If you have questions about the amount of tax deduction on your children's pension, you must contact the Norwegian Tax Administration.",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Har du allerede meldt fra om frivillig skattetrekk, videreføres dette i årene fremover til du melder fra om endring.",
-            Nynorsk to "Viss du allereie har meldt frå om frivillig skattetrekk, blir dette vidareført i åra framover inntil du melder frå om endring.",
-            English to "If you have already notified us about the voluntary tax withholding, this will continue in future years until you report a change.",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK}.",
-            Nynorsk to "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK}.",
-            English to "Read more about tax deductions at ${Constants.BP_SKATTETREKK}.",
-        )
-    }
-}
-
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjonUtland() {
-    title2 {
-        text(
-            Bokmal to "Skattetrekk på barnepensjon",
-            Nynorsk to "Skattetrekk på barnepensjon",
-            English to "Tax deductions on children's pensions",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikke er skattemessig bosatt i Norge. Les mer om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
-            Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at du har gitt beskjed om det. Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
-            English to "Children’s pension is taxable; however, we do not deduct tax if you do not notify us to do so. The Tax Administration will respond to any queries regarding tax on pensions for those who are resident in Norway for tax purposes. Read more about tax at:  ${Constants.SKATTETREKK_KILDESKATT_URL}.",
         )
     }
 }

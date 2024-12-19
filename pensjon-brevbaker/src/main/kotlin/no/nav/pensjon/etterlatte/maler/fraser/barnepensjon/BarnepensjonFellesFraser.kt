@@ -2,17 +2,16 @@ package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.etterbetalingPeriodeValg_safe
 import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.inneholderKrav_safe
-import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
@@ -70,13 +69,13 @@ object BarnepensjonFellesFraser {
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
-                            "du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
+                        "du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
                     Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen " +
-                            "du fekk vedtaket. Klaga må vere skriftleg. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
+                        "du fekk vedtaket. Klaga må vere skriftleg. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
                     English to "If you believe the decision is incorrect, " +
-                            "you may appeal the decision within six weeks from the date you received the decision. " +
-                            "The appeal must be in writing. " +
-                            "You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}."
+                        "you may appeal the decision within six weeks from the date you received the decision. " +
+                        "The appeal must be in writing. " +
+                        "You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}."
                 )
             }
         }
@@ -94,13 +93,13 @@ object BarnepensjonFellesFraser {
             paragraph {
                 text(
                     Bokmal to "Du har som hovedregel rett til å se dokumentene i saken etter" +
-                            " forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
-                            "telefon eller per post.",
+                        " forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
+                        "telefon eller per post.",
                     Nynorsk to "Etter føresegnene i forvaltingslova § 18 har du som hovudregel rett til " +
-                            "å sjå dokumenta i saka di. Kontakt oss på telefon eller per post dersom du ønskjer innsyn.",
+                        "å sjå dokumenta i saka di. Kontakt oss på telefon eller per post dersom du ønskjer innsyn.",
                     English to "As a general rule, you have the right to see the documents in your case " +
-                            "pursuant to the provisions of Section 18 of the Public Administration Act. " +
-                            "If you want access, you can contact us by phone or mail."
+                        "pursuant to the provisions of Section 18 of the Public Administration Act. " +
+                        "If you want access, you can contact us by phone or mail."
                 )
             }
         }
@@ -171,7 +170,7 @@ object BarnepensjonFellesFraser {
     }
 
     data class HvorLengeKanDuFaaBarnepensjon(
-        val migrertYrkesskade: Expression<Boolean>
+        val migrertYrkesskade: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -193,11 +192,13 @@ object BarnepensjonFellesFraser {
                         Nynorsk to "21",
                         English to "21",
                     )
-                }.orShow { text(
-                    Bokmal to "20",
-                    Nynorsk to "20",
-                    English to "20",
-                ) }
+                }.orShow {
+                    text(
+                        Bokmal to "20",
+                        Nynorsk to "20",
+                        English to "20",
+                    )
+                }
                 text(
                     Bokmal to " år, så lenge du oppfyller vilkårene.",
                     Nynorsk to " år.",
@@ -209,9 +210,8 @@ object BarnepensjonFellesFraser {
 
     data class UtbetalingAvBarnepensjon(
         val etterbetaling: Expression<BarnepensjonEtterbetaling?>,
-        val frivilligSkattetrekk: Expression<Boolean>,
         val bosattUtland: Expression<Boolean>,
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -220,6 +220,7 @@ object BarnepensjonFellesFraser {
                     English to "Payment of the children's pension",
                 )
             }
+
             paragraph {
                 text(
                     Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. Du finner utbetalingsdatoer på ${Constants.UTBETALINGSDATOER_URL}.",
@@ -228,19 +229,40 @@ object BarnepensjonFellesFraser {
                 )
             }
 
-            showIf(bosattUtland.not()) {
+            showIf(bosattUtland) {
                 paragraph {
                     text(
-                        Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt " +
-                            "beskjed om det. Du kan legge til et frivillig skattetrekk som en prosentandel av pensjonen " +
-                            "eller som et fast beløp. Dette sikrer at skatten blir riktig og gir mindre risiko for restskatt.",
-                        Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt av beløpet utan at " +
-                            "det er avtalt. Du kan leggje til eit frivillig skattetrekk anten som prosentdel av pensjonen " +
-                            "eller som fast beløp. Dette sikrar at skatten blir rett, og gir mindre risiko for restskatt.",
-                        English to "A children’s pension is taxable, but we do not deduction tax from the amount unless " +
-                            "we have agreed with you to do so. You can add a voluntary tax deduction as a percentage of " +
-                            "your pension or as a fixed amount. This ensures that your tax payment is correct, " +
-                            "and it minimises the risk of back taxes.",
+                        Bokmal to "Det trekkes 17 prosent skatt på alle utbetalinger av barnepensjon, så lenge det " +
+                            "ikke foreligger vedtak om skattefritak.",
+                        Nynorsk to "Dersom det ikkje føreligg vedtak om skattefritak, vert det trekt 17 prosent i " +
+                            "skatt på all utbetaling av barnepensjon.",
+                        English to "A tax of 17 percent is deducted from all payments of children's pension unless " +
+                            "a tax exemption has been granted.",
+                    )
+                }
+
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du mener at du ikke er skattepliktig til Norge, må du søke om fritak hos " +
+                            "Skatteetaten. For at vi skal unngå å trekke skatt av barnepensjonen, må du sende vedtak " +
+                            "om fritak til ${Constants.POSTADRESSE}. " +
+                            "Har du allerede gjort dette, vil det ikke bli trukket skatt av barnepensjonen din. ",
+                        Nynorsk to "Meiner du at du ikkje er skattepliktig til Noreg, må du søkje om fritak hos " +
+                            "Skatteetaten. Du må sende kopi av vedtak om fritak til ${Constants.POSTADRESSE}, for at " +
+                            "vi ikkje skal trekkje skatt av barnepensjonen. Har du allereie sendt oss vedtak om " +
+                            "skattefritak, blir det ikkje trekt skatt på barnepensjonen.",
+                        English to "If you believe you are not liable to pay tax in Norway, you must apply for an " +
+                            "exemption from the Norwegian Tax Administration. To ensure we do not deduct tax from " +
+                            "your children's pension, you must send the exemption decision to ${Constants.POSTADRESSE}. " +
+                            "If you have already done so, no tax will be deducted from your children's pension. ",
+                    )
+                }
+            } orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Det trekkes 17 prosent skatt på alle utbetalinger av barnepensjon, inkludert etterbetalinger.",
+                        Nynorsk to "Det vert trekt 17 prosent i skatt på all utbetaling av barnepensjon. Også etterbetalingar.",
+                        English to "17 percent tax is deducted from all payments of children's pension, including back payments.",
                     )
                 }
             }
@@ -268,115 +290,19 @@ object BarnepensjonFellesFraser {
                         )
                     }
                 }
-                showIf(frivilligSkattetrekk.equalTo(true)) {
-                    paragraph {
-                        text(
-                            Bokmal to
-                                "Du har tidligere oppgitt frivillig skattetrekk på barnepensjonen. " +
-                                "Det samme skattetrekket vil bli brukt på etterbetalingen.",
-                            Nynorsk to
-                                "Du har tidlegare oppgitt frivillig skattetrekk på barnepensjonen. " +
-                                "Det same skattetrekket vil bli brukt på etterbetalinga.",
-                            English to
-                                "You have previously registered a voluntary tax deduction on your children’s pension. " +
-                                "The same tax deduction will be applied to the back payment. ",
-                        )
-                    }
-                } orShow {
-                    showIf(etterbetaling.etterbetalingPeriodeValg_safe.equalTo(EtterbetalingPeriodeValg.UNDER_3_MND)) {
-                        paragraph {
-                            text(
-                                Bokmal to
-                                    "Vær oppmerksom på at det ikke blir trukket skatt av etterbetalingen fordi det " +
-                                    "ikke er registrert frivillig skattetrekk.",
-                                Nynorsk to
-                                    "Ver merksam på at det ikkje blir trekt skatt av etterbetalinga, då det " +
-                                    "ikkje er registrert frivillig skattetrekk.",
-                                English to
-                                    "Please note that no tax is deducted from the back payment because no voluntary " +
-                                    "tax deduction has been registered.",
-                            )
-                        }
-                    }
-                    showIf(etterbetaling.etterbetalingPeriodeValg_safe.equalTo(EtterbetalingPeriodeValg.FRA_3_MND)) {
-                        paragraph {
-                            text(
-                                Bokmal to
-                                    "Det er ikke registrert frivillig skattetrekk for utbetaling av barnepensjonen. " +
-                                    "Vi må få beskjed innen tre uker om du ønsker at vi skal trekke skatt på etterbetalingen. " +
-                                    "Dette sikrer at skatten blir riktig og gir mindre risiko for restskatt.",
-                                Nynorsk to
-                                    "Det er ikkje registrert frivillig skattetrekk for utbetaling av barnepensjonen. " +
-                                    "Vi må få beskjed innan tre veker dersom du vil at vi skal trekkje skatt på etterbetalinga. " +
-                                    "Dette sikrar at skatten blir rett, og gir mindre risiko for restskatt.",
-                                English to
-                                    "There is no registered voluntary tax deduction on the payment of your children's pension. " +
-                                    "We must be notified within three weeks if you want us to deduct tax from the back payment. " +
-                                    "This ensures that your tax payment is correct and minimises the risk of back taxes.",
-                            )
-                        }
-                    }
-                }
-            }.orShow {
-                showIf(frivilligSkattetrekk.equalTo(true)) {
-                    paragraph {
-                        text(
-                            Bokmal to
-                                "Du har oppgitt frivillig skattetrekk på barnepensjonen. Dette videreføres " +
-                                "inntil du melder fra om endring.",
-                            Nynorsk to
-                                "Du har oppgitt frivillig skattetrekk på barnepensjonen. Dette vert vidareført inntil " +
-                                "du melde frå om endring.",
-                            English to
-                                "You have registered a voluntary tax deduction on your children’s pension. " +
-                                "This will continue until you notify us the change.",
-                        )
-                    }
-                }.orShow {
-                    paragraph {
-                        text(
-                            Bokmal to
-                                "For å unngå eventuell restskatt, anbefaler vi å legge til et frivillig skattetrekk " +
-                                "på barnepensjonen. Ta kontakt med Skatteetaten dersom du har spørsmål om skattetrekk.",
-                            Nynorsk to
-                                "Vi anbefaler deg å leggje inn eit frivillig skattetrekk på barnepensjonen for å " +
-                                "unngå restskatt. Ta kontakt med Skatteetaten dersom du har spørsmål om skattetrekk.",
-                            English to
-                                "To avoid any underpaid tax, we recommend adding a voluntary tax deduction to the " +
-                                "children's pension. Contact the Tax Administration if you have questions about tax deductions.",
-                        )
-                    }
-                }
             }
 
-            showIf(bosattUtland) {
-                paragraph {
-                    text(
-                        Bokmal to
-                            "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du har gitt beskjed om det. " +
-                            "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikke er skattemessig " +
-                            "bosatt i Norge. Les mer om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
-                        Nynorsk to
-                            "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan at du har gitt beskjed om det. " +
-                            "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig " +
-                            "busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
-                        English to
-                            "Children’s pension is taxable; however, we do not deduct tax if you do not notify us to do so. " +
-                            "The Tax Administration will respond to any queries regarding tax on pensions for those " +
-                            "who are resident in Norway for tax purposes. Read more about tax at: ${Constants.SKATTETREKK_KILDESKATT_URL}.",
-                    )
-                }
-            } orShow {
-                paragraph {
-                    text(
-                        Bokmal to
-                            "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK}.",
-                        Nynorsk to
-                            "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK}.",
-                        English to
-                            "Read more about tax deductions at ${Constants.BP_SKATTETREKK}.",
-                    )
-                }
+            // TODO: EY-4877 brevutfall frivillig skattetrekk
+
+            paragraph {
+                text(
+                    Bokmal to
+                        "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
+                    Nynorsk to
+                        "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
+                    English to
+                        "Read more about tax deductions at ${Constants.BP_SKATTETREKK} and ${Constants.BP_SKATTEETATEN}.",
+                )
             }
         }
     }
