@@ -24,11 +24,19 @@ val Letter.variables: Sequence<Variable>
         }
     }.build(this)
 
+val Letter.identifiable: Sequence<Edit.Identifiable>
+    get() = object : EditLetterSequence<Edit.Identifiable>() {
+        override suspend fun SequenceScope<Edit.Identifiable>.visitIdentifiable(element: Edit.Identifiable) {
+            yield(element)
+        }
+    }.build(this)
 
 abstract class EditLetterSequence<T> {
     fun build(letter: Letter): Sequence<T> = sequence {
         visit(letter)
     }
+
+    open suspend fun SequenceScope<T>.visitIdentifiable(element: Edit.Identifiable) = Unit
 
     open suspend fun SequenceScope<T>.visit(letter: Letter): Unit =
         letter.blocks.forEach { visit(it) }
@@ -40,15 +48,20 @@ abstract class EditLetterSequence<T> {
             is Paragraph -> visit(block)
         }
 
-    open suspend fun SequenceScope<T>.visit(block: Title1): Unit =
+    open suspend fun SequenceScope<T>.visit(block: Title1) {
+        visitIdentifiable(block)
         block.content.forEach { visit(it) }
+    }
 
-    open suspend fun SequenceScope<T>.visit(block: Paragraph): Unit =
+    open suspend fun SequenceScope<T>.visit(block: Paragraph) {
+        visitIdentifiable(block)
         block.content.forEach { visit(it) }
+    }
 
-    open suspend fun SequenceScope<T>.visit(block: Title2): Unit =
+    open suspend fun SequenceScope<T>.visit(block: Title2) {
+        visitIdentifiable(block)
         block.content.forEach { visit(it) }
-
+    }
 
     open suspend fun SequenceScope<T>.visit(content: ParagraphContent): Unit =
         when (content) {
@@ -63,29 +76,42 @@ abstract class EditLetterSequence<T> {
             is Variable -> visit(content)
         }
 
-    open suspend fun SequenceScope<T>.visit(content: Literal): Unit = Unit
-    open suspend fun SequenceScope<T>.visit(content: Variable): Unit = Unit
+    open suspend fun SequenceScope<T>.visit(content: Literal): Unit = visitIdentifiable(content)
+    open suspend fun SequenceScope<T>.visit(content: Variable): Unit = visitIdentifiable(content)
 
-    open suspend fun SequenceScope<T>.visit(itemList: ItemList): Unit =
+    open suspend fun SequenceScope<T>.visit(itemList: ItemList) {
+        visitIdentifiable(itemList)
         itemList.items.forEach { visit(it) }
+    }
 
-    open suspend fun SequenceScope<T>.visit(item: Item): Unit =
+    open suspend fun SequenceScope<T>.visit(item: Item) {
+        visitIdentifiable(item)
         item.content.forEach { visit(it) }
+    }
 
     open suspend fun SequenceScope<T>.visit(table: Table) {
+        visitIdentifiable(table)
         visit(table.header)
         table.rows.forEach { visit(it) }
     }
 
-    open suspend fun SequenceScope<T>.visit(header: Header): Unit =
+    open suspend fun SequenceScope<T>.visit(header: Header) {
+        visitIdentifiable(header)
         header.colSpec.forEach { visit(it) }
+    }
 
-    open suspend fun SequenceScope<T>.visit(colSpec: ColumnSpec): Unit =
+    open suspend fun SequenceScope<T>.visit(colSpec: ColumnSpec) {
+        visitIdentifiable(colSpec)
         visit(colSpec.headerContent)
+    }
 
-    open suspend fun SequenceScope<T>.visit(row: Row): Unit =
+    open suspend fun SequenceScope<T>.visit(row: Row) {
+        visitIdentifiable(row)
         row.cells.forEach { visit(it) }
+    }
 
-    open suspend fun SequenceScope<T>.visit(cell: Cell): Unit =
+    open suspend fun SequenceScope<T>.visit(cell: Cell) {
+        visitIdentifiable(cell)
         cell.text.forEach { visit(it) }
+    }
 }
