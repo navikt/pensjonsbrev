@@ -68,7 +68,7 @@ class Dto2ApiService(
         )
     }
 
-    private suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
+    suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
         NavAnsatt(navIdent, navansattService.hentNavansatt(navIdent.id)?.navn)
 
 }

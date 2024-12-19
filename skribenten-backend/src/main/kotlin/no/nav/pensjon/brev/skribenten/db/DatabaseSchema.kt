@@ -76,7 +76,9 @@ object BrevredigeringTable : LongIdTable() {
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
     val signaturSignerende: Column<String> = varchar("signaturSignerende", length = 50)
+    val signaturAttestant: Column<String?> = varchar("signaturAttestant", length = 50).nullable()
     val journalpostId: Column<Long?> = long("journalpostId").nullable()
+    val attestertAvNavIdent: Column<String?> = varchar("attestertAvNavIdent", length = 50).nullable()
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
@@ -100,6 +102,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var journalpostId by BrevredigeringTable.journalpostId
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
+    var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
+    var signaturAttestant by BrevredigeringTable.signaturAttestant
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =

@@ -4,6 +4,8 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -58,6 +60,32 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
                 respond(brevredigeringService.oppdaterSignatur(brevId = call.parameters.getOrFail<Long>("brevId"), signaturSignerende = signatur))
             } else {
                 call.respond(HttpStatusCode.BadRequest, "Signatur kan ikke være tom")
+            }
+        }
+
+        route("/{brevId}/attestant") {
+            put<String> { signatur ->
+                if (signatur.trim().isNotEmpty()) {
+                    respond(brevredigeringService.oppdaterSignaturAttestant(brevId = call.parameters.getOrFail<Long>("brevId"), signaturAttestant = signatur))
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "Signatur kan ikke være tom")
+                }
+            }
+            get {
+                // TODO: Er kanskje ikke nødvendig. Kommer an på hvordan `GET /sak/{saksId}/brev/{brevId}/attester` blir.
+                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val saksId = call.attributes[SakKey].saksId
+                brevredigeringService.hentSignaturAttestant(saksId = saksId, brevId = brevId)
+                    ?.onOk { lagretSignatur ->
+                        if (lagretSignatur != null) {
+                            call.respond(lagretSignatur)
+                        } else {
+                            val principal = PrincipalInContext.require()
+                            call.respond(dto2ApiService.hentNavAnsatt(principal.navIdent).navn ?: principal.fullName)
+                        }
+                    }
+                    ?.onError { error, _ -> call.respond(HttpStatusCode.InternalServerError, error) }
+                    ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
             }
         }
 
