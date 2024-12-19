@@ -245,18 +245,16 @@ object BarnepensjonFellesFraser {
                     text(
                         Bokmal to "Hvis du mener at du ikke er skattepliktig til Norge, må du søke om fritak hos " +
                             "Skatteetaten. For at vi skal unngå å trekke skatt av barnepensjonen, må du sende vedtak " +
-                            "om fritak til Nav familie- og pensjonsytelser, Postboks 6600 Etterstad, 0607 Oslo, Norway. " +
+                            "om fritak til ${Constants.POSTADRESSE}. " +
                             "Har du allerede gjort dette, vil det ikke bli trukket skatt av barnepensjonen din. ",
                         Nynorsk to "Meiner du at du ikkje er skattepliktig til Noreg, må du søkje om fritak hos " +
-                            "Skatteetaten. Du må sende kopi av vedtak om fritak til Nav familie- og pensjonsytelser, " +
-                            "Postboks 6600 Etterstad, 0607 Oslo, Norway, for at vi ikkje skal trekkje skatt av " +
-                            "barnepensjonen. Har du allereie sendt oss vedtak om skattefritak, blir det ikkje trekt " +
-                            "skatt på barnepensjonen.",
+                            "Skatteetaten. Du må sende kopi av vedtak om fritak til ${Constants.POSTADRESSE}, for at " +
+                            "vi ikkje skal trekkje skatt av barnepensjonen. Har du allereie sendt oss vedtak om " +
+                            "skattefritak, blir det ikkje trekt skatt på barnepensjonen.",
                         English to "If you believe you are not liable to pay tax in Norway, you must apply for an " +
                             "exemption from the Norwegian Tax Administration. To ensure we do not deduct tax from " +
-                            "your children's pension, you must send the exemption decision to Nav familie- og " +
-                            "pensjonsytelser, P.O. Box 6600 Etterstad, 0607 Oslo, Norway. If you have already done " +
-                            "so, no tax will be deducted from your children's pension. ",
+                            "your children's pension, you must send the exemption decision to ${Constants.POSTADRESSE}. " +
+                            "If you have already done so, no tax will be deducted from your children's pension. ",
                     )
                 }
             } orShow {
