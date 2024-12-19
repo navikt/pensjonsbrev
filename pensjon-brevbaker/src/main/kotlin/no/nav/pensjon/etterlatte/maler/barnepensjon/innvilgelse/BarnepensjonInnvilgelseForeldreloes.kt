@@ -45,6 +45,7 @@ data class BarnepensjonForeldreloesDTO(
     val erGjenoppretting: Boolean,
     val erMigrertYrkesskade: Boolean,
     val etterbetaling: BarnepensjonEtterbetaling?,
+    val frivilligSkattetrekk: Boolean, // TODO: EY-4877
     val harUtbetaling: Boolean,
     val kunNyttRegelverk: Boolean,
     val vedtattIPesys: Boolean,

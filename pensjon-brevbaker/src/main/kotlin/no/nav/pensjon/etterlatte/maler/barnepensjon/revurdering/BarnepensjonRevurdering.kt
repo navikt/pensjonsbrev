@@ -62,6 +62,7 @@ data class BarnepensjonRevurderingDTO(
     val erOmgjoering: Boolean,
     val etterbetaling: BarnepensjonEtterbetaling?,
     val feilutbetaling: FeilutbetalingType,
+    val frivilligSkattetrekk: Boolean, // TODO: EY-4877
     val harFlereUtbetalingsperioder: Boolean,
     val harUtbetaling: Boolean,
     val innholdForhaandsvarsel: List<Element>,

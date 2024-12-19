@@ -28,6 +28,7 @@ data class BarnepensjonRevurderingRedigerbartUtfallDTO(
     val feilutbetaling: FeilutbetalingType,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
+    val frivilligSkattetrekk: Boolean, // TODO: EY-4877
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
