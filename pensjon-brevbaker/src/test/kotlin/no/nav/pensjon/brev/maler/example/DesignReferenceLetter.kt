@@ -25,14 +25,39 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
     ) {
         title {
             text(
-                Bokmal to "Du har fått innvilget søknad om pensjon pensjon pensjon pensjon pensjon pensjon pensjon pensjon pensjon pensjon pensjon"
+                Bokmal to "Brevtittel"
             )
         }
 
         outline {
+            repeat(100){
+                title1 {
+                    text(
+                        Bokmal to "Overskrift",
+                    )
+                }
+                paragraph {
+                    repeat((Math.random()*4).toInt() + 1) {
+                        text(
+                            Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. "
+                        )
+                    }
+
+                    list {
+                        repeat((Math.random()*9).toInt() + 1){
+                            item {
+                                text(
+                                    Bokmal to "Nummerert list",
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+/*
             // section title
             title1 {
-                text(Bokmal to "Hvorfor skriver vi til deg?")
+                text(Bokmal to "Overskrift")
             }
 
             paragraph {
@@ -40,13 +65,21 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                     Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo."
                 )
             }
-
-            repeat(9) {
-                paragraph {
-                    text(Bokmal to "BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA ")
-                }
+            title1 {
+                text(
+                    Bokmal to "Underoverskrift nivå en",
+                )
             }
-
+            paragraph {
+                text(
+                    Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo.",
+                )
+            }
             title1 {
                 text(Bokmal to "Utbetalingsoversikt")
             }
@@ -94,7 +127,6 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
             paragraph {
                 text(
                     Bokmal to "Du har fått innvilget pensjon.",
-                    FontType.BOLD
                 )
 
                 text(
@@ -190,6 +222,7 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
             title2 {
                 text(Bokmal to "Samme innhold med annen størrelse")
             }
+*/
 
         }
     }

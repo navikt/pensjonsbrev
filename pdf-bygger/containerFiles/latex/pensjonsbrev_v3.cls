@@ -41,35 +41,37 @@
 
 \setsansfont{Source Sans 3}
 \setmainfont{Source Sans 3}
-\defaultfontfeatures{LetterSpace=1.5}
 \addfontfeature{VerticalPosition = Inferior }
 \newfontface{\primaryFont}[
-    Color=262626,
+    Color=000000,
     BoldFont={Source Sans 3 Bold},
     ItalicFont={Source Sans 3 Italic},
     BoldItalicFont={Source Sans 3 Bold Italic}]{Source Sans 3}
 
 % Global font commands
-\newcommand{\standardtextsize}{11pt}        % size
-\newcommand{\standardtextspacing}{18.5pt}   % space between normal lines
+\newcommand{\standardtextsize}{11pt}
+\newcommand{\standardtextspacing}{16pt}
+\newcommand{\standardtext}{\primaryFont \fontsize{\standardtextsize}{\standardtextspacing} \mdseries \selectfont}
 
 % main title
-\newcommand{\titletextsize}{16pt}           % size
-\newcommand{\titletextspacing}{26pt}        % space under
+\newcommand{\titletextsize}{16pt}
+\newcommand{\titletextspacing}{20pt}
+\newcommand{\lettertitle}{\primaryFont \fontsize{\titletextsize}{\titletextspacing} \bfseries \selectfont}
 
 %title one
 
-\newcommand{\titleonetextsize}{13pt}        % size
-\newcommand{\titleonetextspacing}{10pt}     % space under
+\newcommand{\titleonetextsize}{13pt}
+\newcommand{\titleonetextspacing}{10pt}
+\newcommand{\titleone}{\primaryFont \fontsize{\titleonetextsize}{\titleonetextspacing} \bfseries \selectfont}
 
 %title two
-\newcommand{\titletwotextsize}{12pt}        % size
-\newcommand{\titletwotextspacing}{10pt}     % space under
-%\newcommand{\titleone}{\primaryFont \fontsize{\titleonetextsize}{\titleonetextspacing} \selectfont}
+\newcommand{\titletwotextsize}{12pt}
+\newcommand{\titletwotextspacing}{10pt}
+\newcommand{\titletwo}{\primaryFont \fontsize{\titletwotextsize}{\titletwotextspacing} \bfseries \selectfont}
 
 %paragraph spacing
 \setlength{\parindent}{0em}                 % indentations before first line in paragraph
-\setlength{\parskip}{1em}                   % space between paragraphs
+\setlength{\parskip}{\standardtextsize}                   % space between paragraphs
 
 %page numbering
 \newcommand{\pagenumbertext}[1]{{\primaryFont \fontsize{10pt}{10pt} \selectfont #1}}
@@ -79,7 +81,8 @@
 \setlength{\listtopsep}{0pt} % separation between top of list and content
 % removes whitespace between items, removes parskip whitespace over and under the list
 % adds custom space to margin and after list
-\setlist[itemize]{noitemsep, before=\vspace{-5pt}, topsep=\dimexpr(-\parskip), leftmargin=15pt, after=\vspace{10pt}}
+                            % penalty for breaking up an itemlist at the top
+\setlist[itemize]{noitemsep, beginpenalty=3000, topsep=\dimexpr(-\parskip), leftmargin=15pt, after=\addvspace{10pt}}
 
 
 % paragraph formatting
@@ -93,7 +96,7 @@
 \clubpenalty=9000                           % penalty for a broken page, with a single line of a paragraph remaining on the bottom of the preceding page.
 \widowpenalty=9000                          % penalty for a broken page, with a single line of a paragraph (called "widow") remaining on the top of the succeeding page.
 
-\@itempenalty=115                           % penalty for breaking up an itemlist
+\@itempenalty=1000                          % penalty for breaking up an itemlist
 
 
 % page text area formatting
@@ -146,7 +149,7 @@
 %             Case details
 %----------------------------------------
 \NewTblrEnviron{saksinfotable}
-\SetTblrInner[saksinfotable]{colspec={l@{\hskip 8mm}X}}
+\SetTblrInner[saksinfotable]{colspec={l@{\hskip 16mm}X}}
 \SetTblrInner[saksinfotable]{leftsep=0pt}
 \SetTblrInner[saksinfotable]{rightsep=0pt}
 \SetTblrInner[saksinfotable]{rowsep=0pt}
@@ -155,7 +158,7 @@
 
 \newcommand{\sakspart}{
     \setlength{\tabcolsep}{12pt}
-    \primaryFont \fontsize{\standardtextsize}{\standardtextspacing} \selectfont
+    \standardtext
     \saksinfomottaker
 }
 

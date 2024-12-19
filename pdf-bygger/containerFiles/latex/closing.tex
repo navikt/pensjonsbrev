@@ -6,6 +6,7 @@
 \newcommand{\closing}{
     \nopagebreak
     \begin{minipage}{\textwidth}
+        \standardtext
         \sloppy % no word-breaking
         \raggedright % no word spacing
         \raggedbottom % no line stretching to fit page
@@ -45,7 +46,6 @@
 
 \newcommand{\doublesignature}[2]{
     \setlength{\tabcolsep}{12pt}
-    \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
     \begin{signaturestable}{colspec={X[l]X[l]}, column{1} = {rightsep = 10mm},column{2} = {leftsep = 10mm}}
         #1 & #2 \\
         \feltclosingsaksbehandlersuffix & \feltclosingsaksbehandlersuffix \\

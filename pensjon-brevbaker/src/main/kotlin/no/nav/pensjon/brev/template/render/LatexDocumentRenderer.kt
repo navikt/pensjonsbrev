@@ -219,12 +219,12 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         list: ParagraphContent.ItemList
     ) {
         if (list.items.isNotEmpty()) {
-            appenCmd("begin", "itemize")
+            appenCmd("begin", "letteritemize")
             list.items.forEach { item ->
                 append("""\item """, escape = false)
                 renderText(item.content)
             }
-            appenCmd("end", "itemize")
+            appenCmd("end", "letteritemize")
         }
     }
 

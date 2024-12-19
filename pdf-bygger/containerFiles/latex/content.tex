@@ -2,29 +2,56 @@
 %               Content
 %----------------------------------------
 
-\newcommand{\lettersectiontitle}[3]{{
+% when /vspace and /addvspace are next to each other, the max value is used.
+% we should then allways follow the same pattern for adding space under
+% and over such that /addvspace is over and /vpsace is under each element.
+% only theese two commands should be used for spacing as it disappears on page breaks.
+
+\newboolean{previouselementwastitle}
+\setboolean{previouselementwastitle}{false}
+
+\newlength{\spacebetweentitleandnontitle}
+\setlength{\spacebetweentitleandnontitle}{\dimexpr(26pt-\standardtextsize) plus 20pt minus 10pt}
+\newcommand{\lettersectiontitle}[1]{
     \pagebreak[3] %strongly encourage page break before section title
-    \primaryFont \fontsize{#2}{0pt}
-    \selectfont
-    \textbf{#1}
-    \nopagebreak %absolutely prevent page break between title and following content
-    \vspace[#3] % newline with custom spacing.
-    \nopagebreak %absolutely prevent page break between title and following content
-}}
+    % add more space between previous non-title element accounting for it's own space )
+    \ifthenelse{\boolean{previouselementwastitle}}{}{\addvspace{\spacebetweentitleandnontitle}}
+    \setboolean{previouselementwastitle}{true}
+    #1
+    \nopagebreak
+    \\[0pt]         %TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent
+    \nopagebreak
+    \vspace{6pt}
+    \nopagebreak
+}
 
 %Letter section title
-\newcommand{\lettersectiontitleone}[1]{{
-    \lettersectiontitle{#1}{\titleonetextsize}{\titleonetextspacing}
-}}
+\newcommand{\lettersectiontitleone}[1]{
+    \lettersectiontitle{\titleone #1}
+}
 
-\newcommand{\lettersectiontitletwo}[1]{{
-    \lettersectiontitle{#1}{\titletwotextsize}{\titletwotextspacing}
-}}
+\newcommand{\lettersectiontitletwo}[1]{
+    \lettersectiontitle{\titletwo #1}
+}
 
 %Normal paragraphs
-\newcommand{\templateparagraph}[1] {#1 \par}
+\newcommand{\templateparagraph}[1] {
+    \standardtext
+    #1
+    \setboolean{previouselementwastitle}{false}
+    \par
+}
 
-
+%----------------------------------------
+%              Item list
+%----------------------------------------
+\newenvironment{letteritemize}[1]{
+    \begin{itemize}
+        #1
+    } {
+    \end{itemize}
+    \setboolean{previouselementwastitle}{false}
+}
 %----------------------------------------
 %                Forms
 %----------------------------------------
@@ -42,6 +69,7 @@
     \begin{checklist}
     } {
     \end{checklist}
+    \setboolean{previouselementwastitle}{false}
 }
 
 %----------------------------------------
@@ -49,7 +77,6 @@
 %----------------------------------------
 %default table settings
 
-\newcommand{\tableHeaderText}[1]{\allowbreak{\primaryFont \fontsize{\titleonetextsize}{\titleonetextspacing} \selectfont \textbf{#1}}} %footer font command
 \definecolor{columnheadercolor}{HTML}{E6F0FF}
 \definecolor{linecolor}{HTML}{E5E5E5}
 \definecolor{row1color}{HTML}{F7F7F7}
@@ -58,14 +85,6 @@
 \DefTblrTemplate{contfoot-text}{default}{\felttablenextpagecontinuation\hfill\space}
 \DefTblrTemplate{caption}{default}{} % remove built in header
 \DefTblrTemplate{capcont}{default}{\felttablecontinuedfrompreviouspage}
-
-
-\newfontface{\tabletext}[
-    Color=000000,
-    BoldFont={Source Sans 3 Bold},
-    ItalicFont={Source Sans 3 Italic},
-    BoldItalicFont={Source Sans 3 Bold Italic}]{Source Sans 3}
-
 
 \newenvironment{letterTable}[1]{
     \setlength{\parskip}{0pt}
@@ -84,5 +103,6 @@
         row{1-1}={columnheadercolor,rowsep=3.2mm}
     }
 }{
-    \end{longtblr}\setlength{\parskip}{1em}
+    \end{longtblr}
+    \setboolean{previouselementwastitle}{false}
 }

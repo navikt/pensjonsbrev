@@ -7,7 +7,7 @@
 \newcommand{\firstpage}{
     \thispagestyle{firstpage} %set pagestyle for this page
     \pagestyle{normalpage} % set default pagestyle
-    \primaryFont\fontsize{\standardtextsize}{\standardtextspacing}\selectfont
+    \standardtext
 }
 
 %----------------------------------------
@@ -15,7 +15,7 @@
 %----------------------------------------
 
 \newcommand{\letterdate}{
-    \primaryFont\fontsize{\standardtextsize}{\standardtextspacing}\selectfont\hfill~\feltdato \newline
+    \standardtext\hfill~\feltdato \newline
 }
 
 %----------------------------------------
@@ -24,14 +24,11 @@
 
 %Title text element
 \newcommand{\titleText}[1]{
-    \textbf{
-        \primaryFont
-        \fontsize{\titletextsize}{0pt}
-        \selectfont
-        \\[0pt] % used to remove title indent
-        #1
-        \\[\titletextspacing]
-    }
+    \lettertitle
+    \noindent % used to remove title indent
+    #1
+    \\[0pt]
+    \vspace{20pt}
 }
 
 % main letter title
