@@ -29,6 +29,7 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
         innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = lagBeregning(),
         etterbetaling = lagEtterbetaling(),
+        frivilligSkattetrekk = true,
         erUnder18Aar = false,
         erBosattUtlandet = true,
     )
