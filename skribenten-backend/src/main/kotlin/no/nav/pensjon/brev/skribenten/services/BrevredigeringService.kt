@@ -8,11 +8,11 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
-import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.db.Mottaker
 import no.nav.pensjon.brev.skribenten.db.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -58,7 +58,6 @@ sealed class BrevredigeringException(message: String) : Exception(message) {
     class ArkivertBrevException(val brevId: Long, val journalpostId: Long) : BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
     class BrevIkkeKlartTilSendingException(override val message: String) : BrevredigeringException(message)
     class BrevLaastForRedigeringException(override val message: String) : BrevredigeringException(message)
-    class BrevFinnesIkkeException(override val message: String) : BrevredigeringException(message)
     class HarIkkeAttestantrolleException(override val message: String) : BrevredigeringException(message)
     class KanIkkeAttestereEgetBrevException(override val message: String) : BrevredigeringException(message)
     class KanIkkeAttestereException(override val message: String) : BrevredigeringException(message)
@@ -259,55 +258,42 @@ class BrevredigeringService(
         }
 
         return brevredigering?.let {
-            val currentHash = brevredigering.redigertBrevHash
-
-            if (document != null && document.redigertBrevHash == currentHash) {
+            if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash) {
                 Ok(document.pdf)
             } else {
-                opprettPdf(brevredigering, currentHash)
+                opprettPdf(brevredigering)
             }
         }
     }
 
-    suspend fun attester(saksId: Long, brevId: Long) {
+    suspend fun attester(saksId: Long, brevId: Long): ServiceResult<ByteArray>? {
         if (!Features.attestant.isEnabled()) {
             logger.debug("Attestering er skrudd av")
-            return
+            return hentEllerOpprettPdf(saksId, brevId)
         }
-        val brev = transaction { Brevredigering.findByIdAndSaksId(id = brevId, saksId = saksId)?.toDto() }
-            ?: throw BrevredigeringException.BrevFinnesIkkeException("Brev $brevId finnes ikke")
-        if (brev.info.attestertAv == null) {
-            val userPrincipal = PrincipalInContext.require()
-            if (!userPrincipal.isInGroup(ADGroups.attestant)) {
-                throw BrevredigeringException.HarIkkeAttestantrolleException(
-                    "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${brev.info.id}",
-                )
-            }
-            if (userPrincipal.navIdent == brev.info.opprettetAv) {
-                throw BrevredigeringException.KanIkkeAttestereEgetBrevException(
-                    "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${brev.info.id}",
-                )
-            }
-            validerErFerdigRedigert(brev)
-            hentBrevMedReservasjon(brevId = brev.info.id, saksId = brev.info.saksId) {
-                val signaturAttestant = brev.info.signaturAttestant
-                    ?: userPrincipal.navIdent.let { navansattService.hentNavansatt(it.id)?.navn }
-                rendreBrev(
-                    brev = brevDto,
-                    signaturAttestant = signaturAttestant
-                ).map { rendretBrev ->
-                    transaction {
-                        brevDb.apply {
-                            redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
-                            this.attestertAvNavIdent = userPrincipal.navIdent
-                            this.signaturAttestant = signaturAttestant
-                        }.toDto()
-                    }
+
+        val userPrincipal = PrincipalInContext.require()
+
+        return hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
+            validerErFerdigRedigert(brevDto)
+            validerKanAttestere(brevDto, userPrincipal)
+
+            val signaturAttestant = brevDto.info.signaturAttestant
+                ?: userPrincipal.navIdent.let { navansattService.hentNavansatt(it.id)?.navn }
+                ?: userPrincipal.fullName
+
+            rendreBrev(
+                brev = brevDto,
+                signaturAttestant = signaturAttestant
+            ).map { rendretBrev ->
+                transaction {
+                    brevDb.apply {
+                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
+                        this.attestertAvNavIdent = userPrincipal.navIdent
+                        this.signaturAttestant = signaturAttestant
+                    }.toDto()
                 }
-            }
-                ?.onError { error, _ -> throw BrevredigeringException.KanIkkeAttestereException(error) }
-        } else {
-            throw BrevredigeringException.AlleredeAttestertException("Brev ${brev.info.id} er allerede attestert")
+            }.then { opprettPdf(it) }
         }
     }
 
@@ -331,27 +317,25 @@ class BrevredigeringService(
                 )
             } else {
                 validerVedtaksbrevAttestert(brev, template.metadata.brevtype)
-                hentEllerOpprettPdf(brev.info.saksId, brev.info.id)?.then {
-                    penService.sendbrev(
-                        sendRedigerbartBrevRequest = Pen.SendRedigerbartBrevRequest(
-                            dokumentDato = document.dokumentDato,
-                            saksId = brev.info.saksId,
-                            enhetId = brev.info.avsenderEnhetId,
-                            templateDescription = template,
-                            brevkode = brev.info.brevkode,
-                            pdf = it,
-                            eksternReferanseId = "skribenten:${brev.info.id}",
-                            mottaker = brev.info.mottaker?.toPen(),
-                        ),
-                        distribuer = brev.info.distribusjonstype == Distribusjonstype.SENTRALPRINT,
-                    ).onOk {
-                        transaction {
-                            if (it.journalpostId != null) {
-                                if (it.error == null) {
-                                    Brevredigering[brevId].delete()
-                                } else {
-                                    Brevredigering[brevId].journalpostId = it.journalpostId
-                                }
+                penService.sendbrev(
+                    sendRedigerbartBrevRequest = Pen.SendRedigerbartBrevRequest(
+                        dokumentDato = document.dokumentDato,
+                        saksId = brev.info.saksId,
+                        enhetId = brev.info.avsenderEnhetId,
+                        templateDescription = template,
+                        brevkode = brev.info.brevkode,
+                        pdf = document.pdf,
+                        eksternReferanseId = "skribenten:${brev.info.id}",
+                        mottaker = brev.info.mottaker?.toPen(),
+                    ),
+                    distribuer = brev.info.distribusjonstype == Distribusjonstype.SENTRALPRINT,
+                ).onOk {
+                    transaction {
+                        if (it.journalpostId != null) {
+                            if (it.error == null) {
+                                Brevredigering[brevId].delete()
+                            } else {
+                                Brevredigering[brevId].journalpostId = it.journalpostId
                             }
                         }
                     }
@@ -427,7 +411,7 @@ class BrevredigeringService(
         brev: Dto.Brevredigering,
         saksbehandlerValg: SaksbehandlerValg? = null,
         signaturSignerende: String? = null,
-        signaturAttestant: String? = null
+        signaturAttestant: String? = null,
     ) =
         rendreBrev(
             brevkode = brev.info.brevkode,
@@ -477,7 +461,7 @@ class BrevredigeringService(
         }
     }
 
-    private suspend fun opprettPdf(brevredigering: Dto.Brevredigering, redigertBrevHash: EditLetterHash): ServiceResult<ByteArray> {
+    private suspend fun opprettPdf(brevredigering: Dto.Brevredigering): ServiceResult<ByteArray> {
         return penService.hentPesysBrevdata(
             saksId = brevredigering.info.saksId,
             vedtaksId = brevredigering.info.vedtaksId,
@@ -499,7 +483,7 @@ class BrevredigeringService(
                         this.brevredigering = Brevredigering[brevredigering.info.id]
                         pdf = ExposedBlob(it.file)
                         dokumentDato = pesysData.felles.dokumentDato
-                        this.redigertBrevHash = redigertBrevHash
+                        this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
                     Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf?.bytes
                         ?: Document.new(update).pdf.bytes
@@ -510,6 +494,22 @@ class BrevredigeringService(
 
     private fun validerErFerdigRedigert(brev: Dto.Brevredigering): Boolean =
         brev.redigertBrev.klarTilSending() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
+
+    private fun validerKanAttestere(brev: Dto.Brevredigering, userPrincipal: UserPrincipal) {
+        if (!userPrincipal.isInGroup(ADGroups.attestant)) {
+            throw BrevredigeringException.HarIkkeAttestantrolleException(
+                "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${brev.info.id}",
+            )
+        }
+        if (userPrincipal.navIdent == brev.info.opprettetAv) {
+            throw BrevredigeringException.KanIkkeAttestereEgetBrevException(
+                "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${brev.info.id}",
+            )
+        }
+        if (brev.info.attestertAv != null && brev.info.attestertAv != userPrincipal.navIdent) {
+            throw BrevredigeringException.AlleredeAttestertException("Brev ${brev.info.id} er allerede attestert av ${brev.info.attestertAv}")
+        }
+    }
 
     private fun Mottaker.oppdater(mottaker: Dto.Mottaker?) =
         if (mottaker != null) {
@@ -524,7 +524,7 @@ class BrevredigeringService(
             landkode = mottaker.landkode
         } else delete()
 
-    suspend fun hentSignaturAttestant(saksId: Long, brevId: Long) =
+    suspend fun hentSignaturAttestant(saksId: Long, brevId: Long): ServiceResult<String?>? =
         hentBrev(saksId = saksId, brevId = brevId)?.map {
             it.info.signaturAttestant
         }
