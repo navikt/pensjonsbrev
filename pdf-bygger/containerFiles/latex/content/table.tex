@@ -15,17 +15,17 @@
     \begin{longtblr}[presep={6mm},postsep={3.5mm},footsep={3.5mm}, headsep={3.5mm}]
     {
         colspec=#1,
-        colsep = 2.5 mm,
+        colsep = 7pt,
         stretch = 0 mm, %Don't add extra space under each cell to fit the table exactly to page.
         hspan=minimal, %wrap instead of widening table over limit
-        hlines={1.3pt,linecolor},
-        row{odd}={row1color,rowsep=5pt},
-        row{even}={row2color,rowsep=5pt},
+        hlines={1pt,linecolor},
+        row{odd}={row1color,rowsep=7pt},
+        row{even}={row2color,rowsep=7pt},
         width=\textwidth,
         rowhead=1,
         hline{1}={0pt,linecolor}, %remove first horizontal line over the column header
         hline{2}={headersepcolor}, %remove first horizontal line over the column header
-        row{1-1}={columnheadercolor,rowsep=9pt}
+        row{1-1}={columnheadercolor,rowsep=11pt}
     }
 }{
     \end{longtblr}
