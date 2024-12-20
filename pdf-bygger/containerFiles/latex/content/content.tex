@@ -1,0 +1,14 @@
+%----------------------------------------
+%               Content
+%----------------------------------------
+
+% used to track whether the title1/title2 should add extra space above. Needs to be declared before other content
+\newboolean{previouselementwastitle}
+%starts with true because of main title
+\setboolean{previouselementwastitle}{true}
+
+\input{titles}
+\input{paragraph}
+\input{itemList}
+\input{forms}
+\input{table}

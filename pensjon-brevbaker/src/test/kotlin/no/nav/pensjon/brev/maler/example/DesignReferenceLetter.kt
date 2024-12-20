@@ -30,6 +30,7 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
         }
 
         outline {
+/*
             repeat(100){
                 title1 {
                     text(
@@ -54,7 +55,7 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                     }
                 }
             }
-/*
+*/
             // section title
             title1 {
                 text(Bokmal to "Overskrift")
@@ -222,7 +223,6 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
             title2 {
                 text(Bokmal to "Samme innhold med annen størrelse")
             }
-*/
 
         }
     }

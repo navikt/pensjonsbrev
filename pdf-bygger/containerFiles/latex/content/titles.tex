@@ -1,0 +1,31 @@
+% used for title1 and title2
+
+% when /vspace and /addvspace are next to each other, the max value is used.
+% we should then allways follow the same pattern for adding space under
+% and over such that /addvspace is over and /vpsace is under each element.
+% only theese two commands should be used for spacing as it disappears on page breaks.
+
+\newlength{\spacebetweentitleandnontitle}
+\setlength{\spacebetweentitleandnontitle}{\dimexpr(18pt)} %plus 15pt minus 10pt
+\newcommand{\lettersectiontitle}[1]{
+    \pagebreak[3] %strongly encourage page break before section title
+    % add more space between previous non-title element accounting for it's own space )
+    \ifthenelse{\boolean{previouselementwastitle}}{}{\addvspace{\spacebetweentitleandnontitle}}
+    \setboolean{previouselementwastitle}{true}
+    #1
+    \nopagebreak
+    \\[0pt]         %TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent
+    \nopagebreak
+    \addvspace{6pt}
+    \nopagebreak
+}
+
+% Title 1
+\newcommand{\lettersectiontitleone}[1]{
+    \lettersectiontitle{\titleone #1}
+}
+
+% Title 2
+\newcommand{\lettersectiontitletwo}[1]{
+    \lettersectiontitle{\titletwo #1}
+}

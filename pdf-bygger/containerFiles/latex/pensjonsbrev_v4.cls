@@ -1,13 +1,14 @@
-%! Class = pensjonsbrev_v3
+%! Class = pensjonsbrev_v4
 %! Author = Håkon Heggholmen
-%! Date = 31.01.2022
+%! Date = 20.12.2024 %TODO
 
 %----------------------------------------
 %            Document class
 %----------------------------------------
 
 %! suppress = PackageNameDoesNotMatchFileName
-\ProvidesPackage{pensjonsbrev_v3}[2022/01/31 Team pensjonsbrev's Document Class]
+                                  %TODO
+\ProvidesPackage{pensjonsbrev_v4}[2024/12/20 Team pensjonsbrev's Document Class]
 \NeedsTeXFormat{LaTeX2e}
 \LoadClass[a4paper]{article}
 
@@ -19,7 +20,6 @@
 \usepackage{fancyhdr}   % custom page styles
 % tables and colors
 \usepackage{xcolor}
-%\usepackage{titlesec}
 \usepackage{ninecolors}
 \usepackage{tabularray} % better tables(tblr, longtblr)
 %\usepackage{layout} % page layout debug package
@@ -29,16 +29,13 @@
 ]{textpos} %first page absolute posistioned elements
 %\usepackage{showframe} %show frames of page geometry
 \input{params}  % Must be done before pdfx is imported
-
 \usepackage[a-3b]{pdfx}       % create pdf/A compliant pdf's
 
 %----------------------------------------
 %                Global
 %----------------------------------------
 
-
 %fonts
-
 \setsansfont{Source Sans 3}
 \setmainfont{Source Sans 3}
 \addfontfeature{VerticalPosition = Inferior }
@@ -58,47 +55,36 @@
 \newcommand{\titletextspacing}{20pt}
 \newcommand{\lettertitle}{\primaryFont \fontsize{\titletextsize}{\titletextspacing} \bfseries \selectfont}
 
-%title one
-
+% title 1
+\newcommand{\titleone}{\primaryFont \fontsize{\titleonetextsize}{\titleonetextspacing} \bfseries \selectfont}
 \newcommand{\titleonetextsize}{13pt}
 \newcommand{\titleonetextspacing}{10pt}
-\newcommand{\titleone}{\primaryFont \fontsize{\titleonetextsize}{\titleonetextspacing} \bfseries \selectfont}
 
-%title two
+% title 2
+\newcommand{\titletwo}{\primaryFont \fontsize{\titletwotextsize}{\titletwotextspacing} \bfseries \selectfont}
 \newcommand{\titletwotextsize}{12pt}
 \newcommand{\titletwotextspacing}{10pt}
-\newcommand{\titletwo}{\primaryFont \fontsize{\titletwotextsize}{\titletwotextspacing} \bfseries \selectfont}
 
-%paragraph spacing
+% paragraph spacing
 \setlength{\parindent}{0em}                 % indentations before first line in paragraph
-\setlength{\parskip}{\standardtextsize}                   % space between paragraphs
+\setlength{\parskip}{\standardtextsize}     % space between paragraphs
 
-%page numbering
-\newcommand{\pagenumbertext}[1]{{\primaryFont \fontsize{10pt}{10pt} \selectfont #1}}
-
-%itemize / lists spacing
-\newlength{\listtopsep}
-\setlength{\listtopsep}{0pt} % separation between top of list and content
-% removes whitespace between items, removes parskip whitespace over and under the list
-% adds custom space to margin and after list
-                            % penalty for breaking up an itemlist at the top
-\setlist[itemize]{noitemsep, beginpenalty=3000, topsep=\dimexpr(-\parskip), leftmargin=15pt, after=\addvspace{10pt}}
-
-
-% paragraph formatting
+% general paragraph formatting
 \sloppy                                     % no word-breaking
 \raggedright                                % no word spacing
 \raggedbottom                               % no line stretching to fit page
 \frenchspacing                              % no double space after ended sentence
 
-% Page break penalties changing this section requires extensive testing, so it's not recommended.
+% Page break penalties changing this section requires extensive testing after changes.
 \interlinepenalty=1700                      % penalty added between each line of a paragraph.
 \clubpenalty=9000                           % penalty for a broken page, with a single line of a paragraph remaining on the bottom of the preceding page.
 \widowpenalty=9000                          % penalty for a broken page, with a single line of a paragraph (called "widow") remaining on the top of the succeeding page.
-
 \@itempenalty=1000                          % penalty for breaking up an itemlist
 
 
+%----------------------------------------
+%             Margins
+%----------------------------------------
 % page text area formatting
 % DO NOT REPLACE WITH GEOMETRY PACKAGE. Geometry will use a hook for end of page, which is unstable and might cause page numbering bugs.
 \newlength{\lettermargin}
@@ -118,12 +104,6 @@
 \setlength{\topmargin}{0mm}
 \setlength{\textheight}{\dimexpr(\paperheight-\lettermargin-\lettermarginbottom)} % standard text height
 
-\fancypagestyle{normalpage}{
-    \renewcommand{\headrulewidth}{0pt}%
-    \fancyhf{}%
-    \fancyfoot[C]{\letterpagenumber}
-}
-
 %----------------------------------------
 %                 Logo
 %----------------------------------------
@@ -131,39 +111,10 @@
     \includegraphics[height=16pt,page=1]{nav-logo}
 }
 
-%----------------------------------------
-%               Page number
-%----------------------------------------
-\newlength{\pagenumbertoppadding}
-\setlength{\pagenumbertoppadding}{16pt} % space between bottom of page content and page number
-\newlength{\pagenumberyposcalc} % calculate page number position to not collide with content.
-\setlength{\pagenumberyposcalc}{\dimexpr(\paperheight-\lettermarginbottom+\pagenumbertoppadding)} % bottom margin.
-\newcommand{\currentSectionName}{mainletter}                                                      % name of the current section of the letter. Used for lastpage label at the end of this section
-\newcommand{\letterpagenumber}{                                                                   % general page number formatting
-    \begin{textblock*}{\textwidth}(\lettermargin,\pagenumberyposcalc)
-        \pagenumbertext{\feltsidesaksnummerprefix\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
-    \end{textblock*}
-}
-
-%----------------------------------------
-%             Case details
-%----------------------------------------
-\NewTblrEnviron{saksinfotable}
-\SetTblrInner[saksinfotable]{colspec={l@{\hskip 16mm}X}}
-\SetTblrInner[saksinfotable]{leftsep=0pt}
-\SetTblrInner[saksinfotable]{rightsep=0pt}
-\SetTblrInner[saksinfotable]{rowsep=0pt}
-\SetTblrOuter[saksinfotable]{postsep=0pt}
-\SetTblrOuter[saksinfotable]{footsep=0pt}
-
-\newcommand{\sakspart}{
-    \setlength{\tabcolsep}{12pt}
-    \standardtext
-    \saksinfomottaker
-}
-
-
-\input{content}     % Code related to the letter content, not the page layout
-\input{attachment}  % Elements related to the letter content, not the page layout
+% order matters
+\input{pagenumber} % needs to load before attachment
+\input{saksinfotable} % needs to load before attachment
+\input{content/content}
+\input{attachment}
 \input{firstpage}
 \input{closing}

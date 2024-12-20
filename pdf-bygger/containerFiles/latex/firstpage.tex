@@ -28,16 +28,16 @@
     \noindent % used to remove title indent
     #1
     \\[0pt]
-    \vspace{20pt}
 }
 
 % main letter title
 \newcommand{\tittel}[1]{
     \logo
-    \\[48pt]
-    \sakspart
+    \\[53pt]
+    \sakspart{\saksinfomottaker}
     \\[28pt]
     \titleText{#1}
+    \addvspace{20pt}
 }
 %\setlength{\footskip}{6pt} % space between letter content.tex and footer
 \newcommand{\footerText}[1]{{\primaryFont \fontsize{8pt}{8pt} \selectfont #1}} %footer font command

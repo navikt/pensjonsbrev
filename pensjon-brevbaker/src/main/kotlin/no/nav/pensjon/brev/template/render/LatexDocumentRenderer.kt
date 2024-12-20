@@ -65,7 +65,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     }
 
     private fun LatexAppendable.renderLetterTemplate(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>) {
-        appendln("""\documentclass{pensjonsbrev_v3}""", escape = false)
+        appendln("""\documentclass{pensjonsbrev_v4}""", escape = false)
         appenCmd("begin", "document")
         appenCmd("firstpage")
         appenCmd("tittel", letter.title)
@@ -117,7 +117,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         appendNewCmd("saksinfomottaker") {
             appenCmd("begin", "saksinfotable", "")
             verge?.let {
-                appendln("""\feltvergenavnprefix & \feltvergenavn \\""", escape = false)
+                appendln("""\felt${LanguageSetting.Sakspart.vergenavn} & \feltvergenavn \\""", escape = false)
                 appendln(
                     """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""",
                     escape = false
@@ -169,7 +169,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     private fun LatexAppendable.renderAttachment(attachment: LetterMarkup.Attachment) {
         appenCmd("startvedlegg") {
             arg { renderText(attachment.title) }
-            arg { if (attachment.includeSakspart) appenCmd("sakspart") }
+            arg { if (attachment.includeSakspart) append("includesakinfo") }
         }
         renderBlocks(attachment.blocks)
         appenCmd("sluttvedlegg")

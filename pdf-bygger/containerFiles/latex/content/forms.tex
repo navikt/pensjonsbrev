@@ -1,0 +1,19 @@
+% used for formChoice() element
+
+\newcommand{\formvspace}[1][true]{\vspace{0.5cm}}
+
+\newcommand{\formText}[1]{
+    \par #1
+}
+
+% formChoice
+% TODO can i do this with just tex and fewer packages?
+\newlist{checklist}{itemize}{1}
+\setlist[checklist]{label=$\square$}
+\newenvironment{formChoice}[1]{
+    \par #1
+    \begin{checklist}
+    } {
+    \end{checklist}
+    \setboolean{previouselementwastitle}{false}
+}

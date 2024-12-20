@@ -5,6 +5,14 @@
 % setup a counter to uniquely identify attachments (used for labeling the last page of attachments)
 \newcounter{attachments}
 
+\newcommand{\saksinfovedlegg}{
+    \begin{saksinfotable}{}
+        \feltvedlegggjeldernavnprefix & \feltnavnbruker \\
+        \feltfoedselsnummerprefix & \feltfoedselsnummerbruker \\
+        \feltsaksnummerprefix & \feltsaksnummer \hfill \letterdate\\
+    \end{saksinfotable}
+}
+
 % produces a label for the current attachment
 \newcommand{\startvedlegg}[2]{
     % make sure that the attachment starts on an even page (for printing)
@@ -17,10 +25,20 @@
     \stepcounter{attachments}
     % increase the attachment counter to identify this attachment
     \logo
-    \vspace*{48pt}
-    #2
-    \titleText{#1}
+    \ifthenelse{\equal{#2}{includesakinfo}}{
+        \addvspace{43pt}
+        \sakspart{\saksinfovedlegg}
+        \addvspace{19pt}
+        \titleText{#1}
+    }{
+        \addvspace{33pt}
+        \titleText{#1}
+    }
+    \addvspace{30pt}
 }
+%     \\[53pt]
+      %\sakspart
+      %\\[28pt]
 
 \newcommand{\sluttvedlegg}{
 % create a label on the last page of this attachment (used by \pagemark for attachments)

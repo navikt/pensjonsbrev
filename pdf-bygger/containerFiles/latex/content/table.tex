@@ -1,0 +1,33 @@
+% Used for table(...){...} element
+
+\definecolor{columnheadercolor}{HTML}{E6F0FF}
+\definecolor{linecolor}{HTML}{7C8695}
+\definecolor{headersepcolor}{HTML}{000000}
+\definecolor{row1color}{HTML}{F2F3F5}
+\definecolor{row2color}{HTML}{FFFFFF}
+
+\DefTblrTemplate{contfoot-text}{default}{\felttablenextpagecontinuation\hfill\space}
+\DefTblrTemplate{caption}{default}{} % remove built in header
+\DefTblrTemplate{capcont}{default}{\felttablecontinuedfrompreviouspage}
+
+\newenvironment{letterTable}[1]{
+    \setlength{\parskip}{0pt}
+    \begin{longtblr}[presep={6mm},postsep={3.5mm},footsep={3.5mm}, headsep={3.5mm}]
+    {
+        colspec=#1,
+        colsep = 2.5 mm,
+        stretch = 0 mm, %Don't add extra space under each cell to fit the table exactly to page.
+        hspan=minimal, %wrap instead of widening table over limit
+        hlines={1.3pt,linecolor},
+        row{odd}={row1color,rowsep=5pt},
+        row{even}={row2color,rowsep=5pt},
+        width=\textwidth,
+        rowhead=1,
+        hline{1}={0pt,linecolor}, %remove first horizontal line over the column header
+        hline{2}={headersepcolor}, %remove first horizontal line over the column header
+        row{1-1}={columnheadercolor,rowsep=9pt}
+    }
+}{
+    \end{longtblr}
+    \setboolean{previouselementwastitle}{false}
+}

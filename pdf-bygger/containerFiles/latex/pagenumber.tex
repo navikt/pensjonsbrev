@@ -1,0 +1,23 @@
+
+% sets the page style which includes the page number
+% TODO can i do this with just tex and fewer packages?
+
+\fancypagestyle{normalpage}{
+    \renewcommand{\headrulewidth}{0pt}%
+    \fancyhf{}%
+    \fancyfoot[C]{\letterpagenumber}
+}
+
+%page numbering
+\newcommand{\pagenumbertext}{\primaryFont \fontsize{10pt}{10pt} \selectfont}
+
+\newlength{\pagenumbertoppadding}
+\setlength{\pagenumbertoppadding}{25pt} % space between bottom of page content and page number
+\newlength{\pagenumberyposcalc} % calculate page number position to not collide with content.
+\setlength{\pagenumberyposcalc}{\dimexpr(\paperheight-\lettermarginbottom+\pagenumbertoppadding)} % bottom margin.
+\newcommand{\currentSectionName}{mainletter}                                                      % name of the current section of the letter. Used for lastpage label at the end of this section
+\newcommand{\letterpagenumber}{                                                                   % general page number formatting
+    \begin{textblock*}{\textwidth}(\lettermargin,\pagenumberyposcalc)
+        \pagenumbertext\feltsidesaksnummerprefix\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}
+    \end{textblock*}
+}

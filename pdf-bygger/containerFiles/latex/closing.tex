@@ -24,10 +24,12 @@
 % attachmentList
 \newenvironment{attachmentList}
     {\par
-    \vspace{30pt}
+    \addvspace{42pt}
     % enclose in brackets to prevent font from bleeding out to the rest of the letter.
     % Should be the same as the secondary letter title, but without extra spacing after.
-    {\primaryFont\fontsize{\titletwotextsize}{0pt} \selectfont \textbf{\feltclosingvedleggprefix}}
+    \titletwo\feltclosingvedleggprefix
+    \standardtext
+    \addvspace{6pt}
     \begin{itemize}}
     {\end{itemize}}
 
