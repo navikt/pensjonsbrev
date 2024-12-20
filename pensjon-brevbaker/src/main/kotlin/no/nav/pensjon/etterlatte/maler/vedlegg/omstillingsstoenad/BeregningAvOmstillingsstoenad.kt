@@ -352,6 +352,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                         " per month. This is included in \"Payout per month\", which appears in the table above.",
                 )
             }
+            paragraph {
+                textExpr(
+                    Bokmal to "Det utbetales aldri mer enn stønadsbeløpet før reduksjon for inntekt. Har du rett på mer etterbetaling enn tillegget som utbetales resten av året, blir dette tatt hensyn til i etteroppgjøret.".expr(),
+                    Nynorsk to "Det blir aldri utbetalt meir enn stønadsbeløpet før reduksjon for inntekt. Har du rett på meir etterbetaling enn tillegget som blir utbetalt resten av året, blir dette teke omsyn til i etteroppgjeret.".expr(),
+                    English to "No more is paid out than the allowance amount before reduction for income. If you are entitled to a larger back payment than the supplement paid for the rest of the year, this will be taken into account in the final settlement.".expr()
+                )
+            }
         }
         showIf(
             sisteBeregningsperiode.restanse.notEqualTo(0) and
