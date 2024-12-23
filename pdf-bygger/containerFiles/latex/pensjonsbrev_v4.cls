@@ -15,21 +15,23 @@
 %----------------------------------------
 %               Imports
 %----------------------------------------
-\usepackage{graphicx}   %graphics such as logo
-\usepackage{fontspec}   %declare font presets
-\usepackage{fancyhdr}   % custom page styles
+\RequirePackage{graphicx}   % graphics such as logo
+\RequirePackage{fontspec}   % declare font presets
+\RequirePackage{fancyhdr}   % custom page styles
+
 % tables and colors
-\usepackage{xcolor}
-\usepackage{ninecolors}
-\usepackage{tabularray} % better tables(tblr, longtblr)
-%\usepackage{layout} % page layout debug package
-\usepackage{enumitem,amssymb} % for formChoice list
-\usepackage[absolute
+\RequirePackage{xcolor}
+\RequirePackage{ninecolors}
+\RequirePackage{tabularray}       % better tables(tblr, longtblr)
+
+%\RequirePackage{layout}          % page layout debug package
+\RequirePackage{enumitem,amssymb} % for formChoice list
+\RequirePackage[absolute
 %    ,showboxes %show boxes around textblocks for debugging
-]{textpos} %first page absolute posistioned elements
-%\usepackage{showframe} %show frames of page geometry
-\input{params}  % Must be done before pdfx is imported
-\usepackage[a-3b]{pdfx}       % create pdf/A compliant pdf's
+]{textpos}                        % first page absolute posistioned elements
+%\RequirePackage{showframe}       % show frames of page geometry
+\input{params}                    % Must be done before pdfx is imported
+\RequirePackage[a-3b]{pdfx}       % create pdf/A compliant pdf's
 
 %----------------------------------------
 %                Global
@@ -112,9 +114,10 @@
 }
 
 % order matters
-\input{pagenumber} % needs to load before attachment
-\input{saksinfotable} % needs to load before attachment
-\input{content/content}
-\input{attachment}
-\input{firstpage}
-\input{closing}
+% needs to load before attachment and firstpage
+\input{pagenumber}
+\input{saksinfotable}
+\input{content/content} % elements used to render the letter and attachment outline/content
+\input{attachment}      % attachment layout
+\input{firstpage}       % first page layout
+\input{closing}         % content on the end of main letter content

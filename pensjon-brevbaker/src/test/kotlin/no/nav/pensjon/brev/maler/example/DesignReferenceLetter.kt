@@ -7,7 +7,9 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import kotlin.random.Random
 
+private val random = Random(1234)
 object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
 
     override val kode = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
@@ -30,7 +32,6 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
         }
 
         outline {
-/*
             repeat(100){
                 title1 {
                     text(
@@ -38,14 +39,15 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                     )
                 }
                 paragraph {
-                    repeat((Math.random()*4).toInt() + 1) {
+                    repeat((random.nextInt(1,5)).toInt()) {
                         text(
                             Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. "
                         )
                     }
 
+/*
                     list {
-                        repeat((Math.random()*9).toInt() + 1){
+                        repeat((random.nextInt(1,10)).toInt()){
                             item {
                                 text(
                                     Bokmal to "Nummerert list",
@@ -53,9 +55,10 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                             }
                         }
                     }
+*/
                 }
             }
-*/
+            /*
             // section title
             title1 {
                 text(Bokmal to "Overskrift")
@@ -223,7 +226,7 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
             title2 {
                 text(Bokmal to "Samme innhold med annen størrelse")
             }
-
+*/
         }
     }
 }

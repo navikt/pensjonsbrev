@@ -1,12 +1,17 @@
 % used for title1 and title2
 
-% when /vspace and /addvspace are next to each other, the max value is used.
-% we should then allways follow the same pattern for adding space under
-% and over such that /addvspace is over and /vpsace is under each element.
-% only theese two commands should be used for spacing as it disappears on page breaks.
+% minus parameter to length
+% The stretch added by plus 10pt minus 10pt is very important for LaTeX to be able to adjust the position of the elements
+% This makes latex to judge how bad it would be to break up content vs removing a little bit of space above a title
+% If for example you are in the middle of a paragraph, and you are just missing 10 pt of space to fit it in the current page
+% , subtracting a couple of pixels above each title instead of shipping the paragraph to the next page or breaking up the paragraph would be the best idea.
+
+% plus
+% plus, like minus allows LaTeX to add some space evenly above each title in the page, such that there isn't much room left on the bottom of the page.
+% This both looks nicer, and mitigates having large empty spaces at the end of a page, which might make readers think the letter is over.
 
 \newlength{\spacebetweentitleandnontitle}
-\setlength{\spacebetweentitleandnontitle}{\dimexpr(18pt)} %plus 15pt minus 10pt
+\setlength{\spacebetweentitleandnontitle}{18pt plus 10pt minus 10pt}
 \newcommand{\lettersectiontitle}[1]{
     \pagebreak[3] %strongly encourage page break before section title
     % add more space between previous non-title element accounting for it's own space )
@@ -14,7 +19,7 @@
     \setboolean{previouselementwastitle}{true}
     #1
     \nopagebreak
-    \\[0pt]         %TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent
+    \\[0pt]         % TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent.
     \nopagebreak
     \addvspace{6pt}
     \nopagebreak
