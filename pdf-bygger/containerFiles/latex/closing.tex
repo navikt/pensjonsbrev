@@ -4,7 +4,8 @@
 
 % Closing page text
 \newcommand{\closing}{
-    \nopagebreak
+    \addpenalty(10000) % similarly to addvspace, combining two addpenalty commands
+                       % favours the highest one. This line negates negative penalty from paragraph
     \begin{minipage}{\textwidth}
         \standardtext
         \sloppy % no word-breaking

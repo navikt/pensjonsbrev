@@ -20,9 +20,8 @@
     #1
     \nopagebreak
     \\[0pt]         % TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent.
-    \nopagebreak
+    \addpenalty(10000) % Absolutely no page break here. Addpenalty carries the penalty through addvspace to the next element.
     \addvspace{6pt}
-    \nopagebreak
 }
 
 % Title 1
