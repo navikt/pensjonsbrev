@@ -7,12 +7,12 @@ import org.apache.cxf.feature.Feature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import java.util.*
 import javax.xml.namespace.QName
-import javax.xml.soap.SOAPElement
-import javax.xml.soap.SOAPFactory
-import javax.xml.ws.handler.Handler
-import javax.xml.ws.handler.MessageContext
-import javax.xml.ws.handler.soap.SOAPHandler
-import javax.xml.ws.handler.soap.SOAPMessageContext
+import jakarta.xml.soap.SOAPElement
+import jakarta.xml.soap.SOAPFactory
+import jakarta.xml.ws.handler.Handler
+import jakarta.xml.ws.handler.MessageContext
+import jakarta.xml.ws.handler.soap.SOAPHandler
+import jakarta.xml.ws.handler.soap.SOAPMessageContext
 
 private const val PASSWORD_TYPE = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"
 private const val SECURITY_URL = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
