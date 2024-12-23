@@ -6,8 +6,6 @@
 %            Document class
 %----------------------------------------
 
-%! suppress = PackageNameDoesNotMatchFileName
-                                  %TODO
 \ProvidesPackage{pensjonsbrev_v4}[2024/12/20 Team pensjonsbrev's Document Class]
 \NeedsTeXFormat{LaTeX2e}
 \LoadClass[a4paper]{article}
@@ -15,26 +13,17 @@
 %----------------------------------------
 %               Imports
 %----------------------------------------
-\RequirePackage{graphicx}   % graphics such as logo
-\RequirePackage{fontspec}   % declare font presets
-\RequirePackage{fancyhdr}   % custom page styles
-
-% tables and colors
-\RequirePackage{xcolor}
-\RequirePackage{ninecolors}
+\RequirePackage{graphicx}         % graphics such as logo
+\RequirePackage{fontspec}         % declare font presets
+\RequirePackage{fancyhdr}         % custom page styles
 \RequirePackage{tabularray}       % better tables(tblr, longtblr)
-
-%\RequirePackage{layout}          % page layout debug package
-\RequirePackage{enumitem,amssymb} % for formChoice list
-\RequirePackage[absolute
-%    ,showboxes %show boxes around textblocks for debugging
-]{textpos}                        % first page absolute posistioned elements
-%\RequirePackage{showframe}       % show frames of page geometry
+\RequirePackage{enumitem}         % for customizing itemlist
+\RequirePackage[absolute]{textpos}% first page absolute posistioned elements
 \input{params}                    % Must be done before pdfx is imported
-\RequirePackage[a-3b]{pdfx}       % create pdf/A compliant pdf's
+\RequirePackage[a-3u]{pdfx}       % create pdf/A compliant pdf's
 
 %----------------------------------------
-%                Global
+%                Fonts
 %----------------------------------------
 
 %fonts
@@ -110,7 +99,7 @@
 %                 Logo
 %----------------------------------------
 \newcommand{\logo}{
-    \includegraphics[height=16pt,page=1]{nav-logo}
+    \includegraphics[height=16pt,page=1]{logo/nav-logo}
 }
 
 % order matters

@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brevbaker.api.model.Bruker
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -26,6 +27,5 @@ class OpplysningerBruktIBeregningUTLegacyTest {
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("OpplysningerBruktIBeregningUfoereLegacy")
-
     }
 }

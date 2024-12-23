@@ -8,18 +8,25 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Path
+import kotlin.text.Typography.paragraph
 
 @Tag(TestTags.INTEGRATION_TEST)
 class LatexVisualITest {
 
-    private fun render(overrideName: String? = null, outlineInit: OutlineOnlyScope<LangBokmal, Unit>.() -> Unit) {
+    private fun render(
+        overrideName: String? = null,
+        overrideFelles: Felles? = null,
+        outlineInit: OutlineOnlyScope<LangBokmal, Unit>.() -> Unit,
+    ) {
         val testName = overrideName ?: StackWalker.getInstance().walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") }
 
         val template = createTemplate(
@@ -35,7 +42,7 @@ class LatexVisualITest {
             }
             outline { outlineInit() }
         }
-        val letter = Letter(template, Unit, Bokmal, Fixtures.fellesAuto)
+        val letter = Letter(template, Unit, Bokmal, overrideFelles?: Fixtures.fellesAuto)
         letter.renderTestPDF(testName, Path.of("build/test_visual/pdf"))
     }
 
@@ -48,6 +55,39 @@ class LatexVisualITest {
             paragraph { ipsumText() }
         }
     }
+
+    @Test
+    fun verge(){
+        render(overrideFelles = Fixtures.felles.copy(
+            vergeNavn = "Verge vergeson"
+        )) {
+            paragraph { ipsumText() }
+        }
+    }
+
+    @Test
+    fun `infobrev med saksbehandler underskrift`(){
+        render(overrideFelles = Fixtures.felles.copy(
+            signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                saksbehandler = "Ole Saksbehandler"
+            )
+        )) {
+            paragraph { ipsumText() }
+        }
+    }
+
+    @Test
+    fun `vedtaksbrev med saksbehandler underskrift`(){
+        render(overrideFelles = Fixtures.felles.copy(
+            signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                saksbehandler = "Ole Saksbehandler",
+                attesterendeSaksbehandler = "Per Attesterende"
+            )
+        )) {
+            paragraph { ipsumText() }
+        }
+    }
+
 
     @Test
     fun `Title1 with ingress text then table`() {
@@ -91,7 +131,7 @@ class LatexVisualITest {
     }
 
     private fun OutlineOnlyScope<LangBokmal, Unit>.renderElementOfType(elementA: ElementType) {
-        when(elementA) {
+        when (elementA) {
             ElementType.T1 -> title1 { text(Bokmal to "First title") }
             ElementType.T2 -> title2 { text(Bokmal to "Second title") }
             ElementType.PAR -> paragraph { ipsumText() }

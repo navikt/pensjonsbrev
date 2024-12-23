@@ -16,7 +16,8 @@ fun Foedselsnummer.format() =
 fun Expression<Telefonnummer>.format() = format(formatter = LocalizedFormatter.TelefonnummerFormat)
 
 @JvmName("formatKroner")
-fun Expression<Kroner>.format() = select(intValueSelector).format(formatter = LocalizedFormatter.CurrencyFormat)
+fun Expression<Kroner>.format() = select(intValueSelector)
+    .format(formatter = LocalizedFormatter.CurrencyFormat)
 
 @JvmName("formatIntValue")
 fun Expression<IntValue>.format() = select(intValueSelector).format()

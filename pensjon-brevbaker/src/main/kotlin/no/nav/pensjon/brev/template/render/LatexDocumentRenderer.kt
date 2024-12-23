@@ -300,7 +300,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                 }
 
                 element.choices.forEach {
-                    appenCmd("item")
+                    appenCmd("formchoiceitem")
                     renderText(it.text)
                 }
 
