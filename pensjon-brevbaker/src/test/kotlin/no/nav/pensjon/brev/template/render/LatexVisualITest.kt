@@ -61,7 +61,19 @@ class LatexVisualITest {
         render(overrideFelles = Fixtures.felles.copy(
             vergeNavn = "Verge vergeson"
         )) {
-            paragraph { ipsumText() }
+            title1 {
+                text(
+                    Bokmal to "Overskrift",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam\n" +
+                            "posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae,\n" +
+                            "imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum\n" +
+                            "leo.",
+                )
+            }
         }
     }
 
