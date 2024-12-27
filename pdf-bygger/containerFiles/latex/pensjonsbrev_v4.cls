@@ -31,6 +31,7 @@
 \setmainfont{Source Sans 3}
 \addfontfeature{VerticalPosition = Inferior }
 \newfontface{\primaryFont}[
+    LetterSpace=0.2,
     Color=000000,
     BoldFont={Source Sans 3 Bold},
     ItalicFont={Source Sans 3 Italic}]{Source Sans 3}
