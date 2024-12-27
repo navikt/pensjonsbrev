@@ -1,9 +1,12 @@
 % elements used to render the letter and attachment outline/content
 
 % used to track whether the title1/title2 should add extra space above. Needs to be declared before other content
-\newboolean{previouselementwastitle}
+\newcommand{\previouselement}{title}
+
 %starts with true because of main title
-\setboolean{previouselementwastitle}{true}
+\newcommand{\setpreviouselement}[1]{
+    \renewcommand{\previouselement}{#1}
+}
 
 \input{titles}
 \input{paragraph}

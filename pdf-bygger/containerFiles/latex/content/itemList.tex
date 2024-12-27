@@ -5,12 +5,13 @@
 % removes whitespace between items, removes parskip whitespace over and under the list
 % adds custom space to margin and after list
                             % penalty for breaking up an itemlist at the top
-\setlist[itemize]{noitemsep, beginpenalty=3000, topsep=\dimexpr(-\parskip), leftmargin=15pt, after=\addvspace{10pt}}
-
+\newlength{\itemtopsep}
+\setlist[itemize]{noitemsep, beginpenalty=3000, topsep=0pt, leftmargin=15pt, after=\addvspace{10pt}}
 \newenvironment{letteritemize}[1]{
+    \ifdefstring{\previouselement}{paragraph}{\vspace{-\parskip}}{}
     \begin{itemize}
         #1
     } {
     \end{itemize}
-    \setboolean{previouselementwastitle}{false}
+    \setpreviouselement{item}
 }

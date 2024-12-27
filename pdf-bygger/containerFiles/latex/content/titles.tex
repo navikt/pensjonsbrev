@@ -11,12 +11,16 @@
 % This both looks nicer, and mitigates having large empty spaces at the end of a page, which might make readers think the letter is over.
 
 \newlength{\spacebetweentitleandnontitle}
-\setlength{\spacebetweentitleandnontitle}{\dimexpr(32pt-\parskip)}
+\setlength{\spacebetweentitleandnontitle}{\dimexpr(32pt-\parskip) plus 10 pt minus 10 pt}
+
+\newcommand{\lettersectiontitlespacing}[1]{
+    \ifdefstring{\previouselement}{title}{par}{}
+}
+
 \newcommand{\lettersectiontitle}[1]{
     \pagebreak[3] %strongly encourage page break before section title
     % add more space between previous non-title element accounting for it's own space )
-    \ifthenelse{\boolean{previouselementwastitle}}{}{\addvspace{\spacebetweentitleandnontitle}}
-    \setboolean{previouselementwastitle}{true}
+    \ifdefstring{\previouselement}{title}{}{\addvspace{\spacebetweentitleandnontitle}}
     #1
     \nopagebreak
     \\[0pt]         % TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent.
@@ -27,9 +31,11 @@
 % Title 1
 \newcommand{\lettersectiontitleone}[1]{
     \lettersectiontitle{\titleone #1}
+    \setpreviouselement{title}
 }
 
 % Title 2
 \newcommand{\lettersectiontitletwo}[1]{
     \lettersectiontitle{\titletwo #1}
+    \setpreviouselement{title}
 }
