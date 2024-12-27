@@ -33,8 +33,8 @@
 \newfontface{\primaryFont}[
     Color=000000,
     BoldFont={Source Sans 3 Bold},
-    ItalicFont={Source Sans 3 Italic},
-    BoldItalicFont={Source Sans 3 Bold Italic}]{Source Sans 3}
+    ItalicFont={Source Sans 3 Italic}]{Source Sans 3}
+
 
 % Global font commands
 \newcommand{\standardtextsize}{11pt}
@@ -42,23 +42,26 @@
 \newcommand{\standardtext}{\primaryFont \fontsize{\standardtextsize}{\standardtextspacing} \mdseries \selectfont}
 
 % main title
+\newfontfamily\titlefont[LetterSpace=0.3]{Source Sans 3 Bold}
 \newcommand{\titletextsize}{16pt}
 \newcommand{\titletextspacing}{20pt}
-\newcommand{\lettertitle}{\primaryFont \fontsize{\titletextsize}{\titletextspacing} \bfseries \selectfont}
+\newcommand{\lettertitle}{\titlefont \fontsize{\titletextsize}{\titletextspacing} \bfseries \selectfont}
 
 % title 1
-\newcommand{\titleone}{\primaryFont \fontsize{\titleonetextsize}{\titleonetextspacing} \bfseries \selectfont}
+\newfontfamily\titleonefont[LetterSpace=0.25]{Source Sans 3 Bold}
+\newcommand{\titleone}{\titleonefont \fontsize{\titleonetextsize}{\titleonetextspacing} \bfseries \selectfont}
 \newcommand{\titleonetextsize}{13pt}
 \newcommand{\titleonetextspacing}{10pt}
 
 % title 2
-\newcommand{\titletwo}{\primaryFont \fontsize{\titletwotextsize}{\titletwotextspacing} \bfseries \selectfont}
+\newfontfamily\titletwofont[LetterSpace=0.2]{Source Sans 3 Bold}
+\newcommand{\titletwo}{\titletwofont \fontsize{\titletwotextsize}{\titletwotextspacing} \bfseries \selectfont}
 \newcommand{\titletwotextsize}{12pt}
 \newcommand{\titletwotextspacing}{10pt}
 
 % paragraph spacing
 \setlength{\parindent}{0em}                 % indentations before first line in paragraph
-\setlength{\parskip}{\standardtextsize}     % space between paragraphs
+\setlength{\parskip}{16pt}                  % space between paragraphs
 
 % general paragraph formatting
 \sloppy                                     % no word-breaking

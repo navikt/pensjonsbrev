@@ -11,7 +11,7 @@
 % This both looks nicer, and mitigates having large empty spaces at the end of a page, which might make readers think the letter is over.
 
 \newlength{\spacebetweentitleandnontitle}
-\setlength{\spacebetweentitleandnontitle}{18pt plus 10pt minus 10pt}
+\setlength{\spacebetweentitleandnontitle}{\dimexpr(32pt-\parskip)}
 \newcommand{\lettersectiontitle}[1]{
     \pagebreak[3] %strongly encourage page break before section title
     % add more space between previous non-title element accounting for it's own space )
@@ -20,7 +20,7 @@
     #1
     \nopagebreak
     \\[0pt]         % TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent.
-    \addpenalty(10000) % Absolutely no page break here. Addpenalty carries the penalty through addvspace to the next element.
+    \addpenalty{10000} % Absolutely no page break here. Addpenalty carries the penalty through addvspace to the next element.
     \addvspace{6pt}
 }
 

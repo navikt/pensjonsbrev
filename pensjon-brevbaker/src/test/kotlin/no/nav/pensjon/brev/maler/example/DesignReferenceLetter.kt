@@ -32,32 +32,48 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
         }
 
         outline {
-            repeat(100){
-                title1 {
-                    text(
-                        Bokmal to "Overskrift",
-                    )
-                }
-                paragraph {
-                    repeat((random.nextInt(1,5)).toInt()) {
-                        text(
-                            Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. "
-                        )
-                    }
-
-/*
-                    list {
-                        repeat((random.nextInt(1,10)).toInt()){
-                            item {
-                                text(
-                                    Bokmal to "Nummerert list",
-                                )
-                            }
-                        }
-                    }
-*/
-                }
+            title1 {
+                text(
+                    Bokmal to "Overskrift",
+                )
             }
+            paragraph {
+                text(
+                    Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo. "
+                )
+            }
+            title2 {
+                text(
+                    Bokmal to "Underoverskrift nivå en",
+                )
+            }
+            
+            paragraph {
+                text(
+                    Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam\n" +
+                            "posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae,\n" +
+                            "imperdiet viverra tortor.",
+                )
+            }
+            
+            paragraph {
+                text(
+                    Bokmal to "Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum leo.",
+                )
+            }
+            title2 {
+                text(
+                    Bokmal to "Underoverskrift nivå to",
+                    FontType.BOLD
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam\n" +
+                            "posuere porta nec eu elit. Integer nec vestibulum leo.",
+                )
+            }
+
             /*
             // section title
             title1 {

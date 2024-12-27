@@ -4,15 +4,14 @@
 
 % Closing page text
 \newcommand{\closing}{
-    \addpenalty(10000) % similarly to addvspace, combining two addpenalty commands
-                       % favours the highest one. This line negates negative penalty from paragraph
+    \addpenalty{10000}
+    \addvspace{42pt minus 20pt} % TODO gjennomgang av design
     \begin{minipage}{\textwidth}
         \standardtext
         \sloppy % no word-breaking
         \raggedright % no word spacing
         \raggedbottom % no line stretching to fit page
         \frenchspacing % no double space after ended sentence
-        \vspace*{42pt}
         \feltclosinggreeting
         \par
         \vspace*{4pt}
@@ -25,7 +24,7 @@
 % attachmentList
 \newenvironment{attachmentList}
     {\par
-    \addvspace{42pt}
+    \addvspace{42pt minus 20pt} % TODO gjennomgang av design
     % enclose in brackets to prevent font from bleeding out to the rest of the letter.
     % Should be the same as the secondary letter title, but without extra spacing after.
     \titletwo\feltclosingvedleggprefix
