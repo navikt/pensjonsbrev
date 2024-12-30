@@ -268,7 +268,7 @@ object BarnepensjonFellesFraser {
                 }
             }
 
-            showIf(frivilligSkattetrekk.equalTo(true)){
+            showIf(frivilligSkattetrekk){
                 paragraph {
                     text(
                         Bokmal to
