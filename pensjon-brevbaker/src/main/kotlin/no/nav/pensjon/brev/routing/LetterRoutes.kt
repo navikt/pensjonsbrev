@@ -23,6 +23,10 @@ fun Route.letterRoutes(
             call.respond(autobrev.renderHTML(brevbestilling))
             autobrev.countLetter(brevbestilling.kode)
         }
+
+        post<BestillBrevRequest<Brevkode.Automatisk>>("/json") {
+            call.respond(autobrev.renderJSON(it))
+        }
     }
     route("/${redigerbareBrev.name}") {
         post<BestillBrevRequest<Brevkode.Redigerbart>>("/markup") { brevbestilling ->

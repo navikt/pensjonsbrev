@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.routes
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import org.slf4j.LoggerFactory
 
@@ -11,7 +11,7 @@ fun Route.brevmal(brevbakerService: BrevbakerService) {
     val logger = LoggerFactory.getLogger("brevbakerRoute")
 
     get("/brevmal/{brevkode}/modelSpecification") {
-        val brevkode = call.parameters.getOrFail<Brevkode.Redigerbart>("brevkode")
+        val brevkode = call.parameters.getOrFail("brevkode").let { RedigerbarBrevkode(it) }
         brevbakerService.getModelSpecification(brevkode)
             .onOk { call.respond(it) }
             .onError { message, status ->

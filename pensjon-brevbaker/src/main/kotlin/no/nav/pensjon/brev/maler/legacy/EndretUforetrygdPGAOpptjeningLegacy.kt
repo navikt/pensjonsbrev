@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.orienteringOmRettigheterUfoere
@@ -75,7 +75,7 @@ import java.time.LocalDate
 @TemplateModelHelpers
 object EndretUforetrygdPGAOpptjeningLegacy : AutobrevTemplate<EndretUforetrygdPGAOpptjeningLegacyDto> {
 
-override val kode = Brevkode.AutoBrev.UT_ENDRET_PGA_OPPTJENING
+override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
     override val template = createTemplate(
         name = kode.name,

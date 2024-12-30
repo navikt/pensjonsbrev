@@ -59,6 +59,14 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
             renderHTML(createLetter(kode, letterData, language, felles), letterMarkup)
         }
 
+    fun renderJSON(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
+        with(brevbestilling) {
+            renderJSON(createLetter(kode, letterData, language, felles))
+        }
+
+    private fun renderJSON(letter: Letter<BrevbakerBrevdata>) = Letter2Markup.render(letter).letterMarkup
+
+
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         createLetter(brevbestilling.kode, brevbestilling.letterData, brevbestilling.language, brevbestilling.felles)
             .let { Letter2Markup.renderLetterOnly(it.toScope(), it.template) }
@@ -117,7 +125,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
         }
 
 
-    private fun parseArgument(letterData: Any, template: LetterTemplate<*, BrevbakerBrevdata>): BrevbakerBrevdata =
+    private fun parseArgument(letterData: BrevbakerBrevdata, template: LetterTemplate<*, BrevbakerBrevdata>): BrevbakerBrevdata =
         try {
             objectMapper.convertValue(letterData, template.letterDataType.java)
         } catch (e: IllegalArgumentException) {

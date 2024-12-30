@@ -31,7 +31,7 @@ import no.nav.pensjon.brev.latex.LatexCompileException
 import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
 import no.nav.pensjon.brev.maler.AllTemplates
-import no.nav.pensjon.brev.routing.brevbakerRouting
+import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun Application.brevbakerModule(templates: AllTemplates) {
@@ -131,7 +131,7 @@ fun Application.brevbakerModule(templates: AllTemplates) {
     }
 
     configureMetrics()
-    brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
+    brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
 }
 
 private fun ApplicationConfig.stringProperty(path: String): String = this.property(path).getString()

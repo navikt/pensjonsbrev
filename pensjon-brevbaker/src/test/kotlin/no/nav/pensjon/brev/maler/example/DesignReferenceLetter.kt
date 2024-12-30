@@ -12,7 +12,13 @@ import kotlin.random.Random
 private val random = Random(1234)
 object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
+    enum class Kode : Brevkode.Automatisk {
+        KODE;
+
+        override fun kode() = name
+    }
+
+    override val kode = Kode.KODE
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
