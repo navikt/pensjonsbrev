@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -40,7 +41,7 @@ object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTempla
                 text(
                     Bokmal to "Forhåndsvarsel",
                     Nynorsk to "Førehandsvarsel",
-                    English to "Notice"
+                    English to "Notice",
                 )
             }
             paragraph {

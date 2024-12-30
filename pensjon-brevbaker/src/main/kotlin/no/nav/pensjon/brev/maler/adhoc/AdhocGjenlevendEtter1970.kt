@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -86,7 +87,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                 text(
                     Bokmal to "Trenger du hjelp til å få jobb eller jobbe mer?",
                     Nynorsk to "Treng du hjelp til å få jobb eller jobbe meir?",
-                    English to "Do you need help getting a job or more work?"
+                    English to "Do you need help getting a job or more work?",
                 )
             }
             paragraph {

@@ -34,6 +34,7 @@
     LetterSpace=0.2,
     Color=000000,
     BoldFont={Source Sans 3 Bold},
+    SemiBoldFont={Source Sans 3 SemiBold},
     ItalicFont={Source Sans 3 Italic}]{Source Sans 3}
 
 

@@ -25,8 +25,25 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, 
     }
 }
 
-interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+@LetterTemplateMarker
+class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> : PlainTextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, PlainTextOnlyScope<Lang, LetterData>> {
+    private val children = mutableListOf<TextElement<Lang>>()
+    override val elements: List<TextElement<Lang>>
+        get() = children
 
+    override fun scopeFactory(): PlainTextOnlyScope<Lang, LetterData> = PlainTextOnlyScope()
+
+    override fun addControlStructure(e: TextElement<Lang>) {
+        children.add(e)
+    }
+
+    override fun addTextContent(e: TextElement<Lang>) {
+        children.add(e)
+    }
+
+}
+
+interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
     fun addTextContent(e: TextElement<Lang>)
 
     fun eval(expression: StringExpression, fontType: FontType = FontType.PLAIN) {
@@ -35,6 +52,13 @@ interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
 
     fun newline() {
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine()))
+    }
+}
+
+interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+    fun addTextContent(e: TextElement<Lang>)
+    fun eval(expression: StringExpression) {
+        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, FontType.PLAIN)))
     }
 }
 
@@ -90,4 +114,53 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     fontType: FontType = FontType.PLAIN,
 ) {
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
+}
+
+
+// PlainTextScope.text()
+//
+//
+fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
+    lang1: Pair<Lang1, String>,
+) {
+    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1).also { addTextContent(Content(it)) }
+}
+
+fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
+    lang1: Pair<Lang1, String>,
+    lang2: Pair<Lang2, String>,
+) {
+    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2).also { addTextContent(Content(it)) }
+}
+
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
+    lang1: Pair<Lang1, String>,
+    lang2: Pair<Lang2, String>,
+    lang3: Pair<Lang3, String>,
+) {
+    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, lang3).also { addTextContent(Content(it)) }
+}
+
+// PlainTextScope.textExpr()
+//
+//
+fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Single<Lang1>, ParameterType>.textExpr(
+    lang1: Pair<Lang1, StringExpression>,
+) {
+    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1).also { addTextContent(Content(it)) }
+}
+
+fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.textExpr(
+    lang1: Pair<Lang1, StringExpression>,
+    lang2: Pair<Lang2, StringExpression>,
+) {
+    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2).also { addTextContent(Content(it)) }
+}
+
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
+    lang1: Pair<Lang1, StringExpression>,
+    lang2: Pair<Lang2, StringExpression>,
+    lang3: Pair<Lang3, StringExpression>,
+) {
+    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3).also { addTextContent(Content(it)) }
 }

@@ -1,17 +1,19 @@
 package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import kotlin.random.Random
 
-private val random = Random(1234)
 object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
-
     enum class Kode : Brevkode.Automatisk {
         KODE;
 
@@ -19,6 +21,53 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
     }
 
     override val kode = Kode.KODE
+    private val attachment = createAttachment<LangBokmal, EmptyBrevdata>(
+        title = newText(
+            Bokmal to "Tittel vedlegg"
+        ),
+        includeSakspart = false,
+    ){
+        title1 {
+            text(
+                Bokmal to "Overskrift",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam\n" +
+                        "posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae,\n" +
+                        "imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum\n" +
+                        "leo.",
+            )
+        }
+        title2 {
+            text(
+                Bokmal to "Underoverskrift",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam\n" +
+                        "posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae,\n" +
+                        "imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum\n" +
+                        "leo.",
+            )
+        }
+        paragraph {
+            table(header = {
+                column { text(Bokmal to "Type inntekt") }
+                column { text(Bokmal to "Mottatt av") }
+                column(alignment = RIGHT) {text(Bokmal to "Inntekt") }
+            }){
+                row { cell{ text(Bokmal to "Arbeidsinntekt")}; cell{ text(Bokmal to "<RegistreringsKilde>")}; cell{ text(Bokmal to "44 520 kr")}}
+                row { cell{ text(Bokmal to "Næringsinntekt")}; cell{ text(Bokmal to "<RegistreringsKilde>")}; cell{ text(Bokmal to "8 000 kr")}}
+                row { cell{ text(Bokmal to "Næringsinntekt")}; cell{ text(Bokmal to "<RegistreringsKilde>")}; cell{ text(Bokmal to "8 000 kr")}}
+                row { cell{ text(Bokmal to "Arbeidsinntekt")}; cell{ text(Bokmal to "<RegistreringsKilde>")}; cell{ text(Bokmal to "44 520 kr")}}
+                row { cell{ text(Bokmal to "Arbeidsinntekt")}; cell{ text(Bokmal to "<RegistreringsKilde>")}; cell{ text(Bokmal to "44 520 kr")}}
+                row { cell{ text(Bokmal to "Arbeidsinntekt")}; cell{ text(Bokmal to "<RegistreringsKilde>")}; cell{ text(Bokmal to "44 520 kr")}}
+            }
+        }
+    }
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
@@ -41,6 +90,7 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
             testpage1()
             //testpage3()
         }
+        includeAttachment(attachment)
     }
 }
 
@@ -133,7 +183,6 @@ private fun OutlineOnlyScope<LanguageSupport.Single<Bokmal>, LetterExampleDto>.t
     title2 {
         text(
             Bokmal to "Underoverskrift nivå to",
-            FontType.BOLD
         )
     }
     paragraph {

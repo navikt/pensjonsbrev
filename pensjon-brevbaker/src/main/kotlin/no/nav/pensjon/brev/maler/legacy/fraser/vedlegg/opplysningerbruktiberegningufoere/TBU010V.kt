@@ -24,7 +24,6 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             Bokmal to "Opplysning",
                             Nynorsk to "Opplysning",
                             English to "Information",
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                         )
                     }
                     column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
