@@ -17,6 +17,7 @@ import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.frivilligSkattetrekk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
@@ -28,7 +29,7 @@ data class BarnepensjonRevurderingRedigerbartUtfallDTO(
     val feilutbetaling: FeilutbetalingType,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
-    val frivilligSkattetrekk: Boolean, // TODO: EY-4877
+    val frivilligSkattetrekk: Boolean,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -57,7 +58,7 @@ object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<Barnepensjo
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(BarnepensjonRevurderingFraser.UtfallRedigerbart(etterbetaling.notNull(), feilutbetaling))
             showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, bosattUtland))
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, bosattUtland, frivilligSkattetrekk))
             }
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselRevurdering)

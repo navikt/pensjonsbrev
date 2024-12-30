@@ -211,6 +211,7 @@ object BarnepensjonFellesFraser {
     data class UtbetalingAvBarnepensjon(
         val etterbetaling: Expression<BarnepensjonEtterbetaling?>,
         val bosattUtland: Expression<Boolean>,
+        val frivilligSkattetrekk: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -267,6 +268,41 @@ object BarnepensjonFellesFraser {
                 }
             }
 
+            showIf(frivilligSkattetrekk){
+                paragraph {
+                    text(
+                        Bokmal to
+                                "Du har bedt om ekstra skattetrekk utover 17 prosent. Det trekkes derfor ekstra skatt fra barnepensjonen din. Du kan se på utbetalingsmeldingen hvor mye som er trukket.",
+                        Nynorsk to
+                                "Du har bede om ekstra skattetrekk utover 17 prosent. Det blir derfor trekt ekstra skatt frå barnepensjonen din. Du kan sjå på utbetalingsmeldinga kor mykje som er trekt.",
+                        English to
+                                "You have requested additional tax deductions exceeding 17 percent. Additional tax is therefore deducted from your child's pension. You can see how much has been deducted on the disbursement notice.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to
+                                "Du må melde fra ved hvert årsskifte dersom du ønsker å fortsette med ekstra skattetrekk.",
+                        Nynorsk to
+                                "Du må melda frå ved kvart årsskifte dersom du ønskjer å halda fram med ekstra skattetrekk.",
+                        English to
+                                "You must report at the end of each year if you wish to continue with the additional tax deductions.",
+                    )
+                }
+
+            }
+
+            paragraph {
+                text(
+                    Bokmal to
+                            "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
+                    Nynorsk to
+                            "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
+                    English to
+                            "Read more about tax deductions at ${Constants.BP_SKATTETREKK} and ${Constants.BP_SKATTEETATEN}.",
+                )
+            }
+
             showIf(etterbetaling.notNull()) {
                 paragraph {
                     text(
@@ -290,19 +326,6 @@ object BarnepensjonFellesFraser {
                         )
                     }
                 }
-            }
-
-            // TODO: EY-4877 brevutfall frivillig skattetrekk
-
-            paragraph {
-                text(
-                    Bokmal to
-                        "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
-                    Nynorsk to
-                        "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
-                    English to
-                        "Read more about tax deductions at ${Constants.BP_SKATTETREKK} and ${Constants.BP_SKATTEETATEN}.",
-                )
             }
         }
     }

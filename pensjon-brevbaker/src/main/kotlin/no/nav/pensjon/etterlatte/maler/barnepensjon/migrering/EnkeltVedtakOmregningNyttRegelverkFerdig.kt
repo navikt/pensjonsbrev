@@ -18,6 +18,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.erBosattUtlandet
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.erUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.frivilligSkattetrekk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
@@ -53,7 +54,7 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
         outline {
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, erBosattUtlandet))
+            includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, erBosattUtlandet, frivilligSkattetrekk))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
