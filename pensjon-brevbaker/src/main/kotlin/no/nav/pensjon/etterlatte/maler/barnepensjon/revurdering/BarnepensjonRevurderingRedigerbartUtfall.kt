@@ -58,7 +58,7 @@ object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<Barnepensjo
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(BarnepensjonRevurderingFraser.UtfallRedigerbart(etterbetaling.notNull(), feilutbetaling))
             showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, frivilligSkattetrekk, bosattUtland))
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, bosattUtland, frivilligSkattetrekk))
             }
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselRevurdering)

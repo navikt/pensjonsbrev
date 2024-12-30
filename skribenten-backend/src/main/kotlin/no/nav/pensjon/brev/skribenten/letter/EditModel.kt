@@ -18,6 +18,7 @@ object Edit {
 
     interface Identifiable {
         val id: Int?
+        val parentId: Int?
 
         @JsonIgnore
         fun isNew(): Boolean = id == null
@@ -39,7 +40,7 @@ object Edit {
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)
 
-        override fun isEdited(): Boolean = isNew() || isChangedType() || content.any { it.isEdited() } || deletedContent.isNotEmpty()
+        override fun isEdited(): Boolean = isNew() || isChangedType() || content.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
 
         data class Title1(
             override val id: Int?,
@@ -47,6 +48,7 @@ object Edit {
             override val content: List<ParagraphContent.Text>,
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
+            override val parentId: Int? = null,
         ) : Block(Type.TITLE1)
 
         data class Title2(
@@ -55,6 +57,7 @@ object Edit {
             override val content: List<ParagraphContent.Text>,
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
+            override val parentId: Int? = null,
         ) : Block(Type.TITLE2)
 
         data class Paragraph(
@@ -63,6 +66,7 @@ object Edit {
             override val content: List<ParagraphContent>,
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
+            override val parentId: Int? = null,
         ) : Block(Type.PARAGRAPH)
     }
 
@@ -71,13 +75,22 @@ object Edit {
             ITEM_LIST, LITERAL, VARIABLE, TABLE,
         }
 
-        data class ItemList(override val id: Int?, val items: List<Item>, val deletedItems: Set<Int> = emptySet()) :
-            ParagraphContent(Type.ITEM_LIST) {
-            data class Item(override val id: Int?, val content: List<Text>) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() }
+        data class ItemList(
+            override val id: Int?,
+            val items: List<Item>,
+            val deletedItems: Set<Int> = emptySet(),
+            override val parentId: Int? = null,
+        ) : ParagraphContent(Type.ITEM_LIST) {
+            data class Item(
+                override val id: Int?,
+                val content: List<Text>,
+                val deletedContent: Set<Int> = emptySet(),
+                override val parentId: Int? = null,
+            ) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
             }
 
-            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() } || deletedItems.isNotEmpty()
+            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty()
         }
 
         data class Table(
@@ -85,26 +98,33 @@ object Edit {
             val rows: List<Row>,
             val header: Header,
             val deletedRows: Set<Int> = emptySet(),
+            override val parentId: Int? = null,
         ) : ParagraphContent(Type.TABLE) {
-            data class Row(override val id: Int?, val cells: List<Cell>) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() }
+            data class Row(override val id: Int?, val cells: List<Cell>, override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() || it.parentId != id }
             }
 
-            data class Cell(override val id: Int?, val text: List<Text>) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() }
+            data class Cell(override val id: Int?, val text: List<Text>, override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() || it.parentId != id }
             }
 
-            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() }
+            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() || it.parentId != id }
             }
 
-            data class ColumnSpec(override val id: Int?, val headerContent: Cell, val alignment: ColumnAlignment, val span: Int) : Identifiable {
+            data class ColumnSpec(
+                override val id: Int?,
+                val headerContent: Cell,
+                val alignment: ColumnAlignment,
+                val span: Int,
+                override val parentId: Int? = null,
+            ) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || headerContent.isEdited()
             }
 
             enum class ColumnAlignment { LEFT, RIGHT }
 
-            override fun isEdited(): Boolean = isNew() || deletedRows.isNotEmpty() || rows.any { it.isEdited() } || header.isEdited()
+            override fun isEdited(): Boolean = isNew() || deletedRows.isNotEmpty() || rows.any { it.isEdited() || it.parentId != id } || header.isEdited()
         }
 
         sealed class Text(type: Type) : ParagraphContent(type) {
@@ -120,11 +140,17 @@ object Edit {
                 val editedText: String? = null,
                 val editedFontType: FontType? = null,
                 val tags: Set<ElementTags> = emptySet(),
+                override val parentId: Int? = null,
             ) : Text(Type.LITERAL) {
                 override fun isEdited(): Boolean = isNew() || editedText != null || editedFontType != null
             }
 
-            data class Variable(override val id: Int?, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(Type.VARIABLE) {
+            data class Variable(
+                override val id: Int?,
+                override val text: String,
+                override val fontType: FontType = FontType.PLAIN,
+                override val parentId: Int? = null,
+            ) : Text(Type.VARIABLE) {
                 override fun isEdited(): Boolean = false
             }
         }
@@ -133,6 +159,8 @@ object Edit {
     object JacksonModule : SimpleModule() {
         class DeserializationException(msg: String) : Exception(msg)
 
+        // object JacksonModule krever denne.
+        @Suppress("unused")
         private fun readResolve(): Any = JacksonModule
 
         init {
@@ -189,23 +217,23 @@ fun List<Block>.toEdit(): List<Edit.Block> =
 
 fun Block.toEdit(): Edit.Block =
     when (this) {
-        is Block.Paragraph -> Edit.Block.Paragraph(id, editable, content.map { it.toEdit() })
-        is Block.Title1 -> Edit.Block.Title1(id, editable, content.map { it.toEdit() })
-        is Block.Title2 -> Edit.Block.Title2(id, editable, content.map { it.toEdit() })
+        is Block.Paragraph -> Edit.Block.Paragraph(id = id, editable = editable, content = content.map { it.toEdit(id) }, parentId = null)
+        is Block.Title1 -> Edit.Block.Title1(id = id, editable = editable, content = content.map { it.toEdit(id) }, parentId = null)
+        is Block.Title2 -> Edit.Block.Title2(id = id, editable = editable, content = content.map { it.toEdit(id) }, parentId = null)
     }
 
-fun ParagraphContent.toEdit(): Edit.ParagraphContent =
+fun ParagraphContent.toEdit(parentId: Int?): Edit.ParagraphContent =
     when (this) {
-        is ParagraphContent.ItemList -> Edit.ParagraphContent.ItemList(id, items.map { it.toEdit() })
-        is ParagraphContent.Text -> toEdit()
+        is ParagraphContent.ItemList -> Edit.ParagraphContent.ItemList(id = id, items = items.map { it.toEdit(id) }, parentId = parentId)
+        is ParagraphContent.Text -> toEdit(parentId)
         is ParagraphContent.Form -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
-        is ParagraphContent.Table -> toEdit()
+        is ParagraphContent.Table -> toEdit(parentId)
     }
 
-fun ParagraphContent.Text.toEdit(): Edit.ParagraphContent.Text =
+fun ParagraphContent.Text.toEdit(parentId: Int?): Edit.ParagraphContent.Text =
     when (this) {
-        is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id = id, text = text, fontType = fontType.toEdit(), tags = tags)
-        is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id, text, fontType.toEdit())
+        is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id = id, text = text, fontType = fontType.toEdit(), tags = tags, parentId = parentId)
+        is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id = id, text = text, fontType = fontType.toEdit(), parentId = parentId)
         is ParagraphContent.Text.NewLine -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
     }
 
@@ -216,23 +244,23 @@ fun ParagraphContent.Text.FontType.toEdit(): Edit.ParagraphContent.Text.FontType
         ParagraphContent.Text.FontType.ITALIC -> Edit.ParagraphContent.Text.FontType.ITALIC
     }
 
-fun ParagraphContent.ItemList.Item.toEdit(): Edit.ParagraphContent.ItemList.Item =
-    Edit.ParagraphContent.ItemList.Item(id, content.map { it.toEdit() })
+fun ParagraphContent.ItemList.Item.toEdit(parentId: Int?): Edit.ParagraphContent.ItemList.Item =
+    Edit.ParagraphContent.ItemList.Item(id = id, content = content.map { it.toEdit(id) }, parentId = parentId)
 
-fun ParagraphContent.Table.toEdit(): Edit.ParagraphContent.Table =
-    Edit.ParagraphContent.Table(id, rows.map { it.toEdit() }, header.toEdit())
+fun ParagraphContent.Table.toEdit(parentId: Int?): Edit.ParagraphContent.Table =
+    Edit.ParagraphContent.Table(id = id, rows = rows.map { it.toEdit(id) }, header = header.toEdit(id), parentId = parentId)
 
-fun ParagraphContent.Table.Row.toEdit(): Edit.ParagraphContent.Table.Row =
-    Edit.ParagraphContent.Table.Row(id, cells.map { it.toEdit() })
+fun ParagraphContent.Table.Row.toEdit(parentId: Int?): Edit.ParagraphContent.Table.Row =
+    Edit.ParagraphContent.Table.Row(id = id, cells = cells.map { it.toEdit(id) }, parentId = parentId)
 
-fun ParagraphContent.Table.Cell.toEdit(): Edit.ParagraphContent.Table.Cell =
-    Edit.ParagraphContent.Table.Cell(id, text.map { it.toEdit() })
+fun ParagraphContent.Table.Cell.toEdit(parentId: Int?): Edit.ParagraphContent.Table.Cell =
+    Edit.ParagraphContent.Table.Cell(id = id, text = text.map { it.toEdit(id) }, parentId = parentId)
 
-fun ParagraphContent.Table.Header.toEdit(): Edit.ParagraphContent.Table.Header =
-    Edit.ParagraphContent.Table.Header(id, colSpec.map { it.toEdit() })
+fun ParagraphContent.Table.Header.toEdit(parentId: Int?): Edit.ParagraphContent.Table.Header =
+    Edit.ParagraphContent.Table.Header(id = id, colSpec = colSpec.map { it.toEdit(id) }, parentId = parentId)
 
-fun ParagraphContent.Table.ColumnSpec.toEdit(): Edit.ParagraphContent.Table.ColumnSpec =
-    Edit.ParagraphContent.Table.ColumnSpec(id, headerContent.toEdit(), alignment.toEdit(), span)
+fun ParagraphContent.Table.ColumnSpec.toEdit(parentId: Int?): Edit.ParagraphContent.Table.ColumnSpec =
+    Edit.ParagraphContent.Table.ColumnSpec(id = id, headerContent = headerContent.toEdit(id), alignment = alignment.toEdit(), span = span, parentId = parentId)
 
 fun ParagraphContent.Table.ColumnAlignment.toEdit(): Edit.ParagraphContent.Table.ColumnAlignment =
     when (this) {

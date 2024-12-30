@@ -87,7 +87,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
             konverterElementerTilBrevbakerformat(innhold)
 
             showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, frivilligSkattetrekk, bosattUtland))
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, bosattUtland, frivilligSkattetrekk))
             }
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)

@@ -8,9 +8,12 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.auth.lesInnADGrupper
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
@@ -561,6 +564,88 @@ class BrevredigeringServiceTest {
         val second = brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)?.resultOrNull()
 
         assertThat(first).isEqualTo(second)
+    }
+
+    @Test
+    fun `attesterer hvis avsender har attestantrolle`(): Unit = runBlocking {
+        Features.override(Features.attestant, true)
+        clearMocks(brevbakerMock, penService)
+
+        coEvery { penService.hentPesysBrevdata(any(), any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
+
+        coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
+        coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
+        val meta = templateDescription.copy(metadata = lettermetadata.copy(brevtype = LetterMetadata.Brevtype.VEDTAKSBREV))
+        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns meta
+
+        ADGroups.init(lesInnADGrupper())
+        val brev = opprettBrev(
+            reserverForRedigering = false,
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            vedtaksId = 1
+        ).resultOrNull()!!
+
+        val navident = NavIdent("A12345")
+        withPrincipal(MockPrincipal(navident, "Peder Ås", mutableSetOf(ADGroups.attestant))) {
+            brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
+            assertEquals("Lars Holm", brevredigeringService.hentSignaturAttestant(sak.saksId, brev.info.id)?.resultOrNull())
+            brevredigeringService.delvisOppdaterBrev(
+                saksId = sak.saksId,
+                brevId = brev.info.id,
+                laastForRedigering = true,
+                distribusjonstype = Distribusjonstype.SENTRALPRINT
+            )
+            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
+            brevredigeringService.attester(sak.saksId, brev.info.id)
+        }
+
+        coVerify {
+            penService.hentPesysBrevdata(
+                eq(sak.saksId),
+                eq(1),
+                eq(Testbrevkoder.TESTBREV),
+                eq(principalNavEnhetId),
+            )
+        }
+    }
+
+    @Test
+    fun `attesterer ikke hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
+        Features.override(Features.attestant, true)
+        clearMocks(brevbakerMock, penService)
+
+        coEvery { penService.hentPesysBrevdata(any(), any(), any(), any()) } returns ServiceResult.Ok(brevdataResponseData)
+
+        coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
+        coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
+        val meta = templateDescription.copy(metadata = lettermetadata.copy(brevtype = LetterMetadata.Brevtype.VEDTAKSBREV))
+        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns meta
+
+        ADGroups.init(lesInnADGrupper())
+        val brev = opprettBrev(
+            reserverForRedigering = false,
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            vedtaksId = 1
+        ).resultOrNull()!!
+
+        val navident = NavIdent("A12345")
+        withPrincipal(MockPrincipal(navident, "Peder Ås", mutableSetOf())) {
+            brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
+            brevredigeringService.delvisOppdaterBrev(
+                saksId = sak.saksId,
+                brevId = brev.info.id,
+                laastForRedigering = true,
+                distribusjonstype = Distribusjonstype.SENTRALPRINT
+            )
+            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
+            assertThrows<BrevredigeringException.HarIkkeAttestantrolleException> {
+                brevredigeringService.attester(sak.saksId, brev.info.id)
+            }
+        }
+
+        coVerify {
+            penService.hentPesysBrevdata(any(), any(), any(), any())
+        }
     }
 
     @Test

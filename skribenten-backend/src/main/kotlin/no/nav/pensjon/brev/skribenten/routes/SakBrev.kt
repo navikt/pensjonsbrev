@@ -130,6 +130,13 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
+        post("/{brevId}/attester") {
+            brevredigeringService.attester(brevId = call.parameters.getOrFail<Long>("brevId"), saksId = call.attributes[SakKey].saksId)
+                ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK) }
+                ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
+        }
+
         post("/{brevId}/pdf/send") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[SakKey]

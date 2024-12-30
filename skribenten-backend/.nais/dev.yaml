@@ -19,6 +19,9 @@ groups:
   #0000-GA-Person-EndreStrengtFortroligUtland
   - name: "EndreStrengtFortroligUtland"
     id: "fc792042-93d8-4d5e-a501-55c45c03c576"
+  #0000-GA-PENSJON_ATTESTERING
+  - name: "Attestant"
+    id: "63f46f74-84a8-4d1c-87a8-78532ab3ae60"
 
 inboundRules:
   - application: skribenten-web

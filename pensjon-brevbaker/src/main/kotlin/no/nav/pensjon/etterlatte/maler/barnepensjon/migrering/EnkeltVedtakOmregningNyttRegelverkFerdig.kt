@@ -54,7 +54,7 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
         outline {
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, frivilligSkattetrekk, erBosattUtlandet))
+            includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, erBosattUtlandet, frivilligSkattetrekk))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))

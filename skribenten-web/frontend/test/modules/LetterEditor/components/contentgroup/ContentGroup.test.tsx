@@ -17,6 +17,7 @@ const content: LiteralValue[] = [newLiteral({ id: 1, text: "Heisann" }), newLite
 
 const block: ParagraphBlock = {
   id: 1,
+  parentId: null,
   editable: true,
   type: PARAGRAPH,
   deletedContent: [],
@@ -43,21 +44,23 @@ function setup() {
 const complexEditorState = letter(
   paragraph(
     variable("Dokumentet starter med variable"),
-    literal("første literal"),
+    literal({ text: "første literal" }),
     variable("X"),
-    newLiteral({ text: "andre literal", tags: [ElementTags.FRITEKST] }),
+    literal({ text: "andre literal", tags: [ElementTags.FRITEKST] }),
   ),
   paragraph(variable("Paragraf med kun variable")),
-  paragraph(literal("paragraf med kun tekst")),
+  paragraph(literal({ text: "paragraf med kun tekst" })),
   paragraph(
-    itemList(
-      item(literal("1. item")),
-      item(variable("2. item variable")),
-      item(literal("3. item"), variable("med variable")),
-      item(literal("nth item")),
-    ),
+    itemList({
+      items: [
+        item(literal({ text: "1. item" })),
+        item(variable("2. item variable")),
+        item(literal({ text: "3. item" }), variable("med variable")),
+        item(literal({ text: "nth item" })),
+      ],
+    }),
   ),
-  paragraph(literal("Dokumentet avsluttes med literal")),
+  paragraph(literal({ text: "Dokumentet avsluttes med literal" })),
 );
 
 function setupComplex(stateOverride?: LetterEditorState) {
@@ -384,7 +387,7 @@ describe("onClickHandler", () => {
   test("clicking on a fritekst variable that has been edited should not select the whole element", async () => {
     const state = letter(
       paragraph(
-        literal("første literal"),
+        literal({ text: "første literal" }),
         variable("X"),
         newLiteral({ text: "andre literal", editedText: "Hei på deg", tags: [ElementTags.FRITEKST] }),
       ),
@@ -411,7 +414,7 @@ describe("onFocusHandler", () => {
   test("tabbing through a fritkest variable that has been edited should not be focused", async () => {
     const state = letter(
       paragraph(
-        literal("første literal"),
+        literal({ text: "første literal" }),
         variable("X"),
         newLiteral({
           text: "andre literal",
