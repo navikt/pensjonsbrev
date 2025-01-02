@@ -4,9 +4,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
-import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
 import no.nav.pensjon.etterlatte.maler.ForskjelligTrygdetid
 import no.nav.pensjon.etterlatte.maler.IntBroek
