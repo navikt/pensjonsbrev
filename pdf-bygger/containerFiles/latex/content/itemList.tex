@@ -4,6 +4,7 @@
 \newenvironment{letteritemize}[1]{
     % remove paragraph spacing if previous element was a paragraph
     \ifdefstring{\previouselement}{paragraph}{\vspace{-\parskip}}{}
+    \standardtext
     \begin{itemize}
         #1
     } {

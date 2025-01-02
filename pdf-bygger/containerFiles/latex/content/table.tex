@@ -15,8 +15,8 @@
 
 \newenvironment{letterTable}[1]{
     \setlength{\parskip}{0pt}
-    %\tablecolumnheadertext
-    \begin{longtblr}[presep={6mm},postsep={3.5mm},footsep={3.5mm}, headsep={3.5mm}]
+    \standardtext
+    \begin{longtblr}[presep={5.5mm},postsep={3.5mm},footsep={3.5mm}, headsep={3.5mm}]
     {
         colspec=#1,
         colsep = 8pt,
@@ -29,8 +29,7 @@
         rowhead=1,
         hline{1}={0pt,linecolor}, %remove first horizontal line over the column header
         hline{2}={headersepcolor}, %remove first horizontal line over the column header
-        row{1-1}={columnheadercolor,rowsep=10pt,cmd=\tablecolumnheader},
-        row{2-2}={cmd=\standardtext}
+        row{1-1}={columnheadercolor,rowsep=11pt,cmd=\tablecolumnheader},
     }
 }{
     \end{longtblr}

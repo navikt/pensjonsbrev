@@ -1,7 +1,7 @@
 %Used for paragraph{...} element
 \newcommand{\templateparagraph}[1] {
+    \ifdefstring{\previouselement}{paragraph}{\par}{} % only put par skip between paragraphs, nowhere else. This reduces the possible combinations of spaces between elements.
+    \setpreviouselement{paragraph}
     \standardtext
     #1
-    \setpreviouselement{paragraph}
-    \par
 }

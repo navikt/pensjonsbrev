@@ -44,20 +44,20 @@
 \newcommand{\standardtext}{\primaryFont \fontsize{\standardtextsize}{\standardtextspacing} \mdseries \selectfont}
 
 % main title
-\newfontfamily\titlefont[LetterSpace=0.3]{Source Sans 3 Bold}
+\newfontfamily\titlefont[LetterSpace=2.5]{Source Sans 3 Bold}
 \newcommand{\titletextsize}{16pt}
 \newcommand{\titletextspacing}{20pt}
-\newcommand{\lettertitle}{\titlefont \fontsize{\titletextsize}{\titletextspacing} \bfseries \selectfont}
+\newcommand{\lettertitle}{\titlefont \fontsize{\titletextsize}{\titletextspacing} \fontseries{bf} \selectfont}
 
 % title 1
-\newfontfamily\titleonefont[LetterSpace=0.25]{Source Sans 3 Bold}
-\newcommand{\titleone}{\titleonefont \fontsize{\titleonetextsize}{\titleonetextspacing} \bfseries \selectfont}
+\newfontfamily\titleonefont[LetterSpace=2.3]{Source Sans 3 Bold}
+\newcommand{\titleone}{\titleonefont \fontsize{\titleonetextsize}{\titleonetextspacing} \fontseries{bf} \selectfont}
 \newcommand{\titleonetextsize}{13pt}
 \newcommand{\titleonetextspacing}{10pt}
 
 % title 2
-\newfontfamily\titletwofont[LetterSpace=0.2]{Source Sans 3 Bold}
-\newcommand{\titletwo}{\titletwofont \fontsize{\titletwotextsize}{\titletwotextspacing} \bfseries \selectfont}
+\newfontfamily\titletwofont[LetterSpace=2.2]{Source Sans 3 Bold}
+\newcommand{\titletwo}{\titletwofont \fontsize{\titletwotextsize}{\titletwotextspacing} \fontseries{bf} \selectfont}
 \newcommand{\titletwotextsize}{12pt}
 \newcommand{\titletwotextspacing}{10pt}
 

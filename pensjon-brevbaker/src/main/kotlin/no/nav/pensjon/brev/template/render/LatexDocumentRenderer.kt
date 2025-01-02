@@ -17,7 +17,13 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
 
-    override fun render(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>, language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype): LatexDocument =
+    override fun render(
+        letter: LetterMarkup,
+        attachments: List<LetterMarkup.Attachment>,
+        language: Language,
+        felles: Felles,
+        brevtype: LetterMetadata.Brevtype
+    ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
                 appendMasterTemplateParameters(attachments, brevtype, felles, language)
@@ -91,12 +97,12 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                     appendln(""" \\ \feltclosingsaksbehandlersuffix """, escape = false)
                 }
                 appenCmd("par")
-                appenCmd("vspace*{12pt}")
+                appenCmd("vspace*{18pt}")
                 appenCmd("feltnavenhet")
             } else {
                 appenCmd("feltnavenhet")
                 appenCmd("par")
-                appenCmd("vspace*{12pt}")
+                appenCmd("vspace*{18pt}")
                 if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
                     appenCmd("feltclosingautomatisktextvedtaksbrev")
                 } else {
@@ -196,23 +202,23 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
             }
         }
 
+    //TODO depricate table/itemlist/form inside paragraph and make them available outside.
+    // there should not be a different space between elements if within/outside paragraphs.
     private fun LatexAppendable.renderParagraph(
         element: LetterMarkup.Block.Paragraph
-    ): Unit =
-        appenCmd("templateparagraph") {
-            arg {
-                element.content.forEach {
-                    renderParagraphContent(it)
-                }
-            }
-        }
+    ): Unit = element.content.forEach { renderParagraphContent(it) }
 
     private fun LatexAppendable.renderParagraphContent(element: ParagraphContent): Unit =
         when (element) {
             is ParagraphContent.Form -> renderForm(element)
             is ParagraphContent.ItemList -> renderList(element)
             is ParagraphContent.Table -> renderTable(element)
-            is ParagraphContent.Text -> renderTextContent(element)
+            is ParagraphContent.Text ->
+                appenCmd("templateparagraph") {
+                    arg {
+                        renderTextContent(element)
+                    }
+                }
         }
 
     private fun LatexAppendable.renderList(

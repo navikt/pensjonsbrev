@@ -3,11 +3,12 @@ package no.nav.pensjon.brev.template.render
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.maler.example.lipsums
-import no.nav.pensjon.brev.renderTestPDF
+import no.nav.pensjon.brev.renderTestPdfOutline
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
@@ -16,8 +17,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.nio.file.Path
-import kotlin.text.Typography.paragraph
 
 @Tag(TestTags.INTEGRATION_TEST)
 class LatexVisualITest {
@@ -25,28 +24,20 @@ class LatexVisualITest {
     private fun render(
         overrideName: String? = null,
         overrideFelles: Felles? = null,
+        brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         outlineInit: OutlineOnlyScope<LangBokmal, Unit>.() -> Unit,
     ) {
-        val testName = overrideName ?: StackWalker.getInstance().walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") }
-
-        val template = createTemplate(
-            testName, Unit::class, languages(Bokmal), LetterMetadata(
-                testName,
-                false,
-                LetterMetadata.Distribusjonstype.VEDTAK,
-                LetterMetadata.Brevtype.VEDTAKSBREV
-            )
-        ) {
-            title {
-                text(Bokmal to testName)
-            }
-            outline { outlineInit() }
-        }
-        val letter = Letter(template, Unit, Bokmal, overrideFelles?: Fixtures.fellesAuto)
-        letter.renderTestPDF(testName, Path.of("build/test_visual/pdf"))
+        renderTestPdfOutline(
+            "test_visual/pdf",
+            testName = overrideName ?: StackWalker.getInstance().walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") },
+            felles = overrideFelles,
+            brevtype = brevtype,
+            outlineInit = outlineInit,
+        )
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, Unit>.ipsumText() = text(Bokmal to lipsums.first())
+    private fun ParagraphOnlyScope<LangBokmal, Unit>.ipsumText() =
+        text(Bokmal to "Etiam porta turpis et eros ullamcorper sodales. Cras et eleifend leo. Aenean vehicula nunc sit amet quam tincidunt, id aliquam arcu cursus.")
 
     @Test
     fun `Two paragraphs in a row`() {
@@ -57,76 +48,74 @@ class LatexVisualITest {
     }
 
     @Test
-    fun verge(){
-        render(overrideFelles = Fixtures.felles.copy(
-            vergeNavn = "Verge vergeson"
-        )) {
-            title1 {
-                text(
-                    Bokmal to "Overskrift",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Aliquam lectus nulla, condimentum vel est vitae, imperdiet viverra tortor. Mauris non lorem eget diam\n" +
-                            "posuere porta nec eu elit. Integer nec vestibulum leo. Aliquam lectus nulla, condimentum vel est vitae,\n" +
-                            "imperdiet viverra tortor. Mauris non lorem eget diam posuere porta nec eu elit. Integer nec vestibulum\n" +
-                            "leo.",
-                )
-            }
-        }
-    }
-
-    @Test
-    fun `infobrev med saksbehandler underskrift`(){
-        render(overrideFelles = Fixtures.felles.copy(
-            signerendeSaksbehandlere = SignerendeSaksbehandlere(
-                saksbehandler = "Ole Saksbehandler"
+    fun verge() {
+        render(
+            overrideFelles = Fixtures.felles.copy(
+                vergeNavn = "Verge vergeson"
             )
-        )) {
+        ) {
+            testTitle1()
             paragraph { ipsumText() }
         }
     }
 
     @Test
-    fun `vedtaksbrev med saksbehandler underskrift`(){
-        render(overrideFelles = Fixtures.felles.copy(
-            signerendeSaksbehandlere = SignerendeSaksbehandlere(
-                saksbehandler = "Ole Saksbehandler",
-                attesterendeSaksbehandler = "Per Attesterende"
+    fun `infobrev med saksbehandler underskrift`() {
+        render(
+            overrideFelles = Fixtures.felles.copy(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                    saksbehandler = "Ole Saksbehandler"
+                )
             )
-        )) {
+        ) {
             paragraph { ipsumText() }
         }
     }
 
+    @Test
+    fun `vedtaksbrev med saksbehandler underskrift`() {
+        render(
+            overrideFelles = Fixtures.felles.copy(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                    saksbehandler = "Ole Saksbehandler",
+                    attesterendeSaksbehandler = "Per Attesterende"
+                )
+            )
+        ) {
+            paragraph { ipsumText() }
+        }
+    }
 
     @Test
-    fun `Title1 with ingress text then table`() {
-        render {
-            title1 { text(Bokmal to "Title 1") }
+    fun `all element combinations with and without paragraph wrappers`() {
+        val relevantEntries = ElementType.entries.filterNot { it == ElementType.T1 || it == ElementType.T2 }
+        val combinations = relevantEntries.flatMapIndexed { index, type ->
+            relevantEntries.drop(index + 1).flatMap { otherType ->
+                listOf(type to otherType, otherType to type)
+            }
+        }
+
+        render(overrideName = "all paragraph content inside same paragraph") {
             paragraph {
-                text(Bokmal to "Some further descriptive text.")
-                table(
-                    header = {
-                        column { text(Bokmal to "Column A") }
-                        column { text(Bokmal to "Column B") }
-                    }
-                ) {
-                    row {
-                        cell { text(Bokmal to "Cell A-1") }
-                        cell { text(Bokmal to "Cell B-1") }
-                    }
+                combinations.forEach {
+                    renderParagraphElementOfType(it.first)
+                    renderParagraphElementOfType(it.second)
                 }
             }
         }
-    }
+        render(overrideName = "all paragraph content inside different paragraphs") {
+            combinations.forEach {
+                paragraph { renderParagraphElementOfType(it.first) }
+                paragraph { renderParagraphElementOfType(it.second) }
 
+            }
+        }
+    }
 
     @Test
     fun `Two pages`() {
         render {
-            title1 { text(Bokmal to "First title") }
+            testTitle1()
             paragraph { ipsumText() }
             title1 { text(Bokmal to "Second title") }
             paragraph { ipsumText() }
@@ -134,45 +123,73 @@ class LatexVisualITest {
     }
 
     @ParameterizedTest
-    @MethodSource("elementCombinations")
+    @MethodSource("allParSeparatedElementCombinations")
     fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
         render(overrideName = "${elementA.description} then ${elementB.description}") {
-            renderElementOfType(elementA)
-            renderElementOfType(elementB)
+            renderOutlineElementOfType(elementA)
+            renderOutlineElementOfType(elementB)
         }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, Unit>.renderElementOfType(elementA: ElementType) {
+    private fun OutlineOnlyScope<LangBokmal, Unit>.renderOutlineElementOfType(elementA: ElementType) {
         when (elementA) {
-            ElementType.T1 -> title1 { text(Bokmal to "First title") }
-            ElementType.T2 -> title2 { text(Bokmal to "Second title") }
-            ElementType.PAR -> paragraph { ipsumText() }
+            ElementType.T1 -> testTitle1()
+            ElementType.T2 -> testTitle2()
+            ElementType.PAR -> {
+                paragraph { ipsumText() }
+            }
 
-            ElementType.TABLE -> paragraph {
-                table(
-                    header = {
-                        column { text(Bokmal to "Column A") }
-                        column { text(Bokmal to "Column B") }
-                    }
-                ) {
-                    row {
-                        cell { text(Bokmal to "Cell A-1") }
-                        cell { text(Bokmal to "Cell B-1") }
-                    }
+            ElementType.TABLE -> {
+                paragraph {
+                    testTable()
                 }
             }
 
-            ElementType.LIST -> paragraph {
-                list {
-                    item {
-                        text(Bokmal to "Text point 1")
-                    }
-                    item {
-                        text(Bokmal to "Text point 2")
-                    }
+            ElementType.LIST -> {
+                paragraph {
+                    testList()
                 }
             }
         }
+    }
+
+    private fun ParagraphOnlyScope<LangBokmal, Unit>.renderParagraphElementOfType(elementA: ElementType) {
+        when (elementA) {
+            ElementType.PAR -> ipsumText()
+            ElementType.TABLE -> testTable()
+            ElementType.LIST -> testList()
+            else -> throw IllegalArgumentException()
+        }
+    }
+
+
+    private fun ParagraphOnlyScope<LangBokmal, Unit>.testList() {
+        list {
+            item {
+                text(Bokmal to "Text point 1")
+            }
+            item {
+                text(Bokmal to "Text point 2")
+            }
+        }
+    }
+
+    private fun ParagraphOnlyScope<LangBokmal, Unit>.testTable() {
+        table(
+            header = {
+                column { text(Bokmal to "Column A") }
+                column { text(Bokmal to "Column B") }
+            }
+        ) {
+            row {
+                cell { text(Bokmal to "Cell A-1") }
+                cell { text(Bokmal to "Cell B-1") }
+            }
+        }
+    }
+
+    private fun OutlineOnlyScope<LangBokmal, Unit>.testTitle2() {
+        title2 { text(Bokmal to "Second title") }
     }
 
     enum class ElementType(val description: String) {
@@ -185,10 +202,25 @@ class LatexVisualITest {
 
     companion object {
         @JvmStatic
-        fun elementCombinations(): List<Arguments> = ElementType.entries.flatMapIndexed { index, type ->
-            ElementType.entries.drop(index + 1).flatMap { otherType ->
-                listOf(Arguments.of(type, otherType), Arguments.of(otherType, type))
+        fun allParSeparatedElementCombinations(): List<Arguments> =
+            ElementType.entries.flatMapIndexed { index, type ->
+                ElementType.entries.drop(index + 1).flatMap { otherType ->
+                    listOf(Arguments.of(type, otherType), Arguments.of(otherType, type))
+                }
+            }
+
+        @JvmStatic
+        fun paragraphContentCombinations(): List<Arguments> {
+            val relevantEntries = ElementType.entries.filterNot { it == ElementType.T1 || it == ElementType.T2 }
+            return relevantEntries.flatMapIndexed { index, type ->
+                relevantEntries.drop(index + 1).flatMap { otherType ->
+                    listOf(Arguments.of(type, otherType), Arguments.of(otherType, type))
+                }
             }
         }
     }
+}
+
+private fun OutlineOnlyScope<LangBokmal, Unit>.testTitle1() {
+    title1 { text(Bokmal to "First title") }
 }
