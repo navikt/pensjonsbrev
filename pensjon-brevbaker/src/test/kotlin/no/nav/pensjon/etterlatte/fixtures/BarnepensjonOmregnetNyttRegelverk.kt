@@ -32,6 +32,7 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
         frivilligSkattetrekk = true,
         erUnder18Aar = false,
         erBosattUtlandet = true,
+        erEtterbetaling = false
     )
 
 internal fun lagBeregning() = BarnepensjonBeregning(

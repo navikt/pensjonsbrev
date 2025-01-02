@@ -131,4 +131,5 @@ fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderin
     brukerUnder18Aar = true,
     bosattUtland = false,
     frivilligSkattetrekk = false,
+    erEtterbetaling = false
 )

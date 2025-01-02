@@ -124,6 +124,7 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
         erGjenoppretting = false,
         vedtattIPesys = false,
         erMigrertYrkesskade = false,
+        erEtterbetaling = false
     )
 }
 
