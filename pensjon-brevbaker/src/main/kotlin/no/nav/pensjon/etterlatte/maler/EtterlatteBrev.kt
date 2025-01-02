@@ -3,16 +3,6 @@ package no.nav.pensjon.etterlatte.maler
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
-data class BarnepensjonEtterbetaling(
-    val inneholderKrav: Boolean?,
-    val etterbetalingPeriodeValg: EtterbetalingPeriodeValg?,
-)
-
-enum class EtterbetalingPeriodeValg {
-    UNDER_3_MND,
-    FRA_3_MND,
-}
-
 data class OmstillingsstoenadEtterbetaling(
     val fraDato: LocalDate,
     val tilDato: LocalDate,
