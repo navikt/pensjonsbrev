@@ -20,6 +20,7 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.brukerUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.erGjenoppretting
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.erMigrertYrkesskade
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.etterbetaling
@@ -45,11 +46,12 @@ data class BarnepensjonForeldreloesDTO(
     val brukerUnder18Aar: Boolean,
     val erGjenoppretting: Boolean,
     val erMigrertYrkesskade: Boolean,
-    val etterbetaling: BarnepensjonEtterbetaling?,
+    val etterbetaling: BarnepensjonEtterbetaling?, // TODO: kan fjernes
     val frivilligSkattetrekk: Boolean,
     val harUtbetaling: Boolean,
     val kunNyttRegelverk: Boolean,
     val vedtattIPesys: Boolean,
+    val erEtterbetaling: Boolean
 ) : FerdigstillingBrevDTO
 
 
@@ -94,7 +96,7 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
             konverterElementerTilBrevbakerformat(innhold)
 
             showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, bosattUtland, frivilligSkattetrekk))
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(etterbetaling, erEtterbetaling, bosattUtland, frivilligSkattetrekk))
             }
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)

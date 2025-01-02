@@ -18,7 +18,8 @@ data class BarnepensjonOmregnetNyttRegelverkFerdigDTO(
     override val innhold: List<Element>,
     val beregning: BarnepensjonBeregning,
     val frivilligSkattetrekk: Boolean,
-    val etterbetaling: BarnepensjonEtterbetaling?,
+    val etterbetaling: BarnepensjonEtterbetaling?, // TODO: kan fjernes
+    val erEtterbetaling: Boolean,
     val erUnder18Aar: Boolean,
     val erBosattUtlandet: Boolean,
 ) : FerdigstillingBrevDTO
