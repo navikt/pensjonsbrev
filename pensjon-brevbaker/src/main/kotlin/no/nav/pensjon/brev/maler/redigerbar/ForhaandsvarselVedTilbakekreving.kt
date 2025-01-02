@@ -64,7 +64,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                 text(
                     Bokmal to "Beløpet er <fritekst: beløp> kr. Det feilutbetalte beløpet er summen av utbetaling som mottakeren ikke hadde krav på.",
                     Nynorsk to "Beløpet er <fritekst: beløp> kr. Det feilutbetalte beløpet er summen av utbetaling som mottakeren ikkje hadde krav på.",
-                    English to "The amount is NOK <fritekst: beløp>. The incorrectly paid amount is the total of the payments to which the recipient was not entitled",
+                    English to "The amount is NOK <fritekst: beløp>. The incorrectly paid amount is the total of the payments to which the recipient was not entitled.",
                 )
             }
             paragraph {
