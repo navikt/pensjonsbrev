@@ -28,7 +28,6 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
     BarnepensjonOmregnetNyttRegelverkFerdigDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = lagBeregning(),
-        etterbetaling = lagEtterbetaling(),
         frivilligSkattetrekk = true,
         erUnder18Aar = false,
         erBosattUtlandet = true,
@@ -106,9 +105,4 @@ internal fun lagBeregning() = BarnepensjonBeregning(
         mindreEnnFireFemtedelerAvOpptjeningstiden = false,
         navnAvdoed = "Elvis Presley"
     )
-)
-
-fun lagEtterbetaling() = BarnepensjonEtterbetaling(
-    inneholderKrav = true,
-    etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
 )

@@ -209,7 +209,6 @@ object BarnepensjonFellesFraser {
     }
 
     data class UtbetalingAvBarnepensjon(
-        val etterbetaling: Expression<BarnepensjonEtterbetaling?>, // TODO: kan fjernes
         val erEtterbetaling: Expression<Boolean>,
         val bosattUtland: Expression<Boolean>,
         val frivilligSkattetrekk: Expression<Boolean>

@@ -122,10 +122,6 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
 }
 
 fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderingRedigerbartUtfallDTO(
-    etterbetaling = BarnepensjonEtterbetaling(
-        inneholderKrav = true,
-        etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
-    ),
     harUtbetaling = true,
     feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
     brukerUnder18Aar = true,

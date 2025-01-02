@@ -68,10 +68,6 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
             trygdetid = listOf(bruktTrygdetid),
             bruktTrygdetid = bruktTrygdetid
         ),
-        etterbetaling = BarnepensjonEtterbetaling(
-            inneholderKrav = true,
-            etterbetalingPeriodeValg = EtterbetalingPeriodeValg.UNDER_3_MND,
-        ),
         frivilligSkattetrekk = true,
         bosattUtland = true,
         brukerUnder18Aar = true,
