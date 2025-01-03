@@ -9,14 +9,7 @@ import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
-import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
-import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeAlder
-import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
-import no.nav.pensjon.brev.maler.redigerbar.VarselOmMuligAvslag
-import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
-import no.nav.pensjon.brev.maler.redigerbar.InnhentingDokumentasjonFraBruker
-import no.nav.pensjon.brev.maler.redigerbar.InnhentingOpplysningerFraBruker
-import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -56,6 +49,7 @@ object ProductionTemplates : AllTemplates {
         BekreftelsePaaFlyktningstatus,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
+        ForhaandsvarselVedTilbakekreving,
         InformasjonOmSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
         InnhentingOpplysningerFraBruker,
