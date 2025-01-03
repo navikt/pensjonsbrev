@@ -57,7 +57,7 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
             paragraph {
                 text(
                     Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen <Fritekst: antall dager/uker/måneder>.",
-                    English to "Without further delays we assume the processing of your case to be complete within <Fritekst: antall dager/uker/måneder>"
+                    English to "Without further delays, we assume the processing of your case to be completed within <Fritekst: antall dager/uker/måneder>."
                 )
             }
             title1 {
@@ -76,9 +76,9 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
             }
             paragraph {
                 text(
-                    Bokmal to "Ta gjerne kontakt med oss på telefon ${Constants.navKontaktsenterPensjon} hvis du ønsker mer informasjon. " +
+                    Bokmal to "Ta gjerne kontakt med oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du ønsker mer informasjon. " +
                             "Husk at du kan finne mer informasjon om regelverket på ${Constants.NAV_URL}.",
-                    English to "Please contact Nav at tel. +47 ${Constants.navKontaktsenterPensjon} if you would like more information. " +
+                    English to "Please contact Nav at tel. +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} if you would like more information. " +
                             "Remember that you can find more information about the regulations at ${Constants.NAV_URL}."
                 )
             }

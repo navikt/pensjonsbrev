@@ -18,7 +18,7 @@ class OrienteringOmForlengetSaksbehandlingTest {
         Letter(
             OrienteringOmForlengetSaksbehandlingstid.template,
             Fixtures.create<EmptyBrevdata>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.fellesAuto
         ).renderTestPDF(OrienteringOmForlengetSaksbehandlingstid.kode.name)
     }
