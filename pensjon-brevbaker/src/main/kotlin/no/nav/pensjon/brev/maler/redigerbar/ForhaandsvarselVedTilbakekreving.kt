@@ -42,30 +42,30 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
     ) {
         title {
             text(
-                Bokmal to "Varsel om at Nav vurderer å kreve tilbake feilutbetalt <fritekst: type ytelse>",
-                Nynorsk to "Varsel om at Nav vurderer å krevje tilbake feilutbetalt <fritekst: type ytelse>",
-                English to "Notification that NAV is considering demanding repayment of incorrectly paid <fritekst: type ytelse>",
+                Bokmal to "Varsel om at Nav vurderer å kreve tilbake feilutbetalt <Fritekst: type ytelse>",
+                Nynorsk to "Varsel om at Nav vurderer å krevje tilbake feilutbetalt <Fritekst: type ytelse>",
+                English to "Notification that Nav is considering demanding repayment of incorrectly paid <Fritekst: type ytelse>",
             )
         }
         outline {
             paragraph {
                 textExpr(
-                    Bokmal to felles.avsenderEnhet.navn + " viser til vedtak av <fritekst: dato>, " +
-                            "hvor det er lagt til grunn at du har fått utbetalt for mye <fritekst: type ytelse> i perioden fra og med " +
-                            "<fritekst: dato fra og med> til og med <fritekst: dato til og med>.".expr(),
-                    Nynorsk to felles.avsenderEnhet.navn + " viser til vedtak av <fritekst: dato>, " +
-                            "der det er lagt til grunn at du har fått utbetalt for mykje <fritekst: type ytelse> i perioden frå og med " +
-                            "<fritekst: dato fra og med> til og med <fritekst: dato til og med>.".expr(),
-                    English to felles.avsenderEnhet.navn + " refers to the decision of <fritekst: dato>, " +
-                            "which indicates that you have received over-payment of <fritekst: type ytelse> during the period from and including " +
-                            "<fritekst: dato fra og med> up to and including <fritekst: dato til og med>.".expr()
+                    Bokmal to felles.avsenderEnhet.navn + " viser til vedtak av <Fritekst: dato>, " +
+                            "hvor det er lagt til grunn at du har fått utbetalt for mye <Fritekst: type ytelse> i perioden fra og med " +
+                            "<Fritekst: dato fra og med> til og med <Fritekst: dato til og med>.".expr(),
+                    Nynorsk to felles.avsenderEnhet.navn + " viser til vedtak av <Fritekst: dato>, " +
+                            "der det er lagt til grunn at du har fått utbetalt for mykje <Fritekst: type ytelse> i perioden frå og med " +
+                            "<Fritekst: dato fra og med> til og med <Fritekst: dato til og med>.".expr(),
+                    English to felles.avsenderEnhet.navn + " refers to the decision of <Fritekst: dato>, " +
+                            "which indicates that you have received over-payment of <Fritekst: type ytelse> during the period from and including " +
+                            "<Fritekst: dato fra og med> up to and including <Fritekst: dato til og med>.".expr()
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Beløpet er <fritekst: beløp> kr. Det feilutbetalte beløpet er summen av utbetaling som mottakeren ikke hadde krav på.",
-                    Nynorsk to "Beløpet er <fritekst: beløp> kr. Det feilutbetalte beløpet er summen av utbetaling som mottakeren ikkje hadde krav på.",
-                    English to "The amount is NOK <fritekst: beløp>. The incorrectly paid amount is the total of the payments to which the recipient was not entitled.",
+                    Bokmal to "Beløpet er <Fritekst: beløp> kr. Det feilutbetalte beløpet er summen av utbetaling som mottakeren ikke hadde krav på.",
+                    Nynorsk to "Beløpet er <Fritekst: beløp> kr. Det feilutbetalte beløpet er summen av utbetaling som mottakeren ikkje hadde krav på.",
+                    English to "The amount is NOK <Fritekst: beløp>. The incorrectly paid amount is the total of the payments to which the recipient was not entitled.",
                 )
             }
             paragraph {
@@ -121,12 +121,12 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
             }
             paragraph {
                 text(
-                    Bokmal to "<fritekst: Gjør kort greie for hva som har skjedd i saken – relevant faktum ut fra hvilke tilbakekrevingshjemler det kan være aktuelt å benytte: Årsak til at feilen oppsto, " +
-                            "uaktsomhet fra mottakers side ved å forårsake og/eller motta feilutbetalt beløp, hvordan og når feilen ble oppdaget osv.",
-                    Nynorsk to "<fritekst: Gjør kort greie for hva som har skjedd i saken – relevant faktum ut fra hvilke tilbakekrevingshjemler det kan være aktuelt å benytte: Årsak til at feilen oppsto, " +
-                            "uaktsomhet fra mottakers side ved å forårsake og/eller motta feilutbetalt beløp, hvordan og når feilen ble oppdaget osv.",
-                    English to "<fritekst: Gjør kort greie for hva som har skjedd i saken – relevant faktum ut fra hvilke tilbakekrevingshjemler det kan være aktuelt å benytte: Årsak til at feilen oppsto, " +
-                            "uaktsomhet fra mottakers side ved å forårsake og/eller motta feilutbetalt beløp, hvordan og når feilen ble oppdaget osv."
+                    Bokmal to "<Fritekst: Gjør kort greie for hva som har skjedd i saken – relevant faktum ut fra hvilke tilbakekrevingshjemler det kan være aktuelt å benytte: Årsak til at feilen oppsto, " +
+                            "uaktsomhet fra mottakers side ved å forårsake og/eller motta feilutbetalt beløp, hvordan og når feilen ble oppdaget osv.>",
+                    Nynorsk to "<Fritekst: Gjør kort greie for hva som har skjedd i saken – relevant faktum ut fra hvilke tilbakekrevingshjemler det kan være aktuelt å benytte: Årsak til at feilen oppsto, " +
+                            "uaktsomhet fra mottakers side ved å forårsake og/eller motta feilutbetalt beløp, hvordan og når feilen ble oppdaget osv.>",
+                    English to "<Fritekst: Gjør kort greie for hva som har skjedd i saken – relevant faktum ut fra hvilke tilbakekrevingshjemler det kan være aktuelt å benytte: Årsak til at feilen oppsto, " +
+                            "uaktsomhet fra mottakers side ved å forårsake og/eller motta feilutbetalt beløp, hvordan og når feilen ble oppdaget osv.>"
                 )
             }
             title1 {
@@ -138,17 +138,17 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
             }
             paragraph {
                 text(
-                    Bokmal to "Ved en feilutbetaling skal NAV vurdere om det skal fattes vedtak om å kreve tilbake det feilutbetalte beløpet fra mottakeren. " +
+                    Bokmal to "Ved en feilutbetaling skal Nav vurdere om det skal fattes vedtak om å kreve tilbake det feilutbetalte beløpet fra mottakeren. " +
                             "De aktuelle bestemmelsene om tilbakekreving står i folketrygdloven paragrafene 22-15 og 22-16. " +
                             "Grunnlaget for tilbakekreving kan være at en person har mottatt noe som vedkommende forsto eller burde forstå at han/hun ikke hadde rett til, " +
                             "og/eller at personen selv har medvirket til feilutbetalingen ved forsettlig eller uaktsomt å gi mangelfulle eller feilaktige opplysninger. " +
                             "I enkelte tilfeller vil feilutbetalte beløp kunne kreves tilbake selv om det ikke foreligger uaktsomhet eller kritikkverdige forhold hos mottakeren. ",
-                    Nynorsk to "Ved ei feilutbetaling skal NAV vurdere om det skal fattast vedtak om å krevje tilbake det feilutbetalte beløpet frå mottakaren. " +
+                    Nynorsk to "Ved ei feilutbetaling skal Nav vurdere om det skal fattast vedtak om å krevje tilbake det feilutbetalte beløpet frå mottakaren. " +
                             "Dei aktuelle føresegnene om tilbakekrevjing står i folketrygdlova paragrafane 22-15 og 22-16. " +
                             "Grunnlaget for tilbakekrevjing kan vere at ein person har motteke noko som vedkommande forstod eller burde ha forstått at han/ho ikkje hadde rett til, " +
                             "og/eller at personen sjølv har medverka til feilutbetalinga ved forsettleg eller aktlaust å gi mangelfulle eller feilaktige opplysningar. " +
                             "I enkelte tilfelle vil feilutbetalte beløp kunne krevjast tilbake sjølv om det ikkje ligg føre aktløyse eller kritikkverdige forhold hos mottakaren.",
-                    English to "In the event of an incorrect payment, NAV will consider whether a decision should be made to demand repayment by the recipient of the incorrectly paid amount. " +
+                    English to "In the event of an incorrect payment, Nav will consider whether a decision should be made to demand repayment by the recipient of the incorrectly paid amount. " +
                             "The relevant provisions regarding a demand for repayment are in paragraphs 22-15 and 22-16 of the Social Security Act. " +
                             "The grounds for demanding repayment may be that a person has received an amount that he or she understood, or should have understood, " +
                             "that he or she was not entitled to and/or that the person concerned has contributed through deliberately or negligently giving incomplete or incorrect information. " +
@@ -159,17 +159,17 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                 text(
                     Bokmal to "Et feilutbetalt beløp kan kreves tilbake med mindre særlige grunner taler mot det. " +
                             "Beløpet kan kreves tilbake fullt ut eller reduseres. Dette avhenger av graden av uaktsomhet hos mottakeren, " +
-                            "størrelsen på det feilutbetalte beløpet, og om feilen helt eller delvis kan tilskrives NAV. " +
+                            "størrelsen på det feilutbetalte beløpet, og om feilen helt eller delvis kan tilskrives Nav. " +
                             "Hvis den som kravet retter seg mot har handlet forsettlig eller grovt uaktsomt, " +
                             "kan det etter folketrygdloven paragraf 22-17a beregnes et rentetillegg på 10 prosent av tilbakekrevingsbeløpet.",
                     Nynorsk to "Eit feilutbetalt beløp kan krevjast tilbake med mindre særlege grunnar taler mot det. " +
                             "Beløpet kan krevjast tilbake fullt ut eller reduserast. Dette er avhengig av graden av aktløyse hos mottakaren, " +
-                            "storleiken på det feilutbetalte beløpet og om feilen heilt eller delvis kan tilskrivast NAV. " +
+                            "storleiken på det feilutbetalte beløpet og om feilen heilt eller delvis kan tilskrivast Nav. " +
                             "Dersom den som kravet rettar seg mot, har handla forsettleg eller grovt aktlaust, " +
                             "kan det etter folketrygdlova paragraf 22-17a bereknast eit rentetillegg på 10 prosent av tilbakekrevjingsbeløpet.",
                     English to "A demand may be made for repayment of an incorrectly paid amount unless specific grounds indicate otherwise. " +
                             "A demand may be made for repayment in full or in part. This depends on the degree of the recipient’s negligence, " +
-                            "the size of the incorrectly paid amount and whether the mistake was partly or entirely NAV’s. " +
+                            "the size of the incorrectly paid amount and whether the mistake was partly or entirely Nav’s. " +
                             "If the person to whom the demand for repayment is directed has acted with intent or gross negligence, " +
                             "additional interest of 10% of the amount to be repaid may be demanded, in accordance with paragraph 22-17a of the Social Security Act."
                 )
@@ -193,15 +193,15 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                     Bokmal to "Du har rett til å uttale deg, skriftlig eller muntlig, før vi tar den endelige avgjørelsen om tilbakebetaling. " +
                             "Du har også som hovedregel rett til å se sakens dokumenter etter bestemmelsene i forvaltningsloven, paragraf 18. " +
                             "Fristen for å gi uttale er 14 dager etter at du har mottatt dette brevet. " +
-                            "Du kan ta kontakt med oss på telefonnummer <fritekst: tlfnr> eller du kan sende et skriftlig svar til:",
+                            "Du kan ta kontakt med oss på telefonnummer <Fritekst: tlfnr> eller du kan sende et skriftlig svar til:",
                     Nynorsk to "Du har rett til å uttale deg, skriftleg eller munnleg, før vi tek den endelege avgjerda om tilbakebetaling. " +
                             "Du har òg som hovudregel rett til å sjå saksdokumenta etter føresegnene i forvaltingslova paragraf 18. " +
                             "Fristen for å uttale seg er 14 dagar etter at du har fått dette brevet. " +
-                            "Du kan ta kontakt med oss på telefonnummer <fritekst: tlfnr>, eller du kan sende eit skriftleg svar til:",
+                            "Du kan ta kontakt med oss på telefonnummer <Fritekst: tlfnr>, eller du kan sende eit skriftleg svar til:",
                     English to "You have the right to submit an opinion, either in writing or verbally, before we take a final decision regarding repayment. " +
                             "As a general rule, you are also entitled to see the case documents, in accordance with the provisions of paragraph 18 of the Public Administration Act. " +
                             "The deadline for submitting an opinion is 14 days after you have received this letter. " +
-                            "You can contact us by telephone on <fritekst: tlfnr> or you can send a written response to:",
+                            "You can contact us by telephone on <Fritekst: tlfnr> or you can send a written response to:",
                 )
             }
             includePhrase(Felles.ReturTilEtterstadOslo)

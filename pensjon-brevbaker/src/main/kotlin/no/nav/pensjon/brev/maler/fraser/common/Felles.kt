@@ -161,11 +161,13 @@ object Felles {
                     Nynorsk to felles.avsenderEnhet.navn,
                     English to felles.avsenderEnhet.navn
                 )
+                newline()
                 textExpr(
                     Bokmal to "Postboks 6600 Etterstad".expr(),
                     Nynorsk to "Postboks 6600 Etterstad".expr(),
                     English to "Postboks 6600 Etterstad".expr(),
                 )
+                newline()
                 textExpr(
                     Bokmal to "0607 Oslo".expr(),
                     Nynorsk to "0607 Oslo".expr(),
