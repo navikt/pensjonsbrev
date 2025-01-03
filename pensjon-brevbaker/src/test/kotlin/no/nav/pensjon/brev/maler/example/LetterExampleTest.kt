@@ -24,9 +24,8 @@ class LetterExampleTest {
             DesignReferenceLetter.template,
             createLetterExampleDto(),
             Language.Bokmal,
-            Fixtures.felles.copy(
-                vergeNavn = "Verge vergeson"
-            )
+            Fixtures.fellesAuto
         ).renderTestPDF("DESIGN_REFERENCE_LETTER_BOKMAL")
     }
+
 }

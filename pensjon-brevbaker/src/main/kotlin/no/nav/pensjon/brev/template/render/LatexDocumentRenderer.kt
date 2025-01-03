@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
@@ -204,22 +205,32 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
 
     //TODO depricate table/itemlist/form inside paragraph and make them available outside.
     // there should not be a different space between elements if within/outside paragraphs.
-    private fun LatexAppendable.renderParagraph(
-        element: LetterMarkup.Block.Paragraph
-    ): Unit = element.content.forEach { renderParagraphContent(it) }
+    private fun LatexAppendable.renderParagraph(element: LetterMarkup.Block.Paragraph) {
+        // yes, this is a bit c esque. Feel free to improve.
+        var i = 0
+        while (i < element.content.size) {
+            val current = element.content[i]
 
-    private fun LatexAppendable.renderParagraphContent(element: ParagraphContent): Unit =
-        when (element) {
-            is ParagraphContent.Form -> renderForm(element)
-            is ParagraphContent.ItemList -> renderList(element)
-            is ParagraphContent.Table -> renderTable(element)
-            is ParagraphContent.Text ->
-                appenCmd("templateparagraph") {
-                    arg {
-                        renderTextContent(element)
+            when (current) {
+                is Form -> renderForm(current)
+                is ItemList -> renderList(current)
+                is Table -> renderTable(current)
+                is Text -> {
+                    appenCmd("templateparagraph") {
+                        arg {
+                            // render all continious text elements inside paragraph
+                            while (i < element.content.size && element.content[i] is Text) {
+                                renderTextContent(element.content[i] as Text)
+                                i++
+                            }
+                        }
                     }
+                    continue // skip extra increment
                 }
+            }
+            i++
         }
+    }
 
     private fun LatexAppendable.renderList(
         list: ParagraphContent.ItemList

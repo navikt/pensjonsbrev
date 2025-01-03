@@ -77,7 +77,7 @@ class LaTeXService(
                     PDFCompilationResponse.Failure.Timeout("Compilation timed out in ${result.timeout}: completed ${result.completedRuns} runs")
             }
         } finally {
-             tmpDir.toFile().deleteRecursively()
+            tmpDir.toFile().deleteRecursively()
         }
     }
 
@@ -120,7 +120,6 @@ class LaTeXService(
                 }
 
                 if (process.exitValue() == 0) {
-                    logger.debug(output.toFile().readText())
                     Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
                 } else {
                     Execution.Failure.Compilation(output = output.toFile().readText(), error = error.toFile().readText())

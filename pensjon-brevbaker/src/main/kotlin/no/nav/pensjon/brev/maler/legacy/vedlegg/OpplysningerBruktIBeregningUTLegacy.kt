@@ -33,7 +33,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             Nynorsk to "Opplysningar om utrekninga",
             English to "Information about calculations"
         ),
-        includeSakspart = true,
+        includeSakspart = false,
     ) {
         val pe = argument
 

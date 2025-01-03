@@ -61,10 +61,10 @@ fun renderTestPdfOutline(
     brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
     attachments: List<AttachmentTemplate<LangBokmal, EmptyBrevdata>> = emptyList(),
     title: String? = null,
-    outlineInit: OutlineOnlyScope<LangBokmal, Unit>.() -> Unit,
+    outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
     val template = createTemplate(
-        testName, Unit::class, languages(Bokmal), LetterMetadata(
+        testName, EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
             testName,
             false,
             LetterMetadata.Distribusjonstype.VEDTAK,
@@ -86,6 +86,7 @@ fun renderTestVedleggPdf(
     title: String? = null,
     includeSakspart: Boolean,
     outputFolder: String,
+    felles: Felles? = null,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
     ) {
     val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment<LangBokmal, EmptyBrevdata>(
@@ -96,7 +97,7 @@ fun renderTestVedleggPdf(
     ) {
         outlineInit()
     }
-    renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title) {  }
+    renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles) {  }
 }
 
 

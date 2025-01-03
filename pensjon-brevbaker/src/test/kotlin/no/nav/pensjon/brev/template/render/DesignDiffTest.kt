@@ -22,7 +22,7 @@ class DesignDiffTest() {
         page: Int,
         felles: Felles? = null,
         brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        outlineInit: OutlineOnlyScope<LangBokmal, Unit>.() -> Unit,
+        outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
     ) {
         renderTestPdfOutline(
             outputFolder = "test_design_diff",
@@ -48,7 +48,7 @@ class DesignDiffTest() {
     }
 
 
-    //@Test
+    @Test
     fun `diff design side 1`() {
         render(page = 1) {
             title1 {
@@ -94,7 +94,7 @@ class DesignDiffTest() {
         }
     }
 
-    //@Test
+    @Test
     fun `diff design side 2`() {
         render(
             page = 2,
