@@ -137,7 +137,9 @@ jobs:
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-    runs-on: ubuntu-latest
+    runs-on:
+      group: "ubuntu-runners"
+      labels: "ubuntu-20.04-16core"
     permissions:
       statuses: write
       checks: write
