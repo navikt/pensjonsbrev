@@ -35,8 +35,8 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData> {
 
-    fun title(init: TextOnlyScope<Lang, LetterData>.() -> Unit) {
-        title.addAll(TextOnlyScope<Lang, LetterData>().apply(init).elements)
+    fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
+        title.addAll(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements)
     }
 
     fun outline(init: OutlineOnlyScope<Lang, LetterData>.() -> Unit) {

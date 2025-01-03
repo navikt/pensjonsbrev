@@ -1382,7 +1382,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             Bokmal to "Reduksjon av barnetillegg for fellesbarn før skatt ",
                             Nynorsk to "Reduksjon av barnetillegg for fellesbarn før skatt ",
                             English to "Reduction of child supplement payment for joint children before tax,",
-                            FontType.BOLD
                         )
 
                         //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
@@ -1391,7 +1390,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 Bokmal to "i år",
                                 Nynorsk to "i år",
                                 English to " for this year",
-                                FontType.BOLD
                             )
                         }
 
@@ -1401,7 +1399,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 Bokmal to "for neste år",
                                 Nynorsk to "for neste år",
                                 English to " for next year",
-                                FontType.BOLD
                             )
                         }
                     }
@@ -1762,7 +1759,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt ",
                                 Nynorsk to "Reduksjon av barnetillegg for særkullsbarn før skatt ",
                                 English to "Reduction of child supplement payment for children from a previous relationship before tax, ",
-                                FontType.BOLD
                             )
 
                             //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
@@ -1771,7 +1767,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     Bokmal to "i år",
                                     Nynorsk to "i år",
                                     English to "for this year",
-                                    FontType.BOLD
                                 )
                             }
 
@@ -1781,7 +1776,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     Bokmal to "for neste år",
                                     Nynorsk to "for neste år",
                                     English to "for next year",
-                                    FontType.BOLD
                                 )
                             }
                         }

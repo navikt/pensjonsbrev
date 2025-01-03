@@ -4,13 +4,14 @@
 
 % Closing page text
 \newcommand{\closing}{
-    \nopagebreak
+    \addpenalty{9000} % Penalty for putting minipage on new page
+    \addvspace{24pt minus 10pt} % TODO gjennomgang av design
     \begin{minipage}{\textwidth}
+        \standardtext
         \sloppy % no word-breaking
         \raggedright % no word spacing
         \raggedbottom % no line stretching to fit page
         \frenchspacing % no double space after ended sentence
-        \vspace*{42pt}
         \feltclosinggreeting
         \par
         \vspace*{4pt}
@@ -23,10 +24,12 @@
 % attachmentList
 \newenvironment{attachmentList}
     {\par
-    \vspace{30pt}
+    \addvspace{42pt minus 20pt} % TODO gjennomgang av design
     % enclose in brackets to prevent font from bleeding out to the rest of the letter.
     % Should be the same as the secondary letter title, but without extra spacing after.
-    {\primaryFont\fontsize{\titletwotextsize}{0pt} \selectfont \textbf{\feltclosingvedleggprefix}}
+    \titletwo\feltclosingvedleggprefix
+    \standardtext
+    \addvspace{6pt}
     \begin{itemize}}
     {\end{itemize}}
 
@@ -45,7 +48,6 @@
 
 \newcommand{\doublesignature}[2]{
     \setlength{\tabcolsep}{12pt}
-    \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
     \begin{signaturestable}{colspec={X[l]X[l]}, column{1} = {rightsep = 10mm},column{2} = {leftsep = 10mm}}
         #1 & #2 \\
         \feltclosingsaksbehandlersuffix & \feltclosingsaksbehandlersuffix \\

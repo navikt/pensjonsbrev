@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
@@ -17,7 +18,13 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
 
-    override fun render(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>, language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype): LatexDocument =
+    override fun render(
+        letter: LetterMarkup,
+        attachments: List<LetterMarkup.Attachment>,
+        language: Language,
+        felles: Felles,
+        brevtype: LetterMetadata.Brevtype
+    ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
                 appendMasterTemplateParameters(attachments, brevtype, felles, language)
@@ -65,7 +72,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     }
 
     private fun LatexAppendable.renderLetterTemplate(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>) {
-        appendln("""\documentclass{pensjonsbrev_v3}""", escape = false)
+        appendln("""\documentclass{pensjonsbrev_v4}""", escape = false)
         appenCmd("begin", "document")
         appenCmd("firstpage")
         appenCmd("tittel", letter.title)
@@ -91,12 +98,12 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                     appendln(""" \\ \feltclosingsaksbehandlersuffix """, escape = false)
                 }
                 appenCmd("par")
-                appenCmd("vspace*{12pt}")
+                appenCmd("vspace*{18pt}")
                 appenCmd("feltnavenhet")
             } else {
                 appenCmd("feltnavenhet")
                 appenCmd("par")
-                appenCmd("vspace*{12pt}")
+                appenCmd("vspace*{18pt}")
                 if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
                     appenCmd("feltclosingautomatisktextvedtaksbrev")
                 } else {
@@ -117,7 +124,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         appendNewCmd("saksinfomottaker") {
             appenCmd("begin", "saksinfotable", "")
             verge?.let {
-                appendln("""\feltvergenavnprefix & \feltvergenavn \\""", escape = false)
+                appendln("""\felt${LanguageSetting.Sakspart.vergenavn} & \feltvergenavn \\""", escape = false)
                 appendln(
                     """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""",
                     escape = false
@@ -169,7 +176,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     private fun LatexAppendable.renderAttachment(attachment: LetterMarkup.Attachment) {
         appenCmd("startvedlegg") {
             arg { renderText(attachment.title) }
-            arg { if (attachment.includeSakspart) appenCmd("sakspart") }
+            arg { if (attachment.includeSakspart) append("includesakinfo") }
         }
         renderBlocks(attachment.blocks)
         appenCmd("sluttvedlegg")
@@ -196,35 +203,45 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
             }
         }
 
-    private fun LatexAppendable.renderParagraph(
-        element: LetterMarkup.Block.Paragraph
-    ): Unit =
-        appenCmd("templateparagraph") {
-            arg {
-                element.content.forEach {
-                    renderParagraphContent(it)
+    //TODO depricate table/itemlist/form inside paragraph and make them available outside.
+    // there should not be a different space between elements if within/outside paragraphs.
+    private fun LatexAppendable.renderParagraph(element: LetterMarkup.Block.Paragraph) {
+        // yes, this is a bit c esque. Feel free to improve.
+        var i = 0
+        while (i < element.content.size) {
+            val current = element.content[i]
+
+            when (current) {
+                is Form -> renderForm(current)
+                is ItemList -> renderList(current)
+                is Table -> renderTable(current)
+                is Text -> {
+                    appenCmd("templateparagraph") {
+                        arg {
+                            // render all continious text elements inside paragraph
+                            while (i < element.content.size && element.content[i] is Text) {
+                                renderTextContent(element.content[i] as Text)
+                                i++
+                            }
+                        }
+                    }
+                    continue // skip extra increment
                 }
             }
+            i++
         }
-
-    private fun LatexAppendable.renderParagraphContent(element: ParagraphContent): Unit =
-        when (element) {
-            is ParagraphContent.Form -> renderForm(element)
-            is ParagraphContent.ItemList -> renderList(element)
-            is ParagraphContent.Table -> renderTable(element)
-            is ParagraphContent.Text -> renderTextContent(element)
-        }
+    }
 
     private fun LatexAppendable.renderList(
         list: ParagraphContent.ItemList
     ) {
         if (list.items.isNotEmpty()) {
-            appenCmd("begin", "itemize")
+            appenCmd("begin", "letteritemize")
             list.items.forEach { item ->
                 append("""\item """, escape = false)
                 renderText(item.content)
             }
-            appenCmd("end", "itemize")
+            appenCmd("end", "letteritemize")
         }
     }
 
@@ -300,7 +317,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                 }
 
                 element.choices.forEach {
-                    appenCmd("item")
+                    appenCmd("formchoiceitem")
                     renderText(it.text)
                 }
 

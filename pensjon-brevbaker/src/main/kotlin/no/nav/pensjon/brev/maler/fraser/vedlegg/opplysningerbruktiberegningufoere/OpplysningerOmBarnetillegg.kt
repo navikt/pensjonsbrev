@@ -381,7 +381,6 @@ data class OpplysningerOmBarnetillegg(
                                 Bokmal to "Beløp",
                                 Nynorsk to "Beløp",
                                 English to "Amount",
-                                BOLD
                             )
                         }
                     }
