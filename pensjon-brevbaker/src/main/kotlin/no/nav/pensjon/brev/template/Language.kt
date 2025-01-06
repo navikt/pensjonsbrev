@@ -22,34 +22,6 @@ data class LanguageSettings(val settings: Map<String, Element.OutlineContent.Par
             ?: throw MissingLanguageSettingException(setting)
 }
 
-sealed class Language : StableHash {
-    val name: String = this::class.java.name
-
-    override fun toString(): String {
-        return this::class.qualifiedName!!
-    }
-
-    fun locale(): Locale =
-        when (this) {
-            Bokmal -> Locale.forLanguageTag("no")
-            Nynorsk -> Locale.forLanguageTag("no")
-            English -> Locale.UK
-        }
-
-    object Bokmal : Language(), StableHash by StableHash.of("Language.Bokmal")
-    object Nynorsk : Language(), StableHash by StableHash.of("Language.Nynorsk")
-    object English : Language(), StableHash by StableHash.of("Language.English")
-}
-
-interface LanguageSupport : StableHash {
-    fun supports(language: Language): Boolean
-    fun all(): Set<Language>
-
-    interface Single<Lang1 : Language> : LanguageSupport
-    interface Double<Lang1 : Language, Lang2 : Language> : Single<Lang1>
-    interface Triple<Lang1 : Language, Lang2 : Language, Lang3 : Language> : Double<Lang1, Lang2>
-}
-
 sealed class LanguageCombination {
 
     data class Single<Lang : Language>(val first: Lang) : LanguageCombination(), LanguageSupport.Single<Lang>, StableHash by StableHash.of(first) {
