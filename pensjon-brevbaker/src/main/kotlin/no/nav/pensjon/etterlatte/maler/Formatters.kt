@@ -5,8 +5,10 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.StableHash
 import no.nav.pensjon.brev.template.dsl.expression.format
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 fun Expression<IntBroek?>.formatBroek(): Expression<String> = this.format(IntBroekFormatter)
 
@@ -35,3 +37,16 @@ object AarFormatter : LocalizedFormatter<LocalDate>(), StableHash by StableHash.
         return date.format(DateTimeFormatter.ofPattern("yyyy", second.locale()))
     }
 }
+
+fun Expression<Number>.formatTall(): Expression<String> = this.format(TallFormatter)
+
+object TallFormatter : LocalizedFormatter<Number>(), StableHash by StableHash.of("TallFormatter") {
+    override fun apply(first: Number, second: Language): String {
+        return when (second) {
+            is Language.Bokmal -> NumberFormat.getNumberInstance(Locale.of("nb", "NO")).format(first)
+            is Language.Nynorsk -> NumberFormat.getNumberInstance(Locale.of("nn", "NO")).format(first)
+            is Language.English -> NumberFormat.getNumberInstance(Locale.of("en", "UK")).format(first)
+        }
+    }
+}
+
