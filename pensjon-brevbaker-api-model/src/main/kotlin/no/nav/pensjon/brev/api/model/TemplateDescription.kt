@@ -29,6 +29,7 @@ interface TemplateDescription {
 
     enum class Brevkontekst { ALLE, SAK, VEDTAK }
 
+    // TODO: Gjer om denne til interface, fleire av desse er pensjonsspesifikke
     enum class Brevkategori {
         ETTEROPPGJOER,
         FOERSTEGANGSBEHANDLING,
