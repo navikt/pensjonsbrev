@@ -5,13 +5,11 @@ import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
-import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTO
 import java.time.LocalDate
@@ -68,10 +66,6 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
             trygdetid = listOf(bruktTrygdetid),
             bruktTrygdetid = bruktTrygdetid
         ),
-        etterbetaling = BarnepensjonEtterbetaling(
-            inneholderKrav = true,
-            etterbetalingPeriodeValg = EtterbetalingPeriodeValg.UNDER_3_MND,
-        ),
         frivilligSkattetrekk = true,
         bosattUtland = true,
         brukerUnder18Aar = true,
@@ -79,6 +73,7 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
         erGjenoppretting = false,
         harUtbetaling = true,
         erMigrertYrkesskade = false,
+        erEtterbetaling = false
     )
 }
 
