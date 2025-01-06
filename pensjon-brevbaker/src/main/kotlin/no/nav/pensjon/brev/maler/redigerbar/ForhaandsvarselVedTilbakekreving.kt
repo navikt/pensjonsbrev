@@ -42,9 +42,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
             textExpr(
                 Bokmal to "Varsel om at Nav vurderer å kreve tilbake feilutbetalt ".expr() + fritekst("type ytelse") + "".expr(),
                 Nynorsk to "Varsel om at Nav vurderer å krevje tilbake feilutbetalt ".expr() + fritekst("type ytelse") + "".expr(),
-                English to "Notification that Nav is considering demanding repayment of incorrectly paid ".expr() + fritekst(
-                    "type ytelse"
-                ) + "".expr()
+                English to "Notification that Nav is considering demanding repayment of incorrectly paid ".expr() + fritekst("type ytelse") + "".expr()
             )
         }
         outline {
