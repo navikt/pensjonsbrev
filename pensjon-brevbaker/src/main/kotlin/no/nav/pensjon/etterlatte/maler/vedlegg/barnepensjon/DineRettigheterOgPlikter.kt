@@ -22,7 +22,7 @@ val dineRettigheterOgPlikterBosattUtland = createAttachment(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Rettane og pliktene dine",
-        English to "Your Rights and Obligations",
+        English to "Your rights and obligations",
     ),
     includeSakspart = false,
 ) {
@@ -38,7 +38,7 @@ val dineRettigheterOgPlikterNasjonal = createAttachment(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Rettane og pliktene dine",
-        English to "Your Rights and Obligations",
+        English to "Your rights and obligations",
     ),
     includeSakspart = false,
 ) {
