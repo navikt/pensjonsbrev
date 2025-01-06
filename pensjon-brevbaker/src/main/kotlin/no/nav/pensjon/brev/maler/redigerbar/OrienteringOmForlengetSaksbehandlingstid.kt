@@ -9,9 +9,12 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -43,11 +46,13 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
         }
         outline {
             paragraph {
-                text(
-                    Bokmal to "Vi har <Fritekst: sakdato> mottatt din søknad om <Fritekst: sak pensjon>. " +
-                    "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. Forsinkelsen skyldes <Fritekst: årsak til forsinkelse>.",
-                    English to "We have received your application for <Fritekst: sak pensjon> on the <Fritekst: dato>. " +
-                    "Due to delays in <Fritekst: årsak til forsinkelse> the processing of your case will take longer than we anticipated.",
+                textExpr(
+                    Bokmal to "Vi har ".expr() + fritekst("saksdato") + " mottatt din søknad om ".expr() +
+                            fritekst("sak pensjon") + ". " + "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. " +
+                            "Forsinkelsen skyldes ".expr() + fritekst("årsak til forsinkelse") + ".".expr(),
+                    English to "We have received your application for ".expr() + fritekst("sak pensjon") +
+                            " on the ".expr() + fritekst("dato") + ". " + "Due to delays in ".expr() +
+                            fritekst("årsak til forsinkelse") + " the processing of your case will take longer than we anticipated.".expr()
                 )
             }
             title1 {
@@ -57,9 +62,11 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
                 )
             }
             paragraph {
-                text(
-                    Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen <Fritekst: antall dager/uker/måneder>.",
-                    English to "Without further delays, we assume the processing of your case to be completed within <Fritekst: antall dager/uker/måneder>."
+                textExpr(
+                    Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() +
+                            fritekst("antall dager/uker/måneder") + ".".expr(),
+                    English to "Without further delays, we assume the processing of your case to be completed within ".expr() +
+                            fritekst("antall dager/uker/måneder") + ".".expr()
                 )
             }
             title1 {
