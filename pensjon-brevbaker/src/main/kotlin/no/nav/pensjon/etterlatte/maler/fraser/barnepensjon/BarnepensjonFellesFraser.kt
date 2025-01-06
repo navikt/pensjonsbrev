@@ -7,11 +7,7 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.inneholderKrav_safe
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
@@ -29,9 +25,9 @@ object BarnepensjonFellesFraser {
 
             paragraph {
                 text(
-                    Bokmal to "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på pensjonen etter EØS/avtalelandreglene heller.",
-                    Nynorsk to "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på pensjonen vurdert etter EØS/avtalelandreglane heller.",
-                    English to "We have now received information from foreign social security authorities, which means you are entitled to the pension under the EEA/agreement country rules either.",
+                    Bokmal to "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på pensjonen etter EØS/avtalelandreglene.",
+                    Nynorsk to "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på pensjonen vurdert etter EØS/avtalelandreglane.",
+                    English to "We have now received information from foreign social security authorities, which means you are entitled to the pension under the EEA/agreement country rules.",
                 )
             }
 
@@ -209,7 +205,7 @@ object BarnepensjonFellesFraser {
     }
 
     data class UtbetalingAvBarnepensjon(
-        val etterbetaling: Expression<BarnepensjonEtterbetaling?>,
+        val erEtterbetaling: Expression<Boolean>,
         val bosattUtland: Expression<Boolean>,
         val frivilligSkattetrekk: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -303,28 +299,14 @@ object BarnepensjonFellesFraser {
                 )
             }
 
-            showIf(etterbetaling.notNull()) {
+            showIf(erEtterbetaling) {
                 paragraph {
                     text(
-                        Bokmal to "Du får etterbetalt pensjon. Vanligvis vil du få denne i løpet av tre uker. ",
-                        Nynorsk to "Du får etterbetalt pensjon. Vanlegvis vil du få denne i løpet av tre veker. ",
+                        Bokmal to "Du får etterbetalt pensjon. Vanligvis vil du få denne i løpet av tre uker. Hvis det er lagt inn krav i etterbetalingen kan denne bli forsinket. Beløpet som er trukket fra etterbetalingen vil gå frem av utbetalingsmeldingen.",
+                        Nynorsk to "Du får etterbetalt pensjon. Vanlegvis vil du få denne i løpet av tre veker. Dersom det er lagt inn krav i etterbetalinga, kan denne bli forseinka. Beløpet som er trekt frå etterbetalinga, vil gå fram av utbetalingsmeldinga.",
                         English to
-                            "You will receive a back payment on your pension. " +
-                            "You will usually receive this back payment within three weeks. ",
+                            "You will receive a back payment on your pension. You will usually receive this back payment within three weeks. If a claim has been submitted against your back payment, the payment to you may be delayed. Deductions from the back payment will be stated in the disbursement notice.",
                     )
-                    showIf(etterbetaling.inneholderKrav_safe.equalTo(true)) {
-                        text(
-                            Bokmal to
-                                "Hvis det er lagt inn krav i etterbetalingen kan denne bli forsinket. " +
-                                "Beløpet som er trukket fra etterbetalingen vil gå frem av utbetalingsmeldingen.",
-                            Nynorsk to
-                                "Dersom det er lagt inn krav i etterbetalinga, kan denne bli forseinka. " +
-                                "Beløpet som er trekt frå etterbetalinga, vil gå fram av utbetalingsmeldinga.",
-                            English to
-                                "If a claim has been submitted against your back payment, the payment to you may be delayed. " +
-                                "Deductions from the back payment will be stated in the disbursement notice.",
-                        )
-                    }
                 }
             }
         }
