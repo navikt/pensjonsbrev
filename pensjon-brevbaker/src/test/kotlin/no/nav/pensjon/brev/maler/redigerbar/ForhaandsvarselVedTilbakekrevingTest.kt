@@ -19,7 +19,7 @@ class ForhaandsvarselVedTilbakekrevingTest {
             ForhaandsvarselVedTilbakekreving.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.felles
         ).renderTestPDF(ForhaandsvarselVedTilbakekreving.kode.name)
     }
 
@@ -29,7 +29,7 @@ class ForhaandsvarselVedTilbakekrevingTest {
             ForhaandsvarselVedTilbakekreving.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.felles
         ).renderTestHtml(ForhaandsvarselVedTilbakekreving.kode.name)
     }
 }
