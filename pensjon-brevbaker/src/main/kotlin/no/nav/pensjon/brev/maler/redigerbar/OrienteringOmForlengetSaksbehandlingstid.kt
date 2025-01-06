@@ -52,7 +52,7 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
                             "Forsinkelsen skyldes ".expr() + fritekst("årsak til forsinkelse") + ".".expr(),
                     English to "We have received your application for ".expr() + fritekst("sak pensjon") +
                             " on the ".expr() + fritekst("dato") + ". " + "Due to delays in ".expr() +
-                            fritekst("årsak til forsinkelse") + " the processing of your case will take longer than we anticipated.".expr()
+                            fritekst("årsak til forsinkelse") + ", the processing of your case will take longer than we anticipated.".expr()
                 )
             }
             title1 {
