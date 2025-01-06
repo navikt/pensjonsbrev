@@ -11,16 +11,17 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import org.apache.commons.codec.language.bm.Lang
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.parallel.Execution
-import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -189,12 +190,27 @@ class LatexVisualITest {
         }
     }
 
-    @ParameterizedTest
-    @MethodSource("allParSeparatedElementCombinations")
-    fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
-        render(overrideName = "${elementA.description} then ${elementB.description}") {
-            renderOutlineElementOfType(elementA)
-            renderOutlineElementOfType(elementB)
+    @Test
+    fun `Test unique content combinations`() {
+        val combinations: List<Pair<ElementType, ElementType>> = ElementType.entries.flatMapIndexed { index, type ->
+            ElementType.entries.drop(index + 1).flatMap { otherType ->
+                listOf(type to otherType, otherType to type, type to type)
+            }
+        }
+
+        // add combinations to separate attachments to save on compile time
+        val attachments = combinations.map {(elementA, elementB) ->
+            createAttachment<LangBokmal, EmptyBrevdata>(
+                title = newText(Bokmal to "${elementA.description} then ${elementB.description}"),
+                includeSakspart = false,
+            ){
+                renderOutlineElementOfType(elementA)
+                renderOutlineElementOfType(elementB)
+            }
+        }
+
+        render(attachments = attachments) {
+
         }
     }
 
@@ -263,7 +279,7 @@ class LatexVisualITest {
 
     companion object {
         @JvmStatic
-        fun allParSeparatedElementCombinations(): List<Arguments> =
+        fun allElementCombinations(): List<Arguments> =
             ElementType.entries.flatMapIndexed { index, type ->
                 ElementType.entries.drop(index + 1).flatMap { otherType ->
                     listOf(Arguments.of(type, otherType), Arguments.of(otherType, type))

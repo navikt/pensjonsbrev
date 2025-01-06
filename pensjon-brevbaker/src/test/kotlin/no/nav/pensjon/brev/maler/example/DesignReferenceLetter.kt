@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import kotlin.text.Typography.paragraph
 
 object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
     enum class Kode : Brevkode.Automatisk {
@@ -85,6 +86,39 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
         }
 
         outline {
+            paragraph {
+                text(
+                    Bokmal to lipsums[1],
+                )
+            }
+            title1 {
+                text(
+                    Bokmal to "Tittel under avsnitt",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Sed suscipit lacus vel risus lobortis, sed\n" +
+                            "dignissim orci posuere. Aenean ut magna eget tellus viverra tincidunt non quis lectus. Donec\n" +
+                            "elementum molestie tellus, tincidunt tincidunt urna tincidunt in. Nunc eget lorem non enim rhoncus\n" +
+                            "consequat. Vivamus laoreet semper facilisis.",
+                )
+            }
+            repeat(10) {
+                title1 {
+                    text(
+                        Bokmal to "tittel",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Sed suscipit lacus vel risus lobortis, sed\n" +
+                                "dignissim orci posuere. Aenean ut magna eget tellus viverra tincidunt non quis lectus. Donec\n" +
+                                "elementum molestie tellus, tincidunt tincidunt urna tincidunt in. Nunc eget lorem non enim rhoncus\n" +
+                                "consequat. Vivamus laoreet semper facilisis.",
+                    )
+                }
+            }
         }
         includeAttachment(attachment)
     }

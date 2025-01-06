@@ -4,7 +4,6 @@
 
 % Closing page text
 \newcommand{\closing}{
-    \addpenalty{9000} % Penalty for putting minipage on new page
     \addvspace{24pt minus 10pt} % TODO gjennomgang av design
     \begin{minipage}{\textwidth}
         \standardtext
@@ -16,9 +15,9 @@
         \par
         \vspace*{4pt}
         \closingbehandlet
-        \feltclosingvedlegg
-        \label{\currentSectionName} %set label for the last page before attachments
     \end{minipage}
+    \feltclosingvedlegg
+    \label{\currentSectionName} %set label for the last page before attachments
 }
 
 % attachmentList
