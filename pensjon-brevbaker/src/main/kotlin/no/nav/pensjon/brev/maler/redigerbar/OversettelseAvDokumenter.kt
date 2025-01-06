@@ -50,7 +50,7 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Det som ønskes oversatt er markert <Fritekst: med tusj, vedlegg>."
+                    Bokmal to "Det som ønskes oversatt er markert <Fritekst: med tusj, se vedlegg>."
                 )
             }
             paragraph {
