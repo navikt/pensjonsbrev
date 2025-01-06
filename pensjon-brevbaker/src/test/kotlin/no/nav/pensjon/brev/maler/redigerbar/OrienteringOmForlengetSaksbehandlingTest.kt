@@ -19,7 +19,7 @@ class OrienteringOmForlengetSaksbehandlingTest {
             OrienteringOmForlengetSaksbehandlingstid.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.English,
-            Fixtures.fellesAuto
+            Fixtures.felles
         ).renderTestPDF(OrienteringOmForlengetSaksbehandlingstid.kode.name)
     }
 
@@ -29,7 +29,7 @@ class OrienteringOmForlengetSaksbehandlingTest {
             OrienteringOmForlengetSaksbehandlingstid.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.felles
         ).renderTestHtml(OrienteringOmForlengetSaksbehandlingstid.kode.name)
     }
 }
