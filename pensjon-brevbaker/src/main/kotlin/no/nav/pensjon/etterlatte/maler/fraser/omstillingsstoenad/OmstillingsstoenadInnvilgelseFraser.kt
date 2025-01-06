@@ -150,11 +150,11 @@ object OmstillingsstoenadInnvilgelseFraser {
                 paragraph {
                     text(
                         Bokmal to
-                                "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på stønaden etter EØS/avtalelandreglene heller.",
+                                "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på stønaden etter EØS/avtalelandreglene.",
                         Nynorsk to
-                                "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du har rett på stønaden etter EØS/avtalelandreglane heller.",
+                                "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du har rett på stønaden etter EØS/avtalelandreglane.",
                         English to
-                                "We have now received information from foreign social security authorities, which means you are entitled to the allowance under the EEA/agreement country rules either.",
+                                "We have now received information from foreign social security authorities, which means you are entitled to the allowance under the EEA/agreement country rules.",
                     )
                 }
             }
