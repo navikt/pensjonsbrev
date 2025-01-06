@@ -5,12 +5,14 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -74,14 +76,7 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
                             "You can report changes on our website ${Constants.NAV_URL}."
                 )
             }
-            paragraph {
-                text(
-                    Bokmal to "Ta gjerne kontakt med oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du ønsker mer informasjon. " +
-                            "Husk at du kan finne mer informasjon om regelverket på ${Constants.NAV_URL}.",
-                    English to "Please contact Nav at tel. +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} if you would like more information. " +
-                            "Remember that you can find more information about the regulations at ${Constants.NAV_URL}."
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
     }
 }
