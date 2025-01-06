@@ -33,26 +33,6 @@ enum class BorMedSivilstand{
     SAMBOER3_2,
 }
 
-enum class Sakstype {
-    AFP,
-    AFP_PRIVAT,
-    ALDER,
-    BARNEP,
-    FAM_PL,
-    GAM_YRK,
-    GENRL,
-    GJENLEV,
-    GRBL,
-    KRIGSP,
-    OMSORG,
-    UFOREP,
-    ;
-
-    companion object {
-        val all: Set<Sakstype> = entries.toSet()
-    }
-}
-
 enum class Institusjon {
     FENGSEL,
     HELSE,
