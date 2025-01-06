@@ -26,7 +26,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     // PE_IY_03_167 - dette er delen for barnep eller gjenlev
-    override val kode = Pesysbrevkoder.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ETTERLATTE
+    override val kode = Pesysbrevkoder.Redigerbar.PE_FORESPOERSEL_DOKUM_BOTIDINORGE_ETTERLATTE
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.BARNEP, Sakstype.GJENLEV)
