@@ -157,4 +157,4 @@ Have you remembered to connect naisdevice? (see https://doc.nais.io/basics/acces
 - Hvis du har tidligere fulgt setupen, kan du prøve å verifiser at du er autensitert i gcloud, og potensielt oppdatere credentials ved å kjøre `gcloud auth login --update-adc`, så kan du prøve igjen
 
 #### Får ikke kjørt jq etter å ha lastet den ned
-- Prøv `brew install jq`
+- Prøv `brew install jq`.
