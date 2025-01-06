@@ -8,7 +8,6 @@ val jupiterVersion: String by project
 val hamkrestVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
-val apiModelVersion: String by project
 val jacksonJsr310Version: String by project
 val mockkVersion: String by project
 
@@ -34,6 +33,7 @@ ktor {
 
 repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
+    mavenLocal()
 }
 
 kotlin {
@@ -112,10 +112,10 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
-    implementation("no.nav.pensjon.brev:brevbaker-api-model-mal:0.0.1-SNAPSHOT") // todo versjon
+    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:0.0.1-SNAPSHOT") // todo versjon
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
 
+    implementation(project(":pensjonsmaler"))
     implementation(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
 
