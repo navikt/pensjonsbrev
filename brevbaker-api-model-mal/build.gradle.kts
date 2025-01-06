@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brevbaker"
-version = "0.0.1"
+version = "0.0.1-SNAPSHOT"
 
 java {
     withSourcesJar()
@@ -22,6 +22,7 @@ repositories {
 dependencies {
     compileOnly(kotlin("stdlib"))
     api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.7.0")
+    implementation(project(":template-model-generator"))
 }
 
 publishing {
