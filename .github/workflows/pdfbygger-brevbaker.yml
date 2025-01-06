@@ -172,7 +172,7 @@ jobs:
         uses: routsi/ImageMagick-action@v1.1.1
         if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
         with:
-          command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
+          command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v4
         if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
         with:
