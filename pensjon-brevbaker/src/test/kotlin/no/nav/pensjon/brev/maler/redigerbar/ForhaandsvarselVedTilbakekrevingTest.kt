@@ -18,7 +18,7 @@ class ForhaandsvarselVedTilbakekrevingTest {
         Letter(
             ForhaandsvarselVedTilbakekreving.template,
             Fixtures.create<EmptyBrevdata>(),
-            Language.English,
+            Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF(ForhaandsvarselVedTilbakekreving.kode.name)
     }
