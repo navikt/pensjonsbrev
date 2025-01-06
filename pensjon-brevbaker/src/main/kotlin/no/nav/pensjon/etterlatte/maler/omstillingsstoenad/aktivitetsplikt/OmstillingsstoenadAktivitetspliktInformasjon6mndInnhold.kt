@@ -23,7 +23,7 @@ data class OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO(
 
 @TemplateModelHelpers
 object OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold : EtterlatteTemplate<OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_AKTIVITETSPLIKT_INFORMASJON_6MND_INNHOLD
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_AKTIVITETSPLIKT_INFORMASJON_6MND_INNHOLD
 
     override val template =
         createTemplate(

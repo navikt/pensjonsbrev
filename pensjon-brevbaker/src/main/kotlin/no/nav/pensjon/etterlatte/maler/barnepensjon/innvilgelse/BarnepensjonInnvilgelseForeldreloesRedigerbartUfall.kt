@@ -41,7 +41,7 @@ data class BarnepensjonForeldreloesRedigerbarDTO(
 @TemplateModelHelpers
 object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
     EtterlatteTemplate<BarnepensjonForeldreloesRedigerbarDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE_UTFALL_FORELDRELOES
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BP_INNVILGELSE_UTFALL_FORELDRELOES
     override val template = createTemplate(
         name = kode.name,
         letterDataType = BarnepensjonForeldreloesRedigerbarDTO::class,

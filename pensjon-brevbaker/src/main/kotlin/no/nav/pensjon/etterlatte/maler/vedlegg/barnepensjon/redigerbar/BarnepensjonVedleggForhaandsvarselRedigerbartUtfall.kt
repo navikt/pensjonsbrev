@@ -13,11 +13,10 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForhaandsvarselFraser
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadForhaandsvarselFraser
 
 @TemplateModelHelpers
 object BarnepensjonVedleggForhaandsvarselRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Vedlegg {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VEDLEGG_FORHAANDSVARSEL_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BP_VEDLEGG_FORHAANDSVARSEL_UTFALL
 
     override val template = createTemplate(
         name = kode.name,

@@ -48,7 +48,7 @@ data class AarligInntektsjusteringVedtakDTO(
 @TemplateModelHelpers
 object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInntektsjusteringVedtakDTO>,
     Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VEDTAK
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_INNTEKTSJUSTERING_VEDTAK
 
     override val template =
         createTemplate(

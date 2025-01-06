@@ -21,7 +21,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.Aarl
 @TemplateModelHelpers
 object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInntektsjusteringVedtakDTO>,
     Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VARSEL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_INNTEKTSJUSTERING_VARSEL
 
     override val template =
         createTemplate(

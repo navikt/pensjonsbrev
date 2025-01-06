@@ -47,7 +47,7 @@ data class OmstillingsstoenadRevurderingDTO(
 
 @TemplateModelHelpers
 object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_REVURDERING
 
     override val template =
         createTemplate(

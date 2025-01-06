@@ -29,7 +29,7 @@ data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
 @TemplateModelHelpers
 object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO>,
     Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNVILGELSE_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_INNVILGELSE_UTFALL
 
     override val template = createTemplate(
         name = kode.name,

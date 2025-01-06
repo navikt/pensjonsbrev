@@ -23,7 +23,7 @@ data class BarnepensjonOpphoerRedigerbartUtfallDTO(
 
 @TemplateModelHelpers
 object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<BarnepensjonOpphoerRedigerbartUtfallDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_OPPHOER_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BP_OPPHOER_UTFALL
 
     override val template = createTemplate(
         name = kode.name,

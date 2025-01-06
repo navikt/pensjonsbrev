@@ -19,7 +19,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregn
 
 @TemplateModelHelpers
 object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmregnetNyttRegelverkDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VEDTAK_OMREGNING
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BP_VEDTAK_OMREGNING
     override val template: LetterTemplate<*, BarnepensjonOmregnetNyttRegelverkDTO> = createTemplate(
         name = kode.name,
         letterDataType = BarnepensjonOmregnetNyttRegelverkDTO::class,

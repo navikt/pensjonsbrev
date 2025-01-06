@@ -46,7 +46,7 @@ data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
 @TemplateModelHelpers
 object OmstillingsstoenadRevurderingRedigerbartUtfall:
     EtterlatteTemplate<OmstillingsstoenadRevurderingRedigerbartUtfallDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_REVURDERING_UTFALL
 
     override val template = createTemplate(
         name = kode.name,

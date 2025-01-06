@@ -15,7 +15,7 @@ data class OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO(val utenV
 @TemplateModelHelpers
 object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
     EtterlatteTemplate<OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_VARSEL_AKTIVITETSPLIKT_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_VARSEL_AKTIVITETSPLIKT_UTFALL
 
     override val template =
         createTemplate(

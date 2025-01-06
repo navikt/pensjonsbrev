@@ -14,7 +14,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
 object OmstillingsstoenadVarselRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_VARSEL_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_VARSEL_UTFALL
 
     override val template = createTemplate(
         name = kode.name,

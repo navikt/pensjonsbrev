@@ -26,7 +26,7 @@ data class BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDT
 
 @TemplateModelHelpers
 object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : EtterlatteTemplate<BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INFORMASJON_DOEDSFALL_MELLOM_ATTEN_OG_TJUE_VED_REFORMTIDSPUNKT
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BP_DOEDSFALL_18_20_VED_REFORMTIDSPUNKT
 
     override val template =
         createTemplate(

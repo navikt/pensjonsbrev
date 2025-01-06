@@ -69,7 +69,7 @@ data class BarnepensjonRevurderingDTO(
 
 @TemplateModelHelpers
 object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BP_REVURDERING
 
     override val template = createTemplate(
         name = kode.name,

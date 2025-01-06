@@ -28,7 +28,7 @@ data class BarnepensjonInformasjonDoedsfallDTO(
 
 @TemplateModelHelpers
 object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInformasjonDoedsfallDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INFORMASJON_DOEDSFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BP_INFORMASJON_DOEDSFALL
 
     override val template =
         createTemplate(

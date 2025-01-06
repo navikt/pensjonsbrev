@@ -23,7 +23,7 @@ class BarnepensjonAvslagTest {
             Language.Bokmal,
             Fixtures.felles,
         )
-        letter.renderTestPDF(EtterlatteBrevKode.BARNEPENSJON_AVSLAG.name)
+        letter.renderTestPDF(EtterlatteBrevKode.BP_AVSLAG.name)
     }
 
     @Test
@@ -33,6 +33,6 @@ class BarnepensjonAvslagTest {
             Fixtures.create<BarnepensjonAvslagDTO>(),
             Language.Bokmal,
             Fixtures.felles,
-        ).renderTestHtml(EtterlatteBrevKode.BARNEPENSJON_AVSLAG.name)
+        ).renderTestHtml(EtterlatteBrevKode.BP_AVSLAG.name)
     }
 }

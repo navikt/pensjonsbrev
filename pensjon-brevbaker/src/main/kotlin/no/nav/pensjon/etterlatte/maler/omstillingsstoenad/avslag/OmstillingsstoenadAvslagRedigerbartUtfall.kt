@@ -29,7 +29,7 @@ data class OmstillingstoenadAvslagRedigerbartUtfallDTO(
 object OmstillingsstoenadAvslagRedigerbartUtfall :
     EtterlatteTemplate<OmstillingstoenadAvslagRedigerbartUtfallDTO>,
     Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_AVSLAG_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_AVSLAG_UTFALL
 
     override val template =
         createTemplate(

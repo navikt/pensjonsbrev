@@ -14,7 +14,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
 object BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Vedlegg {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VEDLEGG_BEREGNING_TRYGDETID_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BP_VEDLEGG_BEREGNING_TRYGDETID_UTFALL
 
     override val template = createTemplate(
         name = kode.name,

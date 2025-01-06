@@ -27,7 +27,7 @@ data class OmstillingstoenadAvslagDTO(
 
 @TemplateModelHelpers
 object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_AVSLAG
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_AVSLAG
 
     override val template = createTemplate(
         name = kode.name,
