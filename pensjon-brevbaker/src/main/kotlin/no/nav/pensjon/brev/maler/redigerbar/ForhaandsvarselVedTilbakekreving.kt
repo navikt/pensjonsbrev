@@ -39,10 +39,10 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
         )
     ) {
         title {
-            textExpr(
-                Bokmal to "Varsel om at Nav vurderer å kreve tilbake feilutbetalt ".expr() + fritekst("type ytelse") + "".expr(),
-                Nynorsk to "Varsel om at Nav vurderer å krevje tilbake feilutbetalt ".expr() + fritekst("type ytelse") + "".expr(),
-                English to "Notification that Nav is considering demanding repayment of incorrectly paid ".expr() + fritekst("type ytelse") + "".expr()
+            text(
+                Bokmal to "Varsel om at Nav vurderer å kreve tilbake feilutbetalt beløp",
+                Nynorsk to "Varsel om at Nav vurderer å krevje tilbake feilutbetalt beløp",
+                English to "Notification that Nav is considering demanding repayment of incorrectly paid beløp",
             )
         }
         outline {
@@ -59,7 +59,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                     English to felles.avsenderEnhet.navn + " refers to the decision of ".expr() + fritekst("dato") + "," +
                             " which indicates that you have received over-payment of ".expr() + fritekst("type ytelse") +
                             " during the period from and including ".expr() + fritekst("dato fra og med") + " up to and including ".expr() +
-                            fritekst("dato til og med") + ".".expr()
+                            fritekst("dato til og med") + ".".expr(),
                 )
             }
             paragraph {
@@ -120,7 +120,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                 text(
                     Bokmal to "Hva som har skjedd",
                     Nynorsk to "Kva som har skjedd ",
-                    English to "What has happened"
+                    English to "What has happened",
                 )
             }
             paragraph {
@@ -136,14 +136,14 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                     English to fritekst(
                         "Gjør kort greie for hva som har skjedd i saken – relevant faktum ut fra hvilke tilbakekrevingshjemler det kan være aktuelt å benytte: " +
                                 "Årsak til at feilen oppsto, uaktsomhet fra mottakers side ved å forårsake og/eller motta feilutbetalt beløp, hvordan og når feilen ble oppdaget osv."
-                    ) + "".expr()
+                    ) + "".expr(),
                 )
             }
             title1 {
                 text(
                     Bokmal to "Reglene for tilbakekreving",
                     Nynorsk to "Reglane for tilbakekrevjing",
-                    English to "The rules for demanding repayment"
+                    English to "The rules for demanding repayment",
                 )
             }
             paragraph {
@@ -181,14 +181,14 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                             "A demand may be made for repayment in full or in part. This depends on the degree of the recipient’s negligence, " +
                             "the size of the incorrectly paid amount and whether the mistake was partly or entirely Nav’s. " +
                             "If the person to whom the demand for repayment is directed has acted with intent or gross negligence, " +
-                            "additional interest of 10% of the amount to be repaid may be demanded, in accordance with paragraph 22-17a of the Social Security Act."
+                            "additional interest of 10% of the amount to be repaid may be demanded, in accordance with paragraph 22-17a of the Social Security Act.",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Dersom det blir gjort vedtak om tilbakebetaling vil det bli gitt nærmere informasjon om hvordan tilbakebetalingen skal skje.",
                     Nynorsk to "Dersom det blir gjort vedtak om tilbakebetaling, vil det bli gitt nærmare informasjon om korleis tilbakebetalinga skal skje.",
-                    English to "If a decision is taken to demand repayment, further information will be provided about how repayment is to be made."
+                    English to "If a decision is taken to demand repayment, further information will be provided about how repayment is to be made.",
                 )
             }
             title1 {
@@ -208,7 +208,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                     ) + ", eller du kan sende eit skriftleg svar til:".expr(),
                     English to "You have the right to submit an opinion, either in writing or verbally, before we take a final decision regarding repayment. As a general rule, you are also entitled to see the case documents, in accordance with the provisions of paragraph 18 of the Public Administration Act. The deadline for submitting an opinion is 14 days after you have received this letter. You can contact us by telephone on ".expr() + fritekst(
                         "tlfnr"
-                    ) + " or you can send a written response to:".expr()
+                    ) + " or you can send a written response to:".expr(),
                 )
             }
             includePhrase(Felles.ReturTilEtterstadOslo)
