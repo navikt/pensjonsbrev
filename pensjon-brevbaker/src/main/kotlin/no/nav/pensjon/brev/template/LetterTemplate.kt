@@ -20,8 +20,6 @@ data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
     }
 }
 
-typealias StringExpression = Expression<String>
-
 sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Element<Lang>> : StableHash {
     data class Content<out Lang : LanguageSupport, C : Element<Lang>>(
         val content: C,

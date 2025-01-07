@@ -83,3 +83,5 @@ sealed class Expression<out Out> : StableHash {
         throw PreventToStringForExpressionException()
     }
 }
+
+typealias StringExpression = Expression<String>
