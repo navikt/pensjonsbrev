@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brevbaker.api.model.*
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
@@ -23,7 +22,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         attachments: List<LetterMarkup.Attachment>,
         language: Language,
         felles: Felles,
-        brevtype: LetterMetadata.Brevtype
+        brevtype: LetterMetadata.Brevtype,
     ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
@@ -188,7 +187,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     private fun LatexAppendable.renderBlocks(blocks: List<LetterMarkup.Block>): Unit =
         blocks.forEach { renderBlock(it) }
 
-    private fun LatexAppendable.renderText(elements: List<ParagraphContent.Text>): Unit =
+    private fun LatexAppendable.renderText(elements: List<Text>): Unit =
         elements.forEach { renderTextContent(it) }
 
     private fun LatexAppendable.renderBlock(block: LetterMarkup.Block): Unit =
@@ -203,38 +202,35 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
             }
         }
 
+    private fun LatexAppendable.renderTextParagraph(text: List<Text>): Unit =
+        appenCmd("templateparagraph") {
+            arg { renderText(text) }
+        }
+
     //TODO depricate table/itemlist/form inside paragraph and make them available outside.
     // there should not be a different space between elements if within/outside paragraphs.
     private fun LatexAppendable.renderParagraph(element: LetterMarkup.Block.Paragraph) {
-        // yes, this is a bit c esque. Feel free to improve.
-        var i = 0
-        while (i < element.content.size) {
-            val current = element.content[i]
+        var continousTextContent = mutableListOf<Text>()
+
+        element.content.forEach { current ->
+            if (current !is Text && continousTextContent.isNotEmpty()) {
+                renderTextParagraph(continousTextContent)
+                continousTextContent = mutableListOf()
+            }
 
             when (current) {
                 is Form -> renderForm(current)
                 is ItemList -> renderList(current)
                 is Table -> renderTable(current)
-                is Text -> {
-                    appenCmd("templateparagraph") {
-                        arg {
-                            // render all continious text elements inside paragraph
-                            while (i < element.content.size && element.content[i] is Text) {
-                                renderTextContent(element.content[i] as Text)
-                                i++
-                            }
-                        }
-                    }
-                    continue // skip extra increment
-                }
+                is Text -> continousTextContent.add(current)
             }
-            i++
+        }
+        if (continousTextContent.isNotEmpty()) {
+            renderTextParagraph(continousTextContent)
         }
     }
 
-    private fun LatexAppendable.renderList(
-        list: ParagraphContent.ItemList
-    ) {
+    private fun LatexAppendable.renderList(list: ItemList) {
         if (list.items.isNotEmpty()) {
             appenCmd("begin", "letteritemize")
             list.items.forEach { item ->
@@ -245,7 +241,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         }
     }
 
-    private fun LatexAppendable.renderTable(table: ParagraphContent.Table) {
+    private fun LatexAppendable.renderTable(table: Table) {
         if (table.rows.isNotEmpty()) {
             val columnSpec = table.header.colSpec
 
@@ -261,10 +257,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         }
     }
 
-    private fun LatexAppendable.renderTableCells(
-        cells: List<ParagraphContent.Table.Cell>,
-        colSpec: List<ParagraphContent.Table.ColumnSpec>
-    ) {
+    private fun LatexAppendable.renderTableCells(cells: List<Table.Cell>, colSpec: List<Table.ColumnSpec>) {
         cells.forEachIndexed { index, cell ->
             val columnSpan = colSpec[index].span
             if (columnSpan > 1) {
@@ -281,7 +274,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         append("""\\""", escape = false)
     }
 
-    private fun columnHeadersLatexString(columnSpec: List<ParagraphContent.Table.ColumnSpec>): String =
+    private fun columnHeadersLatexString(columnSpec: List<Table.ColumnSpec>): String =
         columnSpec.joinToString("") {
             ("X" +
                     when (it.alignment) {
@@ -290,11 +283,11 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                     }).repeat(it.span)
         }
 
-    private fun LatexAppendable.renderTextContent(element: ParagraphContent.Text): Unit =
+    private fun LatexAppendable.renderTextContent(element: Text): Unit =
         when (element) {
-            is ParagraphContent.Text.Literal -> renderTextLiteral(element.text, element.fontType)
-            is ParagraphContent.Text.Variable -> renderTextLiteral(element.text, element.fontType)
-            is ParagraphContent.Text.NewLine -> appenCmd("newline")
+            is Text.Literal -> renderTextLiteral(element.text, element.fontType)
+            is Text.Variable -> renderTextLiteral(element.text, element.fontType)
+            is Text.NewLine -> appenCmd("newline")
         }
 
     private fun LatexAppendable.renderTextLiteral(text: String, fontType: FontType): Unit =
@@ -304,9 +297,9 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
             FontType.ITALIC -> appenCmd("textit") { arg { append(text) } }
         }
 
-    private fun LatexAppendable.renderForm(element: ParagraphContent.Form): Unit =
+    private fun LatexAppendable.renderForm(element: Form): Unit =
         when (element) {
-            is ParagraphContent.Form.MultipleChoice -> {
+            is Form.MultipleChoice -> {
                 if (element.vspace) {
                     appenCmd("formvspace")
                 }
@@ -324,7 +317,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                 appenCmd("end", "formChoice")
             }
 
-            is ParagraphContent.Form.Text -> {
+            is Form.Text -> {
                 if (element.vspace) {
                     appenCmd("formvspace")
                 }
