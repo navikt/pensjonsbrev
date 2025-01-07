@@ -112,11 +112,9 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:0.0.1-SNAPSHOT") // todo versjon
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
 
     implementation(project(":pensjonsmaler"))
-    implementation(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {

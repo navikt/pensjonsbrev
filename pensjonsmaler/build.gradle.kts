@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:0.0.1-SNAPSHOT")
+    api(project(":brevbaker-api-model-mal"))
     api("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 }
 
