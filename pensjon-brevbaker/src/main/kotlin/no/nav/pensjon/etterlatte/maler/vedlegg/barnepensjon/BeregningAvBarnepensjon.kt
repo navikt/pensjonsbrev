@@ -822,7 +822,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 }
 
 private fun ParagraphOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.barnepensjonssats(): StringExpression {
-    return ifElse(sisteBeregningsperiode.harForeldreloessats, 2.25, 1).formatTall()
+    return ifElse(
+        sisteBeregningsperiode.harForeldreloessats.notNull(),
+        ifElse(sisteBeregningsperiode.harForeldreloessats.ifNull(false), 2.25, 1).formatTall(),
+        ifElse(erForeldreloes, 2.25, 1).formatTall()
+    )
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.beregnetBarnepensjonGammeltOgNyttRegelverk(
@@ -864,7 +868,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 newline()
                 textExpr(
                     Bokmal to "Barnepensjonen per år er beregnet til ".expr() + barnepensjonssats() + " G ganget med ".expr() + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "Barnepensjonen per år er rekna ut til".expr() + barnepensjonssats() + " G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året.",
+                    Nynorsk to "Barnepensjonen per år er rekna ut til ".expr() + barnepensjonssats() + " G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året.",
                     English to "The children's pension per year is calculated at ".expr() + barnepensjonssats() + "G x ".expr() + aarTrygdetid.format() + "/40 contribution time, multiplied by the proportional fraction " + prorataBroek.formatBroek() + ". This amount is distributed in 12 payments a year.",
                 )
             }
@@ -892,9 +896,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 textExpr(
-                    Bokmal to "Barnepensjonen per år er beregnet til".expr() + barnepensjonssats() + " G ganget med ".expr() + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "Barnepensjonen per år er rekna ut til".expr() + barnepensjonssats() + " G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året.",
-                    English to "The children's pension per year is calculated at".expr() + barnepensjonssats() + "G x ".expr() + aarTrygdetid.format() + "/40 contribution time, multiplied by the proportional fraction " + prorataBroek.formatBroek() + ". This amount is distributed in 12 payments a year.",
+                    Bokmal to "Barnepensjonen per år er beregnet til ".expr() + barnepensjonssats() + " G ganget med ".expr() + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "Barnepensjonen per år er rekna ut til ".expr() + barnepensjonssats() + " G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året.",
+                    English to "The children's pension per year is calculated at ".expr() + barnepensjonssats() + "G x ".expr() + aarTrygdetid.format() + "/40 contribution time, multiplied by the proportional fraction " + prorataBroek.formatBroek() + ". This amount is distributed in 12 payments a year.",
                 )
             }
         }
@@ -923,9 +927,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 textExpr(
-                    Bokmal to "Barnepensjonen per år er beregnet til".expr() + barnepensjonssats() + " G ganget med ".expr()  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "Barnepensjonen per år er rekna ut til".expr() + barnepensjonssats() + " G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året.",
-                    English to "The children's pension per year is calculated at".expr() + barnepensjonssats() + "G x ".expr() + aarTrygdetid.format() + "/40 contribution time. This amount is distributed in 12 payments a year.",
+                    Bokmal to "Barnepensjonen per år er beregnet til ".expr() + barnepensjonssats() + " G ganget med ".expr()  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "Barnepensjonen per år er rekna ut til ".expr() + barnepensjonssats() + " G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året.",
+                    English to "The children's pension per year is calculated at ".expr() + barnepensjonssats() + "G x ".expr() + aarTrygdetid.format() + "/40 contribution time. This amount is distributed in 12 payments a year.",
                 )
             }
         }.orShow {
@@ -952,9 +956,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 textExpr(
-                    Bokmal to "Barnepensjonen per år er beregnet til".expr() + barnepensjonssats() + " G ganget med ".expr()  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "Barnepensjonen per år er rekna ut til".expr() + barnepensjonssats() + " G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året.",
-                    English to "The children's pension per year is calculated at".expr() + barnepensjonssats() + "G x ".expr() + aarTrygdetid.format() + "/40 contribution time. This amount is distributed in 12 payments a year.",
+                    Bokmal to "Barnepensjonen per år er beregnet til ".expr() + barnepensjonssats() + " G ganget med ".expr()  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "Barnepensjonen per år er rekna ut til ".expr() + barnepensjonssats() + " G gonga med ".expr() + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året.",
+                    English to "The children's pension per year is calculated at ".expr() + barnepensjonssats() + "G x ".expr() + aarTrygdetid.format() + "/40 contribution time. This amount is distributed in 12 payments a year.",
                 )
             }
         }
