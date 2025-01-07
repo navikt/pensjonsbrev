@@ -36,7 +36,7 @@ object AktivitetsgradFormatter : LocalizedFormatter<Aktivitetsgrad>(), StableHas
 @TemplateModelHelpers
 object OmstillingsstoenadAktivitetspliktVarselInnhold :
     EtterlatteTemplate<OmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_AKTIVITETSPLIKT_VARSELBREV_INNHOLD
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.AKTIVITETSPLIKT_VARSELBREV_INNHOLD
 
     override val template = createTemplate(
         name = kode.name,
