@@ -262,8 +262,8 @@ object TemplateDocumentationRenderer {
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =
         if (operation.doc != null) {
             Operation(
-                text = operation.doc.name,
-                syntax = operation.doc.syntax,
+                text = operation.doc!!.name,
+                syntax = operation.doc!!.syntax,
             )
         } else {
             Operation(
