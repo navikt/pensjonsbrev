@@ -182,7 +182,7 @@ object TemplateDocumentationRenderer {
         when (expr.operation) {
             is LocalizedFormatter<*> -> renderExpression(expr.first)
             is BinaryOperation.IfNull<*> ->
-               if (expr.second is Expression.Literal && expr.second.value == false) {
+               if (expr.second is Expression.Literal && (expr.second as Expression.Literal<Any?>).value == false) {
                    renderExpression(expr.first)
                } else {
                    renderAnyBinaryInvoke(expr)
@@ -211,11 +211,11 @@ object TemplateDocumentationRenderer {
             )
 
             is UnaryOperation.MapCollection<*, *> -> TODO()
-            is UnaryOperation.Not -> if (expr.value is Expression.BinaryInvoke<*, *, *> && expr.value.operation is BinaryOperation.Equal<*>) {
+            is UnaryOperation.Not -> if (expr.value is Expression.BinaryInvoke<*, *, *> && (expr.value as Expression.BinaryInvoke<*, *, *>).operation is BinaryOperation.Equal<*>) {
                 TemplateDocumentation.Expression.Invoke(
                     operator = Operation("!=", Documentation.Notation.INFIX),
-                    first = renderExpression(expr.value.first),
-                    second = renderExpression(expr.value.second),
+                    first = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).first),
+                    second = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).second),
                 )
             } else TemplateDocumentation.Expression.Invoke(
                 operator = Operation("!", Documentation.Notation.PREFIX),
@@ -223,16 +223,16 @@ object TemplateDocumentationRenderer {
             )
 
             is UnaryOperation.SafeCall -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("?.${expr.operation.selector.propertyName}", Documentation.Notation.POSTFIX),
+                operator = Operation("?.${(expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyName}", Documentation.Notation.POSTFIX),
                 first = renderExpression(expr.value),
-                type = expr.operation.selector.propertyType,
+                type = (expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyType,
             )
 
-            is UnaryOperation.Select -> if (expr.operation.selector != intValueSelector) {
+            is UnaryOperation.Select -> if ((expr.operation as UnaryOperation.Select<out Any, Any?>).selector != intValueSelector) {
                 TemplateDocumentation.Expression.Invoke(
-                    operator = Operation(".${expr.operation.selector.propertyName}", Documentation.Notation.POSTFIX),
+                    operator = Operation(".${(expr.operation as UnaryOperation.Select<out Any, Any?>).selector.propertyName}", Documentation.Notation.POSTFIX),
                     first = renderExpression(expr.value),
-                    type = expr.operation.selector.propertyType,
+                    type = (expr.operation as UnaryOperation.Select<out Any, Any?>).selector.propertyType,
                 )
             } else {
                 renderExpression(expr.value)
