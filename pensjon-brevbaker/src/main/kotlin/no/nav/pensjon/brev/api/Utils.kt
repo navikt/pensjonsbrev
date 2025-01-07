@@ -10,11 +10,3 @@ fun LanguageCode.toLanguage(): Language =
         LanguageCode.NYNORSK -> Language.Nynorsk
         LanguageCode.ENGLISH -> Language.English
     }
-
-
-fun Language.toCode(): LanguageCode =
-    when (this) {
-        Language.Bokmal -> LanguageCode.BOKMAL
-        Language.Nynorsk -> LanguageCode.NYNORSK
-        Language.English -> LanguageCode.ENGLISH
-    }
