@@ -19,7 +19,7 @@
     "tsc:watch": "tsc --watch"
   },
   "dependencies": {
-    "@emotion/react": "11.11.4",
+    "@emotion/react": "11.14.0",
     "@hookform/resolvers": "3.3.4",
     "@navikt/aksel-icons": "7.9.0",
     "@navikt/ds-css": "7.9.0",
