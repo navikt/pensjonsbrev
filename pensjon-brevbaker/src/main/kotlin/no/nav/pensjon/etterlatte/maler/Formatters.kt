@@ -42,11 +42,7 @@ fun Expression<Number>.formatTall(): Expression<String> = this.format(TallFormat
 
 object TallFormatter : LocalizedFormatter<Number>(), StableHash by StableHash.of("TallFormatter") {
     override fun apply(first: Number, second: Language): String {
-        return when (second) {
-            is Language.Bokmal -> NumberFormat.getNumberInstance(Locale.of("nb", "NO")).format(first)
-            is Language.Nynorsk -> NumberFormat.getNumberInstance(Locale.of("nn", "NO")).format(first)
-            is Language.English -> NumberFormat.getNumberInstance(Locale.of("en", "UK")).format(first)
-        }
+        return NumberFormat.getNumberInstance(second.locale()).format(first)
     }
 }
 
