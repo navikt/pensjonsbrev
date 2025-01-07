@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
-    "@hookform/resolvers": "3.3.4",
+    "@hookform/resolvers": "3.9.1",
     "@navikt/aksel-icons": "7.9.0",
     "@navikt/ds-css": "7.9.0",
     "@navikt/ds-react": "7.9.0",
