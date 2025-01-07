@@ -3,14 +3,12 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
-import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTO
 import java.time.LocalDate
@@ -28,10 +26,10 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
     BarnepensjonOmregnetNyttRegelverkFerdigDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = lagBeregning(),
-        etterbetaling = lagEtterbetaling(),
         frivilligSkattetrekk = true,
         erUnder18Aar = false,
         erBosattUtlandet = true,
+        erEtterbetaling = false
     )
 
 internal fun lagBeregning() = BarnepensjonBeregning(
@@ -105,9 +103,4 @@ internal fun lagBeregning() = BarnepensjonBeregning(
         mindreEnnFireFemtedelerAvOpptjeningstiden = false,
         navnAvdoed = "Elvis Presley"
     )
-)
-
-fun lagEtterbetaling() = BarnepensjonEtterbetaling(
-    inneholderKrav = true,
-    etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
 )
