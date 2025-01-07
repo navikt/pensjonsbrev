@@ -9,12 +9,6 @@ import no.nav.pensjon.brev.api.toCode
 import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 
-interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
-    val template: LetterTemplate<*, LetterData>
-    val kode: Kode
-    fun description(): TemplateDescription
-}
-
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
     val kategori: TemplateDescription.Brevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
