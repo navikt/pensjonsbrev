@@ -238,12 +238,10 @@ class LatexVisualITest {
     @ParameterizedTest
     @MethodSource("allElementCombinations")
     fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
-        createAttachment<LangBokmal, EmptyBrevdata>(
-            title = newText(Bokmal to "${elementA.description} then ${elementB.description}"),
-            includeSakspart = false,
-        ) {
+        render(overrideName = "${elementA.description} then ${elementB.description}") {
             renderOutlineElementOfType(elementA)
             renderOutlineElementOfType(elementB)
+
         }
     }
 
