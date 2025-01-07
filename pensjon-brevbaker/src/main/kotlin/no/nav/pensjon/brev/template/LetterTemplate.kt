@@ -20,12 +20,6 @@ data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
     }
 }
 
-class PreventToStringForExpressionException : Exception(
-    "Expression.toString should not be used. " +
-            "In most cases this means that a template contains string concatenation of a string literal with an Expression-object, e.g:" +
-            "text(Bokmal to \"The year is \${year.format()} \")"
-)
-
 sealed class Expression<out Out> : StableHash {
 
     abstract fun eval(scope: ExpressionScope<*>): Out
