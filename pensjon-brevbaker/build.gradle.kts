@@ -66,7 +66,7 @@ tasks {
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true
         systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
         systemProperties["junit.jupiter.execution.parallel.config.strategy"] = "dynamic"
-        systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.25
+        systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = setOf("integration-test")

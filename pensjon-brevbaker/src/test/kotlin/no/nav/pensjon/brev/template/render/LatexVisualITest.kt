@@ -7,19 +7,16 @@ import no.nav.pensjon.brev.maler.example.lipsums
 import no.nav.pensjon.brev.renderTestPdfOutline
 import no.nav.pensjon.brev.renderTestVedleggPdf
 import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
-import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import org.apache.commons.codec.language.bm.Lang
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -36,7 +33,8 @@ class LatexVisualITest {
         attachments: List<AttachmentTemplate<LangBokmal, EmptyBrevdata>> = emptyList(),
         outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
     ) {
-        val testName = overrideName ?: StackWalker.getInstance().walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") }
+        val testName = overrideName ?: StackWalker.getInstance()
+            .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") }
         renderTestPdfOutline(
             "test_visual/pdf",
             testName = testName,
@@ -56,7 +54,8 @@ class LatexVisualITest {
     ) {
         renderTestVedleggPdf(
             outputFolder = "test_visual/pdf",
-            testName = testName ?: StackWalker.getInstance().walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") },
+            testName = testName ?: StackWalker.getInstance()
+                .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") },
             includeSakspart = includeSakspart,
             outlineInit = vedleggOutlineInit,
             felles = felles,
@@ -94,6 +93,38 @@ class LatexVisualITest {
         ) {
             testTitle1()
             paragraph { ipsumText() }
+        }
+    }
+
+    @Test
+    fun `form elementer`() {
+        render {
+            title1 { text(Bokmal to "Form choice") }
+            paragraph {
+                formChoice(prompt = newText(Bokmal to "Hvor lenge har du jobba?"), true) {
+                    choice(Bokmal to "0 år")
+                    choice(Bokmal to "1 år")
+                    choice(Bokmal to "2 til 5 år")
+                    choice(Bokmal to "6 år eller mer")
+                }
+            }
+            title1 { text(Bokmal to "Form choice uten vspace") }
+            paragraph {
+                formChoice(prompt = newText(Bokmal to "Hvor lenge vil du jobbe?"), false) {
+                    choice(Bokmal to "0 år")
+                    choice(Bokmal to "1 år")
+                    choice(Bokmal to "2 til 5 år")
+                    choice(Bokmal to "6 år eller mer")
+                }
+            }
+            title1 { text(Bokmal to "Form text short med vspace") }
+            paragraph { formText(Size.SHORT, newText(Bokmal to "bla"), true) }
+            title1 { text(Bokmal to "Form text long med vspace") }
+            paragraph { formText(Size.LONG, newText(Bokmal to "bla"), true) }
+            title1 { text(Bokmal to "Form text short uten vspace") }
+            paragraph { formText(Size.SHORT, newText(Bokmal to "bla"), false) }
+            title1 { text(Bokmal to "Form text long uten vspace") }
+            paragraph { formText(Size.LONG, newText(Bokmal to "bla"), false) }
         }
     }
 
@@ -158,6 +189,20 @@ class LatexVisualITest {
     }
 
     @Test
+    fun `test av ulike `() {
+        render(
+            felles = Fixtures.felles.copy(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                    saksbehandler = "Ole Saksbehandler",
+                    attesterendeSaksbehandler = "Per Saksbehandler"
+                )
+            )
+        ) {
+            paragraph { ipsumText() }
+        }
+    }
+
+    @Test
     fun `vedtaksbrev med saksbehandler underskrift`() {
         render(
             felles = Fixtures.felles.copy(
@@ -190,27 +235,15 @@ class LatexVisualITest {
         }
     }
 
-    @Test
-    fun `Test unique content combinations`() {
-        val combinations: List<Pair<ElementType, ElementType>> = ElementType.entries.flatMapIndexed { index, type ->
-            ElementType.entries.drop(index + 1).flatMap { otherType ->
-                listOf(type to otherType, otherType to type, type to type)
-            }
-        }
-
-        // add combinations to separate attachments to save on compile time
-        val attachments = combinations.map {(elementA, elementB) ->
-            createAttachment<LangBokmal, EmptyBrevdata>(
-                title = newText(Bokmal to "${elementA.description} then ${elementB.description}"),
-                includeSakspart = false,
-            ){
-                renderOutlineElementOfType(elementA)
-                renderOutlineElementOfType(elementB)
-            }
-        }
-
-        render(attachments = attachments) {
-
+    @ParameterizedTest
+    @MethodSource("allElementCombinations")
+    fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
+        createAttachment<LangBokmal, EmptyBrevdata>(
+            title = newText(Bokmal to "${elementA.description} then ${elementB.description}"),
+            includeSakspart = false,
+        ) {
+            renderOutlineElementOfType(elementA)
+            renderOutlineElementOfType(elementB)
         }
     }
 
@@ -282,7 +315,7 @@ class LatexVisualITest {
         fun allElementCombinations(): List<Arguments> =
             ElementType.entries.flatMapIndexed { index, type ->
                 ElementType.entries.drop(index + 1).flatMap { otherType ->
-                    listOf(Arguments.of(type, otherType), Arguments.of(otherType, type))
+                    listOf(Arguments.of(type, otherType), Arguments.of(otherType, type), Arguments.of(type, type))
                 }
             }
     }
