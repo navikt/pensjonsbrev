@@ -63,7 +63,7 @@
     "eslint-plugin-simple-import-sort": "12.1.1",
     "eslint-plugin-testing-library": "7.1.1",
     "eslint-plugin-unicorn": "56.0.1",
-    "globals": "15.13.0",
+    "globals": "15.14.0",
     "jsdom": "24.0.0",
     "postcss-styled-syntax": "0.6.4",
     "prettier": "3.4.2",
