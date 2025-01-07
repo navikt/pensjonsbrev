@@ -44,13 +44,13 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(
-                    Bokmal to "Vi ber om bistand til å få oversatt vedlagte dokumenter fra <Fritekst: språk> til norsk."
+                textExpr(
+                    Bokmal to "Vi ber om bistand til å få oversatt vedlagte dokumenter fra ".expr() + fritekst("språk") + " til norsk.".expr()
                 )
             }
             paragraph {
-                text(
-                    Bokmal to "Det som ønskes oversatt er markert <Fritekst: med tusj, se vedlegg>."
+                textExpr(
+                    Bokmal to "Det som ønskes oversatt er markert ".expr() + fritekst("med tusj, se vedlegg.") + "".expr()
                 )
             }
             paragraph {
@@ -60,12 +60,12 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 textExpr(
-                    Bokmal to "Honorar for oversettelsen vil mot regning bli dekket av <Fritekst: ".expr() + felles.avsenderEnhet.navn + " >.".expr()
+                    Bokmal to "Honorar for oversettelsen vil mot regning bli dekket av ".expr() + fritekst(felles.avsenderEnhet.navn) + ".".expr()
                 )
             }
             paragraph {
-                text(
-                    Bokmal to "<Fritekst: Svar for regning sendes til følgende adresse:>"
+                textExpr(
+                    Bokmal to fritekst("Svar for regning sendes til følgende adresse:") + "".expr()
                 )
             }
             paragraph {
