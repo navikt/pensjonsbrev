@@ -13,8 +13,6 @@ data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
-    val modelSpecification: TemplateModelSpecification = TemplateModelSpecificationFactory(letterDataType).build()
-
     init {
         if (title.isEmpty()) {
             throw MissingTitleInTemplateException("Missing title in template: $name")

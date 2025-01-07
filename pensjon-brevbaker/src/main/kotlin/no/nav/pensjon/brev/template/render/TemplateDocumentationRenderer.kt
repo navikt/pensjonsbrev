@@ -12,12 +12,12 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 object TemplateDocumentationRenderer {
 
-    fun render(template: LetterTemplate<*, *>, lang: Language): TemplateDocumentation =
+    fun render(template: LetterTemplate<*, *>, lang: Language, modelSpecification: TemplateModelSpecification): TemplateDocumentation =
         TemplateDocumentation(
             title = renderText(template.title, lang),
             outline = renderOutline(template.outline, lang),
             attachments = template.attachments.map { renderAttachment(it, lang) },
-            templateModelSpecification = template.modelSpecification,
+            templateModelSpecification = modelSpecification,
         )
 
     private fun renderAttachment(attachment: IncludeAttachment<*, *>, lang: Language): TemplateDocumentation.Attachment =
