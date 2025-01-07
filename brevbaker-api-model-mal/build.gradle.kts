@@ -5,6 +5,7 @@ val apiModelJavaTarget: String by System.getProperties()
 plugins {
     kotlin("jvm")
     `maven-publish`
+    id("com.google.devtools.ksp")
 }
 
 group = "no.nav.pensjon.brevbaker"
@@ -23,6 +24,7 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.0")
     api(project(":template-model-generator"))
+    ksp(project(":template-model-generator"))
 }
 
 publishing {

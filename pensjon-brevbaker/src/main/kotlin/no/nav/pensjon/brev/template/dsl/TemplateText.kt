@@ -25,19 +25,6 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, 
     }
 }
 
-interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
-
-    fun addTextContent(e: TextElement<Lang>)
-
-    fun eval(expression: StringExpression, fontType: FontType = FontType.PLAIN) {
-        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, fontType)))
-    }
-
-    fun newline() {
-        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine()))
-    }
-}
-
 // TextScope.text()
 //
 //

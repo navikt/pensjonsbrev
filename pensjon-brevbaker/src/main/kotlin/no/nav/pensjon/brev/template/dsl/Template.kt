@@ -19,15 +19,6 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
         return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata)
     }
 
-@TemplateModelHelpers([Felles::class])
-interface TemplateGlobalScope<LetterData : Any> {
-    val argument: Expression<LetterData>
-        get() = Expression.FromScope.Argument()
-
-    val felles: Expression<Felles>
-        get() = Expression.FromScope.Felles
-}
-
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
     val title: MutableList<TextElement<Lang>> = mutableListOf(),
