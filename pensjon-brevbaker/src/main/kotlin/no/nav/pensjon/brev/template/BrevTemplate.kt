@@ -27,13 +27,3 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
     fun TextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
         Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
 }
-
-interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {
-    override fun description(): TemplateDescription.Autobrev =
-        TemplateDescription.Autobrev(
-            name = template.name,
-            letterDataClass = template.letterDataType.java.name,
-            languages = template.language.all().map { it.toCode() },
-            metadata = template.letterMetadata,
-        )
-}

@@ -11,6 +11,16 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
     fun description(): TemplateDescription
 }
 
+interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {
+    override fun description(): TemplateDescription.Autobrev =
+        TemplateDescription.Autobrev(
+            name = template.name,
+            letterDataClass = template.letterDataType.java.name,
+            languages = template.language.all().map { it.toCode() },
+            metadata = template.letterMetadata,
+        )
+}
+
 fun Language.toCode(): LanguageCode =
     when (this) {
         Language.Bokmal -> LanguageCode.BOKMAL
