@@ -25,9 +25,9 @@ object BarnepensjonFellesFraser {
 
             paragraph {
                 text(
-                    Bokmal to "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på pensjonen etter EØS/avtalelandreglene heller.",
-                    Nynorsk to "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på pensjonen vurdert etter EØS/avtalelandreglane heller.",
-                    English to "We have now received information from foreign social security authorities, which means you are entitled to the pension under the EEA/agreement country rules either.",
+                    Bokmal to "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på pensjonen etter EØS/avtalelandreglene.",
+                    Nynorsk to "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på pensjonen vurdert etter EØS/avtalelandreglane.",
+                    English to "We have now received information from foreign social security authorities, which means you are entitled to the pension under the EEA/agreement country rules.",
                 )
             }
 
@@ -114,7 +114,7 @@ object BarnepensjonFellesFraser {
                 text(
                     Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for utbetalingen av barnepensjon, eller retten til å få barnepensjon. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
                     Nynorsk to "Du pliktar å melde frå til oss om endringar som har innverknad på utbetalinga av eller retten på barnepensjon. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
-                    English to "You are obligated to notify us of any changes that affect the payment of a children's pension, or the right to receive a children's pension. You will see which changes you must report in the attachment: Your Rights and Obligations.",
+                    English to "You are obligated to notify us of any changes that affect the payment of a children's pension, or the right to receive a children's pension. You will see which changes you must report in the attachment: Your rights and obligations.",
                 )
             }
         }
