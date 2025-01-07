@@ -88,6 +88,8 @@ dependencies {
 
     // Domenemodell
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:0.0.1-SNAPSHOT")
+    implementation(project(":template-model-generator")) // TODO: denne bør ikkje vera nødvendig her
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
