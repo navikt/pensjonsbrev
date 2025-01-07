@@ -142,6 +142,47 @@ En strategi for overgangen kan se slik ut:
     ```
 3. Ta i bruk den nye versjonen i avsender systemet.
 
+# Oppdatere LaTeX mal/versjon
+
+## Iterere på endringer
+
+For å fort kunne oppdatere latex filene i pdf-byggeren under kjøring, anbefales det å kjøre følgende kommando, som before launch for LatexVisualITest
+
+```bash
+docker exec -u 0 -it pensjonsbrev_pdf-bygger_1 rm -rf /app/pensjonsbrev_latex && docker cp ./pdf-bygger/containerFiles/latex pensjonsbrev_pdf-bygger_1:/app/pensjonsbrev_latex/
+```
+
+Da vil du kunne se på pensjon-brevbaker/build/test_visual/pdf resultatet av endringen fort.
+
+## Se forskjell mellom endringer og gammel versjon
+For å se at du kun har endret det du skal, så kan du kjøre følgende script:
+```bash
+folder=./pensjon-brevbaker/build/test_visual
+original_files=$folder/image_old
+compare_to_folder=$folder/pdf
+mogrify_folder=$folder/image_new
+output_folder=$folder/out
+mkdir -p $folder/out
+mkdir -p $mogrify_folder
+magick mogrify -path $mogrify_folder -format png -background white -alpha remove -alpha off -density 200 -quality 85 $compare_to_folder/*.pdf
+for absolutefilename in $original_files/*.png; do
+      filename=$(basename "$absolutefilename")
+      echo -e "\n-------------------------------"
+      echo comparing $filename
+      magick compare -metric MAE -density 150 -compose multiply $original_files/$filename $mogrify_folder/$filename $output_folder/$filename
+      echo -e "\n-------------------------------"
+done
+```
+
+Først en gang for å lage bilder i image_new, så kan du kopiere bildene til image_old for å få ett sammenligningsgrunnlag.
+Deretter kan du kjøre scriptet på nytt og få vite hvor ulike de er, samt en diff mellom bildene i out mappen.
+
+Du vil også kunne se disse endringene i percey ved å lage en pull-request.
+
+## Oppdatere latex biblioteker
+Ved først bygge pensjon-pdf-bygger/latex.Dockerfile, så sette "from" i pensjon-pdf-bygger/Dockerfile, kan du iterere over det å oppdatere latex imaget/pakker.
+Når du er ferdig med det, så kan du kjøre github action workflowen "update-latex-image" på branchen, så vil den publisere ett nytt dato-stemplet image som kan tas i bruk i pensjon-pdf-bygger/Dockerfile.
+
 # Kode generert av GitHub Copilot
 
 Dette repoet inneholder forekomster av kode generert av GitHub Copilot.
