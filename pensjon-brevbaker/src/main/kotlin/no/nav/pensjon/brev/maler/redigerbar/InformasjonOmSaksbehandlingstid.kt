@@ -4,25 +4,21 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.InkluderVenterSvarAFPSelectors.uttakAlderspensjonProsent
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.InkluderVenterSvarAFPSelectors.uttaksDato
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.inkluderVenterSvarAFP
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.land
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattSoeknad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.svartidUker
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.ytelse
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.inkluderVenterPaaSvarAFP
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattFraAnnetLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+
+// TODO: Test endringene her med et brev som har redigert tekst i en av de påvirkede avsnittene
 
 @TemplateModelHelpers
 object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbehandlingstidDto> {
@@ -54,14 +50,15 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
 
         outline {
             paragraph {
-                val mottattDato = saksbehandlerValg.mottattSoeknad.format()
-                val ytelse = saksbehandlerValg.ytelse
+                val mottattDato = fritekst("mottatt dato")
+                val ytelse = fritekst("ytelse")
 
-                ifNotNull(saksbehandlerValg.land) { land ->
+                showIf(saksbehandlerValg.mottattFraAnnetLand) {
+                    val annetLand = fritekst("land")
                     textExpr(
-                        Bokmal to "Vi har ".expr() + mottattDato + " mottatt søknaden din om " + ytelse + " fra trygdemyndighetene i " + land + ".",
-                        Nynorsk to "Vi har ".expr() + mottattDato + " fått søknaden din om " + ytelse + " fra trygdeorgana i " + land + ".",
-                        English to "We received your application for ".expr() + ytelse + " from the National Insurance authorities in " + land +
+                        Bokmal to "Vi har ".expr() + mottattDato + " mottatt søknaden din om " + ytelse + " fra trygdemyndighetene i " + annetLand + ".",
+                        Nynorsk to "Vi har ".expr() + mottattDato + " fått søknaden din om " + ytelse + " fra trygdeorgana i " + annetLand + ".",
+                        English to "We received your application for ".expr() + ytelse + " from the National Insurance authorities in " + annetLand +
                                 " on " + mottattDato + "."
                     )
                 } orShow {
@@ -72,10 +69,10 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                     )
                 }
             }
-            ifNotNull(saksbehandlerValg.inkluderVenterSvarAFP) {
-                val prosent = it.uttakAlderspensjonProsent.format()
-                val uttaksDato = it.uttaksDato.format()
+            showIf(saksbehandlerValg.inkluderVenterPaaSvarAFP) {
                 paragraph {
+                    val uttaksDato = fritekst("uttaksdato")
+                    val prosent = fritekst("uttaksgrad alderspensjon")
                     textExpr(
                         Bokmal to "Du har ikke høy nok opptjening til å ta ut ".expr() + prosent + " prosent alderspensjon fra " + uttaksDato
                                 + ". Eventuelle AFP-rettigheter vil kunne gi deg rett til uttak av alderspensjon.",
@@ -97,11 +94,11 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                 }
             }
             paragraph {
-                val svartidUker = saksbehandlerValg.svartidUker.format()
+                val svartid = fritekst("svartid")
                 textExpr(
-                    Bokmal to "Saksbehandlingstiden vår er vanligvis ".expr() + svartidUker + " uker.",
-                    Nynorsk to "Saksbehandlingstida vår er vanlegvis ".expr() + svartidUker + " uker.",
-                    English to "Our processing time for this type of application is usually ".expr() + svartidUker + " weeks.",
+                    Bokmal to "Saksbehandlingstiden vår er vanligvis ".expr() + svartid + ".",
+                    Nynorsk to "Saksbehandlingstida vår er vanlegvis ".expr() + svartid + ".",
+                    English to "Our processing time for this type of application is usually ".expr() + svartid + ".",
                 )
             }
             paragraph {

@@ -8,11 +8,8 @@ import java.time.LocalDate
 fun createInformasjonOmSaksbehandlingstidDto() =
     InformasjonOmSaksbehandlingstidDto(
         saksbehandlerValg = SaksbehandlerValg(
-            mottattSoeknad = LocalDate.now().minusDays(6),
-            ytelse = "AFP",
-            land = null,
-            inkluderVenterSvarAFP = null,
-            svartidUker = 10,
+            mottattFraAnnetLand = false,
+            inkluderVenterPaaSvarAFP = false,
         ),
         pesysData = EmptyBrevdata
     )
