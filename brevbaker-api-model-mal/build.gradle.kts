@@ -30,6 +30,7 @@ dependencies {
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation(kotlin("reflect"))
 }
 
 publishing {
