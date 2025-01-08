@@ -38,15 +38,20 @@ export const getCursorOffsetOrRange = () => {
  * @param offset the offset in the node
  */
 export function focusAtOffset(node: ChildNode, offset: number) {
-  if (offset >= 0 && node) {
-    const range = document.createRange();
-    range.setStart(node, offset);
-    range.collapse();
-    node.parentElement?.focus();
+  if (node && offset >= 0) {
+    try {
+      const range = document.createRange();
+      range.setStart(node, offset);
+      range.collapse();
+      node.parentElement?.focus();
 
-    const selection = globalThis.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
+      const selection = globalThis.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("Could not set cursor position for node", node, error);
+    }
   }
 }
 
