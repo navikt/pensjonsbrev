@@ -9,6 +9,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
+
+
 object Felles {
 
     /**
