@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
+val hamkrestVersion: String by project
 val jupiterVersion: String by project
 
 plugins {
@@ -30,6 +31,7 @@ dependencies {
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testImplementation(kotlin("reflect"))
 }
 
