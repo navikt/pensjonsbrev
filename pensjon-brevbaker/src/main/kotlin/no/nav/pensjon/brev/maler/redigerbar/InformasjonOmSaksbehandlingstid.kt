@@ -18,8 +18,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-// TODO: Test endringene her med et brev som har redigert tekst i en av de påvirkede avsnittene
-
 @TemplateModelHelpers
 object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbehandlingstidDto> {
 
