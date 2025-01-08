@@ -13,13 +13,14 @@ version = "0.0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api(project(":brevbaker-api-model-mal"))
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:1.0.0")
+    ksp("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:1.0.0")
     api(project(":pensjon-brevbaker-api-model"))
-    ksp(project(":template-model-generator"))
 }
 
 tasks.test {

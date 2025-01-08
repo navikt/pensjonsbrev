@@ -9,11 +9,16 @@ val hamkrestVersion: String by project
 
 plugins {
     kotlin("jvm")
+    `maven-publish`
 }
 
 group = "no.nav.pensjon.brev"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0"
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 
 kotlin {
     compilerOptions {
@@ -40,6 +45,24 @@ tasks.named("compileTestKotlin", KotlinCompilationTask::class.java) {
 tasks {
     test {
         useJUnitPlatform()
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/navikt/pensjonsbrev")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        register<MavenPublication>("gpr") {
+            from(components["java"])
+        }
     }
 }
 

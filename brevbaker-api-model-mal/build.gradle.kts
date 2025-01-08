@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brevbaker"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0"
 
 java {
     withSourcesJar()
@@ -26,8 +26,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.0")
-    api(project(":template-model-generator"))
-    ksp(project(":template-model-generator"))
+    api("no.nav.pensjon.brev:template-model-generator:1.0.0")
+    ksp("no.nav.pensjon.brev:template-model-generator:1.0.0")
 
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
