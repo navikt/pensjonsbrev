@@ -9,6 +9,7 @@ import no.nav.pensjon.brevbaker.api.model.FellesSelectors.saksnummer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
+
 class ExpressionEvalTest {
 
     data class SomeDto(val name: String, val kortNavn: String?)
