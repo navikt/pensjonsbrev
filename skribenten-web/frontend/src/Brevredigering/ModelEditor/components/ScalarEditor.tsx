@@ -104,6 +104,8 @@ export const AutoSavingTextField = (props: {
   step?: number;
   timeoutTimer: number;
   onSubmit?: () => void;
+  label?: string;
+  autocomplete?: string;
 }) => {
   const { getFieldState, watch, formState } = useFormContext();
 
@@ -138,10 +140,10 @@ export const AutoSavingTextField = (props: {
       render={({ field, fieldState }) => (
         <TextField
           {...field}
-          autoComplete="off"
+          autoComplete={props.autocomplete ?? "off"}
           error={fieldState.error?.message}
           inputMode={props.type === "number" ? "numeric" : undefined}
-          label={convertFieldToReadableLabel(fieldName)}
+          label={props.label ?? convertFieldToReadableLabel(fieldName)}
           onChange={(e) => (e.target.value ? field.onChange(e.target.value) : field.onChange(null))}
           size="small"
           step={props.step}
