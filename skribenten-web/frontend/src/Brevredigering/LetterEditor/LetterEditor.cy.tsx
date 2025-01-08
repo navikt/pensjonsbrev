@@ -3,18 +3,18 @@ import "./editor.css";
 import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { SpraakKode } from "~/types/apiTypes";
 import { type BrevResponse, Distribusjonstype } from "~/types/brev";
-import type { EditedLetter } from "~/types/brevbakerTypes";
+import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 
 import exampleLetter1Json from "./example-letter-1.json";
 import { LetterEditor } from "./LetterEditor";
 
 const exampleLetter1 = exampleLetter1Json as EditedLetter;
 
-function EditorWithState({ initial }: { initial: EditedLetter }) {
+function EditorWithState({ initial, focus }: { initial: EditedLetter; focus?: Focus }) {
   const brevresponse: BrevResponse = {
     info: {
       id: 1,
@@ -35,7 +35,11 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
     redigertBrevHash: "hash1",
     saksbehandlerValg: {},
   };
-  const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevresponse));
+  const newState = Actions.create(brevresponse);
+  if (focus) {
+    newState.focus = focus;
+  }
+  const [editorState, setEditorState] = useState<LetterEditorState>(newState);
   return (
     <LetterEditor
       editorState={editorState}
@@ -189,6 +193,16 @@ describe("<LetterEditor />", () => {
       move("{home}", 1);
       move("{downArrow}", 1);
       assertCaret("CP3-1", 0);
+    });
+  });
+
+  describe("Focus", () => {
+    it("invalid focus is ignored", () => {
+      const invalidCursorPosition = (exampleLetter1.blocks[0].content[2] as LiteralValue).text.length + 10;
+      const invalidFocus = { blockIndex: 0, contentIndex: 2, cursorPosition: invalidCursorPosition };
+      cy.mount(<EditorWithState focus={invalidFocus} initial={exampleLetter1} />);
+
+      cy.contains("Informasjon om saksbehandlingstiden vår");
     });
   });
 });
