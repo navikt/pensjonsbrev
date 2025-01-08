@@ -89,7 +89,8 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
                     datoTOM = LocalDate.of(2023, Month.JULY, 31),
                     grunnbeloep = Kroner(123456),
                     antallBarn = 2,
-                    utbetaltBeloep = Kroner(6234)
+                    utbetaltBeloep = Kroner(6234),
+                    harForeldreloessats = true,
                 )
             ),
             sisteBeregningsperiode = BarnepensjonBeregningsperiode(
@@ -97,7 +98,8 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
                 datoTOM = LocalDate.of(2023, Month.JULY, 31),
                 grunnbeloep = Kroner(123456),
                 antallBarn = 2,
-                utbetaltBeloep = Kroner(6234)
+                utbetaltBeloep = Kroner(6234),
+                harForeldreloessats = true,
             ),
             trygdetid = listOf(tt1, tt2),
             bruktTrygdetid = tt2,
@@ -128,7 +130,8 @@ fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedig
         datoTOM = LocalDate.of(2023, Month.JULY, 31),
         grunnbeloep = Kroner(123456),
         antallBarn = 2,
-        utbetaltBeloep = Kroner(6234)
+        utbetaltBeloep = Kroner(6234),
+        harForeldreloessats = true,
     )
     val foersteDoed = YearMonth.now().minusMonths(6)
     val andreDoed = YearMonth.now().minusMonths(3).atDay(1)
