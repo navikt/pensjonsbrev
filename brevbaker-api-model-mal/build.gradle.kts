@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.0")
+    api(project(":brevbaker-api-model-common"))
     api(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
 }
