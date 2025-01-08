@@ -43,7 +43,8 @@ internal fun lagBeregning() = BarnepensjonBeregning(
             datoTOM = LocalDate.of(2023, Month.JULY, 31),
             grunnbeloep = Kroner(123456),
             antallBarn = 2,
-            utbetaltBeloep = Kroner(6234)
+            utbetaltBeloep = Kroner(6234),
+            harForeldreloessats = false,
         )
     ),
     sisteBeregningsperiode = BarnepensjonBeregningsperiode(
@@ -51,7 +52,8 @@ internal fun lagBeregning() = BarnepensjonBeregning(
         datoTOM = LocalDate.of(2023, Month.JULY, 31),
         grunnbeloep = Kroner(123456),
         antallBarn = 2,
-        utbetaltBeloep = Kroner(6234)
+        utbetaltBeloep = Kroner(6234),
+        harForeldreloessats = false,
     ),
     trygdetid = listOf(
         Trygdetid(
