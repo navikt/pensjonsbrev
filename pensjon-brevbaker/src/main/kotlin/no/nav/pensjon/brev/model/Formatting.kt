@@ -5,21 +5,6 @@ import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-
-fun Telefonnummer.format() =
-    "([0-9][0-9])".toRegex().replace(value, "$1 ").trim()
-
-fun Foedselsnummer.format() =
-    "([0-9]{6})([0-9]{5})".toRegex().replace(value, "$1 $2")
-
-fun Expression<Telefonnummer>.format() = format(formatter = LocalizedFormatter.TelefonnummerFormat)
-
-@JvmName("formatKroner")
-fun Expression<Kroner>.format() = select(intValueSelector).format(formatter = LocalizedFormatter.CurrencyFormat)
-
-@JvmName("formatIntValue")
-fun Expression<IntValue>.format() = select(intValueSelector).format()
 
 @JvmName("formatBormedSivilstandTabell")
 fun Expression<BorMedSivilstand>.tableFormat() = format(formatter = FormatBorMedSivilstandTabell)
