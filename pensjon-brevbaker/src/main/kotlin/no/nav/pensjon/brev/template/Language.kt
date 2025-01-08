@@ -1,15 +1,6 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import java.util.*
-
-typealias BaseLanguages = LangBokmalNynorskEnglish
-typealias LangBokmal = LanguageSupport.Single<Language.Bokmal>
-typealias LangNynorsk = LanguageSupport.Single<Language.Nynorsk>
-typealias LangEnglish = LanguageSupport.Single<Language.English>
-typealias LangBokmalNynorsk = LanguageSupport.Double<Language.Bokmal, Language.Nynorsk>
-typealias LangBokmalEnglish = LanguageSupport.Double<Language.Bokmal, Language.English>
-typealias LangBokmalNynorskEnglish = LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
 
 data class LanguageSettings(val settings: Map<String, Element.OutlineContent.ParagraphContent.Text.Literal<BaseLanguages>>) {
     class MissingLanguageSettingException(msg: String) : Exception(msg)
