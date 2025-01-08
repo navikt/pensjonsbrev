@@ -50,7 +50,7 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 textExpr(
-                    Bokmal to "Det som ønskes oversatt er markert ".expr() + fritekst("med tusj, se vedlegg.") + "".expr()
+                    Bokmal to "Det som ønskes oversatt er markert ".expr() + fritekst("med tusj, se vedlegg") + ".".expr()
                 )
             }
             paragraph {
@@ -59,8 +59,9 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 )
             }
             paragraph {
+                // TODO: Kan felles.avsenderEnhet.navn redigeres i fritekst felt?
                 textExpr(
-                    Bokmal to "Honorar for oversettelsen vil mot regning bli dekket av ".expr() + fritekst(felles.avsenderEnhet.navn) + ".".expr()
+                    Bokmal to "Honorar for oversettelsen vil mot regning bli dekket av ".expr() + fritekst("felles.avsenderEnhet.navn") + ".".expr()
                 )
             }
             paragraph {
