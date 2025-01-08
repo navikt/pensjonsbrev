@@ -111,3 +111,9 @@ infix fun <T> Expression<T>.equalTo(other: Expression<T>) =
         operation = BinaryOperation.Equal()
     )
 
+fun <T> Expression<T>.format(formatter: LocalizedFormatter<T>): StringExpression =
+    Expression.BinaryInvoke(
+        first = this,
+        second = Expression.FromScope.Language,
+        operation = formatter,
+    )
