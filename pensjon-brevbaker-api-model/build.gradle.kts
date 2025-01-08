@@ -18,11 +18,12 @@ java {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api(project(":brevbaker-api-model-common"))
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }
 

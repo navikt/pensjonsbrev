@@ -20,11 +20,12 @@ java {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     implementation(kotlin("stdlib"))
-    api(project(":brevbaker-api-model-common"))
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.0")
     api(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
 
