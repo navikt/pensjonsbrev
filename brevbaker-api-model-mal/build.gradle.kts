@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
+val jupiterVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -25,6 +26,10 @@ dependencies {
     api(project(":brevbaker-api-model-common"))
     api(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
+
+    // JUnit 5
+    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 publishing {
@@ -49,8 +54,19 @@ kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
     }
+    sourceSets {
+        main {
+            kotlin.srcDir("build/generated/ksp/main/kotlin")
+        }
+        test {
+            kotlin.srcDir("build/generated/ksp/test/kotlin")
+        }
+    }
 }
 tasks {
+    test {
+        useJUnitPlatform()
+    }
     compileJava {
         targetCompatibility = apiModelJavaTarget
     }
