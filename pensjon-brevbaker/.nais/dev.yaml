@@ -28,9 +28,6 @@ preAuthorized:
   - name: skribenten-backend
     namespace: pensjonsbrev
     cluster: dev-gcp
-  - name: etterlatte-brev-api
-    namespace: etterlatte
-    cluster: dev-gcp
   - name: brevoppskrift-web
     namespace: pensjonsbrev
     cluster: dev-gcp

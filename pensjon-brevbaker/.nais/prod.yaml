@@ -10,9 +10,6 @@ preAuthorized:
   - name: pensjon-pen
     namespace: pensjondeployer
     cluster: prod-fss
-  - name: etterlatte-brev-api
-    namespace: etterlatte
-    cluster: prod-gcp
   - name: skribenten-backend
     namespace: pensjonsbrev
     cluster: prod-gcp
