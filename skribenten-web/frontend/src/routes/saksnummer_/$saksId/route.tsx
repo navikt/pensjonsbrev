@@ -59,7 +59,9 @@ function SakBreadcrumbsPage() {
     <FerdigstillResultatContextProvider>
       <MottakerContextProvider>
         <SakInfoBreadcrumbs sak={sakContext?.sak} />
-        <Outlet />
+        <div className="page-margins">
+          <Outlet />
+        </div>
       </MottakerContextProvider>
     </FerdigstillResultatContextProvider>
   );
@@ -79,15 +81,12 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
   }
 
   return (
-    <Bleed
-      asChild
+    <div
       css={css`
         position: sticky;
         top: 48px;
         z-index: var(--a-z-index-focus);
-        overflow-x: hidden;
       `}
-      marginInline="full"
     >
       <div
         css={css`
@@ -122,6 +121,6 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
         </BodyShort>
         {vedtaksId && <BodyShort size="small">vedtaksId: {vedtaksId}</BodyShort>}
       </div>
-    </Bleed>
+    </div>
   );
 }

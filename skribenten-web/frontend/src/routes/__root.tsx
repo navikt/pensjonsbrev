@@ -26,9 +26,7 @@ export const Route = createRootRouteWithContext<{
       </React.Suspense>
       <div>
         <AppHeader />
-        <main className="page-margins">
-          <Outlet />
-        </main>
+        <Outlet />
       </div>
     </>
   ),
