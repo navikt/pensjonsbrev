@@ -1,9 +1,0 @@
-FROM node:20.9.0-slim
-
-COPY . /app
-WORKDIR /app
-RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci
-RUN npm run build
-
-EXPOSE 8080
-CMD ["dist/index.js"]

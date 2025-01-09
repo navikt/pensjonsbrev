@@ -53,7 +53,8 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
                     datoTOM = LocalDate.of(2023, Month.JULY, 31),
                     grunnbeloep = Kroner(123456),
                     antallBarn = 2,
-                    utbetaltBeloep = Kroner(6234)
+                    utbetaltBeloep = Kroner(6234),
+                    harForeldreloessats = true,
                 )
             ),
             sisteBeregningsperiode = BarnepensjonBeregningsperiode(
@@ -61,7 +62,8 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
                 datoTOM = LocalDate.of(2023, Month.JULY, 31),
                 grunnbeloep = Kroner(123456),
                 antallBarn = 2,
-                utbetaltBeloep = Kroner(6234)
+                utbetaltBeloep = Kroner(6234),
+                harForeldreloessats = true,
             ),
             trygdetid = listOf(bruktTrygdetid),
             bruktTrygdetid = bruktTrygdetid

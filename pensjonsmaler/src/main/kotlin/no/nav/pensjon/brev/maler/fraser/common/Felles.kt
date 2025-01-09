@@ -7,7 +7,9 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 
 
 
@@ -16,7 +18,8 @@ object Felles {
     /**
      * TBU1074, TBU2242NB, TBU1075NN, TBU2242EN, RettTilInnsynPesys_001
      */
-    data class RettTilInnsyn(val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class RettTilInnsyn(val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -34,7 +37,7 @@ object Felles {
                 )
                 namedReference(vedlegg)
                 text(
-                    Bokmal to  " for informasjon om hvordan du går fram.",
+                    Bokmal to " for informasjon om hvordan du går fram.",
                     Nynorsk to " for informasjon om korleis du går fram.",
                     English to " for information about how to proceed.",
                 )
@@ -42,7 +45,8 @@ object Felles {
         }
     }
 
-    data class HarDuSpoersmaal(val merInformasjonUrl: String, val telefonnummer: String): OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class HarDuSpoersmaal(val merInformasjonUrl: String, val telefonnummer: String) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -68,6 +72,7 @@ object Felles {
                 )
             }
         }
+
         companion object {
             val ufoeretrygd = HarDuSpoersmaal(Constants.UFOERETRYGD_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
             val omsorg = HarDuSpoersmaal(Constants.OMSORGSOPPTJENING_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
@@ -77,7 +82,8 @@ object Felles {
 
     // TBU2213, TBU1100, RettTilKlagePesys_001
     // TBU2452NN, TBU2452EN, TBU2452
-    data class RettTilAAKlage(val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class RettTilAAKlage(val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -148,5 +154,29 @@ object Felles {
             value = this,
             operation = UnaryOperation.BrukerFulltNavn
         )
+
+    object ReturTilEtterstadOslo : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                textExpr(
+                    Bokmal to felles.avsenderEnhet.navn,
+                    Nynorsk to felles.avsenderEnhet.navn,
+                    English to felles.avsenderEnhet.navn
+                )
+                newline()
+                textExpr(
+                    Bokmal to "Postboks 6600 Etterstad".expr(),
+                    Nynorsk to "Postboks 6600 Etterstad".expr(),
+                    English to "Postboks 6600 Etterstad".expr(),
+                )
+                newline()
+                textExpr(
+                    Bokmal to "0607 Oslo".expr(),
+                    Nynorsk to "0607 Oslo".expr(),
+                    English to "0607 Oslo, Norway".expr(),
+                )
+            }
+        }
+    }
 
 }

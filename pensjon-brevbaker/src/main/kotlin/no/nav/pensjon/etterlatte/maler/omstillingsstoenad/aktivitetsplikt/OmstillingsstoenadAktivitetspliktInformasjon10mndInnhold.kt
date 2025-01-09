@@ -35,7 +35,7 @@ data class OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO(
 object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
     EtterlatteTemplate<OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO> {
     override val kode: EtterlatteBrevKode =
-        EtterlatteBrevKode.OMSTILLINGSSTOENAD_AKTIVITETSPLIKT_INFORMASJON_10MND_INNHOLD
+        EtterlatteBrevKode.AKTIVITETSPLIKT_INFORMASJON_10MND_INNHOLD
 
     override val template = createTemplate(
         name = kode.name,

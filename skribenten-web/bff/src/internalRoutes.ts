@@ -1,17 +1,14 @@
-import { deleteCachedTokens } from "@navikt/backend-for-frontend-utils";
+import { getToken } from "@navikt/oasis";
 import { Express } from "express";
 import { jwtDecode } from "jwt-decode";
 
-import { getTokenFromRequestHeader } from "./tokenValidation.js";
-
 export const internalRoutes = (server: Express) => {
   server.get("/bff/internal/logout", (request, response) => {
-    deleteCachedTokens(request);
     response.redirect("/oauth2/logout");
   });
 
   server.get("/bff/internal/userinfo", (request, response) => {
-    const token = getTokenFromRequestHeader(request);
+    const token = getToken(request);
 
     if (!token) {
       return response.status(400).json({ message: "Bruker er ikke logget inn" });

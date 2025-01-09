@@ -1,5 +1,4 @@
 #Used for local testing purposes
-version: '3.8'
 services:
   pdf-bygger:
     build: ./pdf-bygger
