@@ -19,6 +19,7 @@ body {
 .page-margins {
     max-width: var(--largest-width);
     min-width: var(--minimum-width);
+    min-height: calc(100vh - var(--header-height) - var(--breadcrumbs-height));
     margin: 0 auto;
     padding: 0 24px;
     display: flex;

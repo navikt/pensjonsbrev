@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Bleed, BodyShort, CopyButton } from "@navikt/ds-react";
+import { BodyShort, CopyButton } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet } from "@tanstack/react-router";
