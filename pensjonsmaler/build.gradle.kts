@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelVersion: String by project
 val apiModelJavaTarget: String by System.getProperties()
+val templateModelGeneratorVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -18,6 +19,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
+    implementation("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
     api("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:1.0.0")
     ksp("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:1.0.0")
     api(project(":pensjon-brevbaker-api-model"))

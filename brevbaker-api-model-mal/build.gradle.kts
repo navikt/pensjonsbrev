@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 val apiModelJavaTarget: String by System.getProperties()
 val hamkrestVersion: String by project
 val jupiterVersion: String by project
+val templateModelGeneratorVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -26,8 +27,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.0")
-    api("no.nav.pensjon.brev:template-model-generator:1.0.0")
-    ksp("no.nav.pensjon.brev:template-model-generator:1.0.0")
+    implementation("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
+    ksp("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
 
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))

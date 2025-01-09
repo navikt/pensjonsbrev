@@ -10,6 +10,7 @@ val logstashVersion: String by project
 val micrometerVersion: String by project
 val jacksonJsr310Version: String by project
 val mockkVersion: String by project
+val templateModelGeneratorVersion: String by project
 
 plugins {
     application
@@ -114,6 +115,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
 
+    implementation("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
     implementation(project(":pensjonsmaler"))
     ksp(project(":pensjonsmaler"))
 
