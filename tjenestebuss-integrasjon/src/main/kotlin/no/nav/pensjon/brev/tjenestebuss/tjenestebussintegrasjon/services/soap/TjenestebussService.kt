@@ -11,11 +11,11 @@ import org.apache.cxf.ws.addressing.WSAddressingFeature
 import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.util.*
-import javax.xml.soap.SOAPException
-import javax.xml.soap.SOAPFactory
-import javax.xml.ws.handler.Handler
-import javax.xml.ws.handler.MessageContext
-import javax.xml.ws.handler.soap.SOAPMessageContext
+import jakarta.xml.soap.SOAPException
+import jakarta.xml.soap.SOAPFactory
+import jakarta.xml.ws.handler.Handler
+import jakarta.xml.ws.handler.MessageContext
+import jakarta.xml.ws.handler.soap.SOAPMessageContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration

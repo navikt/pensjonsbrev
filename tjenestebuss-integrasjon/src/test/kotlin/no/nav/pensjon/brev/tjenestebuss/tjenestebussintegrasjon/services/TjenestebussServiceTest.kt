@@ -13,10 +13,10 @@ import org.apache.cxf.feature.Feature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean
 import java.util.*
-import javax.jws.WebService
-import javax.xml.ws.handler.Handler
-import javax.xml.ws.handler.MessageContext
-import javax.xml.ws.handler.soap.SOAPMessageContext
+import jakarta.jws.WebService
+import jakarta.xml.ws.handler.Handler
+import jakarta.xml.ws.handler.MessageContext
+import jakarta.xml.ws.handler.soap.SOAPMessageContext
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
