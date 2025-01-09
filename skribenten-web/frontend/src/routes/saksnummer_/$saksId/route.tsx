@@ -85,6 +85,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
         position: sticky;
         top: 48px;
         z-index: var(--a-z-index-focus);
+        overflow-x: hidden;
       `}
       marginInline="full"
     >
