@@ -13,7 +13,11 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
+import {
+  SaksbehandlerValgModelEditor,
+  usePartitionedModelSpecification,
+} from "~/Brevredigering/ModelEditor/ModelEditor";
+import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
@@ -228,65 +232,79 @@ export const BrevmalAlternativer = (props: {
   submitOnChange?: () => void;
   children?: React.ReactNode;
 }) => {
-  return (
-    <Tabs
-      css={css`
-        width: 100%;
+  const specificationFormElements = usePartitionedModelSpecification(props.brevkode);
 
-        display: flex;
-        flex-direction: column;
-        gap: var(--a-spacing-6);
-        margin-top: 12px;
+  switch (specificationFormElements.status) {
+    case "error": {
+      return <ApiError error={specificationFormElements.error} title={"En feil skjedde"} />;
+    }
+    case "pending": {
+      return <BodyShort size="small">Henter skjema for saksbehandler valg...</BodyShort>;
+    }
+    case "success": {
+      return (
+        <Tabs
+          css={css`
+            width: 100%;
 
-        .navds-tabs__scroll-button {
-          /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
-          display: none;
-        }
-      `}
-      defaultValue={BrevAlternativTab.TEKSTER}
-      fill
-      size="small"
-    >
-      <Tabs.List
-        css={css`
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-        `}
-      >
-        <Tabs.Tab label="Tekster" value={BrevAlternativTab.TEKSTER} />
-        <Tabs.Tab label="Overstyring" value={BrevAlternativTab.OVERSTYRING} />
-      </Tabs.List>
-      <Tabs.Panel
-        css={css`
-          display: flex;
-          flex-direction: column;
-          gap: var(--a-spacing-6);
-          margin-top: 12px;
-        `}
-        value={BrevAlternativTab.TEKSTER}
-      >
-        <SaksbehandlerValgModelEditor
-          brevkode={props.brevkode}
-          fieldsToRender={"optional"}
-          submitOnChange={props.submitOnChange}
-        />
-      </Tabs.Panel>
-      <Tabs.Panel
-        css={css`
-          display: flex;
-          flex-direction: column;
-          gap: var(--a-spacing-6);
-          margin-top: 12px;
-        `}
-        value={BrevAlternativTab.OVERSTYRING}
-      >
-        <SaksbehandlerValgModelEditor
-          brevkode={props.brevkode}
-          fieldsToRender={"required"}
-          submitOnChange={props.submitOnChange}
-        />
-      </Tabs.Panel>
-      {props.children}
-    </Tabs>
-  );
+            display: flex;
+            flex-direction: column;
+            gap: var(--a-spacing-6);
+            margin-top: 12px;
+
+            .navds-tabs__scroll-button {
+              /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
+              display: none;
+            }
+          `}
+          defaultValue={BrevAlternativTab.TEKSTER}
+          fill
+          size="small"
+        >
+          <Tabs.List
+            css={css`
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+            `}
+          >
+            <Tabs.Tab label="Tekster" value={BrevAlternativTab.TEKSTER} />
+            <Tabs.Tab label="Overstyring" value={BrevAlternativTab.OVERSTYRING} />
+          </Tabs.List>
+          <Tabs.Panel
+            css={css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--a-spacing-6);
+              margin-top: 12px;
+            `}
+            value={BrevAlternativTab.TEKSTER}
+          >
+            <SaksbehandlerValgModelEditor
+              brevkode={props.brevkode}
+              fieldsToRender={"optional"}
+              specificationFormElements={specificationFormElements}
+              submitOnChange={props.submitOnChange}
+            />
+          </Tabs.Panel>
+          <Tabs.Panel
+            css={css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--a-spacing-6);
+              margin-top: 12px;
+            `}
+            value={BrevAlternativTab.OVERSTYRING}
+          >
+            <SaksbehandlerValgModelEditor
+              brevkode={props.brevkode}
+              fieldsToRender={"required"}
+              specificationFormElements={specificationFormElements}
+              submitOnChange={props.submitOnChange}
+            />
+          </Tabs.Panel>
+          {props.children}
+        </Tabs>
+      );
+    }
+  }
 };
