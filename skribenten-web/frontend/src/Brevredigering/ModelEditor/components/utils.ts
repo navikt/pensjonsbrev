@@ -5,7 +5,7 @@ export function convertFieldToReadableLabel(field: string) {
   return norskeTegn(capitalizeAsSentence(splitWords(lastFragment)));
 }
 
-const reAcronym = /^[A-Z][A-Z0-9]+$/;
+const reAcronym = /^[A-ZÆØÅ][A-Z0-9ÆØÅ]+$/;
 function capitalizeAsSentence(str: string) {
   return str
     .split(" ")
@@ -21,7 +21,7 @@ function capitalizeAsSentence(str: string) {
     .reduce((previous, current) => previous + " " + current);
 }
 
-const reWords = /^[a-z][a-z0-9]+|[A-Z][a-z0-9]+|[A-Z]([A-Z0-9][^a-z])+/g;
+const reWords = /^[a-zæøå][a-z0-9æøå]+|[A-ZÆØÅ][a-z0-9æøå]+|[A-ZÆØÅ]([A-Z0-9ÆØÅ][^a-zæøå])+/g;
 function splitWords(str: string) {
   const words = str.match(reWords) ?? [];
   return words.reduce((previous, current) => previous + " " + current);

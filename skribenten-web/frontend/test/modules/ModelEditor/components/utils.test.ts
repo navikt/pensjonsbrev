@@ -26,4 +26,8 @@ describe("convertFieldToReadableLabel", () => {
   it("should replace å", () => {
     expect(convertFieldToReadableLabel("aaremaalPaaGang")).toEqual("Åremål på gang");
   });
+
+  it("should accept norwegian characters", () => {
+    expect(convertFieldToReadableLabel("søknadOversendesTilUtlandet")).toEqual("Søknad oversendes til utlandet");
+  });
 });
