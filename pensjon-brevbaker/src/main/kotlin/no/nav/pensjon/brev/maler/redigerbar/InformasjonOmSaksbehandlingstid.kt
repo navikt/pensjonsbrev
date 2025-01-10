@@ -48,7 +48,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
 
         outline {
             paragraph {
-                val mottattDato = fritekst("dato")
+                val mottattDato = fritekst("mottatt dato")
                 val ytelse = fritekst("ytelse")
 
                 showIf(saksbehandlerValg.mottattFraAnnetLand) {
