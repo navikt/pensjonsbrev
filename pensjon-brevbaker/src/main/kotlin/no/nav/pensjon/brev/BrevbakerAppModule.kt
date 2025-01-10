@@ -34,7 +34,10 @@ import no.nav.pensjon.brev.maler.AllTemplates
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.template.brevbakerConfig
 
-fun Application.brevbakerModule(templates: AllTemplates) {
+fun Application.brevbakerModule(
+    templates: AllTemplates,
+    konfigurerFeatureToggling: (ApplicationConfig) -> Unit = { konfigurerUnleash(it) }
+) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
     monitor.subscribe(ApplicationStopPreparing) {
@@ -127,7 +130,7 @@ fun Application.brevbakerModule(templates: AllTemplates) {
     brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
 }
 
-private fun konfigurerFeatureToggling(brevbakerConfig: ApplicationConfig) {
+private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
     FeatureToggleHandler.configure {
         with(brevbakerConfig.config("unleash")) {
             appName = stringProperty("appName")
