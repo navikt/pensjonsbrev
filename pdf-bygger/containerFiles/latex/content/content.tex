@@ -8,6 +8,14 @@
     \renewcommand{\previouselement}{#1}
 }
 
+% Several elements use the \addvspace command. When two elements next to each other uses this kind of space, the highest value is chosen.
+ % For example:
+    % some paragraph text
+    % \addvspace{16pt}
+    % \addvspace{32pt}
+    % some title text
+% in this case only 32 pt of vertical space is added between the elements.
+
 \input{titles}
 \input{paragraph}
 \input{itemList}

@@ -10,12 +10,9 @@
 % plus, like minus allows LaTeX to add some space evenly above each title in the page, such that there isn't much room left on the bottom of the page.
 % This both looks nicer, and mitigates having large empty spaces at the end of a page, which might make readers think the letter is over.
 
+% space that will be added in case the previous element was not a title. Used for chapter like breaks.
 \newlength{\spacebetweentitleandnontitle}
 \setlength{\spacebetweentitleandnontitle}{\dimexpr(32pt-\parskip) plus 8 pt minus 8 pt}
-
-\newcommand{\lettersectiontitlespacing}[1]{
-    \ifdefstring{\previouselement}{title}{par}{}
-}
 
 \newcommand{\lettersectiontitle}[1]{
     \pagebreak[3] %strongly encourage page break before section title
@@ -25,7 +22,7 @@
     \nopagebreak
     \\[0pt]         % TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent.
     \addpenalty{10000} % Absolutely no page break here. Addpenalty carries the penalty through addvspace to the next element.
-    \addvspace{6pt}
+    \addvspace{6pt} % require at least 6 pt of space until the next element.
 }
 
 % Title 1

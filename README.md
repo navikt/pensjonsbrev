@@ -142,7 +142,7 @@ En strategi for overgangen kan se slik ut:
     ```
 3. Ta i bruk den nye versjonen i avsender systemet.
 
-# Oppdatere LaTeX mal/versjon
+# Oppdatere LaTeX mal/avhengigheter
 
 ## Iterere på endringer
 

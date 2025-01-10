@@ -40,7 +40,7 @@ jobs:
         with:
           "distribution": "temurin"
           "java-version": "17"
-          cache: 'gradle'
+          "cache": "gradle"
 
       - name: "compile and run tests"
         run: |
@@ -80,7 +80,7 @@ jobs:
         with:
           "distribution": "temurin"
           "java-version": "17"
-          cache: 'gradle'
+          "cache": "gradle"
       - name: "compile and run tests"
         run: "./gradlew :pdf-bygger:build"
       - name: "Build and publish container image to GAR"
@@ -142,7 +142,7 @@ jobs:
         with:
           "distribution": "temurin"
           "java-version": "17"
-          cache: 'gradle'
+          "cache": "gradle"
       - name: "run integration tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 

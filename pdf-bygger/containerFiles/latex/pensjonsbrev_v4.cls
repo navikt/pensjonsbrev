@@ -38,7 +38,7 @@
     ItalicFont={Source Sans 3 Italic}]{Source Sans 3}
 
 
-% Global font commands
+% Global font commands.
 \newcommand{\standardtextsize}{11pt}
 \newcommand{\standardtextspacing}{16pt}
 \newcommand{\standardtext}{\primaryFont \fontsize{\standardtextsize}{\standardtextspacing} \mdseries \selectfont}

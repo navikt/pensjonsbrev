@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.render.LatexVisualITest.ElementType
 import no.nav.pensjon.brev.template.render.TestTemplateDtoSelectors.etNavn
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.*

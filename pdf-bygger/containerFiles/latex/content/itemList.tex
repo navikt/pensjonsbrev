@@ -3,6 +3,7 @@
 \setlist[itemize]{noitemsep, beginpenalty=3000, topsep=0pt, leftmargin=15pt, after=\addvspace{10pt}}
 \newenvironment{letteritemize}[1]{
     % remove paragraph spacing if previous element was a paragraph
+    % ifdefstring{string variable}{equals to this string}{then do this}{else do this}
     \ifdefstring{\previouselement}{paragraph}{\vspace{-\parskip}}{}
     \standardtext
     \begin{itemize}

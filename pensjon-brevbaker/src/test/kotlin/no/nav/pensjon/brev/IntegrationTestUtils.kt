@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.outlineTestTemplate
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
@@ -63,6 +64,7 @@ fun renderTestPdfOutline(
     title: String? = null,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
+
     val template = createTemplate(
         testName, EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
             testName,
