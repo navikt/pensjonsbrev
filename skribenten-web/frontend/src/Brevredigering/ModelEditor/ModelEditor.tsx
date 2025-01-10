@@ -1,9 +1,8 @@
-import { BodyShort, VStack } from "@navikt/ds-react";
+import { VStack } from "@navikt/ds-react";
 import { partition } from "lodash";
 import { useFormContext } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
-import { ApiError } from "~/components/ApiError";
 import type { FieldType, LetterModelSpecification } from "~/types/brevbakerTypes";
 
 import { FieldEditor } from "./components/ObjectEditor";
@@ -25,7 +24,7 @@ const useModelSpecificationForm = (brevkode: string) => {
   };
 };
 
-const usePartitionedModelSpecification = (brevkode: string) => {
+export const usePartitionedModelSpecification = (brevkode: string) => {
   const { status, specification, error } = useModelSpecificationForm(brevkode);
 
   const [optionalFields, requiredfields] = specification
@@ -40,7 +39,7 @@ const usePartitionedModelSpecification = (brevkode: string) => {
   };
 };
 
-const createFormElementsFromSpecification = (args: {
+export const createFormElementsFromSpecification = (args: {
   specificationFormElements: {
     requiredfields: [string, FieldType][];
     optionalFields: [string, FieldType][];
@@ -86,55 +85,46 @@ const createFormElementsFromSpecification = (args: {
 
 export const SaksbehandlerValgModelEditor = (props: {
   brevkode: string;
+  specificationFormElements: {
+    requiredfields: [string, FieldType][];
+    optionalFields: [string, FieldType][];
+  };
   fieldsToRender: "required" | "optional";
   submitOnChange?: () => void;
 }) => {
   const { register } = useFormContext();
-  const specificationFormElements = usePartitionedModelSpecification(props.brevkode);
   const { requiredFields, optionalFields } = createFormElementsFromSpecification({
-    specificationFormElements,
+    specificationFormElements: props.specificationFormElements,
     brevkode: props.brevkode,
     submitOnChange: props.submitOnChange,
   });
 
-  switch (specificationFormElements.status) {
-    case "error": {
-      return <ApiError error={specificationFormElements.error} title={"En feil skjedde"} />;
-    }
-    case "success": {
-      switch (props.fieldsToRender) {
-        case "required": {
-          /**
-           * Boolean felter er spesielle
-           * Det at et felt er non-nullable, betyr at den er påkrevd ved innsending av skjemaet
-           * Derimot, så er boolean felter stort sett kun brukt for brev-tekst, og er ikke et påkrevd felt som saksbehandler skal
-           * forholde seg til ved opprettelse av brev.
-           *
-           * Tidligere har vi mekket opp et objekt ved innsending som inneholdt boolean feltene ved opprettelse av brev, som ikke
-           * har vært registrert i formet.
-           *
-           * Dette er litt fordi at feltene blir først registrert når dem blit rendret, og boolean felter skal ikke bli rendret under opprettelse av brev.
-           *
-           * Derfor, så registrerer vi boolean felter her.
-           *
-           * Merk at dette er på mange måter bare en ny hack
-           */
-          for (const field of optionalFields) {
-            if (field.fieldType.type === "scalar" && field.fieldType.kind === "BOOLEAN") {
-              register(`saksbehandlerValg.${field.field}`, { value: false });
-            }
-          }
-          return <VStack gap="6">{requiredFields.map((field) => field.element)}</VStack>;
-        }
-        case "optional": {
-          return <VStack gap="6">{optionalFields.map((field) => field.element)}</VStack>;
+  switch (props.fieldsToRender) {
+    case "required": {
+      /**
+       * Boolean felter er spesielle
+       * Det at et felt er non-nullable, betyr at den er påkrevd ved innsending av skjemaet
+       * Derimot, så er boolean felter stort sett kun brukt for brev-tekst, og er ikke et påkrevd felt som saksbehandler skal
+       * forholde seg til ved opprettelse av brev.
+       *
+       * Tidligere har vi mekket opp et objekt ved innsending som inneholdt boolean feltene ved opprettelse av brev, som ikke
+       * har vært registrert i formet.
+       *
+       * Dette er litt fordi at feltene blir først registrert når dem blit rendret, og boolean felter skal ikke bli rendret under opprettelse av brev.
+       *
+       * Derfor, så registrerer vi boolean felter her.
+       *
+       * Merk at dette er på mange måter bare en ny hack
+       */
+      for (const field of optionalFields) {
+        if (field.fieldType.type === "scalar" && field.fieldType.kind === "BOOLEAN") {
+          register(`saksbehandlerValg.${field.field}`, { value: false });
         }
       }
-
-      break;
+      return <VStack gap="6">{requiredFields.map((field) => field.element)}</VStack>;
     }
-    case "pending": {
-      return <BodyShort size="small">Henter skjema for saksbehandler valg...</BodyShort>;
+    case "optional": {
+      return <VStack gap="6">{optionalFields.map((field) => field.element)}</VStack>;
     }
   }
 };
