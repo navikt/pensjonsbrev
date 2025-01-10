@@ -21,7 +21,7 @@ data class OmstillingsstoenadInnhentingAvOpplysningerDTO(
 
 @TemplateModelHelpers
 object OmstillingsstoenadInnhentingAvOpplysninger : EtterlatteTemplate<OmstillingsstoenadInnhentingAvOpplysningerDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INFORMASJON_INNHENTING_AV_OPPLYSNINGER
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNHENTING_AV_OPPLYSNINGER
 
     override val template =
         createTemplate(

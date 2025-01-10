@@ -126,7 +126,7 @@ dependencies {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
 
-    implementation("io.getunleash:unleash-client-java:9.2.4")
+    implementation("io.getunleash:unleash-client-java:9.2.6")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")

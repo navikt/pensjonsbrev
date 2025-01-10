@@ -58,6 +58,7 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
                     grunnbeloep = Kroner(118620),
                     antallBarn = 1,
                     utbetaltBeloep = Kroner(8000),
+                    harForeldreloessats = false,
                 ),
                 BarnepensjonBeregningsperiode(
                     datoFOM = LocalDate.of(2024, Month.MAY, 1),
@@ -65,6 +66,7 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
                     grunnbeloep = Kroner(118620),
                     antallBarn = 1,
                     utbetaltBeloep = Kroner(10000),
+                    harForeldreloessats = false,
                 ),
             ),
             sisteBeregningsperiode = BarnepensjonBeregningsperiode(
@@ -73,7 +75,8 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
                 grunnbeloep = Kroner(118620),
                 antallBarn = 1,
                 utbetaltBeloep = Kroner(10000),
-            ),
+                harForeldreloessats = false,
+                ),
             trygdetid = listOf(
                 Trygdetid(
                     trygdetidsperioder = listOf(

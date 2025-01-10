@@ -1,22 +1,17 @@
-import { Request } from "express";
-import { expressjwt, GetVerificationKey } from "express-jwt";
-import jwksRsa from "jwks-rsa";
+import { getToken, validateToken } from "@navikt/oasis";
+import { NextFunction, Request, Response } from "express";
 
-import config from "./config.js";
+export const verifyToken = async (request: Request, response: Response, next: NextFunction) => {
+  const token = getToken(request);
+  if (!token) {
+    return response.status(401).send();
+  }
 
-export const verifyJWTToken = expressjwt({
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: config.azureApp.openIdJwkUris,
-  }) as GetVerificationKey,
+  const validation = await validateToken(token);
+  if (!validation.ok) {
+    console.log("Invalid token validation", validation);
+    return response.status(403).send();
+  }
 
-  algorithms: ["RS256"],
-  audience: config.azureApp.clientId,
-  issuer: config.azureApp.issuer,
-});
-
-export function getTokenFromRequestHeader(request: Request) {
-  return request.get("authorization")?.split(" ")[1];
-}
+  return next();
+};

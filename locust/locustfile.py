@@ -17,7 +17,7 @@ class BrevbakerLoadTest(FastHttpUser):
 
     def access_token(self):
         return self.token.token
-        #TODO kjent feil. Etter token løper ut etter en time prøver alle workers å fetche token samtidig
+        # Kjent feil. Etter token løper ut etter en time prøver alle workers å fetche token samtidig
         # Kan vi få en uavhengig oppgave med refresh token som oppdaterer denne løpende?
         # mistenker at mange feiler fordi mange forsøker å fetche token samtidig. De som ikke får token dør.
         #if self.token.is_valid():

@@ -23,7 +23,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
 
     // PE_IY_05_027
     override val kode = Pesysbrevkoder.Redigerbar.PE_FORHAANDSVARSEL_VED_TILBAKEKREVING
-    override val kategori = TemplateDescription.Brevkategori.VARSEL
+    override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
@@ -39,10 +39,10 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
         )
     ) {
         title {
-            textExpr(
-                Bokmal to "Varsel om at Nav vurderer å kreve tilbake feilutbetalt ".expr() + fritekst("type ytelse") + "".expr(),
-                Nynorsk to "Varsel om at Nav vurderer å krevje tilbake feilutbetalt ".expr() + fritekst("type ytelse") + "".expr(),
-                English to "Notification that Nav is considering demanding repayment of incorrectly paid ".expr() + fritekst("type ytelse") + "".expr()
+            text(
+                Bokmal to "Varsel om at Nav vurderer å kreve tilbake feilutbetalt beløp",
+                Nynorsk to "Varsel om at Nav vurderer å krevje tilbake feilutbetalt beløp",
+                English to "Notification that Nav is considering demanding repayment of incorrectly paid beløp"
             )
         }
         outline {
@@ -69,35 +69,35 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                     Nynorsk to "Beløpet er ".expr() + fritekst("beløp") + " kr. " +
                             "Det feilutbetalte beløpet er summen av utbetaling som mottakeren ikkje hadde krav på.".expr(),
                     English to "The amount is NOK ".expr() + fritekst("beløp") + ". " +
-                            "The incorrectly paid amount is the total of the payments to which the recipient was not entitled.",
+                            "The incorrectly paid amount is the total of the payments to which the recipient was not entitled."
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Dette brevet gir informasjon om",
                     Nynorsk to "Dette brevet gir informasjon om",
-                    English to "This letter gives information about",
+                    English to "This letter gives information about"
                 )
                 list {
                     item {
                         text(
                             Bokmal to "årsak til feilutbetaling",
                             Nynorsk to "årsaka til feilutbetalinga",
-                            English to "reason for incorrect payment",
+                            English to "reason for incorrect payment"
                         )
                     }
                     item {
                         text(
                             Bokmal to "reglene for tilbakekreving i folketrygdloven kapittel 22",
                             Nynorsk to "reglane for tilbakekrevjing i folketrygdlova kapittel 22",
-                            English to "rules for demanding repayment in section 22 of the Social Security Act",
+                            English to "rules for demanding repayment in section 22 of the Social Security Act"
                         )
                     }
                     item {
                         text(
                             Bokmal to "hvordan du går fram hvis du ønsker å uttale deg i saken",
                             Nynorsk to "korleis du går fram dersom du ønskjer å uttale deg i saka",
-                            English to "how to proceed if you wish to submit an opinion in this case ",
+                            English to "how to proceed if you wish to submit an opinion in this case "
                         )
                     }
                 }
@@ -113,7 +113,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                     English to "We stress that this letter is a prior notification, in accordance with paragraph 16 of the Public Administration Act, " +
                             "that Nav may consider demanding repayment of the overpaid amount. This letter must not therefore be interpreted as a demand for repayment. " +
                             "Before we proceed to consider this case, we would like you to respond to this prior notification - see the last paragraph of this letter. " +
-                            "You will receive notification of the decision when consideration of the case has been completed.",
+                            "You will receive notification of the decision when consideration of the case has been completed."
                 )
             }
             title1 {
@@ -162,7 +162,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                             "The relevant provisions regarding a demand for repayment are in paragraphs 22-15 and 22-16 of the Social Security Act. " +
                             "The grounds for demanding repayment may be that a person has received an amount that he or she understood, or should have understood, " +
                             "that he or she was not entitled to and/or that the person concerned has contributed through deliberately or negligently giving incomplete or incorrect information. " +
-                            "In some cases a demand for repayment of incorrectly paid amounts may be made even if there is no intent or negligence on the part of the recipient. ",
+                            "In some cases a demand for repayment of incorrectly paid amounts may be made even if there is no intent or negligence on the part of the recipient. "
                 )
             }
             paragraph {
@@ -195,7 +195,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
                 text(
                     Bokmal to "Hvordan du går fram hvis du ønsker å uttale deg i saken",
                     Nynorsk to "Korleis du går fram dersom du ønskjer å uttale deg i saka",
-                    English to "How to proceed if you wish to submit an opinion in this case",
+                    English to "How to proceed if you wish to submit an opinion in this case"
                 )
             }
             paragraph {
