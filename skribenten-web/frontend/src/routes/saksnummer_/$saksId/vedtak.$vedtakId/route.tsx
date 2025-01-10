@@ -1,10 +1,14 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, Heading, HStack, Label, Switch, Tabs, VStack } from "@navikt/ds-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
+import { getBrev, hurtiglagreSaksbehandlerValg, oppdaterSignatur } from "~/api/brev-queries";
+import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -12,7 +16,7 @@ import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/Sca
 import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
-import type { SaksbehandlerValg } from "~/types/brev";
+import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
 
 import { nyBrevResponse } from "../../../../../cypress/utils/brevredigeringTestUtils";
 
@@ -78,6 +82,7 @@ interface VedtakSidemenyFormData {
 
 const Vedtak = () => {
   const { saksId } = Route.useParams();
+  const queryClient = useQueryClient();
   const brevResponse = nyBrevResponse({});
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevResponse));
 
@@ -105,7 +110,50 @@ const Vedtak = () => {
     defaultValues: defaultValuesModelEditor,
   });
 
-  console.log("formValues", form.getValues());
+  const signaturMutation = useMutation<BrevResponse, AxiosError, string>({
+    mutationFn: (signatur) => {
+      //TODO - dette er den vanlige signatur for brevbaker brev, trenger vi en annen en for vedtak?
+      return oppdaterSignatur(brevResponse.info.id, signatur);
+    },
+    onSuccess: (response) => {
+      //TODO - vil vi ha en tilsvarende for vedtak?
+      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
+      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
+      //TODO - må ha lignende for vedtaksbrev?
+      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brevResponse.info.id) });
+      setEditorState((previousState) => ({
+        ...previousState,
+        redigertBrev: response.redigertBrev,
+        redigertBrevHash: response.redigertBrevHash,
+        saksbehandlerValg: response.saksbehandlerValg,
+        info: response.info,
+        isDirty: false,
+      }));
+    },
+  });
+
+  const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
+    mutationFn: (saksbehandlerValg) => {
+      return hurtiglagreSaksbehandlerValg(brevResponse.info.id, saksbehandlerValg);
+    },
+    onSuccess: (response) => {
+      //TODO - vil vi ha en tilsvarende for vedtak?
+      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
+      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
+      //TODO - må ha lignende for vedtaksbrev?
+      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brevResponse.info.id) });
+      setEditorState((previousState) => ({
+        ...previousState,
+        redigertBrev: response.redigertBrev,
+        redigertBrevHash: response.redigertBrevHash,
+        saksbehandlerValg: response.saksbehandlerValg,
+        info: response.info,
+        isDirty: false,
+      }));
+    },
+  });
 
   return (
     <ThreeSectionLayout
@@ -139,7 +187,7 @@ const Vedtak = () => {
                     kind: "STRING",
                   }}
                   label="Underskrift"
-                  onSubmit={() => console.log("submit")}
+                  onSubmit={() => signaturMutation.mutate(form.getValues("signatur"))}
                   timeoutTimer={2500}
                   type={"text"}
                 />
@@ -148,7 +196,7 @@ const Vedtak = () => {
               <VStack>
                 <BrevmalAlternativer
                   brevkode={brevResponse.info.brevkode}
-                  submitOnChange={() => console.log("submit")}
+                  submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
                 />
               </VStack>
             </VStack>
@@ -159,8 +207,8 @@ const Vedtak = () => {
         <LetterEditor
           editorHeight={"var(--main-page-content-height)"}
           editorState={editorState}
-          error={false}
-          freeze={false}
+          error={signaturMutation.isError || saksbehandlerValgMutation.isError}
+          freeze={signaturMutation.isPending || saksbehandlerValgMutation.isPending}
           setEditorState={setEditorState}
           showDebug={false}
         />
