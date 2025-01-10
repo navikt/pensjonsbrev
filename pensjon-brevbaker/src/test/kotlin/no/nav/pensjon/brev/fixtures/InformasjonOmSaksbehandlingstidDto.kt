@@ -7,8 +7,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlin
 fun createInformasjonOmSaksbehandlingstidDto() =
     InformasjonOmSaksbehandlingstidDto(
         saksbehandlerValg = SaksbehandlerValg(
-            mottattFraAnnetLand = false,
-            inkluderVenterPaaSvarAFP = false,
+            soeknadMottattFraUtland = false,
+            venterPaaSvarAFP = false,
         ),
         pesysData = EmptyBrevdata
     )
