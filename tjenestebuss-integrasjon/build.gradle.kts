@@ -38,7 +38,7 @@ ktor {
 	}
 }
 
-val cxfVersion = "3.6.3"
+val cxfVersion = "4.1.0"
 val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
 	implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
@@ -57,9 +57,9 @@ dependencies {
 
 	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
 
-	implementation("javax.xml.ws:jaxws-api:2.3.1")
+	implementation("jakarta.xml.ws:jakarta.xml.ws-api:4.0.2")
 	@Suppress("GradlePackageUpdate")
-	implementation("com.sun.xml.messaging.saaj:saaj-impl:1.5.1") // needs to be correct version for apache cxf to function
+	implementation("com.sun.xml.messaging.saaj:saaj-impl:3.0.4") // needs to be correct version for apache cxf to function
 
 	implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
@@ -77,7 +77,7 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 	testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
 	testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
-	testImplementation("com.sun.xml.bind:jaxb-core:2.2.11")
+	testImplementation("com.sun.xml.bind:jaxb-core:4.0.5")
 	testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
 	testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
 }
