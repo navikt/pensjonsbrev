@@ -121,6 +121,13 @@ fun Application.brevbakerModule(templates: AllTemplates) {
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
+    konfigurerFeatureToggling(brevbakerConfig)
+
+    configureMetrics()
+    brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
+}
+
+private fun konfigurerFeatureToggling(brevbakerConfig: ApplicationConfig) {
     FeatureToggleHandler.configure {
         with(brevbakerConfig.config("unleash")) {
             appName = stringProperty("appName")
@@ -129,9 +136,6 @@ fun Application.brevbakerModule(templates: AllTemplates) {
             apiToken = stringProperty("apiToken")
         }
     }
-
-    configureMetrics()
-    brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
 }
 
 private fun ApplicationConfig.stringProperty(path: String): String = this.property(path).getString()
