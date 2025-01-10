@@ -117,6 +117,7 @@ function ToggleableObjectEditor({
       <Switch checked={open} onChange={handleToggle}>
         {convertFieldToReadableLabel(parentFieldName)}
       </Switch>
+
       {open && (
         <div
           css={css`
