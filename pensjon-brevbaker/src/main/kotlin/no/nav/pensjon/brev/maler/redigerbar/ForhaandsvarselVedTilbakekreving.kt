@@ -23,7 +23,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
 
     // PE_IY_05_027
     override val kode = Pesysbrevkoder.Redigerbar.PE_FORHAANDSVARSEL_VED_TILBAKEKREVING
-    override val kategori = TemplateDescription.Brevkategori.VARSEL
+    override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
