@@ -222,11 +222,21 @@ enum BrevAlternativTab {
   OVERSTYRING = "OVERSTYRING",
 }
 
-const BrevmalAlternativer = (props: { brevkode: string; submitOnChange?: () => void }) => {
+//TODO - flytt til egen fil
+export const BrevmalAlternativer = (props: {
+  brevkode: string;
+  submitOnChange?: () => void;
+  children?: React.ReactNode;
+}) => {
   return (
     <Tabs
       css={css`
         width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        gap: var(--a-spacing-6);
+        margin-top: 12px;
 
         .navds-tabs__scroll-button {
           /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
@@ -276,6 +286,7 @@ const BrevmalAlternativer = (props: { brevkode: string; submitOnChange?: () => v
           submitOnChange={props.submitOnChange}
         />
       </Tabs.Panel>
+      {props.children}
     </Tabs>
   );
 };
