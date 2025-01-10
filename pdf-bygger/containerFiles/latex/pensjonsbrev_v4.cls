@@ -1,12 +1,12 @@
 %! Class = pensjonsbrev_v4
 %! Author = Håkon Heggholmen
-%! Date = 20.12.2024 %TODO
+%! Date = 10.01.2025
 
 %----------------------------------------
 %            Document class
 %----------------------------------------
 
-\ProvidesPackage{pensjonsbrev_v4}[2024/12/20 Team pensjonsbrev's Document Class]
+\ProvidesPackage{pensjonsbrev_v4}[2025/01/10 Team pensjonsbrev's Document Class]
 \NeedsTeXFormat{LaTeX2e}
 \LoadClass[a4paper]{article}
 

@@ -2,6 +2,36 @@
 %       Closing/last page of letter
 %----------------------------------------
 
+\newcommand{\closingsinglesignature}{
+    \feltsaksbehandlernavn
+    \\ \feltclosingsaksbehandlersuffix %TODO erstatt \\ med linebreak om mulig
+    \par
+    \vspace*{18pt}
+    \feltnavenhet
+}
+
+\newcommand{\closingdoublesignature}{
+    \doublesignature{\feltattestantnavn}{\feltsaksbehandlernavn}
+    \par
+    \vspace*{18pt}
+    \feltnavenhet
+}
+
+\newcommand{\closingautosignature}[1]{
+    \feltnavenhet
+    \par
+    \vspace*{18pt}
+    #1
+}
+
+\newcommand{\closingautosignaturevedtaksbrev}{
+    \closingautosignature{\feltclosingautomatisktextvedtaksbrev}
+}
+
+\newcommand{\closingautosignatureinfobrev}{
+    \closingautosignature{\feltclosingautomatisktextinfobrev}
+}
+
 % Closing page text
 \newcommand{\closing}{
     \addvspace{24pt minus 10pt}
