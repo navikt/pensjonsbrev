@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.soeknadMottattFraUtland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.venterPaaSvarAFP
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.inkluderVenterPaaSvarAFP
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattFraAnnetLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -51,7 +51,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                 val mottattDato = fritekst("dato")
                 val ytelse = fritekst("ytelse")
 
-                showIf(saksbehandlerValg.soeknadMottattFraUtland) {
+                showIf(saksbehandlerValg.mottattFraAnnetLand) {
                     val annetLand = fritekst("land")
                     textExpr(
                         Bokmal to "Vi har ".expr() + mottattDato + " mottatt søknaden din om " + ytelse + " fra trygdemyndighetene i " + annetLand + ".",
@@ -67,7 +67,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                     )
                 }
             }
-            showIf(saksbehandlerValg.venterPaaSvarAFP) {
+            showIf(saksbehandlerValg.inkluderVenterPaaSvarAFP) {
                 paragraph {
                     val uttaksDato = fritekst("uttaksdato")
                     val prosent = fritekst("uttaksgrad alderspensjon")
