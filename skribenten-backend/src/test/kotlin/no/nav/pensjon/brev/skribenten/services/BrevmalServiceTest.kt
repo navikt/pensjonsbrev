@@ -159,7 +159,6 @@ class BrevmalServiceTest {
     @Test
     fun `inkluderer brevbakerbrev om feature er aktivert`() = runBlocking {
         Features.override(Features.brevbakerbrev, true)
-        Features.override(Features.brevutendata, true)
         val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype.ALDER)
         for (brev in brevbakerbrev) {
             brevmalerAssert.anyMatch { it.id == brev.name }
@@ -169,19 +168,6 @@ class BrevmalServiceTest {
     @Test
     fun `inkluderer ikke brevbakerbrev om feature er deaktivert`() = runBlocking {
         Features.override(Features.brevbakerbrev, false)
-        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype.ALDER)
-        for (brev in brevbakerbrev) {
-            brevmalerAssert.noneMatch { it.id == brev.name }
-        }
-    }
-
-    @Test
-    fun `inkluderer ikke brevbakerbrev uten brevdata om feature er deaktivert`() = runBlocking {
-        coEvery { brevbakerService.getTemplates() } returns ServiceResult.Ok(
-            brevbakerbrev.map { it.copy(letterDataClass = EmptyRedigerbarBrevdata::class.java.name) }
-        )
-        Features.override(Features.brevbakerbrev, true)
-        Features.override(Features.brevutendata, false)
         val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype.ALDER)
         for (brev in brevbakerbrev) {
             brevmalerAssert.noneMatch { it.id == brev.name }
