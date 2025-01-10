@@ -120,15 +120,23 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 )
             }
 
-            paragraph {
-                text(
-                    Bokmal to "Du opplyste FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
-                            "40 prosent arbeid/ikke er i arbeid.",
-                    Nynorsk to "Du opplyste FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
-                            "40 prosent arbeid/ikke er i arbeid.",
-                    English to "You stated that FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
-                            "40 prosent arbeid/ikke er i arbeid.",
-                )
+            showIf(not(utbetaling)){
+                paragraph {
+                    text(                        Bokmal to "Siden du ikke mottar omstillingsstønad i dag, kan du se bort fra kravet om aktivitet. Det er imidlertid viktig at du melder fra hvis situasjonen din endrer seg. Aktivitetsplikt og din mulighet for å motta omstillingsstønad kan da vurderes.",
+                        Nynorsk to "Ettersom du ikkje får omstillingsstønad per i dag, kan du sjå vekk frå kravet om aktivitet. Pass derimot på å melde frå dersom situasjonen din skulle endre seg. Aktivitetsplikt og eventuell rett på omstillingsstønad kan då vurderast.",
+                        English to "Since you are not currently receiving an adjustment allowance, you can disregard the activity requirement. It is, however, important that you notify us, should your situation change. We can then assess your activity requirement and your potential right to adjustment allowance.",)
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Du opplyste FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
+                                "40 prosent arbeid/ikke er i arbeid.",
+                        Nynorsk to "Du opplyste FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
+                                "40 prosent arbeid/ikke er i arbeid.",
+                        English to "You stated that FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
+                                "40 prosent arbeid/ikke er i arbeid.",
+                    )
+                }
             }
 
             showIf(
