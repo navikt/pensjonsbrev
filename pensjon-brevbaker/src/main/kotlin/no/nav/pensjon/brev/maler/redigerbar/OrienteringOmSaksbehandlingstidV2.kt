@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.mottattSoeknad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.soeknadOversendesTilUtlandet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -15,7 +14,6 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -56,7 +54,7 @@ object OrienteringOmSaksbehandlingstidV2 : RedigerbarTemplate<OrienteringOmSaksb
             //[PE_UP_07_105_TB3018-3021,TB124]
 
             paragraph {
-                val mottattDato = saksbehandlerValg.mottattSoeknad.format()
+                val mottattDato = fritekst("dato")
                 textExpr(
                     Bokmal to "Vi har ".expr() + mottattDato + " mottatt søknaden din om uføretrygd.",
                     Nynorsk to "Vi har ".expr() + mottattDato + " mottatt søknaden din om uføretrygd.",

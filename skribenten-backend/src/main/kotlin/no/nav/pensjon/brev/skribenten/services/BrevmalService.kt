@@ -66,7 +66,6 @@ class BrevmalService(
                     result.filter { brev ->
                         when {
                             brev.erMalMedFritekst() -> Features.brevMedFritekst.isEnabled()
-                            brev.hasEmptyBrevData() -> Features.brevutendata.isEnabled()
                             brev.name == Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD.name -> Features.brevmalUTavslag.isEnabled()
                             else -> true
                         }
@@ -79,15 +78,7 @@ class BrevmalService(
         } else emptyList()
 
     private fun TemplateDescription.erMalMedFritekst() = name in setOf(
-        Pesysbrevkoder.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
-        Pesysbrevkoder.Redigerbar.PE_FORESPOERSEL_DOKUM_BOTIDINORGE_ETTERLATTE,
-        Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER,
-        Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER
+        Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER, // Ikke helt klart hvordan vi skal løse fritekst med forhåndsutfylt data fra Felles (navEnhets navn).
     ).map { it.name }
-
-    private fun TemplateDescription.hasEmptyBrevData() = letterDataClass in setOf(
-        EmptyRedigerbarBrevdata::class.java.name,
-        EmptyBrevdata::class.java.name
-    )
 
 }
