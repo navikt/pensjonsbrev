@@ -10,7 +10,7 @@ describe("Oppretter brevbakerbrev", () => {
     });
 
     cy.visit("saksnummer/123456/brevvelger?templateId=INFORMASJON_OM_SAKSBEHANDLINGSTID");
-    cy.contains("Mottatt soeknad").should("exist");
+    cy.contains("Mottatt søknad").should("exist");
     cy.contains("Ytelse").should("exist");
     cy.contains("Land").should("not.exist");
     cy.contains("inkluder venter svar afp").should("not.exist");
@@ -22,7 +22,7 @@ describe("Oppretter brevbakerbrev", () => {
       fixture: "modelSpecificationOrienteringOmSaksbehandlingstid.json",
     });
     cy.visit("/saksnummer/123456/brevvelger?templateId=UT_ORIENTERING_OM_SAKSBEHANDLINGSTID&spraak=NB&enhetsId=null");
-    cy.contains("Mottatt soknad").should("exist");
+    cy.contains("Mottatt søknad").should("exist");
     cy.contains("Soknad oversendes til utlandet").should("not.exist");
   });
 
@@ -63,7 +63,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
-    cy.contains("Mottatt soeknad").click().type("09.10.2024");
+    cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
     cy.contains("Åpne brev").click("left");
@@ -95,7 +95,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
-    cy.contains("Mottatt soknad").click().type("09.10.2024");
+    cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Åpne brev").click("left");
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
   });

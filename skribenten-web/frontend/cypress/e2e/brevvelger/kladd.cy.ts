@@ -101,7 +101,7 @@ describe("Kladd", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
-    cy.contains("Mottatt soeknad").click().type("09.10.2024");
+    cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
     cy.contains("Åpne brev").click("left");
@@ -142,7 +142,7 @@ describe("Kladd", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
-    cy.contains("Mottatt soeknad").click().type("09.10.2024");
+    cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
     cy.contains("Åpne brev").click("left");

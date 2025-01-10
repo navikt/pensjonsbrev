@@ -238,7 +238,7 @@ describe("autolagring", () => {
     cy.visit("/saksnummer/123456/brev/1");
     cy.contains("Lagret 26.07.2024 ").should("exist");
     cy.contains("Saksbehandlingstiden vår er vanligvis 10 uker.").should("exist");
-    cy.contains("Inkluder venter svar afp").click();
+    cy.contains("Inkluder venter svar AFP").click();
     cy.getDataCy("datepicker-editor").eq(0).should("have.value", "");
     cy.getDataCy("datepicker-editor").eq(0).click().clear().type("10.09.2024");
     //verifiserer at autolagring ikke har skjedd enda
@@ -313,7 +313,7 @@ describe("autolagring", () => {
 
     cy.visit("/saksnummer/123456/brev/1");
     cy.contains("Søknaden din vil også bli oversendt utlandet fordi").should("not.exist");
-    cy.contains("Soknad oversendes til utlandet").click();
+    cy.contains("Søknad oversendes til utlandet").click();
     cy.wait("@autoLagring");
     cy.contains("Søknaden din vil også bli oversendt utlandet fordi").should("exist");
   });
