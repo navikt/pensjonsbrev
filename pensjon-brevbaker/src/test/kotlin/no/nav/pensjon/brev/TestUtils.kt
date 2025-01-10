@@ -27,6 +27,18 @@ fun testBrevbakerApp(block: suspend ApplicationTestBuilder.(client: HttpClient) 
     block(client)
 }
 
+val fakeUnleash = FakeUnleash()
+
 fun settOppFakeUnleash() = FeatureToggleHandler.configure {
-    unleash = { FakeUnleash() }
+    unleash = { fakeUnleash }
+}
+
+fun aktiverToggle(toggle: UnleashToggle) {
+    settOppFakeUnleash()
+    fakeUnleash.also { it.enable(unleashTogglePrefix + toggle.name) }
+}
+
+fun deaktiverToggle(toggle: UnleashToggle) {
+    settOppFakeUnleash()
+    fakeUnleash.also { it.disable(unleashTogglePrefix + toggle.name) }
 }

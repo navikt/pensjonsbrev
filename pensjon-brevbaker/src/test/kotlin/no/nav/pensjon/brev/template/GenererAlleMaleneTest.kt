@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
+import no.nav.pensjon.brev.settOppFakeUnleash
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -63,7 +64,9 @@ class GenererAlleMaleneTest {
 
     companion object {
         @JvmStatic
-        fun alleMalene() = listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
+        fun alleMalene(): List<Arguments> {
+            settOppFakeUnleash()
+            return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
                 ProductionTemplates.hentAutobrevmaler().map {
                     Arguments.of(
                         it.template,
@@ -80,5 +83,6 @@ class GenererAlleMaleneTest {
                     )
                 }
             }
+        }
     }
 }
