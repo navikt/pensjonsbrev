@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
+import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -25,12 +25,13 @@ import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
+
+import { BrevmalAlternativer } from "./vedtak.$vedtakId/route";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
@@ -375,7 +376,20 @@ function RedigerBrev({
           >
             <VStack gap="3">
               <Heading size="small">{brevmal.data?.name}</Heading>
-              <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
+
+              <BrevmalAlternativer brevkode={brev.info.brevkode} submitOnChange={onTekstValgAndOverstyringChange}>
+                <AutoSavingTextField
+                  field={"signatur"}
+                  fieldType={{
+                    type: "scalar",
+                    nullable: false,
+                    kind: "STRING",
+                  }}
+                  onSubmit={onTekstValgAndOverstyringChange}
+                  timeoutTimer={2500}
+                  type={"text"}
+                />
+              </BrevmalAlternativer>
             </VStack>
             <LetterEditor
               editorHeight={"var(--main-page-content-height)"}
@@ -464,88 +478,3 @@ function useHurtiglagreMutation<T>(
     },
   });
 }
-
-enum BrevSidemenyTabs {
-  TEKSTVALG = "TEKSTVALG",
-  OVERSTYRING = "OVERSTYRING",
-}
-
-const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?: () => void }) => {
-  return (
-    <Tabs
-      css={css`
-        width: 100%;
-
-        .navds-tabs__scroll-button {
-          /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
-          display: none;
-        }
-      `}
-      defaultValue={BrevSidemenyTabs.TEKSTVALG}
-      fill
-      size="small"
-    >
-      <Tabs.List
-        css={css`
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-        `}
-      >
-        <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
-        <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />
-      </Tabs.List>
-      <Tabs.Panel
-        css={css`
-          display: flex;
-          flex-direction: column;
-          gap: var(--a-spacing-6);
-          margin-top: 12px;
-        `}
-        value={BrevSidemenyTabs.TEKSTVALG}
-      >
-        <SaksbehandlerValgModelEditor
-          brevkode={props.brev.info.brevkode}
-          fieldsToRender={"optional"}
-          submitOnChange={props.submitOnChange}
-        />
-        <AutoSavingTextField
-          field={"signatur"}
-          fieldType={{
-            type: "scalar",
-            nullable: false,
-            kind: "STRING",
-          }}
-          onSubmit={props.submitOnChange}
-          timeoutTimer={2500}
-          type={"text"}
-        />
-      </Tabs.Panel>
-      <Tabs.Panel
-        css={css`
-          display: flex;
-          flex-direction: column;
-          gap: var(--a-spacing-6);
-          margin-top: 12px;
-        `}
-        value={BrevSidemenyTabs.OVERSTYRING}
-      >
-        <SaksbehandlerValgModelEditor
-          brevkode={props.brev.info.brevkode}
-          fieldsToRender={"required"}
-          submitOnChange={props.submitOnChange}
-        />
-        <AutoSavingTextField
-          field={"signatur"}
-          fieldType={{
-            type: "scalar",
-            nullable: false,
-            kind: "STRING",
-          }}
-          onSubmit={props.submitOnChange}
-          timeoutTimer={2500}
-          type={"text"}
-        />
-      </Tabs.Panel>
-    </Tabs>
-  );
-};
