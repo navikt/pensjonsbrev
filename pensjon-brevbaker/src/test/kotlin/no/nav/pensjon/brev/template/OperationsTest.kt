@@ -75,4 +75,24 @@ class OperationsTest {
             assertEquals(expr.eval(scope), Kroner(123))
         }
     }
+
+    @Nested
+    @DisplayName("Feature-toggling")
+    inner class Enabled {
+        private val scope = ExpressionScope(2, Fixtures.felles, Language.Nynorsk)
+
+        @Test
+        fun `enabled gir true viss funksjonen returnerer true`() {
+            val function = { true }
+            val expr = function.expr().enabled()
+            assertEquals(expr.eval(scope), true)
+        }
+
+        @Test
+        fun `enabled gir false viss funksjonen returnerer false`() {
+            val function = { false }
+            val expr = function.expr().enabled()
+            assertEquals(expr.eval(scope), false)
+        }
+    }
 }

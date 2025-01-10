@@ -61,6 +61,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 
+    object Enabled : UnaryOperation<() -> Boolean, Boolean>(), StableHash by StableHash.of("UnaryOperation.Enabled") {
+        override fun apply(input: () -> Boolean): Boolean = input()
+    }
+
     object BrukerFulltNavn: UnaryOperation<Bruker, String>(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {
         override fun apply(input: Bruker): String = input.fulltNavn()
     }
