@@ -221,7 +221,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 }
             }
 
-            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT) or not(utbetaling)) {
+            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT)) {
                 paragraph {
                     text(
                         Bokmal to "Er du fortsatt i mer enn 50 prosent jobb, fyller du aktivitetskravet og vil få omstillingsstønad " +
