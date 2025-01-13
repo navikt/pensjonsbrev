@@ -154,7 +154,6 @@ const KvittertBrevContent = (properties: {
           error={properties.error}
           isPending={properties.isPending}
           onPrøvIgjenClick={properties.onPrøvIgjenClick}
-          resultat={properties.resultat}
           sakId={properties.sakId}
         >
           <BodyShort>Brevet ble ikke sendt pga en ukjent feil. Prøv igjen.</BodyShort>
@@ -172,7 +171,6 @@ const KvittertBrevContent = (properties: {
             error={properties.error}
             isPending={properties.isPending}
             onPrøvIgjenClick={properties.onPrøvIgjenClick}
-            resultat={properties.resultat}
             sakId={properties.sakId}
           >
             <BodyShort>
@@ -188,7 +186,6 @@ const KvittertBrevContent = (properties: {
             error={properties.error}
             isPending={properties.isPending}
             onPrøvIgjenClick={properties.onPrøvIgjenClick}
-            resultat={properties.resultat}
             sakId={properties.sakId}
           >
             <BodyShort>Brevet ble ikke sendt pga en ukjent feil. Prøv igjen.</BodyShort>
@@ -233,9 +230,8 @@ const KvittertBrevContentSuccess = (properties: { sakId: string; resultat: Ferdi
   );
 };
 
-const KvittertBrevContentError = (properties: {
+export const KvittertBrevContentError = (properties: {
   sakId: string;
-  resultat: FerdigstillResponse;
   children: React.ReactNode;
   onPrøvIgjenClick: () => void;
   isPending: boolean;

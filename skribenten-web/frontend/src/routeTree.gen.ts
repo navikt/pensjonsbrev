@@ -18,7 +18,9 @@ import { Route as SaksnummerSaksIdKvitteringRouteImport } from './routes/saksnum
 import { Route as SaksnummerSaksIdBrevvelgerRouteImport } from './routes/saksnummer_/$saksId/brevvelger/route'
 import { Route as SaksnummerSaksIdBrevbehandlerRouteImport } from './routes/saksnummer_/$saksId/brevbehandler/route'
 import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_/$saksId/brev.$brevId'
-import { Route as SaksnummerSaksIdVedtakVedtakIdRouteImport } from './routes/saksnummer_/$saksId/vedtak.$vedtakId/route'
+import { Route as SaksnummerSaksIdVedtakVedtakIdRedigeringRouteImport } from './routes/saksnummer_/$saksId/vedtak.$vedtakId/redigering/route'
+import { Route as SaksnummerSaksIdVedtakVedtakIdKvitteringRouteImport } from './routes/saksnummer_/$saksId/vedtak.$vedtakId/kvittering/route'
+import { Route as SaksnummerSaksIdVedtakVedtakIdForhandsvisningRouteImport } from './routes/saksnummer_/$saksId/vedtak.$vedtakId/forhandsvisning/route'
 
 // Create/Update Routes
 
@@ -62,9 +64,21 @@ const SaksnummerSaksIdBrevBrevIdRoute = SaksnummerSaksIdBrevBrevIdImport.update(
   } as any,
 )
 
-const SaksnummerSaksIdVedtakVedtakIdRouteRoute =
-  SaksnummerSaksIdVedtakVedtakIdRouteImport.update({
-    path: '/vedtak/$vedtakId',
+const SaksnummerSaksIdVedtakVedtakIdRedigeringRouteRoute =
+  SaksnummerSaksIdVedtakVedtakIdRedigeringRouteImport.update({
+    path: '/vedtak/$vedtakId/redigering',
+    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+  } as any)
+
+const SaksnummerSaksIdVedtakVedtakIdKvitteringRouteRoute =
+  SaksnummerSaksIdVedtakVedtakIdKvitteringRouteImport.update({
+    path: '/vedtak/$vedtakId/kvittering',
+    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+  } as any)
+
+const SaksnummerSaksIdVedtakVedtakIdForhandsvisningRouteRoute =
+  SaksnummerSaksIdVedtakVedtakIdForhandsvisningRouteImport.update({
+    path: '/vedtak/$vedtakId/forhandsvisning',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
 
@@ -96,12 +110,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdKvitteringRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteImport
     }
-    '/saksnummer/$saksId/vedtak/$vedtakId': {
-      preLoaderRoute: typeof SaksnummerSaksIdVedtakVedtakIdRouteImport
-      parentRoute: typeof SaksnummerSaksIdRouteImport
-    }
     '/saksnummer/$saksId/brev/$brevId': {
       preLoaderRoute: typeof SaksnummerSaksIdBrevBrevIdImport
+      parentRoute: typeof SaksnummerSaksIdRouteImport
+    }
+    '/saksnummer/$saksId/vedtak/$vedtakId/forhandsvisning': {
+      preLoaderRoute: typeof SaksnummerSaksIdVedtakVedtakIdForhandsvisningRouteImport
+      parentRoute: typeof SaksnummerSaksIdRouteImport
+    }
+    '/saksnummer/$saksId/vedtak/$vedtakId/kvittering': {
+      preLoaderRoute: typeof SaksnummerSaksIdVedtakVedtakIdKvitteringRouteImport
+      parentRoute: typeof SaksnummerSaksIdRouteImport
+    }
+    '/saksnummer/$saksId/vedtak/$vedtakId/redigering': {
+      preLoaderRoute: typeof SaksnummerSaksIdVedtakVedtakIdRedigeringRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteImport
     }
   }
@@ -115,8 +137,10 @@ export const routeTree = rootRoute.addChildren([
     SaksnummerSaksIdBrevbehandlerRouteRoute,
     SaksnummerSaksIdBrevvelgerRouteRoute,
     SaksnummerSaksIdKvitteringRouteRoute,
-    SaksnummerSaksIdVedtakVedtakIdRouteRoute,
     SaksnummerSaksIdBrevBrevIdRoute,
+    SaksnummerSaksIdVedtakVedtakIdForhandsvisningRouteRoute,
+    SaksnummerSaksIdVedtakVedtakIdKvitteringRouteRoute,
+    SaksnummerSaksIdVedtakVedtakIdRedigeringRouteRoute,
   ]),
   SaksnummerIndexRoute,
 ])
