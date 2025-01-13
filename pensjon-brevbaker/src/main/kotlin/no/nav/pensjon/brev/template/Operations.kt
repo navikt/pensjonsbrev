@@ -62,7 +62,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 
-    object Enabled : UnaryOperation<UnleashToggle, Boolean>(), StableHash by StableHash.of("UnaryOperation.Enabled") {
+    object FunksjonsbryterEnabled : UnaryOperation<UnleashToggle, Boolean>(), StableHash by StableHash.of("UnaryOperation.Enabled") {
         override fun apply(input: UnleashToggle): Boolean = input.isEnabled()
     }
 

@@ -253,7 +253,7 @@ object TemplateDocumentationRenderer {
                 first = renderExpression(expr.value)
             )
 
-            is UnaryOperation.Enabled -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.FunksjonsbryterEnabled -> TemplateDocumentation.Expression.Invoke(
                 operator = Operation(text = "enabled", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value)
             )

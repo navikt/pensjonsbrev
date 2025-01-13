@@ -81,7 +81,7 @@ class OperationsTest {
 
     @Nested
     @DisplayName("Feature-toggling")
-    inner class Enabled {
+    inner class FunksjonsbryterEnabled {
         private val scope = ExpressionScope(2, Fixtures.felles, Language.Nynorsk)
 
         @Test

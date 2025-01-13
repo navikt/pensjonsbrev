@@ -17,7 +17,7 @@ fun Expression<Int>.absoluteValue(): Expression<Int> =
     Expression.UnaryInvoke(value = this, operation = UnaryOperation.AbsoluteValue)
 
 fun Expression<UnleashToggle>.enabled(): Expression<Boolean> =
-    Expression.UnaryInvoke(value = this, operation = UnaryOperation.Enabled)
+    Expression.UnaryInvoke(value = this, operation = UnaryOperation.FunksjonsbryterEnabled)
 
 @JvmName("absoluteValueKroner")
 fun Expression<Kroner>.absoluteValue(): Expression<Kroner> =
