@@ -9,7 +9,7 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
-group = "no.nav.etterlatte"
+group = "no.nav.pensjon.brev"
 version = "0.0.1-SNAPSHOT"
 
 repositories {
