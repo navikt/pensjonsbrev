@@ -4,10 +4,9 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.createVedleggTestTemplate
+import no.nav.pensjon.brev.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brevbaker.api.model.Bruker
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 

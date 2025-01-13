@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.outlineTestTemplate
+import no.nav.pensjon.brev.outlineTestTemplate
 import org.junit.jupiter.api.Test
 
 class LatexDocumentRendererTest {

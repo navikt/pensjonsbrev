@@ -11,12 +11,17 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.outlineTestTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
@@ -64,7 +69,6 @@ fun renderTestPdfOutline(
     title: String? = null,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
-
     val template = createTemplate(
         testName, EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
             testName,
@@ -74,7 +78,7 @@ fun renderTestPdfOutline(
         )
     ) {
         title {
-            text(Bokmal to (title?:testName))
+            text(Bokmal to (title ?: testName))
         }
         outline { outlineInit() }
         attachments.forEach { includeAttachment(it) }
@@ -147,3 +151,47 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: Str
 
     return this
 }
+
+fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
+    template: AttachmentTemplate<Lang, AttachmentData>,
+    attachmentData: Expression<AttachmentData>,
+    languages: Lang,
+) = createTemplate(
+    name = "test-template",
+    letterDataType = Unit::class,
+    languages = languages,
+    letterMetadata = LetterMetadata(
+        "test mal",
+        isSensitiv = false,
+        distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+    ),
+) {
+    title {
+        eval("Tittel".expr())
+    }
+
+    outline {}
+
+    includeAttachment(template, attachmentData)
+}
+
+internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
+    createTemplate(
+        name = "test",
+        letterDataType = LetterData::class,
+        languages = languages(Bokmal),
+        letterMetadata = testLetterMetadata,
+    ) {
+        title.add(bokmalTittel)
+        outline(function)
+    }
+
+fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
+    name = "test",
+    title = listOf(bokmalTittel),
+    letterDataType = Unit::class,
+    language = languages(Bokmal),
+    outline = elements.asList(),
+    letterMetadata = testLetterMetadata
+)

@@ -29,7 +29,6 @@ class LatexVisualITest {
         title: String? = null,
         felles: Felles? = null,
         brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        attachments: List<AttachmentTemplate<LangBokmal, EmptyBrevdata>> = emptyList(),
         outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
     ) {
         val testName = overrideName ?: StackWalker.getInstance()
@@ -39,7 +38,6 @@ class LatexVisualITest {
             testName = testName,
             felles = felles,
             brevtype = brevtype,
-            attachments = attachments,
             outlineInit = outlineInit,
             title = title ?: testName
         )
@@ -96,7 +94,7 @@ class LatexVisualITest {
     }
 
     @Test
-    fun `form elementer`() {
+    fun `form choice med vspace`() {
         render {
             title1 { text(Bokmal to "Form choice") }
             paragraph {
@@ -107,6 +105,12 @@ class LatexVisualITest {
                     choice(Bokmal to "6 år eller mer")
                 }
             }
+        }
+    }
+
+    @Test
+    fun `form choice uten vspace`() {
+        render {
             title1 { text(Bokmal to "Form choice uten vspace") }
             paragraph {
                 formChoice(prompt = newText(Bokmal to "Hvor lenge vil du jobbe?"), false) {
@@ -116,14 +120,38 @@ class LatexVisualITest {
                     choice(Bokmal to "6 år eller mer")
                 }
             }
+        }
+    }
+
+    @Test
+    fun `short form text med vspace`() {
+        render {
             title1 { text(Bokmal to "Form text short med vspace") }
-            paragraph { formText(Size.SHORT, newText(Bokmal to "bla"), true) }
+            paragraph { formText(Size.SHORT, newText(Bokmal to "test"), true) }
+        }
+    }
+
+    @Test
+    fun `long form text med vspace`() {
+        render {
             title1 { text(Bokmal to "Form text long med vspace") }
-            paragraph { formText(Size.LONG, newText(Bokmal to "bla"), true) }
+            paragraph { formText(Size.LONG, newText(Bokmal to "test"), true) }
+        }
+    }
+
+    @Test
+    fun `short form text uten vspace`() {
+        render {
             title1 { text(Bokmal to "Form text short uten vspace") }
-            paragraph { formText(Size.SHORT, newText(Bokmal to "bla"), false) }
+            paragraph { formText(Size.SHORT, newText(Bokmal to "test"), false) }
+        }
+    }
+
+    @Test
+    fun `long form text uten vspace`() {
+        render {
             title1 { text(Bokmal to "Form text long uten vspace") }
-            paragraph { formText(Size.LONG, newText(Bokmal to "bla"), false) }
+            paragraph { formText(Size.LONG, newText(Bokmal to "test"), false) }
         }
     }
 
