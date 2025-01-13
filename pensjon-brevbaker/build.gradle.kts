@@ -117,6 +117,7 @@ dependencies {
 
     implementation("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
     implementation(project(":pensjonsmaler"))
+    implementation(project(":etterlattemaler"))
     ksp(project(":pensjonsmaler"))
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
