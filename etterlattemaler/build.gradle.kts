@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 val apiModelVersion: String by project
 val apiModelJavaTarget: String by System.getProperties()
 val templateModelGeneratorVersion: String by project
+val jacksonJsr310Version: String by project
 
 plugins {
     kotlin("jvm")
@@ -23,6 +24,11 @@ dependencies {
     api("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:1.0.0")
     ksp("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
     api(project(":pensjon-brevbaker-api-model"))
+
+
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
+        because("we require deserialization/serialization of java.time.LocalDate")
+    }
 }
 
 tasks.test {
