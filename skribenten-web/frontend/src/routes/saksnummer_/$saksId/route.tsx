@@ -13,6 +13,7 @@ import { queryFold } from "~/utils/tanstackUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
+import { SendVedtakContextProvider } from "./vedtak.$vedtakId/kvittering/-SendVedtakContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId")({
   beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
@@ -57,6 +58,7 @@ function SakLayout() {
   const sakContext = Route.useLoaderData();
 
   return (
+    <SendVedtakContextProvider>
     <FerdigstillResultatContextProvider>
       <MottakerContextProvider>
         {sakContext && <Subheader sak={sakContext.sak} />}
@@ -65,6 +67,7 @@ function SakLayout() {
         </div>
       </MottakerContextProvider>
     </FerdigstillResultatContextProvider>
+    </SendVedtakContextProvider>
   );
 }
 

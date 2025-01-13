@@ -31,7 +31,7 @@ import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, Saksbehand
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
-import { BrevmalAlternativer } from "./vedtak.$vedtakId/route";
+import { BrevmalAlternativer } from "./vedtak.$vedtakId/redigering/route";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),

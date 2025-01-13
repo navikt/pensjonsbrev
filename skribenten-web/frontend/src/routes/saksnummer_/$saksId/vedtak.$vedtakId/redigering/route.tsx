@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, Heading, HStack, Label, Switch, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -22,13 +22,17 @@ import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
 
-import { nyBrevResponse } from "../../../../../cypress/utils/brevredigeringTestUtils";
+import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
 
-export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId")({
+export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/redigering")({
   component: () => <Vedtak />,
 });
 
-const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNode; bottom: React.ReactNode }) => {
+export const ThreeSectionLayout = (props: {
+  left: React.ReactNode;
+  right: React.ReactNode;
+  bottom: React.ReactNode;
+}) => {
   return (
     <Box
       background="bg-default"
@@ -36,17 +40,16 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        flex: 1;
       `}
     >
       <div
         css={css`
           display: grid;
-          grid-template-columns: 25% 75%;
+          grid-template-columns: 27% 73%;
           flex: 1;
 
           > :first-of-type {
-            padding: var(--a-spacing-6);
+            padding: 16px 24px;
             border-right: 1px solid var(--a-gray-200);
           }
 
@@ -69,7 +72,7 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
           background: var(--a-white);
 
           border-top: 1px solid var(--a-gray-200);
-          padding: 0.5rem 1rem;
+          padding: var(--a-spacing-2) var(--a-spacing-4);
         `}
         justify={"end"}
       >
@@ -88,6 +91,7 @@ const Vedtak = () => {
   const { saksId } = Route.useParams();
   const queryClient = useQueryClient();
   const brevResponse = nyBrevResponse({});
+  const navigate = useNavigate({ from: Route.fullPath });
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevResponse));
 
   useEffect(() => {
@@ -159,65 +163,90 @@ const Vedtak = () => {
     },
   });
 
+  const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
+    //console.log("submitting - hehe", values);
+    queryClient.setQueryData(["vedtak", brevResponse.info.id], () => brevResponse);
+    onSuccess?.();
+    // saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
+    //   onSuccess: () => {
+    //     signaturMutation.mutate(values.signatur, {
+    //       onSuccess: onSuccess,
+    //     });
+    //   },
+    // });
+  };
+
   return (
-    <ThreeSectionLayout
-      bottom={
-        <Button icon={<ArrowRightIcon />} iconPosition="right" size="small" type="button">
-          Fortsett
-        </Button>
-      }
-      left={
-        <div>
-          <FormProvider {...form}>
-            <VStack gap="8">
-              <Heading size="small">{brevResponse.redigertBrev.title}</Heading>
-              <VStack gap="4">
+    <form
+      onSubmit={form.handleSubmit((v) =>
+        onSubmit(v, () =>
+          navigate({
+            to: "/saksnummer/$saksId/vedtak/$vedtakId/forhandsvisning",
+            params: { saksId, vedtakId: brevResponse.info.id.toString() },
+          }),
+        ),
+      )}
+    >
+      <Outlet />
+      <ThreeSectionLayout
+        bottom={
+          <Button icon={<ArrowRightIcon />} iconPosition="right" size="small">
+            Fortsett
+          </Button>
+        }
+        left={
+          <div>
+            <FormProvider {...form}>
+              <VStack gap="8">
                 <Heading size="small">{brevResponse.redigertBrev.title}</Heading>
-                <OppsummeringAvMottaker mottaker={brevResponse.info.mottaker} saksId={saksId} withTitle />
+                <VStack gap="4">
+                  <Heading size="small">{brevResponse.redigertBrev.title}</Heading>
+                  <OppsummeringAvMottaker mottaker={brevResponse.info.mottaker} saksId={saksId} withTitle />
+                  <VStack>
+                    <Label size="small">Distribusjonstype</Label>
+                    <BodyShort size="small">{brevResponse.info.distribusjonstype}</BodyShort>
+                  </VStack>
+                </VStack>
+                <Divider />
+                <VStack gap="5">
+                  <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
+                  <Switch size="small">Vis slettet tekst</Switch>
+                  <AutoSavingTextField
+                    field={"signatur"}
+                    fieldType={{
+                      type: "scalar",
+                      nullable: false,
+                      kind: "STRING",
+                    }}
+                    label="Underskrift"
+                    onSubmit={() => signaturMutation.mutate(form.getValues("signatur"))}
+                    timeoutTimer={2500}
+                    type={"text"}
+                  />
+                </VStack>
+                <Divider />
                 <VStack>
-                  <Label size="small">Distribusjonstype</Label>
-                  <BodyShort size="small">TODO - type</BodyShort>
+                  <BrevmalAlternativer
+                    brevkode={brevResponse.info.brevkode}
+                    submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
+                  />
                 </VStack>
               </VStack>
-              <Divider />
-              <VStack gap="5">
-                <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
-                <Switch size="small">Vis slettet tekst</Switch>
-                <AutoSavingTextField
-                  field={"signatur"}
-                  fieldType={{
-                    type: "scalar",
-                    nullable: false,
-                    kind: "STRING",
-                  }}
-                  label="Underskrift"
-                  onSubmit={() => signaturMutation.mutate(form.getValues("signatur"))}
-                  timeoutTimer={2500}
-                  type={"text"}
-                />
-              </VStack>
-              <Divider />
-              <VStack>
-                <BrevmalAlternativer
-                  brevkode={brevResponse.info.brevkode}
-                  submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
-                />
-              </VStack>
-            </VStack>
-          </FormProvider>
-        </div>
-      }
-      right={
-        <LetterEditor
-          editorHeight={"var(--main-page-content-height)"}
-          editorState={editorState}
-          error={signaturMutation.isError || saksbehandlerValgMutation.isError}
-          freeze={signaturMutation.isPending || saksbehandlerValgMutation.isPending}
-          setEditorState={setEditorState}
-          showDebug={false}
-        />
-      }
-    />
+            </FormProvider>
+          </div>
+        }
+        right={
+          <LetterEditor
+            editorHeight={"var(--main-page-content-height)"}
+            editorState={editorState}
+            error={signaturMutation.isError || saksbehandlerValgMutation.isError}
+            freeze={signaturMutation.isPending || saksbehandlerValgMutation.isPending}
+            setEditorState={setEditorState}
+            showDebug={false}
+          />
+        }
+      />
+    </form>
   );
 };
 
