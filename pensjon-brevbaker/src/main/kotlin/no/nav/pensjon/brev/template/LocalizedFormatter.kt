@@ -37,7 +37,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
                 .format(first)
-                .replace(' ', ' ')
+                .replace(' ', '\u00A0')
     }
 
     object TelefonnummerFormat : LocalizedFormatter<Telefonnummer>() {

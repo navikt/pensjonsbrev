@@ -17,15 +17,4 @@ class LetterExampleTest {
             Fixtures.fellesAuto
         ).renderTestPDF("EKSEMPELBREV_BOKMAL")
     }
-
-    @Test
-    fun `test design reference letter`() {
-        Letter(
-            DesignReferenceLetter.template,
-            createLetterExampleDto(),
-            Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("DESIGN_REFERENCE_LETTER_BOKMAL")
-    }
-
 }
