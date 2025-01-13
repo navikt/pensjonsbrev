@@ -16,8 +16,8 @@ class InformasjonOmSaksbehandlingstidITest {
 
     private val data = InformasjonOmSaksbehandlingstidDto(
         saksbehandlerValg = InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg(
-            mottattFraAnnetLand = false,
-            inkluderVenterPaaSvarAFP = false,
+            soeknadMottattFraUtland = false,
+            venterPaaSvarAFP = false,
         ),
         pesysData = EmptyBrevdata
     )
@@ -29,14 +29,14 @@ class InformasjonOmSaksbehandlingstidITest {
 
     @Test
     fun `med land`() {
-        writeAllLanguages("med-land", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(mottattFraAnnetLand = true)))
+        writeAllLanguages("med-land", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(soeknadMottattFraUtland = true)))
     }
 
     @Test
     fun `med venter svar AFP`() {
         writeAllLanguages(
             "med-venter-svar",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(inkluderVenterPaaSvarAFP = true))
+            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(venterPaaSvarAFP = true))
         )
     }
 
