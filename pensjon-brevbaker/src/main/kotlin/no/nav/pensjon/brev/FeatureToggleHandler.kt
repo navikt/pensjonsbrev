@@ -5,7 +5,7 @@ import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import io.getunleash.util.UnleashConfig
 
-private const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
+const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
 
 object FeatureToggleHandler {
 
