@@ -287,7 +287,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     mindreEnnFireFemtedelerAvOpptjeningstiden: Expression<Boolean>,
     forskjelligTrygdetid: Expression<ForskjelligTrygdetid?>,
     harForskjelligMetode: Expression<Boolean>,
-    erYrkesskade: Expression<Boolean>,
+    erYrkesskade: Expression<Boolean?>,
 ) {
     title2 {
         text(
@@ -391,22 +391,24 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             }
         }
 
-        showIf(erYrkesskade) {
-            paragraph {
-                text(
-                    Bokmal to "Det er bekreftet at dødsfallet skyldes en godkjent yrkesskade eller yrkessykdom. " +
-                            "Det gis derfor barnepensjon etter egne særbestemmelser. Selv om den avdøde hadde mindre enn " +
-                            "40 års trygdetid i Norge, er barnepensjonen beregnet med full trygdetid. Dette framkommer " +
-                            "ikke i tabellen nedenfor.",
-                    Nynorsk to "Det er stadfesta at dødsfallet kjem av ein godkjend yrkesskade eller yrkessjukdom. " +
-                            "Det blir derfor gitt barnepensjon etter eigne særreglar. Sjølv om dei avdøde hadde mindre " +
-                            "enn 40 års trygdetid i Noreg, er barnepensjonen berekna med full trygdetid. " +
-                            "Dette kjem ikkje fram i tabellen nedanfor.",
-                    English to "It has been confirmed that the death was caused by an approved occupational injury " +
-                            "or disease. The children's pension is granted under special regulations. Although the " +
-                            "deceased had less than 40 years of social security coverage in Norway, the children's pension " +
-                            "is calculated based on a full social security period. This is not reflected in the table below.",
-                )
+        ifNotNull(erYrkesskade) { erYrkesskade ->
+            showIf(erYrkesskade) {
+                paragraph {
+                    text(
+                        Bokmal to "Det er bekreftet at dødsfallet skyldes en godkjent yrkesskade eller yrkessykdom. " +
+                                "Det gis derfor barnepensjon etter egne særbestemmelser. Selv om den avdøde hadde mindre enn " +
+                                "40 års trygdetid i Norge, er barnepensjonen beregnet med full trygdetid. Dette framkommer " +
+                                "ikke i tabellen nedenfor.",
+                        Nynorsk to "Det er stadfesta at dødsfallet kjem av ein godkjend yrkesskade eller yrkessjukdom. " +
+                                "Det blir derfor gitt barnepensjon etter eigne særreglar. Sjølv om dei avdøde hadde mindre " +
+                                "enn 40 års trygdetid i Noreg, er barnepensjonen berekna med full trygdetid. " +
+                                "Dette kjem ikkje fram i tabellen nedanfor.",
+                        English to "It has been confirmed that the death was caused by an approved occupational injury " +
+                                "or disease. The children's pension is granted under special regulations. Although the " +
+                                "deceased had less than 40 years of social security coverage in Norway, the children's pension " +
+                                "is calculated based on a full social security period. This is not reflected in the table below.",
+                    )
+                }
             }
         }.orShowIf(mindreEnnFireFemtedelerAvOpptjeningstiden) {
             paragraph {
@@ -428,7 +430,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             }
         }
     }
-    showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.PRORATA).and(harForskjelligMetode.not()).and(erYrkesskade.not())) {
+    showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.PRORATA).and(harForskjelligMetode.not())) {
         paragraph {
             showIf(erForeldreloes.not()) {
                 text(
@@ -545,7 +547,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             }
         }
     }
-    showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.BEST).or(harForskjelligMetode).and(erYrkesskade.not())) {
+    showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.BEST).or(harForskjelligMetode)) {
         showIf(erForeldreloes.not()) {
             paragraph {
                 text(

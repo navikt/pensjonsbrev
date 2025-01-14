@@ -432,7 +432,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, OmstillingsstoenadBeregning>.trygdetid(
     trygdetid: Expression<Trygdetid>,
     tidligereFamiliepleier: Expression<Boolean>,
-    erYrkesskade: Expression<Boolean>,
+    erYrkesskade: Expression<Boolean?>,
 ) {
     title2 {
         text(
@@ -502,13 +502,24 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
             )
         }
 
-        showIf(erYrkesskade) {
-            paragraph {
-                text(
-                    Bokmal to "Det er bekreftet at dødsfallet skyldes en godkjent yrkesskade eller yrkessykdom. Det gis derfor omstillingsstønad etter egne særbestemmelser. Selv om den avdøde hadde mindre enn 40 års trygdetid i Norge, er omstillingsstønaden beregnet med full trygdetid. Dette framkommer ikke i tabellen nedenfor.",
-                    Nynorsk to "Det er stadfesta at dødsfallet kjem av ein godkjend yrkesskade eller yrkessjukdom. Det blir derfor gitt omstillingsstønad etter eigne særreglar. Sjølv om den avdøde hadde mindre enn 40 års trygdetid i Noreg, er omstillingsstønaden berekna med full trygdetid. Dette kjem ikkje fram i tabellen nedanfor.",
-                    English to "It has been confirmed that the death was caused by an approved occupational injury or disease. The adjustment allowance is granted under special regulations. Although the deceased had less than 40 years of social security coverage in Norway, the adjustment allowance is calculated based on a full social security period. This is not reflected in the table below.",
-                )
+        ifNotNull(erYrkesskade){erYrkesskade ->
+            showIf(erYrkesskade) {
+                paragraph {
+                    text(
+                        Bokmal to "Det er bekreftet at dødsfallet skyldes en godkjent yrkesskade eller yrkessykdom. " +
+                                "Det gis derfor omstillingsstønad etter egne særbestemmelser. Selv om den avdøde hadde mindre " +
+                                "enn 40 års trygdetid i Norge, er omstillingsstønaden beregnet med full trygdetid. " +
+                                "Dette framkommer ikke i tabellen nedenfor.",
+                        Nynorsk to "Det er stadfesta at dødsfallet kjem av ein godkjend yrkesskade eller yrkessjukdom. " +
+                                "Det blir derfor gitt omstillingsstønad etter eigne særreglar. Sjølv om den avdøde hadde " +
+                                "mindre enn 40 års trygdetid i Noreg, er omstillingsstønaden berekna med full trygdetid. Dette kjem ikkje fram i tabellen nedanfor.",
+                        English to "It has been confirmed that the death was caused by an approved occupational " +
+                                "injury or disease. The adjustment allowance is granted under special regulations. " +
+                                "Although the deceased had less than 40 years of social security coverage in Norway, " +
+                                "the adjustment allowance is calculated based on a full social security period. " +
+                                "This is not reflected in the table below.",
+                    )
+                }
             }
         }.orShowIf(trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden) {
             paragraph {
@@ -537,7 +548,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
             }
         }
     }
-    showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.PRORATA) and erYrkesskade.not()) {
+    showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.PRORATA)) {
         paragraph {
             textExpr(
                 Bokmal to "For å få full omstillingsstønad må ".expr() +
@@ -599,7 +610,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
             )
         }
     }
-    showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.BEST) and erYrkesskade.not()) {
+    showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.BEST)) {
         paragraph {
             textExpr(
                 Bokmal to "For å få full omstillingsstønad må ".expr() +
