@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -221,7 +220,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 }
             }
 
-            showIf(aktivitetsgrad.isOneOf(Aktivitetsgrad.OVER_50_PROSENT, Aktivitetsgrad.AKKURAT_100_PROSENT)) {
+            showIf(aktivitetsgrad.isOneOf(Aktivitetsgrad.OVER_50_PROSENT, Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
                 paragraph {
                     text(
                         Bokmal to "Er du fortsatt i mer enn 50 prosent jobb, fyller du aktivitetskravet og vil få omstillingsstønad " +
