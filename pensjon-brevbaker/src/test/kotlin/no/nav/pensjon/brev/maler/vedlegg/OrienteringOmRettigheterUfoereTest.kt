@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -20,12 +19,13 @@ class OrienteringOmRettigheterUfoereTest {
             Fixtures.create(OrienteringOmRettigheterUfoereDto::class).expr(),
             languages(Bokmal, Nynorsk, English),
         )
-        Letter(
+        renderTestPDF(
             template,
             Unit,
             Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("OrienteringOmRettigheterUfoere")
+            Fixtures.fellesAuto,
+            "OrienteringOmRettigheterUfoere"
+        )
 
     }
 }

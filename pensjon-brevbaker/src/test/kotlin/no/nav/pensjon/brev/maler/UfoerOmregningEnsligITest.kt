@@ -11,21 +11,23 @@ class UfoerOmregningEnsligITest {
 
     @Test
     fun test() {
-        Letter(
+        renderTestPDF(
             UfoerOmregningEnslig.template,
             Fixtures.create<UfoerOmregningEnsligDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto,
-        ).renderTestPDF("UT_DOD_ENSLIG_AUTO_BOKMAL")
+            "UT_DOD_ENSLIG_AUTO_BOKMAL"
+        )
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             UfoerOmregningEnslig.template,
             Fixtures.create<UfoerOmregningEnsligDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto,
-        ).renderTestHtml("UT_DOD_ENSLIG_AUTO_BOKMAL")
+            "UT_DOD_ENSLIG_AUTO_BOKMAL"
+        )
     }
 }

@@ -10,21 +10,23 @@ class OmsorgEgenAutoITest {
 
     @Test
     fun testPdf() {
-        Letter(
+        renderTestPDF(
             OmsorgEgenAuto.template,
             Fixtures.create<OmsorgEgenAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("OMSORG_EGEN_AUTO_BOKMAL")
+            Fixtures.fellesAuto,
+            "OMSORG_EGEN_AUTO_BOKMAL"
+        )
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             OmsorgEgenAuto.template,
             Fixtures.create<OmsorgEgenAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestHtml("OMSORG_EGEN_AUTO_BOKMAL")
+            Fixtures.fellesAuto,
+            "OMSORG_EGEN_AUTO_BOKMAL"
+        )
     }
 }

@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.In
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -103,12 +102,13 @@ class OpplysningerOmEtteropgjoeretTest {
             ).expr(),
             languages(Bokmal),
         )
-        Letter(
+        renderTestPDF(
             template,
             Unit,
             Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("OpplysningerOmEtteroppgjoeret")
+            Fixtures.fellesAuto,
+            "OpplysningerOmEtteroppgjoeret"
+        )
 
     }
 }

@@ -10,42 +10,46 @@ class InfoAldersovergang67AarAutoTest {
 
     @Test
     fun testPdfNB() {
-        Letter(
+        renderTestPDF(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL")
+            Fixtures.fellesAuto,
+            "INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL"
+        )
     }
 
     @Test
     fun testPdfNN() {
-        Letter(
+        renderTestPDF(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
-        ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_NYNORSK")
+            Fixtures.fellesAuto,
+            "INFO_ALDERSOVERGANG_67_AAR_AUTO_NYNORSK"
+        )
     }
 
     @Test
     fun testPdfEN() {
-        Letter(
+        renderTestPDF(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.English,
-            Fixtures.fellesAuto
-        ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_ENGLISH")
+            Fixtures.fellesAuto,
+            "INFO_ALDERSOVERGANG_67_AAR_AUTO_ENGLISH"
+        )
     }
 
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestHtml("INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL")
+            Fixtures.fellesAuto,
+            "INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL"
+        )
     }
 }

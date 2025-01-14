@@ -10,22 +10,24 @@ class LetterExampleTest {
 
     @Test
     fun test() {
-        Letter(
+        renderTestPDF(
             LetterExample.template,
             createLetterExampleDto(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("EKSEMPELBREV_BOKMAL")
+            Fixtures.fellesAuto,
+            "EKSEMPELBREV_BOKMAL"
+        )
     }
 
     @Test
     fun `test design reference letter`() {
-        Letter(
+        renderTestPDF(
             DesignReferenceLetter.template,
             createLetterExampleDto(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("DESIGN_REFERENCE_LETTER_BOKMAL")
+            Fixtures.fellesAuto,
+            "DESIGN_REFERENCE_LETTER_BOKMAL"
+        )
     }
 
 }

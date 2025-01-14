@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -19,11 +18,12 @@ class PraktiskInformasjonEtteroppgjoerTest {
             Unit.expr(),
             languages(Bokmal)
         )
-        Letter(
+        renderTestPDF(
             template,
             Unit,
             Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("PraktiskInformasjonEtteroppgjoer")
+            Fixtures.fellesAuto,
+            "PraktiskInformasjonEtteroppgjoer"
+        )
     }
 }

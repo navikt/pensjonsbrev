@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -15,21 +14,23 @@ class EtteroppgjoerEtterbetalingAutoTest {
 
     @Test
     fun testPdf() {
-        Letter(
+        renderTestPDF(
             EtteroppgjoerEtterbetalingAutoLegacy.template,
             Fixtures.create<EtteroppgjoerEtterbetalingAutoDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
-        ).renderTestPDF("UT_ENDRET_PGA_INNTEKT")
+            Fixtures.fellesAuto,
+            "UT_ENDRET_PGA_INNTEKT"
+        )
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             EtteroppgjoerEtterbetalingAutoLegacy.template,
             Fixtures.create<EtteroppgjoerEtterbetalingAutoDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
-        ).renderTestHtml("UT_ENDRET_PGA_INNTEKT")
+            Fixtures.fellesAuto,
+            "UT_ENDRET_PGA_INNTEKT"
+        )
     }
 }

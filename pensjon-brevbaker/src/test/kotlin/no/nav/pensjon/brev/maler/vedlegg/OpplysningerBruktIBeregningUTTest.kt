@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -20,12 +19,13 @@ class OpplysningerBruktIBeregningUTTest {
             Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr(),
             languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )
-        Letter(
+        renderTestPDF(
             template,
             Unit,
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("OpplysningerBruktIBeregningUfoere")
+            Fixtures.fellesAuto,
+            "OpplysningerBruktIBeregningUfoere"
+        )
 
     }
 }

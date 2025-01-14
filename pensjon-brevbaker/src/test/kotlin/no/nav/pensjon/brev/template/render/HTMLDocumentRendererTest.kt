@@ -9,11 +9,12 @@ import org.junit.jupiter.api.Test
 class HTMLDocumentRendererTest {
     @Test
     fun renderDesignReference() {
-        Letter(
+        renderTestHtml(
             DesignReferenceLetter.template,
             createLetterExampleDto(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestHtml("DESIGN_REFERENCE_LETTER")
+            Fixtures.fellesAuto,
+            "DESIGN_REFERENCE_LETTER"
+        )
     }
 }

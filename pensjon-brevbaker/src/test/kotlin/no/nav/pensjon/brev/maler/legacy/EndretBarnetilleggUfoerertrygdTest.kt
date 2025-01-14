@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdD
 import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -16,21 +15,23 @@ class EndretBarnetilleggUfoerertrygdTest {
 
     @Test
     fun testPdf() {
-        Letter(
+        renderTestPDF(
             EndretBarnetilleggUfoerertrygd.template,
             Fixtures.create<EndretBarnetilleggUfoeretrygdDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("UT_ENDRET_BARNETILLEGG")
+            Fixtures.fellesAuto,
+            "UT_ENDRET_BARNETILLEGG"
+        )
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             EndretBarnetilleggUfoerertrygd.template,
             Fixtures.create<EndretBarnetilleggUfoeretrygdDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestHtml("UT_ENDRET_BARNETILLEGG")
+            Fixtures.fellesAuto,
+            "UT_ENDRET_BARNETILLEGG"
+        )
     }
 }

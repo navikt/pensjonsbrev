@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.maler.example.lipsums
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Tag
@@ -30,8 +29,7 @@ class LatexVisualITest {
             }
             outline { outlineInit() }
         }
-        val letter = Letter(template, Unit, Bokmal, Fixtures.fellesAuto)
-        letter.renderTestPDF(testName, Path.of("build/test_visual/pdf"))
+        renderTestPDF(template, Unit, Bokmal, Fixtures.fellesAuto, testName, Path.of("build/test_visual/pdf"))
     }
 
     private fun ParagraphOnlyScope<LangBokmal, Unit>.ipsumText() = text(Bokmal to lipsums.first())

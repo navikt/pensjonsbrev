@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
@@ -16,23 +15,24 @@ internal class TomMalInformasjonsbrevTest {
 
     @Test
     fun pdftest() {
-        val letter = Letter(
+        renderTestPDF(
             TomMalInformasjonsbrev.template,
             Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
-            Fixtures.felles
+            Fixtures.felles,
+            EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name
         )
-        letter.renderTestPDF(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             TomMalInformasjonsbrev.template,
             Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
-            Fixtures.felles
-        ).renderTestHtml(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)
+            Fixtures.felles,
+            EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name
+        )
     }
 
 }

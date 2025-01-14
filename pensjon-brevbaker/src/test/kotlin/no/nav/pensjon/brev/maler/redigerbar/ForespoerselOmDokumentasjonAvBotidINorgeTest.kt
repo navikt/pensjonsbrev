@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -14,11 +13,12 @@ class ForespoerselOmDokumentasjonAvBotidINorgeTest {
 
     @Test
     fun testPdf() {
-        Letter(
+        renderTestPDF(
             ForespoerselOmDokumentasjonAvBotidINorgeAlder.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.felles
-        ).renderTestPDF(ForespoerselOmDokumentasjonAvBotidINorgeAlder.kode.name)
+            Fixtures.felles,
+            ForespoerselOmDokumentasjonAvBotidINorgeAlder.kode.name
+        )
     }
 }

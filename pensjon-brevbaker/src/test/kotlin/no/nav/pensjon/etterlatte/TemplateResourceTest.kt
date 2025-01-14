@@ -31,9 +31,7 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        val letter = Letter(template, fixtures, spraak, Fixtures.felles)
-
-        letter.renderTestPDF(filnavn(etterlatteBrevKode, spraak))
+        renderTestPDF(template, fixtures, spraak, Fixtures.felles, filnavn(etterlatteBrevKode, spraak))
     }
 
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
@@ -44,12 +42,13 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        Letter(
+        renderTestHtml(
             template,
             fixtures,
             spraak,
             Fixtures.felles,
-        ).renderTestHtml(filnavn(etterlatteBrevKode, spraak))
+            filnavn(etterlatteBrevKode, spraak)
+        )
     }
 
     private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =

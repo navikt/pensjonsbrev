@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslag
@@ -17,22 +16,23 @@ class BarnepensjonAvslagTest {
 
     @Test
     fun pdftest() {
-        val letter = Letter(
+        renderTestPDF(
             BarnepensjonAvslag.template,
             Fixtures.create<BarnepensjonAvslagDTO>(),
             Language.Bokmal,
             Fixtures.felles,
+            EtterlatteBrevKode.BARNEPENSJON_AVSLAG.name
         )
-        letter.renderTestPDF(EtterlatteBrevKode.BARNEPENSJON_AVSLAG.name)
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             BarnepensjonAvslag.template,
             Fixtures.create<BarnepensjonAvslagDTO>(),
             Language.Bokmal,
             Fixtures.felles,
-        ).renderTestHtml(EtterlatteBrevKode.BARNEPENSJON_AVSLAG.name)
+            EtterlatteBrevKode.BARNEPENSJON_AVSLAG.name
+        )
     }
 }

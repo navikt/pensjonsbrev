@@ -11,11 +11,16 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
-import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.Letter2Markup.renderAttachmentsOnly
+import no.nav.pensjon.brev.template.render.Letter2Markup.renderLetterOnly
+import no.nav.pensjon.brev.template.render.LetterWithAttachmentsMarkup
+import no.nav.pensjon.brevbaker.api.model.Felles
 import java.nio.file.Path
 import java.util.Base64
 import kotlin.io.path.Path
@@ -48,12 +53,23 @@ fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("buil
 
 private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
 
-fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
-    pdfFileName: String,
+
+
+internal fun <ParameterType: Any> renderTestPDF(
+    template: LetterTemplate<*, ParameterType>,
+    argument: ParameterType,
+    language: Language,
+    felles: Felles,
+    pdfFileName: String = "${template.name}_${language.javaClass.simpleName}",
     path: Path = Path.of("build", "test_pdf"),
-): Letter<ParameterType> {
-    Letter2Markup.render(this)
+) =
+    ExpressionScope(argument, felles, language)
         .let {
+            LetterWithAttachmentsMarkup(
+                letterMarkup = renderLetterOnly(it, template),
+                attachments = renderAttachmentsOnly(scope = it, template = template)
+            )
+        }.let {
             LatexDocumentRenderer.render(
                 it.letterMarkup,
                 it.attachments,
@@ -64,10 +80,8 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
         }
         .let { runBlocking { laTeXCompilerService.producePDF(it).base64PDF } }
         .also { writeTestPDF(pdfFileName, Base64.getDecoder().decode(it), path) }
-    return this
-}
 
-fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: String = "test_html") {
+internal fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: String = "test_html") {
     val dir = Path("build/$buildSubDir/$letterName")
     dir.toFile().mkdirs()
     htmlLetter.files.forEach { it.writeTo(dir) }
@@ -77,9 +91,21 @@ fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: Str
         }
 }
 
-fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
-    Letter2Markup.render(this)
+
+internal fun <ParameterType: Any> renderTestHtml(
+    template: LetterTemplate<*, ParameterType>,
+    argument: ParameterType,
+    language: Language,
+    felles: Felles,
+    htmlFileName: String = "${template.name}_${language.javaClass.simpleName}",
+) =
+    ExpressionScope(argument, felles, language)
         .let {
+            LetterWithAttachmentsMarkup(
+                letterMarkup = renderLetterOnly(it, template),
+                attachments = renderAttachmentsOnly(scope = it, template = template)
+            )
+        }.let {
             HTMLDocumentRenderer.render(
                 it.letterMarkup,
                 it.attachments,
@@ -89,6 +115,3 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: Str
             )
         }
         .also { writeTestHTML(htmlFileName, it) }
-
-    return this
-}

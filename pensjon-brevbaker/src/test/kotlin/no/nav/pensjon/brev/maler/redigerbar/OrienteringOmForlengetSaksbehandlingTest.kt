@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -15,21 +14,23 @@ class OrienteringOmForlengetSaksbehandlingTest {
 
     @Test
     fun testPdf() {
-        Letter(
+        renderTestPDF(
             OrienteringOmForlengetSaksbehandlingstid.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.English,
-            Fixtures.felles
-        ).renderTestPDF(OrienteringOmForlengetSaksbehandlingstid.kode.name)
+            Fixtures.felles,
+            OrienteringOmForlengetSaksbehandlingstid.kode.name
+        )
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             OrienteringOmForlengetSaksbehandlingstid.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.felles
-        ).renderTestHtml(OrienteringOmForlengetSaksbehandlingstid.kode.name)
+            Fixtures.felles,
+            OrienteringOmForlengetSaksbehandlingstid.kode.name
+        )
     }
 }

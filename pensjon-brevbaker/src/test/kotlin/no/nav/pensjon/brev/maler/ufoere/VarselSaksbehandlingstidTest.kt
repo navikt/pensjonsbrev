@@ -13,22 +13,24 @@ class VarselSaksbehandlingstidTest {
 
     @Test
     fun pdftest() {
-        Letter(
+        renderTestPDF(
             VarselSaksbehandlingstidAuto.template,
             Fixtures.create<VarselSaksbehandlingstidAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("UT_VARSEL_SAKSBEHANDLINGSTID_AUTO")
+            Fixtures.fellesAuto,
+            "UT_VARSEL_SAKSBEHANDLINGSTID_AUTO"
+        )
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             VarselSaksbehandlingstidAuto.template,
             Fixtures.create<VarselSaksbehandlingstidAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestHtml("UT_VARSEL_SAKSBEHANDLINGSTID_AUTO_BOKMAL")
+            Fixtures.fellesAuto,
+            "UT_VARSEL_SAKSBEHANDLINGSTID_AUTO_BOKMAL"
+        )
     }
 
 }

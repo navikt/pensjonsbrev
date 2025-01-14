@@ -57,21 +57,23 @@ class MaanedligUfoeretrygdFoerSkattITest {
 
     @Test
     fun testPdf() {
-        Letter(
+        renderTestPDF(
             template,
             Unit,
             Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("MaanedligUfoeretrygdFoerSkatt")
+            Fixtures.fellesAuto,
+            "MaanedligUfoeretrygdFoerSkatt"
+        )
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             template,
             Unit,
             Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestHtml("MaanedligUfoeretrygdFoerSkatt")
+            Fixtures.fellesAuto,
+            "MaanedligUfoeretrygdFoerSkatt"
+        )
     }
 }

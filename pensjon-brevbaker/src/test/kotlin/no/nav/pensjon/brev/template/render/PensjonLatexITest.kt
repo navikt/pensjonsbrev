@@ -48,7 +48,7 @@ class PensjonLatexITest {
                 }
             }
         }
-        Letter(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender")
+        renderTestPDF(template, brevData, Bokmal, Fixtures.felles, "pensjonLatexITest_canRender")
     }
 
     @Test
@@ -122,8 +122,7 @@ class PensjonLatexITest {
                 }
             }
 
-            Letter(testTemplate, brevData, Bokmal, Fixtures.felles)
-                .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar")
+            renderTestPDF(testTemplate, brevData, Bokmal, Fixtures.felles, "LATEX_ESCAPE_TEST_$startChar-$endChar")
 
             return true
         } catch (e: Throwable) {

@@ -34,9 +34,8 @@ class GenererAlleMaleneTest {
             println("Mal ${template.name} fins ikke på språk $spraak, tester ikke denne")
             return
         }
-        val letter = Letter(template, fixtures, spraak, Fixtures.felles)
 
-        letter.renderTestPDF(filnavn(brevkode, spraak))
+        renderTestPDF(template, fixtures, spraak, Fixtures.felles, filnavn(brevkode, spraak))
     }
 
     @ParameterizedTest(name = "{1}, {3}")
@@ -51,12 +50,13 @@ class GenererAlleMaleneTest {
             println("Mal ${template.name} fins ikke på språk $spraak, tester ikke denne")
             return
         }
-        Letter(
+        renderTestHtml(
             template,
             fixtures,
             spraak,
             Fixtures.felles,
-        ).renderTestHtml(filnavn(brevkode, spraak))
+            filnavn(brevkode, spraak)
+        )
     }
 
     private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =

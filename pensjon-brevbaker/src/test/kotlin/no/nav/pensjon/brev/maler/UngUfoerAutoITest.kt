@@ -12,22 +12,24 @@ class UngUfoerAutoITest {
 
     @Test
     fun pdftest() {
-        Letter(
+        renderTestPDF(
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("UNG_UFOER_AUTO_BOKMAL")
+            Fixtures.fellesAuto,
+        "UNG_UFOER_AUTO_BOKMAL"
+        )
     }
 
     @Test
     fun testHtml() {
-        Letter(
+        renderTestHtml(
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
-        ).renderTestHtml("UNG_UFOER_AUTO_BOKMAL")
+            Fixtures.fellesAuto,
+            "UNG_UFOER_AUTO_BOKMAL"
+        )
     }
 
 }
