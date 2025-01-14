@@ -74,7 +74,7 @@ export function paragraph(...content: Content[]): ParagraphBlock {
     editable: true,
     type: PARAGRAPH,
     deletedContent: [],
-    content: withParent(content ?? [], id),
+    content: withParent(content, id),
   };
 }
 
@@ -93,7 +93,7 @@ export function title1(...content: TextContent[]): Title1Block {
     editable: true,
     type: TITLE1,
     deletedContent: [],
-    content: withParent(content ?? [], id),
+    content: withParent(content, id),
   };
 }
 export function title2(...content: TextContent[]): Title2Block {
@@ -104,7 +104,7 @@ export function title2(...content: TextContent[]): Title2Block {
     editable: true,
     type: TITLE2,
     deletedContent: [],
-    content: withParent(content ?? [], id),
+    content: withParent(content, id),
   };
 }
 
