@@ -159,17 +159,17 @@ jobs:
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
       - name: Convert visual-test pdfs
         uses: routsi/ImageMagick-action@v1.1.1
-        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
         with:
           command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v4
-        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
         with:
           node-version: '20'
       - run: npm install --save-dev @percy/cli
-        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
       - name: Publish visual-tests to percy
-        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
         run: |
           npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
           cat percy.log
