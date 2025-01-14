@@ -73,3 +73,12 @@ export const hentPdfForJournalpost = async (argz: { sakId: string; journalpostId
 export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: string | number }) => {
   return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}/mottaker`)).data;
 };
+
+export const attesterBrev = async (args: { saksId: string; brevId: string | number }) => {
+  return (
+    await axios.post(`${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attester`, {
+      responseType: "blob",
+      headers: { Accept: "application/pdf" },
+    })
+  ).data;
+};
