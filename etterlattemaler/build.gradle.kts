@@ -1,9 +1,11 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelVersion: String by project
 val apiModelJavaTarget: String by System.getProperties()
 val templateModelGeneratorVersion: String by project
 val jacksonJsr310Version: String by project
+val jupiterVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -29,6 +31,10 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
+
+    // JUnit 5
+    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 tasks.test {
@@ -55,5 +61,38 @@ tasks {
     }
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
+    }
+}
+
+tasks {
+    test {
+        useJUnitPlatform {
+            excludeTags = setOf("integration-test", "manual-test")
+        }
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
+    }
+
+    task<Test>("integrationTest") {
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        useJUnitPlatform {
+            includeTags = setOf("integration-test")
+        }
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
+    }
+    task<Test>("manualTest") {
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        useJUnitPlatform {
+            includeTags = setOf("manual-test")
+        }
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
     }
 }
