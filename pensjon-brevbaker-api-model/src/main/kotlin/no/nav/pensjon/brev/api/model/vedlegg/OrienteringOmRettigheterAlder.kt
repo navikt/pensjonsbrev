@@ -1,11 +1,13 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sivilstand
 
 @Suppress("unused")
 data class OrienteringOmRettigheterAlderDto(
     val bruker_sivilstand: Sivilstand,
+    val bormed_sivilstand: BorMedSivilstand?,
     val bruker_borINorge: Boolean,
     val harTilleggForFlereBarn: Boolean,
     val institusjon_gjeldende: Institusjon,

@@ -1,10 +1,12 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.bormed_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.bruker_borINorge
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.bruker_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.ektefelletilleggVedvirk_innvilgetEktefelletillegg
@@ -52,8 +54,11 @@ val dineRettigheterOgPlikterAlder =
                     eps_borSammenMedBrukerGjeldende
                             and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
                 ) {
-
-                    showIf(bruker_sivilstand.isOneOf(GIFT)) {
+                    ifNotNull(bormed_sivilstand) {
+                        showIf(it.isOneOf(BorMedSivilstand.EKTEFELLE)){
+                            item { includePhrase(VedleggPlikterAP4_002) }
+                        }
+                    }.orShowIf(bruker_sivilstand.isOneOf(GIFT)) {
                         item { includePhrase(VedleggPlikterAP4_002) }
                     }.orShowIf(bruker_sivilstand.isOneOf(PARTNER)) {
                         item { includePhrase(VedleggPlikterAP13_002) }
