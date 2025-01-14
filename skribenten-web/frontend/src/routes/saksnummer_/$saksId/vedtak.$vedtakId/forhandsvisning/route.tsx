@@ -5,12 +5,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
+import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse } from "~/types/brev";
 
 import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
 import PDFViewer from "../../brevbehandler/-components/PDFViewer";
 import { useSendVedtakContext } from "../kvittering/-SendVedtakContext";
-import { ThreeSectionLayout } from "../redigering/route";
 
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/forhandsvisning")({
   component: () => <VedtaksForhåndsvisning />,
