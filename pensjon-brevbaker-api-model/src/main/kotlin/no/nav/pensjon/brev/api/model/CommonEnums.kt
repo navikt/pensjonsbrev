@@ -50,6 +50,7 @@ enum class Sakstype {
 
     companion object {
         val all: Set<Sakstype> = entries.toSet()
+        val pensjon: Set<Sakstype> = setOf(AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG)
     }
 }
 
