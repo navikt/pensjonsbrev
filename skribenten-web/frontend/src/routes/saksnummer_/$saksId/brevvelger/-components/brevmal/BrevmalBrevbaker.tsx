@@ -7,7 +7,6 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
@@ -17,6 +16,7 @@ import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/type
 import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
+import { BrevmalAlternativer } from "../../../vedtak.$vedtakId/redigering/route";
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
 import { EndreMottakerModal } from "../endreMottaker/EndreMottaker";
@@ -211,7 +211,7 @@ const BrevmalBrevbaker = (props: {
             </VStack>
             <SelectEnhet />
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
-            <SaksbehandlerValgModelEditor brevkode={props.letterTemplate.id} fieldsToRender="required" />
+            <BrevmalAlternativer brevkode={props.letterTemplate.id} displaySingle="required" />
           </VStack>
           {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
         </BrevmalFormWrapper>

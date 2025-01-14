@@ -1,14 +1,14 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, Heading, HStack, Label, Switch, Tabs, VStack } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BodyShort, Box, Button, Heading, HStack, Label, Loader, Switch, Tabs, VStack } from "@navikt/ds-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getBrev, hurtiglagreSaksbehandlerValg, oppdaterSignatur } from "~/api/brev-queries";
-import { hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { getBrev, hurtiglagreSaksbehandlerValg, oppdaterAttestantSignatur } from "~/api/brev-queries";
+import { attesterBrev, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -21,11 +21,12 @@ import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
+import { queryFold } from "~/utils/tanstackUtils";
 
 import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/redigering")({
-  component: () => <Vedtak />,
+  component: () => <VedtakWrapper />,
 });
 
 export const ThreeSectionLayout = (props: {
@@ -83,53 +84,101 @@ export const ThreeSectionLayout = (props: {
 };
 
 interface VedtakSidemenyFormData {
-  signatur: string;
+  attestantSignatur: string;
   saksbehandlerValg: SaksbehandlerValg;
 }
 
-const Vedtak = () => {
-  const { saksId } = Route.useParams();
-  const queryClient = useQueryClient();
+const VedtakWrapper = () => {
+  const { saksId, vedtakId } = Route.useParams();
   const brevResponse = nyBrevResponse({});
+
+  const hentBrevQuery = useQuery({
+    queryKey: getBrev.queryKey(Number.parseInt(vedtakId)),
+    queryFn: () => Promise.resolve(brevResponse),
+  });
+
+  return queryFold({
+    query: hentBrevQuery,
+    initial: () => null,
+    pending: () => (
+      <Box
+        background="bg-default"
+        css={css`
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          align-items: center;
+          padding-top: var(--a-spacing-8);
+        `}
+      >
+        <VStack align="center" gap="1">
+          <Loader size="3xlarge" title="henter brev..." />
+          <Heading size="large">Henter brev....</Heading>
+        </VStack>
+      </Box>
+    ),
+    error: (err) => (
+      <Box
+        background="bg-default"
+        css={css`
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          align-items: center;
+          padding-top: var(--a-spacing-8);
+        `}
+      >
+        <ApiError error={err} title={"En feil skjedde ved henting av vedtaksbrev"} />
+      </Box>
+    ),
+    success: (brev) => <Arbeid brevResponse={brev} saksId={saksId} />,
+  });
+};
+
+const Arbeid = (props: { saksId: string; brevResponse: BrevResponse }) => {
+  const queryClient = useQueryClient();
+
   const navigate = useNavigate({ from: Route.fullPath });
-  const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevResponse));
+  const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brevResponse));
 
   useEffect(() => {
-    if (editorState.redigertBrevHash !== brevResponse.redigertBrevHash) {
+    if (editorState.redigertBrevHash !== props.brevResponse.redigertBrevHash) {
       setEditorState((previousState) => ({
         ...previousState,
-        redigertBrev: brevResponse.redigertBrev,
-        redigertBrevHash: brevResponse.redigertBrevHash,
+        redigertBrev: props.brevResponse.redigertBrev,
+        redigertBrevHash: props.brevResponse.redigertBrevHash,
       }));
     }
-  }, [brevResponse.redigertBrev, brevResponse.redigertBrevHash, editorState.redigertBrevHash, setEditorState]);
+  }, [
+    props.brevResponse.redigertBrev,
+    props.brevResponse.redigertBrevHash,
+    editorState.redigertBrevHash,
+    setEditorState,
+  ]);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
       saksbehandlerValg: {
-        ...brevResponse.saksbehandlerValg,
+        ...props.brevResponse.saksbehandlerValg,
       },
-      signatur: brevResponse.redigertBrev.signatur.saksbehandlerNavn,
+      signatur: props.brevResponse.redigertBrev.signatur.saksbehandlerNavn,
     }),
-    [brevResponse.redigertBrev.signatur.saksbehandlerNavn, brevResponse.saksbehandlerValg],
+    [props.brevResponse.redigertBrev.signatur.saksbehandlerNavn, props.brevResponse.saksbehandlerValg],
   );
 
   const form = useForm<VedtakSidemenyFormData>({
     defaultValues: defaultValuesModelEditor,
   });
 
-  const signaturMutation = useMutation<BrevResponse, AxiosError, string>({
+  const attestantSignaturMutation = useMutation<BrevResponse, AxiosError, string>({
     mutationFn: (signatur) => {
-      //TODO - dette er den vanlige signatur for brevbaker brev, trenger vi en annen en for vedtak?
-      return oppdaterSignatur(brevResponse.info.id, signatur);
+      return oppdaterAttestantSignatur(props.brevResponse.info.id, signatur);
     },
     onSuccess: (response) => {
-      //TODO - vil vi ha en tilsvarende for vedtak?
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
       //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
-      //TODO - må ha lignende for vedtaksbrev?
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brevResponse.info.id) });
+      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brevResponse.info.id) });
       setEditorState((previousState) => ({
         ...previousState,
         redigertBrev: response.redigertBrev,
@@ -143,15 +192,13 @@ const Vedtak = () => {
 
   const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
     mutationFn: (saksbehandlerValg) => {
-      return hurtiglagreSaksbehandlerValg(brevResponse.info.id, saksbehandlerValg);
+      return hurtiglagreSaksbehandlerValg(props.brevResponse.info.id, saksbehandlerValg);
     },
     onSuccess: (response) => {
-      //TODO - vil vi ha en tilsvarende for vedtak?
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
       //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
-      //TODO - må ha lignende for vedtaksbrev?
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brevResponse.info.id) });
+      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brevResponse.info.id) });
       setEditorState((previousState) => ({
         ...previousState,
         redigertBrev: response.redigertBrev,
@@ -163,17 +210,21 @@ const Vedtak = () => {
     },
   });
 
+  const attesterMutation = useMutation<BrevResponse, AxiosError>({
+    mutationFn: () => attesterBrev({ saksId: props.saksId, brevId: props.brevResponse.info.id }),
+  });
+
   const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
-    //console.log("submitting - hehe", values);
-    queryClient.setQueryData(["vedtak", brevResponse.info.id], () => brevResponse);
+    attestantSignaturMutation.mutate(values.attestantSignatur, {
+      onSuccess: () => {
+        saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
+          onSuccess: () => {
+            attesterMutation.mutate();
+          },
+        });
+      },
+    });
     onSuccess?.();
-    // saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
-    //   onSuccess: () => {
-    //     signaturMutation.mutate(values.signatur, {
-    //       onSuccess: onSuccess,
-    //     });
-    //   },
-    // });
   };
 
   return (
@@ -182,7 +233,7 @@ const Vedtak = () => {
         onSubmit(v, () =>
           navigate({
             to: "/saksnummer/$saksId/vedtak/$vedtakId/forhandsvisning",
-            params: { saksId, vedtakId: brevResponse.info.id.toString() },
+            params: { saksId: props.saksId, vedtakId: props.brevResponse.info.id.toString() },
           }),
         ),
       )}
@@ -198,13 +249,13 @@ const Vedtak = () => {
           <div>
             <FormProvider {...form}>
               <VStack gap="8">
-                <Heading size="small">{brevResponse.redigertBrev.title}</Heading>
+                <Heading size="small">{props.brevResponse.redigertBrev.title}</Heading>
                 <VStack gap="4">
-                  <Heading size="small">{brevResponse.redigertBrev.title}</Heading>
-                  <OppsummeringAvMottaker mottaker={brevResponse.info.mottaker} saksId={saksId} withTitle />
+                  <Heading size="small">{props.brevResponse.redigertBrev.title}</Heading>
+                  <OppsummeringAvMottaker mottaker={props.brevResponse.info.mottaker} saksId={props.saksId} withTitle />
                   <VStack>
                     <Label size="small">Distribusjonstype</Label>
-                    <BodyShort size="small">{brevResponse.info.distribusjonstype}</BodyShort>
+                    <BodyShort size="small">{props.brevResponse.info.distribusjonstype}</BodyShort>
                   </VStack>
                 </VStack>
                 <Divider />
@@ -212,14 +263,14 @@ const Vedtak = () => {
                   <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
                   <Switch size="small">Vis slettet tekst</Switch>
                   <AutoSavingTextField
-                    field={"signatur"}
+                    field={"attestantSignatur"}
                     fieldType={{
                       type: "scalar",
                       nullable: false,
                       kind: "STRING",
                     }}
                     label="Underskrift"
-                    onSubmit={() => signaturMutation.mutate(form.getValues("signatur"))}
+                    onSubmit={() => attestantSignaturMutation.mutate(form.getValues("attestantSignatur"))}
                     timeoutTimer={2500}
                     type={"text"}
                   />
@@ -227,7 +278,7 @@ const Vedtak = () => {
                 <Divider />
                 <VStack>
                   <BrevmalAlternativer
-                    brevkode={brevResponse.info.brevkode}
+                    brevkode={props.brevResponse.info.brevkode}
                     submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
                   />
                 </VStack>
@@ -239,8 +290,8 @@ const Vedtak = () => {
           <LetterEditor
             editorHeight={"var(--main-page-content-height)"}
             editorState={editorState}
-            error={signaturMutation.isError || saksbehandlerValgMutation.isError}
-            freeze={signaturMutation.isPending || saksbehandlerValgMutation.isPending}
+            error={attestantSignaturMutation.isError || saksbehandlerValgMutation.isError}
+            freeze={attestantSignaturMutation.isPending || saksbehandlerValgMutation.isPending}
             setEditorState={setEditorState}
             showDebug={false}
           />
@@ -260,6 +311,10 @@ export const BrevmalAlternativer = (props: {
   brevkode: string;
   submitOnChange?: () => void;
   children?: React.ReactNode;
+  /**
+   * Kan velge hvilke felter som skal vises. Default er at begge vises.
+   */
+  displaySingle?: "required" | "optional";
 }) => {
   const specificationFormElements = usePartitionedModelSpecification(props.brevkode);
 
@@ -271,6 +326,26 @@ export const BrevmalAlternativer = (props: {
       return <BodyShort size="small">Henter skjema for saksbehandler valg...</BodyShort>;
     }
     case "success": {
+      if (props.displaySingle === "required") {
+        return (
+          <SaksbehandlerValgModelEditor
+            brevkode={props.brevkode}
+            fieldsToRender={"required"}
+            specificationFormElements={specificationFormElements}
+            submitOnChange={props.submitOnChange}
+          />
+        );
+      } else if (props.displaySingle === "optional") {
+        return (
+          <SaksbehandlerValgModelEditor
+            brevkode={props.brevkode}
+            fieldsToRender={"optional"}
+            specificationFormElements={specificationFormElements}
+            submitOnChange={props.submitOnChange}
+          />
+        );
+      }
+
       return (
         <Tabs
           css={css`
