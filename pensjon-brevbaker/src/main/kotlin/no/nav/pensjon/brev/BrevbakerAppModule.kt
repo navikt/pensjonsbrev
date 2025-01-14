@@ -34,7 +34,10 @@ import no.nav.pensjon.brev.maler.AllTemplates
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.template.brevbakerConfig
 
-fun Application.brevbakerModule(templates: AllTemplates) {
+fun Application.brevbakerModule(
+    templates: AllTemplates,
+    konfigurerFeatureToggling: (ApplicationConfig) -> Unit = { konfigurerUnleash(it) }
+) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
     monitor.subscribe(ApplicationStopPreparing) {
@@ -121,6 +124,13 @@ fun Application.brevbakerModule(templates: AllTemplates) {
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
+    konfigurerFeatureToggling(brevbakerConfig)
+
+    configureMetrics()
+    brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
+}
+
+private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
     FeatureToggleHandler.configure {
         with(brevbakerConfig.config("unleash")) {
             appName = stringProperty("appName")
@@ -129,9 +139,6 @@ fun Application.brevbakerModule(templates: AllTemplates) {
             apiToken = stringProperty("apiToken")
         }
     }
-
-    configureMetrics()
-    brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
 }
 
 private fun ApplicationConfig.stringProperty(path: String): String = this.property(path).getString()

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
+import no.nav.pensjon.brev.UnleashToggle
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
@@ -105,6 +106,15 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                     textExpr(
                         Bokmal to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
                         Nynorsk to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
+                    )
+                }
+            }
+
+            showIf(UnleashToggle("" + System.currentTimeMillis()).expr().enabled()) {
+                paragraph {
+                    text(
+                        Bokmal to "Tekst styrt av funksjonsbryter",
+                        Nynorsk to "Tekst styrt av funksjonsbrytar"
                     )
                 }
             }
