@@ -44,18 +44,78 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        // Språklige greier
+        val epsTypeBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut()
+        val epsTypeNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall()
+        val barnetEllerBarnaFelles = pe.ut_barnet_barna_felles()
+        val barnetEllerBarnaSaerkull = pe.ut_barnet_barna_serkull()
+        val barnetBarnaFellesSerkull = pe.pe_ut_barnet_barna_felles_serkull()
+
+        val gammeltBelop = pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
+        val nyttBelop = pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
+        val virkningFom = pe.vedtaksdata_virkningfom()
+        val virkningFomAr = pe.ut_virkningfomar()
+        val forventetInntekt = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+        val utbetalingsgrad = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
+        val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+        val ettArForVirkningstidspunkt = pe.ut_virkningstidpunktarminus1ar()
+        val vilFylle67IlaVirkningFomAr = pe.ut_vilfylle67ivirkningfomar()
+        val virkningFomErForsteDagIAaret = FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())
+        val beregningvirkningDatoFomErForsteDagIAaret = FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom())
+        val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+        val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
+        val instoppholdType = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype()
+        val beregningUforeTotalNetto = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
+        val avkortningInntektsgrense = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+        val avkortningInntektstak = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
+        val beregningBelopRedusert = pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()
+        val avkortningsbelopPerAr = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortingsbelopperar()
+        val beregningGrunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
+        val kravarsaksType = pe.vedtaksdata_kravhode_kravarsaktype()
+        val nettoRestAr = pe.nettoakk_pluss_nettorestar()
+        val nettoAkk = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
+        val uforetrygdNetto = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
+        val beregningBelopOkt = pe.vedtaksdata_beregningsdata_beregningufore_belopokt()
+        val barnetilleggRegelverkType = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype()
+
+        // Barnetillegg fellesbarn
+        val gammeltBelopBTFB = pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
+        val nyttBelopBTFB = pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()
+        val innvilgetBTFB = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
+        val inntektBruktIAvkortningAvBTFB = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
+        val periodisertInntektBTFB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert()
+        val periodisertFribelopBTFB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()
+        val brukersInntektBruktIAvkortningAvBTFB = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning()
+        val inntektAnnenForelderBTFB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder()
+        val belopFratrukketAnnenForeldersInntektBTFB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+        val justeringsbelopPerArBTFB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+        val nettoBTFB = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+        val fribelopBTFB = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+        val avkortningInntektstakBTFB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+        val arligAvkortningsbelopBTFB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+        val justeringsbelopPerArUtenMinusBTFB = pe.barnetilleggfelles_justeringsbelopperarutenminus()
+
+        // Barnetillegg saerkullsbarn
+        val gammeltBelopBTSB = pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
+        val nyttBelopBTSB = pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
+        val innvilgetBTSB = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
+        val inntektBruktIAvkortningAvBTSB = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
+        val periodisertInntektBTSB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()
+        val periodisertFribelopBTSB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()
+        val nettoBTSB = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+        val justeringsbelopPerArBTSB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+        val fribelopBTSB = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+        val avkortningInntektstakBTSB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+        val arligAvkortningsbelopBTSB = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+        val justeringsbelopPerArUtenMinusBTSB = pe.barnetilleggserkull_justeringsbelopperarutenminus()
 
         title {
-
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB) THEN      INCLUDE ENDIF
                 showIf(
-                    (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-                    ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                        .equalTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                        .equalTo(
-                            pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                        ))){
+                    (gammeltBelop.notEqualTo(nyttBelop)
+                            and gammeltBelopBTFB.equalTo(nyttBelopBTFB)
+                            and gammeltBelopBTSB.equalTo(nyttBelopBTSB))
+                ) {
                     text (
                         Bokmal to "Nav har endret utbetalingen av uføretrygden din",
                         Nynorsk to "Nav har endra utbetalinga av uføretrygda di",
@@ -64,12 +124,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) THEN      INCLUDE ENDIF
                 showIf(
-                    (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                        .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                        .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                        .notEqualTo(
-                            pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                        )))){
+                    (gammeltBelop.notEqualTo(nyttBelop)
+                            and (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                            or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)))
+                ) {
                     text (
                         Bokmal to "Nav har endret utbetalingen av uføretrygden og ",
                         Nynorsk to "Nav har endra utbetalinga av uføretrygda di og ",
@@ -77,14 +135,19 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) AND ((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true))) THEN INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                    .notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                    ))) and ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) or (not(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
-                ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())))){
+            showIf(
+                (
+                        (
+                                gammeltBelop.notEqualTo(nyttBelop)
+                                        and (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                                        or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB))
+                                )
+                                and (
+                                (innvilgetBTSB and not(innvilgetBTFB))
+                                        or (not(innvilgetBTSB)
+                                        and innvilgetBTFB))
+                        )
+            ) {
                     text (
                         Bokmal to "barnetillegget ditt",
                         Nynorsk to "barnetillegget ditt",
@@ -92,12 +155,17 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                    .notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                    ))) and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))){
+            showIf(
+                (
+                        (
+                                gammeltBelop.notEqualTo(nyttBelop)
+                                        and (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                                        or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+                                        )
+                                )
+                                and (innvilgetBTSB and innvilgetBTFB)
+                        )
+            ) {
                     text (
                         Bokmal to "barnetilleggene dine",
                         Nynorsk to "barnetillegga di",
@@ -106,12 +174,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) THEN      INCLUDE ENDIF
                 showIf(
-                    (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                        .equalTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                        .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                        .notEqualTo(
-                            pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                        )))){
+                    (gammeltBelop.equalTo(nyttBelop)
+                            and (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                            or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)))
+                ) {
                     text (
                         Bokmal to "Nav har endret utbetalingen av ",
                         Nynorsk to "Nav har endra utbetalinga av ",
@@ -119,14 +185,20 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) AND ((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)))  THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                    .equalTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                    .notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                    ))) and ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) or (not(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
-                ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())))){
+            showIf(
+                (
+                        (
+                                gammeltBelop.equalTo(nyttBelop)
+                                        and (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                                        or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB))
+                                )
+                                and (
+                                (innvilgetBTSB and not(innvilgetBTFB))
+                                        or (not(innvilgetBTSB)
+                                        and innvilgetBTFB)
+                                )
+                        )
+            ) {
                     text (
                         Bokmal to "barnetillegget ",
                         Nynorsk to "barnetillegget ",
@@ -134,12 +206,16 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                    .equalTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                    .notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                    ))) and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))){
+            showIf(
+                (
+                        (
+                                gammeltBelop.equalTo(nyttBelop)
+                                        and (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                                        or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+                                        )
+                                ) and (innvilgetBTSB and innvilgetBTFB)
+                        )
+            ) {
                     text (
                         Bokmal to "barnetilleggene ",
                         Nynorsk to "barnetillegga ",
@@ -149,12 +225,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) THEN      INCLUDE ENDIF
                 showIf(
-                    (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                        .equalTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                        .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                        .notEqualTo(
-                            pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                        )))){
+                    (gammeltBelop.equalTo(nyttBelop)
+                            and (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                            or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)))
+                ) {
                     text (
                         Bokmal to "i uføretrygden din",
                         Nynorsk to "i uføretrygda di",
@@ -164,7 +238,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
         outline {
 
             //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = false) THEN      INCLUDE ENDIF
-            showIf(not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()))){
+            showIf(not(virkningFomErForsteDagIAaret)) {
                 //[TBU2249NN, TBU2249]
 
                 paragraph {
@@ -174,7 +248,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     )
 
                     //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false
-                    showIf(not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())){
+                    showIf(not(innvilgetBTFB)) {
                         text (
                             Bokmal to " din",
                             Nynorsk to " di",
@@ -182,16 +256,16 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     }
 
                     //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    showIf(innvilgetBTFB) {
                         textExpr(
-                            Bokmal to " til deg eller din ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + ". Inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " har kun betydning for størrelsen på barnetillegget ",
-                            Nynorsk to " til deg eller ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din. Inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din har berre betydning for storleiken på barnetillegget ",
+                            Bokmal to " til deg eller din ".expr() + epsTypeBokmal + ". Inntekten til din " + epsTypeBokmal + " har kun betydning for størrelsen på barnetillegget ",
+                            Nynorsk to " til deg eller ".expr() + epsTypeNynorsk + " din. Inntekta til " + epsTypeNynorsk + " din har berre betydning for storleiken på barnetillegget ",
                         )
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
+                        showIf(innvilgetBTSB) {
                             textExpr(
-                                Bokmal to "for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre",
-                                Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine",
+                                Bokmal to "for ".expr() + barnetEllerBarnaFelles + " som bor med begge sine foreldre",
+                                Nynorsk to "for ".expr() + barnetEllerBarnaFelles + " som bur saman med begge foreldra sine",
                             )
                         }.orShow {
                             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false) THEN      INCLUDE ENDIF
@@ -209,8 +283,8 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT) THEN      INCLUDE ENDIF
                     showIf(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                            .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())
+                        gammeltBelop
+                            .notEqualTo(nyttBelop)
                     ){
                         text (
                             Bokmal to "uføretrygden din ",
@@ -218,11 +292,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         )
                         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                                .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                                .notEqualTo(
-                                    pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                                )){
+                            gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                                    or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+                        ) {
                             text (
                                 Bokmal to "og ",
                                 Nynorsk to "og ",
@@ -231,13 +303,20 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     }
 
                     //IF(((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)  OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true))) AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)  THEN      INCLUDE ENDIF
-                    showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) or (not(
-                        pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
-                    ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                        .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                        .notEqualTo(
-                            pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                        ))){
+                    showIf(
+                        (
+                                (
+                                        innvilgetBTSB
+                                                and not(innvilgetBTFB)
+                                        )
+                                        or (not(innvilgetBTSB)
+                                        and innvilgetBTFB)
+                                )
+                                and (
+                                gammeltBelopBTFB.notEqualTo(nyttBelopBTSB)
+                                        or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+                                )
+                    ) {
                         text (
                             Bokmal to "barnetillegget ditt ",
                             Nynorsk to "barnetillegget ditt ",
@@ -246,11 +325,13 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                     //IF((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)) AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)  THEN      INCLUDE ENDIF
                     showIf(
-                        pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                            .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                            .notEqualTo(
-                                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                            ))){
+                        innvilgetBTFB
+                                and innvilgetBTSB
+                                and (
+                                gammeltBelopBTFB.notEqualTo(nyttBelopBTSB)
+                                        or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+                                )
+                    ) {
                         text (
                             Bokmal to "barnetilleggene dine ",
                             Nynorsk to "barnetillegga dine ",
@@ -260,7 +341,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         Bokmal to "er derfor endret fra ",
                         Nynorsk to "er derfor endra frå ",
                     )
-                    ifNotNull(pe.vedtaksdata_virkningfom()) {
+                    ifNotNull(virkningFom) {
                         textExpr(
                             Bokmal to it.format(),
                             Nynorsk to it.format(),
@@ -275,77 +356,73 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
             //Integer iYear  iYear = FF_getYear(PE_VedtaksData_VirkningFOM)  IF(  PE_VedtaksData_VirkningFOM = FF_getFirstDayOfYear(iYear) AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT)  ) THEN      INCLUDE ENDIF
             //[TBU3403NN, TBU3403]
-            showIf(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())){
+            showIf(virkningFomErForsteDagIAaret and gammeltBelop.notEqualTo(nyttBelop)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi vil bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " kroner når vi reduserer uføretrygden din for " + pe.ut_virkningfomar().format() + ". Har du ikke meldt inn ny inntekt for " + pe.ut_virkningfomar().format() + ", er inntekten justert opp til dagens verdi.",
-                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " kroner når vi reduserer uføretrygda di for " + pe.ut_virkningfomar().format() + ". Har du ikkje meldt inn ny inntekt for " + pe.ut_virkningfomar().format() + ", er inntekta justert opp til dagens verdi.",
+                        Bokmal to "Vi vil bruke en inntekt på ".expr() + forventetInntekt.format() + " kroner når vi reduserer uføretrygden din for " + virkningFomAr.format() + ". Har du ikke meldt inn ny inntekt for " + virkningFomAr.format() + ", er inntekten justert opp til dagens verdi.",
+                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + forventetInntekt.format() + " kroner når vi reduserer uføretrygda di for " + virkningFomAr.format() + ". Har du ikkje meldt inn ny inntekt for " + virkningFomAr.format() + ", er inntekta justert opp til dagens verdi.",
                     )
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad())) {
+                showIf(utbetalingsgrad.notEqualTo(uforegrad)) {
                     paragraph {
                         textExpr(
-                            Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar().format() + ", er inntekten justert opp slik at den gjelder for hele " + pe.ut_virkningfomar().format() + ".",
-                            Nynorsk to "Fekk du innvilga uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar().format() + ", er inntekta også justert opp slik at den gjeld for heile " + pe.ut_virkningfomar().format() + ".",
+                            Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + ettArForVirkningstidspunkt.format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFomAr.format() + ".",
+                            Nynorsk to "Fekk du innvilga uføretrygd etter januar ".expr() + ettArForVirkningstidspunkt.format() + ", er inntekta også justert opp slik at den gjeld for heile " + virkningFomAr.format() + ".",
                         )
                     }
                 }
 
                 //PE_UT_VilFylle67iVirkningFomAr = true
-                showIf(pe.ut_vilfylle67ivirkningfomar()) {
+                showIf(vilFylle67IlaVirkningFomAr) {
                     paragraph {
                         textExpr(
-                            Bokmal to "Fordi du fyller 67 år i ".expr() + pe.ut_virkningfomar().format() + ", er inntekten justert i forhold til antall måneder du mottar uføretrygd.",
-                            Nynorsk to "Fordi du fyljer 67 år i ".expr() + pe.ut_virkningfomar().format() + ", er inntekta justert ut frå talet på månadar du får uføretrygd.",
+                            Bokmal to "Fordi du fyller 67 år i ".expr() + virkningFomAr.format() + ", er inntekten justert i forhold til antall måneder du mottar uføretrygd.",
+                            Nynorsk to "Fordi du fyljer 67 år i ".expr() + virkningFomAr.format() + ", er inntekta justert ut frå talet på månadar du får uføretrygd.",
                         )
                     }
                 }
             }
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND  (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget= true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) AND FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true THEN  INCLUDE ENDIF
             showIf(
-                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                    .notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                    )) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(
-                    pe.vedtaksdata_virkningfom()
-                )){
+                gammeltBelop.notEqualTo(nyttBelop)
+                        and (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                        or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+                        )
+                        and innvilgetBTSB
+                        and not(innvilgetBTFB)
+                        and virkningFomErForsteDagIAaret
+            ) {
                 //[TBU4016_NN, TBU4016]
 
                 paragraph {
                     textExpr (
-                        Bokmal to "I reduksjonen av barnetillegget ditt vil vi bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                            .format() + " kroner. ",
-                        Nynorsk to "I reduksjonen av barnetillegget ditt vil vi bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                            .format() + " kroner.",
+                        Bokmal to "I reduksjonen av barnetillegget ditt vil vi bruke en inntekt på ".expr() + inntektBruktIAvkortningAvBTSB.format() + " kroner. ",
+                        Nynorsk to "I reduksjonen av barnetillegget ditt vil vi bruke ei inntekt på ".expr() + inntektBruktIAvkortningAvBTSB.format() + " kroner.",
                     )
                 }
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) AND (FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true )     THEN  INCLUDE ENDIF
             showIf(
-                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
+                gammeltBelop
+                    .notEqualTo(nyttBelop) and (gammeltBelopBTFB
+                    .notEqualTo(nyttBelopBTFB) or gammeltBelopBTSB
                     .notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                    )) and FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(
-                    pe.vedtaksdata_virkningfom()
-                ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
+                        nyttBelopBTSB
+                    )) and virkningFomErForsteDagIAaret and innvilgetBTFB
             ){
                 //[TBU4001]
                 paragraph {
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) THEN      INCLUDE ENDIF
                     showIf(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                            .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                            .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
+                        gammeltBelop
+                            .notEqualTo(nyttBelop) and (gammeltBelopBTFB
+                            .notEqualTo(nyttBelopBTFB) or gammeltBelopBTSB
                             .notEqualTo(
-                                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
+                                nyttBelopBTSB
                             ))){
                         text (
                             Bokmal to "I reduksjonen av barnetillegg",
@@ -355,12 +432,14 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) AND FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom) AND ((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true))     THEN  INCLUDE ENDIF
                     showIf(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                            .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                            .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
+                        gammeltBelop
+                            .notEqualTo(nyttBelop) and (gammeltBelopBTFB
+                            .notEqualTo(nyttBelopBTFB) or gammeltBelopBTSB
                             .notEqualTo(
-                                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                            )) and FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
+                                nyttBelopBTSB
+                            )) and beregningvirkningDatoFomErForsteDagIAaret
+                                and (innvilgetBTFB or innvilgetBTSB)
+                    ) {
                         text (
                             Bokmal to "et ditt ",
                             Nynorsk to "et ditt ",
@@ -369,26 +448,24 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) THEN      INCLUDE ENDIF
                     showIf(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                            .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                            .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                            .notEqualTo(
-                                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                            ))){
+                        gammeltBelop.notEqualTo(nyttBelop)
+                                and (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                                or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB))
+                    ) {
                         textExpr (
-                            Bokmal to "vil vi bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
+                            Bokmal to "vil vi bruke en inntekt på ".expr() + inntektBruktIAvkortningAvBTFB
                                 .format() + " kroner ",
-                            Nynorsk to "vil vi bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
+                            Nynorsk to "vil vi bruke ei inntekt på ".expr() + inntektBruktIAvkortningAvBTFB
                                 .format() + " kroner ",
                         )
                     }
 
                     //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()){
+                    showIf(innvilgetBTFB and innvilgetBTSB) {
                         textExpr (
-                            Bokmal to "for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. For " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene vil vi bruke en inntekt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
+                            Bokmal to "for ".expr() + barnetEllerBarnaFelles + " som bor med begge sine foreldre. For " + barnetEllerBarnaSaerkull + " som ikke bor sammen med begge foreldrene vil vi bruke en inntekt på " + inntektBruktIAvkortningAvBTSB
                                 .format() + " kroner",
-                            Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur med begge sine foreldra. For " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldrea vil vi bruke ei inntekt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
+                            Nynorsk to "for ".expr() + barnetEllerBarnaFelles + " som bur med begge sine foreldra. For " + barnetEllerBarnaSaerkull + " som ikkje bur saman med begge foreldrea vil vi bruke ei inntekt på " + inntektBruktIAvkortningAvBTSB
                                 .format() + " kroner",
                         )
                     }
@@ -402,27 +479,28 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  AND  (FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true) )     THEN  INCLUDE ENDIF
             showIf(
-                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().equalTo(
-                    pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-                ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) and FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(
-                    pe.vedtaksdata_virkningfom()
-                )){
+                gammeltBelop.equalTo(nyttBelop)
+                        and gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                        and virkningFomErForsteDagIAaret
+            ) {
                 //[TBU4002_NN, TBU4002]
 
                 paragraph {
                     textExpr (
-                        Bokmal to "Vi vil bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
+                        Bokmal to "Vi vil bruke en inntekt på ".expr() + inntektBruktIAvkortningAvBTFB
                             .format() + " kroner når vi reduserer barnetillegget ",
-                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
+                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + inntektBruktIAvkortningAvBTFB
                             .format() + " kroner når vi reduserer barnetillegget ",
                     )
 
                     //IF((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)  OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)) THEN      INCLUDE ENDIF
                     showIf(
-                        (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) or (not(
-                            pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
-                        ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())){
+                        (
+                                innvilgetBTSB
+                                        and not(innvilgetBTFB)
+                                )
+                                or (not(innvilgetBTFB) and innvilgetBTFB)
+                    ) {
                         text (
 							Bokmal to "ditt ",
 							Nynorsk to "ditt ",
@@ -430,14 +508,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     }
 
                     //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()){
+                    showIf(innvilgetBTFB and innvilgetBTSB) {
                         textExpr (
-                            Bokmal to "for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre for " + pe.ut_virkningfomar()
-                                .format() + ". For " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene vil vi bruke en inntekt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .format() + " kroner. ",
-                            Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine for " + pe.ut_virkningfomar()
-                                .format() + ". For " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra vil vi bruke ei inntekt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .format() + " kroner. ",
+                            Bokmal to "for ".expr() + barnetEllerBarnaFelles + " som bor med begge sine foreldre for " + virkningFomAr.format() + ". For " + barnetEllerBarnaSaerkull + " som ikke bor sammen med begge foreldrene vil vi bruke en inntekt på " + inntektBruktIAvkortningAvBTSB.format() + " kroner. ",
+                            Nynorsk to "for ".expr() + barnetEllerBarnaFelles + " som bur saman med begge foreldra sine for " + virkningFomAr.format() + ". For " + barnetEllerBarnaSaerkull + " som ikkje bur saman med begge foreldra vil vi bruke ei inntekt på " + inntektBruktIAvkortningAvBTSB.format() + " kroner. ",
                         )
                     }
                     text (
@@ -446,7 +520,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     )
 
                     //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    showIf(innvilgetBTFB) {
                         text(
                             Bokmal to "e",
                             Nynorsk to "ei",
@@ -458,19 +532,19 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     )
 
                     //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    showIf(innvilgetBTFB) {
                         text(
                             Bokmal to "er",
                             Nynorsk to "e",
                         )
                     }
                     textExpr (
-                        Bokmal to " for ".expr() + pe.ut_virkningfomar().format() + ", er inntekten",
+                        Bokmal to " for ".expr() + virkningFomAr.format() + ", er inntekten",
                         Nynorsk to " inntekt".expr(),
                     )
 
                     //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    showIf(innvilgetBTFB) {
                         text(
                             Bokmal to "e",
                             Nynorsk to "er",
@@ -478,11 +552,11 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     }
                     textExpr (
                         Bokmal to " justert opp til dagens verdi.".expr(),
-                        Nynorsk to " for ".expr() + pe.ut_virkningfomar().format() + ", er ",
+                        Nynorsk to " for ".expr() + virkningFomAr.format() + ", er ",
                     )
 
                     //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false
-                    showIf(not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())){
+                    showIf(not(innvilgetBTFB)) {
                         text (
                             Bokmal to "",
                             Nynorsk to "inntekta",
@@ -490,7 +564,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     }
 
                     //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    showIf(innvilgetBTFB) {
                         text(
                             Bokmal to "",
                             Nynorsk to "inntektene ",
@@ -505,22 +579,20 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
             //IF (FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true AND  (   PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB    AND    PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB ) AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT) THEN  INCLUDE ENDIF
             showIf(
-                FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .equalTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                    .notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                    ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().equalTo(
-                    pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-                )){
+                virkningFomErForsteDagIAaret
+                        and gammeltBelopBTFB.equalTo(nyttBelopBTFB)
+                        and gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+                        and gammeltBelop.equalTo(nyttBelop)
+            ) {
                 //[TBU4017_NN, TBU4017]
 
                 paragraph {
                     textExpr (
-                        Bokmal to "Vi vil bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                            .format() + " kroner når vi reduserer barnetillegget ditt. Har du ikke meldt inn ny inntekt for " + pe.ut_virkningfomar()
+                        Bokmal to "Vi vil bruke en inntekt på ".expr() + inntektBruktIAvkortningAvBTSB
+                            .format() + " kroner når vi reduserer barnetillegget ditt. Har du ikke meldt inn ny inntekt for " + virkningFomAr
                             .format() + ", er inntekten justert opp til dagens verdi.",
-                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                            .format() + " kroner når vi reduserer barnetillegget ditt. Har du ikkje meldt inn ny inntekt for " + pe.ut_virkningfomar()
+                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + inntektBruktIAvkortningAvBTSB
+                            .format() + " kroner når vi reduserer barnetillegget ditt. Har du ikkje meldt inn ny inntekt for " + virkningFomAr
                             .format() + ", er inntekta justert opp til dagens verdi.",
                     )
                 }
@@ -528,23 +600,23 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
             //IF( (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB  <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB) OR (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB  <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB)) AND FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true ) THEN      INCLUDE ENDIF
             showIf(
-                pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
-                    .equalTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and ((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                    .notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                    )) or (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()))) and FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(
-                    pe.vedtaksdata_virkningfom()
-                )){
+                utbetalingsgrad.equalTo(uforegrad)
+                        and (
+                        (
+                                gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+                                )
+                                or (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB))
+                        ) and virkningFomErForsteDagIAaret
+            ) {
                 //[TBU4013_NN, TBU4013]
 
                 paragraph {
                     textExpr (
-                        Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar()
-                            .format() + ", er inntekten justert opp slik at den gjelder for hele " + pe.ut_virkningfomar()
+                        Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + ettArForVirkningstidspunkt
+                            .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFomAr
                             .format() + ".",
-                        Nynorsk to "Fekk du innvilga uføretrygd etter januar ".expr() + pe.ut_virkningstidpunktarminus1ar()
-                            .format() + ", er inntekta justert opp slik at den gjeld for heile " + pe.ut_virkningfomar()
+                        Nynorsk to "Fekk du innvilga uføretrygd etter januar ".expr() + ettArForVirkningstidspunkt
+                            .format() + ", er inntekta justert opp slik at den gjeld for heile " + virkningFomAr
                             .format() + ".",
                     )
                 }
@@ -552,15 +624,18 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
             //IF ( FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true AND  ( PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB > PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB > PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB ) AND  ( PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB > 0 OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB > 0 ) AND ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true ) )THEN  INCLUDE ENDIF
             showIf(
-                FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .greaterThan(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()
-                    ) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().greaterThan(
-                    pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                )) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()
-                    .greaterThan(0) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb().greaterThan(
-                    0
-                )) and (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())){
+                virkningFomErForsteDagIAaret
+                        and (gammeltBelopBTFB.greaterThan(nyttBelopBTFB)
+                        or gammeltBelopBTSB.greaterThan(nyttBelopBTSB)
+                        ) and (nyttBelopBTFB.greaterThan(0)
+                        or nyttBelopBTSB.greaterThan(0)
+                        ) and (
+                        periodisertInntektBTFB
+                                or periodisertInntektBTSB
+                                or periodisertFribelopBTFB
+                                or periodisertFribelopBTSB
+                        )
+            ) {
                 //[TBU4003_NN, TBU4003]
 
                 paragraph {
@@ -570,25 +645,36 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     )
 
                     //IF( ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= false ) OR ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= false ) AND ( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true ) ) THEN      INCLUDE ENDIF
-                    showIf(((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() and not(
-                        pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()
-                    )) or (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() and not(
-                        pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()
-                    )) and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))){
+                    showIf(
+                        (
+                                (
+                                        periodisertInntektBTFB
+                                                and not(periodisertInntektBTSB)
+                                        )
+                                        or (periodisertFribelopBTFB
+                                        and not(periodisertFribelopBTSB)
+                                        )
+                                        and (innvilgetBTFB and innvilgetBTSB))
+                    ) {
                         textExpr (
-                            Bokmal to "for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre ",
-                            Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra ",
+                            Bokmal to "for ".expr() + barnetEllerBarnaFelles + " som bor med begge sine foreldre ",
+                            Nynorsk to "for ".expr() + barnetEllerBarnaFelles + " som bur saman med begge foreldra ",
                         )
                     }
 
                     //IF( ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true ) OR ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true ) AND ( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true ) )THEN   INCLUDE ENDIF
                     showIf(
-                        (not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()) or (not(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()
-                        ) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
+                        (
+                                not(periodisertInntektBTFB)
+                                        and periodisertInntektBTSB)
+                                or (not(periodisertFribelopBTFB)
+                                and periodisertFribelopBTSB
+                                )
+                                and (innvilgetBTFB and innvilgetBTSB)
+                    ) {
                         textExpr (
-                            Bokmal to "for ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene ",
-                            Nynorsk to "for ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra ",
+                            Bokmal to "for ".expr() + barnetEllerBarnaSaerkull + " som ikke bor sammen med begge foreldrene ",
+                            Nynorsk to "for ".expr() + barnetEllerBarnaSaerkull + " som ikkje bur saman med begge foreldra ",
                         )
                     }
                     text (
@@ -597,7 +683,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     )
 
                     //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true )) THEN   INCLUDE ENDIF
-                    showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert())){
+                    showIf((periodisertInntektBTFB or periodisertInntektBTSB)) {
                         text (
                             Bokmal to "inntektene ",
                             Nynorsk to "inntektene ",
@@ -605,7 +691,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     }
 
                     //IF( ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true ) AND ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true ) )THEN   INCLUDE ENDIF
-                    showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()) and (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())){
+                    showIf((periodisertInntektBTFB or periodisertInntektBTSB) and (periodisertFribelopBTFB or periodisertFribelopBTSB)) {
                         text (
                             Bokmal to "og ",
                             Nynorsk to "og ",
@@ -613,7 +699,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     }
 
                     //IF( ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true ) )THEN   INCLUDE ENDIF
-                    showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())){
+                    showIf((periodisertFribelopBTFB or periodisertFribelopBTSB)) {
                         text (
                             Bokmal to "fribeløpet ",
                             Nynorsk to "fribeløpet ",
@@ -627,7 +713,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true) THEN      INCLUDE ENDIF
-            showIf(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())){
+            showIf(virkningFomErForsteDagIAaret) {
                 //[TBU4004_NN, TBU4004]
 
                 paragraph {
@@ -637,17 +723,17 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     )
 
                     //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    showIf(innvilgetBTFB) {
                         textExpr(
-                            Bokmal to "og din ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " ",
-                            Nynorsk to "og ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din ",
+                            Bokmal to "og din ".expr() + epsTypeBokmal + " ",
+                            Nynorsk to "og ".expr() + epsTypeNynorsk + " din ",
                         )
                     }
 
                     textExpr (
-                        Bokmal to "å tjene noe annet i ".expr() + pe.ut_virkningfomar()
+                        Bokmal to "å tjene noe annet i ".expr() + virkningFomAr
                             .format() + " er det viktig at du melder inn ny forventet inntekt. Dette kan du gjøre på nav.no.",
-                        Nynorsk to "å tene noko anna i ".expr() + pe.ut_virkningfomar()
+                        Nynorsk to "å tene noko anna i ".expr() + virkningFomAr
                             .format() + " er det viktig at du melder inn ei ny forventa inntekt. Dette kan du gjere på nav.no.",
                     )
                 }
@@ -656,60 +742,74 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "") THEN      INCLUDE ENDIF
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "") THEN      INCLUDE ENDIF
             showIf(
-                (not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
-                ) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
-                ) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo(""))){
+                (not(ektefelletilleggInnvilget) and not(
+                    innvilgetBTSB
+                ) and not(innvilgetBTFB)
+                        and not(gjenlevendetilleggInnvilget)
+                        and instoppholdType.equalTo(""))
+            ) {
                 includePhrase(TBU1120_Generated(pe))
             }
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = ""  ) THEN      INCLUDE ENDIF
             showIf(
-                ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
-                ) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype()
-                    .equalTo(""))){
+                (
+                        (innvilgetBTSB or innvilgetBTFB)
+                                and not(ektefelletilleggInnvilget)
+                                and not(gjenlevendetilleggInnvilget)
+                                and instoppholdType.equalTo(""))
+            ) {
                 includePhrase(TBU1121_Generated(pe))
             }
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true  ) THEN      INCLUDE ENDIF
             showIf(
-                ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
-                ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget())){
+                (
+                        (innvilgetBTSB or innvilgetBTFB)
+                                and not(gjenlevendetilleggInnvilget)
+                                and ektefelletilleggInnvilget)
+            ) {
                 includePhrase(TBU1254_Generated(pe))
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN      INCLUDE ENDIF
             showIf(
-                (not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
-                ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget())){
+                (
+                        not(innvilgetBTSB)
+                                and not(innvilgetBTFB)
+                                and not(gjenlevendetilleggInnvilget)
+                                and ektefelletilleggInnvilget)
+            ) {
                 includePhrase(TBU1253_Generated(pe))
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "") THEN      INCLUDE ENDIF
             showIf(
-                (not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
-                ) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and not(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
-                ) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo(""))){
+                (
+                        not(innvilgetBTSB)
+                                and not(innvilgetBTFB)
+                                and gjenlevendetilleggInnvilget
+                                and not(ektefelletilleggInnvilget)
+                                and instoppholdType.equalTo("")
+                        )
+            ) {
                 includePhrase(TBU1122_Generated(pe))
             }
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false  ) THEN      INCLUDE ENDIF
             showIf(
-                ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and not(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
-                ))){
+                (
+                        (innvilgetBTSB or innvilgetBTFB)
+                                and gjenlevendetilleggInnvilget
+                                and not(ektefelletilleggInnvilget)
+                        )
+            ) {
                 includePhrase(TBU1123_Generated(pe))
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto > 0) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().greaterThan(0))){
-                includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().greaterThan(0)))
+            showIf((beregningUforeTotalNetto.greaterThan(0))) {
+                includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(beregningUforeTotalNetto.greaterThan(0)))
             }
             includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
             //[TBU1029]
@@ -717,18 +817,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             includePhrase(Vedtak.BegrunnelseOverskrift)
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT) THEN      INCLUDE ENDIF
-            showIf(
-                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())
-            ){
+            showIf(gammeltBelop.notEqualTo(nyttBelop)) {
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
-                showIf(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .lessThan(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        )
-                ){
+                showIf(avkortningInntektsgrense.lessThan(avkortningInntektstak)) {
                     //[TBU2253NN, TBU2253]
 
                     paragraph {
@@ -741,14 +833,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     paragraph {
                         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT > PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .greaterThan(
-                                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                                ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                                .greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-                                .greaterThan(
-                                    0
-                                )){
+                            forventetInntekt.greaterThan(avkortningInntektsgrense)
+                                    and gammeltBelop.greaterThan(nyttBelop)
+                                    and nyttBelop.greaterThan(0)
+                        ) {
                             text (
                                 Bokmal to "Uføretrygden din reduseres fordi du tjener over inntektsgrensen din. Selv om du får en reduksjon lønner det seg likevel å jobbe ved siden av uføretrygden. ",
                                 Nynorsk to "Uføretrygda di blir redusert fordi du tener over inntektsgrensa di. Sjølv om du får ein reduksjon, lønner det seg likevel å jobbe ved sida av uføretrygda. ",
@@ -757,17 +845,11 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT < PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .greaterThan(
-                                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                                ) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
-                                .equalTo(
-                                    pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                                ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                                .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-                                .greaterThan(
-                                    0
-                                )){
+                            forventetInntekt.greaterThan(avkortningInntektsgrense)
+                                    and utbetalingsgrad.equalTo(uforegrad)
+                                    and gammeltBelop.lessThan(nyttBelop)
+                                    and nyttBelop.greaterThan(0)
+                        ) {
                             text (
                                 Bokmal to "Endringen i inntekten din gjør at uføretrygden ikke lenger er redusert. ",
                                 Nynorsk to "Endringa i inntekta di gjer at uføretrygda ikkje lenger er redusert. ",
@@ -776,13 +858,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .lessThan(
-                                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                                ) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
-                                .equalTo(
-                                    pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                                ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0)){
+                            forventetInntekt.lessThan(avkortningInntektsgrense)
+                                    and utbetalingsgrad.equalTo(uforegrad)
+                                    and nyttBelop.greaterThan(0)
+                        ) {
                             text (
                                 Bokmal to "Utbetalingen av uføretrygden din økes fordi du tjener under inntektsgrensen din. Det betyr at uføretrygden ikke lenger er redusert. ",
                                 Nynorsk to "Utbetalinga av uføretrygda aukar fordi du tener under inntektsgrensa di. Det betyr at uføretrygda ikkje lenger er redusert. ",
@@ -791,11 +870,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT = 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt <= PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .lessThanOrEqual(
-                                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                                )){
+                            nyttBelop.equalTo(0)
+                                    and forventetInntekt.lessThanOrEqual(avkortningInntektstak)
+                        ) {
                             text (
                                 Bokmal to "Endring i inntekten din gjør at du ikke får utbetalt uføretrygd for resten av året. ",
                                 Nynorsk to "Endring i inntekta di gjer at du ikkje får utbetalt uføretrygd for resten av året. ",
@@ -805,12 +882,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense >= PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
-                showIf(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .greaterThanOrEqual(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        )
-                ){
+                showIf(avkortningInntektsgrense.greaterThanOrEqual(avkortningInntektstak)) {
                     //[TBU3734NN, TBU3734]
 
                     paragraph {
@@ -820,12 +892,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         )
 
                         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUforePeriode_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN      INCLUDE ENDIF
-                        showIf(
-                            pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .greaterThan(
-                                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                                )
-                        ){
+                        showIf(beregningBelopRedusert and forventetInntekt.greaterThan(avkortningInntektsgrense)) {
                             text (
                                 Bokmal to " Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.",
                                 Nynorsk to " Det lønner seg likevel å jobbe fordi inntekt og uføretrygd vil alltid vere høgare enn uføretrygd åleine.",
@@ -835,25 +902,21 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
-                showIf(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .greaterThan(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0)){
+                showIf(forventetInntekt.greaterThan(avkortningInntektsgrense) and nyttBelop.greaterThan(0)) {
                     //[TBU4005_NN, TBU4005]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Siden du har en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .format() + " kroner trekker vi " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortingsbelopperar()
+                            Bokmal to "Siden du har en inntekt på ".expr() + forventetInntekt
+                                .format() + " kroner trekker vi " + avkortningsbelopPerAr
                                 .format() + " kroner fra uføretrygden ",
-                            Nynorsk to "Fordi du har ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .format() + " kroner trekkjer vi " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortingsbelopperar()
+                            Nynorsk to "Fordi du har ei inntekt på ".expr() + forventetInntekt
+                                .format() + " kroner trekkjer vi " + avkortningsbelopPerAr
                                 .format() + " kroner frå uføretrygda ",
                         )
 
                         //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = false) THEN      INCLUDE ENDIF
-                        showIf(not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()))){
+                        showIf(not(virkningFomErForsteDagIAaret)) {
                             text (
                                 Bokmal to "i ",
                                 Nynorsk to "i ",
@@ -861,7 +924,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = true) THEN      INCLUDE ENDIF
-                        showIf(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())){
+                        showIf(virkningFomErForsteDagIAaret) {
                             text (
                                 Bokmal to "for neste ",
                                 Nynorsk to "for neste ",
@@ -876,22 +939,19 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT = 0) THEN      INCLUDE ENDIF
                 showIf(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .greaterThan(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        ) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .notEqualTo(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().equalTo(0)){
+                    forventetInntekt.greaterThan(avkortningInntektstak)
+                            and avkortningInntektsgrense.notEqualTo(avkortningInntektstak)
+                            and nyttBelop.equalTo(0)
+                ) {
                     //[TBU2258NN, TBU2258]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Du får ikke utbetalt uføretrygd siden inntekten din er høyere enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                                .format() + " kroner. Inntekten vi har brukt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                            Bokmal to "Du får ikke utbetalt uføretrygd siden inntekten din er høyere enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr() + avkortningInntektstak
+                                .format() + " kroner. Inntekten vi har brukt er " + forventetInntekt
                                 .format() + " kroner og du vil derfor ikke få utbetalt uføretrygd resten av året.",
-                            Nynorsk to "Du får ikkje utbetalt uføretrygd fordi inntekta di er høgare enn 80 prosent av inntekta du hadde før du blei ufør, det vil seie ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                                .format() + " kroner. Inntekta vi har brukt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                            Nynorsk to "Du får ikkje utbetalt uføretrygd fordi inntekta di er høgare enn 80 prosent av inntekta du hadde før du blei ufør, det vil seie ".expr() + avkortningInntektstak
+                                .format() + " kroner. Inntekta vi har brukt er " + forventetInntekt
                                 .format() + " kroner og du vil ikkje få utbetalt uføretrygd resten av året.",
                         )
                     }
@@ -899,22 +959,19 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense = PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT = 0) THEN      INCLUDE ENDIF
                 showIf(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .greaterThan(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        ) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .equalTo(
-                            pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().equalTo(0)){
+                    forventetInntekt.greaterThan(avkortningInntektsgrense)
+                            and avkortningInntektsgrense.equalTo(avkortningInntektstak)
+                            and nyttBelop.equalTo(0)
+                ) {
                     //[TBU3735NN, TBU3735]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Det utbetales ikke uføretrygd når inntekten din utgjør mer enn inntektsgrensen, det vil si ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                                .format() + " kroner. Inntekten vi har brukt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                            Bokmal to "Det utbetales ikke uføretrygd når inntekten din utgjør mer enn inntektsgrensen, det vil si ".expr() + avkortningInntektsgrense
+                                .format() + " kroner. Inntekten vi har brukt er " + forventetInntekt
                                 .format() + " kroner og du vil derfor ikke få utbetalt uføretrygd resten av året.",
-                            Nynorsk to "Det blir ikkje utbetalt uføretrygd når inntekta di utgjer meir enn inntektsgrensa di, det vil seie ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                                .format() + " kroner. Inntekta vi har brukt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                            Nynorsk to "Det blir ikkje utbetalt uføretrygd når inntekta di utgjer meir enn inntektsgrensa di, det vil seie ".expr() + avkortningInntektsgrense
+                                .format() + " kroner. Inntekta vi har brukt er " + forventetInntekt
                                 .format() + " kroner og du vil derfor ikkje få utbetalt uføretrygd resten av året.",
                         )
                     }
@@ -923,14 +980,12 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB) THEN      INCLUDE ENDIF
             showIf(
-                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                    .notEqualTo(
-                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                    )){
+                gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                        or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+            ) {
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()){
+                showIf(innvilgetBTFB or innvilgetBTSB) {
                     //[TBU4006_NN, TBU4006]
 
                     paragraph {
@@ -941,12 +996,12 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB  OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                                .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                                .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                                .notEqualTo(
-                                    pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                                ))){
+                            gammeltBelop.notEqualTo(nyttBelop)
+                                    and (
+                                    gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
+                                            or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
+                                    )
+                        ) {
                             text (
                                 Bokmal to "også ",
                                 Nynorsk to "også ",
@@ -958,7 +1013,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         )
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                        showIf(not(innvilgetBTSB) and innvilgetBTFB) {
                             text (
                                 Bokmal to "Fordi",
                                 Nynorsk to "Fordi",
@@ -966,7 +1021,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                        showIf(innvilgetBTSB and innvilgetBTFB) {
                             text (
                                 Bokmal to "For",
                                 Nynorsk to "For",
@@ -974,15 +1029,15 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                        showIf(innvilgetBTFB) {
                             textExpr(
-                                Bokmal to " ".expr() + pe.ut_barnet_barna_felles() + " ",
-                                Nynorsk to " ".expr() + pe.ut_barnet_barna_felles() + " ",
+                                Bokmal to " ".expr() + barnetEllerBarnaFelles + " ",
+                                Nynorsk to " ".expr() + barnetEllerBarnaFelles + " ",
                             )
                         }
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                        showIf(innvilgetBTSB and innvilgetBTFB) {
                             text (
                                 Bokmal to "som ",
                                 Nynorsk to "som ",
@@ -990,18 +1045,18 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                        showIf(innvilgetBTFB) {
                             textExpr(
-                                Bokmal to "bor med begge sine foreldre, bruker vi i tillegg din ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt når vi fastsetter størrelsen på barnetillegget ditt. ",
-                                Nynorsk to "bur saman med begge foreldra sine, bruker vi i tillegg ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din si inntekt når vi fastset storleiken på barnetillegget ditt. ",
+                                Bokmal to "bor med begge sine foreldre, bruker vi i tillegg din ".expr() + epsTypeBokmal + "s inntekt når vi fastsetter størrelsen på barnetillegget ditt. ",
+                                Nynorsk to "bur saman med begge foreldra sine, bruker vi i tillegg ".expr() + epsTypeNynorsk + " din si inntekt når vi fastset storleiken på barnetillegget ditt. ",
                             )
                         }
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                        showIf(innvilgetBTSB and innvilgetBTFB) {
                             textExpr (
-                                Bokmal to "For ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene bruker vi kun inntekten din. ",
-                                Nynorsk to "For ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra bruker vi berre inntekta di. ",
+                                Bokmal to "For ".expr() + barnetEllerBarnaSaerkull + " som ikke bor sammen med begge foreldrene bruker vi kun inntekten din. ",
+                                Nynorsk to "For ".expr() + barnetEllerBarnaSaerkull + " som ikkje bur saman med begge foreldra bruker vi berre inntekta di. ",
                             )
                         }
                         text (
@@ -1010,7 +1065,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         )
 
                         //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false
-                        showIf(not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget())){
+                        showIf(not(gjenlevendetilleggInnvilget)) {
                             text (
                                 Bokmal to "din ",
                                 Nynorsk to "di ",
@@ -1018,7 +1073,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
-                        showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
+                        showIf(gjenlevendetilleggInnvilget) {
                             text(
                                 Bokmal to "og gjenlevendetillegget ditt ",
                                 Nynorsk to "og attlevandetillegget ditt ",
@@ -1032,43 +1087,30 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
-                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                showIf(innvilgetBTFB) {
                     //[TBU4007_NN, TBU4007]
 
                     paragraph {
                         textExpr(
-                            Bokmal to "Vi har beregnet barnetillegget på nytt ut fra inntekten din på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning()
-                                .format() + " kroner og inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder()
-                                .format() + " kroner. ",
-                            Nynorsk to "Vi har berekna barnetillegget på nytt ut frå inntekta di på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning()
-                                .format() + " kroner og inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder()
-                                .format() + " kroner. ",
+                            Bokmal to "Vi har beregnet barnetillegget på nytt ut fra inntekten din på ".expr() + brukersInntektBruktIAvkortningAvBTFB
+                                .format() + " kroner og inntekten til din " + epsTypeBokmal + " på " + inntektAnnenForelderBTFB.format() + " kroner. ",
+                            Nynorsk to "Vi har berekna barnetillegget på nytt ut frå inntekta di på ".expr() + brukersInntektBruktIAvkortningAvBTFB
+                                .format() + " kroner og inntekta til " + epsTypeNynorsk + " din på " + inntektAnnenForelderBTFB.format() + " kroner. ",
                         )
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbelopFratrukketAnnenForeldersInntekt > 0) THEN      INCLUDE ENDIF
-                        showIf(
-                            (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
-                                .greaterThan(0))
-                        ) {
+                        showIf((belopFratrukketAnnenForeldersInntektBTFB.greaterThan(0))) {
                             textExpr(
-                                Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-                                    .format() + " kroner er holdt utenfor din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt. ",
-                                Nynorsk to "Grunnbeløpet i folketrygda på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-                                    .format() + " kroner er held utanfor inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din. ",
+                                Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + beregningGrunnbelop.format() + " kroner er holdt utenfor din " + epsTypeBokmal + "s inntekt. ",
+                                Nynorsk to "Grunnbeløpet i folketrygda på inntil ".expr() + beregningGrunnbelop.format() + " kroner er held utanfor inntekta til " + epsTypeNynorsk + " din. ",
                             )
                         }
                         textExpr(
-                            Bokmal to "Til sammen utgjør disse inntektene ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                .format() + " kroner. ",
-                            Nynorsk to "Til saman utgjer desse inntektene ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                .format() + " kroner. ",
+                            Bokmal to "Til sammen utgjør disse inntektene ".expr() + inntektBruktIAvkortningAvBTFB.format() + " kroner. ",
+                            Nynorsk to "Til saman utgjer desse inntektene ".expr() + inntektBruktIAvkortningAvBTFB.format() + " kroner. ",
                         )
 
-                        showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                .greaterThan(0)
-                        ) {
+                        showIf(justeringsbelopPerArBTFB.equalTo(0) and nettoBTFB.greaterThan(0)) {
                             //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto > 0) THEN      INCLUDE ENDIF
                             text(
                                 Bokmal to "Dette beløpet er ",
@@ -1076,10 +1118,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             )
 
                             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBInntektBruktiAvkortning > PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto > 0) THEN      INCLUDE ENDIF
-                            showIf(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                    .greaterThan(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop())
-                            ) {
+                            showIf(inntektBruktIAvkortningAvBTFB.greaterThan(fribelopBTFB)) {
                                 text(
                                     Bokmal to "høyere",
                                     Nynorsk to "høgare",
@@ -1087,10 +1126,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             }
 
                             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBInntektBruktiAvkortning <= PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto > 0) THEN      INCLUDE ENDIF
-                            showIf(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                    .lessThanOrEqual(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop())
-                            ) {
+                            showIf(inntektBruktIAvkortningAvBTFB.lessThanOrEqual(fribelopBTFB)) {
                                 text(
                                     Bokmal to "lavere",
                                     Nynorsk to "lågare",
@@ -1099,30 +1135,20 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                             //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto > 0) THEN      INCLUDE ENDIF
                             textExpr(
-                                Bokmal to " enn fribeløpsgrensen på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
-                                    .format() + " kroner. Derfor er barnetillegget ",
-                                Nynorsk to " enn fribeløpet på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
-                                    .format() + " kroner. Derfor er barnetillegget ",
+                                Bokmal to " enn fribeløpsgrensen på ".expr() + fribelopBTFB.format() + " kroner. Derfor er barnetillegget ",
+                                Nynorsk to " enn fribeløpet på ".expr() + fribelopBTFB.format() + " kroner. Derfor er barnetillegget ",
                             )
 
                             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto > 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
-                            showIf(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                    .greaterThan(
-                                        0
-                                    )
-                            ) {
+                            showIf(innvilgetBTFB and innvilgetBTSB and nettoBTSB.greaterThan(0)) {
                                 textExpr(
-                                    Bokmal to "for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre ",
-                                    Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge sine foreldra ",
+                                    Bokmal to "for ".expr() + barnetEllerBarnaFelles + " som bor med begge sine foreldre ",
+                                    Nynorsk to "for ".expr() + barnetEllerBarnaFelles + " som bur saman med begge sine foreldra ",
                                 )
                             }
 
                             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBInntektBruktiAvkortning <= PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto > 0) THEN      INCLUDE ENDIF
-                            showIf(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                    .lessThanOrEqual(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop())
-                            ) {
+                            showIf(inntektBruktIAvkortningAvBTFB.lessThanOrEqual(fribelopBTFB)) {
                                 text(
                                     Bokmal to "ikke lenger ",
                                     Nynorsk to "ikkje lenger ",
@@ -1138,24 +1164,16 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
-                        showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
-                                .notEqualTo(0)
-                        ) {
+                        showIf(justeringsbelopPerArBTFB.notEqualTo(0)) {
                             text(
                                 Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget",
                                 Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget",
                             )
                             //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
-                            showIf(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                    .greaterThan(
-                                        0
-                                    )
-                            ) {
+                            showIf(innvilgetBTSB and nettoBTSB.greaterThan(0)) {
                                 textExpr(
-                                    Bokmal to " for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre",
-                                    Nynorsk to " for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine",
+                                    Bokmal to " for ".expr() + barnetEllerBarnaFelles + " som bor med begge sine foreldre",
+                                    Nynorsk to " for ".expr() + barnetEllerBarnaFelles + " som bur saman med begge foreldra sine",
                                 )
                             }
 
@@ -1166,7 +1184,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             )
 
                             //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0) THEN      INCLUDE ENDIF
-                            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)) {
+                            showIf(nettoBTFB.equalTo(0)) {
                                 text(
                                     Bokmal to "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
                                     Nynorsk to "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
@@ -1177,33 +1195,23 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                showIf(innvilgetBTSB and innvilgetBTFB) {
                     //[TBU4008_NN, TBU4008]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Barnetillegget for ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene er beregnet ut fra inntekten din på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .format() + " kroner. ",
-                            Nynorsk to "Barnetillegget for ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra er berekna ut frå inntekta di på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .format() + " kroner. ",
+                            Bokmal to "Barnetillegget for ".expr() + barnetEllerBarnaSaerkull + " som ikke bor sammen med begge foreldrene er beregnet ut fra inntekten din på " + inntektBruktIAvkortningAvBTSB.format() + " kroner. ",
+                            Nynorsk to "Barnetillegget for ".expr() + barnetEllerBarnaSaerkull + " som ikkje bur saman med begge foreldra er berekna ut frå inntekta di på " + inntektBruktIAvkortningAvBTSB.format() + " kroner. ",
                         )
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
-                        showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .greaterThan(
-                                    0
-                                )){
+                        showIf(justeringsbelopPerArBTSB.equalTo(0) and nettoBTSB.greaterThan(0)) {
                             text (
                                 Bokmal to "Dette er ",
                                 Nynorsk to "Dette er ",
                             )
                             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning > PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
-                            showIf(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                    .greaterThan(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop())
-                            ){
+                            showIf(inntektBruktIAvkortningAvBTSB.greaterThan(fribelopBTSB)) {
                                 text (
                                     Bokmal to "høyere",
                                     Nynorsk to "høgare",
@@ -1211,10 +1219,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             }
 
                             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning <= PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
-                            showIf(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                    .lessThanOrEqual(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop())
-                            ){
+                            showIf(inntektBruktIAvkortningAvBTSB.lessThanOrEqual(fribelopBTSB)) {
                                 text (
                                     Bokmal to "lavere",
                                     Nynorsk to "lågere",
@@ -1223,17 +1228,12 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                             //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
                             textExpr (
-                                Bokmal to " enn fribeløpsgrensen på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                                    .format() + " kroner. Dette barnetillegget er derfor ",
-                                Nynorsk to " enn fribeløpet på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                                    .format() + " kroner. Derfor er barnetillegget ",
+                                Bokmal to " enn fribeløpsgrensen på ".expr() + fribelopBTSB.format() + " kroner. Dette barnetillegget er derfor ",
+                                Nynorsk to " enn fribeløpet på ".expr() + fribelopBTSB.format() + " kroner. Derfor er barnetillegget ",
                             )
 
                             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning <= PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
-                            showIf(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                    .lessThanOrEqual(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop())
-                            ){
+                            showIf(inntektBruktIAvkortningAvBTSB.lessThanOrEqual(fribelopBTSB)) {
                                 text (
                                     Bokmal to "ikke lenger ",
                                     Nynorsk to "ikkje lenger ",
@@ -1242,11 +1242,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB > PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB > PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
                             showIf(
-                                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
-                                    .greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
-                                    .greaterThan(
-                                        pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()
-                                    )){
+                                gammeltBelopBTFB.greaterThan(nyttBelopBTFB)
+                                        and gammeltBelopBTSB.greaterThan(nyttBelopBTSB)
+                            ) {
                                 text (
                                     Bokmal to "også ",
                                     Nynorsk to "også ",
@@ -1262,22 +1260,17 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .notEqualTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .greaterThan(
-                                    0
-                                )){
+                            justeringsbelopPerArBTSB.notEqualTo(0)
+                                    and nettoBTSB.greaterThan(0)
+                        ) {
                             textExpr (
-                                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene. ",
-                                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra. ",
+                                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for ".expr() + barnetEllerBarnaSaerkull + " som ikke bor sammen med begge foreldrene. ",
+                                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for ".expr() + barnetEllerBarnaSaerkull + " som ikkje bur saman med begge foreldra. ",
                             )
                         }
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0) THEN      INCLUDE ENDIF
-                        showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .notEqualTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .equalTo(0)){
+                        showIf(justeringsbelopPerArBTSB.notEqualTo(0) and nettoBTSB.equalTo(0)) {
                             text (
                                 Bokmal to "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
                                 Nynorsk to "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
@@ -1287,24 +1280,17 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())){
+                showIf(innvilgetBTSB and not(innvilgetBTFB)) {
                     //[TBU4009_NN, TBU4009]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Vi har beregnet barnetillegget på nytt ut fra inntekten din på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .format() + " kroner. ",
-                            Nynorsk to "Vi har berekna barnetillegget på nytt ut frå inntekta di på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .format() + " kroner. ",
+                            Bokmal to "Vi har beregnet barnetillegget på nytt ut fra inntekten din på ".expr() + inntektBruktIAvkortningAvBTSB.format() + " kroner. ",
+                            Nynorsk to "Vi har berekna barnetillegget på nytt ut frå inntekta di på ".expr() + inntektBruktIAvkortningAvBTSB.format() + " kroner. ",
                         )
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
-                        showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .greaterThan(
-                                    0
-                                )){
+                        showIf(justeringsbelopPerArBTSB.equalTo(0) and nettoBTSB.greaterThan(0)) {
                             text (
                                 Bokmal to "Dette er ",
                                 Nynorsk to "Dette beløpet er ",
@@ -1313,13 +1299,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning > PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().greaterThan(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                            ) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .greaterThan(
-                                    0
-                                )){
+                            inntektBruktIAvkortningAvBTSB.greaterThan(fribelopBTSB)
+                                    and justeringsbelopPerArBTSB.equalTo(0)
+                                    and nettoBTSB.greaterThan(0)
+                        ) {
                             text (
                                 Bokmal to "høyere",
                                 Nynorsk to "høgare",
@@ -1328,14 +1311,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning <= PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .lessThanOrEqual(
-                                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                                ) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .greaterThan(
-                                    0
-                                )){
+                            inntektBruktIAvkortningAvBTSB.lessThanOrEqual(fribelopBTSB)
+                                    and justeringsbelopPerArBTSB.equalTo(0)
+                                    and nettoBTSB.greaterThan(0)
+                        ) {
                             text (
                                 Bokmal to "lavere",
                                 Nynorsk to "lågare",
@@ -1344,29 +1323,21 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .greaterThan(
-                                    0
-                                )){
+                            justeringsbelopPerArBTSB.equalTo(0)
+                                    and nettoBTSB.greaterThan(0)
+                        ) {
                             textExpr (
-                                Bokmal to " enn fribeløpsgrensen på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                                    .format() + " kroner. Barnetillegget er derfor ",
-                                Nynorsk to " enn fribeløpet på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                                    .format() + " kroner. Derfor er barnetillegget ",
+                                Bokmal to " enn fribeløpsgrensen på ".expr() + fribelopBTSB.format() + " kroner. Barnetillegget er derfor ",
+                                Nynorsk to " enn fribeløpet på ".expr() + fribelopBTSB.format() + " kroner. Derfor er barnetillegget ",
                             )
                         }
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning <= PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .lessThanOrEqual(
-                                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                                ) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .greaterThan(
-                                    0
-                                )){
+                            inntektBruktIAvkortningAvBTSB.lessThanOrEqual(fribelopBTSB)
+                                    and justeringsbelopPerArBTSB.equalTo(0)
+                                    and nettoBTSB.greaterThan(0)
+                        ) {
                             text (
                                 Bokmal to "ikke lenger ",
                                 Nynorsk to "ikkje lenger ",
@@ -1375,11 +1346,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .greaterThan(
-                                    0
-                                )){
+                            justeringsbelopPerArBTSB.equalTo(0)
+                                    and nettoBTSB.greaterThan(0)
+                        ) {
                             text (
                                 Bokmal to "redusert. ",
                                 Nynorsk to "redusert. ",
@@ -1388,11 +1357,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .notEqualTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .greaterThan(
-                                    0
-                                )){
+                            justeringsbelopPerArBTSB.notEqualTo(0)
+                                    and nettoBTSB.greaterThan(0)
+                        ) {
                             text (
                                 Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. ",
                                 Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. ",
@@ -1401,9 +1368,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0) THEN      INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .notEqualTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .equalTo(0)){
+                            justeringsbelopPerArBTSB.notEqualTo(0)
+                                    and nettoBTSB.equalTo(0)
+                        ) {
                             text (
                                 Bokmal to "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
                                 Nynorsk to "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
@@ -1414,9 +1381,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
                 showIf(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                        .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
-                        .equalTo(0)){
+                    nettoBTFB.equalTo(0)
+                            and innvilgetBTFB
+                            and justeringsbelopPerArBTFB.equalTo(0)
+                ) {
                     //[TBU4010_NN, TBU4010]
 
                     paragraph {
@@ -1426,28 +1394,22 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         )
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                        showIf(innvilgetBTSB and innvilgetBTFB) {
                             textExpr (
-                                Bokmal to "for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre ",
-                                Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge forelda sine ",
+                                Bokmal to "for ".expr() + barnetEllerBarnaFelles + " som bor med begge sine foreldre ",
+                                Nynorsk to "for ".expr() + barnetEllerBarnaFelles + " som bur saman med begge forelda sine ",
                             )
                         }
                         textExpr (
-                            Bokmal to "blir ikke utbetalt fordi den samlede inntekten til deg og din ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
-                                .format() + " kroner.",
-                            Nynorsk to "blir ikkje utbetalt fordi den samla inntekta til deg og ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din er høgare enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
-                                .format() + " kroner.",
+                            Bokmal to "blir ikke utbetalt fordi den samlede inntekten til deg og din ".expr() + epsTypeBokmal + " er høyere enn " + avkortningInntektstakBTFB.format() + " kroner.",
+                            Nynorsk to "blir ikkje utbetalt fordi den samla inntekta til deg og ".expr() + epsTypeNynorsk + " din er høgare enn " + avkortningInntektstakBTFB.format() + " kroner.",
                         )
                     }
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
-                showIf(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                        .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                        .equalTo(0)){
+                showIf(nettoBTSB.equalTo(0) and innvilgetBTSB and justeringsbelopPerArBTSB.equalTo(0)) {
                     //[TBU4011_NN, TBU4011]
-
                     paragraph {
                         text (
                             Bokmal to "Barnetillegget ",
@@ -1455,23 +1417,29 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         )
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                        showIf(innvilgetBTSB and innvilgetBTFB) {
                             textExpr (
-                                Bokmal to "for ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene ",
-                                Nynorsk to "for ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra ",
+                                Bokmal to "for ".expr() + barnetEllerBarnaSaerkull + " som ikke bor sammen med begge foreldrene ",
+                                Nynorsk to "for ".expr() + barnetEllerBarnaSaerkull + " som ikkje bur saman med begge foreldra ",
                             )
                         }
                         textExpr (
-                            Bokmal to "blir ikke utbetalt fordi inntekten din er høyere enn ".expr() + this.pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
-                                .format() + " kroner.",
-                            Nynorsk to "blir ikkje utbetalt fordi inntekta di er høgare enn ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
-                                .format() + " kroner.",
+                            Bokmal to "blir ikke utbetalt fordi inntekten din er høyere enn ".expr() + avkortningInntektstakBTSB.format() + " kroner.",
+                            Nynorsk to "blir ikkje utbetalt fordi inntekta di er høgare enn ".expr() + avkortningInntektstakBTSB.format() + " kroner.",
                         )
                     }
                 }
 
                 //IF( FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = false AND ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true ) ) THEN      INCLUDE ENDIF
-                showIf(not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())) and (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())){
+                showIf(
+                    not(virkningFomErForsteDagIAaret)
+                            and (
+                            periodisertInntektBTFB
+                                    or periodisertInntektBTSB
+                                    or periodisertFribelopBTFB
+                                    or periodisertFribelopBTSB
+                            )
+                ) {
                     //[TBU4012]
                     paragraph {
                         text (
@@ -1479,29 +1447,30 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             Nynorsk to "Fordi du ikkje har barnetillegg ",
                         )
 
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()){
+                        showIf(innvilgetBTFB and innvilgetBTSB) {
                             showIf(
-                                (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() and not(
-                                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()
-                                )) or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() and not(
-                                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()
-                                )){
+                                (periodisertInntektBTFB
+                                        and not(periodisertInntektBTSB)
+                                        ) or periodisertFribelopBTFB and not(periodisertFribelopBTSB)
+                            ) {
                                 textExpr (
-                                    Bokmal to "for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre ",
-                                    Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine ",
+                                    Bokmal to "for ".expr() + barnetEllerBarnaFelles + " som bor med begge sine foreldre ",
+                                    Nynorsk to "for ".expr() + barnetEllerBarnaFelles + " som bur saman med begge foreldra sine ",
 
                                     )
                             }
 
                             //IF( ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true ) OR ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true ) AND ( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true ) )THEN   INCLUDE ENDIF
                             showIf(
-                                (not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()) or not(
-                                    pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()
-                                ) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()
+                                (
+                                        not(periodisertInntektBTFB)
+                                                and periodisertInntektBTSB)
+                                        or not(periodisertFribelopBTFB)
+                                        and periodisertFribelopBTSB
                             ){
                                 textExpr (
-                                    Bokmal to "for ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene ",
-                                    Nynorsk to "for ".expr() + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra ",
+                                    Bokmal to "for ".expr() + barnetEllerBarnaSaerkull + " som ikke bor sammen med begge foreldrene ",
+                                    Nynorsk to "for ".expr() + barnetEllerBarnaSaerkull + " som ikkje bur saman med begge foreldra ",
                                 )
                             }
                         }
@@ -1513,16 +1482,16 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         )
 
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true )) THEN   INCLUDE ENDIF
-                        showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert())){
+                        showIf((periodisertInntektBTFB or periodisertInntektBTSB)) {
                             text (
                                 Bokmal to "inntektene ",
                                 Nynorsk to "inntektene ",
                             )
                         }
 
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) {
+                        showIf(periodisertFribelopBTFB or periodisertFribelopBTSB) {
                             //IF( ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true ) AND ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true ) )THEN   INCLUDE ENDIF
-                            showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()){
+                            showIf(periodisertInntektBTFB or periodisertInntektBTSB) {
                                 text (
                                     Bokmal to "og ",
                                     Nynorsk to "og ",
@@ -1544,11 +1513,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF( (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = false  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = false) AND (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = true) ) THEN      INCLUDE ENDIF
                         showIf(
-                            not(
-                                pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert()
-                            ) and not(
-                                pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()
-                            ) and (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())){
+                            not(periodisertInntektBTFB)
+                                    and not(periodisertInntektBTSB)
+                                    and (periodisertFribelopBTFB or periodisertFribelopBTSB)
+                        ) {
                             text (
                                 Bokmal to "det",
                                 Nynorsk to "det",
@@ -1565,7 +1533,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         )
 
                         //PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"
-                        showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring")){
+                        showIf(kravarsaksType.equalTo("sivilstandsendring")) {
                             text (
                                 Bokmal to "Fordi sivilstanden din har endret seg er ",
                                 Nynorsk to "Fordi sivilstanden din har endra seg, er ",
@@ -1573,11 +1541,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //IF( (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true) AND PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring" ) THEN   INCLUDE ENDIF
-                        showIf(
-                            (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()) and pe.vedtaksdata_kravhode_kravarsaktype()
-                                .equalTo(
-                                    "sivilstandsendring"
-                                )){
+                        showIf((periodisertInntektBTFB or periodisertInntektBTSB) and kravarsaksType.equalTo("sivilstandsendring")) {
                             text (
                                 Bokmal to "inntektene ",
                                 Nynorsk to "inntektene ",
@@ -1586,8 +1550,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF( ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert= true ) AND ( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true ) AND ( PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring" ) )THEN   INCLUDE ENDIF
                         showIf(
-                            (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()) and (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) and pe.vedtaksdata_kravhode_kravarsaktype()
-                                .equalTo("sivilstandsendring")){
+                            (periodisertInntektBTFB or periodisertInntektBTSB)
+                                    and (periodisertFribelopBTFB or periodisertFribelopBTSB)
+                                    and kravarsaksType.equalTo("sivilstandsendring")
+                        ) {
                             text (
                                 Bokmal to "og ",
                                 Nynorsk to "og ",
@@ -1596,10 +1562,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF( (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert= true) AND PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  )THEN   INCLUDE ENDIF
                         showIf(
-                            (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) and pe.vedtaksdata_kravhode_kravarsaktype()
-                                .equalTo(
-                                    "sivilstandsendring"
-                                )){
+                            (periodisertFribelopBTFB or periodisertFribelopBTSB)
+                                    and kravarsaksType.equalTo("sivilstandsendring")
+                        ) {
                             text (
                                 Bokmal to "fribeløpet ",
                                 Nynorsk to "fribeløpet ",
@@ -1607,7 +1572,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"
-                        showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring")){
+                        showIf(kravarsaksType.equalTo("sivilstandsendring")) {
                             text (
                                 Bokmal to "justert slik at de kun gjelder for den framtidige perioden du mottar barnetillegg. ",
                                 Nynorsk to "justert slik at dei berre gjeld for den framtidige perioden du får barnetillegg. ",
@@ -1618,18 +1583,17 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
-            showIf(
-                pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                    .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak())
-            ){
+            showIf(avkortningInntektsgrense.lessThan(avkortningInntektstak)) {
                 includePhrase(TBU1133_Generated)
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false) THEN      INCLUDE ENDIF
             showIf(
-                not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(
-                pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
-            ) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget())){
+                not(innvilgetBTSB)
+                        and not(innvilgetBTFB)
+                        and not(gjenlevendetilleggInnvilget)
+                        and not(ektefelletilleggInnvilget)
+            ) {
                 //[TBU2263NN, TBU2263]
 
                 paragraph {
@@ -1642,10 +1606,11 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT  ) THEN      INCLUDE ENDIF
             showIf(
-                (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
-                ) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                    .notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())){
+                (innvilgetBTSB or innvilgetBTFB)
+                        and not(gjenlevendetilleggInnvilget)
+                        and not(ektefelletilleggInnvilget)
+                        and gammeltBelop.notEqualTo(nyttBelop)
+            ) {
                 //[TBU2264NN, TBU2264]
 
                 paragraph {
@@ -1655,10 +1620,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(
-                        pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype()
-                            .equalTo("overgangsregler_2016")
-                    ){
+                    showIf(barnetilleggRegelverkType.equalTo("overgangsregler_2016")) {
                         text (
                             Bokmal to " og forskrift om overgangsregler for barnetillegg i uføretrygden",
                             Nynorsk to " og forskrift om overgangsregler for barnetillegg i uføretrygda",
@@ -1673,9 +1635,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true  ) THEN      INCLUDE ENDIF
             showIf(
-                (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
-                ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+                (innvilgetBTSB or innvilgetBTFB)
+                        and not(gjenlevendetilleggInnvilget)
+                        and ektefelletilleggInnvilget
             ){
                 //[TBU2265NN, TBU2265]
 
@@ -1686,10 +1648,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(
-                        pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype()
-                            .equalTo("overgangsregler_2016")
-                    ){
+                    showIf(barnetilleggRegelverkType.equalTo("overgangsregler_2016")) {
                         text (
                             Bokmal to " og forskrift om overgangsregler for barnetillegg i uføretrygden",
                             Nynorsk to " og forskrift om overgangsregler for barnetillegg i uføretrygda",
@@ -1703,7 +1662,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false  ) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget())){
+            showIf((innvilgetBTSB or innvilgetBTFB) and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget)) {
                 //[TBU2266NN, TBU2266]
 
                 paragraph {
@@ -1714,7 +1673,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(
-                        pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype()
+                        barnetilleggRegelverkType
                             .equalTo("overgangsregler_2016")
                     ){
                         text (
@@ -1730,12 +1689,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false) THEN      INCLUDE ENDIF
-            showIf(
-                not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
-                ) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and not(
-                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
-                )){
+            showIf(not(innvilgetBTSB) and not(innvilgetBTFB) and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget)) {
                 //[TBU2267NN, TBU2267]
 
                 paragraph {
@@ -1747,11 +1701,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN      INCLUDE ENDIF
-            showIf(
-                not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
-                ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
-            ){
+            showIf(not(innvilgetBTSB) and not(innvilgetBTFB) and not(gjenlevendetilleggInnvilget) and ektefelletilleggInnvilget) {
                 //[TBU2268NN, TBU2268]
 
                 paragraph {
@@ -1763,7 +1713,12 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //IF((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT = PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT)  THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().equalTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())){
+            showIf(
+                (innvilgetBTSB or innvilgetBTFB)
+                        and not(gjenlevendetilleggInnvilget)
+                        and not(ektefelletilleggInnvilget)
+                        and gammeltBelop.equalTo(nyttBelop)
+            ) {
                 //[TBU4014_NN, TBU4014]
 
                 paragraph {
@@ -1774,7 +1729,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(
-                        pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype()
+                        barnetilleggRegelverkType
                             .equalTo("overgangsregler_2016")
                     ){
                         text (
@@ -1790,7 +1745,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT > 0) THEN      INCLUDE ENDIF
-            showIf(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0)){
+            showIf(gammeltBelop.notEqualTo(nyttBelop) and nyttBelop.greaterThan(0)) {
                 //[TBU4015_NN, TBU4015]
 
                 title1 {
@@ -1801,44 +1756,38 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense())){
+                showIf(utbetalingsgrad.lessThan(uforegrad) and avkortningInntektstak.greaterThan(avkortningInntektsgrense)) {
                     //[TBU4044_NN, TBU4044]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Ut fra den årlige inntekten din vil uføretrygden utgjøre ".expr() + pe.nettoakk_pluss_nettorestar()
-                                .format() + " kroner. ",
-                            Nynorsk to "Ut frå den årlege inntekta di vil uføretrygda utgjere ".expr() + pe.nettoakk_pluss_nettorestar()
-                                .format() + " kroner. ",
+                            Bokmal to "Ut fra den årlige inntekten din vil uføretrygden utgjøre ".expr() + nettoRestAr.format() + " kroner. ",
+                            Nynorsk to "Ut frå den årlege inntekta di vil uføretrygda utgjere ".expr() + nettoRestAr.format() + " kroner. ",
                         )
 
                         //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = false) THEN      INCLUDE ENDIF
-                        showIf(not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()))){
+                        showIf(not(virkningFomErForsteDagIAaret)) {
                             textExpr (
-                                Bokmal to "Hittil i år har du fått utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                                    .format() + " kroner. ",
-                                Nynorsk to "Hittil i år har du fått utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                                    .format() + " kroner. ",
+                                Bokmal to "Hittil i år har du fått utbetalt ".expr() + nettoAkk.format() + " kroner. ",
+                                Nynorsk to "Hittil i år har du fått utbetalt ".expr() + nettoAkk.format() + " kroner. ",
                             )
                         }
                         textExpr (
-                            Bokmal to "Du har derfor rett til en utbetaling av uføretrygd på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                                .format() + " kroner per måned for resten av året.",
-                            Nynorsk to "Du har derfor rett til ei utbetaling av uføretrygd på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                                .format() + " kroner per månad for resten av året.",
+                            Bokmal to "Du har derfor rett til en utbetaling av uføretrygd på ".expr() + uforetrygdNetto.format() + " kroner per måned for resten av året.",
+                            Nynorsk to "Du har derfor rett til ei utbetaling av uføretrygd på ".expr() + uforetrygdNetto.format() + " kroner per månad for resten av året.",
                         )
                     }
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense())){
+                showIf(forventetInntekt.greaterThan(avkortningInntektsgrense)) {
                     //[TBU4045_NN, TBU4045]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Selv om uføretrygden din er redusert på grunn av inntekt beholder du likevel uføregraden din på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                            Bokmal to "Selv om uføretrygden din er redusert på grunn av inntekt beholder du likevel uføregraden din på ".expr() + uforegrad
                                 .format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din.",
-                            Nynorsk to "Sjølv om uføretrygda di er redusert på grunn av inntekt beheld du likevel uføregraden din på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                            Nynorsk to "Sjølv om uføretrygda di er redusert på grunn av inntekt beheld du likevel uføregraden din på ".expr() + uforegrad
                                 .format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn inntektsgrensa di.",
                         )
                     }
@@ -1846,7 +1795,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //IF( (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB > 0) OR (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB > 0) ) THEN   INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb().greaterThan(0)) or (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb().greaterThan(0))){
+            showIf(
+                (gammeltBelopBTFB.notEqualTo(nyttBelopBTFB) and nyttBelopBTFB.greaterThan(0))
+                        or (gammeltBelopBTSB.notEqualTo(nyttBelopBTSB) and nyttBelopBTSB.greaterThan(0))
+            ) {
                 //[TBU4046_NN, TBU4046]
 
                 title1 {
@@ -1857,19 +1809,19 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF( (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB) AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB <> 0 ) THEN   INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb().notEqualTo(0)){
+                showIf(gammeltBelopBTFB.notEqualTo(nyttBelopBTFB) and nyttBelopBTFB.notEqualTo(0)) {
                     //[TBU4047_NN, TBU4047]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Ut fra den samlede inntekten til deg og din ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er barnetillegget vurdert på nytt. Barnetillegget er redusert for hele året ut fra den inntekten som overstiger fribeløpet. Den årlige reduksjonen av barnetillegget er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                            Bokmal to "Ut fra den samlede inntekten til deg og din ".expr() + epsTypeBokmal + " er barnetillegget vurdert på nytt. Barnetillegget er redusert for hele året ut fra den inntekten som overstiger fribeløpet. Den årlige reduksjonen av barnetillegget er " + arligAvkortningsbelopBTFB
                                 .format() + " kroner.",
-                            Nynorsk to "Ut frå dei samla inntektene til deg og ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din er barnetillegget blitt vurdert på nytt. Barnetillegget er redusert for heile året ut frå inntekta som overstig fribeløpet. Den årlege reduksjonen av barnetillegget er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                            Nynorsk to "Ut frå dei samla inntektene til deg og ".expr() + epsTypeNynorsk + " din er barnetillegget blitt vurdert på nytt. Barnetillegget er redusert for heile året ut frå inntekta som overstig fribeløpet. Den årlege reduksjonen av barnetillegget er " + arligAvkortningsbelopBTFB
                                 .format() + " kroner.",
                         )
 
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 )) THEN   INCLUDE ENDIF
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)){
+                        showIf(justeringsbelopPerArBTFB.notEqualTo(0)) {
                             text (
                                 Bokmal to " Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor ",
                                 Nynorsk to " Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor ",
@@ -1877,7 +1829,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr > 0 )) THEN   INCLUDE ENDIF
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().greaterThan(0)){
+                        showIf(justeringsbelopPerArBTFB.greaterThan(0)) {
                             text (
                                 Bokmal to "lagt til",
                                 Nynorsk to "lagt til",
@@ -1885,7 +1837,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr < 0 )) THEN   INCLUDE ENDIF
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().lessThan(0)){
+                        showIf(justeringsbelopPerArBTFB.lessThan(0)) {
                             text (
                                 Bokmal to "trukket fra",
                                 Nynorsk to "trekt frå",
@@ -1893,38 +1845,31 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 )) THEN   INCLUDE ENDIF
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)){
+                        showIf(justeringsbelopPerArBTFB.notEqualTo(0)) {
                             textExpr (
-                                Bokmal to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
-                                    .format() + " kroner i det vi reduserer barnetillegget med for resten av året.",
-                                Nynorsk to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
-                                    .format() + " kroner i det vi har redusert barnetillegget med for resten av året.",
+                                Bokmal to " ".expr() + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi reduserer barnetillegget med for resten av året.",
+                                Nynorsk to " ".expr() + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi har redusert barnetillegget med for resten av året.",
                             )
                         }
                         textExpr (
-                            Bokmal to " Du har derfor rett til en utbetaling av barnetillegg på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                .format() + " kroner per måned for resten av året. ",
-                            Nynorsk to " Du har derfor rett til ei utbetaling av barnetillegg på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                .format() + " kroner per månad for resten av året.",
+                            Bokmal to " Du har derfor rett til en utbetaling av barnetillegg på ".expr() + nettoBTFB.format() + " kroner per måned for resten av året. ",
+                            Nynorsk to " Du har derfor rett til ei utbetaling av barnetillegg på ".expr() + nettoBTFB.format() + " kroner per månad for resten av året.",
                         )
                     }
                 }
 
                 //IF( (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB) AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB <> 0 ) THEN   INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb().notEqualTo(0)){
+                showIf(gammeltBelopBTSB.notEqualTo(nyttBelopBTSB) and nyttBelopBTSB.notEqualTo(0)) {
                     //[TBU4048_NN, TBU4048]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Ut fra den samlede inntekten din er barnetillegget vurdert på nytt. Barnetillegget er redusert for hele året ut fra den inntekten som overstiger fribeløpet. Den årlige reduksjonen av barnetillegget er ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                                .format() + " kroner.",
-                            Nynorsk to "Ut frå den samla inntekta di er barnetillegget blitt vurdert på nytt. Barnetillegget er redusert for heile året ut frå inntekta som overstig fribeløpet. Den årlege reduksjonen av barnetillegget er ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                                .format() + " kroner.",
+                            Bokmal to "Ut fra den samlede inntekten din er barnetillegget vurdert på nytt. Barnetillegget er redusert for hele året ut fra den inntekten som overstiger fribeløpet. Den årlige reduksjonen av barnetillegget er ".expr() + arligAvkortningsbelopBTSB.format() + " kroner.",
+                            Nynorsk to "Ut frå den samla inntekta di er barnetillegget blitt vurdert på nytt. Barnetillegget er redusert for heile året ut frå inntekta som overstig fribeløpet. Den årlege reduksjonen av barnetillegget er ".expr() + arligAvkortningsbelopBTSB.format() + " kroner.",
                         )
 
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 )) THEN   INCLUDE ENDIF
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)
-                        ){
+                        showIf(justeringsbelopPerArBTSB.notEqualTo(0)) {
                             text (
                                 Bokmal to " Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor ",
                                 Nynorsk to " Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor ",
@@ -1932,10 +1877,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr > 0 )) THEN   INCLUDE ENDIF
-                        showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .greaterThan(0)
-                        ){
+                        showIf(justeringsbelopPerArBTSB.greaterThan(0)) {
                             text (
                                 Bokmal to "lagt til",
                                 Nynorsk to "lagt til",
@@ -1943,10 +1885,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr < 0 )) THEN   INCLUDE ENDIF
-                        showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .lessThan(0)
-                        ){
+                        showIf(justeringsbelopPerArBTSB.lessThan(0)) {
                             text (
                                 Bokmal to "trukket fra",
                                 Nynorsk to "trekt frå",
@@ -1954,50 +1893,41 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
 
                         //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 )) THEN   INCLUDE ENDIF
-                        showIf(
-                            pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                                .notEqualTo(0)
-                        ){
+                        showIf(justeringsbelopPerArBTSB.notEqualTo(0)) {
                             textExpr (
-								Bokmal to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
-                                    .format() + " kroner i det vi reduserer barnetillegget med for resten av året.",
-								Nynorsk to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
-                                    .format() + " kroner i det vi reduserte barnetillegget med for resten av året.",
+                                Bokmal to " ".expr() + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserer barnetillegget med for resten av året.",
+                                Nynorsk to " ".expr() + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserte barnetillegget med for resten av året.",
                             )
                         }
                         textExpr (
-                            Bokmal to " Du har derfor rett til en utbetaling av barnetillegg på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .format() + " kroner per måned for resten av året.",
-                            Nynorsk to " Du har derfor rett til ei utbetaling av barnetillegg på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .format() + " kroner per månad for resten av året.",
+                            Bokmal to " Du har derfor rett til en utbetaling av barnetillegg på ".expr() + nettoBTSB.format() + " kroner per måned for resten av året.",
+                            Nynorsk to " Du har derfor rett til ei utbetaling av barnetillegg på ".expr() + nettoBTSB.format() + " kroner per månad for resten av året.",
                         )
                     }
                 }
 
                 //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) ) THEN   INCLUDE ENDIF
                 showIf(
-                    (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                        .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                        .equalTo(
-                            0
-                        ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())){
+                    (nettoBTSB.equalTo(0) and innvilgetBTSB)
+                            or (nettoBTFB.equalTo(0) and innvilgetBTFB)
+                ) {
                     //[TBU4049_NN, TBU4049]
 
                     paragraph {
                         textExpr (
-                            Bokmal to "Du får ikke utbetalt barnetillegget for ".expr() + pe.pe_ut_barnet_barna_felles_serkull() + " som ",
-                            Nynorsk to "Du får ikkje utbetalt barnetillegget for ".expr() + pe.pe_ut_barnet_barna_felles_serkull() + " som ",
+                            Bokmal to "Du får ikke utbetalt barnetillegget for ".expr() + barnetBarnaFellesSerkull + " som ",
+                            Nynorsk to "Du får ikkje utbetalt barnetillegget for ".expr() + barnetBarnaFellesSerkull + " som ",
                         )
 
                         //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) AND (   PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false   OR   (     PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true     AND     PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0) ) )THEN   INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (not(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
-                            ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .notEqualTo(
-                                    0
-                                )))){
+                            nettoBTFB.equalTo(0)
+                                    and innvilgetBTFB
+                                    and (
+                                    not(innvilgetBTSB)
+                                            or (innvilgetBTSB and nettoBTSB.notEqualTo(0))
+                                    )
+                        ) {
                             text (
                                 Bokmal to "bor med begge sine foreldre",
                                 Nynorsk to "bur med begge foreldra",
@@ -2006,13 +1936,13 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) AND (   PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false   OR   (     PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true     AND     PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0) ) )THEN   INCLUDE ENDIF
                         showIf(
-                            pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and (not(
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
-                            ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                .notEqualTo(
-                                    0
-                                )))){
+                            nettoBTSB.equalTo(0)
+                                    and innvilgetBTSB
+                                    and (
+                                    not(innvilgetBTFB)
+                                            or (innvilgetBTFB and nettoBTFB.notEqualTo(0))
+                                    )
+                        ) {
                             text (
                                 Bokmal to "ikke bor sammen med begge foreldrene",
                                 Nynorsk to "ikkje bur saman med begge foreldra",
@@ -2027,7 +1957,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
-            showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
+            showIf(gjenlevendetilleggInnvilget) {
                 includePhrase(TBU1214_Generated)
                 //[TBU2272NN, TBU2272]
 
@@ -2039,7 +1969,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
+                showIf(beregningBelopRedusert and gjenlevendetilleggInnvilget) {
                     //[TBU2273NN, TBU2273]
 
                     paragraph {
@@ -2051,7 +1981,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
+                showIf(beregningBelopOkt and gjenlevendetilleggInnvilget) {
                     //[TBU2274NN, TBU2274]
 
                     paragraph {
@@ -2065,12 +1995,12 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             }
 
             //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) {
+            showIf(ektefelletilleggInnvilget) {
                 includePhrase(TBU2275_Generated)
             }
 
             //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) {
+            showIf(ektefelletilleggInnvilget) {
                 //[TBU2276NN, TBU2276]
 
                 paragraph {
@@ -2091,16 +2021,16 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             includePhrase(TBU2278_Generated(pe))
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN      INCLUDE ENDIF
-            showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense())){
+            showIf(forventetInntekt.lessThan(avkortningInntektstak) and avkortningInntektstak.greaterThan(avkortningInntektsgrense)) {
                 includePhrase(TBU2279_Generated(pe))
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak <= PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN      INCLUDE ENDIF
             showIf(
-                pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                    .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
+                forventetInntekt
+                    .lessThan(avkortningInntektstak) and avkortningInntektstak
                     .lessThanOrEqual(
-                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+                        avkortningInntektsgrense
                     )){
                 includePhrase(TBU3740_Generated(pe))
             }
@@ -2171,7 +2101,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 // Når feature toggelen slettes skal resten av if-en bli igjen, også det i orShow
-                showIf(FeatureToggles.pl7822EndretInntekt.expr().enabled() and pe.vedtaksdata_virkningfom().legacyGreaterThanOrEqual(LocalDate.of(2023, 1, 1)) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                showIf(FeatureToggles.pl7822EndretInntekt.expr().enabled() and virkningFom.legacyGreaterThanOrEqual(LocalDate.of(2023, 1, 1)) and innvilgetBTFB) {
                     text(
                         Bokmal to "Hva kan holdes utenfor personinntekten til den andre forelderen?",
                         Nynorsk to "Kva kan haldast utanfor personinntekta til den andre forelderen?",
