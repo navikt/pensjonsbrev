@@ -20,6 +20,7 @@ data class BarnepensjonBeregning(
     val trygdetid: List<Trygdetid>,
     val erForeldreloes: Boolean = false,
     val forskjelligTrygdetid: ForskjelligTrygdetid? = null,
+    val erYrkesskade: Boolean = false,
 ) : BrevDTO {
     val harForskjelligMetode = forskjelligTrygdetid?.harForskjelligMetode == true
 }
@@ -42,6 +43,7 @@ data class OmstillingsstoenadBeregning(
     val trygdetid: Trygdetid,
     val oppphoersdato: LocalDate? = null,
     val opphoerNesteAar: Boolean,
+    val erYrkesskade: Boolean = false,
 ) : BrevDTO
 
 data class OmstillingsstoenadBeregningRevurderingRedigertbartUtfall(
