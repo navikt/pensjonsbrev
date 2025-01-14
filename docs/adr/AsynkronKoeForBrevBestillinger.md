@@ -19,21 +19,42 @@ kjørende for å kunne håndtere store volum synkrone bestillinger.
 * [Uavklart ansvarsforhold ved tekniske feilmeldinger fra brevløsningen]
 * [Kostnader ved ubrukt reservert CPU kapasitet på NAIS]
 
+## Decision Outcome
+Vi lager en kafka kø. Meldings-størrelsen kan økes, og ved test virker det som om meldingene 
+er godt innenfor grensene. Kafka er godt støttet av NAIS og utviklere har bedre kjennskap til Kafka enn Redis.
+
+### Positive Consequences <!-- optional -->
+
+* Vi skjuler en del tekniske feil som kun vi skal agere på fra konsumenten.
+* Vi samler kompleksitet fra for retry logikk og håndtering av våres tekniske feil ett sted.
+* Vi kan skalere fort basert på antall meldinger i køen.
+* Vi kan spare penger ved å redusere alltid reservert kapasitet på NAIS.
+
+### Negative consequences <!-- optional -->
+
+* Vi får driftsansvar for køen.
+* Vi får mer kompleksitet i kodebasen våres.
+* Vi må integrere tilbake til applikasjonen som kaller oss.
+* 
 ## Considered Options
 
 * [option 1] Lage en kafka kø mellom brevbaker og pdf-bygger
-* [option 2] 
-* [option 3]
+* [option 2] Lage en kafka redis kø mellom brevbaker og pdf-bygger
 
 ### [option 1] Lage en kafka kø mellom brevbaker og pdf-bygger
 
 Lage en asynkron kø som tar i mot letter markup og produserer PDF.
 
 Fordeler:
-* Vi skjuler en del tekniske feil som kun vi skal agere på fra konsumenten.
-* Vi samler kompleksitet fra for retry logikk og håndtering av våres tekniske feil ett sted.
-* Vi kan skalere fort basert på antall meldinger i køen.
-* Vi kan spare penger ved å redusere alltid reservert kapasitet på NAIS.
+* Kafka er mye brukt i NAV, så vi får bruke mye eksisterende kompetanse og GCP støtte
 Ulemper:
-* Vi får driftsansvar for køen.
-* Vi får mer kompleksitet i kodebasen våres.
+* Har begrenset kø-størrelse på 1MB, så vi kan i niche cases risikere at brev blir for store.
+
+
+### [option 2] Lage en redis kø mellom brevbaker og pdf-bygger
+
+Fordeler:
+* Støtter større task elementer (512MB)
+Ulemper:
+* Ikke mange i nav som bruker redis for kø-mekanismer.
+* Mer implementasjon må til for kø-mekanismen.
