@@ -1,7 +1,10 @@
 package no.nav.pensjon.brev
 
-data class UnleashToggle(val name: String) {
-    fun isEnabled() = FeatureToggleHandler.isEnabled(this)
+import no.nav.pensjon.brevbaker.api.model.FeatureToggle
+
+
+data class UnleashToggle(val name: String) : FeatureToggle {
+    override fun isEnabled() = FeatureToggleHandler.isEnabled(this)
 }
 
 object FeatureToggles {
