@@ -1,25 +1,43 @@
-import { produce } from "immer";
+import type { Draft } from "immer";
 
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import type { AnyBlock, Content, Item, TextContent } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import type {
+  AnyBlock,
+  Content,
+  Identifiable,
+  Item,
+  ItemList,
+  LiteralValue,
+  TextContent,
+  VariableValue,
+} from "~/types/brevbakerTypes";
+import { ElementTags, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
-import { MergeTarget } from "../actions/merge";
 import type { ContentGroup } from "./state";
 
-export function isTextContent(content?: Content | null): content is TextContent {
-  return content?.type === LITERAL || content?.type === VARIABLE;
+export function isTextContent(obj: Draft<Identifiable | null | undefined>): obj is Draft<TextContent>;
+export function isTextContent(obj: Content | null | undefined): obj is TextContent;
+export function isTextContent(obj: Identifiable | null | undefined): obj is TextContent {
+  return isLiteral(obj) || isVariable(obj);
 }
 
-export function getMergeIds(sourceId: number, target: MergeTarget): [number, number] {
-  switch (target) {
-    case MergeTarget.PREVIOUS: {
-      return [sourceId - 1, sourceId];
-    }
-    case MergeTarget.NEXT: {
-      return [sourceId, sourceId + 1];
-    }
-  }
+export function isLiteral(obj: Draft<Identifiable | null | undefined>): obj is Draft<LiteralValue>;
+export function isLiteral(obj: Identifiable | null | undefined): obj is LiteralValue {
+  return !!obj && "type" in obj && obj.type === LITERAL;
+}
+
+export function isVariable(obj: Draft<Identifiable | null | undefined>): obj is Draft<VariableValue>;
+export function isVariable(obj: Identifiable | null | undefined): obj is VariableValue {
+  return !!obj && "type" in obj && obj.type === VARIABLE;
+}
+
+export function isItemList(obj: Draft<Identifiable | null | undefined>): obj is Draft<ItemList>;
+export function isItemList(obj: Identifiable | null | undefined): obj is ItemList {
+  return !!obj && "type" in obj && obj.type === ITEM_LIST;
+}
+
+export function isFritekst(literal: LiteralValue): boolean {
+  return literal.tags.includes(ElementTags.FRITEKST);
 }
 
 export function isEmptyContent(content: Content) {
@@ -36,24 +54,6 @@ export function isEmptyContent(content: Content) {
 
 export function isEmptyContentGroup(group: ContentGroup) {
   return group.content.length === 1 && isEmptyContent(group.content[0]);
-}
-
-export function mergeContentArrays<T extends Content>(first: T[], second: T[]): T[];
-export function mergeContentArrays(first: Content[], second: Content[]) {
-  return produce(first, (draft) => {
-    const lastContentOfFirst = draft[first.length - 1];
-    const firstContentOfSecond = second[0];
-
-    if (lastContentOfFirst.type === LITERAL && firstContentOfSecond.type === LITERAL) {
-      // merge adjoining literals
-      lastContentOfFirst.editedText =
-        (lastContentOfFirst.editedText ?? lastContentOfFirst.text) +
-        (firstContentOfSecond.editedText ?? firstContentOfSecond.text);
-      draft.splice(first.length, 0, ...second.slice(1));
-    } else {
-      draft.splice(first.length, 0, ...second);
-    }
-  });
 }
 
 export function isEmptyItem(item: Item): boolean {

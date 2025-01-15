@@ -3,7 +3,6 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.IntBroek
@@ -11,7 +10,6 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
-import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTO
 import java.time.LocalDate
@@ -60,6 +58,7 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
                     grunnbeloep = Kroner(118620),
                     antallBarn = 1,
                     utbetaltBeloep = Kroner(8000),
+                    harForeldreloessats = false,
                 ),
                 BarnepensjonBeregningsperiode(
                     datoFOM = LocalDate.of(2024, Month.MAY, 1),
@@ -67,6 +66,7 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
                     grunnbeloep = Kroner(118620),
                     antallBarn = 1,
                     utbetaltBeloep = Kroner(10000),
+                    harForeldreloessats = false,
                 ),
             ),
             sisteBeregningsperiode = BarnepensjonBeregningsperiode(
@@ -75,7 +75,8 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
                 grunnbeloep = Kroner(118620),
                 antallBarn = 1,
                 utbetaltBeloep = Kroner(10000),
-            ),
+                harForeldreloessats = false,
+                ),
             trygdetid = listOf(
                 Trygdetid(
                     trygdetidsperioder = listOf(
@@ -106,10 +107,6 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
             erForeldreloes = true,
             bruktTrygdetid = bruktTrygdetid
         ),
-        etterbetaling = BarnepensjonEtterbetaling(
-            inneholderKrav = true,
-            etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
-        ),
         frivilligSkattetrekk = true,
         brukerUnder18Aar = true,
         bosattUtland = false,
@@ -118,17 +115,15 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
         harUtbetaling = true,
         feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
         erMigrertYrkesskade = false,
+        erEtterbetaling = false,
     )
 }
 
 fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderingRedigerbartUtfallDTO(
-    etterbetaling = BarnepensjonEtterbetaling(
-        inneholderKrav = true,
-        etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
-    ),
     harUtbetaling = true,
     feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
     brukerUnder18Aar = true,
     bosattUtland = false,
-    frivilligSkattetrekk = false
+    frivilligSkattetrekk = false,
+    erEtterbetaling = false
 )

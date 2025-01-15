@@ -12,6 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.etterbetaling
@@ -23,7 +24,7 @@ data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
     val utbetalingsbeloep: Kroner,
     val etterbetaling: Boolean,
     val tidligereFamiliepleier: Boolean = false,
-)
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO>,

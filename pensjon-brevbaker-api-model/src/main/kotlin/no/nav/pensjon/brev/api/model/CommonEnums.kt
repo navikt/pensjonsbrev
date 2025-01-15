@@ -50,6 +50,7 @@ enum class Sakstype {
 
     companion object {
         val all: Set<Sakstype> = entries.toSet()
+        val pensjon: Set<Sakstype> = setOf(AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG)
     }
 }
 
@@ -73,4 +74,14 @@ enum class Beregningsmetode {
     SOR_KOREA,
     SVEITS,
     USA
+}
+
+enum class YtelseForAldersovergangKode {
+    FAM_PL,
+    GJP_AVKORT,
+    GJP_FULL,
+    INGEN_YT,
+    UT,
+    UT_AP_GRAD,
+    UT_GRAD,
 }

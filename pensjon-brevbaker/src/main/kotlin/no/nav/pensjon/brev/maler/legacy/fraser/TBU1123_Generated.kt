@@ -15,8 +15,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.formatMaanedAar
 
+
 data class TBU1123_Generated(
-	val pe: Expression<PE>,
+    val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU1123NN, TBU1123, TBU1123EN]

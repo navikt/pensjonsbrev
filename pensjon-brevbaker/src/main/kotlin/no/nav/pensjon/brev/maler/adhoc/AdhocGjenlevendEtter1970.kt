@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.adhoc
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -14,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970
+    override val kode = Pesysbrevkoder.AutoBrev.PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
         name = kode.name,
         letterDataType = EmptyBrevdata::class,

@@ -1,17 +1,20 @@
+import { type BrevInfo, Distribusjonstype } from "../../src/types/brev";
+import { nyBrevInfo } from "../utils/brevredigeringTestUtils";
+
 describe("Brevbehandler", () => {
-  const kladdBrev = {
+  const kladdBrev = nyBrevInfo({
     id: 1,
-    opprettetAv: "Ola Nordmann",
+    opprettetAv: { id: "Z990297", navn: "Ola Nordmann" },
     opprettet: "2021-09-01T12:00:00",
-    sistredigertAv: "Ola Nordmann",
+    sistredigertAv: { id: "Z990297", navn: "Ola Nordmann" },
     sistredigert: "2021-09-01T12:00:00",
     brevkode: "INFORMASJON_OM_SAKSBEHANDLINGSTID",
     brevtittel: "Informasjon om saksbehandlingstid",
     status: { type: "Kladd" },
-    distribusjonstype: "SENTRALPRINT",
-  };
+    distribusjonstype: Distribusjonstype.SENTRALPRINT,
+  });
 
-  const klarBrev = { ...kladdBrev, status: { type: "Klar" } };
+  const klarBrev: BrevInfo = { ...kladdBrev, status: { type: "Klar" } };
 
   const brevSomSendesSomLokalPrint = {
     ...klarBrev,
@@ -364,7 +367,7 @@ describe("Brevbehandler", () => {
   });
 
   it("et arkivert brev kan ikke endre på noe informasjon, og kan kun sendes på nytt", () => {
-    const arkivertBrev = { ...klarBrev, journalpostId: 123_456 };
+    const arkivertBrev: BrevInfo = { ...klarBrev, status: { type: "Arkivert" }, journalpostId: 123_456 };
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([arkivertBrev]);
@@ -381,5 +384,27 @@ describe("Brevbehandler", () => {
     cy.contains("Ferdigstill 1 brev").click("left");
     cy.contains("Ja, send valgte brev").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
+  });
+
+  it("brev som har uendret fritekstfelter kan ikke gjøres klar til sending", () => {
+    const nyBrevInfo2 = nyBrevInfo({});
+
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
+      request.reply([nyBrevInfo2]);
+    });
+    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
+      expect(request.body).deep.equal({
+        brevId: 1,
+        laastForRedigering: true,
+        saksId: "123456",
+      });
+      request.reply({ statusCode: 400, body: { message: "dette er en feil" } });
+    });
+
+    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.contains("Brevet er klart for sending").click();
+
+    //TODO - Her skal vi egentlig på en faktisk feilmelding om at brevet inneholder uendret fritekst
+    cy.contains("Noe gikk galt").should("be.visible");
   });
 });

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
+import no.nav.pensjon.brev.UnleashToggle
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
@@ -28,10 +29,16 @@ import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import java.time.LocalDate
 
+enum class LetterExampleBrevkode : Brevkode.Automatisk {
+    TESTBREV;
+
+    override fun kode() = name
+}
+
 @TemplateModelHelpers
 object LetterExample : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
+    override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
@@ -99,6 +106,15 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                     textExpr(
                         Bokmal to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
                         Nynorsk to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
+                    )
+                }
+            }
+
+            showIf(UnleashToggle("" + System.currentTimeMillis()).expr().enabled()) {
+                paragraph {
+                    text(
+                        Bokmal to "Tekst styrt av funksjonsbryter",
+                        Nynorsk to "Tekst styrt av funksjonsbrytar"
                     )
                 }
             }

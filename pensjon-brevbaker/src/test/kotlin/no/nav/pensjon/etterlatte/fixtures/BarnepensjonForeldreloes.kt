@@ -4,9 +4,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
-import no.nav.pensjon.etterlatte.maler.EtterbetalingPeriodeValg
 import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
 import no.nav.pensjon.etterlatte.maler.ForskjelligTrygdetid
 import no.nav.pensjon.etterlatte.maler.IntBroek
@@ -91,7 +89,8 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
                     datoTOM = LocalDate.of(2023, Month.JULY, 31),
                     grunnbeloep = Kroner(123456),
                     antallBarn = 2,
-                    utbetaltBeloep = Kroner(6234)
+                    utbetaltBeloep = Kroner(6234),
+                    harForeldreloessats = true,
                 )
             ),
             sisteBeregningsperiode = BarnepensjonBeregningsperiode(
@@ -99,7 +98,8 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
                 datoTOM = LocalDate.of(2023, Month.JULY, 31),
                 grunnbeloep = Kroner(123456),
                 antallBarn = 2,
-                utbetaltBeloep = Kroner(6234)
+                utbetaltBeloep = Kroner(6234),
+                harForeldreloessats = true,
             ),
             trygdetid = listOf(tt1, tt2),
             bruktTrygdetid = tt2,
@@ -112,10 +112,6 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
             ),
             erForeldreloes = true,
         ),
-        etterbetaling = BarnepensjonEtterbetaling(
-            inneholderKrav = true,
-            etterbetalingPeriodeValg = EtterbetalingPeriodeValg.FRA_3_MND,
-        ),
         frivilligSkattetrekk = true,
         bosattUtland = true,
         brukerUnder18Aar = true,
@@ -124,6 +120,7 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
         erGjenoppretting = false,
         vedtattIPesys = false,
         erMigrertYrkesskade = false,
+        erEtterbetaling = false
     )
 }
 
@@ -133,7 +130,8 @@ fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedig
         datoTOM = LocalDate.of(2023, Month.JULY, 31),
         grunnbeloep = Kroner(123456),
         antallBarn = 2,
-        utbetaltBeloep = Kroner(6234)
+        utbetaltBeloep = Kroner(6234),
+        harForeldreloessats = true,
     )
     val foersteDoed = YearMonth.now().minusMonths(6)
     val andreDoed = YearMonth.now().minusMonths(3).atDay(1)

@@ -1,31 +1,32 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { Mock } from "vitest";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
+import type { CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
-import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
+import { ElementTags, PARAGRAPH } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 
-const content: LiteralValue[] = [
-  { type: LITERAL, id: 1, text: "Heisann", editedText: null },
-  { type: LITERAL, id: 2, text: "Velkommen", editedText: null },
-];
+const content: LiteralValue[] = [newLiteral({ id: 1, text: "Heisann" }), newLiteral({ id: 2, text: "Velkommen" })];
 
 const block: ParagraphBlock = {
   id: 1,
+  parentId: null,
   editable: true,
   type: PARAGRAPH,
   deletedContent: [],
   content,
 };
 const editorState = letter(block, block, block);
-const setEditorState = vi.fn<[(l: LetterEditorState) => LetterEditorState]>();
+const setEditorState: Mock<CallbackReceiver<LetterEditorState>> = vi.fn();
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -45,31 +46,33 @@ function setup() {
 const complexEditorState = letter(
   paragraph(
     variable("Dokumentet starter med variable"),
-    literal("første literal"),
+    literal({ text: "første literal" }),
     variable("X"),
-    literal("andre literal"),
+    literal({ text: "andre literal", tags: [ElementTags.FRITEKST] }),
   ),
   paragraph(variable("Paragraf med kun variable")),
-  paragraph(literal("paragraf med kun tekst")),
+  paragraph(literal({ text: "paragraf med kun tekst" })),
   paragraph(
-    itemList(
-      item(literal("1. item")),
-      item(variable("2. item variable")),
-      item(literal("3. item"), variable("med variable")),
-      item(literal("nth item")),
-    ),
+    itemList({
+      items: [
+        item(literal({ text: "1. item" })),
+        item(variable("2. item variable")),
+        item(literal({ text: "3. item" }), variable("med variable")),
+        item(literal({ text: "nth item" })),
+      ],
+    }),
   ),
-  paragraph(literal("Dokumentet avsluttes med literal")),
+  paragraph(literal({ text: "Dokumentet avsluttes med literal" })),
 );
 
-function setupComplex() {
+function setupComplex(stateOverride?: LetterEditorState) {
   return {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider
-        value={{ freeze: false, error: false, editorState: complexEditorState, setEditorState }}
+        value={{ freeze: false, error: false, editorState: stateOverride ?? complexEditorState, setEditorState }}
       >
-        {complexEditorState.redigertBrev.blocks.map((block, blockIndex) => (
+        {(stateOverride ?? complexEditorState).redigertBrev.blocks.map((block, blockIndex) => (
           <div className={block.type} key={blockIndex}>
             <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
           </div>
@@ -146,7 +149,7 @@ describe("backspaceHandler", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.merge(editorState, { blockIndex: 0, contentIndex: 1 }, MergeTarget.PREVIOUS),
+      Actions.merge(editorState, { blockIndex: 0, contentIndex: 0 }, MergeTarget.PREVIOUS),
     );
   });
   test("backspace at beginning of block, but not before first character of TextContent, does not trigger merge", async () => {
@@ -263,6 +266,26 @@ describe("ArrowLeft will move focus to previous editable content", () => {
       itemContentIndex: 0,
     });
   });
+  test("When marked a fritekst-felt, 2 arrow-lefts required to move to next editable content", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("andre literal"));
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{ArrowLeft}");
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{ArrowLeft}");
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+    });
+  });
 });
 describe("ArrowRight will move focus to next editable content", () => {
   test("unless already at the end of the document", async () => {
@@ -305,6 +328,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     });
 
     await user.keyboard("{ArrowRight}");
+    await user.keyboard("{ArrowRight}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
@@ -329,5 +353,85 @@ describe("ArrowRight will move focus to next editable content", () => {
       itemIndex: 3,
       itemContentIndex: 0,
     });
+  });
+  test("When marked a fritekst-felt, 2 arrow-rights required to move to next editable content", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("andre literal"));
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{ArrowRight}");
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{ArrowRight}");
+    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+      blockIndex: 2,
+      contentIndex: 0,
+    });
+  });
+});
+
+describe("onClickHandler", () => {
+  test("clicking on a fritekst variable will select the whole element", async () => {
+    const { user } = setupComplex();
+
+    await user.click(screen.getByText("andre literal"));
+    const selection = globalThis.getSelection();
+    expect(selection).not.toBeNull();
+    expect(selection?.toString()).toBe("andre literal");
+  });
+
+  test("clicking on a fritekst variable that has been edited should not select the whole element", async () => {
+    const state = letter(
+      paragraph(
+        literal({ text: "første literal" }),
+        variable("X"),
+        newLiteral({ text: "andre literal", editedText: "Hei på deg", tags: [ElementTags.FRITEKST] }),
+      ),
+    );
+    const { user } = setupComplex(state);
+
+    await user.click(screen.getByText("Hei på deg"));
+    const selection = globalThis.getSelection();
+    expect(selection).not.toBeNull();
+    expect(selection?.toString()).toBe("");
+  });
+});
+
+describe("onFocusHandler", () => {
+  test("tabbing through a fritkest variable will select the whole element", async () => {
+    const { user } = setupComplex();
+
+    await user.click(screen.getByText("Dokumentet starter med variable"));
+    await user.tab();
+    const selection = globalThis.getSelection();
+    expect(selection).not.toBeNull();
+    expect(selection?.toString()).toBe("andre literal");
+  });
+  test("tabbing through a fritkest variable that has been edited should not be focused", async () => {
+    const state = letter(
+      paragraph(
+        literal({ text: "første literal" }),
+        variable("X"),
+        newLiteral({
+          text: "andre literal",
+          editedText: "Denne skal ikke bli fokusert fordi den er redigert",
+          tags: [ElementTags.FRITEKST],
+        }),
+        newLiteral({ text: "tredje literal", tags: [ElementTags.FRITEKST] }),
+      ),
+    );
+    const { user } = setupComplex(state);
+
+    await user.click(screen.getByText("første literal"));
+    await user.tab();
+    const selection = globalThis.getSelection();
+    expect(selection).not.toBeNull();
+    expect(selection?.toString()).toBe("tredje literal");
   });
 });

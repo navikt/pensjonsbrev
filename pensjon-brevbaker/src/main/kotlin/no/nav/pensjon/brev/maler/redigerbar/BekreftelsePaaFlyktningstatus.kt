@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -24,7 +24,7 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     // PE_IY_03_049
-    override val kode = Brevkode.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS
+    override val kode = Pesysbrevkoder.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = Sakstype.all
@@ -49,18 +49,8 @@ object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdat
         outline {
             paragraph {
                 textExpr(
-                    Bokmal to felles.avsenderEnhet.navn
-                            + " ønsker å få bekreftet om følgende person er registrert med flyktningstatus hos dere:"
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to felles.bruker.fulltNavn()
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to felles.bruker.foedselsnummer.value
+                    Bokmal to felles.avsenderEnhet.navn + " ønsker å få bekreftet om " + felles.bruker.fulltNavn() + " med fødselsnummer " +
+                            felles.bruker.foedselsnummer.value + " er registrert med flyktningstatus hos dere."
                 )
             }
             paragraph {

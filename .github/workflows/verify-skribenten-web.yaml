@@ -6,11 +6,39 @@ on:
       - 'main'
     paths:
       - .github/workflows/verify-skribenten-web.yaml
-      - skribenten-web/frontend/**
+      - skribenten-web/**
 
 jobs:
-  verify:
-    name: Verify tests, lint and typescript errors
+  verify-bff:
+    name: Verify bff tests, lint and typescript errors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+      - name: Install bff dependencies
+        working-directory: skribenten-web/bff
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: Run ESLint
+        working-directory: skribenten-web/bff
+        run: npm run lint
+
+      - name: Check for typescript errors
+        working-directory: skribenten-web/bff
+        run: npm run check-types
+
+      - name: Build bff
+        working-directory: skribenten-web/bff
+        run: npm run build
+
+  verify-frontend:
+    name: Verify frontend tests, lint and typescript errors
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

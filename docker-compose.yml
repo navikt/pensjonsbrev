@@ -1,5 +1,4 @@
 #Used for local testing purposes
-version: '3.8'
 services:
   pdf-bygger:
     build: ./pdf-bygger
@@ -12,6 +11,7 @@ services:
       - "5016:5006"
   pensjon-brevbaker:
     environment:
+      - NAIS_APP_NAME=brevbaker
       - PDF_BUILDER_URL=http://pdf-bygger:8080
       - AZURE_OPENID_CONFIG_JWKS_URI=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
@@ -23,6 +23,8 @@ services:
     ports:
       - "8080:8080"
       - "5015:5005" # debug port
+    env_file:
+      - ./pensjon-brevbaker/secrets/unleash.env
   skribenten-backend:
     profiles:
       - skribenten
@@ -72,6 +74,7 @@ services:
       - AD_GROUP_Fortrolig_Adresse=ea930b6b-9397-44d9-b9e6-f4cf527a632a
       - AD_GROUP_Strengt_Fortrolig_Adresse=5ef775f2-61f8-4283-bf3d-8d03f428aa14
       - AD_GROUP_EndreStrengtFortroligUtland=fc792042-93d8-4d5e-a501-55c45c03c576
+      - AD_GROUP_Attestant=63f46f74-84a8-4d1c-87a8-78532ab3ae60
       - NORG2_URL=https://norg2.intern.dev.nav.no/norg2/
 
   skribenten-backend-db:
@@ -118,10 +121,10 @@ services:
       - WONDERWALL_OPENID_PROVIDER=azure
       - WONDERWALL_INGRESS=http://localhost:8083
       - WONDERWALL_BIND_ADDRESS=0.0.0.0:8083
-      - WONDERWALL_UPSTREAM_HOST=skritenben-bff:8084
+      - WONDERWALL_UPSTREAM_HOST=skribenten-bff:8084
       - WONDERWALL_LOG_LEVEL=debug
       - WONDERWALL_LOG_FORMAT=text
-  skritenben-bff:
+  skribenten-bff:
     profiles:
       - skribenten
     build:
@@ -153,6 +156,9 @@ services:
       BREVBAKER_API_URL: "http://pensjon-brevbaker:8080"
 
   locust-master:
+    depends_on:
+      locust-worker:
+        condition: service_started
     profiles:
       - locust
     image: locustio/locust

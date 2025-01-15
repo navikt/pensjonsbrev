@@ -32,12 +32,12 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTO
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTO
@@ -119,20 +119,20 @@ object Fixtures {
             OmstillingsstoenadRevurderingRedigerbartUtfallDTO::class -> createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() as T
             OmstillingsstoenadOpphoerDTO::class -> createOmstillingsstoenadOpphoerDTO() as T
             OmstillingsstoenadOpphoerRedigerbartUtfallDTO::class -> createOmstillingsstoenadpphoerRedigerbartUtfallDTO() as T
-            OmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktVarselbrevInnholdDTO() as T
             OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO() as T
             OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO() as T
             OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon6mndDto() as T
             OmstillingsstoenadVarselAktivitetspliktDTO::class -> createOmstillingsstoenadVarselAktivitetspliktDTO() as T
             OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO::class -> createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() as T
 
-            OmstillingsstoenadInntektsjusteringVedtakDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
+            AarligInntektsjusteringVedtakDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
             OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfallDTO() as T
 
             TilbakekrevingBrevDTO::class -> createTilbakekrevingFerdigDTO() as T
             TilbakekrevingRedigerbartBrevDTO::class -> createTilbakekrevingRedigerbartBrevDTO() as T
 
             AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
+            KlageSaksbehandlingstidDTO::class -> createKlageSaksbehandlingstidDtoTestI() as T
             AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T
             KlageOversendelseBlankettDTO::class -> createKlageOversendelseBlankettDTO() as T
             KlageOversendelseBrukerDTO::class -> createKlageOversendelseBrukerDTO() as T

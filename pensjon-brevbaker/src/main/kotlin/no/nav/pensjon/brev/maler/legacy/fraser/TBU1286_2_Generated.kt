@@ -21,7 +21,6 @@ data class TBU1286_2_Generated(
     val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        //[TBU1286.2, TBU1286.2_NN, TBU1286.2_EN]
 
         paragraph {
             text(

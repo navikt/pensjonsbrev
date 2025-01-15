@@ -8,118 +8,153 @@
   },
   "blocks": [
     {
-      "id": -29856172,
+      "id": 1,
+      "parentId": null,
       "editable": true,
       "content": [
         {
-          "id": 2054713812,
+          "id": 11,
+          "parentId": 1,
           "text": "Denne blokken[CP1-1] ",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         },
         {
-          "id": -169301316,
+          "id": 12,
+          "parentId": 1,
           "text": "VARIABLE-MED-LITT-LENGDE",
           "type": "VARIABLE"
         },
         {
-          "id": -1820992704,
+          "id": 13,
+          "parentId": 1,
           "text": "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
       "type": "PARAGRAPH"
     },
     {
-      "id": -1125430838,
+      "id": 2,
+      "parentId": null,
       "editable": true,
       "content": [
         {
-          "id": -1505022304,
+          "id": 21,
+          "parentId": 2,
           "text": "[CP2-1]Her vil vi teste om piltast opp/ned",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         },
         {
-          "id": 1762521580,
+          "id": 22,
+          "parentId": 2,
           "text": "ØVRE-VARIABLE",
           "type": "VARIABLE"
         },
         {
-          "id": 1027473067,
+          "id": 23,
+          "parentId": 2,
           "text": "fungerer mellom egne avsnitt",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
       "type": "PARAGRAPH"
     },
     {
-      "id": -1125430838,
+      "id": 3,
+      "parentId": null,
       "editable": true,
       "content": [
         {
-          "id": -1505022304,
+          "id": 31,
+          "parentId": 3,
           "text": "[CP2-2]Her vil vi",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         },
         {
-          "id": 1762521580,
+          "id": 32,
+          "parentId": 3,
           "text": "NEDRE-VARIABLE",
           "type": "VARIABLE"
         },
         {
-          "id": 1027473067,
+          "id": 33,
+          "parentId": 3,
           "text": " teste om piltast opp/ned fungerer mellom egne avsnitt[CP2-3]",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
       "type": "PARAGRAPH"
     },
     {
-      "id": 1620092169,
+      "id": 4,
+      "parentId": null,
       "editable": true,
       "content": [
         {
-          "id": 1620092138,
+          "id": 41,
+          "parentId": 4,
           "text": "Tittel over punktliste",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
       "type": "TITLE1"
     },
     {
-      "id": -1125430838,
+      "id": 5,
+      "parentId": null,
       "editable": true,
       "content": [
         {
-          "id": 1993244052,
+          "id": 51,
+          "parentId": 5,
           "items": [
             {
+              "id": 511,
+              "parentId": 51,
               "content": [
                 {
-                  "id": -1890568417,
+                  "id": 5111,
+                  "parentId": 511,
                   "text": "Punkt 1. Dette er et veldig langt punkt kun av den grunn at vi ønsker helst, mest sannsynlig, at denne skal brekke over to linjer[CP3-1]",
-                  "type": "LITERAL"
+                  "type": "LITERAL",
+                  "tags": []
                 }
               ]
             },
             {
+              "id": 512,
+              "parentId": 51,
               "content": [
                 {
-                  "id": 935219458,
+                  "id": 5121,
+                  "parentId": 512,
                   "text": "Punkt 2. Migrere brev[CP3-2]",
-                  "type": "LITERAL"
+                  "type": "LITERAL",
+                  "tags": []
                 }
               ]
             },
             {
+              "id": 513,
+              "parentId": 51,
               "content": [
                 {
-                  "id": -1163733415,
+                  "id": -5131,
+                  "parentId": 513,
                   "text": "Punkt 3. Øk budjsettet[CP3-3]",
-                  "type": "LITERAL"
+                  "type": "LITERAL",
+                  "tags": []
                 }
               ]
             }
@@ -131,26 +166,29 @@
       "type": "PARAGRAPH"
     },
     {
-      "id": 1620092169,
+      "id": 6,
+      "parentId": null,
       "editable": true,
       "content": [
         {
-          "id": 1620092138,
+          "id": 61,
           "text": "Tittel under punktliste",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],
       "type": "TITLE2"
     },
     {
-      "id": -349491824,
+      "id": 7,
       "editable": true,
       "content": [
         {
-          "id": -349491855,
+          "id": 71,
           "text": "Siste avsnitt for å teste at pil ned tar oss til end of line.[CP4-1]",
-          "type": "LITERAL"
+          "type": "LITERAL",
+          "tags": []
         }
       ],
       "deletedContent": [],

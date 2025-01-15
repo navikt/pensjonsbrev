@@ -43,7 +43,6 @@ data class TBU1122_Generated(
 				English to ".",
 			)
 		}
-
     }
 }
         

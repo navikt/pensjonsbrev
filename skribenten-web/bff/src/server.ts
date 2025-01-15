@@ -2,10 +2,10 @@ import express from "express";
 
 import { setupActuators } from "./actuators.js";
 import { setupSkribentenBackendApiProxy } from "./apiProxy.js";
-import { errorHandling } from "./errorHandler.js";
 import { setupStaticRoutes } from "./frontendRoute.js";
 import { internalRoutes } from "./internalRoutes.js";
-import { verifyJWTToken } from "./tokenValidation.js";
+import { setupLogging } from "./logging.js";
+import { verifyToken } from "./tokenValidation.js";
 
 const server = express();
 
@@ -13,15 +13,14 @@ const server = express();
 server.use(express.urlencoded({ extended: true }));
 
 setupActuators(server);
+setupLogging(server);
 
 server.set("trust proxy", 1);
 
-server.use(verifyJWTToken);
-
+server.use(verifyToken);
 
 setupSkribentenBackendApiProxy(server);
 internalRoutes(server);
 setupStaticRoutes(server);
-server.use(errorHandling);
 
 export { server };

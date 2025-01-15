@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Bleed, BodyShort, CopyButton } from "@navikt/ds-react";
+import { BodyShort, CopyButton } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet } from "@tanstack/react-router";
@@ -59,7 +59,9 @@ function SakBreadcrumbsPage() {
     <FerdigstillResultatContextProvider>
       <MottakerContextProvider>
         <SakInfoBreadcrumbs sak={sakContext?.sak} />
-        <Outlet />
+        <div className="page-margins">
+          <Outlet />
+        </div>
       </MottakerContextProvider>
     </FerdigstillResultatContextProvider>
   );
@@ -79,14 +81,12 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
   }
 
   return (
-    <Bleed
-      asChild
+    <div
       css={css`
         position: sticky;
         top: 48px;
         z-index: var(--a-z-index-focus);
       `}
-      marginInline="full"
     >
       <div
         css={css`
@@ -121,6 +121,6 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
         </BodyShort>
         {vedtaksId && <BodyShort size="small">vedtaksId: {vedtaksId}</BodyShort>}
       </div>
-    </Bleed>
+    </div>
   );
 }

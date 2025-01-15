@@ -6,4 +6,5 @@ data class Ytelsesgrunnlag(
     val beregningsgrunnlagordinar: BeregningsgrunnlagOrdinar?,
     val beregningsgrunnlagyrkesskadearsbelop: Kroner?,
     val inntektvedskadetidspunktet: Kroner?,
+    val beregningsgrunnlagyrkesskadebest: Boolean?
 )

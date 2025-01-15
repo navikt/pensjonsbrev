@@ -1,10 +1,40 @@
-import { capitalize, startCase } from "lodash";
-
 import type { FieldType } from "~/types/brevbakerTypes";
 
 export function convertFieldToReadableLabel(field: string) {
-  const lastFragment = field.split(".").at(-1);
-  return capitalize(startCase(lastFragment));
+  const lastFragment = field.split(".").at(-1) ?? "";
+  return norskeTegn(capitalizeAsSentence(splitWords(lastFragment)));
+}
+
+const reAcronym = /^[A-ZÆØÅ][A-Z0-9ÆØÅ]+$/;
+function capitalizeAsSentence(str: string) {
+  return str
+    .split(" ")
+    .map((value, index) => {
+      if (reAcronym.test(value)) {
+        return value;
+      } else if (index === 0) {
+        return value.length > 0 ? value[0].toUpperCase() + value.slice(1) : value;
+      } else {
+        return value.length > 0 ? value[0].toLowerCase() + value.slice(1) : value;
+      }
+    })
+    .reduce((previous, current) => previous + " " + current);
+}
+
+const reWords = /^[a-zæøå][a-z0-9æøå]+|[A-ZÆØÅ][a-z0-9æøå]+|[A-ZÆØÅ]([A-Z0-9ÆØÅ][^a-zæøå])+/g;
+function splitWords(str: string) {
+  const words = str.match(reWords) ?? [];
+  return words.reduce((previous, current) => previous + " " + current);
+}
+
+function norskeTegn(str: string) {
+  return str
+    .replaceAll("Ae", "Æ")
+    .replaceAll("ae", "æ")
+    .replaceAll("Oe", "Ø")
+    .replaceAll("oe", "ø")
+    .replaceAll("Aa", "Å")
+    .replaceAll("aa", "å");
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,7 +44,7 @@ export function getFieldDefaultValue(defaults: { [x: string]: any } | undefined,
   }
 
   const dotIndex = fieldName.indexOf(".");
-  if (dotIndex >= 0) {
+  if (dotIndex !== -1) {
     return getFieldDefaultValue(defaults[fieldName.slice(0, dotIndex)], fieldName.slice(dotIndex + 1));
   }
   return defaults[fieldName];

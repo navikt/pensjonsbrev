@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -19,7 +18,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
-import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetaling
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
@@ -29,9 +27,9 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.datoVedtakOmgjoering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erMigrertYrkesskade
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erOmgjoering
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.harFlereUtbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.harUtbetaling
@@ -60,7 +58,7 @@ data class BarnepensjonRevurderingDTO(
     val erEndret: Boolean,
     val erMigrertYrkesskade: Boolean,
     val erOmgjoering: Boolean,
-    val etterbetaling: BarnepensjonEtterbetaling?,
+    val erEtterbetaling: Boolean,
     val feilutbetaling: FeilutbetalingType,
     val frivilligSkattetrekk: Boolean,
     val harFlereUtbetalingsperioder: Boolean,
@@ -125,7 +123,7 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
                 BarnepensjonRevurderingFraser.RevurderingVedtak(
                 erEndret,
                 beregning,
-                etterbetaling.notNull(),
+                erEtterbetaling,
                 harFlereUtbetalingsperioder,
                 harUtbetaling
             ))

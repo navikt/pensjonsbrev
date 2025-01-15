@@ -33,7 +33,7 @@ class Dto2ApiService(
             sistredigertAv = hentNavAnsatt(info.sistredigertAv),
             sistredigert = info.sistredigert,
             brevkode = info.brevkode,
-            brevtittel = template?.metadata?.displayTitle ?: info.brevkode.name,
+            brevtittel = template?.metadata?.displayTitle ?: info.brevkode.kode(),
             status = when {
                 info.journalpostId != null -> BrevStatus.Arkivert
                 info.laastForRedigering -> BrevStatus.Klar
@@ -68,7 +68,7 @@ class Dto2ApiService(
         )
     }
 
-    private suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
+    suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
         NavAnsatt(navIdent, navansattService.hentNavansatt(navIdent.id)?.navn)
 
 }

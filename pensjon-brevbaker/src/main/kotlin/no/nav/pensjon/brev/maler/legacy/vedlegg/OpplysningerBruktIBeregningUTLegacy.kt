@@ -4,13 +4,14 @@ package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_sum_fattnorge_framtidigttnorge_div_12
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.GrunnlagSelectors.persongrunnlagsliste_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistebilateral_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglisteeos_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistenor_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateralSelectors.trygdetidsgrunnlagbilateral_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagListeEOSSelectors.trygdetidsgrunnlageos_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNorSelectors.trygdetidsgrunnlag_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.grunnlag_safe
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.*
@@ -61,24 +62,13 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             )
         }
 
-        //TBU010V
         includePhrase(TBU010V(pe))
-
-        // TODO TBUxx1V trengs for brev som ikke er:
-        //  PE_UT_07_100, PE_UT_05_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200, PE_UT_06_300
-
-        // TODO TBU011V-TBU016V trengs for brev som ikke er:
-        //  PE_UT_07_100 , PE_UT_05_100 , PE_UT_04_300 , PE_UT_14_300 , PE_UT_04_108 , PE_UT_04_109 , PE_UT_07_200 , PE_UT_06_300
-
-        // TODO TBUxx2V trengs for brev som ikke er:
-        //  PE_UT_04_300, PE_UT_14_300, PE_UT_05_100, PE_UT_07_100, PE_UT_04_108, PE_UT_04_109, PE_UT_07_100, PE_UT_07_200, PE_UT_06_300
-
-        // TODO TBU080V-TBU027V trengs for brev som ikke er:
-        //  PE_UT_07_100, PE_UT_05_100, PE_UT_04_300, PE_UT_14_300, PE_UT_04_103, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300
+        includePhrase(TBUxx1V(pe))
+        includePhrase(TBU011V_TBU016V(pe))
+        includePhrase(TBUxx2V(pe))
+        includePhrase(TBU080V_TBU027V(pe))
 
         // TODO TBU028V-TBU020V trengs for brev PE_UT_04_300 og PE_UT_14_300
-
-
 
         showIf(
             pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
@@ -91,53 +81,39 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 TBU034V_036V(pe)
             )
         }
-        // TODO TBU037V_1 trengs for brev som ikke er:
-        //  PE_UT_05_100, PE_UT_14_300, PE_UT_07_100, PE_UT_04_300, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300, PE_UT_04_500
-
-        // TODO TBU037V_2 trengs for brev som ikke er:
-        //  PE_UT_05_100, PE_UT_14_300, PE_UT_07_100, PE_UT_04_300, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300, PE_UT_04_500
-
-        // TODO TBU038V_1 trengs for brev som ikke er:
-        //  PE_UT_07_100, PE_UT_05_100, PE_UT_14_300, PE_UT_04_300, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300, PE_UT_04_500
-
-        // TODO TBU038V_2 trengs for brev som ikke er:
-        //  PE_UT_07_100, PE_UT_05_100, PE_UT_14_300, PE_UT_04_300, PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300, PE_UT_04_500
-
-        // TODO TVU037V_3 trengs for brev som ikke er:
-        //  PE_UT_05_100, PE_UT_04_300, PE_UT_07_100, PE_UT_14_300, PE_UT_04_500, PE_UT_06_300
-
-        // TODO TVU037V_4 trengs for brev som ikke er:
-        //  PE_UT_05_100, PE_UT_04_300, PE_UT_07_100, PE_UT_14_300, PE_UT_04_500, PE_UT_06_300
-
-        // TODO TBU038V_3 trengs for brev som ikke er:
-        //  PE_UT_05_100, PE_UT_07_100, PE_UT_14_300, PE_UT_04_300, PE_UT_04_500, PE_UT_06_300
-        //
-        // TODO TBU038V_4 trengs for brev som ikke er:
-        //  PE_UT_05_100, PE_UT_07_100, PE_UT_14_300, PE_UT_04_300, PE_UT_04_500, PE_UT_06_300
+        includePhrase(TBU037V_1(pe))
+        includePhrase(TBU037V_2(pe))
+        includePhrase(TBU038V_1(pe))
+        includePhrase(TBU038V_2(pe))
+        includePhrase(TBU037V_3(pe))
+        includePhrase(TBU037V_4(pe))
+        includePhrase(TBU038V_3(pe))
+        includePhrase(TBU038V_4(pe))
 
         showIf(pe.ut_trygdetid()) {
             includePhrase(TBU039V_TBU044V_1(pe))
         }
 
-
         //IF( PE_UT_Trygdetid() = true  AND ((((FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTNorge) +  FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk)) / 12) < 40 AND FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = false )   OR (PE_Vedtaksdata_Kravhode_BoddArbeidUtland = true  AND  FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = false)   AND  FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom) = true  )  ) THEN      INCLUDE ENDIF
-
         // TB1187 2
         showIf(
             pe.ut_trygdetid()
-                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
-                    and pe.functions.pe_ut_sum_fattnorge_framtidigttnorge_div_12.lessThan(40) or
-                    (pe.vedtaksdata_kravhode_boddarbeidutland()
-                            and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()))
+                    and ((pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40)
+                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()))
+                    or (pe.vedtaksdata_kravhode_boddarbeidutland()
+                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()))
+                    and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull())
+        )
         {
-            includePhrase(TBU1187_2(pe))
+            ifNotNull(pe.vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe) { trygdetidsliste ->
+                includePhrase(TrygdetidListeNorTabell(trygdetidsliste))
+            }
         }
-        // TBU1187_F 2 er bare whitespace under tabellen
 
         showIf(pe.ut_trygdetid() and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().greaterThan(0)){
-            ifNotNull(pe.vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglisteeos_safe){
+            ifNotNull(pe.vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglisteeos_safe.trygdetidsgrunnlageos_safe){
                 includePhrase(TBU045V_1)
-                includePhrase(TBU045V_2(it))
+                includePhrase(TrygdetidsListeEOSTabell(it))
             }
         }
 
@@ -155,51 +131,23 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
             ifNotNull(pe.vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe){
                 includePhrase(TBU046V_1)
-                includePhrase(TBU046V_2(it))
+                includePhrase(TrygdetidsListeBilateralTabell(it))
             }
-
         }
 
-        showIf(
-            pe.ut_trygdetid()
-                    and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid()
-                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
-        ) {
+        showIf(pe.ut_trygdetid() and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid() and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())) {
             includePhrase(TBU047V)
         }
 
-        // TODO TBU1187_H, TBU1187_H, TBU1382, TBU1384_h, TBU1384 trengs ikke for brev:
-        //  PE_UT_07_100, PE_UT_05_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200, PE_UT_06_300
+        includePhrase(TBU1187(pe))
+        includePhrase(TBU1382(pe))
+        includePhrase(TBU1384(pe))
 
         showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endring_ifu")){
             includePhrase(TBU500v)
         }
 
-        showIf(
-            (
-                    pe.pebrevkode().notEqualTo("PE_UT_07_100")
-                            and pe.pebrevkode().notEqualTo("PE_UT_05_100")
-                            and pe.pebrevkode().notEqualTo("PE_UT_04_115")
-                            and pe.pebrevkode().notEqualTo("PE_UT_04_103")
-                            and pe.pebrevkode().notEqualTo("PE_UT_06_100")
-                            and pe.pebrevkode().notEqualTo("PE_UT_04_300")
-                            and pe.pebrevkode().notEqualTo("PE_UT_14_300")
-                            and pe.pebrevkode().notEqualTo("PE_UT_07_200")
-                            and pe.pebrevkode().notEqualTo("PE_UT_06_300")
-                            and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().notEqualTo("")
-                            or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieubegrunnelse().notEqualTo(""))
-                    )
-
-                    or pe.pebrevkode().equalTo("PE_UT_04_500")
-                    or (pe.vedtaksdata_kravhode_kravarsaktype()
-                .equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse())
-                    or (
-                    pe.pebrevkode().equalTo("PE_UT_04_108") or pe.pebrevkode().equalTo("PE_UT_04_109")
-                            and pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu().greaterThan(95.0)
-                    )
-                    and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                    and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu")) {
-
+        showIf((pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_04_115") and pe.pebrevkode().notEqualTo("PE_UT_04_103") and pe.pebrevkode().notEqualTo("PE_UT_06_100") and pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().notEqualTo("") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieubegrunnelse().notEqualTo(""))) or pe.pebrevkode().equalTo("PE_UT_04_500") or (pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()) or (pe.pebrevkode().equalTo("PE_UT_04_108") or pe.pebrevkode().equalTo("PE_UT_04_109") and pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu().greaterThan(95.0)) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu")) {
             includePhrase(TBUxx4v_og_TBU048V_TBU055V(pe))
         }
 
@@ -217,22 +165,16 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         showIf(pe.pe_ut_tbu601v_tbu604v()) {
             includePhrase(TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(pe))
         }
+        includePhrase(TBU052V_TBU073V_ForDegSomHarRettTilBarnetillegg(pe))
+
         includePhrase(TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
 
         includePhrase(TBU052V_TBU073V_SlikBeregnerViGjenlevendetilleggetDitt(pe))
 
         includePhrase(TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(pe))
 
-        showIf(
-            (pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_108")
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_500")
-                    and pe.pebrevkode().notEqualTo("PE_UT_07_200")
-                    and (pe.pebrevkode().notEqualTo("PE_UT_04_102")
-                    or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
-                    ) or pe.pebrevkode().equalTo("PE_UT_06_300")) {
-                includePhrase(TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
-            }
+        showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))) or pe.pebrevkode().equalTo("PE_UT_06_300")) {
+            includePhrase(TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
+        }
     }
 

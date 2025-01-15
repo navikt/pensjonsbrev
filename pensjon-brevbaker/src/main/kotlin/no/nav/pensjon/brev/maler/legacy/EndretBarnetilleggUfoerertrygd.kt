@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.orienteringOmRettigheterUfoere
@@ -28,7 +28,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndretBarnetilleggUfoerertrygd : AutobrevTemplate<EndretBarnetilleggUfoeretrygdDto> {
 
-    override val kode = Brevkode.AutoBrev.UT_BARNETILLEGG_ENDRET_AUTO
+    // PE_UT_06_300
+    override val kode = Pesysbrevkoder.AutoBrev.UT_BARNETILLEGG_ENDRET_AUTO
 
     override val template = createTemplate(
         name = kode.name,
@@ -373,7 +374,7 @@ object EndretBarnetilleggUfoerertrygd : AutobrevTemplate<EndretBarnetilleggUfoer
             includePhrase(Skattekort)
 
             //TBU3730
-            includePhrase(SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("nor") and pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("")))
+            includePhrase(SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("nor") or pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("")))
             //TBU1076 og TBU1077
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
 

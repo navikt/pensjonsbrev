@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.UnleashToggle
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.IntValue
@@ -59,6 +60,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
     object IsEmpty : UnaryOperation<Collection<*>, Boolean>(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
+    }
+
+    object FunksjonsbryterEnabled : UnaryOperation<UnleashToggle, Boolean>(), StableHash by StableHash.of("UnaryOperation.Enabled") {
+        override fun apply(input: UnleashToggle): Boolean = input.isEnabled()
     }
 
     object BrukerFulltNavn: UnaryOperation<Bruker, String>(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {

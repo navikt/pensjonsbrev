@@ -10,7 +10,17 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -47,7 +57,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 fun beregningAvOmstillingsstoenad(
     tidligereFamiliepleier: Boolean,
-    inntektsjustering: Boolean = false
+    innvilgelsesaar: Boolean
 ): AttachmentTemplate<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning> =
     createAttachment(
         title =
@@ -58,7 +68,7 @@ fun beregningAvOmstillingsstoenad(
         ),
         includeSakspart = false,
     ) {
-        beregning(tidligereFamiliepleier.expr(), inntektsjustering.expr())
+        beregning(tidligereFamiliepleier.expr(), innvilgelsesaar.expr())
         trygdetid(trygdetid, tidligereFamiliepleier.expr())
         perioderMedRegistrertTrygdetid(trygdetid, tidligereFamiliepleier.expr())
         meldFraTilNav()
@@ -66,7 +76,7 @@ fun beregningAvOmstillingsstoenad(
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning>.beregning(
     tidligereFamiliepleier: Expression<Boolean>,
-    inntektsjustering: Expression<Boolean>,
+    innvilgelsesAar: Expression<Boolean>,
 ) {
     val sisteInntekt = sisteBeregningsperiode.inntekt
     val sisteGrunnbeloep = sisteBeregningsperiode.grunnbeloep
@@ -221,7 +231,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     )
                 }
             }
-            showIf(inntektsjustering.not() and sisteInnvilgaMaaneder.lessThan(12)) {
+            showIf(innvilgelsesAar and sisteInnvilgaMaaneder.lessThan(12)) {
                 textExpr(
                     Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har en inntekt på " +
@@ -342,6 +352,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                         " per month. This is included in \"Payout per month\", which appears in the table above.",
                 )
             }
+            paragraph {
+                textExpr(
+                    Bokmal to "Det utbetales aldri mer enn stønadsbeløpet før reduksjon for inntekt. Har du rett på mer etterbetaling enn tillegget som utbetales resten av året, blir dette tatt hensyn til i etteroppgjøret.".expr(),
+                    Nynorsk to "Det blir aldri utbetalt meir enn stønadsbeløpet før reduksjon for inntekt. Har du rett på meir etterbetaling enn tillegget som blir utbetalt resten av året, blir dette teke omsyn til i etteroppgjeret.".expr(),
+                    English to "No more is paid out than the allowance amount before reduction for income. If you are entitled to a larger back payment than the supplement paid for the rest of the year, this will be taken into account in the final settlement.".expr()
+                )
+            }
         }
         showIf(
             sisteBeregningsperiode.restanse.notEqualTo(0) and
@@ -351,7 +368,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 text(
                     Bokmal to "Feilutbetalt ytelse vil bli behandlet i et etteroppgjør",
                     Nynorsk to "Feilutbetalt yting vil bli behandla i eit etteroppgjer",
-                    English to "Incorrectly paid benefit will be dealt with in a final settlement",
+                    English to "Incorrectly paid allowance will be dealt with in a final settlement",
                 )
             }
             paragraph {

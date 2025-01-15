@@ -6,7 +6,7 @@ import { defineConfig } from "vite";
 import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(() => ({
   plugins: [
     react({
       jsxImportSource: "@emotion/react",
@@ -25,4 +25,4 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true // Enables Vitest to automatically cleanup after each test
   },
-});
+}));

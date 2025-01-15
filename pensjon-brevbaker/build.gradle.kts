@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -55,6 +56,10 @@ tasks {
         useJUnitPlatform {
             excludeTags = setOf("integration-test", "manual-test")
         }
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
     }
 
     task<Test>("integrationTest") {
@@ -62,11 +67,19 @@ tasks {
         useJUnitPlatform {
             includeTags = setOf("integration-test")
         }
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
     }
     task<Test>("manualTest") {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = setOf("manual-test")
+        }
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         }
     }
 }
@@ -108,6 +121,8 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
+
+    implementation("io.getunleash:unleash-client-java:9.2.6")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")

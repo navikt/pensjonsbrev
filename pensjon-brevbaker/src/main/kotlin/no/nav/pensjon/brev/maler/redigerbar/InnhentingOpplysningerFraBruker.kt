@@ -2,14 +2,15 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -24,7 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     // PE_IY_03_048
-    override val kode = Brevkode.Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = Sakstype.all
@@ -50,21 +51,19 @@ object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevd
         outline {
 
             paragraph {
+                val henvendelse = fritekst("blankett/brev/henvendelse")
+                val dato = fritekst("dato")
+                val opplysninger = fritekst("opplysning 1")
+
                 textExpr(
-                    Bokmal to felles.avsenderEnhet.navn + " har mottatt en <fritekst: blankett/brev/henvendelse> fra deg <fritekst: dato>. For å kunne behandle henvendelsen mangler vi følgende opplysninger:<fritekst:",
-                    English to felles.avsenderEnhet.navn + " received a <free text: form/letter/request> from you on <free text: date>. In order to process your request, we need the following information from you:<free text:",
+                    Bokmal to felles.avsenderEnhet.navn + " har mottatt en " + henvendelse + " fra deg " + dato + ". For å kunne behandle henvendelsen mangler vi følgende opplysninger: ",
+                    English to felles.avsenderEnhet.navn + " received a " + henvendelse + " from you on " + dato + ". In order to process your request, we need the following information from you: ",
                 )
                 list {
                     item {
-                        text(
-                            Bokmal to "Opplysning 1",
-                            English to "Details 1",
-                        )
-                    }
-                    item {
-                        text(
-                            Bokmal to "Opplysning 2>",
-                            English to "Details 2>",
+                        textExpr(
+                            Bokmal to opplysninger,
+                            English to opplysninger,
                         )
                     }
                 }
@@ -72,12 +71,12 @@ object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevd
 
 
             paragraph {
-                text(
-                    Bokmal to "Vi ber deg derfor om å sende oss overnevnte opplysninger innen <fritekst: dato> til adresse:",
-                    English to "Please send us the above information by <free text: date>, to the following address:",
+                val dato = fritekst("dato")
+                textExpr(
+                    Bokmal to "Vi ber deg derfor om å sende oss overnevnte opplysninger innen ".expr() + dato + " til adresse:",
+                    English to "Please send us the above information by ".expr() + dato + ", to the following address:",
                 )
             }
-
             includePhrase(Alderspensjon.Returadresse)
 
             includePhrase(Felles.HarDuSpoersmaal.alder)

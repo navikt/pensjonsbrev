@@ -101,7 +101,7 @@ describe("Kladd", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
-    cy.contains("Mottatt soeknad").click().type("09.10.2024");
+    cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
     cy.contains("Åpne brev").click("left");
@@ -142,7 +142,7 @@ describe("Kladd", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
-    cy.contains("Mottatt soeknad").click().type("09.10.2024");
+    cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
     cy.contains("Åpne brev").click("left");
@@ -156,11 +156,19 @@ describe("Kladd", () => {
   it("arkiverte brev i brevvelger skal ikke kunne gjøre endringer på brev, og kun navigere videre til brevbehandler", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
       req.reply([
-        nyBrevInfo({ id: 1, opprettet: "2024-09-17T08:36:09.785Z", status: { type: "Klar" }, journalpostId: 123_456 }),
+        nyBrevInfo({
+          id: 1,
+          opprettet: "2024-09-17T08:36:09.785Z",
+          status: { type: "Arkivert" },
+          journalpostId: 123_456,
+        }),
       ]);
     }).as("getAlleBrevForSak");
 
     cy.visit('/saksnummer/123456/brevvelger?brevId="1"');
+    cy.wait("@getAlleBrevForSak");
+    //det er visst noe timing issues her, selv om vi venter på aki-kallet, så er ikke ting ferdig rendret når vi begynner sjekkene
+    cy.wait(1000);
     cy.contains("Endre mottaker").should("not.exist");
     cy.contains("Slett brev").should("not.exist");
     cy.contains("Åpne brev").click("left");

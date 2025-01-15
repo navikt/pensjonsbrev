@@ -29,7 +29,7 @@ object Dto {
         val sistredigert: Instant,
         val redigeresAv: NavIdent?,
         val sistReservert: Instant?,
-        val brevkode: Brevkode.Redigerbar,
+        val brevkode: Brevkode.Redigerbart,
         val laastForRedigering: Boolean,
         val distribusjonstype: Distribusjonstype,
         val mottaker: Mottaker?,
@@ -37,6 +37,8 @@ object Dto {
         val spraak: LanguageCode,
         val signaturSignerende: String,
         val journalpostId: Long?,
+        val attestertAv: NavIdent?,
+        val signaturAttestant: String?,
     )
 
     data class Document(

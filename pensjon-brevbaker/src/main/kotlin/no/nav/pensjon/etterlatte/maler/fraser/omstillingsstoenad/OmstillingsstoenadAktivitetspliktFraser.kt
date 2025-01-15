@@ -165,7 +165,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                 text(
                     Bokmal to "Hvis du ikke melder fra om endringer og får utbetalt for mye stønad, kan stønad som er utbetalt feil kreves tilbake.",
                     Nynorsk to "Dersom du får utbetalt for mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake det du ikkje hadde rett på.",
-                    English to "If you fail to report changes and/or are paid too much benefits/allowance, Nav has the right to collect the incorrect amount.",
+                    English to "If you fail to report changes and/or are paid too much allowance, Nav has the right to collect the incorrect amount.",
                 )
             }
 
@@ -322,7 +322,8 @@ class OmstillingsstoenadAktivitetspliktFraser {
     }
 
     data class FellesOppfyllelseAktivitetsplikt(
-        val nasjonalEllerUtland: Expression<NasjonalEllerUtland>
+        val nasjonalEllerUtland: Expression<NasjonalEllerUtland>,
+        val tolvMaanederEtterDoedsfall: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
@@ -335,10 +336,10 @@ class OmstillingsstoenadAktivitetspliktFraser {
             }
 
             paragraph {
-                text(
-                    Bokmal to "Du fyller aktivitetsplikten hvis du er minst 50 prosent aktiv ved å",
-                    Nynorsk to "Du oppfyller aktivitetsplikta dersom du er minst 50 prosent aktiv ved å",
-                    English to "You are in compliance with the activity obligation if you are at least 50 percent active",
+                textExpr(
+                    Bokmal to "Du fyller aktivitetsplikten hvis du er ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent" ) + " aktiv ved å",
+                    Nynorsk to "Du oppfyller aktivitetsplikta dersom du er ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent") + " aktiv ved å",
+                    English to "You are in compliance with the activity obligation if you are ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 percent", "at least 50 percent") + " active",
                 )
                 list {
                     item {

@@ -28,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.*
 @TemplateModelHelpers
 object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<ForhaandsvarselEtteroppgjoerUfoeretrygdDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO
 
     override val template = createTemplate(
             name = kode.name,

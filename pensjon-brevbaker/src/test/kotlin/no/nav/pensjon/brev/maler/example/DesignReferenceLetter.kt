@@ -10,7 +10,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
+    enum class Kode : Brevkode.Automatisk {
+        KODE;
+
+        override fun kode() = name
+    }
+
+    override val kode = Kode.KODE
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID

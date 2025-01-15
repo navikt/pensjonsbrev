@@ -6,19 +6,23 @@ import { SpraakKode } from "~/types/apiTypes";
 import { Distribusjonstype } from "~/types/brev";
 import type {
   AnyBlock,
+  Cell,
   Content,
+  ElementTags,
   Identifiable,
   Item,
   ItemList,
   LiteralValue,
   ParagraphBlock,
+  Row,
+  Table,
   TextContent,
   Title1Block,
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { TITLE2 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, PARAGRAPH, TITLE1, VARIABLE } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, PARAGRAPH, TABLE, TITLE1, TITLE2, VARIABLE } from "~/types/brevbakerTypes";
+import type { Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
@@ -58,13 +62,19 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
   };
 }
 
+function randomId() {
+  return randomInt(1_000_000);
+}
+
 export function paragraph(...content: Content[]): ParagraphBlock {
+  const id = randomId();
   return {
-    id: randomInt(1000),
+    id,
+    parentId: null,
     editable: true,
     type: PARAGRAPH,
     deletedContent: [],
-    content,
+    content: withParent(content, id),
   };
 }
 
@@ -76,56 +86,127 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
 }
 
 export function title1(...content: TextContent[]): Title1Block {
+  const id = randomId();
   return {
-    id: randomInt(1000),
+    id,
+    parentId: null,
     editable: true,
     type: TITLE1,
     deletedContent: [],
-    content,
+    content: withParent(content, id),
   };
 }
 export function title2(...content: TextContent[]): Title2Block {
+  const id = randomId();
   return {
-    id: randomInt(1000),
+    id,
+    parentId: null,
     editable: true,
     type: TITLE2,
     deletedContent: [],
-    content,
+    content: withParent(content, id),
   };
 }
 
-export function literal(text: string, editedText: string | null = null): LiteralValue {
+export function literal(args: {
+  id?: Nullable<number>;
+  parentId?: Nullable<number>;
+  text: string;
+  editedText?: Nullable<string>;
+  tags?: ElementTags[];
+}): LiteralValue {
   return {
-    id: randomInt(1000),
+    id: args.id ?? randomId(),
+    parentId: args.parentId ?? null,
     type: LITERAL,
-    text,
-    editedText,
+    text: args.text,
+    editedText: args.editedText ?? null,
+    tags: args.tags ?? [],
   };
 }
 
 export function variable(text: string): VariableValue {
   return {
-    id: randomInt(1000),
+    id: randomId(),
+    parentId: null,
     type: VARIABLE,
     text,
   };
 }
 
-export function itemList(...items: Item[]): ItemList {
+export function itemList(args: {
+  id?: Nullable<number>;
+  parentId?: Nullable<number>;
+  items: Item[];
+  deletedItems?: number[];
+}): ItemList {
+  const id = args.id ?? randomId();
   return {
-    id: randomInt(1000),
+    id: id,
+    parentId: args.parentId ?? null,
     type: ITEM_LIST,
-    items,
-    deletedItems: [],
+    items: withParent(args.items, id),
+    deletedItems: args.deletedItems ?? [],
   };
 }
 
 export function item(...content: TextContent[]): Item {
-  return { id: randomInt(1000), content };
+  const id = randomId();
+  return { id: id, parentId: null, content: withParent(content, id), deletedContent: [] };
 }
 
-export function asNew<T extends Identifiable>(c: T): T {
-  return { ...c, id: null };
+export function table(headerCells: Cell[], rows: Row[]): Table {
+  const tableId = randomId();
+  const headerId = randomId();
+  return {
+    id: tableId,
+    parentId: null,
+    type: TABLE,
+    rows: withParent(rows, tableId),
+    header: {
+      id: headerId,
+      parentId: tableId,
+      colSpec: headerCells.map((c) => {
+        const colSpecId = randomId();
+        return {
+          id: colSpecId,
+          parentId: headerId,
+          headerContent: { ...c, parentId: colSpecId },
+          alignment: "LEFT",
+          span: 1,
+        };
+      }),
+    },
+    deletedRows: [],
+  };
+}
+export function cell(...content: TextContent[]): Cell {
+  const id = randomId();
+  return {
+    id,
+    parentId: null,
+    text: withParent(content, id),
+  };
+}
+export function row(...cells: Cell[]): Row {
+  const id = randomId();
+  return {
+    id,
+    parentId: null,
+    cells: withParent(cells, id),
+  };
+}
+
+export function withParent<T extends Identifiable>(
+  content: T[],
+  parentId: number | null,
+  replaceExisting: boolean = false,
+): T[] {
+  return content.map((c) => ({ ...c, parentId: replaceExisting ? parentId : (c.parentId ?? parentId) }));
+}
+
+export function asNew<T extends Identifiable>(c: T, keepParent: boolean = false): T {
+  return { ...c, id: null, parentId: keepParent ? c.parentId : null };
 }
 
 export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex> & { blockIndex: number }): T {

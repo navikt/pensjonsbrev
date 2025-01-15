@@ -11,6 +11,7 @@ object ADGroups {
     private lateinit var _fortroligAdresse: String
     private lateinit var _strengtFortroligAdresse: String
     private lateinit var _strengtFortroligUtland: String
+    private lateinit var _attestant: String
 
     val pensjonUtland: ADGroup
         get() = ADGroup(_pensjonUtland)
@@ -22,6 +23,8 @@ object ADGroups {
         get() = ADGroup(_strengtFortroligAdresse)
     val strengtFortroligUtland: ADGroup
         get() = ADGroup(_strengtFortroligUtland)
+    val attestant: ADGroup
+        get() = ADGroup(_attestant)
 
     fun init(groupsConfig: Config) {
         _pensjonUtland = groupsConfig.getString("pensjonUtland")
@@ -29,5 +32,6 @@ object ADGroups {
         _fortroligAdresse = groupsConfig.getString("fortroligAdresse")
         _strengtFortroligAdresse = groupsConfig.getString("strengtFortroligAdresse")
         _strengtFortroligUtland = groupsConfig.getString("strengtFortroligUtland")
+        _attestant = groupsConfig.getString("attestant")
     }
 }

@@ -3,16 +3,6 @@ package no.nav.pensjon.etterlatte.maler
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
-data class BarnepensjonEtterbetaling(
-    val inneholderKrav: Boolean?,
-    val etterbetalingPeriodeValg: EtterbetalingPeriodeValg?,
-)
-
-enum class EtterbetalingPeriodeValg {
-    UNDER_3_MND,
-    FRA_3_MND,
-}
-
 data class OmstillingsstoenadEtterbetaling(
     val fraDato: LocalDate,
     val tilDato: LocalDate,
@@ -40,6 +30,7 @@ data class BarnepensjonBeregningsperiode(
     val grunnbeloep: Kroner,
     val antallBarn: Int,
     var utbetaltBeloep: Kroner,
+    val harForeldreloessats: Boolean,
 )
 
 data class OmstillingsstoenadBeregning(
@@ -52,6 +43,15 @@ data class OmstillingsstoenadBeregning(
     val oppphoersdato: LocalDate? = null,
     val opphoerNesteAar: Boolean,
 ) : BrevDTO
+
+data class OmstillingsstoenadBeregningRevurderingRedigertbartUtfall(
+    val virkningsdato: LocalDate,
+    val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,
+    val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
+    val sisteBeregningsperiodeNesteAar: OmstillingsstoenadBeregningsperiode?,
+    val oppphoersdato: LocalDate? = null,
+    val opphoerNesteAar: Boolean,
+)
 
 data class OmstillingsstoenadBeregningsperiode(
     val datoFOM: LocalDate,
@@ -70,7 +70,7 @@ data class OmstillingsstoenadBeregningsperiode(
 )
 
 data class Trygdetid(
-    val navnAvdoed: String,
+    val navnAvdoed: String?,
     val trygdetidsperioder: List<Trygdetidsperiode>,
     val beregnetTrygdetidAar: Int,
     val prorataBroek: IntBroek?,
@@ -132,7 +132,7 @@ data class ForskjelligTrygdetid(
 }
 
 data class ForskjelligAvdoedPeriode(
-    val foersteAvdoed: Avdoed,
-    val senereAvdoed: Avdoed,
+    val foersteAvdoed: Avdoed?,
+    val senereAvdoed: Avdoed?,
     val senereVirkningsdato: LocalDate,
 )

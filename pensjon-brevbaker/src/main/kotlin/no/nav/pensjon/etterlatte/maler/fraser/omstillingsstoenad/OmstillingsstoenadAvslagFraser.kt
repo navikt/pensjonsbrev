@@ -33,11 +33,11 @@ object OmstillingsstoenadAvslagFraser {
                 paragraph {
                     text(
                         Bokmal to
-                            "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du ikke har rett på stønaden vurdert etter EØS-reglene heller.",
+                            "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du ikke har rett på stønaden vurdert etter EØS/avtalelandreglene.",
                         Nynorsk to
-                            "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på stønaden vurdert etter EØS-reglane heller.",
+                            "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på stønaden vurdert etter EØS/avtalelandreglane.",
                         English to
-                            "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA rules either.",
+                            "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA/agreement country rules.",
                     )
                 }
                 paragraph {
@@ -53,7 +53,7 @@ object OmstillingsstoenadAvslagFraser {
                     paragraph {
                         text(
                             Bokmal to "Din søknad om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid> er avslått.",
-                            Nynorsk to "Din søknad om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid> er avslått.",
+                            Nynorsk to "Din søknad om omstillingsstønad som tidlegare familiepleiar for <navn på den som er pleid> er avslått.",
                             English to "Your application for adjustment allowance as a former family caregiver for <name of the person who has been cared for> has been rejected.",
                         )
                     }
