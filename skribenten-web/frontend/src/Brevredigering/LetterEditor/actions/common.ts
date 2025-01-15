@@ -11,6 +11,7 @@ import type {
   Item,
   ItemList,
   LiteralValue,
+  NewLine,
   ParagraphBlock,
   TextContent,
   TITLE1,
@@ -18,8 +19,7 @@ import type {
   TITLE2,
   Title2Block,
 } from "~/types/brevbakerTypes";
-import { NEW_LINE } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import type { LetterEditorState } from "../model/state";
@@ -164,6 +164,23 @@ export function mergeLiteralsIfPossible<T extends Identifiable>(first: Draft<T>,
   }
 }
 
+/**
+ * Splits literal text at given offset by updating 'editedText' of the given literal and returning a new literal.
+ *
+ * @param literal the literal to update
+ * @param offset the offset to split at
+ * @returns a new literal
+ */
+export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: number): LiteralValue {
+  const origText = text(literal);
+  const newText = cleanseText(origText.slice(0, Math.max(0, offset)));
+  const nextText = cleanseText(origText.slice(Math.max(0, offset)));
+
+  updateLiteralText(literal, newText);
+
+  return newLiteral({ text: "", editedText: nextText });
+}
+
 export function newTitle(args: {
   id?: Nullable<number>;
   content: TextContent[];
@@ -227,6 +244,15 @@ export function newItemList(args: { id?: Nullable<number>; items: Item[]; delete
     type: "ITEM_LIST",
     items: args.items,
     deletedItems: args.deletedItems ?? [],
+  };
+}
+
+export function createNewLine(): NewLine {
+  return {
+    id: null,
+    parentId: null,
+    type: NEW_LINE,
+    text: "",
   };
 }
 

@@ -134,8 +134,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
     const offset = getCursorOffset();
-
-    applyAction(Actions.split, setEditorState, literalIndex, offset);
+    if (event.shiftKey) {
+      applyAction(Actions.addNewLine, setEditorState, { ...literalIndex, cursorPosition: offset });
+    } else {
+      applyAction(Actions.split, setEditorState, literalIndex, offset);
+    }
   };
 
   const handleBackspace = (event: React.KeyboardEvent<HTMLSpanElement>) => {
@@ -151,9 +154,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleDelete = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     const cursorIsAtEnd = getCursorOffset() >= text.length;
-    const cursorIsInLastContent =
-      getContent(editorState.redigertBrev, literalIndex).length - 1 === literalIndex.contentIndex;
-    if (cursorIsAtEnd && cursorIsInLastContent) {
+    if (cursorIsAtEnd) {
       event.preventDefault();
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.NEXT);
     }

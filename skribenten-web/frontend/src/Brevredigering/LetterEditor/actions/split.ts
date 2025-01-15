@@ -1,14 +1,13 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import type { AnyBlock, Content, ItemList, LiteralValue, TextContent } from "~/types/brevbakerTypes";
+import type { AnyBlock, Content, ItemList, TextContent } from "~/types/brevbakerTypes";
 import { ITEM_LIST } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
-import { addElements, cleanseText, newItem, newLiteral, newParagraph, removeElements, text } from "./common";
+import { addElements, newItem, newLiteral, newParagraph, removeElements, splitLiteralAtOffset, text } from "./common";
 import type { LiteralIndex } from "./model";
 
 export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = produce(splitRecipe);
@@ -169,16 +168,13 @@ function splitContentArrayAtLiteral<T extends Content | TextContent>(
 ): Draft<T[]> {
   const content = from.content[atIndex];
   if (isLiteral(content)) {
-    const origText = text(content as LiteralValue);
-    const newText = cleanseText(origText.slice(0, Math.max(0, offset)));
-    const nextText = cleanseText(origText.slice(Math.max(0, offset)));
-
     let contentAfterSplit;
-    if (newText.length > 0) {
-      updateLiteralText(content, newText);
+    if (offset > 0) {
+      const newLiteral = splitLiteralAtOffset(content, offset);
+
       contentAfterSplit = removeElements(atIndex + 1, from.content.length, from);
-      if (nextText.length > 0 || isVariable(contentAfterSplit[0]) || contentAfterSplit.length === 0) {
-        addElements([newLiteral({ text: "", editedText: nextText }) as T], 0, contentAfterSplit, []);
+      if (text(newLiteral).length > 0 || isVariable(contentAfterSplit[0]) || contentAfterSplit.length === 0) {
+        addElements([newLiteral as T], 0, contentAfterSplit, []);
       }
     } else {
       contentAfterSplit = removeElements(atIndex, from.content.length, from);

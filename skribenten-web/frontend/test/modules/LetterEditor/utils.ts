@@ -13,6 +13,7 @@ import type {
   Item,
   ItemList,
   LiteralValue,
+  NewLine,
   ParagraphBlock,
   Row,
   Table,
@@ -21,7 +22,7 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, PARAGRAPH, TABLE, TITLE1, TITLE2, VARIABLE } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, TITLE1, TITLE2, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
@@ -131,6 +132,15 @@ export function variable(text: string): VariableValue {
     parentId: null,
     type: VARIABLE,
     text,
+  };
+}
+
+export function newLine(): NewLine {
+  return {
+    id: randomId(),
+    parentId: null,
+    type: NEW_LINE,
+    text: "",
   };
 }
 

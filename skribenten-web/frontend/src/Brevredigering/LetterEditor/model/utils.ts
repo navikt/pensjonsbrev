@@ -8,10 +8,11 @@ import type {
   Item,
   ItemList,
   LiteralValue,
+  ParagraphBlock,
   TextContent,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
+import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { ContentGroup } from "./state";
 
@@ -66,4 +67,8 @@ export function isEmptyContentList(content: Content[]) {
 }
 export function isEmptyBlock(block: AnyBlock): boolean {
   return isEmptyContentList(block.content);
+}
+
+export function isParagraph(block: AnyBlock | undefined | null): block is ParagraphBlock {
+  return block?.type === PARAGRAPH;
 }
