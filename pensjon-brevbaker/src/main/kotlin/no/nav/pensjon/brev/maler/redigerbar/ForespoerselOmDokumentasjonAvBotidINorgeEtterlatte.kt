@@ -2,8 +2,10 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.SaksbehandlerValgSelectors.opplystOmBotid
+import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -18,7 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 @TemplateModelHelpers
-object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<ForespoerselOmDokumentasjonAvBotidINorgeDto> {
 
     // PE_IY_03_167 - dette er delen for barnep eller gjenlev
     override val kode = Pesysbrevkoder.Redigerbar.PE_FORESPOERSEL_DOKUM_BOTIDINORGE_ETTERLATTE
@@ -28,7 +30,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<E
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EmptyRedigerbarBrevdata::class,
+        letterDataType = ForespoerselOmDokumentasjonAvBotidINorgeDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Forespørsel om dokumentasjon av botid i Norge - barnepensjon eller gjenlevendepensjon",
@@ -53,6 +55,12 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<E
                     Bokmal to " e.l) for ".expr() + fritekst("avdødes navn") + " med fødselsnummer " + fritekst("avdødes fødselsnummer") + ". "
                             + fritekst("Det er opplyst at han/hun var sist bosatt i deres kommune fra mm.dd.år til mm.dd.år.")
                 )
+                showIf(saksbehandlerValg.opplystOmBotid) {
+                    val dato = fritekst("mm.dd.år")
+                    textExpr(
+                        Bokmal to "Det er opplyst om at ".expr() + fritekst("han/hun") + " var sist bosatt i deres kommune fra " + dato + " til " + dato + ".",
+                    )
+                }
             }
             //[PE_IY_03_167_tekst]
 
