@@ -1,10 +1,8 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.UnleashToggle
-import no.nav.pensjon.brev.aktiverToggle
-import no.nav.pensjon.brev.deaktiverToggle
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.FeatureToggle
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
@@ -87,16 +85,14 @@ class OperationsTest {
 
         @Test
         fun `enabled gir true viss funksjonen returnerer true`() {
-            val toggle = UnleashToggle("t1")
-            aktiverToggle(toggle)
+            val toggle = object : FeatureToggle { override fun isEnabled() = true }
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), true)
         }
 
         @Test
         fun `enabled gir false viss funksjonen returnerer false`() {
-            val toggle = UnleashToggle("t2")
-            deaktiverToggle(toggle)
+            val toggle = object : FeatureToggle { override fun isEnabled() = false }
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), false)
         }
