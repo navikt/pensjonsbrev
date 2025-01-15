@@ -56,7 +56,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
                 )
                 text(Bokmal to "hovedregisterkort/navnekort", fontType = FontType.BOLD)
                 textExpr(
-                    Bokmal to " e.l) for ".expr() + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + ".",
+                    Bokmal to " e.l) for ".expr() + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + ". ",
                 )
                 showIf(saksbehandlerValg.opplystOmBotid) {
                     val dato = fritekst("mm.dd.år")

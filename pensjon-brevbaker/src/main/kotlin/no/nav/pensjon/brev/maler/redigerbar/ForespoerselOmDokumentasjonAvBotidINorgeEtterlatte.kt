@@ -52,8 +52,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<F
                 )
                 text(Bokmal to "hovedregisterkort/navnekort", fontType = BOLD)
                 textExpr(
-                    Bokmal to " e.l) for ".expr() + fritekst("avdødes navn") + " med fødselsnummer " + fritekst("avdødes fødselsnummer") + ". "
-                            + fritekst("Det er opplyst at han/hun var sist bosatt i deres kommune fra mm.dd.år til mm.dd.år.")
+                    Bokmal to " e.l) for ".expr() + fritekst("avdødes navn") + " med fødselsnummer " + fritekst("avdødes fødselsnummer") + ". ",
                 )
                 showIf(saksbehandlerValg.opplystOmBotid) {
                     val dato = fritekst("mm.dd.år")
