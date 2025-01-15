@@ -62,7 +62,7 @@ function SakBreadcrumbsPage() {
         <MottakerContextProvider>
           <SakInfoBreadcrumbs sak={sakContext?.sak} />
           <div className="page-margins">
-              <Outlet />
+            <Outlet />
           </div>
         </MottakerContextProvider>
       </FerdigstillResultatContextProvider>
