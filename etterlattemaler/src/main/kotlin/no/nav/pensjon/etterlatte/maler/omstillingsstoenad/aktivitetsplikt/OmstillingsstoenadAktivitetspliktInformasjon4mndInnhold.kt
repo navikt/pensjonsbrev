@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -120,15 +119,24 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 )
             }
 
-            paragraph {
-                text(
-                    Bokmal to "Du opplyste FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
-                            "40 prosent arbeid/ikke er i arbeid.",
-                    Nynorsk to "Du opplyste FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
-                            "40 prosent arbeid/ikke er i arbeid.",
-                    English to "You stated that FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
-                            "40 prosent arbeid/ikke er i arbeid.",
-                )
+            showIf(not(utbetaling)){
+                paragraph {
+                    text(
+                        Bokmal to "Siden du ikke mottar omstillingsstønad i dag, kan du se bort fra kravet om aktivitet. Det er imidlertid viktig at du melder fra hvis situasjonen din endrer seg. Aktivitetsplikt og din mulighet for å motta omstillingsstønad kan da vurderes.",
+                        Nynorsk to "Ettersom du ikkje får omstillingsstønad per i dag, kan du sjå vekk frå kravet om aktivitet. Pass derimot på å melde frå dersom situasjonen din skulle endre seg. Aktivitetsplikt og eventuell rett på omstillingsstønad kan då vurderast.",
+                        English to "Since you are not currently receiving an adjustment allowance, you can disregard the activity requirement. It is, however, important that you notify us, should your situation change. We can then assess your activity requirement and your potential right to adjustment allowance.",)
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Du opplyste FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
+                                "40 prosent arbeid/ikke er i arbeid.",
+                        Nynorsk to "Du opplyste FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
+                                "40 prosent arbeid/ikke er i arbeid.",
+                        English to "You stated that FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. i søknaden at du er i " +
+                                "40 prosent arbeid/ikke er i arbeid.",
+                    )
+                }
             }
 
             showIf(
@@ -137,18 +145,23 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                     Aktivitetsgrad.IKKE_I_AKTIVITET
                 ) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)
             ) {
-                paragraph {
-                    text(
-                        Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  " +
-                                "Hvis du ikke gjør noen av de andre aktivitetene som er nevnt, må du dokumentere at du er arbeidssøker " +
-                                "via din lokale arbeidsformidling, eller på annen måte sannsynliggjøre at du er arbeidssøker.",
-                        Nynorsk to "For å kunne få omstillingsstønad vidare må du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?». " +
-                                "Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du dokumentere via den lokale " +
-                                "arbeidsformidlinga at du er arbeidssøkjar, eller på anna vis sannsynleggjere at du er arbeidssøkjar.",
-                        English to "To receive an adjustment allowance in the future, you must increase your level of activity. " +
-                                "See “How do I comply with the activity obligation?”.  If you are not doing any of the other activities mentioned, " +
-                                "you must document your status as a job seeker through your local job centre, or otherwise document that you are a job seeker.",
-                    )
+
+                showIf(utbetaling) {
+                    paragraph {
+
+
+                        text(
+                            Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  " +
+                                    "Hvis du ikke gjør noen av de andre aktivitetene som er nevnt, må du dokumentere at du er arbeidssøker " +
+                                    "via din lokale arbeidsformidling, eller på annen måte sannsynliggjøre at du er arbeidssøker.",
+                            Nynorsk to "For å kunne få omstillingsstønad vidare må du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?». " +
+                                    "Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du dokumentere via den lokale " +
+                                    "arbeidsformidlinga at du er arbeidssøkjar, eller på anna vis sannsynleggjere at du er arbeidssøkjar.",
+                            English to "To receive an adjustment allowance in the future, you must increase your level of activity. " +
+                                    "See “How do I comply with the activity obligation?”.  If you are not doing any of the other activities mentioned, " +
+                                    "you must document your status as a job seeker through your local job centre, or otherwise document that you are a job seeker.",
+                        )
+                    }
                 }
 
                 paragraph {
@@ -174,19 +187,22 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                     Aktivitetsgrad.IKKE_I_AKTIVITET
                 ) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.NASJONAL)
             ) {
-                paragraph {
-                    text(
-                        Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”. " +
-                                "Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, må du melde deg som reell arbeidssøker hos Nav. " +
-                                "Dette innebærer at du sender meldekort, er aktiv med å søke jobber, samt deltar på de kurs som Nav tilbyr.",
-                        Nynorsk to "For å kunne få omstillingsstønad vidare må du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?». " +
-                                "Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du melde deg som reell arbeidssøkjar hos Nav. " +
-                                "Dette inneber at du sender meldekort, er aktiv med å søkje jobbar, og deltek på kursa som Nav tilbyr.",
-                        English to "To receive an adjustment allowance in the future, you must increase your level of activity. " +
-                                "See “How do I comply with the activity obligation?”.  If you do not undertake any of the other activities mentioned, " +
-                                "you must register as a genuine job seeker with Nav. This means that you must send in the Employment Status Form, " +
-                                "actively be looking for work, and participate in the courses offered by Nav.",
-                    )
+
+                showIf(utbetaling) {
+                    paragraph {
+                        text(
+                            Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”. " +
+                                    "Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, må du melde deg som reell arbeidssøker hos Nav. " +
+                                    "Dette innebærer at du sender meldekort, er aktiv med å søke jobber, samt deltar på de kurs som Nav tilbyr.",
+                            Nynorsk to "For å kunne få omstillingsstønad vidare må du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?». " +
+                                    "Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du melde deg som reell arbeidssøkjar hos Nav. " +
+                                    "Dette inneber at du sender meldekort, er aktiv med å søkje jobbar, og deltek på kursa som Nav tilbyr.",
+                            English to "To receive an adjustment allowance in the future, you must increase your level of activity. " +
+                                    "See “How do I comply with the activity obligation?”.  If you do not undertake any of the other activities mentioned, " +
+                                    "you must register as a genuine job seeker with Nav. This means that you must send in the Employment Status Form, " +
+                                    "actively be looking for work, and participate in the courses offered by Nav.",
+                        )
+                    }
                 }
 
                 paragraph {
@@ -212,7 +228,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 }
             }
 
-            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT) or not(utbetaling)) {
+            showIf(aktivitetsgrad.isOneOf(Aktivitetsgrad.OVER_50_PROSENT, Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
                 paragraph {
                     text(
                         Bokmal to "Er du fortsatt i mer enn 50 prosent jobb, fyller du aktivitetskravet og vil få omstillingsstønad " +

@@ -46,13 +46,17 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
         }
         outline {
             paragraph {
+                val dato = fritekst("dato")
+                val ytelse = fritekst("ytelse")
+                val aarsak = fritekst("årsak til forsinkelse")
+
                 textExpr(
-                    Bokmal to "Vi har ".expr() + fritekst("saksdato") + " mottatt din søknad om ".expr() +
-                            fritekst("sak pensjon") + ". " + "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. " +
-                            "Forsinkelsen skyldes ".expr() + fritekst("årsak til forsinkelse") + ".".expr(),
-                    English to "We have received your application for ".expr() + fritekst("sak pensjon") +
-                            " on the ".expr() + fritekst("dato") + ". " + "Due to delays in ".expr() +
-                            fritekst("årsak til forsinkelse") + ", the processing of your case will take longer than we anticipated.".expr()
+                    Bokmal to "Vi har ".expr() + dato + " mottatt din søknad om ".expr() + ytelse + ". "
+                            + "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. "
+                            + "Forsinkelsen skyldes ".expr() + aarsak + ".".expr(),
+                    English to "We have received your application for ".expr() + ytelse +
+                            " on the ".expr() + dato + ". " + "Due to delays in ".expr() +
+                            aarsak + ", the processing of your case will take longer than we anticipated.".expr()
                 )
             }
             title1 {
@@ -62,11 +66,10 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
                 )
             }
             paragraph {
+                val frist = fritekst("antall dager/uker/måneder")
                 textExpr(
-                    Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() +
-                            fritekst("antall dager/uker/måneder") + ".".expr(),
-                    English to "Without further delays, we assume the processing of your case to be completed within ".expr() +
-                            fritekst("antall dager/uker/måneder") + ".".expr()
+                    Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + frist + ".".expr(),
+                    English to "Without further delays, we assume the processing of your case to be completed within ".expr() + frist + ".".expr()
                 )
             }
             title1 {

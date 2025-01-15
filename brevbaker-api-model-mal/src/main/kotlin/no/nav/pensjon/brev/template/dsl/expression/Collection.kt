@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
+import no.nav.pensjon.brev.UnleashToggle
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
@@ -14,6 +15,9 @@ fun <T> Expression<Collection<T>>.size(): Expression<Int> =
 
 fun Expression<Int>.absoluteValue(): Expression<Int> =
     Expression.UnaryInvoke(value = this, operation = UnaryOperation.AbsoluteValue)
+
+fun Expression<UnleashToggle>.enabled(): Expression<Boolean> =
+    Expression.UnaryInvoke(value = this, operation = UnaryOperation.FunksjonsbryterEnabled)
 
 @JvmName("absoluteValueKroner")
 fun Expression<Kroner>.absoluteValue(): Expression<Kroner> =

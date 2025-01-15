@@ -49,18 +49,8 @@ object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdat
         outline {
             paragraph {
                 textExpr(
-                    Bokmal to felles.avsenderEnhet.navn
-                            + " ønsker å få bekreftet om følgende person er registrert med flyktningstatus hos dere:"
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to felles.bruker.fulltNavn()
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to felles.bruker.foedselsnummer.value
+                    Bokmal to felles.avsenderEnhet.navn + " ønsker å få bekreftet om " + felles.bruker.fulltNavn() + " med fødselsnummer " +
+                            felles.bruker.foedselsnummer.value + " er registrert med flyktningstatus hos dere."
                 )
             }
             paragraph {

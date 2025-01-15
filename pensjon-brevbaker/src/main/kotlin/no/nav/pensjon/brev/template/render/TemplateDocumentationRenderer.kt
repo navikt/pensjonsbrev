@@ -253,6 +253,11 @@ object TemplateDocumentationRenderer {
                 first = renderExpression(expr.value)
             )
 
+            is UnaryOperation.FunksjonsbryterEnabled -> TemplateDocumentation.Expression.Invoke(
+                operator = Operation(text = "enabled", Documentation.Notation.FUNCTION),
+                first = renderExpression(expr.value)
+            )
+
             is UnaryOperation.BrukerFulltNavn -> TemplateDocumentation.Expression.Invoke(
                 operator = Operation("fulltNavn", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value),
