@@ -48,6 +48,7 @@ object Pesysbrevkoder {
         PE_OVERSETTELSE_AV_DOKUMENTER,
         PE_VARSEL_OM_MULIG_AVSLAG,
         UT_AVSLAG_UFOERETRYGD,
+        UT_INFORMASJON_OM_FORLENGET_SAKSBEHANDLINGSTID,
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID;
 
         override fun kode(): String = this.name
