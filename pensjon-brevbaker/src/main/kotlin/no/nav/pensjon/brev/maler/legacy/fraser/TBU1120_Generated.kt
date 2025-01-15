@@ -1,5 +1,3 @@
-
-
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
@@ -18,7 +16,6 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.formatMaanedAar
 
-
 data class TBU1120_Generated(
 	val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -27,7 +24,7 @@ data class TBU1120_Generated(
 		val beregningUfore_totalNetto: Expression<Kroner> = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
 		paragraph {
 			textExpr (
-				Bokmal to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner i uføretrygd per måned før skatt" ,
+				Bokmal to "Du får ".expr() + beregningUfore_totalNetto.format() + " kroner i uføretrygd per måned før skatt" ,
 				Nynorsk to "Du får ".expr() + beregningUfore_totalNetto.format() + " kroner i uføretrygd per månad før skatt",
 				English to "Your monthly disability benefit payment will be NOK ".expr() + beregningUfore_totalNetto.format() + " before tax",
 			)
