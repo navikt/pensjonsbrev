@@ -17,8 +17,8 @@ import type {
   Title1Block,
   TITLE2,
   Title2Block,
-  VariableValue,
 } from "~/types/brevbakerTypes";
+import { NEW_LINE } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
@@ -32,12 +32,12 @@ export function isEditableContent(content: Content | undefined | null): boolean 
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
 }
 
-export function text<T extends LiteralValue | VariableValue | undefined>(
+export function text<T extends TextContent | undefined>(
   content: T,
 ): string | (undefined extends T ? undefined : never) {
   if (content?.type === LITERAL) {
     return content.editedText ?? content.text;
-  } else if (content?.type === VARIABLE) {
+  } else if (content?.type === VARIABLE || content?.type === NEW_LINE) {
     return content.text;
   } else {
     return undefined as undefined extends T ? undefined : never;
@@ -54,7 +54,6 @@ export function create(brev: BrevResponse): LetterEditorState {
   };
 }
 
-// TODO: skriv en test som verifiserer at kun elementer som har matchende parentId til from blir lagt til i deleted.
 export function removeElements<T extends Identifiable>(
   startIndex: number,
   count: number,

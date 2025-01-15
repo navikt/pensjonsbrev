@@ -11,7 +11,7 @@ import type {
   TextContent,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { ElementTags, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { ContentGroup } from "./state";
 
@@ -43,6 +43,7 @@ export function isFritekst(literal: LiteralValue): boolean {
 export function isEmptyContent(content: Content) {
   switch (content.type) {
     case VARIABLE:
+    case NEW_LINE:
     case LITERAL: {
       return text(content).trim().replaceAll("​", "").length === 0;
     }

@@ -21,6 +21,7 @@ import {
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
+import { NEW_LINE } from "~/types/brevbakerTypes";
 import { ElementTags, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 /**
@@ -53,6 +54,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
                 : { ...literalIndex, contentIndex: _contentIndex };
             return <EditableText content={content} key={_contentIndex} literalIndex={updatedLiteralIndex} />;
           }
+          case NEW_LINE:
           case VARIABLE: {
             return <Text content={content} key={_contentIndex} />;
           }
