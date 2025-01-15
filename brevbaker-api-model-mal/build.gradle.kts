@@ -60,9 +60,6 @@ kotlin {
         jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
     }
     sourceSets {
-        main {
-            kotlin.srcDir("build/generated/ksp/main/kotlin")
-        }
         test {
             kotlin.srcDir("build/generated/ksp/test/kotlin")
         }
