@@ -150,16 +150,22 @@ const Vedtak = (props: { saksId: string; brevResponse: BrevResponse }) => {
     },
   });
 
-  const attesterMutation = useMutation<BrevResponse, AxiosError>({
+  const attesterMutation = useMutation<Blob, AxiosError>({
     mutationFn: () => attesterBrev({ saksId: props.saksId, brevId: props.brevResponse.info.id }),
   });
 
+  //TODO - muligens 1 api som tar inn all dette innholdet
   const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
     attestantSignaturMutation.mutate(values.attestantSignatur, {
       onSuccess: () => {
         saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
           onSuccess: () => {
-            attesterMutation.mutate(void 0, { onSuccess: onSuccess });
+            attesterMutation.mutate(void 0, {
+              onSuccess: (pdf) => {
+                queryClient.setQueryData(hentPdfForBrev.queryKey(props.brevResponse.info.id), pdf);
+                onSuccess?.();
+              },
+            });
           },
         });
       },
